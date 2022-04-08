@@ -814,7 +814,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public static void ResizeTarget()
         {
-            NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            Main.QueueMainThreadAction(() =>
+            {
+                NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            });
         }
 
         public void Unload()

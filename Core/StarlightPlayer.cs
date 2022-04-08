@@ -301,17 +301,4 @@ namespace StarlightRiver.Core
             }
         }
     }
-
-    public class StarlightRiverPlayerLayer : PlayerDrawLayer
-    {
-        public override Position GetDefaultPosition()
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void Draw(ref PlayerDrawSet drawInfo)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

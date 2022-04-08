@@ -310,6 +310,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
     class DebugGore : ModGore
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public override void OnSpawn(Gore gore)
 		{
             gore.timeLeft = 30;

@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -7,6 +8,8 @@ namespace StarlightRiver.Gores
 {
 	public abstract class QuickDrop : ModGore
     {
+        public override string Texture => AssetDirectory.Debug;
+
         public override void OnSpawn(Gore gore)
         {
             gore.numFrames = 15;

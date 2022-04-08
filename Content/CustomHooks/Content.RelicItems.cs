@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.CustomHooks
         {
             var c = new ILCursor(il);
 
-            c.TryGotoNext(i => i.MatchStfld<Item>("crit"), i => i.MatchLdloc(2), i => i.MatchLdcI4(84));
+            c.TryGotoNext(i => i.MatchStfld<Item>("crit"), i => i.MatchLdloc(2), i => i.MatchLdcI4(85));
             c.Index++;
 
             ILLabel label = il.DefineLabel(c.Next); //for when we need to skip later

@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-			return item.GetGlobalItem<RelicItem>();
+			return item.TryGetGlobalItem<RelicItem>(out var gi) ? gi : new RelicItem();
 		}
 
 		public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)

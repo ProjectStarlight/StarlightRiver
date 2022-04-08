@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Lavas
                 return;
 
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw += DrawSpecialLava;
-            IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
+            //IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
 
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
         }

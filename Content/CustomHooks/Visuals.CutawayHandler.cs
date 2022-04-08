@@ -28,7 +28,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 			On.Terraria.Main.CheckMonoliths += DrawCutawayTarget;
 
-			cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			Main.QueueMainThreadAction(() =>
+			{
+				cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			});
 		}
 
 		private void RefreshCutawayTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)

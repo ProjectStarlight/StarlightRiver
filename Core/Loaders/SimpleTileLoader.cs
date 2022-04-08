@@ -151,7 +151,11 @@ namespace StarlightRiver.Core.Loaders
             TileTexture = texture;
         }
 
-        public override void SetStaticDefaults()
+        public override string Name => InternalName;
+
+        public override string Texture => TileTexture;
+
+		public override void SetStaticDefaults()
         {
             this.QuickSetFurniture
                 (

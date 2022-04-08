@@ -21,7 +21,7 @@ namespace StarlightRiver.Core
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-            return item.GetGlobalItem<StarlightItem>();
+            return item.TryGetGlobalItem<StarlightItem>(out var gi) ? gi : new StarlightItem();
 		}
 
 		public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)

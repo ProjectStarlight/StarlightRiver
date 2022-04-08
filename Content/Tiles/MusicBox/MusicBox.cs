@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 		{
 			LoadFurniture(name, displayName, boxData);
 			var mod = StarlightRiver.Instance;
-			MusicLoader.AddMusicBox(mod, MusicLoader.GetMusicSlot(path), mod.Find<ModItem>(name + "Item").Type, mod.Find<ModTile>(name).Type);
+			MusicLoader.AddMusicBox(mod, MusicLoader.GetMusicSlot(StarlightRiver.Instance, path), mod.Find<ModItem>(name + "Item").Type, mod.Find<ModTile>(name).Type);
 		}
 	}
 }

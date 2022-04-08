@@ -41,8 +41,12 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-            reflectionNormalMapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+
+            Main.QueueMainThreadAction(() =>
+            {
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+                reflectionNormalMapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            });
 
             PlayerDrawMethod = typeof(Main).GetMethod("DrawPlayers", BindingFlags.NonPublic | BindingFlags.Instance);
             ProjectileDrawMethod = typeof(Main).GetMethod("DrawProjectiles", BindingFlags.NonPublic | BindingFlags.Instance);

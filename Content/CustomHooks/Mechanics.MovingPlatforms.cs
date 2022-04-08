@@ -20,12 +20,12 @@ namespace StarlightRiver.Content.CustomHooks
         {
             On.Terraria.Player.SlopingCollision += PlatformCollision;
 
-            IL.Terraria.Projectile.VanillaAI += GrapplePlatforms;
+            IL.Terraria.Projectile.AI_007_GrapplingHooks += GrapplePlatforms;
         }
 
 		public override void Unload()
         {
-            IL.Terraria.Projectile.VanillaAI -= GrapplePlatforms;
+            IL.Terraria.Projectile.AI_007_GrapplingHooks -= GrapplePlatforms;
         }
 
         private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough, bool ignorePlats)
@@ -125,8 +125,8 @@ namespace StarlightRiver.Content.CustomHooks
         {
             ILCursor c = new ILCursor(il);
             c.TryGotoNext(i => i.MatchLdfld<Projectile>("aiStyle"), i => i.MatchLdcI4(7));
-            c.TryGotoNext(i => i.MatchLdfld<Projectile>("ai"), i => i.MatchLdcI4(0), i => i.MatchLdelemR4(), i => i.MatchLdcR4(2));
-            c.TryGotoNext(i => i.MatchLdloc(143)); //flag2 in source code
+            c.TryGotoNext(i => i.MatchLdfld<Projectile>("ai"), i => i.MatchLdcI4(0), i => i.MatchLdelemR4(), i => i.MatchLdcR4(0));
+            c.TryGotoNext(i => i.MatchLdloc(44)); //flag in source code
             c.Index++;
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<GrapplePlatformDelegate>(EmitGrapplePlatformDelegate);

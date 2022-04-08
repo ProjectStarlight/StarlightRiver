@@ -199,7 +199,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
     internal class MagmiteGore : ModGore
     {
-        public override void OnSpawn(Gore gore)
+		public override string Texture => AssetDirectory.VitricNpc + "MagmiteGore";
+
+		public override void OnSpawn(Gore gore)
         {
             gore.timeLeft = 180;
             gore.sticky = true;

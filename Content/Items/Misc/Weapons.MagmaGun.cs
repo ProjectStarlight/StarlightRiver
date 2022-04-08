@@ -54,8 +54,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void UpdateWindowSize(GraphicsDevice graphicsDevice, int width, int height)
 		{
-			Target = new RenderTarget2D(graphicsDevice, width, height);
-			TmpTarget = new RenderTarget2D(graphicsDevice, width, height);
+			Main.QueueMainThreadAction(() =>
+			{
+				Target = new RenderTarget2D(graphicsDevice, width, height);
+				TmpTarget = new RenderTarget2D(graphicsDevice, width, height);
+			});
+
 			oldScreenWidth = width;
 			oldScreenHeight = height;
 		}

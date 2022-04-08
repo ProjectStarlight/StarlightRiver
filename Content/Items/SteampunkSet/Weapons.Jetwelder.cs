@@ -559,6 +559,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
     internal class JetwelderCasingGore : ModGore
     {
+        public override string Texture => AssetDirectory.Debug;
+
         public override bool Update(Gore gore)
         {
             gore.alpha += 4;

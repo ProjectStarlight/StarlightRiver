@@ -53,12 +53,15 @@ namespace StarlightRiver.Helpers
 
         public void ResizeBuffers(int width, int height)
         {
-            float factor = height / (float)width;
-            ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Main.QueueMainThreadAction(() =>
+            {
+                float factor = height / (float)width;
+                ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-            if(TileLightingTempTexture != null)
-                TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                if (TileLightingTempTexture != null)
+                    TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            });
         }
 
         private void PopulateTileTexture(Vector2 start)

@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Biomes
 {
 	public class FirstContactEvent : ModSceneEffect
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/WhipAndNaenae");
+		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/WhipAndNaenae");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.Event;
 

@@ -61,8 +61,11 @@ namespace StarlightRiver.Content.CustomHooks
             PlayerIndexLookup = new Dictionary<int, int>();
             prevNumPlayers = -1;
 
-            Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-            ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            Main.QueueMainThreadAction(() =>
+            {
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+                ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            });
 
             PlayerDrawMethod = typeof(Main).GetMethod("DrawPlayer", BindingFlags.Public | BindingFlags.Instance);
 
