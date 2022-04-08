@@ -24,14 +24,14 @@ namespace StarlightRiver.Content.CustomHooks
             //This set of IL hooks changes the title of the NPCs in chat messages and UI, since attempting to change the actual name of the NPCs makes vanilla unhappy.
             IL.Terraria.WorldGen.SpawnTownNPC += SwapTitle;
             IL.Terraria.NPC.checkDead += SwapTitleDeath;
-            IL.Terraria.Main.DrawInventory += SwapTitleMenu;
+            IL.Terraria.Main.DrawNPCHousesInUI += SwapTitleMenu;
         }
 
         public override void Unload()
         {
             IL.Terraria.WorldGen.SpawnTownNPC -= SwapTitle;
             IL.Terraria.NPC.checkDead -= SwapTitleDeath;
-            IL.Terraria.Main.DrawInventory -= SwapTitleMenu;
+            IL.Terraria.Main.DrawNPCHousesInUI -= SwapTitleMenu;
         }
 
         private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
@@ -53,26 +53,26 @@ namespace StarlightRiver.Content.CustomHooks
         private void SwapTitleMenu(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchLdsfld<Main>("spriteBatch"), i => i.MatchLdsfld<Main>("NPCHeadTexture"), i => i.MatchLdloc(78));
-            c.Index += 4; //not the safest thing ever ech
+            c.TryGotoNext(i => i.MatchLdsfld<Main>("spriteBatch"), i => i.MatchLdsfld(typeof(Terraria.GameContent.TextureAssets), "NpcHead"), i => i.MatchLdloc(17));
+            c.Index += 5; //not the safest thing ever ech
 
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
-            c.Emit(OpCodes.Ldloc, 71);
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldloc, 11);
             c.Emit(OpCodes.Ldelem_Ref);
 
             c.EmitDelegate<SwapTitleMenuDelegate>(EmitSwapTitleMenuDelegate);
 
-            c.Emit(OpCodes.Ldloc, 66);
-            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("NPC", BindingFlags.Static | BindingFlags.Public));
-            c.Emit(OpCodes.Ldloc, 71);
+            c.Emit(OpCodes.Ldloc, 1);
+            c.Emit(OpCodes.Ldsfld, typeof(Main).GetField("npc", BindingFlags.Static | BindingFlags.Public));
+            c.Emit(OpCodes.Ldloc, 11);
             c.Emit(OpCodes.Ldelem_Ref);
 
-            c.Emit(OpCodes.Ldloc, 73); //X and Y coords to check mouse collision
-            c.Emit(OpCodes.Ldloc, 74);
+            c.Emit(OpCodes.Ldloc, 12); //X and Y coords to check mouse collision
+            c.Emit(OpCodes.Ldloc, 13);
 
             c.EmitDelegate<SwapTextMenuDelegate>(EmitSwapTextMenuDelegate);
 
-            c.Emit(OpCodes.Stloc, 66);
+            c.Emit(OpCodes.Stloc, 1);
         }
 
         private delegate string SwapTextMenuDelegate(string input, NPC NPC, int x, int y);
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void SwapTitleDeath(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchStloc(3));
+            c.TryGotoNext(i => i.MatchStloc(6));
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<SwapTitleDeathDelegate>(EmitSwapTitleDeathDelegate);
         }
