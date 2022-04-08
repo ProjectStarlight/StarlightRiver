@@ -34,6 +34,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             //limit the tick difference cause otherwise may end up with a super reverse of the whole cutscene when some weirdness happens, if the lag is extreme enough, things may just break
             return (GlobalTimer == time || (justRecievedPacket && prevTickGlobalTimer < time && GlobalTimer > time && Math.Abs(prevTickGlobalTimer - GlobalTimer) < 15));
         }
+
         private void SpawnAnimation() //The animation which plays when the boss is spawning
         {
             rotationLocked = true;
