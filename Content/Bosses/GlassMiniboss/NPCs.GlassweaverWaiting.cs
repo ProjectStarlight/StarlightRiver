@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (firstButton)
             {
-                NPC.NewNPC((int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassMiniboss>());
+                NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassMiniboss>());
                 NPC.active = false;
             }
         }

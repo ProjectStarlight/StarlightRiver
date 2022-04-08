@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Reflection;

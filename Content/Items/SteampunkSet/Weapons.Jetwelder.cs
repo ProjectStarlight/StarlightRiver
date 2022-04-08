@@ -108,10 +108,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void Load()
         {
-            StarlightRiver.Instance.AddGore(Texture + "_Gore1");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore2");
-            StarlightRiver.Instance.AddGore(Texture + "_Gore3");
-            
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore1");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore2");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore3");
         }
 
         public override void SetStaticDefaults()
@@ -268,7 +267,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     {
                         for (int k = 1; k < 4; k++)
                         {
-                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()), 1f);
+                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()).Type, 1f);
                         }
                     }
                     Projectile.NewProjectile(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
@@ -284,7 +283,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 tries++;
                 int posX = (int)position.X / 16;
                 int posY = (int)position.Y / 16;
-                if (Framing.GetTileSafely(posX, posY).HasTile && Main.tileSolid[Framing.GetTileSafely(posX, posY).type])
+                if (Framing.GetTileSafely(posX, posY).HasTile && Main.tileSolid[Framing.GetTileSafely(posX, posY).TileType])
                 {
                     break;
                 }
@@ -411,9 +410,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             Color bloomColor = Color.White;
             bloomColor.A = 0;
-            Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
+            Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0);
 
-            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0f);
+            Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0);
 
             return false;
         }

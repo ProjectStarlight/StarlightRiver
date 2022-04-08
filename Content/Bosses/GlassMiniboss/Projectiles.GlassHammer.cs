@@ -105,9 +105,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Tile tile = Framing.GetTileSafely((int)Projectile.Center.X / 16 + (Projectile.velocity.X > 0 ? 1 : -1), (int)Projectile.Center.Y / 16);
             //Main.NewText(tile.type);//debug
 
-            if (Projectile.timeLeft < 140 && tile.type == TileType<VitricGlass>())
-                Projectile.position.Y -= 128;
-
             if (Projectile.timeLeft < 150 && Projectile.velocity.Y == 0 && Projectile.timeLeft % 20 == 0)
                 Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 16, Vector2.Zero, ProjectileType<ShockwaveSpike>(), Projectile.damage, 0, Projectile.owner);
 

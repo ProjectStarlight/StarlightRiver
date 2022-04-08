@@ -145,8 +145,6 @@ namespace StarlightRiver.Core
                     TownUpgrades.Add(type.Name.Replace("Upgrade", ""), false);
                 }
             }
-
-            PureTiles = new List<Vector2>();
         }
 
         public override void SaveWorldData(TagCompound tag)

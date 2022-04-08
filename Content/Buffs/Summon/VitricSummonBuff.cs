@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using StarlightRiver.Content.Items.Vitric;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Buffs.Summon
 {
@@ -8,7 +10,7 @@ namespace StarlightRiver.Content.Buffs.Summon
 
         public override void Update(Player Player, ref int buffIndex)
         {
-            if (Player.ownedProjectileCounts[Mod.ProjectileType("VitricSummonOrb")] > 0)
+            if (Player.ownedProjectileCounts[ModContent.ProjectileType<VitricSummonOrb>()] > 0)
             {
                 Player.buffTime[buffIndex] = 18000;
             }

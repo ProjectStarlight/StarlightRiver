@@ -41,12 +41,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             if (Projectile.timeLeft == 20)
-                Terraria.Audio.SoundEngine.PlaySound(
-                    StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").SoundId,
-                    -1, -1,
-                    StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/GlassMinibossSword").Style,
-                    1.1f, 0.2f
-                    );
+                Helper.PlayPitched("GlassMinibossSword", 1.1f, 0.2f);
 
             if (Parent != null) 
                 Projectile.Center = Parent.Center + Vector2.UnitX * (Projectile.ai[1] == -1 ? 120 : -120);
