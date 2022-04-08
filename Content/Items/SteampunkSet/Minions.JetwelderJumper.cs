@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void Load()
 		{
             for (int k = 1; k <= 8; k++)
-                GoreLoader.AddGoreFromTexture<>(Mod, Texture + "_Gore" + k);
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + k);
         }
 
 		public override void SetStaticDefaults()

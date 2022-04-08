@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Alchemy
 {
@@ -106,7 +107,7 @@ namespace StarlightRiver.Content.Alchemy
         {
             foreach(Item eachOutputItem in outputItemList)
             {
-                Item.NewItem(wrapper.cauldronRect, eachOutputItem.type, eachOutputItem.stack * wrapper.currentBatchSize);
+                Item.NewItem(new EntitySource_WorldEvent(), wrapper.cauldronRect, eachOutputItem.type, eachOutputItem.stack * wrapper.currentBatchSize);
             }
             foreach (AlchemyIngredient eachIngredient in currentingredients)
             {

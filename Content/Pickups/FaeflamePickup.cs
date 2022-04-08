@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Core;
 using System;
 using Terraria;

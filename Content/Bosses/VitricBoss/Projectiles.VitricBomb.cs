@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void Load()
 		{
             for(int k = 0; k < 4; k++)
-                GoreLoader.AddGoreFromTexture<>(Mod, AssetDirectory.VitricBoss + "Gore/Mine" + k);
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricBoss + "Gore/Mine" + k);
 		}
 
 		public override void SetDefaults()

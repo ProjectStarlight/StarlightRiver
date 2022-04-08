@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -47,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Air>(), Vector2.Zero);
 
-            if (distance.Length() <= 180 && !mp.Unlocked<Whip>() || Main.dayTime) NPC.ai[3] = 1;
+            if (distance.Length() <= 180 || Main.dayTime) NPC.ai[3] = 1;
 
             if (NPC.ai[3] == 1)
             {

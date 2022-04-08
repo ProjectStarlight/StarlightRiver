@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -64,7 +65,7 @@ namespace StarlightRiver.Content.Alchemy.Recipes
             {
                 foreach (Item eachOutputItem in outputItemList)
                 {
-                    Item.NewItem(wrapper.cauldronRect.Center() - new Vector2(0, 100), Vector2.Zero, eachOutputItem.type, Stack: eachOutputItem.stack, prefixGiven: eachOutputItem.prefix);
+                    Item.NewItem(new EntitySource_WorldEvent(), wrapper.cauldronRect.Center() - new Vector2(0, 100), Vector2.Zero, eachOutputItem.type, Stack: eachOutputItem.stack, prefixGiven: eachOutputItem.prefix);
                 }
                 foreach (AlchemyIngredient eachIngredient in currentingredients)
                 {

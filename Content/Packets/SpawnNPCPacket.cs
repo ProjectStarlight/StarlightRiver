@@ -4,6 +4,7 @@ using StarlightRiver.Content.Abilities;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Packets
 {
@@ -27,12 +28,12 @@ namespace StarlightRiver.Packets
         {
             if (Main.netMode == Terraria.ID.NetmodeID.Server)
             {
-                int n = NPC.NewNPC(x, y, type);
+                int n = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, type);
                 NetMessage.SendData(Terraria.ID.MessageID.SyncNPC, -1, -1, null, n);
             }
 
             if (Main.netMode == Terraria.ID.NetmodeID.SinglePlayer)
-                NPC.NewNPC(x, y, type);
+                NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, type);
         }
     }
 }

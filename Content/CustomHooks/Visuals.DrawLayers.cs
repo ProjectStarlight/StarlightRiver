@@ -22,8 +22,6 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            //Under water
-            On.Terraria.Main.DrawWaters += DrawUnderwaterNPCs;
             //Keys
             On.Terraria.Main.DrawItems += DrawKeys;
             //Tile draws infront of the Player
@@ -39,25 +37,6 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (!Main.gameMenu && shadow == 0)
                 drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
-        }
-
-		private void DrawUnderwaterNPCs(On.Terraria.Main.orig_DrawWaters orig, Main self, bool bg) //TODO: Generalize this for later use
-        {
-            orig(self, bg);
-
-            foreach (NPC NPC in Main.npc.Where(NPC => NPC.type == NPCType<BoneMine>() && NPC.active))
-            {
-                SpriteBatch spriteBatch = Main.spriteBatch;
-                Color drawColor = Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16) * 0.3f;
-
-                spriteBatch.Draw(Request<Texture2D>(NPC.ModNPC.Texture).Value, NPC.position - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2((float)Math.Sin(NPC.ai[0]) * 4f, 0), drawColor);
-                for (int k = 0; k >= 0; k++)
-                {
-                    if (Main.tile[(int)NPC.position.X / 16, (int)NPC.position.Y / 16 + k + 2].HasTile) break;
-                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.OvergrowItem + "ShakerChain").Value,
-                        NPC.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(NPC.ai[0] + k) * 4, 18 + k * 16), drawColor);
-                }
-            }
         }
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)

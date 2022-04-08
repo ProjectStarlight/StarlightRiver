@@ -32,7 +32,7 @@ namespace StarlightRiver.Helpers
 
         public static void PlaceMultitile(Point16 position, int type, int style = 0)
         {
-            TileObjectData data = TileObjectData.Find<ModTile>Data(type, style); //magic numbers and uneccisary params begone!
+            TileObjectData data = TileObjectData.GetTileData(type, style); //magic numbers and uneccisary params begone!
 
             if (position.X + data.Width > Main.maxTilesX || position.X < 0) return; //make sure we dont spawn outside of the world!
             if (position.Y + data.Height > Main.maxTilesY || position.Y < 0) return;

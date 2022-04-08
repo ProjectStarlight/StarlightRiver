@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.Purify;
-using StarlightRiver.Content.Abilities.Purify.TransformationHelpers;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Permafrost;
@@ -37,8 +35,6 @@ namespace StarlightRiver.Core
 
         //Voidsmith
         public static Dictionary<string, bool> TownUpgrades = new Dictionary<string, bool>();
-
-        public static List<Vector2> PureTiles = new List<Vector2>();
 
         public static Rectangle VitricBiome = new Rectangle();
 
@@ -123,18 +119,12 @@ namespace StarlightRiver.Core
 
         public override void PostUpdateWorld()
         {
-            if (!Main.projectile.Any(proj => proj.type == ProjectileType<Purifier>()) && PureTiles != null)
-                PureTiles.Clear();
-
             //SquidBoss arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
                 NPC.NewNPC(new EntitySource_WorldEvent(), SquidBossArena.Center.X * 16 + 8, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 
             //Keys
             foreach (Key key in Keys) key.Update();
-
-
-
         }
 
 		public override void OnWorldLoad()
@@ -177,8 +167,6 @@ namespace StarlightRiver.Core
             tag[nameof(flags)] = (int)flags;
 
             tag[nameof(TownUpgrades)] = tag;
-
-            tag[nameof(PureTiles)] = PureTiles;
 
             tag[nameof(RiftLocation)] = RiftLocation;
 
@@ -241,24 +229,12 @@ namespace StarlightRiver.Core
 
             TownUpgrades = targetDict;
 
-            PureTiles = (List<Vector2>)tag.GetList<Vector2>(nameof(PureTiles));
-
             RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
 
             Chungus = tag.GetFloat("Chungus");
 
             Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
             Chungus = MathHelper.Clamp(Chungus, 0, 1);
-
-
-            for (int k = 0; k <= PureTiles.Count - 1; k++)
-                for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
-                    for (int j = (int)PureTiles[k].Y - 16; j <= (int)PureTiles[k].Y + 16; j++)
-                    {
-                        PurifyTransformation.RevertTile(i, j);
-                    }
-
-            PureTiles.Clear();
 
             foreach (Key key in KeyInventory)
             {

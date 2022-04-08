@@ -1,7 +1,5 @@
-﻿using StarlightRiver.Content.Abilities.Faeflame;
+﻿using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.GaiasFist;
-using StarlightRiver.Content.Abilities.Purify;
 using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
@@ -41,8 +39,6 @@ namespace StarlightRiver.Content.Abilities
         {
             Bind<Dash>("Forbidden Winds", "LeftShift");
             Bind<Whip>("Faeflame", "F");
-            Bind<Pure>("Purity Crown", "N");
-            Bind<Smash>("Gaia's Fist", "Z");
         }
         internal void Unload()
         {

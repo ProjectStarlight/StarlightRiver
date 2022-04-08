@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.gameMenu)
                 return;
 
-            if (Main.ActivePlayersCount > 0)
+            if (Main.player.Any(n => n.active))
                 DrawPlayerTarget();
 
             if (Main.instance.tileTarget.IsDisposed)
@@ -161,10 +162,12 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawPlayerTarget()
         {
-            if (Main.ActivePlayersCount != prevNumPlayers)
+            var activePlayerCount = Main.player.Count(n => n.active);
+
+            if (activePlayerCount != prevNumPlayers)
             {
-                prevNumPlayers = Main.ActivePlayersCount;
-                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * Main.ActivePlayersCount, 300);
+                prevNumPlayers = activePlayerCount;
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
                 int activeCount = 0;
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {

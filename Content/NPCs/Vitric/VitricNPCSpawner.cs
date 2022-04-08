@@ -10,6 +10,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using static Terraria.ModLoader.ModContent;
 using Terraria.ID;
+using StarlightRiver.Content.Biomes;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {

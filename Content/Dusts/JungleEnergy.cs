@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.GaiasFist;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
@@ -37,50 +36,6 @@ namespace StarlightRiver.Content.Dusts
 
             if (dust.alpha > 255)
                 dust.active = false;
-            return false;
-        }
-    }
-
-    public class JungleEnergyFollow : ModDust
-    {
-        public override string Texture => AssetDirectory.Dust + "JungleEnergy";
-
-        public override void OnSpawn(Dust dust)
-        {
-            dust.noGravity = true;
-            dust.noLight = false;
-            dust.color.R = 140;
-            dust.color.G = 255;
-            dust.color.B = 80;
-            dust.alpha = 150;
-        }
-
-        public override Color? GetAlpha(Dust dust, Color lightColor)
-        {
-            return dust.color * (dust.alpha / 255f);
-        }
-
-        public override bool Update(Dust dust)
-        {
-            if (dust.customData is Player Player)
-            {
-                Abilities.AbilityHandler mp = Player.GetModPlayer<Abilities.AbilityHandler>();
-
-                dust.position = Player.Center + dust.velocity;
-
-                if (mp.GetAbility<Smash>(out var smash))
-                {
-                    dust.rotation += 6.28f / Smash.ChargeTime;
-
-                    if (smash.Active && smash.Timer <= Smash.ChargeTime) dust.alpha = (int)(smash.Timer / Smash.ChargeTime * 255f);
-
-                    if (smash.Timer > Smash.ChargeTime || !smash.Active) dust.alpha -= 10;
-                    if (dust.alpha <= 0) dust.active = false;
-                }
-            }
-            else
-                dust.active = false;
-
             return false;
         }
     }

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void Load()
 		{
             for(int k = 0; k <= 5; k++)
-			    GoreLoader.AddGoreFromTexture(Mod, AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);          
+			    GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/SnakeGore" + k);          
 		}
 
 		public override void SetStaticDefaults()

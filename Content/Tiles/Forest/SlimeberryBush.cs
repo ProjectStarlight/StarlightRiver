@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Forest
         public override void RandomUpdate(int i, int j) 
         {
             Tile tile = Main.tile[i, j]; 
-            TileObjectData data = TileObjectData.Find<ModTile>Data(tile); 
+            TileObjectData data = TileObjectData.GetTileData(tile); 
             int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); 
 
             if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0)

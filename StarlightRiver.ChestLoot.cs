@@ -79,10 +79,10 @@ namespace StarlightRiver
                     IChestItem chestItem = typeAndChestItem.Item2;
 
                     // Type check is to prevent dungeon wooden chests being treated as surface ones.
-                    if (chest.Item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(chestItem.Regions, tile) && WorldGen.genRand.NextFloat() < chanceToReplaceMainChestLootWithModdedItem)
+                    if (chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(chestItem.Regions, tile) && WorldGen.genRand.NextFloat() < chanceToReplaceMainChestLootWithModdedItem)
                     {
                         // Replaces the "main" chest Item. I'm assuming this is always in slot 0.
-                        chest.Item[0] = SetupItem(typeAndChestItem.Item1, chestItem.Stack, false);
+                        chest.item[0] = SetupItem(typeAndChestItem.Item1, chestItem.Stack, false);
                     }
                 }
             }
@@ -94,14 +94,14 @@ namespace StarlightRiver
         {
             int type = ItemID.None;
 
-            for (int i = 0; i < chest.Item.Length; i++)
+            for (int i = 0; i < chest.item.Length; i++)
             {
-                Item Item = chest.Item[i];
+                Item Item = chest.item[i];
 
                 // Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
                 if (Item.accessory || (Item.damage > 0 && Item.notAmmo && (Item.DamageType.CountsAs(DamageClass.Melee) || Item.DamageType.CountsAs(DamageClass.Ranged) || Item.DamageType.CountsAs(DamageClass.Magic) || Item.DamageType.CountsAs(DamageClass.Magic)) && Item.maxStack == 1))
                 {
-                    type = chest.Item[i].type;
+                    type = chest.item[i].type;
 
                     break;
                 }

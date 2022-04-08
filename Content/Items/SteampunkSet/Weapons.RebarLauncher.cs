@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void Load()
 		{
-			GoreLoader.AddGoreFromTexture<>(Mod, AssetDirectory.SteampunkItem + "RebarProj");			
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.SteampunkItem + "RebarProj");			
 		}
 		public override void SetStaticDefaults()
 		{

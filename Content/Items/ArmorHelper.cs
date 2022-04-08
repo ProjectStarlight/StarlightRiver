@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.Faewhip;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;

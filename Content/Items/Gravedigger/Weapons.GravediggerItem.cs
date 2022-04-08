@@ -9,6 +9,7 @@ using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -427,23 +428,27 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	{
 		public ShovelQuickFall() : base("Quick fall", "You slammin", false) { }
 
-		public override void Update(NPC NPC, ref int buffIndex)
+		public override void Update(NPC npc, ref int buffIndex)
 		{
-			NPC.velocity.X *= 0.85f;
-			NPC.velocity.Y = 40;
-			if (NPC.collideY)
+			npc.velocity.X *= 0.85f;
+			npc.velocity.Y = 40;
+			if (npc.collideY)
             {
-				NPC.velocity.X = 0;
-				Player Player = Main.player[NPC.target];
-				NPC.DelBuff(buffIndex--);
+				npc.velocity.X = 0;
+				Player Player = Main.player[npc.target];
+				npc.DelBuff(buffIndex--);
 				Player.GetModPlayer<StarlightPlayer>().Shake += 10;
 				for (int k = 0; k <= 50; k++)
 				{
-					Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
+					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
 				}
-				Projectile.NewProjectile(NPC.Center + new Vector2(0, NPC.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee)), 0, NPC.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI); //PORTTODO: Figure out what projectile source to use here
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, NPC.Center);
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, NPC.Center);
+
+				var pos = npc.Center + new Vector2(0, npc.height / 2);
+				var damage = (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee));
+
+				Projectile.NewProjectile(new EntitySource_Buff(npc, Type, buffIndex), pos, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), damage, 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, npc.Center);
 			}
 		}
 	}

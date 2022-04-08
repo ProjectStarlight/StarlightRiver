@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Alchemy
@@ -118,7 +119,7 @@ namespace StarlightRiver.Content.Alchemy
             if (storedItem.stack > 0)
             {
                 //TODO: rework this to handle exact clone dropping like keeping modifiers, maybe look into calling newItem to get an open Main.item index and then replace it with the clone and net send it
-                Item.NewItem(cauldronRect, storedItem.type, storedItem.stack);
+                Item.NewItem(new EntitySource_WorldEvent(), cauldronRect, storedItem.type, storedItem.stack);
             }
 
             storedItem = null;
