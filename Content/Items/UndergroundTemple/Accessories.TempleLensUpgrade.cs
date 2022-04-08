@@ -55,6 +55,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
     class Exposed : SmartBuff
     {
+        public override string Texture => AssetDirectory.Debug;
+
         public Exposed() : base("Exposed", "How do you have this its NPC only", true) { }
 
 		public override void Load()

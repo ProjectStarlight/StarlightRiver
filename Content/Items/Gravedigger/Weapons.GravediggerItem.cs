@@ -416,6 +416,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	class ShovelSlowFall : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public ShovelSlowFall() : base("Slow fall", "Falling Speed Reduced", false) { }
 
 		public override void Update(NPC NPC, ref int buffIndex)
@@ -426,6 +428,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	}
 	class ShovelQuickFall : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public ShovelQuickFall() : base("Quick fall", "You slammin", false) { }
 
 		public override void Update(NPC npc, ref int buffIndex)

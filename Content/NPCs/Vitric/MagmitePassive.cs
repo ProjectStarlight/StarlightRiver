@@ -235,6 +235,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         }
     }
 
+    /*
     internal class MagmiteBanner : ModBanner
     {
         public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
@@ -243,5 +244,5 @@ namespace StarlightRiver.Content.NPCs.Vitric
     internal class MagmiteBannerItem : QuickBannerItem
     {
         public MagmiteBannerItem() : base("MagmiteBanner", "Small Magmite", AssetDirectory.VitricNpc) { }
-    }
+    }*/
 }

@@ -157,6 +157,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         }
     }
 
+    /*
     internal class VitricBatBanner : ModBanner
     {
         public VitricBatBanner() : base("VitricBatBannerItem", NPCType<CrystalPopper>(), AssetDirectory.VitricNpc) { }
@@ -165,5 +166,5 @@ namespace StarlightRiver.Content.NPCs.Vitric
     internal class VitricBatBannerItem : QuickBannerItem
     {
         public VitricBatBannerItem() : base("VitricBatBanner", "Sand Bat", AssetDirectory.VitricNpc) { }
-    }
+    }*/
 }

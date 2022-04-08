@@ -58,8 +58,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public override ModItem Clone(Item Item)
         {
-
             var clone = base.Clone(Item);
+
+            if (!(Item.ModItem is Cloudstrike))
+                return clone;
 
             if (Main.mouseItem.type == ModContent.ItemType<Cloudstrike>())
                 Item.ModItem.HoldItem(Main.player[Main.myPlayer]);
@@ -69,6 +71,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             return clone;
         }
+
         public override void ModifyManaCost(Player Player, ref float reduce, ref float mult)
         {
             mult = (float)Math.Sqrt(chargeRatio);

@@ -37,15 +37,13 @@ namespace StarlightRiver.Compat.BossChecklist
 
 		public void PostLoad()
 		{
-			Mod bcl = ModLoader.GetMod("BossChecklist");
+			if (ModLoader.TryGetMod("BossChecklist", out var bcl))
+			{
+				typeInfo = bcl.Code.GetType("BossChecklist.UIElements.BossLogUIElements").GetNestedType("BossLogPanel", BindingFlags.NonPublic);
+				MethodInfo hooked = typeInfo.GetMethod("Draw", BindingFlags.Public | BindingFlags.Instance);
 
-			if (bcl is null)
-				return;
-
-			typeInfo = bcl.Code.GetType("BossChecklist.UIElements.BossLogUIElements").GetNestedType("BossLogPanel", BindingFlags.NonPublic);
-			MethodInfo hooked = typeInfo.GetMethod("Draw", BindingFlags.Public | BindingFlags.Instance);
-
-			drawHook = new ILHook(hooked, PatchDraw);
+				drawHook = new ILHook(hooked, PatchDraw);
+			}
 		}
 
 		public static void PatchDraw(ILContext il)

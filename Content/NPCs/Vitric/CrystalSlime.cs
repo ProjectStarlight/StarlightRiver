@@ -122,6 +122,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
         }
     }
 
+    /* PORTTODO: Figure out why banners make the game melt
     internal class CrystalSlimeBanner : ModBanner
     {
         public CrystalSlimeBanner() : base("CrystalSlimeBannerItem", NPCType<CrystalSlime>(), AssetDirectory.VitricNpc) { }
@@ -130,5 +131,5 @@ namespace StarlightRiver.Content.NPCs.Vitric
     internal class CrystalSlimeBannerItem : QuickBannerItem
     {
         public CrystalSlimeBannerItem() : base("CrystalSlimeBanner", "Crystal Slime", AssetDirectory.VitricNpc) { }
-    }
+    }*/
 }

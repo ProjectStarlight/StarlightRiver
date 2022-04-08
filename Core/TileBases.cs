@@ -180,7 +180,7 @@ namespace StarlightRiver.Core
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));
-            ItemType = Mod.Find<ModItem>(ItemName).Type;
+            //ItemType = Mod.Find<ModItem>(ItemName).Type; //PORTTODO: Figure out why this is causing load errors
             DustType = -1;
 
             SafeSetDefaults();

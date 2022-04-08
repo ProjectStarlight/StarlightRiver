@@ -275,7 +275,9 @@ namespace StarlightRiver.Content.Items.Misc
 
     public class FiletFrenzyBuff : SmartBuff
     {
-        public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed, but decreased crit rate on Filet Knife", false, false) { }
+        public override string Texture => AssetDirectory.Debug;
+
+		public FiletFrenzyBuff() : base("Blood Frenzy", "Increased melee speed, but decreased crit rate on Filet Knife", false, false) { }
 
         public override void Update(Player Player, ref int buffIndex)
         {

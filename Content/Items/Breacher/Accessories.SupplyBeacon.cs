@@ -316,6 +316,8 @@ namespace StarlightRiver.Content.Items.Breacher
 	}
 	class SupplyBeaconDefense : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
 
 		public override void SafeSetDetafults()
@@ -334,6 +336,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	class SupplyBeaconHeal : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
 
 		public override void SafeSetDetafults()
@@ -353,6 +357,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	class SupplyBeaconDamage : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
 
 		public override void SafeSetDetafults()

@@ -453,6 +453,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class SoulSuck : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public SoulSuck() : base("Soul Suck", "You getting sucked", false) { }
 
 		public override void Update(NPC NPC, ref int buffIndex)

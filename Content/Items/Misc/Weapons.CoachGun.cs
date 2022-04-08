@@ -521,6 +521,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class CoachDebuff : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public CoachDebuff() : base("Coach Debuff", "10% increased damage", false) { }
 
 		public override void Update(NPC NPC, ref int buffIndex)

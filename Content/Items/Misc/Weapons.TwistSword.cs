@@ -58,6 +58,9 @@ namespace StarlightRiver.Content.Items.Misc
         {
             var clone = base.Clone(Item);
 
+            if (!(Item.ModItem is TwistSword))
+                return clone;
+
             if (Main.mouseItem.type == ItemType<TwistSword>())
                 Item.ModItem.HoldItem(Main.player[Main.myPlayer]);
 

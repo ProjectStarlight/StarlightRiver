@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Forest
 	{
         Vector2 savedPos;
 
-		public override string Texture => "Terraria/Item_27";
+		public override string Texture => AssetDirectory.ForestItem + Name;
 
 		public override void SetDefaults()
 		{

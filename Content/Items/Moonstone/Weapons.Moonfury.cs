@@ -400,6 +400,8 @@ namespace StarlightRiver.Content.Items.Moonstone
     }
     class MoonfuryDebuff : SmartBuff
     {
+        public override string Texture => AssetDirectory.Debug;
+
         public MoonfuryDebuff() : base("Dreamfire", "Next Moonfury hit has increased damage", false) { }
 
         public override void Update(NPC NPC, ref int buffIndex)

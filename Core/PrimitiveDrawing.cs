@@ -11,8 +11,8 @@ namespace StarlightRiver.Core
     {
         public bool IsDisposed { get; private set; }
 
-        private readonly DynamicVertexBuffer vertexBuffer;
-        private readonly DynamicIndexBuffer indexBuffer;
+        private DynamicVertexBuffer vertexBuffer;
+        private DynamicIndexBuffer indexBuffer;
 
         private readonly GraphicsDevice device;
 
@@ -22,8 +22,11 @@ namespace StarlightRiver.Core
 
             if (device != null)
             {
-                vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
-                indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+                Main.QueueMainThreadAction(() =>
+                {
+                    vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
+                    indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+                });
             }
         }
 
