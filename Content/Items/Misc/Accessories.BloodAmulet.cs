@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool dropHeart = false;
 
-        public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
+		public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
         {
             if (dropHeart && NPC.life <= 0)
 				Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, ItemID.Heart);

@@ -25,7 +25,12 @@ namespace StarlightRiver.Content.ArmorEnchantment
             return Enchantment.PreDrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
         }
 
-        public override string IsArmorSet(Item head, Item body, Item legs)
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+            return item.GetGlobalItem<EnchantedArmorGlobalItem>();
+		}
+
+		public override string IsArmorSet(Item head, Item body, Item legs)
         {
             if (GetEnchant(head) != null && //so unenchanted Items are unaffected
                 GetEnchant(body) != null &&

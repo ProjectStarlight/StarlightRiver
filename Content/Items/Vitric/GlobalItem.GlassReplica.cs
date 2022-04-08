@@ -17,6 +17,11 @@ namespace StarlightRiver.Content.Items.Vitric
         public bool isReplica;
         private bool firstTime = true;
 
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+            return item.GetGlobalItem<GlassReplica>();
+		}
+
 		public override void SaveData(Item item, TagCompound tag)
 		{
 			tag["isReplica"] = isReplica;

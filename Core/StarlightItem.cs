@@ -19,7 +19,12 @@ namespace StarlightRiver.Core
 
         public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox) => meleeHitbox = hitbox;
 
-        public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+            return item.GetGlobalItem<StarlightItem>();
+		}
+
+		public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
         {
             var prefix = PrefixLoader.GetPrefix(Item.prefix);
 

@@ -13,6 +13,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
             color: new Color(140, 97, 86),
             glowColor: new Color(255, 220, 150),
             dust: DustType<Dusts.Air>(),
-            material: StarlightRiver.Instance.Find<ModItem>("AncientSandstoneItem").Type) { }
+            material: ModContent.ItemType<Content.Items.Vitric.SandstoneChunk>()) { }
     }
 }

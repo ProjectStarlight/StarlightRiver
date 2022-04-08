@@ -23,7 +23,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 
-        public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+			return item.GetGlobalItem<RelicItem>();
+		}
+
+		public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)
         {
             if (isRelic)
             {

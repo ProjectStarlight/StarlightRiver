@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             var player = Main.LocalPlayer;
 
-            if(dummySpear.IsAir)
+            if(dummySpear.IsAir && !Main.gameMenu)
                 dummySpear.SetDefaults(ItemType<Datsuzei>());
 
             if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player) && player.controlUp)

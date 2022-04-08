@@ -152,8 +152,8 @@ namespace StarlightRiver.Content.GUI
 
             base.Draw(spriteBatch);
 
-            previewGif?.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
-            previewGif?.UpdateGIF();
+            //previewGif?.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
+            //previewGif?.UpdateGIF();
 
             if(previewGif is null && selected != null)
 			{
@@ -298,14 +298,14 @@ namespace StarlightRiver.Content.GUI
             byte[] file = GetFileBytes(output.PreviewVideo + ".gif");
             Stream stream = new MemoryStream(file);
 
-            var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2); //PORTTODO: Update interchange ref
+            //var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2); //PORTTODO: Update interchange ref //PORTTODO: Re-enable this
 
             if (token.IsCancellationRequested)
                 return;
 
-            (parent as InfusionMaker).previewGif = gif;
-            (parent as InfusionMaker).previewGif.ShouldLoop = true;
-            (parent as InfusionMaker).previewGif.Play();
+            //(parent as InfusionMaker).previewGif = gif;
+            //(parent as InfusionMaker).previewGif.ShouldLoop = true;
+            //(parent as InfusionMaker).previewGif.Play();
         }
     }
 

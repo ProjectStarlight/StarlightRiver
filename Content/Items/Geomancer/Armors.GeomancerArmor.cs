@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             var Player = Main.LocalPlayer;
 
-            if (dummyItem.IsAir)
+            if (dummyItem.IsAir && !Main.gameMenu)
                 dummyItem.SetDefaults(ModContent.ItemType<GeomancerItemDummy>());
 
             if (IsGeomancerArmor(Main.HoverItem) && IsArmorSet(Player) && Player.controlUp)

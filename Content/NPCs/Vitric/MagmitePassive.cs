@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void Load()
         {
-            GoreLoader.AddGoreFromTexture<MagmiteGore>(StarlightRiver.Instance, "StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
+            //GoreLoader.AddGoreFromTexture<MagmiteGore>(StarlightRiver.Instance, "StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
         }
 
         public override void SetStaticDefaults()

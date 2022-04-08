@@ -65,7 +65,7 @@ namespace StarlightRiver
                     loadCache.Add(instance as IOrderedLoadable);
                 }
 
-                loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+                loadCache.Sort((n, t) => n.Priority.CompareTo(t.Priority));
             }
 
             for (int k = 0; k < loadCache.Count; k++)

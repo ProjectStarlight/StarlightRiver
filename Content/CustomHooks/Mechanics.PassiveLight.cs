@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            IL.Terraria.Lighting.PreRenderPhase += VitricLighting; //PORTTODO: Figure out how the new lighting system works for this one. Yikes.
+            //IL.Terraria.Lighting.PreRenderPhase += VitricLighting; //PORTTODO: Figure out how the new lighting system works for this one. Yikes.
             On.Terraria.Main.Update += UpdateLightingVars; //TODO: Change to an event in modworld update hook eventually?
         }
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
         {
-            IL.Terraria.Lighting.PreRenderPhase -= VitricLighting;
+            //IL.Terraria.Lighting.PreRenderPhase -= VitricLighting;
         }
 
         private delegate void ModLightingStateDelegate(float from, ref float to);

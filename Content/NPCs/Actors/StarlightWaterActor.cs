@@ -145,6 +145,11 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override bool InstancePerEntity => true;
 
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+			return item.GetGlobalItem<TransformableItem>();
+		}
+
 		public override void SetDefaults(Item Item) //TOOD: Probably move this later or make it modular? pee pee poo poo
 		{ 
 			if (Item.type == ItemID.WoodHelmet) transformType = ModContent.ItemType<StarwoodHat>();
