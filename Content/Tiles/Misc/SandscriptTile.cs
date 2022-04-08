@@ -27,7 +27,7 @@ namespace StarlightRiver.Tiles.Misc
 
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-            StarlightWorld.LearnRecipie("SandScripts");
+            RecipeSystem.LearnRecipie(GetInstance<Content.Items.Misc.Sandscript>().Name);
 		}
 	}
 }

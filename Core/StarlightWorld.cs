@@ -33,9 +33,6 @@ namespace StarlightRiver.Core
 
         public static Cutaway cathedralOverlay;
 
-        //Recipe """database""" TODO: More robust system for this? do we really need one?
-        public static List<string> knownRecipies = new List<string>();
-
         public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
 
         //Voidsmith
@@ -153,8 +150,7 @@ namespace StarlightRiver.Core
 
             flags = default;
 
-            TownUpgrades = new Dictionary<string, bool>();
-            knownRecipies = new List<string>();
+            TownUpgrades = new Dictionary<string, bool>();         
 
             //Autoload NPC upgrades
             Mod Mod = StarlightRiver.Instance;
@@ -194,7 +190,7 @@ namespace StarlightRiver.Core
 
             tag["Chungus"] = Chungus;
 
-            tag["Recipies"] = knownRecipies;
+
 
         }
 
@@ -260,7 +256,6 @@ namespace StarlightRiver.Core
             Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
             Chungus = MathHelper.Clamp(Chungus, 0, 1);
 
-            knownRecipies = (List<string>)tag.GetList<string>("Recipies");
 
             for (int k = 0; k <= PureTiles.Count - 1; k++)
                 for (int i = (int)PureTiles[k].X - 16; i <= (int)PureTiles[k].X + 16; i++)
@@ -283,16 +278,6 @@ namespace StarlightRiver.Core
             Physics.VerletChain.toDraw.Clear();
 
             DummyTile.dummies.Clear();
-        }
-
-        public static void LearnRecipie(string key)
-        {
-            //this is set up in a way where the stored key should be the same as the display name, there is no real reason to differentiate as the entirety of the data stored is a string list.
-            if (!knownRecipies.Contains(key))
-            {
-                knownRecipies.Add(key);
-                CombatText.NewText(Main.LocalPlayer.Hitbox, Color.Tan, "Learned Recipie: " + key);
-            }
         }
     }
 }

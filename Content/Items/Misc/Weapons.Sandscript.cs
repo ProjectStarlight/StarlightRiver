@@ -46,10 +46,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AddRecipes()
 		{
-            Recipe recipe = new LearnableRecipe("SandScripts"); //PORTTODO: Find out how to reimplement learnable recipes
+            RecipeSystem.allHiddenRecipes.Add(Name); //Hide this recipe
+
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Sandstone, 10);
             recipe.AddIngredient(ItemID.Topaz);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 		}
 	}
 
