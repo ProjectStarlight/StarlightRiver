@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.GUI
             if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || ShouldReset)
             {
                 RemoveAllChildren();
+                abilityIconPositions.Clear();
+
                 var abilities = Ability.GetAbilityInstances();
 
                 for (int k = 0; k < abilities.Length; k++)
