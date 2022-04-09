@@ -149,7 +149,7 @@ namespace StarlightRiver.Core
 
         public override void SaveWorldData(TagCompound tag)
         {
-            TagCompound townTag;
+            TagCompound townTag = new TagCompound();
             foreach (var pair in TownUpgrades)
                 townTag.Add(pair.Key, pair.Value);
 
