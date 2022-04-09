@@ -92,15 +92,20 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
         }
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
 			if (player.altFunctionUse == 2)
-            {
-				cooldown = 130;
+			{
 				Vector2 dir = Vector2.Normalize(velocity) * 9;
 				velocity = dir;
 				type = ModContent.ProjectileType<CoachGunBomb>();
 			}
+		}
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+			if (player.altFunctionUse == 2)
+				cooldown = 130;
 			else
             {
 				float rot = velocity.ToRotation();

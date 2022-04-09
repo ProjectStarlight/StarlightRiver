@@ -54,11 +54,14 @@ namespace StarlightRiver.Content.Items.Breacher
             return new Vector2(-10, 0);
         }
 
-
-        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             type = ModContent.ProjectileType<ExplosiveFlare>();
             position.Y -= 4;
+        }
+
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
             Vector2 direction = velocity;
 
             for (int i = 0; i < 15; i++)
