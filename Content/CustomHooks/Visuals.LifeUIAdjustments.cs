@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.CustomHooks
 			Player Player = Main.LocalPlayer;
 			var sp = Player.GetModPlayer<BarrierPlayer>();
 
+			if (Main.ResourceSetsManager.ActiveSetKeyName != "Default")
+				return arg;
+
 			if (sp.Barrier <= 0 && sp.MaxBarrier <= 0)
 				return arg;
 

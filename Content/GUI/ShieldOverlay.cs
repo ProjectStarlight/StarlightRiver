@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.UI.ResourceSets;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -57,9 +58,20 @@ namespace StarlightRiver.Content.GUI
 
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
-					var pos = new Vector2(Main.screenWidth - 300 + k * 26, 32f);
-					if (k >= 10)
-						pos += new Vector2(-260, 26);
+					Vector2 pos = Vector2.Zero;
+
+					if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
+					{
+						pos = new Vector2(Main.screenWidth - 300 + k * 26, 32f);
+						if (k >= 10)
+							pos += new Vector2(-260, 26);
+					}
+					else if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
+					{
+						pos = new Vector2(Main.screenWidth - 292 + k * 24, 19f);
+						if (k >= 10)
+							pos += new Vector2(-240, 28);
+					}
 
 					var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
 					var texOver = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;

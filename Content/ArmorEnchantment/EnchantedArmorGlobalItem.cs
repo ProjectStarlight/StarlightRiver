@@ -55,9 +55,12 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
         public override void SaveData(Item Item, TagCompound tag)
         {
-            tag["EnchantGuid"] = Enchantment.Guid.ToString();
-            tag["EnchantType"] = Enchantment.GetType().FullName;
-            tag["Enchantment"] = Enchantment.SaveData();
+            if (Enchantment != null)
+            {
+                tag["EnchantGuid"] = Enchantment.Guid.ToString();
+                tag["EnchantType"] = Enchantment.GetType().FullName;
+                tag["Enchantment"] = Enchantment.SaveData();
+            }
         }
 
         public override void LoadData(Item Item, TagCompound tag)
