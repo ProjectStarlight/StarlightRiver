@@ -132,7 +132,7 @@ namespace StarlightRiver
 
         public void CheckScreenSize()
         {
-            if (!Main.dedServ)
+            if (!Main.dedServ && !Main.gameMenu)
             {
                 if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
                 {

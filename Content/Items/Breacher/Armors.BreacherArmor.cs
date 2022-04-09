@@ -836,6 +836,7 @@ namespace StarlightRiver.Content.Items.Breacher
             RenderTargetBinding[] bindings = gD.GetRenderTargets();
             gD.SetRenderTarget(NPCTarget);
             gD.Clear(Color.Transparent);
+
             Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
             for (int i = 0; i < Main.npc.Length; i++)

@@ -49,7 +49,7 @@ namespace StarlightRiver.Core
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
-                TooltipLine line = new TooltipLine(Mod, "CustomPrefix", prefixLine);
+                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "CustomPrefix", prefixLine);
                 line.isModifier = true;
                 line.isModifierBad = false;
                 tooltips.Insert(index + 1, line);
@@ -58,7 +58,7 @@ namespace StarlightRiver.Core
             //Crit display. Same as ammo, maybe move this later?
             if(Item.damage > 0 && Item.crit > -4)
 			{
-                TooltipLine line = new TooltipLine(Mod, "CritDamage", "");
+                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "CritDamage", "");
 
                 var critLine = tooltips.Find(n => n.Name == "Damage");
 
@@ -84,7 +84,7 @@ namespace StarlightRiver.Core
 
             if(Item.useAmmo != 0)
             {
-                TooltipLine line = new TooltipLine(Mod, "AmmoInfo", "Uses:");
+                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "AmmoInfo", "Uses:");
 
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);

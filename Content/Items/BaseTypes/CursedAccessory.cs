@@ -189,6 +189,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
                 var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
+                if (effect is null)
+                    return true;
+
                 effect.Parameters["speed"].SetValue(1);
                 effect.Parameters["power"].SetValue(0.011f * tooltipProgress);
                 effect.Parameters["uTime"].SetValue(Main.GameUpdateCount / 10f);

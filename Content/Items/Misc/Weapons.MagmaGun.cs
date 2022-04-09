@@ -94,6 +94,10 @@ namespace StarlightRiver.Content.Items.Misc
 			graphicsDevice.Clear(Color.Transparent);
 
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
+
+			if (borderNoise is null)
+				return;
+
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
 
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
@@ -101,12 +105,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			foreach (Projectile proj in Main.projectile)
 			{
-				/*if (proj.ModProjectile is MagmaGunProj modProj && proj.active)
-				{
-					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + modProj.rotationConst);
-					spriteBatch.Draw(TextureAssets.Projectile[proj.type].Value, (proj.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, proj.scale / 32f, SpriteEffects.None, 0);
-				}*/
-
 				if (proj.ModProjectile is MagmaGunPhantomProj modProj && proj.active)
                 {
 					foreach (MagmaGlob glob in modProj.Globs)

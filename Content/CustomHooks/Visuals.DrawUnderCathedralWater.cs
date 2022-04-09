@@ -22,19 +22,19 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            IL.Terraria.Main.DoDraw += DrawWater;
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs += DrawWater;
         }
 
         public override void Unload()
         {
-            IL.Terraria.Main.DoDraw -= DrawWater;
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs -= DrawWater;
         }
 
         private void DrawWater(ILContext il)
         {
             ILCursor c = new ILCursor(il);
             c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsBehindNonSolidTiles"));
-            c.Index--;
+            //c.Index--;
 
             c.EmitDelegate<DrawWaterDelegate>(DrawWater);
         }
@@ -74,6 +74,9 @@ namespace StarlightRiver.Content.CustomHooks
                    (Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch); //draw boss ontop if extant
 
                 var effect = Filters.Scene["Waves"].GetShader().Shader;
+
+                if (effect is null)
+                    return;
 
                 effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
                 effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));

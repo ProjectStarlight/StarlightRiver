@@ -194,10 +194,16 @@ namespace StarlightRiver.Content.CustomHooks
 
         public void drawGlassWallReflectionNormalMap(SpriteBatch spriteBatch)
         {
+            var shader = Filters.Scene["ReflectionMapper"].GetShader().Shader;
+
+            if (shader is null)
+                return;
+
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Texture, default, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
-            Filters.Scene["ReflectionMapper"].GetShader().Shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
-            Filters.Scene["ReflectionMapper"].GetShader().Shader.Parameters["uIntensity"].SetValue(0.5f);
+
+            shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
+            shader.Parameters["uIntensity"].SetValue(0.5f);
 
             int TileSearchSize = 30; //limit distance from Player for getting these wall tiles
             for (int i = -TileSearchSize; i < TileSearchSize; i++)

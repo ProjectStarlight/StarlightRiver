@@ -32,12 +32,16 @@ namespace StarlightRiver.Core.Loaders
 
         public static void ResizeTarget()
         {
+            projTarget?.Dispose();
+            tileTarget?.Dispose();
+
             Main.QueueMainThreadAction(() =>
             {
                 projTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
                 tileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
             });
         }
+
         private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             orig(self);
@@ -69,7 +73,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void DrawToTarget()
         {
-            if (Main.instance.tileTarget == null || Main.instance.tileTarget.IsDisposed)
+            if (Main.gameMenu || Main.instance.tileTarget == null || Main.instance.tileTarget.IsDisposed)
                 return;
 
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
@@ -103,6 +107,7 @@ namespace StarlightRiver.Core.Loaders
 
             gD.SetRenderTarget(projTarget);
             gD.Clear(Color.Transparent);
+
             spriteBatch.Begin(
                 SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default,
                 RasterizerState.CullNone, null,
@@ -137,15 +142,18 @@ namespace StarlightRiver.Core.Loaders
             if (tileTarget == null || projTarget == null)
                 return;
 
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-
-            //Main.spriteBatch.Draw(tileTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
             Effect effect = Filters.Scene["OverTileShader"].GetShader().Shader;
+
+            if (effect is null)
+                return;
+
             effect.Parameters["TileTarget"].SetValue(tileTarget);
             effect.CurrentTechnique.Passes[0].Apply();
 
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
             Main.spriteBatch.Draw(projTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
             Main.spriteBatch.End();
         }
     }

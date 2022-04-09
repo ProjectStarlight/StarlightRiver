@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.CustomHooks
             Main.graphics.GraphicsDevice.SetRenderTarget(hotspringShineTarget);
             Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-            Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap").Value;
+            Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
             Vector2 screenSize = Helpers.Helper.ScreenSize;
             Vector2 textureSize = tex2.Size();

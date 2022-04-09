@@ -42,6 +42,9 @@ namespace StarlightRiver.Content.CustomHooks
 
                 Effect effect = Filters.Scene["DonutIcon"].GetShader().Shader;
 
+                if (effect is null)
+                    return;
+
                 effect.Parameters["upperRadiusLimit"].SetValue(0.5f);
                 effect.Parameters["lowerRadiusLimit"].SetValue(0.375f);
                 effect.Parameters["color"].SetValue(new Color(31, 250, 131).ToVector4());

@@ -131,6 +131,9 @@ namespace StarlightRiver.Helpers
 
             Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
 
+            if (upscaleEffect is null)
+                return;
+
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
             
             graphics.SetVertexBuffer(lightingQuadBuffer);
@@ -138,7 +141,6 @@ namespace StarlightRiver.Helpers
 
             Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
             
-
             upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
             upscaleEffect.Parameters["offset"].SetValue(offset);
