@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     modPlayer.scrap -= 20;
                 }
 
-                 //modPlayer.scrap = 20;
+                //modPlayer.scrap = 20;
                 //Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = Player.Center;
                 if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
@@ -275,8 +275,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                         }
                     }
 
-                    Main.NewText(Projectile.damage.ToString());
-                    Projectile.NewProjectile(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+                    proj.originalDamage = Projectile.damage;
                 }
             }
         }
