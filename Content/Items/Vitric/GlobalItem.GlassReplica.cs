@@ -24,7 +24,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SaveData(Item item, TagCompound tag)
 		{
-			tag["isReplica"] = isReplica;
+            if(isReplica)
+			    tag["isReplica"] = isReplica;
 		}
 
 		public override void LoadData(Item item, TagCompound tag)

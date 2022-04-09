@@ -91,13 +91,19 @@ namespace StarlightRiver.Content.GUI
             Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
             Texture2D fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value : overrideTexture;
 
+            if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
+            {
+                emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmptyFancy").Value;
+                fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFancy").Value : overrideTexture;
+            }
+
             int row = 0;
             for (int k = 0; k <= mp.StaminaMax; k++)
             {
                 if (k % 7 == 0 && k != 0) row++;
 
-                Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, k % 7 * 28) :
-                    dimensions.TopLeft() + new Vector2(row * -18, 14 + k % 7 * 28);
+                Vector2 pos = row % 2 == 0 ? dimensions.TopLeft() + new Vector2(row * -18, k % 7 * 24) :
+                    dimensions.TopLeft() + new Vector2(row * -18, 12 + k % 7 * 24);
 
                 if (k >= mp.StaminaMax) //draws the incomplete vessel
                 {
@@ -111,13 +117,13 @@ namespace StarlightRiver.Content.GUI
 
                 var slotTex = emptyTex;
 
-                //if (k < specialVesselTextures.Count)
-                //slotTex = Request<Texture2D>(specialVesselTextures[k]).Value;
+                if(k == 0 && Main.ResourceSetsManager.ActiveSetKeyName == "New") //Maybe not the most elegant solution but a functional one
+                    slotTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmptyFancyFirst").Value;
 
                 if (k >= mp.StaminaMax - specialVesselTextures.Count)
                     slotTex = Request<Texture2D>(specialVesselTextures[(int)mp.StaminaMax - k - 1]).Value;
 
-                spriteBatch.Draw(slotTex, pos, emptyTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+                spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
                 // If on a filled stamina vessel
                 if (k < mp.Stamina - 1)

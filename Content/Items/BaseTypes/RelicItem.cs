@@ -194,7 +194,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void SaveData(Item Item, TagCompound tag)
         {
-			tag.Add("isRelic", isRelic); //PORTTODO: Make sure this isn't fucked up
+			if(isRelic)
+				tag["isRelic"] = isRelic; 
 		}
 
         public override void LoadData(Item Item, TagCompound tag)

@@ -149,8 +149,9 @@ namespace StarlightRiver.Core
 
         public override void SaveWorldData(TagCompound tag)
         {
+            var townTag
             foreach (var pair in TownUpgrades)
-                tag.Add(pair.Key, pair.Value);
+                townTag.Add(pair.Key, pair.Value);
 
             // TODO why the hell is this throwing Collection was modified?
 
@@ -164,7 +165,7 @@ namespace StarlightRiver.Core
 
             tag[nameof(flags)] = (int)flags;
 
-            tag[nameof(TownUpgrades)] = tag;
+            tag[nameof(TownUpgrades)] = townTag;
 
             tag[nameof(RiftLocation)] = RiftLocation;
 

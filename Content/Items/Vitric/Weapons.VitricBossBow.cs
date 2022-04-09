@@ -196,8 +196,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color) //optimization nightmare. Figure out smth later
 		{
-            var texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
+            var texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             var effect = Filters.Scene["BowRing"].GetShader().Shader;
+
+            if (effect is null)
+                return;
 
             effect.Parameters["uProgress"].SetValue(rotation);
             effect.Parameters["uColor"].SetValue(color.ToVector3());

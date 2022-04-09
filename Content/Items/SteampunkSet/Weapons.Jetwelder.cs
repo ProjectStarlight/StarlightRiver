@@ -524,6 +524,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         protected override void Draw(ref PlayerDrawSet drawInfo)
         {
             Player Player = drawInfo.drawPlayer;
+
+            if (Player.HeldItem.type != ModContent.ItemType<Jetwelder>())
+                return;
+
             Texture2D barTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar").Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "JetwelderBar_Glow").Value;
 

@@ -42,16 +42,24 @@ namespace StarlightRiver.Content.Items
             Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
-        public override bool? UseItem(Player Player)
+		public override void UpdateAccessory(Player player, bool hideVisual)
+		{
+            player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
+        }
+
+		public override bool? UseItem(Player player)
         {
-            Player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
+            player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
+            return true;
+
+            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
             InfusionMaker.visible = !InfusionMaker.visible;
             return true;
 
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
             return true;
 
-            Player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             return true;
 
             if (ZoomHandler.ExtraZoomTarget == 0.8f)
