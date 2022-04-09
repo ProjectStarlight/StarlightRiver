@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.GUI
 			var Player = Main.LocalPlayer;
 			var sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if (sp.Barrier > 0 || sp.MaxBarrier > 0)
+			if ((sp.Barrier > 0 || sp.MaxBarrier > 0) && Main.ResourceSetsManager.ActiveSetKeyName == "Default") //Text, only present on classic UI
 			{
 				int num4 = (int)((float)Main.player[Main.myPlayer].statLifeMax2 / 20);
 				if (num4 >= 10)
