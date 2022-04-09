@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     else
                         offset2 *= Helper.LerpFloat(0, 7, (float)Math.Sqrt((0.33f - (charge - i)) * 3));
 
-                    Texture2D fragmenttexture = ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem.Remove(0, Mod.Name.Length + 1) + "StarwoodSlingshotParts").Value;
+                    Texture2D fragmenttexture = ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotParts").Value;
                     Rectangle frame2 = new Rectangle(0, (int)(i * 5 * 24), 22, 24);
                     if (empowered)
                         frame2.Y += fragmenttexture.Height / 2;

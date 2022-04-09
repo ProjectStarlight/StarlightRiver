@@ -378,6 +378,8 @@ namespace StarlightRiver.Helpers
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
         public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
         {
+            return null;//Temp port fix to allow items that use this to work until this method is fixed
+            
             if (Main.netMode == NetmodeID.Server)
                 return null;
 
