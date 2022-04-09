@@ -219,7 +219,7 @@ namespace StarlightRiver.Core
 		}
         public override bool PreDrawExtras()
 		{
-			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_chain").Value;
+			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture + "_chain").Value;
 			Player Owner = Main.player[Projectile.owner];
 			int timestodrawchain = Math.Max((int)(Projectile.Distance(Owner.MountedCenter) / ChainTexture.Width), 1);
 

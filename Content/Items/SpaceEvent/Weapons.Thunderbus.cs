@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
              !n.dontTakeDamage &&
              !n.townNPC &&
              Helper.CheckConicalCollision(Player.Center, 500, aim, 1, n.Hitbox) &&
-             Utils.PlotLine((n.Center / 16).ToPoint16(), (Player.Center / 16).ToPoint16(), (x, y) => Framing.GetTileSafely(x, y).BlockType != BlockType.Solid)))
+             Utils.PlotLine((n.Center / 16).ToPoint16(), (Player.Center / 16).ToPoint16(), (x, y) => (!Framing.GetTileSafely(x, y).HasTile || Framing.GetTileSafely(x, y).BlockType != BlockType.Solid) )))
             {
                 targets.Add(NPC);
             }

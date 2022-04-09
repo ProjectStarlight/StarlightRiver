@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
 				spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.LightGoldenrodYellow * 0.5f, Projectile.rotation, bloom.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0);
 				
 				spriteBatch.End(); 
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 				
-				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
 				float opacity = (Projectile.ai[1] / chargetime) * 0.75f;
 				Color color = (Projectile.ai[1] < chargetime / 2) ? Color.White : Color.Lerp(Color.White, Color.Orange, (Projectile.ai[1] - chargetime / 2) / (chargetime / 2));
 				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-				Texture2D bloom = ModContent.Request<Texture2D>(Texture.Remove(0, Mod.Name.Length + 1) + "_bloom").Value;
+				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
 				float opacity = (Projectile.timeLeft / 20f) * 2f;
 				Color color = Color.Orange;
 				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,

@@ -22,8 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "CoachGunCasing"); //PORTTODO: Generic ModGore class
-			
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "CoachGunCasing");		
 		}
 
 		private int cooldown = 0;
