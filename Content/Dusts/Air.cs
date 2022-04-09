@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirDash : ModDust
     {
-        public override string Texture => AssetDirectory.Dust + "Air";
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
 
         public override void OnSpawn(Dust dust)
         {

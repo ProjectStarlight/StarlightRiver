@@ -86,14 +86,14 @@ namespace StarlightRiver.Content.Pickups
                 if (!Fancy) 
                     return;
 
-                if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), NPC.Center) <= Main.screenWidth / 2 + 100) //shader
+                /*if (Vector2.Distance(Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), NPC.Center) <= Main.screenWidth / 2 + 100) //shader
                 {
                     float timer = Math.Abs((float)Math.Sin(StarlightWorld.rottime));
                     Filters.Scene.Activate("Shockwave", NPC.Center).GetShader()
                         .UseProgress(Main.screenWidth / (float)Main.screenHeight)
                         .UseIntensity(500 + 200 * (timer))
                         .UseDirection(new Vector2(0.005f + timer * 0.03f, 1 * 0.008f - timer * 0.004f));
-                }
+                }*/
 
                 if (Vector2.Distance(Main.LocalPlayer.Center, NPC.Center) < 200f) //music handling
                 {

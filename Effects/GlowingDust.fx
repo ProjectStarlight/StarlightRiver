@@ -13,6 +13,10 @@ float3 uLightSource;
 float2 uImageSize0;
 float2 uImageSize1;
 
+float4 uLegacyArmorSourceRect;
+float2 uLegacyArmorSheetSize;
+float2 uTargetPosition;
+
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
 	float4 color = tex2D(uImage0, float2(abs(fmod(coords.x, 1.0)), coords.y));

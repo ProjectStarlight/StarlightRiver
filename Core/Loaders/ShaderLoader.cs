@@ -39,7 +39,7 @@ namespace StarlightRiver.Core.Loaders
 
         public static void LoadShader(string name, string path)
         {
-            var screenRef = new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>(path).Value);
+            var screenRef = new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, name + "Pass"), EffectPriority.High);
             Filters.Scene[name].Load();
         }

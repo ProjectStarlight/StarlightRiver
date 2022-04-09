@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Pickups
             if (timer == 1)
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Pickups/get")); //start the SFX
-                Filters.Scene.Deactivate("Shockwave");
+                //Filters.Scene.Deactivate("Shockwave");
 
                 cache1.Clear();
                 cache2.Clear();
@@ -216,6 +216,9 @@ namespace StarlightRiver.Content.Pickups
 			//return;
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            if (effect is null)
+                return;
 
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;

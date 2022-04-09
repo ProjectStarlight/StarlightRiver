@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         public override void Load()
         {
-            if (Main.dedServ)
+            //if (Main.dedServ) //PORTTODO: Re-enable this when appropriate
                 return;
 
 
