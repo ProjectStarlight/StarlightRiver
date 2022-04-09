@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.aiStyle = -1;
             Projectile.width = 60;
             Projectile.height = 56;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.hostile = false;
             Projectile.minion = true;
@@ -67,6 +67,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             idleYOffset = Main.rand.Next(-25, 35);
 
         }
+
+        public override bool? CanHitNPC(NPC target) => false;
 
         public override void AI()
         {
@@ -180,7 +182,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
+                //Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f); //PORTTODO: Fix default gores
             }
         }
 
@@ -194,7 +196,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 dir.Normalize();
                 bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
-                Gore.NewGore(Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.SteampunkItem + "JetwelderCasing").Type, 1f);
+                //Gore.NewGore(Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.SteampunkItem + "JetwelderCasing").Type, 1f); //PORTTODO: Fix default gores
                 Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }
         }

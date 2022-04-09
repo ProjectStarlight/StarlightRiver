@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.aiStyle = -1;
             Projectile.width = 26;
             Projectile.height = 26;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.hostile = false;
             Projectile.minion = true;
@@ -70,7 +70,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			windup = Main.rand.Next(40, 80);
 			Projectile.ignoreWater = true;
         }
-        public override bool PreDraw(ref Color lightColor)
+
+		public override bool? CanHitNPC(NPC target) => false;
+
+		public override bool PreDraw(ref Color lightColor)
         {
 			var spriteBatch = Main.spriteBatch;
 
@@ -122,7 +125,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			for (int i = 1; i < 8; i++)
 			{
-				Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
+				//Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f); //PORTTODO: Fix default gores
 			}
 		}
 
@@ -218,7 +221,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.frameCounter = 0;
 
 				Vector2 pos = Projectile.Center + (GunOffset().RotatedBy(Projectile.rotation));
-				Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.MiscItem + "CoachGunCasing").Type, 1f);
+				//Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.MiscItem + "CoachGunCasing").Type, 1f); //PORTTODO: Fix default gores
 				gunRotation -= Math.Sign(dir.X) * 0.3f;
 				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }

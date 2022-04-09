@@ -54,14 +54,15 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             return base.CanUseItem(Player);
         }
 
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+        {
+            if (player.altFunctionUse == 2)
+                type = ModContent.ProjectileType<JetwelderSelector>();
+        }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            JetwelderPlayer modPlayer = player.GetModPlayer<JetwelderPlayer>();
             if (player.altFunctionUse == 2)
-            {
                 clickingRight = true;
-                type = ModContent.ProjectileType<JetwelderSelector>();
-            }
             return true;
         }
 
@@ -123,12 +124,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.width = 2;
             Projectile.height = 2;
             Projectile.aiStyle = -1;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.penetrate = -1;
             Projectile.tileCollide = false;
             Projectile.timeLeft = 999999;
             Projectile.ignoreWater = true;
         }
+
+        public override bool? CanHitNPC(NPC target) => false;
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -247,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     modPlayer.scrap -= 20;
                 }
 
-                // modPlayer.scrap = 20;
+                 modPlayer.scrap = 20;
                 //Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = Player.Center;
                 if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
@@ -258,18 +261,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 if (projType != -1)
                 {
                     int j;
-                    for (j = 0; j < 18; j++)
+
+                    for (j = 0; j < 17; j++)
                     {
                         Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-                        Dust.NewDustPerfect((position + (direction * 6)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+                        Dust.NewDustPerfect((position + (direction * 6)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f); //PORTTODO: Uncomment when dust shaders don't crash the game
                     }
                     for (j = 0; j < 3; j++)
                     {
                         for (int k = 1; k < 4; k++)
                         {
-                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()).Type, 1f);
+                            //Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()).Type, 1f); //PORTTODO: Fix default gores
                         }
                     }
+
+                    Main.NewText(Projectile.damage.ToString());
                     Projectile.NewProjectile(Projectile.InheritSource(Projectile), position, Vector2.Zero, projType, Projectile.damage, Projectile.knockBack, Player.whoAmI);
                 }
             }

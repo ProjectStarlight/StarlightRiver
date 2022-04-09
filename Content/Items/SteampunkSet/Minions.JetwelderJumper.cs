@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.aiStyle = -1;
             Projectile.width = 38;
             Projectile.height = 50;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.tileCollide = true;
             Projectile.hostile = false;
             Projectile.minion = true;
@@ -60,6 +60,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.timeLeft = STARTTIMELEFT;
             Projectile.ignoreWater = true;
         }
+
+        public override bool? CanHitNPC(NPC target) => false;
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -146,7 +148,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
+                //Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f); PORTTODO: Fix gores
             }
         }
 
@@ -200,7 +202,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.width = 12;       
             Projectile.height = 12;  
             Projectile.friendly = true;     
-            Projectile.DamageType = DamageClass.Ranged;      
+            Projectile.DamageType = DamageClass.Summon;      
             Projectile.tileCollide = true;   
             Projectile.penetrate = 1;      
             Projectile.timeLeft = 300;   

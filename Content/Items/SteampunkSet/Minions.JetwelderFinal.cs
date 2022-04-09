@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Projectile.aiStyle = -1;
             Projectile.width = 60;
             Projectile.height = 56;
-            Projectile.friendly = false;
+            Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.hostile = false;
             Projectile.minion = true;
@@ -73,6 +73,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             idleYOffset = Main.rand.Next(-25, 35);
 
         }
+
+        public override bool? CanHitNPC(NPC target) => false;
 
         public override void AI()
         {
@@ -195,7 +197,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 6; i++)
             {
-                Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f);
+                //Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + i.ToString()).Type, 1f); //PORTTODO: Fix default gores
             }
 
             for (int i = 0; i < 6; i++)
