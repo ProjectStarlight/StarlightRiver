@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void RightClick(Player Player)
         {
-            Item.stack++;
+            Item.stack = 2;
 
             Item mouseItem = Main.mouseItem;
 
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items.Utility
             TooltipLine line = new TooltipLine(Mod, "Starlight", 
                 "Right click to equip stored armor\n" +
                 "Right click with armor to add it to the bag\n" +
-                "Shift-Right click to empty the bag");
+                "Ctrl-Right click to empty the bag");
 
             tooltips.Add(line);
         }

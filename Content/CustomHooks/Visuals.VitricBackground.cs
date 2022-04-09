@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void ChangeBlackThreshold(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            c.TryGotoNext(n => n.MatchLdloc(5), n => n.MatchStloc(11)); //beginning of the loop, local 11 is a looping variable
+            c.TryGotoNext(n => n.MatchLdloc(6), n => n.MatchStloc(12)); //beginning of the loop, local 11 is a looping variable
             c.Index++; //this is kinda goofy since I dont think you could actually ever write c# to compile to the resulting IL from emitting here.
             c.Emit(OpCodes.Ldloc, 3); //pass the original value so we can set that instead if we dont want to change the threshold
             c.EmitDelegate<Func<float, float>>(NewThreshold); //check if were in the biome to set, else set the original value
