@@ -149,7 +149,7 @@ namespace StarlightRiver.Core
 
         public override void SaveWorldData(TagCompound tag)
         {
-            var townTag
+            TagCompound townTag;
             foreach (var pair in TownUpgrades)
                 townTag.Add(pair.Key, pair.Value);
 
@@ -170,9 +170,6 @@ namespace StarlightRiver.Core
             tag[nameof(RiftLocation)] = RiftLocation;
 
             tag["Chungus"] = Chungus;
-
-
-
         }
 
         private static bool CheckForSquidArena(Player Player)
