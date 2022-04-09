@@ -156,8 +156,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Projectile.width = 20;
             Projectile.height = 20;
             Projectile.friendly = false;
-            Projectile.minion = true;
-            Projectile.minionSlots = 0;
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.penetrate = -1;
             Projectile.timeLeft = 216000;
             Projectile.tileCollide = false;
