@@ -487,7 +487,7 @@ namespace StarlightRiver.Content.Items.Misc
 							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
 							if (!Main.tileSolid[tile2.TileType] || !tile2.HasTile)
 							{
-								//Gore.NewGoreDirect(pos, bubbleDir, StarlightRiver.Instance.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+								//Gore.NewGoreDirect(pos, bubbleDir, StarlightRiver.Instance.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f)); //PORTTODO: Make the gore spawn properly
 							}
 						}
 					}
