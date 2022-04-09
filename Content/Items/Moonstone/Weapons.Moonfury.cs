@@ -73,7 +73,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
-            cooldown = 75;
             Vector2 direction = new Vector2(0, -1);
             direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
             position = Main.MouseWorld + (direction * 800);
@@ -87,7 +86,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (cooldown > 0)
                 return false;
-
+            cooldown = 75;
             return true;
         }
 

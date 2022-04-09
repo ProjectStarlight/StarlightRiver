@@ -635,7 +635,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool? CanHitNPC(NPC target)
         {
-			if (target.townNPC)
+			if (target.townNPC || target.immune[Projectile.owner] > 0)
 				return false;
 			foreach (MagmaGlob glob in Globs)
 			{
