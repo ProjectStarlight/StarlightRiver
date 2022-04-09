@@ -29,7 +29,7 @@ namespace StarlightRiver.Backgrounds
     {
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/Blank");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/Blank");
         }
     }
 
@@ -37,7 +37,7 @@ namespace StarlightRiver.Backgrounds
     {
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/corruptjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/corruptjunglebackground");
         }
     }
 
@@ -45,7 +45,7 @@ namespace StarlightRiver.Backgrounds
     {
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 
@@ -53,7 +53,7 @@ namespace StarlightRiver.Backgrounds
     {
         public override void FillTextureArray(int[] textureSlots)
         {
-            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("Assets/Backgrounds/bloodyjunglebackground");
+            for (int k = 0; k < textureSlots.Length; k++) textureSlots[k] = BackgroundTextureLoader.GetBackgroundSlot("StarlightRiver/Assets/Backgrounds/bloodyjunglebackground");
         }
     }
 }
