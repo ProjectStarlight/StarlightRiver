@@ -11,18 +11,14 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	class PassiveLight : HookGroup
+	class PassiveLight : ModSystem
     {
         private static float mult = 0;
         private static bool vitricLava = false;
 
-        //Rare method to hook but not the best finding logic. Also old code.
-        public override SafetyLevel Safety => SafetyLevel.Fragile;
-
         public override void Load()
         {
             On.Terraria.Graphics.Light.TileLightScanner.GetTileLight += VitricLightingNew;
-            On.Terraria.Main.Update += UpdateLightingVars; //TODO: Change to an event in modworld update hook eventually?
         }
 
 		private void VitricLightingNew(On.Terraria.Graphics.Light.TileLightScanner.orig_GetTileLight orig, Terraria.Graphics.Light.TileLightScanner self, int x, int y, out Vector3 outputColor)
@@ -68,15 +64,13 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
-		private void UpdateLightingVars(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		public override void PostUpdateEverything()
 		{
             if (!Main.gameMenu)
             {
                 mult = (0.8f + (Main.dayTime ? (float)System.Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)System.Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f));
                 vitricLava = Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>());
             }
-
-            orig(self, gameTime);
-		}
+        }
     }
 }
