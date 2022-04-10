@@ -24,9 +24,9 @@ namespace StarlightRiver.Content.CustomHooks
 
             //Keys
             On.Terraria.Main.DrawItems += DrawKeys;
-            //Tile draws infront of the Player
-            On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
-            On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
+
+            //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
+            //On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
 
             On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_RenderAllLayers += PostDrawPlayerLayer;
         }

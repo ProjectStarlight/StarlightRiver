@@ -27,20 +27,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public static void LoadGores()
         {
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadTop");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadNose");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadJaw");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadLeft");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadRight");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekLeft");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekRight");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornLeft");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornRight");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyTop");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyBottom");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentLarge");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentMedium");
-            GoreLoader.AddGoreFromTexture<DebugGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentSmall");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadTop");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadNose");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadJaw");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyTop");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyBottom");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentLarge");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentMedium");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentSmall");
         }
 
         public void DrawBody(SpriteBatch sb)
@@ -307,14 +307,4 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
         }
     }
-
-    class DebugGore : ModGore
-	{
-		public override string Texture => AssetDirectory.Debug;
-
-		public override void OnSpawn(Gore gore)
-		{
-            gore.timeLeft = 30;
-		}
-	}
 }

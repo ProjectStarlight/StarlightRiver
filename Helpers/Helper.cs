@@ -378,12 +378,10 @@ namespace StarlightRiver.Helpers
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
         public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
         {
-            return null;//Temp port fix to allow items that use this to work until this method is fixed
-            
             if (Main.netMode == NetmodeID.Server)
                 return null;
 
-            for (int i = 0; i < instances.Count; i++)
+            /*for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -397,11 +395,14 @@ namespace StarlightRiver.Helpers
                     instances.RemoveAt(i);
                     i--;
                 }
-            }
+            }*/
 
-            var soundEffect = Terraria.Audio.SoundEngine.GetTrackableSoundByStyleId(SoundLoader.GetSoundSlot(StarlightRiver.Instance, "StarlightRiver/Sounds/" + path)).CreateInstance(); //PORTTODO: Figure out new audio
+            var type = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).SoundId;
+            var style = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).Style;
 
-            float distFactor = 1;
+            return Terraria.Audio.SoundEngine.PlaySound(type, (int)position.X, (int)position.Y, style, volume, pitch);       
+
+            /*float distFactor = 1;
 
             if (position != default)
                 distFactor = 1 - MathHelper.Clamp(Vector2.Distance(Main.LocalPlayer.Center, position) / 2000f, 0, 1);
@@ -410,8 +411,7 @@ namespace StarlightRiver.Helpers
             soundEffect.Pitch = pitch;
 
             instances.Add(soundEffect);
-            soundEffect.Play();
-            return soundEffect;
+            soundEffect.Play();*/
         }
 
         public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
