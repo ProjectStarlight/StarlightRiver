@@ -63,6 +63,8 @@ namespace StarlightRiver.Content.Biomes
 
 	public class VitricDesertBackground : ModSceneEffect
 	{
+		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/GlassPassive");
+
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
 		public override bool IsSceneEffectActive(Player player)
