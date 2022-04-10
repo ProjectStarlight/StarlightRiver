@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
+            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
             return true;
         }
     }
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     if (!red)
                     {
                         red = true;
-                        Helper.PlayPitched("Effects/Bleep", 1, 1 - (explosionTimer / 100f));
+                        Helper.PlayPitched("Effects/Bleep", 1, 1 - (explosionTimer / 100f), Projectile.Center);
                         blinkCounter = 0;
                     }
                     else
@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         private void Explode(NPC target)
         {
-            Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+            Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
             if (!target.immortal && !target.dontTakeDamage)
                 target.StrikeNPC(Projectile.damage, 0f, 0);
