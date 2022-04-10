@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
                 float opacity = 1.25f - (((sin / 2) + 0.5f) * 0.8f);
 
-                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.6f);
+                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.03f);
                 effect.Parameters["uOpacity"].SetValue(opacity);
                 effect.CurrentTechnique.Passes[0].Apply();
 
@@ -215,12 +215,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         //    Player armorOwner = info.drawPlayer;
 
         //    Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - Player.gfxOffY);
-        //    float timerVar = (float)(Main.timeForVisualEffects % 2.4f / 2.4f) * 6.28f;
+        //    float timerVar = (float)((Main.timeForVisualEffects * 0.05f) % 2.4f / 2.4f) * 6.28f;
         //    float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
 
-        //    Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+        //    Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
 
-        //    Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.1f);
+        //    Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
         //    Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
 
         //    DrawData value = new DrawData(
@@ -426,7 +426,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             switch (storedGem)
             {
                 case StoredGem.All:
-                    return Main.hslToRgb(((float)Main.timeForVisualEffects * 0.1f) % 1, 1f, 0.5f);
+                    return Main.hslToRgb(((float)Main.timeForVisualEffects * 0.005f) % 1, 1f, 0.5f);
                 case StoredGem.Amethyst:
                     return Color.Purple;
                 case StoredGem.Topaz:

@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             dust.velocity *= 0.98f;
 
-            dust.color = Main.hslToRgb(((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.4f)) % 1f, 1, 0.5f);
+            dust.color = Main.hslToRgb(((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.02f)) % 1f, 1, 0.5f);
             dust.shader.UseColor(dust.color);
 
             dust.fadeIn++;

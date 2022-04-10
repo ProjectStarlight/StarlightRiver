@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             SafeAI();
             Projectile.rotation = 0f;
-            Projectile.Center = Main.player[Projectile.owner].Center + ((Projectile.ai[0] + ((float)Main.timeForVisualEffects * 0.5f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
+            Projectile.Center = Main.player[Projectile.owner].Center + ((Projectile.ai[0] + ((float)Main.timeForVisualEffects * 0.025f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
 
             GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             Projectile.timeLeft = 2;
