@@ -41,8 +41,8 @@ namespace StarlightRiver.Core
             progress.Message = "Digging the Vitric Desert";
 
             int vitricHeight = 140;
-            ValidGround = new int[] { instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type };
-            ValidDesertGround = new int[] { instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type, TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+            ValidGround = new int[] { instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type };
+            ValidDesertGround = new int[] { instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type, TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.FossilOre };
             
             //Basic biome information
@@ -139,8 +139,8 @@ namespace StarlightRiver.Core
                 int x = genRand.Next(2) == 0 ? genRand.Next(VitricBiome.X + VitricSlopeOffset + 20, VitricBiome.Center.X - 61) : genRand.Next(VitricBiome.Center.X + 62, VitricBiome.Right - VitricSlopeOffset - 20);
                 int y = (maxCeilingDepth + 20) + (genRand.Next((int)(VitricBiome.Height / 3.2f)));
 
-                if (Helper.ScanForTypeDown(x, y, instance.Find<ModItem>("VitricSand").Type, 120))
-                    y = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type);
+                if (Helper.ScanForTypeDown(x, y, instance.Find<ModTile>("VitricSand").Type, 120))
+                    y = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModTile>("VitricSand").Type);
                 else
                 {
                     i--;
@@ -297,7 +297,7 @@ namespace StarlightRiver.Core
                     Tile t = Main.tile[x, y];
                     if ((y < layers["TOP"] && genRand.Next(layers["TOP"] - y) == 0 && t.HasTile && Main.tileSolid[t.TileType]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y >= layers["TOP"])
                     {
-                        PlaceTile(x, y, instance.Find<ModItem>("VitricSand").Type, false, true);
+                        PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
                         t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
                     }
@@ -319,7 +319,7 @@ namespace StarlightRiver.Core
                     if ((y > layers["BOTTOM"] && genRand.Next(y - layers["BOTTOM"]) == 0 && t.HasTile && Main.tileSolid[t.TileType]) || ((xDif < 8 || xDif > VitricBiome.Width - 8) && genRand.Next(xRand) == 0) || y <= layers["BOTTOM"])
                     {
                         if(t.TileType != TileType<VitricSpike>())
-                            PlaceTile(x, y, instance.Find<ModItem>("VitricSand").Type, false, true);
+                            PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
 
                         t.Slope = SlopeType.Solid;
                         KillWall(x, y, false);
@@ -525,7 +525,7 @@ namespace StarlightRiver.Core
 
                     if (Vector2.Distance(new Vector2(g, h), new Vector2(range, 0)) <= range + 0.5f && InWorld(posX, posY) && Main.tile[posX, posY].TileType == TileID.Sandstone)
                     {
-                        Main.tile[posX, posY].TileType = (ushort)instance.Find<ModItem>("VitricSand").Type;
+                        Main.tile[posX, posY].TileType = (ushort)instance.Find<ModTile>("VitricSand").Type;
                     }
                 }
             }
@@ -559,7 +559,7 @@ namespace StarlightRiver.Core
                 {
                     for (int k = pos.Y; k < bot; ++k)
                     {
-                        if (Main.tile[j, k].TileType != instance.Find<ModItem>("VitricSand").Type)
+                        if (Main.tile[j, k].TileType != instance.Find<ModTile>("VitricSand").Type)
                             continue; //Skip not-sand tiles
                         bool endCheck = false;
                         for (int x = -1; x < 1; ++x)
@@ -639,7 +639,7 @@ namespace StarlightRiver.Core
 
                 for (int j = y - top + offset; j < y + depth + offset; j++)
                 {
-                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.Find<ModItem>("VitricSand").Type;
+                    int t = j > (y + depth + offset) - 4 ? TileID.Sandstone : instance.Find<ModTile>("VitricSand").Type;
                     PlaceTile(i, j, t, false, true);
                 }
 
@@ -653,8 +653,8 @@ namespace StarlightRiver.Core
                 int posX = genRand.Next(x - (int)(wid / 2f), x + (int)(wid / 2f));
                 int posY = genRand.Next(y, y + maxDepth);
 
-                if (Framing.GetTileSafely(posX, posY).TileType == instance.Find<ModItem>("VitricSand").Type)
-                    TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.Find<ModItem>("VitricSoftSand").Type, false, 0, 0, true, true);
+                if (Framing.GetTileSafely(posX, posY).TileType == instance.Find<ModTile>("VitricSand").Type)
+                    TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.Find<ModTile>("VitricSoftSand").Type, false, 0, 0, true, true);
             }
 
             //Place crystal if needed
@@ -739,15 +739,15 @@ namespace StarlightRiver.Core
         /// <returns>True if a pillar was successfully placed within an area</returns>
         public static bool GenPillar(int x, int y)
         {
-            int ceil = FindTypeUp(x, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
-            int floor = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
+            int ceil = FindTypeUp(x, y, VitricBiome.Y - 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type);
+            int floor = FindType(x, y, VitricBiome.Bottom + 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type);
             if (ceil == -1 || floor == -1 || ceil >= floor) return false; //If there's an invalid ceiling or floor, or if the floor is above or on the ceiling, kill
             int height = floor - ceil; //Height of pillar
             if (height < 7 || height > 50) return false; //If it's too short or too tall
             int wid = genRand.Next(3, 6); //Width of pillar
 
-            int GetHeight(int xPos) => Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type));
-            int GetDepth(int xPos) => Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type));
+            int GetHeight(int xPos) => Math.Abs(ceil - FindTypeUp(xPos, y, VitricBiome.Y - 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type));
+            int GetDepth(int xPos) => Math.Abs(floor - FindType(xPos, y, VitricBiome.Y - 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type));
 
             for (int i = -wid; i < wid + 1; ++i) //Checks for crystals. If there's a crystal, kill this pillar before it gens
             {
@@ -763,15 +763,15 @@ namespace StarlightRiver.Core
                 int depth = genRand.Next(2) + 1;
                 if (Math.Abs(i) == wid || Math.Abs(i) == wid - 2) depth = (int)Math.Ceiling(height / 4f) + genRand.Next((int)Math.Ceiling(-height / 6f), (int)Math.Ceiling(height / 6f));
                 if (Math.Abs(i) == wid - 1) depth = (int)Math.Ceiling(height / 3f) + genRand.Next((int)Math.Ceiling(-height / 6f), (int)Math.Ceiling(height / 6f));
-                int ceilingY = FindTypeUp(x + i, y, VitricBiome.Y - 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
-                int floorY = FindType(x + i, y, VitricBiome.Bottom + 20, instance.Find<ModItem>("VitricSand").Type, instance.Find<ModItem>("VitricSoftSand").Type);
+                int ceilingY = FindTypeUp(x + i, y, VitricBiome.Y - 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type);
+                int floorY = FindType(x + i, y, VitricBiome.Bottom + 20, instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type);
 
                 for (int j = 0; j < depth; ++j)
                 {
                     KillTile(x + i, ceilingY + j, false, false, true);
-                    PlaceTile(x + i, ceilingY + j, instance.Find<ModItem>("AncientSandstone").Type, true, false);
+                    PlaceTile(x + i, ceilingY + j, instance.Find<ModTile>("AncientSandstone").Type, true, false);
                     KillTile(x + i, floorY - j, false, false, true);
-                    PlaceTile(x + i, floorY - j, instance.Find<ModItem>("AncientSandstone").Type, true, false);
+                    PlaceTile(x + i, floorY - j, instance.Find<ModTile>("AncientSandstone").Type, true, false);
                 }
 
                 //Wall placement
