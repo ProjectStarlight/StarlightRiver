@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-    public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
+    public class VitricBackdropLeft : ModNPC
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             NPC.dontTakeDamage = true;
             NPC.dontCountMe = true;
             NPC.netAlways = true;
+            NPC.hide = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -193,18 +194,23 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
-
-        public void DrawMoonlordLayer(SpriteBatch spriteBatch)
-        {
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
             if (!NPC.active)
-                return;
+                return false;
 
             if (State == 3 || State == 4)
                 ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
                 MainDraw(spriteBatch);
-        }
+
+            return false;
+		}
+
+		public override void DrawBehind(int index)
+		{
+            Main.instance.DrawCacheNPCsMoonMoon.Add(index);
+		}
 
         public virtual void MainDraw(SpriteBatch sb)
         {
