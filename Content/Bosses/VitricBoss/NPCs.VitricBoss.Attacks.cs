@@ -1021,7 +1021,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Phase = (int)AIStates.FirstPhase; //go back to normal attacks after this is all over
                 AttackPhase = crystals.Count(n => n.ai[0] != 2); //unique first attack each to, so at the very least Players see all of phase 1's attacks
 
-                NPC.defense = Main.expertMode ? 14 : 10;
+                NPC.defense = Main.expertMode ? 14 : 10;               
 
                 ResetAttack();
             }
