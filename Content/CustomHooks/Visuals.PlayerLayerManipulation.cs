@@ -20,38 +20,27 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            //IL.Terraria.Main.DrawPlayer_DrawAllLayers += ManipulateLayers; //PORTTODO: Figure out where all of this moved
+            On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_TransformDrawData += CustomTransformations;
         }
 
-        public override void Unload()
+        private void CustomTransformations(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
         {
-            //IL.Terraria.Main.DrawPlayer_DrawAllLayers -= ManipulateLayers;
-        }
-
-        private void ManipulateLayers(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchStloc(2)); //I need to match more instructions here probably. TODO: that
-
-            c.Emit(OpCodes.Ldarg_1);
-            c.EmitDelegate<LayerManipDelegate>(EmitLayerManipDelegate);
-        }
-
-        private delegate DrawData LayerManipDelegate(DrawData input, Player Player);
-
-        private DrawData EmitLayerManipDelegate(DrawData input, Player Player)
-        {
-            /*if(!Main.gameMenu && Player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Terraria.GameContent.TextureAssets.Item[Player.HeldItem.type])
+            for (int k = 0; k < drawinfo.DrawDataCache.Count; k++)
             {
-                input.shader = 2; //TODO: Move this. actually bind the correct armor shader. Stop being lazy.
-            }*/
+                drawinfo.DrawDataCache[k] = ManipulateDrawInfo(drawinfo.DrawDataCache[k], drawinfo.drawPlayer);
+            }
+        }
 
+		public override void Unload() { }
+
+        private DrawData ManipulateDrawInfo(DrawData input, Player Player)
+        {
             float rotation = Player.GetModPlayer<StarlightPlayer>().rotation;
 
             if (rotation != 0) //paper mario-style rotation
             {
                 float sin = (float)Math.Sin(rotation + 1.57f * Player.direction);
-                int off = Math.Abs((int)(input.texture.Width * sin));
+                int off = Math.Abs((int)((input.useDestinationRectangle ? input.destinationRectangle.Width : input.sourceRect?.Width ?? input.texture.Width) * sin));
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                 if (input.effect == SpriteEffects.FlipHorizontally) effect = effect == SpriteEffects.FlipHorizontally ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
