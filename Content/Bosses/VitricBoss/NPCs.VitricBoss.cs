@@ -574,7 +574,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             Terraria.Audio.SoundEngine.PlaySound(SoundID.ForceRoar, NPC.Center);
                         }
 
-                        NPC.dontTakeDamage = true; //boss is immune at phase gate
+                        NPC.dontTakeDamage = true; //boss is immune at phase gate TODO: If the boss gets butchered during anger attack he wont drop anything... and he can be butchered.
                     }
                     else
                         NPC.dontTakeDamage = false;
