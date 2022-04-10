@@ -32,6 +32,9 @@ namespace StarlightRiver.Core
 
         public void Render(Effect effect)
         {
+            if (vertexBuffer is null || indexBuffer is null)
+                return;
+
             device.SetVertexBuffer(vertexBuffer);
             device.Indices = indexBuffer;
 
@@ -44,12 +47,12 @@ namespace StarlightRiver.Core
 
         public void SetVertices(VertexPositionColorTexture[] vertices)
         {
-            vertexBuffer.SetData(0, vertices, 0, vertices.Length, VertexPositionColorTexture.VertexDeclaration.VertexStride, SetDataOptions.Discard);
+            vertexBuffer?.SetData(0, vertices, 0, vertices.Length, VertexPositionColorTexture.VertexDeclaration.VertexStride, SetDataOptions.Discard);
         }
 
         public void SetIndices(short[] indices)
         {
-            indexBuffer.SetData(0, indices, 0, indices.Length, SetDataOptions.Discard);
+            indexBuffer?.SetData(0, indices, 0, indices.Length, SetDataOptions.Discard);
         }
 
         public void Dispose()

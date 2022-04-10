@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool? CanBeHitByItem(Player Player, Item Item) => false;
 
-        public override void SetStaticDefaults()
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Resonant Crystal");
             Main.npcFrameCount[NPC.type] = 4;
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (phase == 1 || phase == 5)
                 return false;
 
-            return !(state == 0 || state == 1); //too tired of dealing with this 
+            return !(state == 0 || state == 1); 
         }
 
         public bool findParent()
@@ -183,11 +183,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         for (int k = 0; k < 40; k++)
                             Dust.NewDustPerfect(Parent.NPC.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 2.6f); //Boss
-
-                        for (int k = 0; k < 5; k++) 
-                            Gore.NewGore(Parent.NPC.Center, Vector2.One.RotatedBy(k / 4f * 6.28f) * 4, Mod.Find<ModGore>("ShieldGore").Type);
-
-                        
+                    
                         if(Main.netMode == Terraria.ID.NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
 						{
                             var packet = new CeirosCrystal(Main.myPlayer, NPC.whoAmI, Parent.NPC.whoAmI, Player.velocity);
@@ -195,12 +191,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             return;
 						}
                         
-
                         state = 1; //It's all broken and on the floor!
                         phase = 0; //go back to doing nothing
                         timer = 0; //reset timer
 
                         Parent.NPC.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
+                        Parent.NPC.dontTakeDamage = false;  
                         Parent.ResetAttack();
 
                         NPC.netUpdate = true;
@@ -333,7 +329,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                     Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)(NPC.Center.Y + 24) / 16);
 
-                    if (tile.BlockType == BlockType.Solid && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
+                    if ((tile.HasTile && tile.BlockType == BlockType.Solid) && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
                         Impact();
                     
                     break;

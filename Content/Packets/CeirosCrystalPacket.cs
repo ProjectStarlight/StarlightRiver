@@ -75,6 +75,7 @@ namespace StarlightRiver.Packets
                 crystalMod.timer = 0; //reset timer
 
                 Parent.NPC.ai[1] = (int)AIStates.Anger; //boss should go into it's angery phase
+                Parent.NPC.dontTakeDamage = false;
                 Parent.ResetAttack();
 
                 crystal.netUpdate = true;
