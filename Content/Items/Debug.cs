@@ -49,6 +49,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            return true;
+
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
             return true;
 

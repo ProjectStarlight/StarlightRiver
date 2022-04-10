@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Biomes
 	{
 		public static Rectangle GlassTempleZone => new Rectangle(StarlightWorld.VitricBiome.Center.X - 50, StarlightWorld.VitricBiome.Center.Y - 4, 101, 400);
 
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/GlassTemple");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassTemple");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 

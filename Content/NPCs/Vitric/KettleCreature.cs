@@ -148,8 +148,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            leftLeg.Draw(spriteBatch);
-            rightLeg.Draw(spriteBatch);
+            leftLeg?.Draw(spriteBatch);
+            rightLeg?.Draw(spriteBatch);
         }
     }
 

@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Biomes
 {
 	public class OvergrowBiome : ModBiome
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/Overgrow");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Overgrow");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 

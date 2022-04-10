@@ -16,7 +16,9 @@ namespace StarlightRiver.Content.Biomes
 {
 	public class VitricDesertBiome : ModBiome
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/GlassPassive");
+		public override string BestiaryIcon => AssetDirectory.Biomes + "VitricDesertIcon";
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassPassive");
 
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
@@ -63,7 +65,7 @@ namespace StarlightRiver.Content.Biomes
 
 	public class VitricDesertBackground : ModSceneEffect
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/GlassPassive");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassPassive");
 
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
@@ -75,7 +77,7 @@ namespace StarlightRiver.Content.Biomes
 
 	public class VitricBossAmbientMusic : ModSceneEffect
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/VitricBossAmbient");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/VitricBossAmbient");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 

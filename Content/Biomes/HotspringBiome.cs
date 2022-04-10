@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Biomes
 {
 	public class HotspringBiome : ModBiome
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/HotspringAmbient");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/HotspringAmbient");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
 

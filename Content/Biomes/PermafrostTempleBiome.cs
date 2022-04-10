@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Biomes
 {
 	public class PermafrostTempleBiome : ModBiome
 	{
-		public override int Music => MusicLoader.GetMusicSlot("Sounds/Music/SquidArena");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/SquidArena");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 

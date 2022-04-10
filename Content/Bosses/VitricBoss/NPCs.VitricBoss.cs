@@ -16,6 +16,8 @@ using Terraria.Utilities;
 using Terraria.GameContent.ItemDropRules;
 using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
+using StarlightRiver.Content.Biomes;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -73,7 +75,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool CheckActive() => Phase == (int)AIStates.Leaving;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Ceiros");
+        public override void SetStaticDefaults()
+        { 
+            DisplayName.SetDefault("Ceiros");
+
+            NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+            {
+
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+        }
 
         public override void Load()
         {
@@ -124,7 +137,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             NPC.defense = 14;
         }
 
-        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] 
+            {
+				new FlavorTextBestiaryInfoElement("[PH] Someone write an entry for this fella")
+            });
+        }
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
             return false;
             //return Phase == (int)AIStates.FirstPhase && AttackPhase == 4 && AttackTimer % 240 < 120;
@@ -168,8 +189,36 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 return false;
         }
 
+        public void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
+		{
+            NPC.frame.Width = 204;
+            NPC.frame.Height = 190;
+
+            SetFrameY(1);
+
+            Vector2 offset;
+
+            offset = new Vector2(60, 140);
+
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Body").Value, NPC.Center - screenPos + offset, new Rectangle(228, 0, 114, 232), new Color(150, 140, 140), -0.1f, new Vector2(114, 232) / 2, 1, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "BodyGlow").Value, NPC.Center - screenPos + offset, new Rectangle(228, 0, 114, 232), Color.White, -0.1f, new Vector2(114, 232) / 2, 1, 0, 0);
+
+            offset = new Vector2(20, 0);
+
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + offset, NPC.frame, new Color(150, 140, 140), -0.2f, NPC.frame.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos + offset, NPC.frame, Color.White, -0.2f, NPC.frame.Size() / 2, 1, 0, 0);
+
+
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if(NPC.IsABestiaryIconDummy)
+			{
+                DrawBestiary(spriteBatch, screenPos);
+                return false;
+			}
+
             swooshes.ForEach(n => n.Draw(spriteBatch));
 
             spriteBatch.End();

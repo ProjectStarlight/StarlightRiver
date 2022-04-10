@@ -4,6 +4,8 @@ namespace StarlightRiver.Core
     {
         public const string Assets =                "StarlightRiver/Assets/";
 
+        public const string Biomes =                Assets +"Biomes/";
+
         public const string Backgrounds =           Assets + "Backgrounds/";
         public const string MapBackgrounds =        Backgrounds + "MapBackgrounds/";
 
@@ -49,7 +51,7 @@ namespace StarlightRiver.Core
         public const string VitricItem =            Assets + "Items/Vitric/";
         public const string VitricNpc =             Assets + "NPCs/Vitric/";
         public const string GlassMiniboss =         Assets + "Bosses/GlassMiniboss/";
-        public const string VitricBoss =             Assets + "Bosses/VitricBoss/";
+        public const string VitricBoss =            Assets + "Bosses/VitricBoss/";
 
         public const string PermafrostTile =        Assets + "Tiles/Permafrost/";
         public const string PermafrostItem =        Assets + "Items/Permafrost/";
@@ -77,7 +79,7 @@ namespace StarlightRiver.Core
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
 
-        public const string Alchemy =           Assets + "Alchemy/";
+        public const string Alchemy =               Assets + "Alchemy/";
 
         public const string TrophyTile =            Assets + "Tiles/Trophies/";
 
@@ -96,7 +98,7 @@ namespace StarlightRiver.Core
         public const string ForestNPC =             Assets + "NPCs/Forest/";
 
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";
-        public const string HerbologyCropTile = Assets + "Tiles/Herbology/Crops/";
+        public const string HerbologyCropTile =     Assets + "Tiles/Herbology/Crops/";
 
         public const string PureTile =              Assets + "Tiles/Purified/";
 
