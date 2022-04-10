@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             for (int k = 0; k < 4; k++)
             {
-                Gore.NewGore(Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>(AssetDirectory.VitricBoss + "Gore/Mine" + k).Type);
+                Gore.NewGore(Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>("Mine" + k).Type);
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                     Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
             }

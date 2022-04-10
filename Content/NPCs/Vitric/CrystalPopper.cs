@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 4; k++)
-                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k).Type);
+                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>("CrystalPopperGore" + k).Type);
             }
 
             if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)

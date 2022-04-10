@@ -253,18 +253,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             var pos = chain.ropeSegments[0].posNow;
 
-            GoreMe(pos, new Vector2(-60, -30), AssetDirectory.VitricBoss + "Gore/HeadLeft");
-            GoreMe(pos, new Vector2(60, -30), AssetDirectory.VitricBoss + "Gore/HeadRight");
+            GoreMe(pos, new Vector2(-60, -30), "HeadLeft");
+            GoreMe(pos, new Vector2(60, -30), "HeadRight");
 
-            GoreMe(pos, new Vector2(-60, 0), AssetDirectory.VitricBoss + "Gore/HornLeft");
-            GoreMe(pos, new Vector2(60, 0), AssetDirectory.VitricBoss + "Gore/HornRight");
+            GoreMe(pos, new Vector2(-60, 0), "HornLeft");
+            GoreMe(pos, new Vector2(60, 0), "HornRight");
 
-            GoreMe(pos, new Vector2(0, -15), AssetDirectory.VitricBoss + "Gore/HeadTop");
-            GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/HeadNose");
-            GoreMe(pos, new Vector2(0, 80), AssetDirectory.VitricBoss + "Gore/HeadJaw");
+            GoreMe(pos, new Vector2(0, -15), "HeadTop");
+            GoreMe(pos, new Vector2(0, 0), "HeadNose");
+            GoreMe(pos, new Vector2(0, 80), "HeadJaw");
 
-            GoreMe(pos, new Vector2(-45, 40), AssetDirectory.VitricBoss + "Gore/CheekLeft");
-            GoreMe(pos, new Vector2(45, 40), AssetDirectory.VitricBoss + "Gore/CheekRight");
+            GoreMe(pos, new Vector2(-45, 40), "CheekLeft");
+            GoreMe(pos, new Vector2(45, 40), "CheekRight");
         }
 
         public void SpawnGores()
@@ -281,21 +281,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 switch (k)
                 {
                     case 1:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/BodyTop");
-                        GoreMe(pos, new Vector2(0, 50), AssetDirectory.VitricBoss + "Gore/BodyBottom");
+                        GoreMe(pos, new Vector2(0, 0), "BodyTop");
+                        GoreMe(pos, new Vector2(0, 50), "BodyBottom");
                         break;
 
                     case 2:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentLarge");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentLarge");
                         break;
 
                     case 3:
                     case 4:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentMedium");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentMedium");
                         break;
 
                     default:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentSmall");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentSmall");
                         break;
                 }
             }
@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void GoreMe(Vector2 pos, Vector2 offset, string tex)
 		{
-            var texture = Request<Texture2D>(tex).Value;
+            var texture = Request<Texture2D>(AssetDirectory.VitricBoss + "Gore/" + tex).Value;
             Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
         }
     }

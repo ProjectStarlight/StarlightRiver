@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 							if (!collided)
 							{
 								Projectile.alpha = 255;
-								Gore.NewGorePerfect(Projectile.Center, initialVel, Mod.Find<ModGore>(Texture).Type);
+								Gore.NewGorePerfect(Projectile.Center, initialVel, Mod.Find<ModGore>("RebarProj").Type);
 								collided = true;
 							}
 						}

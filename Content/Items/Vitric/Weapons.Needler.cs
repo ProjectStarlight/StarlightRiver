@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				int needles = target.GetGlobalNPC<NeedlerNPC>().needles;
 
 				if (Main.rand.Next(Math.Max(((10 - needles) * 30) + 300, 50)) == 0)
-					Gore.NewGoreDirect(Projectile.Center, Vector2.Zero, Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.4f, 0.8f));
+					Gore.NewGoreDirect(Projectile.Center, Vector2.Zero, Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.4f, 0.8f));
 
 				if (target.GetGlobalNPC<NeedlerNPC>().needleTimer == 1)
 				{
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AI()
         {
 			for (int i = 0; i < 2; i++)
-				Gore.NewGoreDirect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), Main.rand.NextFloat(3.14f,6.28f).ToRotationVector2() * 7, Mod.Find<ModGore>("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore").Type, Main.rand.NextFloat(0.4f, 0.8f));
+				Gore.NewGoreDirect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), Main.rand.NextFloat(3.14f,6.28f).ToRotationVector2() * 7, Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.4f, 0.8f));
 		}
 
         public override bool PreDraw(ref Color lightColor)

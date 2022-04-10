@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.frameCounter = 0;
 
 				Vector2 pos = Projectile.Center + (GunOffset().RotatedBy(Projectile.rotation));
-				//Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>(AssetDirectory.MiscItem + "CoachGunCasing").Type, 1f); //PORTTODO: Fix default gores
+				Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f); //PORTTODO: Fix default gores
 				gunRotation -= Math.Sign(dir.X) * 0.3f;
 				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }
