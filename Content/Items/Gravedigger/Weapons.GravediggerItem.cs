@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (Projectile.frame > 0)
+			if (Projectile.frame > 0 || target.immune[Projectile.owner] > 0)
 				return false;
 			return base.CanHitNPC(target);
 		}
