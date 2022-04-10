@@ -76,9 +76,7 @@ namespace StarlightRiver.Content.GUI
     }
 
     internal class Stam : UIElement
-    {
-        float fade;
-        int time;
+    {       
         public static Texture2D overrideTexture = null;
         public static List<string> specialVesselTextures = new List<string>();
 
@@ -136,78 +134,8 @@ namespace StarlightRiver.Content.GUI
                 }
             }
 
-            switch (GetInstance<GUIConfig>().OverheadStaminaState)
-            {
-                case OverlayState.AlwaysOn:
-                    time = 120;
-                    break;
-
-                case OverlayState.WhileNotFull:
-                    if (mp.Stamina < mp.StaminaMax)
-                        time = 120;
-                    break;
-
-                case OverlayState.WhileUsing:
-                    if (mp.ActiveAbility != null)
-                        time = 120;
-                    break;
-
-                case OverlayState.Never:
-                    time = 0;
-                    break;
-            }
-
-            if (time > 0)
-            {
-                fade += 0.1f;
-                time--;
-            }
-            else
-                fade -= 0.1f;
-
-
-            fade = MathHelper.Clamp(fade, 0, 1);
-
-            DrawOverhead(spriteBatch);
-
             overrideTexture = null;
             specialVesselTextures.Clear();
-        }
-
-        private void DrawOverhead(SpriteBatch spriteBatch)
-        {
-            Player Player = Main.LocalPlayer;
-            AbilityHandler mp = Player.GetHandler();
-            Vector2 basepos = Player.Center - Main.screenPosition - Vector2.UnitY * 48;
-
-            var flagTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFlag").Value;
-            var emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmallEmpty").Value;
-            var fillTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmall").Value;
-
-            var width = mp.StaminaMax * (fillTex.Width / 2 + 1);
-
-            spriteBatch.Draw(flagTex, basepos + new Vector2(-width / 2 - 9, -3), Color.White * fade);
-
-            if (mp.StaminaMax % 2 == 1)
-                spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -3), Color.White * fade);
-            else
-                spriteBatch.Draw(flagTex, basepos + new Vector2(width / 2 - 9, -5), null, Color.White * fade, 0, Vector2.Zero, 1, SpriteEffects.FlipVertically, 0);
-
-            for (int k = 0; k < mp.StaminaMax; k++)
-            {
-                var x = k * (fillTex.Width / 2 + 1) - width / 2;
-                var y = k % 2 == 0 ? -4 : 2;
-
-                var pos = basepos + new Vector2(x, y);
-
-                spriteBatch.Draw(emptyTex, pos, null, Color.White * fade, 0, fillTex.Size() / 2, 1, 0, 0);
-
-                if (mp.Stamina >= k)
-                {
-                    var scale = MathHelper.Clamp(mp.Stamina - k, 0, 1);
-                    spriteBatch.Draw(fillTex, pos, null, Color.White * scale * fade, 0, fillTex.Size() / 2, scale, 0, 0);
-                }
-            }
         }
     }
 }
