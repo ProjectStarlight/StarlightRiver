@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     modPlayer.scrap -= 20;
                 }
 
-                modPlayer.scrap = 20;
+                //modPlayer.scrap = 20;
                 //Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = Player.Center;
                 if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
