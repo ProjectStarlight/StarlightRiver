@@ -400,7 +400,10 @@ namespace StarlightRiver.Helpers
             var type = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).SoundId;
             var style = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).Style;
 
-            return Terraria.Audio.SoundEngine.PlaySound(type, (int)position.X, (int)position.Y, style, volume, pitch);       
+            if (position != default)
+                return Terraria.Audio.SoundEngine.PlaySound(type, (int)position.X, (int)position.Y, style, volume, pitch);
+            else
+                return Terraria.Audio.SoundEngine.PlaySound(type, -1, -1, style, volume, pitch);
 
             /*float distFactor = 1;
 
