@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
             {
-                for (float i = 0; i < 1; i += 0.25f)
+                for (float i = -1; i < 0; i += 0.25f)
                 {
                     Dust dust = Dust.NewDustPerfect(Projectile.Center - (Projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
                     dust.scale = 0.85f;
