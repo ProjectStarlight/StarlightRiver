@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.position += dust.velocity;
             dust.velocity.Y += 0.15f;
-            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == Terraria.ID.BlockType.Solid)
+            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].TileType])
             {
                 dust.alpha += 10;
                 dust.velocity *= -0.1f;

@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		private void DoSFX()
         {
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 		}
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			Player Player = Main.player[Projectile.owner];
 			Player.GetModPlayer<StarlightPlayer>().Shake += 3;
-			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 			if (target.knockBackResist != 0)
 			{
 				switch (SwingFrame)
