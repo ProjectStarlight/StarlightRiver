@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     modPlayer.scrap -= 20;
                 }
 
-                //modPlayer.scrap = 20;
+                modPlayer.scrap = 20;
                 //Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
                 Vector2 position = Player.Center;
                 if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     {
                         for (int k = 1; k < 4; k++)
                         {
-                            //Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>(Texture + "_Gore" + k.ToString()).Type, 1f); //PORTTODO: Fix default gores
+                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderSelector_Gore" + k.ToString()).Type, 1f);
                         }
                     }
 
@@ -569,7 +569,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
     internal class JetwelderCasingGore : ModGore
     {
-        public override string Texture => AssetDirectory.Debug;
+        public override string Texture => AssetDirectory.SteampunkItem + "JetwelderCasing";
 
         public override bool Update(Gore gore)
         {
