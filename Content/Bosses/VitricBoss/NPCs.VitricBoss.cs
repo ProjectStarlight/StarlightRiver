@@ -141,6 +141,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] 
             {
+                Bestiary.SLRSpawnConditions.VitricDesert,
 				new FlavorTextBestiaryInfoElement("[PH] Someone write an entry for this fella")
             });
         }
