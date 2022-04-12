@@ -24,10 +24,7 @@ namespace StarlightRiver.Content.GUI
             StarlightPlayer.PreDrawEvent += DrawOverhead;
 		}
 
-		public void Unload()
-		{
-			throw new NotImplementedException();
-		}
+        public void Unload() { }
 
 		private void DrawOverhead(Player player, SpriteBatch spriteBatch)
         {
