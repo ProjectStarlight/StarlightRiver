@@ -54,7 +54,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private Player owner => Main.player[Projectile.owner];
 
-		private int chargeCounter = 600;
+		private int chargeCounter = 300;
+
+        private int scaleCounter = 0;
 
 		private float startRotation = 0f;
 
@@ -62,7 +64,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private int counter = 0;
 
-		private float chargeRatio => chargeCounter / 600f;
+		private float chargeRatio => chargeCounter / 300f;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aurora Bell");
@@ -83,28 +85,40 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override bool PreDraw(ref Color lightColor)
         {
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D outlineTex = ModContent.Request<Texture2D>(Texture + "_Outline").Value;
 
-			Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
+            Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
 
 			float pulseProgress = chargeCounter / 40f;
 			float transparency = (float)Math.Pow(MathHelper.Clamp(1 - pulseProgress, 0, 1), 2);
 			float scale = (float)MathHelper.Clamp(1 + pulseProgress, 0, 2);
 
 			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale * scale, SpriteEffects.None, 0f);
-			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
-			return false;
+            Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+
+            if (chargeCounter == 300)
+                Main.spriteBatch.Draw(outlineTex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+            return false;
         }
 
         public override void AI()
         {
-			Projectile.rotation = (float)(Math.Sin((Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection) + startRotation)) * (float)Math.Pow(1 - chargeRatio, 3f);
+            if (scaleCounter < 15)
+                scaleCounter++;
+
+            Projectile.scale = scaleCounter / 15f;
+
+			Projectile.rotation = (float)(Math.Sin((Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection) + startRotation)) * (float)Math.Pow(1 - chargeRatio, 2f);
             Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
             Lighting.AddLight(Projectile.Center + offset, Color.White.ToVector3() * 1.5f * (float)Math.Pow(1 - chargeRatio, 9f));
             counter++;
-			if (chargeCounter < 600)
+			if (chargeCounter < 300)
 				chargeCounter++;
-			if (chargeCounter < 20)
+
+            if (chargeCounter == 299)
+                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, owner.whoAmI);
+            if (chargeCounter < 20)
 				return;
 			for (int i = 0; i < Main.projectile.Length; i++)
             {
@@ -145,8 +159,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				if (colliding) 
 				{
                     owner.GetModPlayer<StarlightPlayer>().Shake +=7;
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), Projectile.damage, Projectile.knockBack, owner.whoAmI, 2);
-					newProj.originalDamage = Projectile.damage;
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
+					newProj.originalDamage = (int)(proj.damage * chargeRatio);
 
                     for (int j = 0; j < 12; j++)
                     {
@@ -165,7 +179,9 @@ namespace StarlightRiver.Content.Items.Permafrost
                         newProjMP.cantHit = oldRinger.cantHit;
                     }
                     else
-                        newProjMP.cantHit.Add(Projectile); 
+                        newProjMP.cantHit.Add(Projectile);
+
+                    newProjMP.radiusMult = (float)Math.Pow(chargeRatio, 0.7f);
 					chargeCounter = 0;
 					break;
 				}
@@ -176,6 +192,8 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         public override string Texture => AssetDirectory.Assets + "Invisible";
 
+        public float radiusMult = 1f;
+
         private List<Vector2> cache;
 
         private Trail trail;
@@ -183,7 +201,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private float Progress => 1 - (Projectile.timeLeft / 20f);
 
-        private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress));
+        private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
 
         public List<Projectile> cantHit = new List<Projectile>();
 
@@ -206,7 +224,11 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override void AI()
         {
             if (Projectile.timeLeft == 17 && Projectile.ai[0] > 0)
-                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
+            {
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
+                var mp = proj.ModProjectile as AuroraBellRing;
+                mp.radiusMult = radiusMult;
+            }
             if (Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
@@ -245,6 +267,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
 
                 float radiusOffset = 1 + ((0.3f * (float)Math.Sin((rad * 15) + Projectile.timeLeft + (Projectile.ai[0] * 2.09f))) * (0.2f * (float)Math.Cos((rad * 8.5f) - Projectile.timeLeft + (Projectile.ai[0] * 2.09f))));
+                if (i == 128)
+                    radiusOffset = 1 + ((0.3f * (float)Math.Sin((rad * 15) + Projectile.timeLeft + (Projectile.ai[0] * 2.09f))) * (0.2f * (float)Math.Cos((rad * 8.5f) - Projectile.timeLeft + (Projectile.ai[0] * 2.09f))));
                 offset *= radius * radiusOffset;
                 cache.Add(Projectile.Center + offset);
             }
@@ -258,14 +282,14 @@ namespace StarlightRiver.Content.Items.Permafrost
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 28 * (1 - Progress), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 28 * (1 - Progress) * radiusMult, factor =>
             {
                 float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
                 float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
                 return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 14 * (1 - Progress), factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 14 * (1 - Progress) * radiusMult, factor =>
             {
                 float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
                 float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
@@ -298,48 +322,106 @@ namespace StarlightRiver.Content.Items.Permafrost
             trail2?.Render(effect);
         }
     }
-    class AuroraRingDust : ModDust
-    {
-        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
-        public override void OnSpawn(Dust dust)
+    internal class AuroraBellRingSmall : ModProjectile, IDrawPrimitive
+    {
+        public override string Texture => AssetDirectory.Assets + "Invisible";
+
+        private List<Vector2> cache;
+
+        private Trail trail;
+        private Trail trail2;
+
+        private float Progress => 1 - (Projectile.timeLeft / 20f);
+
+        private float Radius => 50 * (float)(Math.Sqrt(Progress));
+
+        public override void SetDefaults()
         {
-            dust.color = Color.Transparent;
-            dust.fadeIn = 0;
-            dust.noLight = false;
-            dust.frame = new Rectangle(0, 0, 64, 64);
-            dust.velocity *= 2;
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-            dust.alpha = Main.rand.Next(100);
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.friendly = false;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 20;
         }
 
-        public override bool Update(Dust dust)
+        public override void SetStaticDefaults()
         {
-            if (dust.customData == null)
-                dust.customData = Main.rand.NextFloat(6.28f);
-            if (dust.color == Color.Transparent)
-                dust.position -= Vector2.One * 32 * dust.scale;
+            DisplayName.SetDefault("Aurora Bell");
+        }
 
-            //dust.rotation += dust.velocity.Y * 0.1f;
-            dust.position += dust.velocity;
+        public override void AI()
+        { 
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
+        }
 
-            dust.velocity *= 0.98f;
+        public override bool PreDraw(ref Color lightColor) => false;
 
-            float sin = 1 + (float)Math.Sin((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.02f) + (float)dust.customData);
-            float cos = 1 + (float)Math.Cos((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.02f) + (float)dust.customData);
-            dust.color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-            dust.shader.UseColor(dust.color);
+        private void ManageCaches()
+        {
+            cache = new List<Vector2>();
+            float radius = Radius;
+            for (int i = 0; i < 129; i++) //TODO: Cache offsets, to improve performance
+            {
+                double rad = (i / 128f) * 6.28f;
+                Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
 
-            dust.fadeIn++;
+                offset *= radius;
+                cache.Add(Projectile.Center + offset);
+            }
 
-            dust.scale *= 0.96f;
+            while (cache.Count > 129)
+            {
+                cache.RemoveAt(0);
+            }
+        }
 
-            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.4f * dust.scale);
+        private void ManageTrail()
+        {
 
-            if (dust.fadeIn > 70)
-                dust.active = false;
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            {
+                float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+            });
 
-            return false;
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 10 * (1 - Progress), factor =>
+            {
+                float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f); ;
+            });
+            float nextplace = 33f / 32f;
+            Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+            offset *= Radius;
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center + offset;
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = Projectile.Center + offset;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+            effect.Parameters["alpha"].SetValue(1);
+
+            trail?.Render(effect);
+            trail2?.Render(effect);
         }
     }
 }
