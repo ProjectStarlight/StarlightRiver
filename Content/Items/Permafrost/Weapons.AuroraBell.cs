@@ -147,12 +147,14 @@ namespace StarlightRiver.Content.Items.Permafrost
                     Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), Projectile.damage, Projectile.knockBack, owner.whoAmI);
 					newProj.originalDamage = Projectile.damage;
 
+                    var newProjMP = newProj.ModProjectile as AuroraBellRing;
                     if (modProj is AuroraBellRing oldRinger)
                     {
-                        var newProjMP = newProj.ModProjectile as AuroraBellRing;
                         oldRinger.cantHit.Add(Projectile);
                         newProjMP.cantHit = oldRinger.cantHit;
                     }
+                    else
+                        newProjMP.cantHit.Add(Projectile); 
 					chargeCounter = 0;
 					break;
 				}
