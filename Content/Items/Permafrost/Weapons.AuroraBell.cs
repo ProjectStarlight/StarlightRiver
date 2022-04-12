@@ -199,6 +199,8 @@ namespace StarlightRiver.Content.Items.Permafrost
         private Trail trail;
         private Trail trail2;
 
+        private Noise.FastNoise noise;
+
         private float Progress => 1 - (Projectile.timeLeft / 20f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
@@ -223,6 +225,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AI()
         {
+            if (noise == null)
+            {
+                noise = new Noise.FastNoise(Main.rand.Next(9999));
+                noise.Frequency = 2f;
+                noise.NoiseType = Noise.FastNoise.NoiseTypes.Perlin;
+            }
             if (Projectile.timeLeft == 17 && Projectile.ai[0] > 0)
             {
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
@@ -266,9 +274,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 double rad = (i / 128f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
 
-                float radiusOffset = 1 + ((0.3f * (float)Math.Sin((rad * 15) + Projectile.timeLeft + (Projectile.ai[0] * 2.09f))) * (0.2f * (float)Math.Cos((rad * 8.5f) - Projectile.timeLeft + (Projectile.ai[0] * 2.09f))));
-                if (i == 128)
-                    radiusOffset = 1 + ((0.3f * (float)Math.Sin((rad * 15) + Projectile.timeLeft + (Projectile.ai[0] * 2.09f))) * (0.2f * (float)Math.Cos((rad * 8.5f) - Projectile.timeLeft + (Projectile.ai[0] * 2.09f))));
+                float radiusOffset = 1 + (0.15f * noise.GetNoise(offset.X, offset.Y));
                 offset *= radius * radiusOffset;
                 cache.Add(Projectile.Center + offset);
             }
