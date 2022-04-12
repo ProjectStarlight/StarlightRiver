@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float transparency = (float)Math.Pow(MathHelper.Clamp(1 - pulseProgress, 0, 1), 2);
 			float scale = (float)MathHelper.Clamp(1 + pulseProgress, 0, 2);
 
-			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * transparency, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale * scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale * scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 			return false;
         }
@@ -99,8 +99,9 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override void AI()
         {
 			Projectile.rotation = (float)(Math.Sin((Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection) + startRotation)) * (float)Math.Pow(1 - chargeRatio, 3f);
-
-			counter++;
+            Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
+            Lighting.AddLight(Projectile.Center + offset, Color.White.ToVector3() * 1.5f * (float)Math.Pow(1 - chargeRatio, 9f));
+            counter++;
 			if (chargeCounter < 600)
 				chargeCounter++;
 			if (chargeCounter < 20)
@@ -108,7 +109,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			for (int i = 0; i < Main.projectile.Length; i++)
             {
 				Projectile proj = Main.projectile[i];
-				if (proj == null || !proj.active || !(ProjectileID.Sets.IsAWhip[proj.type] || (proj.type == ModContent.ProjectileType<AuroraBellRing>())))
+				if (proj == null || !proj.active || proj.damage == 0 || !(ProjectileID.Sets.IsAWhip[proj.type] || (proj.type == ModContent.ProjectileType<AuroraBellRing>())))
 					continue;
 
 				ModProjectile modProj = proj.ModProjectile;
@@ -143,9 +144,19 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding) 
 				{
-                    Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), Projectile.damage, Projectile.knockBack, owner.whoAmI);
+                    owner.GetModPlayer<StarlightPlayer>().Shake +=7;
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), Projectile.damage, Projectile.knockBack, owner.whoAmI, 2);
 					newProj.originalDamage = Projectile.damage;
+
+                    for (int j = 0; j < 12; j++)
+                    {
+                        float angle = Main.rand.NextFloat(6.28f);
+
+                        float colorVel = Main.rand.NextFloat(6.28f);
+                        float sin = 1 + (float)Math.Sin(colorVel);
+                        float cos = 1 + (float)Math.Cos(colorVel);
+                        Dust.NewDustPerfect(Projectile.Center + offset + (angle.ToRotationVector2() * 20), ModContent.DustType<Dusts.Aurora>(), angle.ToRotationVector2() * Main.rand.NextFloat() * 8, 0, new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), Main.rand.NextFloat(1.5f,2.5f));
+                    }
 
                     var newProjMP = newProj.ModProjectile as AuroraBellRing;
                     if (modProj is AuroraBellRing oldRinger)
@@ -170,9 +181,9 @@ namespace StarlightRiver.Content.Items.Permafrost
         private Trail trail;
         private Trail trail2;
 
-        private float Progress => 1 - (Projectile.timeLeft / 16f);
+        private float Progress => 1 - (Projectile.timeLeft / 20f);
 
-        private float Radius => 180 * (float)Math.Sqrt(Math.Sqrt(Progress));
+        private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress));
 
         public List<Projectile> cantHit = new List<Projectile>();
 
@@ -184,7 +195,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 16;
+            Projectile.timeLeft = 20;
         }
 
         public override void SetStaticDefaults()
@@ -194,6 +205,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AI()
         {
+            if (Projectile.timeLeft == 17 && Projectile.ai[0] > 0)
+                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
             if (Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
@@ -226,15 +239,17 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             cache = new List<Vector2>();
             float radius = Radius;
-            for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
+            for (int i = 0; i < 129; i++) //TODO: Cache offsets, to improve performance
             {
-                double rad = (i / 32f) * 6.28f;
+                double rad = (i / 128f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
-                offset *= radius;
+
+                float radiusOffset = 1 + ((0.3f * (float)Math.Sin((rad * 15) + Projectile.timeLeft + (Projectile.ai[0] * 2.09f))) * (0.2f * (float)Math.Cos((rad * 8.5f) - Projectile.timeLeft + (Projectile.ai[0] * 2.09f))));
+                offset *= radius * radiusOffset;
                 cache.Add(Projectile.Center + offset);
             }
 
-            while (cache.Count > 33)
+            while (cache.Count > 129)
             {
                 cache.RemoveAt(0);
             }
@@ -243,14 +258,18 @@ namespace StarlightRiver.Content.Items.Permafrost
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 28 * (1 - Progress), factor =>
             {
-                return Color.Magenta;
+                float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 14 * (1 - Progress), factor =>
             {
-                return Color.White;
+                float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
+                return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f); ;
             });
             float nextplace = 33f / 32f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
@@ -277,6 +296,50 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             trail?.Render(effect);
             trail2?.Render(effect);
+        }
+    }
+    class AuroraRingDust : ModDust
+    {
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+
+        public override void OnSpawn(Dust dust)
+        {
+            dust.color = Color.Transparent;
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.frame = new Rectangle(0, 0, 64, 64);
+            dust.velocity *= 2;
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+            dust.alpha = Main.rand.Next(100);
+        }
+
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData == null)
+                dust.customData = Main.rand.NextFloat(6.28f);
+            if (dust.color == Color.Transparent)
+                dust.position -= Vector2.One * 32 * dust.scale;
+
+            //dust.rotation += dust.velocity.Y * 0.1f;
+            dust.position += dust.velocity;
+
+            dust.velocity *= 0.98f;
+
+            float sin = 1 + (float)Math.Sin((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.02f) + (float)dust.customData);
+            float cos = 1 + (float)Math.Cos((dust.alpha / 100f) + ((float)Main.timeForVisualEffects * 0.02f) + (float)dust.customData);
+            dust.color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+            dust.shader.UseColor(dust.color);
+
+            dust.fadeIn++;
+
+            dust.scale *= 0.96f;
+
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.4f * dust.scale);
+
+            if (dust.fadeIn > 70)
+                dust.active = false;
+
+            return false;
         }
     }
 }
