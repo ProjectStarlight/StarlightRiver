@@ -146,7 +146,8 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void SaveData(TagCompound tag)
         {
-            tag["Item"] = containedItem;
+            if(containedItem != null)
+                tag["Item"] = containedItem;
         }
 
         public override void LoadData(TagCompound tag)
