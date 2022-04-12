@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿/*using Microsoft.Xna.Framework; Sorry, this gotta go for now
 using Terraria;
 using System.Windows.Forms;
 using System.Drawing;
@@ -157,4 +157,4 @@ namespace StarlightRiver.Core.Loaders
             On.Terraria.Main.DoUpdate -= WaitForWindowAvailible;
         }
     }
-}
+}*/

@@ -38,7 +38,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             float chungosity = 0;
 
-            if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) chungosity = tag3.GetFloat("Chungus");
+            if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) 
+                chungosity = tag3.GetFloat("Chungus");
 
             Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ChungusMeter").Value;
             Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ChungusMeterFill").Value;
@@ -59,6 +60,9 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self, data, snapPointIndex, canBePlayed);
 
             string path = data.Path.Replace(".wld", ".twld");
+
+            if (!File.Exists(path))
+                return;
 
             TagCompound tag;
 
