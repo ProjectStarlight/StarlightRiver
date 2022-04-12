@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-            return item.TryGetGlobalItem<EnchantedArmorGlobalItem>(out var gi) ? gi : new EnchantedArmorGlobalItem();
+            return item.TryGetGlobalItem<EnchantedArmorGlobalItem>(out var gi) ? gi : this;
 		}
 
 		public override string IsArmorSet(Item head, Item body, Item legs)

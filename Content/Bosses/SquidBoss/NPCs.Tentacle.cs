@@ -18,6 +18,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public Vector2 SavedPoint;
         public int OffBody;
 
+        public ref float State => ref NPC.ai[0];
+        public ref float Timer => ref NPC.ai[1];
+
         public enum TentacleStates
         {
             SpawnAnimation = 0,
@@ -52,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 float dist = NPC.Center.X - Parent.NPC.Center.X;
                 int underMax = 0;
-                underMax = (int)(NPC.ai[1] / 60 * 40);
+                underMax = (int)(Timer / 60 * 40);
 
                 if (underMax > 40) underMax = 40;
 
@@ -66,23 +69,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 for (int k = 0; k < underMax; k++)
                 {
-                    Vector2 pos = Parent.NPC.Center + new Vector2(OffBody - 9 + (float)Math.Sin(NPC.ai[1] / 20f + k) * 2, 100 + k * 10);
+                    Vector2 pos = Parent.NPC.Center + new Vector2(OffBody - 9 + (float)Math.Sin(Timer / 20f + k) * 2, 100 + k * 10);
                     spriteBatch.Draw(body, pos - Main.screenPosition, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 1.6f);
                 }
 
-                if (NPC.ai[1] > 60 && Vector2.Distance(NPC.Center, SavedPoint) > 8)
+                if (Timer > 60 && Vector2.Distance(NPC.Center, SavedPoint) > 8)
                 {
                     Color color;
 
-                    switch (NPC.ai[0])
+                    switch (State)
                     {
                         case 0: color = new Color(100, 255, 50); break;
                         case 1: color = new Color(255, 120, 140); break;
 
                         case 2:
 
-                            float sin = 1 + (float)Math.Sin(NPC.ai[1] / 10f);
-                            float cos = 1 + (float)Math.Cos(NPC.ai[1] / 10f);
+                            float sin = 1 + (float)Math.Sin(Timer / 10f);
+                            float cos = 1 + (float)Math.Cos(Timer / 10f);
                             color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
                             if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase) color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
@@ -109,17 +112,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     for (int k = 0; k < Vector2.Distance(NPC.Center + new Vector2(0, NPC.height / 2), SavedPoint) / 10f; k++)
                     {
-                        Vector2 pos = new Vector2((float)Math.Sin(NPC.ai[1] / 20f + k) * 4, 0) + Vector2.Lerp(NPC.Center + new Vector2(0, NPC.height / 2).RotatedBy(rot),
+                        Vector2 pos = new Vector2((float)Math.Sin(Timer / 20f + k) * 4, 0) + Vector2.Lerp(NPC.Center + new Vector2(0, NPC.height / 2).RotatedBy(rot),
                             SavedPoint, k / Vector2.Distance(NPC.Center + new Vector2(0, NPC.height / 2), SavedPoint) * 10f);
 
                         spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 1.6f, rot, body.Size() / 2, 1, 0, 0);
                     }
 
                     // Draw the ring around the tentacle
-                    int squish = (int)(Math.Sin(NPC.ai[1] * 0.1f) * 5);
+                    int squish = (int)(Math.Sin(Timer * 0.1f) * 5);
                     Rectangle rect = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X), (int)(NPC.Center.Y - Main.screenPosition.Y) + 40, 34 - squish, 16 + (int)(squish * 0.4f));
 
-                    if (NPC.ai[0] != 2) spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.6f, 0, ring.Size() / 2, 0, 0);
+                    if (State != 2) spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.6f, 0, ring.Size() / 2, 0, 0);
                 }
             }
         }
@@ -127,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override bool CheckDead()
         {
             NPC.life = 1;
-            NPC.ai[0] = 2;
+            State = 2;
 
             Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath1, NPC.Center);
 
@@ -157,17 +160,21 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
              * 0: state
              * 1: timer
              */
-            if (Parent == null || !Parent.NPC.active) NPC.active = false;
+            if (Parent == null || !Parent.NPC.active) 
+                NPC.active = false;
 
-            NPC.dontTakeDamage = NPC.ai[0] != 0;
+            NPC.dontTakeDamage = State != 0;
 
-            if (Parent.NPC.ai[0] == (int)SquidBoss.AIStates.SpawnAnimation) NPC.dontTakeDamage = true;
+            if (Parent.NPC.ai[0] == (int)SquidBoss.AIStates.SpawnAnimation) 
+                NPC.dontTakeDamage = true;
 
-            if ((NPC.ai[0] == 0 || NPC.ai[0] == 1) && NPC.ai[1] == 0) SavedPoint = NPC.Center;
+            if ((State == 0 || State == 1) && Timer == 0) 
+                SavedPoint = NPC.Center;
 
-            NPC.ai[1]++;
+            Timer++;
 
-            if (NPC.ai[1] >= 60 && NPC.ai[1] < 120) NPC.Center = Vector2.SmoothStep(SavedPoint, MovePoint, (NPC.ai[1] - 60) / 60f); //Spawn animation
+            if (Timer >= 60 && Timer < 120) 
+                NPC.Center = Vector2.SmoothStep(SavedPoint, MovePoint, (Timer - 60) / 60f); //Spawn animation
         }
 
         public override void SendExtraAI(System.IO.BinaryWriter writer)

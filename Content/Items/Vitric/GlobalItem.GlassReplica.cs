@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-            return item.TryGetGlobalItem<GlassReplica>(out var gi) ? gi : new GlassReplica();
+            return item.TryGetGlobalItem<GlassReplica>(out var gi) ? gi : this;
 		}
 
 		public override void SaveData(Item item, TagCompound tag)
