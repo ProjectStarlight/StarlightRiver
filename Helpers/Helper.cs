@@ -216,10 +216,11 @@ namespace StarlightRiver.Helpers
                     if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
 
                         var tile = Framing.GetTileSafely(thisPoint);
-                    if(tile.BlockType == BlockType.Solid && tile.HasTile)
+                    if(Main.tileSolid[tile.TileType] && tile.HasTile)
                     {
                         var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
-                        if (rect.Contains(point.ToPoint())) return true;
+                        if (rect.Contains(point.ToPoint())) 
+                            return true;
                     }
                 }
 
