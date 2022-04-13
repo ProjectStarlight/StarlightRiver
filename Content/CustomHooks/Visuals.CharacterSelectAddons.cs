@@ -44,8 +44,9 @@ namespace StarlightRiver.Content.CustomHooks
             particle.Scale = (float)Math.Sin(particle.Timer / 60f * 3.14f) * particle.StoredPosition.X;
 
             particle.Color = new Color(255, 230, (byte)(Math.Sin(particle.Timer / 60f * 3.14f) * 200)) * (float)Math.Sin(particle.Timer / 60f * 3.14f);
+            particle.Position += particle.Velocity;
 
-            particle.Rotation += 0.15f;
+            particle.Rotation += 0.05f;
         }
 
         private void ShiftTextOver(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
@@ -170,8 +171,15 @@ namespace StarlightRiver.Content.CustomHooks
                     var medal = mp3.medals[k];
                     var tex = mp3.GetMedalTexture(medal.name);
                     var frame = new Rectangle(36 * (medal.difficulty + 1), 0, 34, 46);
+                    var pos = origin + new Vector2(14 + k * 42, 98);
 
-                    spriteBatch.Draw(tex, origin + new Vector2(14 + k * 42, 98), frame, Color.White);
+                    spriteBatch.Draw(tex, pos, frame, Color.White);
+
+                    if(medal.difficulty == 1 && Main.rand.Next(10) == 0)
+                        sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 230, 0), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
+
+                    if (medal.difficulty == 2 && Main.rand.Next(8) == 0)
+                        sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
 
                     var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
                     if (rectangle.Contains(Main.MouseScreen.ToPoint()))
@@ -181,10 +189,10 @@ namespace StarlightRiver.Content.CustomHooks
 				}
 			}
 
-            if( //Player is "complete"
+            if ( //Player is "complete"
                 Player.statLifeMax == 500 &&
-                Player.statManaMax == 200 && 
-                PlayerStamina == 5 && 
+                Player.statManaMax == 200 &&
+                PlayerStamina == 5 &&
                 codexProgress == 100 &&
                 !abilities.Any(n => !Player.GetHandler().Unlocked(n.GetType()))
                 )
@@ -198,10 +206,10 @@ namespace StarlightRiver.Content.CustomHooks
                         sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.Next(borderTex.Width), Main.rand.NextBool() ? 2 : borderTex.Height - 2), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
                     else
                         sparkles.AddParticle(new Particle(origin + new Vector2(Main.rand.NextBool() ? 2 : borderTex.Width - 2, Main.rand.Next(borderTex.Height)), Vector2.Zero, 0, 0, new Color(255, 230, 0), 60, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
-                }
-
-                sparkles.DrawParticles(spriteBatch);
+                }             
             }
+
+            sparkles.DrawParticles(spriteBatch);
 
             Player.ResetEffects();
         }
