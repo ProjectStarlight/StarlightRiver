@@ -38,7 +38,7 @@ namespace StarlightRiver.Items.Armor
                 return;
             Texture2D tex = Request<Texture2D>(texture).Value;
             int frame = (int)(info.drawPlayer.legFrame.Y/*TODO*/ * 0.01785714286f);//(int)((frame / 1120f) * 20);
-            Vector2 pos = ((info.drawPlayer.position + info.drawPlayer.headPosition) - Main.screenPosition + offset).ToPoint16().ToVector2();
+            Vector2 pos = ((info.drawPlayer.MountedCenter) - Main.screenPosition + offset).ToPoint16().ToVector2() + new Vector2(0, info.drawPlayer.gfxOffY);
             int height = (int)(tex.Height * 0.05f);//tex.Height / 20
             Color drawColor = color ?? info.colorArmorHead;
             info.DrawDataCache.Add(new DrawData(tex, pos, new Rectangle(0, frame * height, tex.Width, height), immuneFade ? drawColor * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f) : drawColor, info.drawPlayer.headRotation, new Vector2(tex.Width * 0.5f, tex.Height * 0.025f), scale, info.playerEffect, 0));

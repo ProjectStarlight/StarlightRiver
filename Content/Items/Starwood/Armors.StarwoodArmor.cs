@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Starwood
         public void DrawArmorLayer(PlayerDrawSet info)//custom drawing the hat (todo)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(10, 18));
+                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.StarwoodItem + "StarwoodHat_Head_Alt", 1, new Vector2(0, -3));
         }
     }
 
