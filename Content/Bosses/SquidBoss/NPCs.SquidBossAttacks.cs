@@ -61,28 +61,41 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         #region phase 1
         private void TentacleSpike()
         {
+            NPC.rotation = NPC.velocity.X * 0.01f;
+
             for (int k = 0; k < 4; k++)
             {
+                Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+
                 if (AttackTimer == k * 100 || (k == 0 && AttackTimer == 1)) //teleport where needed
                 {
                     RandomizeTarget();
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-
+                    
                     int adj = (int)Main.player[NPC.target].velocity.X * 60; if (adj > 200) adj = 200;
                     tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, tentacles[k].Center.Y);
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -850);
                     tentacle.NPC.netUpdate = true;
 
+                    savedPoint = new Vector2(Main.player[NPC.target].Center.X + adj + (Main.rand.NextBool() ? 150 : -150), Main.player[NPC.target].Center.Y);
+
                     SpawnTell(tentacle.MovementTarget + new Vector2(0, -64), tentacle.BasePoint);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
                 }
 
+                if(AttackTimer > k * 100 && AttackTimer < k * 100 + 50)
+				{
+                    tentacle.DownwardDrawDistance += 2;
+                    NPC.velocity = (savedPoint - NPC.Center) * 0.035f * Math.Min(1, (AttackTimer - k * 100) / 10f); //visually pursue the player
+				}
+
                 if (AttackTimer > k * 100 + 30 && AttackTimer < k * 100 + 70) //shooting up, first 30 frames are for tell
                 {
+                    if (AttackTimer > k * 100 + 50)
+                        NPC.velocity *= 0.92f; //slow down from movement
+
                     int time = (int)AttackTimer - (k * 100 + 30);
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
                     tentacle.StalkWaviness = 0;
                     tentacle.ZSpin = (time / 30f * 6.28f);
@@ -96,11 +109,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     }
 
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, time / 40f);
-                    tentacles[k].ai[1] += 5f; //make it squirm faster
                 }
 
                 if (AttackTimer == k * 100 + 70) //impact
                 {
+                    NPC.velocity *= 0f; //stop
+
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20; //TODO: Find the right player instances
 
                     Helpers.Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
@@ -108,19 +122,29 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (AttackTimer > k * 100 + 70 && AttackTimer < k * 100 + 300) //retracting
                 {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-
                     int time = (int)AttackTimer - (k * 100 + 70);
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 230f);
+                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 190f);
                     tentacle.StalkWaviness = Math.Min(1.5f, time / 30f);
                     tentacle.ZSpin = 0;
+
+                    if (AttackTimer > k * 100 + 250)
+                        tentacle.DownwardDrawDistance -= 2;
 
                     if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 260 : 205))
                     {
                         SplashDustSmall(k);
                     }
                 }
+
+                if (AttackTimer == k * 100 + 300)
+                    tentacle.DownwardDrawDistance = 20;
             }
+
+            if (AttackTimer == 540)
+                savedPoint = NPC.Center;
+
+            if (AttackTimer > 540) //return home
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -600), (AttackTimer - 540) / 60f);
 
             if (AttackTimer == 600) ResetAttack();
         }
