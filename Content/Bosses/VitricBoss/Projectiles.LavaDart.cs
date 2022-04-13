@@ -136,6 +136,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(midPoint);
+            writer.WritePackedVector2(endPoint);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            midPoint = reader.ReadPackedVector2();
+            endPoint = reader.ReadPackedVector2();
+
+            dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
+            dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
+        }
+
         private void ManageCaches()
         {
             if (cache == null)
@@ -154,21 +169,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 cache.RemoveAt(0);
             }
-        }
-
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.WritePackedVector2(midPoint);
-            writer.WritePackedVector2(endPoint);
-        }
-
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            midPoint = reader.ReadPackedVector2();
-            endPoint = reader.ReadPackedVector2();
-
-            dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
-            dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
         }
 
         private void ManageTrail()

@@ -173,15 +173,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void InkBurst()
         {
-            if (AttackTimer == 300) ResetAttack();
-            return;
+            if (AttackTimer < 30)
+                NPC.velocity = (Main.player[NPC.target].Center + new Vector2(0, -200) - NPC.Center) * 0.05f;
 
-            for (float k = 0; k <= 3.14f; k += 3.14f / 5f)
+            if (AttackTimer > 30 && AttackTimer < 60)
+                NPC.velocity *= 0.95f;
+
+            if (AttackTimer > 90)
+                NPC.velocity *= 0;
+
+            if (AttackTimer > 100)
             {
-                if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
-                if (AttackTimer == 60) ResetAttack();
+                float angle = (Main.player[NPC.target].Center - NPC.Center).ToRotation();
+
+                if (AttackTimer % 20 == 0)
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(8, 0).RotatedBy(angle + Main.rand.NextFloat(-0.5f, 0.5f)), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+
+                if (AttackTimer % 20 == 0)
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
             }
+
+            if (AttackTimer == 180) ResetAttack();
+            return;
         }
 
         private void PlatformSweep()
@@ -638,10 +651,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer > 61)
             {
-                for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
+                if (AttackTimer == 64)
                 {
-                    if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                    if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                    for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
+                    {
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                    }
                 }
             }
 
