@@ -112,7 +112,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+            {
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+
+                if(Main.masterMode)
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), homePos + new Vector2(Main.rand.Next(-700, 700), 420), new Vector2(0, -18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+            }
 
             if (AttackTimer >= 720)
                 ResetAttack();
@@ -186,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
-                    float addedRotation = BrokenCount * (Main.expertMode ? 2.3f : 1.8f);
+                    float addedRotation = BrokenCount * (Main.masterMode ? 2.8f : Main.expertMode ? 2.3f : 1.8f);
                     crystal.Center = NPC.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - NPC.Center).RotatedBy(-(AttackTimer - 360) / 480 * (4.72f + addedRotation));
 
                     //the chosen "favorite" or master crystal is the one where our opening should be
@@ -971,15 +976,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
                 }
 
-                if (LaserTimer > 590 && LaserTimer <= 650)
+                if (LaserTimer > (Main.masterMode ? 545 : 590) && LaserTimer <= (Main.masterMode ? 605 : 650))
                 {
                     SetFrameY(4);
-                    SetFrameX(9 - (int)((LaserTimer - 590) / 60f * 10));
+                    SetFrameX(9 - (int)((LaserTimer - (Main.masterMode ? 545 : 590)) / 60f * 10));
                 }
 
                 NPC.velocity = (NPC.Center - arena.Center.ToVector2()) * -0.02f;
 
-                if (AttackTimer >= 720)
+                if (AttackTimer >= (Main.masterMode ? 675 : 720))
 				{
                     NPC.velocity *= 0;
                     ResetAttack();

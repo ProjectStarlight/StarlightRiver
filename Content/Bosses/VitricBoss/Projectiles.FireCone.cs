@@ -82,6 +82,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f + 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
                     Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(Projectile.rotation + 3.14f - 1f) * 11, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
                 }
+
+                if(Main.masterMode)
+				{
+                    //TODO: Homing fireball
+				}
             }
 
             if (Timer >= 94) //when this Projectile goes off

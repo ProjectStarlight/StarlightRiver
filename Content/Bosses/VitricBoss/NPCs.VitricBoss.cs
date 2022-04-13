@@ -135,6 +135,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             NPC.lifeMax = (int)(9000 * bossLifeScale);
             NPC.damage = 40;
             NPC.defense = 14;
+
+            if(Main.masterMode)
+			{
+                NPC.lifeMax = (int)(14000 * bossLifeScale);
+                NPC.damage = 60;
+                NPC.defense = 14;
+            }
         }
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -657,7 +664,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         AttackPhase++;
                         if (AttackPhase > 3)
                         {
-                            if (!(AttackPhase == 4 && NPC.life <= NPC.lifeMax / 5)) //at low HP he can laser!
+                            if (!(AttackPhase == 4 && NPC.life <= (Main.masterMode ? NPC.lifeMax / 4 : NPC.lifeMax / 5) )) //at low HP he can laser!
                                 AttackPhase = 0;
                         }
 

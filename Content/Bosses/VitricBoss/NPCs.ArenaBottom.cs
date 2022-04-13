@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            NPC.height = 16;
+            NPC.height = Main.masterMode ? 42 : 16;
             NPC.width = 1260;
             NPC.aiStyle = -1;
             NPC.lifeMax = 2;
@@ -188,7 +188,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 int eggIndex = rand.Next(25) == 0 ? rand.Next(0, NPC.width / 18) * 18 : -1;// 1/25 chance
 
-                float off = Math.Min((NPC.ai[0] - 120) / 30f * 32, 32);
+                float maxOffset = Main.masterMode ? 64 : 32;
+                float off = Math.Min((NPC.ai[0] - 120) / 30f * maxOffset, maxOffset);
                 Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "CrystalWaveHot").Value;
                 for (int k = 0; k < NPC.width; k += 18)
                 {

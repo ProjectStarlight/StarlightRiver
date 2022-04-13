@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 {
     internal abstract class MovingPlatform : ModNPC
     {
+        public bool DontCollide = false;
+
         public virtual void SafeSetDefaults() { }
 
         public virtual void SafeAI() { }
