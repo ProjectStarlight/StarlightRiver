@@ -32,21 +32,23 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (Main.gameMenu)
                 return;
 
-            Main.NewText(Filters.Scene["AuroraBellPulse"].GetShader());
-
             int projectilesFound = 0;
+            int numberOfBells = 0;
             float[] progresses = new float[10];
+            float[] intensity = new float[10];
             Vector2[] positions = new Vector2[10];
+
 
             for (int i = 0; i < Main.projectile.Length; i++)
             {
                 Projectile proj = Main.projectile[i];
                 if (proj.active && proj.damage > 0 && proj.ModProjectile is AuroraBellRing mp)
                 {
+                    intensity[projectilesFound] = mp.radiusMult;
+                    positions[projectilesFound] = proj.Center - new Vector2(200,200);
+                    progresses[projectilesFound] = (float)Math.Sqrt(mp.Progress);
 
-                    positions[projectilesFound] = proj.Center;
-                    progresses[projectilesFound] = mp.Progress;
-
+                    numberOfBells++;
                     projectilesFound++;
                     if (projectilesFound > 9)
                         break;
@@ -64,13 +66,16 @@ namespace StarlightRiver.Content.Items.Permafrost
                 projectilesFound++;
                 progresses[projectilesFound] = 0;
                 positions[projectilesFound] = Vector2.Zero;
+                intensity[projectilesFound] = 0;
             }
             //a
             Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["progresses"].SetValue(progresses);
             Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["positions"].SetValue(positions);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["intensity"].SetValue(intensity);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["numberOfBells"].SetValue(numberOfBells);
             if (Main.netMode != NetmodeID.Server && !Filters.Scene["AuroraBellPulse"].IsActive())
             {
-                Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.Purple.ToVector3()).UseOpacity(0.5f).UseIntensity(0.75f);
+                Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.White.ToVector3()).UseOpacity(0.0001f);
             }
         }
     }
@@ -156,7 +161,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float transparency = (float)Math.Pow(MathHelper.Clamp(1 - pulseProgress, 0, 1), 2);
 			float scale = (float)MathHelper.Clamp(1 + pulseProgress, 0, 2);
 
-			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale * scale, SpriteEffects.None, 0f);
+            Vector2 centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height / 2);
+			Main.spriteBatch.Draw(tex, ((Projectile.Center + offset - centerer) - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * scale, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 
             if (chargeCounter == 300)
