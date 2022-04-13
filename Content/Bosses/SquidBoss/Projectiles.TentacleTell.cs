@@ -51,8 +51,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var underGlowTarget = new Rectangle((int)basePos.X, (int)basePos.Y, 100, (int)dist);
             var flashGlowTarget = new Rectangle((int)basePos.X, (int)basePos.Y, (int)(timer / 20f * 200), (int)dist);
 
-            var leftTarget = new Rectangle((int)basePos.X - 50, (int)basePos.Y, 4, (int)dist * 2);
-            var rightTarget = new Rectangle((int)basePos.X + 50, (int)basePos.Y, 4, (int)dist * 2);
+            var leftTarget = new Rectangle((int)(basePos.X - (50 * Math.Cos(rot))), (int)(basePos.Y - (50 * Math.Sin(rot))), 4, (int)dist * 2);
+            var rightTarget = new Rectangle((int)(basePos.X + (50 * Math.Cos(rot))), (int)(basePos.Y + (50 * Math.Sin(rot))), 4, (int)dist * 2);
             var thinSource = new Rectangle(50, 0, glow.Width - 100, glow.Height);
 
             spriteBatch.Draw(flat, underGlowTarget, null, new Color(255, 40, 40) * (float)Math.Sin(timer / 60f * 3.14f) * 0.7f, rot, origin, 0, 0);

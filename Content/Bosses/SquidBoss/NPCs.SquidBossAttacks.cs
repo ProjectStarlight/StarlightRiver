@@ -475,8 +475,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.MovementTarget = Main.player[NPC.target].Center;
                     tentacle.NPC.netUpdate = true;
 
-                    for (int n = 0; n < 50; n++)
-                        Dust.NewDustPerfect(Vector2.Lerp(Main.player[NPC.target].Center, tentacle.BasePoint, n / 50f), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
+                    SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
                 }
@@ -516,8 +515,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = Main.player[NPC.target].Center;
 
-                    for (int n = 0; n < 50; n++)
-                        Dust.NewDustPerfect(Vector2.Lerp(Main.player[NPC.target].Center, tentacle.BasePoint, n / 50f), DustID.Fireworks, Vector2.Zero, 0, default, 0.5f);
+                    SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
                 }

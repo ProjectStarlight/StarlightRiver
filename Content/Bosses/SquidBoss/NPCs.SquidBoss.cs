@@ -71,8 +71,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, (int)NPC.Center.X, (int)NPC.Center.Y, 1, 1, -0.8f);
 
-                for (int k = 0; k < 10; k++)
-                    Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.Find<ModGore>("SquidGore").Type);
+                /*for (int k = 0; k < 10; k++)
+                    Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.Find<ModGore>("SquidGore").Type);*/
                 return true;
             }
         }
