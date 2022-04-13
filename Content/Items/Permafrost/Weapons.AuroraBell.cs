@@ -12,9 +12,68 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
+    public class AuroraBellShockwaves : ModSystem
+    {
+        public override void Load()
+        {
+            if (Main.netMode != NetmodeID.Server)
+            {
+                Ref<Effect> screenRef = new Ref<Effect>(Mod.Assets.Request<Effect>("Effects/AuroraBellPulse").Value); 
+                Filters.Scene["AuroraBellPulse"] = new Filter(new ScreenShaderData(screenRef, "MainPS"), EffectPriority.VeryHigh);
+                Filters.Scene["AuroraBellPulse"].Load();
+            }
+        }
+        public override void PostUpdateProjectiles()
+        {
+            if (Main.gameMenu)
+                return;
+
+            Main.NewText(Filters.Scene["AuroraBellPulse"].GetShader());
+
+            int projectilesFound = 0;
+            float[] progresses = new float[10];
+            Vector2[] positions = new Vector2[10];
+
+            for (int i = 0; i < Main.projectile.Length; i++)
+            {
+                Projectile proj = Main.projectile[i];
+                if (proj.active && proj.damage > 0 && proj.ModProjectile is AuroraBellRing mp)
+                {
+
+                    positions[projectilesFound] = proj.Center;
+                    progresses[projectilesFound] = mp.Progress;
+
+                    projectilesFound++;
+                    if (projectilesFound > 9)
+                        break;
+                }
+            }
+
+            if (projectilesFound == 0)
+            {
+                if (Filters.Scene["AuroraBellPulse"].IsActive())
+                    Filters.Scene["AuroraBellPulse"].Deactivate();
+                return;
+            }
+            while (projectilesFound < 9)
+            {
+                projectilesFound++;
+                progresses[projectilesFound] = 0;
+                positions[projectilesFound] = Vector2.Zero;
+            }
+            //a
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["progresses"].SetValue(progresses);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["positions"].SetValue(positions);
+            if (Main.netMode != NetmodeID.Server && !Filters.Scene["AuroraBellPulse"].IsActive())
+            {
+                Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.Purple.ToVector3()).UseOpacity(0.5f).UseIntensity(0.75f);
+            }
+        }
+    }
 	class AuroraBell : ModItem
 	{
         public override string Texture => AssetDirectory.PermafrostItem + "AuroraBell";
@@ -221,7 +280,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private Noise.FastNoise noise;
 
-        private float Progress => 1 - (Projectile.timeLeft / 20f);
+        public float Progress => 1 - (Projectile.timeLeft / 20f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
 
