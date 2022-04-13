@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16));
         }
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override string Texture => AssetDirectory.SquidBoss + Name;
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.position - Main.screenPosition, Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16));
         }

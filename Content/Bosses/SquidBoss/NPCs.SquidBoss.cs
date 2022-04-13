@@ -30,6 +30,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
 
+        public float Opacity = 1;
+
         public enum AIStates
         {
             SpawnEffects = 0,
@@ -105,7 +107,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             StarlightWorld.Flag(WorldFlags.SquidBossDowned);
         }
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRing").Value;
             Texture2D ringGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingGlow").Value;
@@ -136,16 +138,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
-                spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White, NPC.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
             var lightColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
-            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, body.Frame(), lightColor * 1.2f, NPC.rotation, body.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White, NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
+            var bodyColor = lightColor * 1.2f * Opacity;
+            bodyColor.A = 255;
+            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, body.Frame(), bodyColor, NPC.rotation, body.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White * Opacity, NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
@@ -228,16 +232,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
 
-                spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f, NPC.rotation,
+                spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f * Opacity, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
+                spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f * Opacity, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White, NPC.rotation,
+                spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
 
                 spriteBatch.End();
@@ -360,7 +364,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     else //else advance the attack pattern
                     {
                         AttackPhase++;
-                        if (AttackPhase > (Main.expertMode ? 1 : 1)) AttackPhase = 1;
+                        if (AttackPhase > (Main.expertMode ? 2 : 2)) AttackPhase = 1;
                     }
 
                 switch (AttackPhase)

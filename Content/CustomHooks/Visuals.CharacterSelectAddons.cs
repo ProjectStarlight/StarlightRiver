@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.CustomHooks
                     var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
                     if (rectangle.Contains(Main.MouseScreen.ToPoint()))
                     {
-                        Utils.DrawBorderString(spriteBatch, medal.ToString(), origin + new Vector2(286, 70), Color.White);
+                        Utils.DrawBorderString(spriteBatch, medal.ToString(), origin + new Vector2(306, 70), Color.White);
                     }
 				}
 			}

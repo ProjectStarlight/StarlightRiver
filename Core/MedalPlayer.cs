@@ -26,10 +26,11 @@ namespace StarlightRiver.Core
 
 		private Medal attemptedMedal;
 
-		private static int Difficulty => Main.LocalPlayer.difficulty > 2 ? -1 : Main.LocalPlayer.difficulty;
+		private static int Difficulty => Main.masterMode ? 2 : Main.expertMode ? 1 : Main.LocalPlayer.difficulty == 3 ? -1 : 0;
 
 		public void QualifyForMedal(Medal medal)
 		{
+			Main.NewText("Difficulty for current fight is:" + Difficulty);
 			attemptedMedal = medal;
 		}
 
@@ -105,7 +106,7 @@ namespace StarlightRiver.Core
 
 		public override string ToString()
 		{
-			return name + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : "Master");
+			return name + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
 		}
 
 		public override bool Equals(object obj)

@@ -63,6 +63,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             NPC.rotation = NPC.velocity.X * 0.01f;
 
+            if (AttackTimer < 30)
+                Opacity = 1 - (AttackTimer / 30f * 0.5f);
+
             for (int k = 0; k < 4; k++)
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
@@ -76,6 +79,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -850);
                     tentacle.NPC.netUpdate = true;
+
+                    if(tentacle.State != 2)
+                        tentacle.State = 1;
 
                     savedPoint = new Vector2(Main.player[NPC.target].Center.X + adj + (Main.rand.NextBool() ? 150 : -150), Main.player[NPC.target].Center.Y);
 
@@ -115,6 +121,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     NPC.velocity *= 0f; //stop
 
+                    if (tentacle.State != 2 && (Phase == (int)AIStates.FirstPhaseTwo || tentacles.Count(n => n.ai[0] == 2) < 2))
+                    {
+                        tentacle.State = 0;
+
+                        for (int i = 0; i < 20; i++)
+                            Dust.NewDustPerfect(tentacle.NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 1, new Color(255, Main.rand.Next(0, 155), 0), 0.5f);
+                    }
+
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20; //TODO: Find the right player instances
 
                     Helpers.Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
@@ -126,6 +140,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 190f);
                     tentacle.StalkWaviness = Math.Min(1.5f, time / 30f);
                     tentacle.ZSpin = 0;
+
+                    if(AttackTimer == k * 100 + 250)
+                        if (tentacle.State != 2)
+                            tentacle.State = 1;
 
                     if (AttackTimer > k * 100 + 250)
                         tentacle.DownwardDrawDistance -= 2;
@@ -144,13 +162,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 savedPoint = NPC.Center;
 
             if (AttackTimer > 540) //return home
+            {
                 NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -600), (AttackTimer - 540) / 60f);
+                Opacity = 0.5f + (AttackTimer - 540) / 60f;
+            }
 
-            if (AttackTimer == 600) ResetAttack();
+            if (AttackTimer == 600) 
+                ResetAttack();
         }
 
         private void InkBurst()
         {
+            if (AttackTimer == 300) ResetAttack();
+            return;
+
             for (float k = 0; k <= 3.14f; k += 3.14f / 5f)
             {
                 if (AttackTimer % 3 == 0) Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));

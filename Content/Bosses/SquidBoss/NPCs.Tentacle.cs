@@ -37,8 +37,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            NPC.width = 60;
-            NPC.height = 80;
+            NPC.width = 80;
+            NPC.height = 100;
             NPC.lifeMax = 225;
             NPC.damage = 20;
             NPC.noGravity = true;
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.HitSound = Terraria.ID.SoundID.NPCHit1;
         }
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             if (Parent != null)
             {
@@ -61,46 +61,60 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 switch (State) //Select the color of this tentacle's glow
                 {
-                    case 0: GlowColor = new Color(100, 255, 50); break;
-                    case 1: GlowColor = new Color(255, 120, 140); break;
+                    case 0: //vulnerable
+                        float sin0 = 1 + (float)Math.Sin(Timer / 10f);
+                        GlowColor = new Color(255, 100 + (int)(sin0 * 50), 40);
 
-                    case 2:
+                        break;
+                    
+                    case 1: //invulnerable
 
-                        float sin = 1 + (float)Math.Sin(Timer / 10f);
-                        float cos = 1 + (float)Math.Cos(Timer / 10f);
-                        GlowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+                        float sin1 = 1 + (float)Math.Sin(Timer / 10f);
+                        float cos1 = 1 + (float)Math.Cos(Timer / 10f);
+                        GlowColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
 
-                        if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase) GlowColor = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+                        if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase) 
+                            GlowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
 
+                        break;
+
+                    case 2: //dead
+                        GlowColor = new Color(100, 100, 150) * 0.5f;
+                        
                         break;
 
                     default: GlowColor = Color.Black; break;
                 }
 
-                for (int k = 0; k <= DownwardDrawDistance; k++)
+                if (NPCLayer == 0)
                 {
-                    var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + k * 10) - Main.screenPosition;
-                    pos.X += (float)Math.Sin(Timer / 20f + k * 0.1f) * k * 0.5f;
+                    for (int k = 0; k <= DownwardDrawDistance; k++)
+                    {
+                        var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + k * 10) - Main.screenPosition;
+                        pos.X += (float)Math.Sin(Timer / 20f + k * 0.1f) * k * 0.5f;
 
-                    var scale = 1 + Math.Max(0, (k - DownwardDrawDistance + 10) / 10f);
+                        var scale = 1 + Math.Max(0, (k - DownwardDrawDistance + 10) / 10f);
+                        var lightColor = Lighting.GetColor((int)(pos.X + Main.screenPosition.X) / 16, (int)(pos.Y + Main.screenPosition.Y) / 16) * 1.1f * Parent.Opacity;
+                        lightColor.A = 255;
 
-                    spriteBatch.Draw(body, pos, null, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), 0, body.Size() / 2, scale, 0, 0);
+                        spriteBatch.Draw(body, pos, null, lightColor, 0, body.Size() / 2, scale, 0, 0);
 
-                    if (k == DownwardDrawDistance)
-					{
-                        var topOriginBody = new Vector2(top.Width / 2, top.Height);
-                        var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
+                        if (k == DownwardDrawDistance)
+                        {
+                            var topOriginBody = new Vector2(top.Width / 2, top.Height);
+                            var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
+                            
+                            spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
+                            spriteBatch.Draw(glow, pos, glow.Frame(), GlowColor * 0.325f, bodyRotation, topOriginBody, 1, 0, 0);
 
-                        spriteBatch.Draw(top, pos, top.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 1.6f, bodyRotation, topOriginBody, 1, 0, 0);
-                        spriteBatch.Draw(glow, pos, glow.Frame(), GlowColor * 0.325f, bodyRotation, topOriginBody, 1, 0, 0);
-
-                        var glow2Color = GlowColor;
-                        glow2Color.A = 0;
-                        spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f, bodyRotation, topOriginBody, 1, 0, 0);
+                            var glow2Color = GlowColor;
+                            glow2Color.A = 0;
+                            spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f, bodyRotation, topOriginBody, 1, 0, 0);
+                        }
                     }
                 }
 
-                if (Timer > 60 && Vector2.Distance(NPC.Center, BasePoint) > 8)
+                if (NPCLayer == 1 && Timer > 60 && Vector2.Distance(NPC.Center, BasePoint) > 8)
                 {
                     float rot = (BasePoint - NPC.Center).ToRotation() - 1.57f;
                     float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
@@ -109,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     var topOrigin = new Vector2(top.Width / 2, top.Height + 10);
                     var litColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 2.6f;
-                    var topPos = NPC.Center + Vector2.UnitX * tentacleSin * 30;
+                    var topPos = NPC.Center + new Vector2(tentacleSin * 30, 36);
                     var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
 
                     spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
@@ -126,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         float segmentSin = (float)Math.Sin(Timer / 20f + k * 0.02f);
                         float magnitude = Math.Max(0, 30 - k * 0.05f) * StalkWaviness;
                         float size = Math.Max(1, 2 - k * 0.005f);
-                        Vector2 pos = new Vector2(segmentSin * magnitude, 0) + Vector2.Lerp(NPC.Center, BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
+                        Vector2 pos = new Vector2(segmentSin * magnitude, 0) + Vector2.Lerp(NPC.Center + new Vector2(0, 36), BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
                         spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 2.6f, rot + segmentSin * 0.25f, body.Size() / 2, size, 0, 0);
 
                         if (k == 0 && State != 2)

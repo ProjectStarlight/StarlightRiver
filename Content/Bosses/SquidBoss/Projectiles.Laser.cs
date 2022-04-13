@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect))) Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " got lasered to death by a squid..."), 50, 0);
         }
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
