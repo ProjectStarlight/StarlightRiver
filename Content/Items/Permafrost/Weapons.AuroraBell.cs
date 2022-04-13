@@ -248,10 +248,10 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (noise == null)
             {
                 noise = new Noise.FastNoise(Main.rand.Next(9999));
-                noise.Frequency = 2f;
                 noise.NoiseType = Noise.FastNoise.NoiseTypes.Perlin;
             }
-            if (Projectile.timeLeft == 17 && Projectile.ai[0] > 0)
+            noise.Frequency = MathHelper.Lerp(5, 1.5f, Progress);
+            if (Projectile.timeLeft == 15 && Projectile.ai[0] > 0)
             {
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
                 var mp = proj.ModProjectile as AuroraBellRing;
@@ -308,14 +308,12 @@ namespace StarlightRiver.Content.Items.Permafrost
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 28 * (1 - Progress) * radiusMult, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 34 * (1 - Progress) * radiusMult, factor =>
             {
-                float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
-                float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
-                return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+                return new Color(181, 0, 252);
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 14 * (1 - Progress) * radiusMult, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 129, new TriangularTip(1), factor => 30 * (1 - Progress) * radiusMult, factor =>
             {
                 float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
                 float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
