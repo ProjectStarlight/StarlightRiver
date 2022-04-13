@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
     public class GreenhouseGlassItem : QuickTileItem
     {
-        public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth of any plant below it\nNeeds a clear area above it", ModContent.TileType<GreenhouseGlass>(), 1, AssetDirectory.HerbologyTile) { }
+        public GreenhouseGlassItem() : base("Greenhouse Glass", "Speeds up the growth of any plant below it\nNeeds a clear area above it", "GreenhouseGlass", 1, AssetDirectory.HerbologyTile) { }
 
         public override void AddRecipes()
         {

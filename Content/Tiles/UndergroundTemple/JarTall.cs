@@ -75,6 +75,6 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug Item", TileType<JarTall>(), -12) { }
+        public JarTallItem() : base("Stamina Jar Placer (Tall)", "Debug Item", "JarTall", -12) { }
     }
 }

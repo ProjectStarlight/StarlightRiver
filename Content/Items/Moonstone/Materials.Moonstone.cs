@@ -9,14 +9,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 {
 	public class MoonstoneOreItem : QuickTileItem
     {
-        public MoonstoneOreItem() : base("Moonstone", "", ModContent.TileType<MoonstoneOre>(), ItemRarityID.Blue, AssetDirectory.MoonstoneItem) { }
+        public MoonstoneOreItem() : base("Moonstone", "", "MoonstoneOre", ItemRarityID.Blue, AssetDirectory.MoonstoneItem) { }
 
         public override void SafeSetDefaults() => Item.value = Item.sellPrice(0, 0, 1, 50);
     }
 
     public class MoonstoneBarItem : QuickTileItem
     {
-        public MoonstoneBarItem() : base("Moonstone Bar", "'Shimmering with Beautiful Light'", TileType<MoonstoneBar>(), ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
+        public MoonstoneBarItem() : base("Moonstone Bar", "'Shimmering with Beautiful Light'", "MoonstoneBar", ItemRarityID.White, AssetDirectory.MoonstoneItem) { }  //TODO: Fix place type
 
         public override void SafeSetDefaults() => Item.value = Item.sellPrice(0, 0, 13, 50);
 

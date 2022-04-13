@@ -31,6 +31,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
     class MagmiteShrineItem : QuickTileItem
     {
-        public MagmiteShrineItem() : base("The Boi", "It's him!", TileType<MagmiteShrine>(), 1, "StarlightRiver/Assets/Tiles/Underground/") { }
+        public MagmiteShrineItem() : base("The Boi", "It's him!", "MagmiteShrine", 1, "StarlightRiver/Assets/Tiles/Underground/") { }
     }
 }

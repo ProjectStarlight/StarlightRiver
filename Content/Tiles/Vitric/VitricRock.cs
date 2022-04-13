@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal class VitricRockItem : QuickTileItem 
     { 
-        public VitricRockItem() : base("Vitric Rock", "", TileType<VitricRock>(), 0, AssetDirectory.VitricTile) { }
+        public VitricRockItem() : base("Vitric Rock", "", "VitricRock", 0, AssetDirectory.VitricTile) { }
         //public override void OnConsumeItem(Player Player) => Main.NewText(TileType<VitricRock>());
     }
 

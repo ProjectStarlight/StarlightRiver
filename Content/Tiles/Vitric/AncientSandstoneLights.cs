@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	public class AncientSandstoneTorchItem : QuickTileItem
     {
-        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, AssetDirectory.VitricTile + "AncientSandstoneTorch", true) { }
+        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", "AncientSandstoneTorch", 0, AssetDirectory.VitricTile + "AncientSandstoneTorch", true) { }
     }
 
     internal class AncientSandstoneTorch : ModTile

@@ -49,6 +49,6 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class LumishroomItem : QuickTileItem
     {
-        public LumishroomItem() : base("Lumishroom", "Glowy...", TileType<Lumishroom>(), 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
+        public LumishroomItem() : base("Lumishroom", "Glowy...", "Lumishroom", 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
     }
 }

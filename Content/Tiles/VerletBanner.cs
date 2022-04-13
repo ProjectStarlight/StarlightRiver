@@ -23,8 +23,9 @@ namespace StarlightRiver.Content.Tiles
 
     class VerletBannerItem : QuickTileItem
 	{
-        public VerletBannerItem() : base("Verlet banner", "Debug Item", TileType<VerletBanner>(), 1, AssetDirectory.VitricTile, false) { }
-	}
+        public VerletBannerItem() : base("Verlet banner", "Debug Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }
+
+    }
 
     internal class VerletBannerDummy : Dummy
     {

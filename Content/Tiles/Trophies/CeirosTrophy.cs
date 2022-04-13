@@ -23,6 +23,6 @@ namespace StarlightRiver.Content.Tiles.Trophies
 
     class CeirosTrophyItem : QuickTileItem
     {
-        public CeirosTrophyItem() : base("Ceiros Trophy", "", TileType<CeirosTrophy>(), 1, AssetDirectory.TrophyTile) { }
+        public CeirosTrophyItem() : base("Ceiros Trophy", "", "CeirosTrophy", 1, AssetDirectory.TrophyTile) { }
     }
 }

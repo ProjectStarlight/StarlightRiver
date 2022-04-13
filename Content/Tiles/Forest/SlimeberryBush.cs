@@ -93,8 +93,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 
     public class SlimeberryBushItem : QuickTileItem
 	{
-        public SlimeberryBushItem() : base("Slimeberry Bush", "Places a slimeberry bush", TileType<SlimeberryBush>(), ItemRarityID.Blue, AssetDirectory.ForestTile) { }
-	}
+        public SlimeberryBushItem() : base("Slimeberry Bush", "Places a slimeberry bush", "SlimeberryBush", ItemRarityID.Blue, AssetDirectory.ForestTile) { }
+
+    }
 
     public class BerrySlime : ModNPC
 	{

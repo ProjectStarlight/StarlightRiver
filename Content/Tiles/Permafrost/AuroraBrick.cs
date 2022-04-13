@@ -38,13 +38,13 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickItem";
 
-        public AuroraBrickItem() : base("Aurora Brick", "Oooh... Preeetttyyy", TileType<AuroraBrick>(), ItemRarityID.White) { }
+        public AuroraBrickItem() : base("Aurora Brick", "Oooh... Preeetttyyy", "AuroraBrick", ItemRarityID.White) { }
     }
 
     class AuroraBrickDoorItem : QuickTileItem
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public AuroraBrickDoorItem() : base("Debug Brick Placer", "", TileType<AuroraBrickDoor>(), ItemRarityID.White) { }
+        public AuroraBrickDoorItem() : base("Debug Brick Placer", "", "AuroraBrickDoor", ItemRarityID.White) { }
     }
 }

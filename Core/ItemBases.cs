@@ -136,18 +136,18 @@ namespace StarlightRiver.Core
         public string InternalName = "";
         public string Itemname;
         public string Itemtooltip;
-        private readonly int Tiletype;
+        //private readonly int Tiletype;
         private readonly string Tilename;
         private readonly int Rare;
         private readonly string TexturePath;
         private readonly bool PathHasName;
         private readonly int ItemValue;
 
-        public QuickTileItem(string name, string tooltip, int placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
+        public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
         {
             Itemname = name;
             Itemtooltip = tooltip;
-            Tiletype = placetype;
+            Tilename = placetype;
             Rare = rare;
             TexturePath = texturePath;
             PathHasName = pathHasName;
@@ -189,7 +189,7 @@ namespace StarlightRiver.Core
             Item.useTime = 10;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
-            Item.createTile = Tiletype == 0 && Tilename != null ? Mod.Find<ModTile>(Tilename).Type : Tiletype;
+            Item.createTile = Mod.Find<ModTile>(Tilename).Type;
             Item.rare = Rare;
             Item.value = ItemValue;
             SafeSetDefaults();

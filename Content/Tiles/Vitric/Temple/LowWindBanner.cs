@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class LowWindBannerItem : QuickTileItem
     {
-        public LowWindBannerItem() : base("Rectangular Flowing Banner", "", TileType<LowWindBanner>(), 1, AssetDirectory.VitricTile, false) { }
+        public LowWindBannerItem() : base("Rectangular Flowing Banner", "", "LowWindBanner", 1, AssetDirectory.VitricTile, false) { }
     }
 
     internal class LowWindBannerDummy : Dummy

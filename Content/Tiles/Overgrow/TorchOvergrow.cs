@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class TorchOvergrowItem : QuickTileItem
     {
-        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", TileType<TorchOvergrow>(), 0, AssetDirectory.OvergrowTile) { }
+        public TorchOvergrowItem() : base("Faerie Torch", "Sparkly!", "WispAltarL", 0, AssetDirectory.OvergrowTile) { }
     }
 
     internal class BlueTorchOvergrow : ModTile
@@ -51,6 +51,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class BlueTorchOvergrowItem : QuickTileItem
     {
-        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", TileType<BlueTorchOvergrow>(), 0, AssetDirectory.OvergrowTile) { }
+        public BlueTorchOvergrowItem() : base("Blue Faerie Torch", "Sparkly! and Blue!", "BlueTorchOvergrow", 0, AssetDirectory.OvergrowTile) { }
     }
 }

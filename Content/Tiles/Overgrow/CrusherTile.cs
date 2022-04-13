@@ -44,5 +44,5 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         }
     }
 
-    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", TileType<CrusherTile>(), 0, AssetDirectory.OvergrowTile) { } }
+    public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", "CrusherTile", 0, AssetDirectory.OvergrowTile) { } }
 }

@@ -108,6 +108,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class OldCeirosShrineItem : QuickTileItem 
     {
-        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", TileType<OldCeirosShrine>(), 0, AssetDirectory.Debug, true) { }
+        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0, AssetDirectory.Debug, true) { }
     }
 }

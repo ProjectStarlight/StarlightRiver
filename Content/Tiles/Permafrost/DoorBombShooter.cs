@@ -40,6 +40,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public DoorBombShooterItem() : base("Debug Shooter Placer", "", TileType<DoorBombShooter>(), ItemRarityID.White) { }
+        public DoorBombShooterItem() : base("Debug Shooter Placer", "", "DoorBombShooter", ItemRarityID.White) { }
     }
 }
