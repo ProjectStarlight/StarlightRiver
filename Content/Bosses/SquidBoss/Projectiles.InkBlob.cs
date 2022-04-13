@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     class SpewBlob : ModProjectile
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aurora Shard");

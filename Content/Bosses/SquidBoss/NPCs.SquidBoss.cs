@@ -311,8 +311,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
                         (Main.npc[i].ModNPC as Tentacle).Parent = this;
-                        (Main.npc[i].ModNPC as Tentacle).MovePoint = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - y);
-                        (Main.npc[i].ModNPC as Tentacle).OffBody = xb;
+                        (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - y);
+                        (Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;
                         tentacles.Add(Main.npc[i]);
                     }
 
@@ -332,7 +332,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     foreach (NPC tentacle in tentacles)
                     {
                         Tentacle mt = tentacle.ModNPC as Tentacle;
-                        tentacle.Center = Vector2.SmoothStep(mt.MovePoint, mt.SavedPoint, (GlobalTimer - 600) / 100f);
+                        tentacle.Center = Vector2.SmoothStep(mt.MovementTarget, mt.BasePoint, (GlobalTimer - 600) / 100f);
                     }
 
                 if (GlobalTimer > 700)
@@ -360,7 +360,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     else //else advance the attack pattern
                     {
                         AttackPhase++;
-                        if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
+                        if (AttackPhase > (Main.expertMode ? 1 : 1)) AttackPhase = 1;
                     }
 
                 switch (AttackPhase)
