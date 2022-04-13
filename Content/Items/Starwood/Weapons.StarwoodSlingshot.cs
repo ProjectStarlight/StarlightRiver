@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 Color color = Projectile.GetAlpha(Color.White) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length * 0.5f);
                 float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length;
 
-                Main.spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem.Remove(0, Mod.Name.Length + 1) + "StarwoodSlingshotGlowTrail").Value,
+                Main.spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotGlowTrail").Value,
                 Projectile.oldPos[k] + drawOrigin - Main.screenPosition,
                 new Rectangle(0, 24 * Projectile.frame, 22, 24),
                 color,
