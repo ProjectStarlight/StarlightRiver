@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            NPC.height = Main.masterMode ? 42 : 16;
+            NPC.height = 16;
             NPC.width = 1260;
             NPC.aiStyle = -1;
             NPC.lifeMax = 2;
@@ -84,6 +84,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 NPC.ai[0] = 0;
                 NPC.ai[3]++;//the 4th ai slot is used here as a random seed
             }
+
+            if(NPC.velocity.Y == 0 && Main.masterMode) //bigger hitbox in master
+                NPC.height = 42;
 
             switch (NPC.ai[1])
             {
