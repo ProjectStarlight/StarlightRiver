@@ -50,15 +50,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.ai[1] += 0.04f; //used as timers for visuals
             NPC.ai[2] += 0.01f;
 
-            (fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
-            (fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
-            (fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
-            (fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
+            if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
+            {
+                (fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
+                (fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
+                (fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
+                (fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
 
-            var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
+                var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
 
-            if(followBox.Contains(Main.LocalPlayer.Center.ToPoint()))
-                fakeBoss.Center += ((Main.LocalPlayer.Center + new Vector2(0, -50)) - fakeBoss.Center) * 0.01f;
+                if (followBox.Contains(Main.LocalPlayer.Center.ToPoint()))
+                    fakeBoss.Center += ((Main.LocalPlayer.Center + new Vector2(0, -50)) - fakeBoss.Center) * 0.01f;
+            }
 
             if (NPC.ai[0] < 150) NPC.ai[0] = 150; //water clamping and return logic
 
