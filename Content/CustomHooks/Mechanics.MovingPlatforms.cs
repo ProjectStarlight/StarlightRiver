@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             foreach (NPC NPC in Main.npc)
             {
-                if (!NPC.active || NPC.ModNPC == null || !(NPC.ModNPC is MovingPlatform))
+                if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform)
                     continue;
 
                 Rectangle PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1);
@@ -94,9 +94,12 @@ namespace StarlightRiver.Content.CustomHooks
                             self.velocity.Y = 0;
                             self.jump = 0;
                             self.fallStart = (int)(self.position.Y / 16f);
+
+                            (NPC.ModNPC as MovingPlatform).BeingStoodOn = true;
                         }
                     }
-                } else if (PlayerRect.Intersects(NPCRect) && self.position.Y <= NPC.position.Y)
+                } 
+                else if (PlayerRect.Intersects(NPCRect) && self.position.Y <= NPC.position.Y)
                 {
                     if (!self.justJumped && self.velocity.Y >= 0)
                     {
@@ -109,6 +112,8 @@ namespace StarlightRiver.Content.CustomHooks
                         self.fallStart = (int)(self.position.Y / 16f);
                         self.position.Y = NPC.position.Y - self.height + 4;
                         self.position += NPC.velocity;
+
+                        (NPC.ModNPC as MovingPlatform).BeingStoodOn = true;
                     }
                 }
             }

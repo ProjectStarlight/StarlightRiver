@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 {
     internal abstract class MovingPlatform : ModNPC
     {
+        public bool BeingStoodOn;
+
         public virtual void SafeSetDefaults() { }
 
         public virtual void SafeAI() { }
@@ -57,7 +59,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
         {
             SafeAI();
 
-
             float yDistTraveled = NPC.position.Y - prevPos.Y;
 
             if (NPC.velocity != Vector2.Zero && NPC.velocity.Y < -1f && yDistTraveled < NPC.velocity.Y * 1.5 && yDistTraveled > NPC.velocity.Y * 6)
@@ -87,7 +88,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
                 }
             }
 
-
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
@@ -103,6 +103,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
             }
 
             prevPos = NPC.position;
+            BeingStoodOn = false;
         }
     }
 }

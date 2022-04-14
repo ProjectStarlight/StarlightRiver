@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (NPC.ai[0] == 0) NPC.ai[0] = NPC.position.Y;
 
-            if (Main.player.Any(Player => Player.active && Player.Hitbox.Intersects(NPC.Hitbox)))
+            if (BeingStoodOn)
             {
                 Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
                 NPC.ai[1]++;
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (NPC.ai[0] == 0) NPC.ai[0] = NPC.position.Y;
 
-            if (Main.player.Any(Player => Player.active && Player.Hitbox.Intersects(NPC.Hitbox)) && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
+            if (BeingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
             {
                 if (NPC.velocity.Y < 1.5f) NPC.velocity.Y += 0.02f;
 
