@@ -49,9 +49,6 @@ namespace StarlightRiver.Content.CustomHooks
             if (hotspringShineTarget is null || hotspringShineTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
                 hotspringShineTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
 
-
-
-
             graphics.SetRenderTarget(hotspringMapTarget);
 
             graphics.Clear(Color.Transparent);

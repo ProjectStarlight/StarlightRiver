@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         private List<Vector2> cache;
         private Trail trail;
 
-        public override string Texture => AssetDirectory.SquidBoss + Name;
+        public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
 
         public override void SetStaticDefaults()
         {
@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            Projectile.width = 80;
-            Projectile.height = 80;
+            Projectile.width = 40;
+            Projectile.height = 40;
             Projectile.aiStyle = -1;
             Projectile.timeLeft = 120;
             Projectile.hostile = true;
@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
+            if (Main.masterMode)
+                color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
             if (Main.rand.Next(4) == 0)
             {
                 var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
@@ -57,7 +60,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             ManageTrail();
         }
 
-        public override bool PreDraw(ref Color lightColor)
+		public override void Kill(int timeLeft)
+		{
+			for(int k = 0; k < 20; k++)
+			{
+                var off = Vector2.One.RotatedByRandom(6.28f);
+                var d = Dust.NewDustPerfect(Projectile.Center + off * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), off * Main.rand.NextFloat(5), 0, Color.White, 0.5f);
+                d.customData = Main.rand.NextFloat(1, 2);
+            }
+		}
+
+		public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
@@ -65,6 +78,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
             float alpha = (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * alpha;
+
+            if (Main.masterMode)
+                color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), Color.White * alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.8f, 0, 0);
@@ -85,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return base.Colliding(projHitbox, targetHitbox);
 		}
 
-		private void ManageCaches()
+		protected void ManageCaches()
         {
             if (cache == null)
             {
@@ -105,7 +121,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        private void ManageTrail()
+        protected void ManageTrail()
         {
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 16, factor =>
             {
@@ -120,6 +136,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float sin = 1 + (float)Math.Sin(factor.X * 10);
                 float cos = 1 + (float)Math.Cos(factor.X * 10);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+                if (Main.masterMode)
+                    color = new Color(1, 0.25f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
 
                 return color * alpha;
             });
@@ -146,6 +165,46 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             trail?.Render(effect);
         }
     }
+
+    class InkBlobGravity : InkBlob
+	{
+        public override void SetDefaults()
+        {
+            Projectile.width = 40;
+            Projectile.height = 40;
+            Projectile.aiStyle = -1;
+            Projectile.timeLeft = 200;
+            Projectile.hostile = true;
+            Projectile.damage = 25;
+        }
+
+        public override void AI()
+		{
+            Projectile.scale -= 1 / 400f;
+
+            Projectile.ai[1] += 0.1f;
+            Projectile.rotation += Main.rand.NextFloat(0.2f);
+            Projectile.scale = 0.5f;
+
+            Projectile.velocity.Y += 0.2f;
+
+            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
+            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
+            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+            if (Main.masterMode)
+                color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+            if (Main.rand.Next(4) == 0)
+            {
+                var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
+                d.customData = Main.rand.NextFloat(1, 2);
+            }
+
+            ManageCaches();
+            ManageTrail();
+        }
+	}
 
     class SpewBlob : ModProjectile
     {
@@ -198,6 +257,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float sin = 1 + (float)Math.Sin(Projectile.ai[1] + k * 0.1f);
                 float cos = 1 + (float)Math.Cos(Projectile.ai[1] + k * 0.1f);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (1 - k / (float)Projectile.oldPos.Length);
+
+                if(Main.masterMode)
+                    color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
                 Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1, default, default);
             }

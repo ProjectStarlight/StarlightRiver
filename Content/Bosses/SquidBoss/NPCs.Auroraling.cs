@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
+using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -32,11 +33,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.TargetClosest();
             Player Player = Main.player[NPC.target];
 
-            NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.1f;
-            if (NPC.velocity.LengthSquared() > 4) NPC.velocity = Vector2.Normalize(NPC.velocity) * 2;
+            NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.15f;
+            if (NPC.velocity.LengthSquared() > 4) NPC.velocity *= 0.95f;
             if (NPC.ai[0] % 15 == 0) NPC.velocity.Y -= 0.5f;
 
             NPC.rotation = NPC.velocity.X * 0.25f;
+
+            foreach (NPC npc in Main.npc.Where(n => n.active && n.type == Type && Vector2.Distance(n.Center, NPC.Center) < 32))
+                npc.velocity += (npc.Center - NPC.Center) * 0.05f;
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)

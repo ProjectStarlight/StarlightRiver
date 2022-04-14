@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.dontCountMe = true;
             NPC.immortal = true;
             NPC.noGravity = true;
-            NPC.lifeMax = 2;
+            NPC.lifeMax = 10;
         }
 
         public override void AI()

@@ -71,11 +71,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
                 NPC.ai[1]++;
             }
-            else if (NPC.ai[1] > 0) NPC.ai[1]--;
+            else if (NPC.ai[1] > 0) 
+                NPC.ai[1]--;
 
-            if (NPC.ai[1] >= 20) NPC.velocity.Y += 0.3f;
-            else if (NPC.position.Y > NPC.ai[0]) NPC.velocity.Y = -1;
-            else NPC.velocity.Y = 0;
+            int maxStandTime = Main.masterMode ? 2 : 20;
+
+            if (NPC.ai[1] >= maxStandTime) 
+                NPC.velocity.Y += 0.3f;
+            else if (NPC.position.Y > NPC.ai[0]) 
+                NPC.velocity.Y = -1;
+            else 
+                NPC.velocity.Y = 0;
         }
     }
 

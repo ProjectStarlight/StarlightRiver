@@ -364,15 +364,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     else //else advance the attack pattern
                     {
                         AttackPhase++;
-                        if (AttackPhase > (Main.expertMode ? 2 : 2)) AttackPhase = 1;
+                        variantAttack = Main.rand.NextBool();
+                        if (AttackPhase > (Main.expertMode ? 5 : 4)) AttackPhase = 1;
                     }
 
                 switch (AttackPhase)
                 {
                     case 1: TentacleSpike(); break;
-                    case 2: InkBurst(); break;
-                    case 3: PlatformSweep(); break;
-                    case 4: ArenaSweep(); break;
+                    case 2: if (variantAttack) InkBurstAlt(); else InkBurst(); break;
+                    case 3: if (variantAttack) TentacleSpike(); else PlatformSweep(); break;
+                    case 4: if (variantAttack) SpawnAdds(); else InkBurst(); break;
+                    case 5: ArenaSweep(); break;
                 }
             }
 

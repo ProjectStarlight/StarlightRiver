@@ -17,9 +17,9 @@ namespace StarlightRiver.Content.Buffs
 
         public override void Update(Player Player, ref int buffIndex)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) || NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
             {
-                Player.lifeRegen -= 60;
+                Player.lifeRegen -= Main.masterMode ? 100 : 60;
                 Player.slow = true;
                 Player.wet = true;
 

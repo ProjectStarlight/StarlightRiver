@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     RandomizeTarget();
                     
                     int adj = (int)Main.player[NPC.target].velocity.X * 60; if (adj > 200) adj = 200;
-                    tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, tentacles[k].Center.Y);
+                    tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, spawnPoint.Y - 50);
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -850);
                     tentacle.NPC.netUpdate = true;
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (AttackTimer == k * 100 + 300)
-                    tentacle.DownwardDrawDistance = 20;
+                    tentacle.DownwardDrawDistance = 28;
             }
 
             if (AttackTimer == 540)
@@ -182,20 +182,109 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer > 90)
                 NPC.velocity *= 0;
 
-            if (AttackTimer > 100)
+            if (AttackTimer > 100 && AttackTimer <= 180)
             {
                 float angle = (Main.player[NPC.target].Center - NPC.Center).ToRotation();
 
-                if (AttackTimer % 20 == 0)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(8, 0).RotatedBy(angle + Main.rand.NextFloat(-0.5f, 0.5f)), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                int delay = Main.masterMode ? 10 : Main.expertMode ? 15 : 20;
 
-                if (AttackTimer % 20 == 0)
+                if (AttackTimer % delay == 0)
+                {
+                    Vector2 speed = new Vector2(Main.masterMode ? 12 : 8, 0).RotatedBy(angle + Main.rand.NextFloat(-0.5f, 0.5f));
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), speed, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                }
+
+                if (AttackTimer % delay == 0)
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
             }
 
-            if (AttackTimer == 180) ResetAttack();
+            if (AttackTimer == 240) 
+                ResetAttack();
+
             return;
         }
+
+        private void InkBurstAlt()
+		{
+            if(AttackTimer == 60)
+			{
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+
+                savedPoint = NPC.Center;
+            }
+
+            if(AttackTimer > 80 && AttackTimer <= 130)
+			{
+                float prog = Helpers.Helper.SwoopEase((AttackTimer - 80) / 50f);
+                NPC.Center = Vector2.Lerp(savedPoint, spawnPoint + new Vector2(0, -200), prog);
+			}
+
+            if(AttackTimer == 130)
+			{
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+
+                savedPoint = spawnPoint + new Vector2(0, -250);
+                Main.NewText("Sploosh");
+			}
+
+            if(AttackTimer > 160)
+			{
+                float prog = (AttackTimer - 160) / 30f;
+                NPC.Center = Vector2.SmoothStep(spawnPoint + new Vector2(0, -200), savedPoint, prog);
+            }
+
+            if (AttackTimer == 190)
+                ResetAttack();
+		}
+
+        private void SpawnAdds()
+		{
+            RandomizeTarget();
+
+            if(AttackTimer == 1)
+			{
+                savedPoint = Main.player[NPC.target].Center + new Vector2(0, 200);
+			}
+
+            if(AttackTimer > 1 && AttackTimer < 60)
+			{
+                NPC.velocity = (savedPoint - NPC.Center) * 0.035f * Math.Min(1, (AttackTimer) / 10f); //visually pursue the player
+            }
+
+            if(AttackTimer > 60 && AttackTimer < 80)
+			{
+                NPC.velocity *= 0.95f;
+			}
+
+            if(AttackTimer > 120)
+			{
+                NPC.velocity *= 0;
+
+                if (AttackTimer % 5 == 0)
+                {
+                    int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y + 220, ModContent.NPCType<Auroraling>());
+                    Main.npc[i].velocity += Vector2.UnitY.RotatedByRandom(1) * 20;
+
+                    for (int k = 0; k < 20; k++)
+                        Dust.NewDustPerfect(NPC.Center + new Vector2(0, 220), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(5), 0, new Color(100, 255, 255), 0.25f);
+                }
+			}
+
+            if (AttackTimer == 160)
+                ResetAttack();
+		}
 
         private void PlatformSweep()
         {
@@ -210,12 +299,27 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = platforms[k].Center + new Vector2(0, -70);
                     tentacle.NPC.netUpdate = true;
+
+                    tentacle.StalkWaviness = 0;
+
+                    SpawnTell(tentacle.MovementTarget + new Vector2(0, -64), tentacle.BasePoint);
                 }
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
             }
 
-            if (AttackTimer > 60 && AttackTimer < 120) //rising
+            if (AttackTimer < 60)
+            {
+                Opacity = 1 - AttackTimer / 60f * 0.5f;
+
+                for (int k = 0; k < 4; k++)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacle.DownwardDrawDistance++;
+                }
+            }
+
+            if (AttackTimer > 60 && AttackTimer < 100) //rising
             {
                 if (AttackTimer == 61)
                 {
@@ -226,7 +330,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 for (int k = 0; k < 4; k++)
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - 60) / 60f);
+                    tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - 60) / 40f);
 
                     if (AttackTimer == (Phase == (int)AIStates.FirstPhase ? 65 : 90))
                     {
@@ -235,17 +339,31 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
             }
 
-            if (AttackTimer > 120 && AttackTimer < 360) //waving around
+            if (AttackTimer == 100)
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    tentacles[k].position.X += (float)Math.Sin(AttackTimer / 10f + k) * 2;
-                    tentacles[k].position.Y += (float)Math.Cos(AttackTimer / 10f + k) * 4;
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+
+                    int i = Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), platforms[k].Center + new Vector2(0, -22), Vector2.Zero, ModContent.ProjectileType<IcePlatformSpike>(), 20, 0, Main.myPlayer);
+                    var proj = Main.projectile[i].ModProjectile as IcePlatformSpike;
+                    proj.Parent = tentacle;
+                }
+            }
+
+            if (AttackTimer > 100 && AttackTimer < 360) //waving around
+            {
+                for (int k = 0; k < 4; k++)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacle.StalkWaviness = Math.Min(1, (AttackTimer - 100) / 30f);
                 }
             }
 
             if (AttackTimer > 360 && AttackTimer < 420) //going back
             {
+                Opacity = 0.5f + (AttackTimer - 360) / 60f * 0.5f;
+
                 for (int k = 0; k < 4; k++)
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
@@ -258,8 +376,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
             }
 
-            if (AttackTimer == 420) ResetAttack();
+            if(AttackTimer > 420 && AttackTimer < 480)
+			{
+                for (int k = 0; k < 4; k++)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacle.DownwardDrawDistance--;
+                }
+            }
 
+            if (AttackTimer == 520)
+                ResetAttack();
         }
 
         private void ArenaSweep()

@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public float StalkWaviness = 1;
         public float ZSpin = 0;
-        public int DownwardDrawDistance = 20;
+        public int DownwardDrawDistance = 28;
 
         public ref float State => ref NPC.ai[0];
         public ref float Timer => ref NPC.ai[1];
@@ -88,18 +88,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (NPCLayer == 0)
                 {
-                    for (int k = 0; k <= DownwardDrawDistance; k++)
+                    var extraLength = (int)(Math.Abs(OffsetFromParentBody) * 0.15f);
+                    var maxSegments = DownwardDrawDistance + extraLength;
+
+                    for (int k = 0; k <= maxSegments; k++)
                     {
                         var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + k * 10) - Main.screenPosition;
                         pos.X += (float)Math.Sin(Timer / 20f + k * 0.1f) * k * 0.5f;
+                        pos.X += OffsetFromParentBody * k * 0.03f;
 
-                        var scale = 1 + Math.Max(0, (k - DownwardDrawDistance + 10) / 10f);
+                        var scale = 1 + Math.Max(0, (k - maxSegments + 10) / 20f);
                         var lightColor = Lighting.GetColor((int)(pos.X + Main.screenPosition.X) / 16, (int)(pos.Y + Main.screenPosition.Y) / 16) * 1.1f * Parent.Opacity;
                         lightColor.A = 255;
 
                         spriteBatch.Draw(body, pos, null, lightColor, 0, body.Size() / 2, scale, 0, 0);
 
-                        if (k == DownwardDrawDistance)
+                        if (k == maxSegments)
                         {
                             var topOriginBody = new Vector2(top.Width / 2, top.Height);
                             var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
