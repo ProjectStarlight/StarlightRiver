@@ -12,9 +12,79 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
+using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
+    public class AuroraBellShockwaves : ModSystem
+    {
+        public override void Load()
+        {
+            if (Main.netMode != NetmodeID.Server)
+            {
+                Ref<Effect> screenRef = new Ref<Effect>(Mod.Assets.Request<Effect>("Effects/AuroraBellPulse").Value); 
+                Filters.Scene["AuroraBellPulse"] = new Filter(new ScreenShaderData(screenRef, "MainPS"), EffectPriority.VeryHigh);
+                Filters.Scene["AuroraBellPulse"].Load();
+            }
+        }
+
+        public override void PostUpdateProjectiles()
+        {
+            if (Main.gameMenu)
+                return;
+
+            int projectilesFound = 0;
+            int numberOfBells = 0;
+            float[] progresses = new float[10];
+            float[] intensity = new float[10];
+            Vector2[] positions = new Vector2[10];
+
+
+            for (int i = 0; i < Main.projectile.Length; i++)
+            {
+                Projectile proj = Main.projectile[i];
+
+                if (proj.active && proj.damage > 0 && proj.ModProjectile is AuroraBellRing mp)
+                {
+                    intensity[projectilesFound] = mp.radiusMult;
+                    positions[projectilesFound] = proj.Center - new Vector2(200,200);
+                    progresses[projectilesFound] = (float)Math.Sqrt(mp.Progress);
+
+                    numberOfBells++;
+                    projectilesFound++;
+                    if (projectilesFound > 9)
+                        break;
+                }
+            }
+
+            if (projectilesFound == 0)
+            {
+                if (Filters.Scene["AuroraBellPulse"].IsActive())
+                    Filters.Scene["AuroraBellPulse"].Deactivate();
+
+                return;
+            }
+
+            while (projectilesFound < 9)
+            {
+                projectilesFound++;
+                progresses[projectilesFound] = 0;
+                positions[projectilesFound] = Vector2.Zero;
+                intensity[projectilesFound] = 0;
+            }
+
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["progresses"].SetValue(progresses);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["positions"].SetValue(positions);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["intensity"].SetValue(intensity);
+            Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["numberOfBells"].SetValue(numberOfBells);
+
+            if (Main.netMode != NetmodeID.Server && !Filters.Scene["AuroraBellPulse"].IsActive())
+            {
+                Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.White.ToVector3()).UseOpacity(0.0001f);
+            }
+        }
+    }
+
 	class AuroraBell : ModItem
 	{
         public override string Texture => AssetDirectory.PermafrostItem + "AuroraBell";
@@ -48,6 +118,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return false;
 		}
 	}
+
 	public class AuroraBellProj : ModProjectile
 	{
 		public override string Texture => AssetDirectory.PermafrostItem + "AuroraBellProj";
@@ -68,6 +139,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private int counter = 0;
 
 		private float chargeRatio => chargeCounter / 300f;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aurora Bell");
@@ -97,7 +169,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float transparency = (float)Math.Pow(MathHelper.Clamp(1 - pulseProgress, 0, 1), 2);
 			float scale = (float)MathHelper.Clamp(1 + pulseProgress, 0, 2);
 
-			Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale * scale, SpriteEffects.None, 0f);
+            Vector2 centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height / 2);
+			Main.spriteBatch.Draw(tex, ((Projectile.Center + offset - centerer) - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * scale, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 
             if (chargeCounter == 300)
@@ -116,28 +189,35 @@ namespace StarlightRiver.Content.Items.Permafrost
             Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
             Lighting.AddLight(Projectile.Center + offset, Color.White.ToVector3() * 1.5f * (float)Math.Pow(1 - chargeRatio, 9f));
             counter++;
+
 			if (chargeCounter < 300)
 				chargeCounter++;
 
             if (chargeCounter == 299)
                 Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, owner.whoAmI);
+
             if (chargeCounter < 20)
 				return;
+
 			for (int i = 0; i < Main.projectile.Length; i++)
             {
 				Projectile proj = Main.projectile[i];
+
 				if (proj == null || !proj.active || proj.damage == 0 || !(ProjectileID.Sets.IsAWhip[proj.type] || (proj.type == ModContent.ProjectileType<AuroraBellRing>())))
 					continue;
 
 				ModProjectile modProj = proj.ModProjectile;
+
                 if (modProj is AuroraBellRing ringer && ringer.cantHit.Contains(Projectile))
                     continue;
 
 				bool colliding = false;
+
 				if (modProj != null && modProj.Colliding(proj.Hitbox, Projectile.Hitbox) != false)
 				{
 					if (modProj.Colliding(proj.Hitbox, Projectile.Hitbox) == null && Projectile.Colliding(proj.Hitbox, Projectile.Hitbox))
 						colliding = true;
+
                     if (modProj.Colliding(proj.Hitbox, Projectile.Hitbox) == true)
                         colliding = true;
 				}
@@ -149,6 +229,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						Point point = proj.WhipPointsForCollision[n].ToPoint();
 						Rectangle myRect = new Rectangle(0,0, proj.width, proj.height);
 						myRect.Location = new Point(point.X - myRect.Width / 2, point.Y - myRect.Height / 2);
+
 						if (myRect.Intersects(Projectile.Hitbox))
 						{
 							startRotation = (float)Math.Asin(Projectile.rotation);
@@ -176,6 +257,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                     }
 
                     var newProjMP = newProj.ModProjectile as AuroraBellRing;
+
                     if (modProj is AuroraBellRing oldRinger)
                     {
                         oldRinger.cantHit.Add(Projectile);
@@ -208,6 +290,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             }
         }
     }
+
     internal class AuroraBellRing : ModProjectile, IDrawPrimitive
     {
         public override string Texture => AssetDirectory.Assets + "Invisible";
@@ -221,7 +304,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private Noise.FastNoise noise;
 
-        private float Progress => 1 - (Projectile.timeLeft / 20f);
+        public float Progress => 1 - (Projectile.timeLeft / 20f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
 
@@ -250,13 +333,16 @@ namespace StarlightRiver.Content.Items.Permafrost
                 noise = new Noise.FastNoise(Main.rand.Next(9999));
                 noise.NoiseType = Noise.FastNoise.NoiseTypes.Perlin;
             }
+
             noise.Frequency = MathHelper.Lerp(5, 1.5f, Progress);
+
             if (Projectile.timeLeft == 15 && Projectile.ai[0] > 0)
             {
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
                 var mp = proj.ModProjectile as AuroraBellRing;
                 mp.radiusMult = radiusMult;
             }
+
             if (Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
@@ -270,6 +356,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             if (target.whoAmI == (int)Projectile.ai[0])
                 return false;
+
             return base.CanHitNPC(target);
         }
 
@@ -278,10 +365,10 @@ namespace StarlightRiver.Content.Items.Permafrost
             Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
             line.Normalize();
             line *= Radius;
+
             if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-            {
                 return true;
-            }
+
             return false;
         }
 
@@ -289,6 +376,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             cache = new List<Vector2>();
             float radius = Radius;
+
             for (int i = 0; i < 129; i++) //TODO: Cache offsets, to improve performance
             {
                 double rad = (i / 128f) * 6.28f;
@@ -319,6 +407,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 0.4f + (Projectile.ai[0] * 0.6f) + (factor.X * 6.28f));
                 return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f); ;
             });
+
             float nextplace = 33f / 32f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
             offset *= Radius;
