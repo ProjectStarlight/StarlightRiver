@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.CustomHooks
             shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
             shader.Parameters["uIntensity"].SetValue(0.5f);
 
-            int TileSearchSize = 3; //limit distance from Player for getting these wall tiles
+            int TileSearchSize = 30; //limit distance from Player for getting these wall tiles
             for (int i = -TileSearchSize; i < TileSearchSize; i++)
             {
                 for (int j = -TileSearchSize; j < TileSearchSize; j++)
