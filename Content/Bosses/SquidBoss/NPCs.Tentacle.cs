@@ -109,11 +109,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
                             
                             spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
-                            spriteBatch.Draw(glow, pos, glow.Frame(), GlowColor * 0.325f, bodyRotation, topOriginBody, 1, 0, 0);
+                            spriteBatch.Draw(glow, pos, glow.Frame(), GlowColor * 0.325f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
 
                             var glow2Color = GlowColor;
                             glow2Color.A = 0;
-                            spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f, bodyRotation, topOriginBody, 1, 0, 0);
+                            spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
                         }
                     }
                 }

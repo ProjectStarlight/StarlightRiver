@@ -31,6 +31,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         internal ref float AttackTimer => ref NPC.ai[3];
 
         public float Opacity = 1;
+        public bool OpaqueJelly = false;
 
         public enum AIStates
         {
@@ -128,17 +129,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k);
                 float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * Opacity;
 
                 if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation)
-                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f * Opacity;
+
+                if (OpaqueJelly)
+                    color.A = 255;
 
                 spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.8f, NPC.rotation, ring.Size() / 2, 0, 0);
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                if (!OpaqueJelly)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                }
 
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
+                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
                 spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
 
                 spriteBatch.End();
@@ -149,7 +156,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var bodyColor = lightColor * 1.2f * Opacity;
             bodyColor.A = 255;
             spriteBatch.Draw(body, NPC.Center - Main.screenPosition, body.Frame(), bodyColor, NPC.rotation, body.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White * Opacity, NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White * (0.5f + (Opacity * 0.5f)), NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
@@ -207,10 +214,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float scale = 1 + sin * 0.04f;
                 float scale2 = 1 + sin2 * 0.06f;
 
-                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
+                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * Opacity;
 
                 if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red jelly in last phases
-                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f * Opacity;
+
+                if (OpaqueJelly)
+                    color.A = 255;
 
                 if (Phase == (int)AIStates.DeathAnimation) //Unique drawing for death animation
                 {
@@ -232,13 +242,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
 
-                spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f * Opacity, NPC.rotation,
+                spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                if (!OpaqueJelly)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                }
 
-                spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f * Opacity, NPC.rotation,
+                spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
                 spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
@@ -246,14 +259,89 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }
+        }
+
+        private void DoLighting()
+		{
+            for (int k = 0; k < 5; k++) //lighting for the head blobs
+            {
+                Vector2 off = Vector2.Zero;
+
+                switch (k)
+                {
+                    case 0:
+                        off = new Vector2(42, 12);
+                        break;
+
+                    case 1:
+                        off = new Vector2(-43, 12);
+                        break;
+
+                    case 2:
+                        off = new Vector2(-41, -20);
+                        break;
+
+                    case 3:
+                        off = new Vector2(40, -20);
+                        break;
+
+                    case 4:
+                        off = new Vector2(-1, -58);
+                        break;
+                }
+
+                off = off.RotatedBy(NPC.rotation);
+
+                float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f);
+                float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k * 0.5f);
+
+                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
+
+                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red in last phases
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
 
                 Lighting.AddLight(NPC.Center + off, color.ToVector3() * 0.5f);
+            }
+        }
+
+        /// <summary>
+        /// Only intended for use by the fake boss in the arena actor!
+        /// </summary>
+        public void QuickSetup()
+        {
+            for (int k = 0; k < 4; k++) //each tenticle
+            {
+                int x;
+                int y;
+                int xb;
+
+                switch (k) //I handle these manually to get them to line up with the window correctly
+                {
+                    case 0: x = -370; y = 0; xb = -50; break;
+                    case 1: x = -420; y = -100; xb = -20; break;
+                    case 3: x = 370; y = 0; xb = 50; break;
+                    case 2: x = 420; y = -100; xb = 20; break;
+                    default: x = 0; y = 0; xb = 0; break;
+                }
+
+                var tent = new NPC();
+                tent.SetDefaults(NPCType<Tentacle>());
+                tent.Center = new Vector2(NPC.Center.X + x, NPC.Center.Y + 550);
+                tent.ai[0] = 1;
+
+                (tent.ModNPC as Tentacle).Parent = this;
+                (tent.ModNPC as Tentacle).OffsetFromParentBody = xb;
+                (tent.ModNPC as Tentacle).Timer = 60;
+                tentacles.Add(tent);
             }
         }
 
         public override void AI()
         {
             GlobalTimer++;
+
+            DoLighting();
 
             //boss health bar glow effects
 
@@ -313,7 +401,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             default: x = 0; y = 0; xb = 0; break;
                         }
 
-                        int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
+                        int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y + 550, NPCType<Tentacle>(), 0, 1);
                         (Main.npc[i].ModNPC as Tentacle).Parent = this;
                         (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - y);
                         (Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;

@@ -196,7 +196,7 @@ namespace StarlightRiver.Core
             templeCutaway.inside = n => n.InModBiome(ModContent.GetInstance<VitricTempleBiome>());
             CutawayHandler.NewCutaway(templeCutaway);*/
 
-            cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver").Value, SquidBossArena.TopLeft() * 16);
+            cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, SquidBossArena.TopLeft() * 16);
             cathedralOverlay.inside = CheckForSquidArena;
             CutawayHandler.NewCutaway(cathedralOverlay);
         }
