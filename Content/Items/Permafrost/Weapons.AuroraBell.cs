@@ -250,8 +250,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 				if (colliding) 
 				{
                     owner.GetModPlayer<StarlightPlayer>().Shake +=7;
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio * 2), Projectile.knockBack, owner.whoAmI, 2);
-					newProj.originalDamage = (int)(proj.damage * chargeRatio * 2);
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
+					newProj.originalDamage = (int)(proj.damage * chargeRatio);
+
+                    if (modProj is not AuroraBellRing)
+                    {
+                        newProj.originalDamage *= 2;
+                        newProj.damage *= 2;
+                    }
 
                     for (int j = 0; j < 12; j++)
                     {
