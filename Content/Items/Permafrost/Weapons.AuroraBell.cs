@@ -171,7 +171,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             Vector2 centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height / 2);
 			Main.spriteBatch.Draw(tex, ((Projectile.Center + offset - centerer) - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * scale, SpriteEffects.None, 0f);
-            Main.spriteBatch.Draw(tex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+
+            Texture2D backTex = ModContent.Request<Texture2D>(Texture + "_Back").Value;
+            Texture2D frontTex = ModContent.Request<Texture2D>(Texture + "_Front").Value;
+            Texture2D clapperTex = ModContent.Request<Texture2D>(Texture + "_Clapper").Value;
+            centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height * 0.75f);
+            Main.spriteBatch.Draw(backTex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(clapperTex, ((Projectile.Center + offset - centerer) - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, -Projectile.rotation, new Vector2(tex.Width / 2, tex.Height * 0.75f), Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(frontTex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 
             if (chargeCounter == 300)
                 Main.spriteBatch.Draw(outlineTex, (Projectile.Center + offset - new Vector2(0, tex.Height / 2)) - Main.screenPosition, null, Color.White * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
@@ -243,8 +250,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				if (colliding) 
 				{
                     owner.GetModPlayer<StarlightPlayer>().Shake +=7;
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
-					newProj.originalDamage = (int)(proj.damage * chargeRatio);
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio * 2), Projectile.knockBack, owner.whoAmI, 2);
+					newProj.originalDamage = (int)(proj.damage * chargeRatio * 2);
 
                     for (int j = 0; j < 12; j++)
                     {
