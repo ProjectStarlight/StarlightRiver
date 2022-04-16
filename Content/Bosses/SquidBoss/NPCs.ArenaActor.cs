@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core;
@@ -7,6 +8,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -31,7 +33,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-        public override void SetDefaults()
+		public override void Load()
+		{
+            ReflectionTarget.DrawReflectionNormalMapEvent += DrawGlass;
+		}
+
+		public override void SetDefaults()
         {
             NPC.dontTakeDamage = true;
             NPC.dontCountMe = true;
@@ -250,6 +257,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             particle.StoredPosition.Y += particle.Velocity.Y;
             particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.45f;
             particle.Position = particle.StoredPosition - Main.screenPosition;
+        }
+
+        public void DrawGlass(SpriteBatch spriteBatch)
+        {
+            var arena = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+
+            if (arena != null)
+            {
+                Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
+                spriteBatch.Draw(reflectionMap, NPC.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, Color.White);
+            }
         }
 
         public void DrawBigWindow(SpriteBatch spriteBatch)

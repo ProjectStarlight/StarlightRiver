@@ -158,6 +158,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 spriteBatch.Draw(reflectionMap, proj.position - Main.screenPosition, Color.White);
             }
         }
+
         public override void SafeSetDefaults()
         {
             Projectile.hide = true;
