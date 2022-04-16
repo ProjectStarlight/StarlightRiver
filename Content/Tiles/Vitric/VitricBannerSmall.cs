@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricBannerSmallItem : QuickTileItem
 	{
-        public VitricBannerSmallItem() : base("Short Flowing Banner", "", TileType<VitricBannerSmall>(), 2, AssetDirectory.VitricTile, false) { }
-	}
+        public VitricBannerSmallItem() : base("Short Flowing Banner", "", "VitricBannerSmall", 2, AssetDirectory.VitricTile, false) { }
+
+    }
 }

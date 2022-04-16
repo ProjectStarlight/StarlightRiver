@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/HotspringFountainItem";
 
-		public HotspringFountainItem() : base("Hotspring Source", "Transforms nearby water into a hotspring!", ModContent.TileType<HotspringFountain>()) { }
+		public HotspringFountainItem() : base("Hotspring Source", "Transforms nearby water into a hotspring!", "HotspringFountain") { }
 	}
 
 	class HotspringFountainDummy : Dummy

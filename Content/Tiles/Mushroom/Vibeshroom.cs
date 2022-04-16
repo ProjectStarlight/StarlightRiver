@@ -49,6 +49,6 @@ namespace StarlightRiver.Tiles.Mushroom
 
     class VibeshroomItem : QuickTileItem
     {
-        public VibeshroomItem() : base("Vibeshroom", "Vibin'", TileType<Vibeshroom>(), 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
+        public VibeshroomItem() : base("Vibeshroom", "Vibin'", "Vibeshroom", 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
     }
 }

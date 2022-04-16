@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         }
     }
 
-    internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", TileType<AncientSandstonePlatform>(), 0, AssetDirectory.VitricTile) { } }
+    internal class AncientSandstonePlatformItem : QuickTileItem { public AncientSandstonePlatformItem() : base("Ancient Sandstone Platform", "", "AncientSandstonePlatform", 0, AssetDirectory.VitricTile) { } }
 
     internal class AncientSandstoneWall : ModWall
     {

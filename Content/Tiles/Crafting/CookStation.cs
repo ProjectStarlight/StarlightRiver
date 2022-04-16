@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class CookStationItem : QuickTileItem
     {
-        public CookStationItem() : base("Prep Station", "Right click to prepare meals", TileType<CookStation>(), 0, AssetDirectory.CraftingTile) { }
+        public CookStationItem() : base("Prep Station", "Right click to prepare meals", "CookStation", 0, AssetDirectory.CraftingTile) { }
 
         public override void AddRecipes()
         {

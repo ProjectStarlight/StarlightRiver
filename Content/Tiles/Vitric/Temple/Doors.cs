@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class DoorVerticalItem : QuickTileItem
     {
-        public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", TileType<DoorVertical>(), ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+        public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
     }
 
     class DoorHorizontal : ModTile
@@ -37,6 +37,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class DoorHorizontalItem : QuickTileItem
     {
-        public DoorHorizontalItem() : base("Horizontal Temple Door", "Temple Door, But what if it was horizontal?", TileType<DoorHorizontal>(), ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+        public DoorHorizontalItem() : base("Horizontal Temple Door", "Temple Door, But what if it was horizontal?", "DoorHorizontal", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
     }
 }

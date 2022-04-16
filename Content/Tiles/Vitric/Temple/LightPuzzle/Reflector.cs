@@ -221,6 +221,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 	class ReflectorItem : QuickTileItem
 	{
-		public ReflectorItem() : base("Reflector", "Debug Item", ModContent.TileType<Reflector>()) { }
+		public ReflectorItem() : base("Reflector", "Debug Item", "Reflector") { }
 	}
 }

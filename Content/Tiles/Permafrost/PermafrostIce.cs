@@ -41,6 +41,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/PermafrostIceItem";
 
-        public PermafrostIceItem() : base("Permafrost Ice", "", TileType<PermafrostIce>(), ItemRarityID.White) { }
+        public PermafrostIceItem() : base("Permafrost Ice", "", "PermafrostIce", ItemRarityID.White) { }
     }
 }

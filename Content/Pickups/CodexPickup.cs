@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Pickups
 
     public class CodexTileItem : QuickTileItem
     {
-        public CodexTileItem() : base("Starlight Codex", "Debug placer for ability pickup", TileType<CodexPickupTile>(), -1) { }
+        public CodexTileItem() : base("Starlight Codex", "Debug placer for ability pickup", "CodexPickupTile", -1) { }
 
         public override string Texture => "StarlightRiver/Assets/GUI/Book1Closed";
     }

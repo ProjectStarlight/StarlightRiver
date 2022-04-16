@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class Rice : QuickTileItem
     {
-        public Rice() : base("Rice", " ", TileType<TallRice>(), ItemRarityID.White, AssetDirectory.HerbologyCropTile) { }
+        public Rice() : base("Rice", " ", "TallRice", ItemRarityID.White, AssetDirectory.HerbologyCropTile) { }
     }
 
 
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class GoldenRice : QuickTileItem
     {
-        public GoldenRice() : base("Golden Rice", " ", TileType<TallGoldenRice>(), ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
+        public GoldenRice() : base("Golden Rice", " ", "TallGoldenRice", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
     }
 
 
@@ -221,6 +221,6 @@ namespace StarlightRiver.Content.Tiles.Herbology
     }
     public class AncientFruit : QuickTileItem
     {
-        public AncientFruit() : base("Ancient Fruit", " ", TileType<TallAncientFruit>(), ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
+        public AncientFruit() : base("Ancient Fruit", " ", "TallAncientFruit", ItemRarityID.Orange, AssetDirectory.HerbologyCropTile) { }
     }
 }

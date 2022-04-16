@@ -103,6 +103,6 @@ namespace StarlightRiver.Tiles.Mushroom
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/JellyShroomItem";
 
-        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", TileType<JellyShroom>(), 0) { }
+        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", "JellyShroom", 0) { }
     }
 }

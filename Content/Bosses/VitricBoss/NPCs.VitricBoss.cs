@@ -517,7 +517,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (!BootlegHealthbar.visible && Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && Phase != (int)AIStates.SpawnEffects && Phase != (int)AIStates.SpawnAnimation && Main.netMode != NetmodeID.Server && arena.Contains(Main.LocalPlayer.Center.ToPoint()))
             {
                 //in case the player joined late or something for the hp bar
-                BootlegHealthbar.SetTracked(NPC, ", Shattered Sentinel", ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar").Value);
+                BootlegHealthbar.SetTracked(NPC, ", Shattered Sentinel", ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
                 BootlegHealthbar.visible = true;
             }
 

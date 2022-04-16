@@ -33,6 +33,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class ForgeInnerDoorItem : QuickTileItem
     {
-        public ForgeInnerDoorItem() : base("Forge Inner Door", "Debug Item", TileType<ForgeInnerDoor>(), 1, AssetDirectory.Debug, true) { }
+        public ForgeInnerDoorItem() : base("Forge Inner Door", "Debug Item", "ForgeInnerDoor", 1, AssetDirectory.Debug, true) { }
     }
 }

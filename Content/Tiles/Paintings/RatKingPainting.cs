@@ -20,6 +20,6 @@ namespace StarlightRiver.Content.Tiles.Paintings
 
     class RatKingPaintingItem : QuickTileItem
     {
-        public RatKingPaintingItem() : base("Majestic Hoarder", "'K. Ra'", TileType<RatKingPainting>(), 1, AssetDirectory.PaintingTile) { }
+        public RatKingPaintingItem() : base("Majestic Hoarder", "'K. Ra'", "RatKingPainting", 1, AssetDirectory.PaintingTile) { }
     }
 }

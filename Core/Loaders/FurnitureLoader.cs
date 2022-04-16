@@ -79,7 +79,7 @@ namespace StarlightRiver.Core
         private readonly int craftingMaterial;
         private readonly string texture;
 
-        public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", StarlightRiver.Instance.Find<ModTile>(name.Replace(" ", "")).Type, 0)
+        public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", name.Replace(" ", ""), 0)
         {
             this.internalName = internalName;
             this.name = name;

@@ -33,6 +33,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
     public class InfuserItem : QuickTileItem
     {
-        public InfuserItem() : base("[PH]Infuser", "Used to imprint infusions", TileType<Infuser>(), 0, AssetDirectory.CraftingTile) { }
+        public InfuserItem() : base("[PH]Infuser", "Used to imprint infusions", "Infuser", 0, AssetDirectory.CraftingTile) { }
     }
 }

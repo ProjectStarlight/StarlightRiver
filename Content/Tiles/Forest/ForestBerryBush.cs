@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Tiles.Forest
     }
     public class ForestBerryBushItem : QuickTileItem
     {
-        public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries!", TileType<ForestBerryBush>(), 1, AssetDirectory.ForestTile) { }
+        public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries!", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
     }
 
 }

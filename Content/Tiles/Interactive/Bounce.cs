@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
     internal class BouncerItem : QuickTileItem 
     {
-        public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", TileType<Bouncer>(), 8, AssetDirectory.InteractiveTile) { }
+        public BouncerItem() : base("Vitric Bouncer", "Dash into this to go flying!\nResets jump accessories", "Bouncer", 8, AssetDirectory.InteractiveTile) { }
     }
 
     internal class BouncerDummy : Dummy

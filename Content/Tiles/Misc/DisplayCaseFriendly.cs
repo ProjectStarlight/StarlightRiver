@@ -54,6 +54,6 @@ namespace StarlightRiver.Content.Tiles.Misc
 
     class DisplayCaseFriendlyItem : QuickTileItem
     {
-        public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", ModContent.TileType<DisplayCaseFriendly>(), 2, "StarlightRiver/Assets/Tiles/Misc/") { }
+        public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", "DisplayCaseFriendly", 2, "StarlightRiver/Assets/Tiles/Misc/") { }
     }
 }

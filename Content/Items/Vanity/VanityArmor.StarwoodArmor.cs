@@ -40,9 +40,9 @@ namespace StarlightRiver.Content.Items.Vanity
         public void DrawArmorLayer(PlayerDrawSet info)
         {
             if (info.drawPlayer.GetModPlayer<StarlightPlayer>().empowered)
-                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(10, 4));
+                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn_Alt", 1, new Vector2(0, -17));
             else
-                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(10, 4));
+                ArmorHelper.QuickDrawHeadFramed(info, AssetDirectory.VanityItem + "AncientStarwoodHat_Worn", 1, new Vector2(0, -17));
         }
     }
 

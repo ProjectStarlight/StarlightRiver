@@ -20,6 +20,6 @@ namespace StarlightRiver.Content.Tiles.Paintings
 
     class EggCodexPaintingItem : QuickTileItem
     {
-        public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", TileType<EggCodexPainting>(), 1, AssetDirectory.PaintingTile) { }
+        public EggCodexPaintingItem() : base("Codex Genesis", "'K. Ra'", "EggCodexPainting", 1, AssetDirectory.PaintingTile) { }
     }
 }

@@ -37,6 +37,6 @@ namespace StarlightRiver.Tiles.Misc
 
     public class RatTentItem : QuickTileItem
     {
-        public RatTentItem() : base("Strange Tent", "Whats inside?...", TileType<RatTent>(), 1, AssetDirectory.MiscTile) { }
+        public RatTentItem() : base("Strange Tent", "Whats inside?...", "RatTent", 1, AssetDirectory.MiscTile) { }
     }
 }
