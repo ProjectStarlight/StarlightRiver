@@ -255,8 +255,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             particle.Timer--;
 
             particle.StoredPosition.Y += particle.Velocity.Y;
-            particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.45f;
+            particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.rottime + particle.Velocity.X) * 0.45f;
             particle.Position = particle.StoredPosition - Main.screenPosition;
+            particle.Alpha = particle.Timer < 70 ? particle.Timer / 70f : particle.Timer > 630 ? 1 - (particle.Timer - 630) / 70f : 1;
         }
 
         public void DrawGlass(SpriteBatch spriteBatch)
@@ -291,15 +292,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
             spriteBatch.Draw(layer1, target, GetSource(0.15f, layer1), color, 0, Vector2.Zero, 0, 0);
-
-            system.DrawParticles(spriteBatch);
-
-            if (Main.rand.Next(4) == 0)
-                system.AddParticle(new Particle(Vector2.Zero, Vector2.UnitY * -Main.rand.NextFloat(0.6f, 1.2f), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
-
             spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
             target.Y -= 1100;
+            target.X += 64;
+            target.Width -= 128;
 
             spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
             target.Y -= 100;
@@ -310,6 +307,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             //Draw our fake boss           
             (fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
             (fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
+
+            system.DrawParticles(spriteBatch);
+
+            if (Main.rand.Next(4) == 0)
+                system.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+
+            if (Main.rand.Next(4) == 0)
+                system.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 

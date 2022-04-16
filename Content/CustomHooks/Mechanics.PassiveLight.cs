@@ -30,6 +30,19 @@ namespace StarlightRiver.Content.CustomHooks
 
             var tile = Framing.GetTileSafely(x, y);
 
+            if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
+            {
+                var squidDomeRect = StarlightWorld.SquidBossArena;
+                squidDomeRect.X += 22;
+                squidDomeRect.Width -= 44;
+                squidDomeRect.Y += 35;
+                squidDomeRect.Height = 70;
+                if (squidDomeRect.Contains(x, y))
+                {
+                    outputColor += new Vector3(0.15f, 0.175f, 0.2f);
+                }
+            }
+
             // If the tile is in the vitric biome and doesn't block light, emit light.
             if (StarlightWorld.VitricBiome.Contains(x, y))
             {
