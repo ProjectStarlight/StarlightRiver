@@ -266,7 +266,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (arena != null)
             {
                 Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
-                spriteBatch.Draw(reflectionMap, NPC.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, Color.White);
+                var color = Color.White;
+                color.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 100 : 200);
+                spriteBatch.Draw(reflectionMap, arena.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, color, 0, reflectionMap.Size() / 2, 1, 0, 0);
             }
         }
 
