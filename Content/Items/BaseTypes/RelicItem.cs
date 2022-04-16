@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public override void SaveData(Item item, TagCompound tag)
         {
 			if(item.GetGlobalItem<RelicItem>().isRelic)
-				tag["isRelic"] = item.GetGlobalItem<RelicItem>().isRelic; 
+				tag["isRelic"] = true;
 		}
 
         public override void LoadData(Item item, TagCompound tag)
