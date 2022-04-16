@@ -200,8 +200,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void LoadData(Item item, TagCompound tag)
         {
-			if(tag.ContainsKey("isRelic"))
+			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
-        }
+		}
     }
 }
