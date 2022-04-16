@@ -707,13 +707,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void ResetPosition()
         {
-            int restTime = Main.expertMode ? 80 : 110;
+            int restTime = Main.masterMode ? 50 : Main.expertMode ? 80 : 110;
+            int startTime = Main.masterMode ? 10 : 40;
 
-            if (AttackTimer == 40)
+            if (AttackTimer == startTime)
                 startPos = NPC.Center;
 
-            if (AttackTimer > 40 && AttackTimer <= 80)
-                NPC.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - 40) / 40f);
+            if (AttackTimer > startTime && AttackTimer <= startTime + 40)
+                NPC.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - startTime) / 40f);
 
             if (AttackTimer == restTime) 
                 ResetAttack();
@@ -801,6 +802,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
+        private void SpawnMine(Vector2 velocity)
+		{
+            Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, velocity, ProjectileType<VitricBomb>(), 32, 0);
+
+            if(Main.masterMode)
+			{
+                for (int k = -1; k <= 1; k++)
+                {
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(velocity).RotatedBy(k * 0.5f) * 8, ProjectileType<GlassSpike>(), 50, 1);
+                }
+            }
+        }
+
         private void Mines()
         {
             rotationLocked = true;
@@ -820,24 +834,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(0, -10));
 
                 if (AttackTimer == 35 && NPC.life <= NPC.lifeMax * 0.33f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(-10, 4));
 
                 if (AttackTimer == 40 && NPC.life <= NPC.lifeMax * 0.25f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(10, 4));
             }
             else if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(0, 6));
 
                 if (AttackTimer == 35 && NPC.life <= NPC.lifeMax * 0.33f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(10, -6));
 
                 if (AttackTimer == 40 && NPC.life <= NPC.lifeMax * 0.25f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(-10, -6));
             }
 
             if(AttackTimer == 40)
@@ -891,7 +905,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
                     float rot = (Main.player[NPC.target].Center - NPC.Center).ToRotation() + bossRand.NextFloat(-0.35f, 0.35f);
 
-                    if (Main.expertMode)
+                    if (Main.masterMode)
+                    {
+                        for (int k = -4; k <= 4; k++)
+                        {
+                            SpawnDart(NPC.Center, NPC.Center + Vector2.UnitX.RotatedBy(rot + k * 0.375f) * 350, NPC.Center + Vector2.UnitX.RotatedBy(rot + k * 0.20f) * 700, 50);
+                        }
+                    }
+                    else if (Main.expertMode)
                     {
                         for (int k = -3; k <= 3; k++)
                         {
