@@ -266,9 +266,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (arena != null)
             {
                 Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
+                Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDome").Value;
                 var color = Color.White;
                 color.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 100 : 200);
                 spriteBatch.Draw(reflectionMap, arena.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, color, 0, reflectionMap.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(dome, arena.Center - dome.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, null, color, 0, Vector2.Zero, 1, 0, 0);
             }
         }
 
@@ -297,19 +299,30 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
+            target.Y -= 1100;
+
+            spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
+            target.Y -= 100;
+            spriteBatch.Draw(layer1, target, GetSource(0.15f, layer1), color, 0, Vector2.Zero, 0, 0);
+            target.Y -= 240;
+            spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
+
             //Draw our fake boss           
             (fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
             (fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
 
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
-            Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;
-            LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, backdrop);
+            Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;         
+            LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, backdrop);       
 
             var shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - NPC.ai[0]) - Main.screenPosition;
             DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDome").Value;
+            spriteBatch.Draw(dome, NPC.Center - dome.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, null, Color.White * 0.325f, 0, Vector2.Zero, 1, 0, 0);
 
             Texture2D glass = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowIn").Value;
             Texture2D glass2 = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInGlow").Value;
