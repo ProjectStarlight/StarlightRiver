@@ -28,9 +28,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return item.TryGetGlobalItem<RelicItem>(out var gi) ? gi : this;
 		}
 
-		public override bool? PrefixChance(Item Item, int pre, UnifiedRandom rand)
+		public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
                 if (pre == -3)
                     return false;
@@ -39,115 +39,115 @@ namespace StarlightRiver.Content.Items.BaseTypes
                     return true;
             }
 
-            return base.PrefixChance(Item, pre, rand);
+            return base.PrefixChance(item, pre, rand);
         }
 
-        public override int ChoosePrefix(Item Item, UnifiedRandom rand)
+        public override int ChoosePrefix(Item item, UnifiedRandom rand)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
-                int result = base.ChoosePrefix(Item, rand);
-                return result != 0 ? result : ChoosePrefix(Item, rand);
+                int result = base.ChoosePrefix(item, rand);
+                return result != 0 ? result : ChoosePrefix(item, rand);
             }
 
-            return base.ChoosePrefix(Item, rand);
+            return base.ChoosePrefix(item, rand);
         }
 
-        public override void UpdateAccessory(Item Item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
+        public override void UpdateAccessory(Item item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
         {
-			if (!isRelic)
+			if (!item.GetGlobalItem<RelicItem>().isRelic)
 			{ 
-				base.UpdateAccessory(Item, Player, hideVisual);
+				base.UpdateAccessory(item, Player, hideVisual);
 				return;
 				}
 
-			if (Item.prefix == 62)
+			if (item.prefix == 62)
 			{
 				Player.statDefense++;
 			}
-			if (Item.prefix == 63)
+			if (item.prefix == 63)
 			{
 				Player.statDefense += 2;
 			}
-			if (Item.prefix == 64)
+			if (item.prefix == 64)
 			{
 				Player.statDefense += 3;
 			}
-			if (Item.prefix == 65)
+			if (item.prefix == 65)
 			{
 				Player.statDefense += 4;
 			}
-			if (Item.prefix == 66)
+			if (item.prefix == 66)
 			{
 				Player.statManaMax2 += 20;
 			}
-			if (Item.prefix == 67)
+			if (item.prefix == 67)
 			{
 				Player.GetCritChance(DamageClass.Melee) += 2;
 				Player.GetCritChance(DamageClass.Ranged) += 2;
 				Player.GetCritChance(DamageClass.Magic) += 2;
 				Player.GetCritChance(DamageClass.Throwing) += 2;
 			}
-			if (Item.prefix == 68)
+			if (item.prefix == 68)
 			{
 				Player.GetCritChance(DamageClass.Melee) += 4;
 				Player.GetCritChance(DamageClass.Ranged) += 4;
 				Player.GetCritChance(DamageClass.Magic) += 4;
 				Player.GetCritChance(DamageClass.Throwing) += 4;
 			}
-			if (Item.prefix == 69)
+			if (item.prefix == 69)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.01f; 
 			}
-			if (Item.prefix == 70)
+			if (item.prefix == 70)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.02f;
 			}
-			if (Item.prefix == 71)
+			if (item.prefix == 71)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.03f;
 			}
-			if (Item.prefix == 72)
+			if (item.prefix == 72)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.04f;
 			}
-			if (Item.prefix == 73)
+			if (item.prefix == 73)
 			{
 				Player.moveSpeed += 0.01f;
 			}
-			if (Item.prefix == 74)
+			if (item.prefix == 74)
 			{
 				Player.moveSpeed += 0.02f;
 			}
-			if (Item.prefix == 75)
+			if (item.prefix == 75)
 			{
 				Player.moveSpeed += 0.03f;
 			}
-			if (Item.prefix == 76)
+			if (item.prefix == 76)
 			{
 				Player.moveSpeed += 0.04f;
 			}
-			if (Item.prefix == 77)
+			if (item.prefix == 77)
 			{
 				Player.meleeSpeed += 0.01f;
 			}
-			if (Item.prefix == 78)
+			if (item.prefix == 78)
 			{
 				Player.meleeSpeed += 0.02f;
 			}
-			if (Item.prefix == 79)
+			if (item.prefix == 79)
 			{
 				Player.meleeSpeed += 0.03f;
 			}
-			if (Item.prefix == 80)
+			if (item.prefix == 80)
 			{
 				Player.meleeSpeed += 0.04f;
 			}
 		}
 
-        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
                 for(int k = 0; k < tooltips.Count; k++)
                 {
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 					{
 						line.overrideColor = RelicColor(k);
 
-						if (Item.accessory)
+						if (item.accessory)
 							line.text = DoubleIntValues(line.text);
 					}
 
@@ -192,15 +192,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return input;
         }
 
-        public override void SaveData(Item Item, TagCompound tag)
+        public override void SaveData(Item item, TagCompound tag)
         {
-			if(isRelic)
-				tag["isRelic"] = isRelic; 
+			if(item.GetGlobalItem<RelicItem>().isRelic)
+				tag["isRelic"] = item.GetGlobalItem<RelicItem>().isRelic; 
 		}
 
-        public override void LoadData(Item Item, TagCompound tag)
+        public override void LoadData(Item item, TagCompound tag)
         {
-            isRelic = tag.GetBool("isRelic");
+			if(tag.ContainsKey("isRelic"))
+				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
         }
     }
 }
