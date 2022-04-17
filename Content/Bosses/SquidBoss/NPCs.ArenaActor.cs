@@ -334,7 +334,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             drawReflections(spriteBatch);
             spriteBatch.End();
 
@@ -349,10 +349,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
             Texture2D domeMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDomeMap").Value;
             var tintColor = Color.White;
-            tintColor.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 100 : 200);
+            tintColor.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 25 : 100);
 
-            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, restartSpriteBatch: false);
-            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, restartSpriteBatch: false);
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, tintColor: tintColor, restartSpriteBatch: false);
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(0f, 0.025f), offsetScale: 0.08f, tintColor: tintColor, restartSpriteBatch: false);
             ReflectionTarget.isDrawReflectablesThisFrame = true;
         }
 

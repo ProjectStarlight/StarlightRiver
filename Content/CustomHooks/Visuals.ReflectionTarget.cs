@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                 GD.SetRenderTarget(reflectionNormalMapTarget);
                 GD.Clear(Color.Transparent);
-
+                Main.GameViewMatrix.Zoom = new Vector2(1,1);
                 Main.spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
                 DrawWallReflectionNormalMapEvent?.Invoke(sb);
 
@@ -153,7 +153,6 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawReflectableEntities(GraphicsDevice GD, SpriteBatch sb, ReflectionSubConfig reflectionConfig)
         {
-            Main.NewText("drawing reflection");
             GD.SetRenderTarget(Target);
             GD.Clear(Color.Transparent);
 
@@ -222,7 +221,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (ReflectionTarget.applyWallReflectionsThisFrame)
             {
-                DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: ReflectionTarget.reflectionNormalMapTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, restartSpriteBatch: true);
+                DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: ReflectionTarget.reflectionNormalMapTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, tintColor: Color.White, restartSpriteBatch: true);
                 ReflectionTarget.applyWallReflectionsThisFrame = false;
             }
         }
@@ -230,7 +229,7 @@ namespace StarlightRiver.Content.CustomHooks
         /// <summary>
         /// helper function to set params onto the reflection shader and draw to screen when called
         /// </summary>
-        public static void DrawReflection(SpriteBatch spriteBatch, Vector2 screenPos, Texture2D normalMap, Vector2 flatOffset, float offsetScale, bool restartSpriteBatch = true)
+        public static void DrawReflection(SpriteBatch spriteBatch, Vector2 screenPos, Texture2D normalMap, Vector2 flatOffset, float offsetScale, Color tintColor, bool restartSpriteBatch = true)
         {
             ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
@@ -240,19 +239,20 @@ namespace StarlightRiver.Content.CustomHooks
                 if (restartSpriteBatch)
                 {
                     spriteBatch.End();
-                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
                 }
 
-                DrawData data = new DrawData(normalMap, screenPos, Color.White);
+                DrawData data = new DrawData(normalMap, screenPos, new Color(255,255,255, 0));
 
                 //need to force the registers into using the proper data
                 Main.graphics.GraphicsDevice.Textures[1] = ReflectionTarget.Target;
-                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearClamp;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearWrap;
 
                 GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["reflectionTargetSize"].SetValue(ReflectionTarget.Target.Size());
-                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["flatOffset"].SetValue(flatOffset * Main.GameViewMatrix.Zoom.Length());
-                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["offsetScale"].SetValue(offsetScale * Main.GameViewMatrix.Zoom);
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["flatOffset"].SetValue(flatOffset);
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["offsetScale"].SetValue(offsetScale);
                 GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapPosition"].SetValue(new Vector2(screenPos.X / ReflectionTarget.Target.Width, screenPos.Y / ReflectionTarget.Target.Height));
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["tintColor"].SetValue(tintColor.ToVector4());
 
                 GameShaders.Misc[simpleReflectionShaderPath].Apply(data);
 

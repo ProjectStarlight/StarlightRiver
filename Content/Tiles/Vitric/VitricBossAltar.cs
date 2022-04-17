@@ -324,7 +324,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             {
                 if (checkIfDrawReflection())
                 {
-                    ReflectionTarget.DrawReflection(spriteBatch, screenPos: Projectile.position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f);
+                    ReflectionTarget.DrawReflection(spriteBatch, screenPos: Projectile.position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), tintColor: new Color(150, 150, 255, 200), offsetScale: 0.05f);
                     ReflectionTarget.isDrawReflectablesThisFrame = true;
                 }
                     

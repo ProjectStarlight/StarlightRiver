@@ -21,6 +21,8 @@ float2 flatOffset;
 sampler reflectionTargetSampler : register(s1); //corresponds to the entities reflection target
 float2 reflectionTargetSize;
 
+float4 tintColor; //tints the output color by multiplying against this i.e. to dim the reflection set this as (255,255,255,100)
+
 
 //this is the less intensive version of the reflection shader that only does direct angled specular reflection without any of the fancy stuff
 
@@ -35,7 +37,7 @@ float4 P1(float2 coords : TEXCOORD0) : COLOR0
 
     float4 ReflectedPixel = tex2D(reflectionTargetSampler, sourceCoords);
 
-    return reflectionNormalMapColor.a * ReflectedPixel;
+    return reflectionNormalMapColor.a * ReflectedPixel * tintColor;
 }
 
 technique Technique1
