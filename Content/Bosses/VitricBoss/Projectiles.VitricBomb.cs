@@ -150,6 +150,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByProjectile(Player.whoAmI, Projectile.whoAmI), Main.expertMode ? Projectile.damage * 2 : Projectile.damage, 0);
             }
+
+            if(Main.masterMode)
+			{
+                for (int k = 0; k < 8; k++)
+                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);
+			}
         }
     }
 }
