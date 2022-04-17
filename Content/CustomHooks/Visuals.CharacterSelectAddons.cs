@@ -176,7 +176,12 @@ namespace StarlightRiver.Content.CustomHooks
                     var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
                     if (rectangle.Contains(Main.MouseScreen.ToPoint()))
                     {
-                        Utils.DrawBorderString(spriteBatch, medal.ToString(), origin + new Vector2(286, 70), Color.White);
+                        var message = medal.ToString();
+
+                        if (medal.difficulty == 2 && Main.time % 4800 > 2400)
+                            message = "Deaths: " + mp3.GetDeaths(medal.name);
+
+                        Utils.DrawBorderString(spriteBatch, message, origin + new Vector2(286, 70), Color.White);
                     }
 				}
 			}

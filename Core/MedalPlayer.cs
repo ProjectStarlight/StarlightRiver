@@ -23,19 +23,25 @@ namespace StarlightRiver.Core
 	class MedalPlayer : ModPlayer
 	{
 		public List<Medal> medals = new List<Medal>();
+		public List<DeathCounter> deathCounters = new List<DeathCounter>();
 
 		private Medal attemptedMedal;
+		private DeathCounter activeCounter;
 
 		private static int Difficulty => Main.LocalPlayer.difficulty > 2 ? -1 : Main.LocalPlayer.difficulty;
 
 		public void QualifyForMedal(Medal medal)
 		{
 			attemptedMedal = medal;
+
+			if(!deathCounters.Any(n => n.name == medal.name))
+				deathCounters.Add(new DeathCounter(medal.name, 0));
+
+			activeCounter = deathCounters.FirstOrDefault(n => n.name == medal.name);
 		}
 
 		public void QualifyForMedal(string name, float order)
-		{
-			
+		{			
 			var medal = new Medal(name, Difficulty, order);
 			QualifyForMedal(medal);
 		}
@@ -53,6 +59,8 @@ namespace StarlightRiver.Core
 
 				Main.NewText("Medal earned!", new Color(255, 255, 100));
 			}
+
+			activeCounter = null;
 		}
 
 		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
@@ -61,23 +69,40 @@ namespace StarlightRiver.Core
 				attemptedMedal = default;
 		}
 
+		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+		{
+			if (activeCounter != null && Main.masterMode) //death counters are for master only
+			{
+				activeCounter.deaths++;
+				MasterDeathTicker.ShowDeathCounter(activeCounter.name, activeCounter.deaths);
+			}
+
+			activeCounter = null;
+		}
+
 		public override void SaveData(TagCompound tag)
 		{
 			tag["medals"] = medals;
+			tag["deathCounters"] = deathCounters;
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			medals.Clear();
+			deathCounters.Clear();
 
 			var list = new List<Medal>();
-
 			var list2 = tag.GetList<TagCompound>("medals");
 
 			foreach (TagCompound c in list2)
 				list.Add(Medal.Deserialize(c));
 
 			medals = list;
+
+			var list4 = tag.GetList<TagCompound>("deathCounters");
+
+			foreach (TagCompound c in list4)
+				deathCounters.Add(DeathCounter.Deserialize(c));
 		}
 
 		public Texture2D GetMedalTexture(string name)
@@ -87,6 +112,40 @@ namespace StarlightRiver.Core
 			if (tex is null)
 				return ModContent.Request<Texture2D>("StarlightRiver/Assets/Medals/Cheater").Value;
 			else return tex;
+		}
+
+		public int GetDeaths(string name)
+		{
+			if (deathCounters.Any(n => n.name == name))
+				return deathCounters.FirstOrDefault(n => n.name == name).deaths;
+
+			return -1;
+		}
+	}
+
+	class DeathCounter : TagSerializable
+	{
+		public string name;
+		public int deaths;
+
+		public DeathCounter(string name, int deaths)
+		{
+			this.name = name;
+			this.deaths = deaths;
+		}
+
+		public TagCompound SerializeData()
+		{
+			return new TagCompound()
+			{
+				["name"] = name,
+				["deaths"] = deaths
+			};
+		}
+
+		public static DeathCounter Deserialize(TagCompound tag)
+		{
+			return new DeathCounter(tag.GetString("name"), tag.GetInt("deaths"));
 		}
 	}
 
