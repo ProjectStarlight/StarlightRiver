@@ -22,7 +22,7 @@ float2 offset;
 
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
-	float2 off = float2(0, sin(uTime + (coords.x + offset.x) * speed) * power);
+	float2 off = float2(0, sin(uTime + (coords.x + offset.x) * speed) * cos((coords.x + offset.x) * 0.37 * speed - uTime) * sin((coords.x + offset.x) * 0.21 * speed - uTime) * power);
 	float4 color = tex2D(uImage0, coords + off);
 	float map = tex2D(samplerTex, coords + off).r;
 	float map2 = map * map * map;

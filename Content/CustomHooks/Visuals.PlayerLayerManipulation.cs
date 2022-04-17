@@ -61,8 +61,8 @@ namespace StarlightRiver.Content.CustomHooks
 
                 return newData;
             }
-
-            else return input;
+            else
+                return input;
         }
 
 

@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             for (int k = 0; k < 100; k++)
             {
                 int x = (int)(NPC.Center.X / 16) - 50 + k;
-                int y = (int)(NPC.Center.Y / 16) + 29;
+                int y = (int)(NPC.Center.Y / 16) + 28;
                 if (WorldGen.InWorld(x, y)) WorldGen.KillTile(x, y);
             }
 
@@ -215,7 +215,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             ApplyEffect.Parameters["drawSize"].SetValue(target.Size());
             ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevel - Main.screenPosition.Y) / 2f));
-            ApplyEffect.Parameters["time"].SetValue(Main.GameUpdateCount / 75f);
+            ApplyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects/ 75f);
 
             ApplyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
             ApplyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);

@@ -86,9 +86,9 @@ namespace StarlightRiver.Content.CustomHooks
                 if (effect is null)
                     return;
 
-                effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
-                effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
-                effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
+                effect.Parameters["power"].SetValue(0.01f);
+                effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth, 0));
                 effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget);
                 effect.Parameters["speed"].SetValue(50f);
 

@@ -94,19 +94,19 @@ namespace StarlightRiver.Core
 			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
 				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 				{
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j) * 1.5f, 
+					Main.spriteBatch.Draw(tex2, new Vector2(i, j), 
 						new Rectangle(
-							(int)((Main.screenPosition.X * 0.6f) % tex2.Width),
-							(int)((Main.screenPosition.Y * 0.6f) % tex2.Height),
+							(int)((Main.screenPosition.X) % tex2.Width - Main.GameUpdateCount * 0.55f),
+							(int)((Main.screenPosition.Y) % tex2.Height + Main.GameUpdateCount * 0.3f),
 							tex2.Width,
 							tex2.Height
 							), 
-						Color.White * 0.7f, default, default, 1.5f, 0, 0);
+						Color.White * 0.7f, default, default, 1, 0, 0);
 
 					Main.spriteBatch.Draw(tex2, new Vector2(i, j), 
 						new Rectangle(
-							(int)((Main.screenPosition.X * 0.8f) % tex2.Width),
-							(int)((Main.screenPosition.Y * 0.8f) % tex2.Height),
+							(int)((Main.screenPosition.X) % tex2.Width + Main.GameUpdateCount * 0.75f),
+							(int)((Main.screenPosition.Y) % tex2.Height - Main.GameUpdateCount * 0.4f),
 							tex2.Width,
 							tex2.Height
 							), 
