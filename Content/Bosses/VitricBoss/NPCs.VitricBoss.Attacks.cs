@@ -112,7 +112,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
 
             if (AttackTimer > 180 && AttackTimer % 25 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+            {
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), homePos + new Vector2(Main.rand.Next(-700, 700), -460), new Vector2(0, 18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+
+                if(Main.masterMode)
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), homePos + new Vector2(Main.rand.Next(-700, 700), 420), new Vector2(0, -18), ProjectileType<TelegraphedGlassSpike>(), 15, 0);
+            }
 
             if (AttackTimer >= 720)
                 ResetAttack();
@@ -186,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (AttackTimer >= 360 && AttackTimer < 840) //come back in
                 {
-                    float addedRotation = BrokenCount * (Main.expertMode ? 2.3f : 1.8f);
+                    float addedRotation = BrokenCount * (Main.masterMode ? 2.8f : Main.expertMode ? 2.3f : 1.8f);
                     crystal.Center = NPC.Center + (Vector2.SmoothStep(crystalModNPC.TargetPos, crystalModNPC.StartPos, (AttackTimer - 360) / 480) - NPC.Center).RotatedBy(-(AttackTimer - 360) / 480 * (4.72f + addedRotation));
 
                     //the chosen "favorite" or master crystal is the one where our opening should be
@@ -702,13 +707,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void ResetPosition()
         {
-            int restTime = Main.expertMode ? 80 : 110;
+            int restTime = Main.masterMode ? 50 : Main.expertMode ? 80 : 110;
+            int startTime = Main.masterMode ? 10 : 40;
 
-            if (AttackTimer == 40)
+            if (AttackTimer == startTime)
                 startPos = NPC.Center;
 
-            if (AttackTimer > 40 && AttackTimer <= 80)
-                NPC.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - 40) / 40f);
+            if (AttackTimer > startTime && AttackTimer <= startTime + 40)
+                NPC.Center = Vector2.SmoothStep(startPos, arena.Center() + new Vector2(200 * (altAttack ? 1 : -1), 100), (AttackTimer - startTime) / 40f);
 
             if (AttackTimer == restTime) 
                 ResetAttack();
@@ -796,6 +802,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
         }
 
+        private void SpawnMine(Vector2 velocity)
+		{
+            Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, velocity, ProjectileType<VitricBomb>(), 32, 0);
+
+            if(Main.masterMode)
+			{
+                for (int k = -1; k <= 1; k++)
+                {
+                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(velocity).RotatedBy(k * 0.5f) * 8, ProjectileType<GlassSpike>(), 50, 1);
+                }
+            }
+        }
+
         private void Mines()
         {
             rotationLocked = true;
@@ -815,24 +834,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (altAttack && Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(0, -10), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(0, -10));
 
                 if (AttackTimer == 35 && NPC.life <= NPC.lifeMax * 0.33f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(-10, 4), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(-10, 4));
 
                 if (AttackTimer == 40 && NPC.life <= NPC.lifeMax * 0.25f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(10, 4), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(10, 4));
             }
             else if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
                 if (AttackTimer == 30)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(0, 6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(0, 6));
 
                 if (AttackTimer == 35 && NPC.life <= NPC.lifeMax * 0.33f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(10, -6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(10, -6));
 
                 if (AttackTimer == 40 && NPC.life <= NPC.lifeMax * 0.25f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, new Vector2(-10, -6), ProjectileType<VitricBomb>(), 32, 0);
+                    SpawnMine(new Vector2(-10, -6));
             }
 
             if(AttackTimer == 40)
@@ -886,7 +905,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
                     float rot = (Main.player[NPC.target].Center - NPC.Center).ToRotation() + bossRand.NextFloat(-0.35f, 0.35f);
 
-                    if (Main.expertMode)
+                    if (Main.masterMode)
+                    {
+                        for (int k = -4; k <= 4; k++)
+                        {
+                            SpawnDart(NPC.Center, NPC.Center + Vector2.UnitX.RotatedBy(rot + k * 0.375f) * 350, NPC.Center + Vector2.UnitX.RotatedBy(rot + k * 0.20f) * 700, 50);
+                        }
+                    }
+                    else if (Main.expertMode)
                     {
                         for (int k = -3; k <= 3; k++)
                         {
@@ -971,15 +997,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     }
                 }
 
-                if (LaserTimer > 590 && LaserTimer <= 650)
+                if (LaserTimer > (Main.masterMode ? 545 : 590) && LaserTimer <= (Main.masterMode ? 605 : 650))
                 {
                     SetFrameY(4);
-                    SetFrameX(9 - (int)((LaserTimer - 590) / 60f * 10));
+                    SetFrameX(9 - (int)((LaserTimer - (Main.masterMode ? 545 : 590)) / 60f * 10));
                 }
 
                 NPC.velocity = (NPC.Center - arena.Center.ToVector2()) * -0.02f;
 
-                if (AttackTimer >= 720)
+                if (AttackTimer >= (Main.masterMode ? 675 : 720))
 				{
                     NPC.velocity *= 0;
                     ResetAttack();

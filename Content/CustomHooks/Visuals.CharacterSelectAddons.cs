@@ -182,11 +182,17 @@ namespace StarlightRiver.Content.CustomHooks
                         sparkles.AddParticle(new Particle(pos + new Vector2(Main.rand.Next(34), 10 + Main.rand.Next(36)), Vector2.UnitY * Main.rand.NextFloat(0.2f), 0, 0, new Color(255, 50, 50), 90, new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0), new Rectangle(0, 0, 15, 15)));
 
                     var rectangle = new Rectangle((int)origin.X + 14 + k * 42, (int)origin.Y + 98, 34, 46);
+
                     if (rectangle.Contains(Main.MouseScreen.ToPoint()))
                     {
-                        Utils.DrawBorderString(spriteBatch, medal.ToString(), origin + new Vector2(306, 70), Color.White);
+                        var message = medal.ToString();
+
+                        if (medal.difficulty == 2 && Main.time % 4800 > 2400)
+                            message = "Deaths: " + mp3.GetDeaths(medal.name);
+
+                        Utils.DrawBorderString(spriteBatch, message, origin + new Vector2(306, 70), Color.White);
                     }
-				}
+                }
 			}
 
             if ( //Player is "complete"

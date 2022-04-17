@@ -67,6 +67,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Projectile.Center = parent.NPC.Center + new Vector2(4, -4);
 
+            if (Timer < 120 && Main.masterMode)
+                Projectile.extraUpdates = 2;
+            else
+                Projectile.extraUpdates = 0;
+
             if (Timer < 60)
 			{
                 for (int k = 0; k < 3; k++)
@@ -105,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     parent.NPC.position += Vector2.Normalize(endpoint - Projectile.Center) * -4.0f;
 
-                    float laserSpeed = Main.expertMode ? 0.017f : 0.014f;
+                    float laserSpeed = Main.masterMode ? 0.019f : Main.expertMode ? 0.017f : 0.014f;
 
                     for (int k = 0; k < 160; k++) //raycast to find the laser's endpoint
                     {
@@ -127,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         if (Player.active && !Player.dead && Helpers.Helper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out point))
                         {
-                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.expertMode ? 65 : 45, 0, false, false, false, 5);
+                            Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.masterMode ? 9999999 : Main.expertMode ? 65 : 45, 0, false, false, false, 5);
                             endpoint = point;
                             break;
                         }

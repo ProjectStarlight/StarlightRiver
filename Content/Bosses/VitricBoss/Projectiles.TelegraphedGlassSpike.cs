@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, 264, (Projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? 0.4f : -0.4f), 0, color, 1f);
                 d.noGravity = true;
             }
-            Projectile.rotation = Projectile.velocity.ToRotation() + 3.14f / 4;
+            Projectile.rotation = savedVelocity.ToRotation() + 3.14f / 4;
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit) => target.AddBuff(BuffID.Bleeding, 300);
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 float alpha2 = (float)Math.Sin((Projectile.timeLeft - 180) / 60f * 3.14f);
                 Color color2 = new Color(255, 180, 80) * alpha2;
                 var source = new Rectangle(0, tex2.Height / 2, tex2.Width, tex2.Height / 2);
-                spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, source, color2, 0, new Vector2(tex2.Width / 2, 0), 6, 0, 0);
+                spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, source, color2, (Projectile.rotation - 3.14f / 4) - 3.14f / 2, new Vector2(tex2.Width / 2, 0), 6, 0, 0);
             }
         }
     }

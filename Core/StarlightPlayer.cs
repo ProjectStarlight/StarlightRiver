@@ -15,6 +15,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using StarlightRiver.Core.Loaders;
 
 namespace StarlightRiver.Core
 {
@@ -257,6 +258,11 @@ namespace StarlightRiver.Core
             inTutorial = false;
 
             DummyTile.dummies.Clear();
+
+            if(Main.masterMode)
+                UILoader.GetUIState<MessageBox>().Display("WARNING", "Starlight River has unique behavior for it's bosses in master mode. This behavior is intended to be immensely difficult over anything else, and assumes a high amount of knowldge about " +
+					"both the mod and base game. Starlight River master mode is not intended for a first playthrough. Starlight River master mode is not intended to be fair. Starlight River master mode is not intended to be fun for everyone. " +
+					"Please remember that the health, both physical and mental, of yourself and those around you is far more important than this game or anything inside of it."); 
         }
 
         public override void OnRespawn(Player Player)

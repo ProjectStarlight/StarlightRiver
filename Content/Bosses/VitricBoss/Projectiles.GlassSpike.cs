@@ -35,6 +35,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 savedVelocity = Projectile.velocity;
                 Projectile.velocity *= 0;
+
+                if (Main.masterMode)
+                    savedVelocity *= 1.2f;
             }
 
             if (Projectile.timeLeft > 150)
@@ -61,7 +64,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
                 Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.Glow>(), 0, 0, 0, color, 0.3f);
             }
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+            
+            if(Main.masterMode)
+			{
+                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 50);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+            }
+            else
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor)

@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private Trail trail;
 
         public float TimeFade => 1 - Projectile.timeLeft / 20f;
-        public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * 100;
+        public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
 
         public override string Texture => AssetDirectory.Invisible;
 

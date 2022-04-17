@@ -14,6 +14,8 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
     {
         public bool BeingStoodOn;
 
+        public bool DontCollide = false;
+
         public virtual void SafeSetDefaults() { }
 
         public virtual void SafeAI() { }

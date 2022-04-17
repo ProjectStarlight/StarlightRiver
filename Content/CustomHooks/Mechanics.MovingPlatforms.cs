@@ -72,7 +72,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             foreach (NPC NPC in Main.npc)
             {
-                if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform)
+                if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).DontCollide)
+
                     continue;
 
                 Rectangle PlayerRect = new Rectangle((int)self.position.X, (int)self.position.Y + (self.height), self.width, 1);

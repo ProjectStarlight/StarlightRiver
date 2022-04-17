@@ -85,6 +85,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 NPC.ai[3]++;//the 4th ai slot is used here as a random seed
             }
 
+            else if(NPC.velocity.Y == 0 && Main.masterMode) //bigger hitbox in master
+                NPC.height = 42;
+
             switch (NPC.ai[1])
             {
                 case 0:
@@ -144,14 +147,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         foreach (Player target in Main.player.Where(n => n.active))
                         {
-                            Rectangle rect = new Rectangle((int)NPC.position.X, (int)NPC.position.Y - 840, NPC.width, NPC.height);
-
-                            if (target.Hitbox.Intersects(rect))
-                            {
-                                target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
-                                target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
-                                target.velocity.Y = Main.rand.Next(9, 13);
-                            }
 
                             if (target.Hitbox.Intersects(NPC.Hitbox))
                             {
@@ -166,6 +161,31 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                                 target.canJumpAgain_Sandstorm = true;
                                 target.canJumpAgain_Fart = true;
                                 target.canJumpAgain_Sail = true;
+                            }
+
+                            Rectangle topColission = new Rectangle((int)NPC.position.X, (int)NPC.position.Y - 840, NPC.width, NPC.height);
+
+                            if (target.Hitbox.Intersects(topColission))
+                            {
+                                target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+                                target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
+                                target.velocity.Y = Main.rand.Next(9, 13);
+                            }
+
+                            if(Main.masterMode)
+							{
+                                Rectangle leftColission = new Rectangle((int)NPC.position.X, (int)NPC.position.Y - 840, NPC.height, 900);
+                                Rectangle rightColission = new Rectangle((int)NPC.position.X + NPC.width - NPC.height, (int)NPC.position.Y - 840, NPC.height, 900);
+
+                                if (target.Hitbox.Intersects(rightColission) || target.Hitbox.Intersects(leftColission))
+                                {
+                                    target.Hurt(PlayerDeathReason.ByCustomReason(target.name + " was impaled..."), Main.expertMode ? 80 : 40, 0);
+                                    target.GetModPlayer<StarlightPlayer>().platformTimer = 15;
+
+                                    target.velocity.X = target.Hitbox.Intersects(leftColission) ? 10 : -10;
+
+                                    target.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
+                                }
                             }
                         }
                     }
@@ -188,8 +208,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 int eggIndex = rand.Next(25) == 0 ? rand.Next(0, NPC.width / 18) * 18 : -1;// 1/25 chance
 
-                float off = Math.Min((NPC.ai[0] - 120) / 30f * 32, 32);
+                float maxOffset = Main.masterMode ? 64 : 32;
+                float off = Math.Min((NPC.ai[0] - 120) / 30f * maxOffset, maxOffset);
                 Texture2D tex = Request<Texture2D>(AssetDirectory.VitricBoss + "CrystalWaveHot").Value;
+
                 for (int k = 0; k < NPC.width; k += 18)
                 {
                     Vector2 pos = NPC.position + new Vector2(k, 36 - off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6) - screenPos; //actually draw the crystals
@@ -205,6 +227,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     {
                         spriteBatch.Draw(tex, pos, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
                         spriteBatch.Draw(tex, pos2, null, Color.White, 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                    }
+                }
+
+                if(Main.masterMode)
+				{
+                    for (int k = 0; k < 900; k += 18)
+                    {
+                        Vector2 pos = NPC.position + new Vector2(-20 + off + (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6, -900 + k) - screenPos; //actually draw the crystals
+                        Vector2 pos2 = NPC.position + new Vector2(1348 - off - (float)Math.Sin(Main.GameUpdateCount * 0.05f + rand.Next(100) * 0.2f) * 6, -900 + k) - screenPos;
+
+                        if (eggIndex == k)//ugly but I this way its only checked once
+                        {
+                            Texture2D eggTex = Request<Texture2D>(AssetDirectory.VitricBoss + "MagMegg").Value;
+                            spriteBatch.Draw(eggTex, pos, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                            spriteBatch.Draw(eggTex, pos2, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(tex, pos, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                            spriteBatch.Draw(tex, pos2, null, Color.White, 1.57f + 0.1f * ((float)rand.NextDouble() - 0.5f), default, 1, default, default);
+                        }
                     }
                 }
             }
@@ -232,6 +275,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 66 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, color, 0, default, default, default);
                 spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X - (int)Main.screenPosition.X, NPC.Hitbox.Y - 848 - (int)Main.screenPosition.Y, NPC.Hitbox.Width, 100), null, color, 0, default, SpriteEffects.FlipVertically, default);
+
+                if (Main.masterMode)
+                {
+                    spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X + 106 - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, color, 1.57f, default, default, default);
+                    spriteBatch.Draw(tex, new Rectangle(NPC.Hitbox.X + 10 + NPC.width - (int)Main.screenPosition.X, NPC.Hitbox.Y - 866 - (int)Main.screenPosition.Y, 900, 100), null, color, 1.57f, default, SpriteEffects.FlipVertically, default);
+                }
             }
         }
     }
