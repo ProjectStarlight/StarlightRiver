@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.GUI
 					case 11: tease = "You could always try an easy boss like moon lord first."; break;
 					case 12: tease = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; break;
 					case 13: tease = "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle."; break;
+					case 14: tease = "Press " + Main.cJump + " to jump."; break;
 					default: tease = "You died so many times you broke our snarky quote code. Great job."; break;
 				}
 			}
