@@ -53,12 +53,23 @@ namespace StarlightRiver.Content.GUI
 
 			if(deaths % 10 == 0)
 			{
-				switch(Main.rand.Next(4))
+				switch(Main.rand.Next(14))
 				{
 					case 0: tease = "Maybe try journey mode..."; break;
 					case 1: tease = "You're not supposed to win."; break;
 					case 2: tease = "Whoopsy daisy."; break;
 					case 3: tease = "It's not THAT hard."; break;
+					case 4: tease = "Give up."; break;
+					case 5: tease = "Have you tried dodging?"; break;
+					case 6: tease = "skill issue"; break;
+					case 7: tease = "Are the logged hours on your steam account accurate?"; break;
+					case 8: tease = "You sure you wanna do this?"; break;
+					case 9: tease = "There are easier difficulties you know."; break;
+					case 10: tease = "You can install CheatSheet from the mod browser."; break;
+					case 11: tease = "You could always try an easy boss like moon lord first."; break;
+					case 12: tease = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"; break;
+					case 13: tease = "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle."; break;
+					case 14: tease = "Press " + Main.cJump + " to jump."; break;
 					default: tease = "You died so many times you broke our snarky quote code. Great job."; break;
 				}
 			}
