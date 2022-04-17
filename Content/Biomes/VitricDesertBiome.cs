@@ -57,6 +57,12 @@ namespace StarlightRiver.Content.Biomes
 			}
 		}
 
+		public override void OnLeave(Player player)
+		{
+			if (Filters.Scene["GradientDistortion"].IsActive())
+				Filters.Scene.Deactivate("GradientDistortion");
+		}
+
 		public override void OnEnter(Player player)
 		{
 			Helper.UnlockCodexEntry<VitricEntry>(player);
