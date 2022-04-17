@@ -22,6 +22,8 @@ namespace StarlightRiver.Content.CustomHooks
         //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
+        public const String simpleReflectionShaderPath = "StarlightRiver:SimpleReflection";
+
         private MethodInfo NpcsOverTilesDrawMethod;
         private MethodInfo PlayerBehindNPCsDrawMethod;
         private MethodInfo NpcsBehindTilesDrawMethod;
@@ -35,13 +37,25 @@ namespace StarlightRiver.Content.CustomHooks
         public static RenderTarget2D Target;
         private static RenderTarget2D reflectionNormalMapTarget;
 
+        /// <summary>
+        /// lets other components know that targets on this component are being rendered so they cannot try to use them.
+        /// </summary>
         public static bool canUseTarget = false;
+
+        /// <summary>
+        /// determines whether or not to draw the entities to the reflection RT, set to true if either the wall reflections are active OR the homogenized version is in use
+        /// </summary>
+        public static bool isDrawReflectablesThisFrame = false;
+
+        /// <summary>
+        /// determines whether or not to apply the shader and actually draw the wall reflections to the screen, only set to true if the wall reflections are in use this frame
+        /// </summary>
+        public static bool applyWallReflectionsThisFrame = false;
 
         public override void Load()
         {
-            if (Main.dedServ) //PORTTODO: Re-enable this when appropriate
+            if (Main.dedServ)
                 return;
-
 
             Main.QueueMainThreadAction(() =>
             {
@@ -63,20 +77,20 @@ namespace StarlightRiver.Content.CustomHooks
 
             On.Terraria.Main.SetDisplayMode += RefreshTargets;
             On.Terraria.Main.CheckMonoliths += DrawTargets;
-            On.Terraria.Main.DoDraw_Tiles_NonSolid += DrawReflectionLayer;
+            On.Terraria.Main.DoDraw_WallsAndBlacks += DrawWallReflectionLayer;
 
-            ReflectionTarget.DrawReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
+            ReflectionTarget.DrawWallReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
-            GameShaders.Misc["StarlightRiver:TileReflection"] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/TileReflection").Value), "TileReflectionPass");
+            GameShaders.Misc[simpleReflectionShaderPath] = new MiscShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/SimpleReflection").Value), "TileReflectionPass");
         }
 
         public override void Unload()
         {
             On.Terraria.Main.SetDisplayMode -= RefreshTargets;
             On.Terraria.Main.CheckMonoliths -= DrawTargets;
-            On.Terraria.Main.DoDraw_Tiles_NonSolid -= DrawReflectionLayer;
+            On.Terraria.Main.DoDraw_WallsAndBlacks -= DrawWallReflectionLayer;
 
-            ReflectionTarget.DrawReflectionNormalMapEvent -= drawGlassWallReflectionNormalMap;
+            ReflectionTarget.DrawWallReflectionNormalMapEvent -= drawGlassWallReflectionNormalMap;
         }
 
         private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
@@ -91,10 +105,11 @@ namespace StarlightRiver.Content.CustomHooks
         }
 
         /// <summary>
-        /// Use this event for anything that wants to add reflections to the layer before entities are drawn
+        /// Use this event for anything that wants to add reflections to the layer right after walls are drawn, 
+        /// elements higher up in the draw chain or with custom offsets will have to use the version of the reflection shader with homogenized coordinates (look at vitricbossAltar as an example)
         /// </summary>
-        public static event DrawReflectionNormalMapDelegate DrawReflectionNormalMapEvent;
-        public delegate void DrawReflectionNormalMapDelegate(SpriteBatch spritebatch);
+        public static event DrawWallReflectionNormalMapDelegate DrawWallReflectionNormalMapEvent;
+        public delegate void DrawWallReflectionNormalMapDelegate(SpriteBatch spritebatch);
 
         private void DrawTargets(On.Terraria.Main.orig_CheckMonoliths orig)
         {
@@ -109,38 +124,59 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (reflectionConfig.isReflectingAnything())
             {
-                RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
-                canUseTarget = false;
-
                 GraphicsDevice GD = Main.graphics.GraphicsDevice;
                 SpriteBatch sb = Main.spriteBatch;
 
-                GD.SetRenderTarget(Target);
+                RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
+                canUseTarget = false;
+
+                GD.SetRenderTarget(reflectionNormalMapTarget);
                 GD.Clear(Color.Transparent);
 
-                Vector2 originalZoom = Main.GameViewMatrix.Zoom;
-                Main.GameViewMatrix.Zoom = originalZoom;
+                Main.spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+                DrawWallReflectionNormalMapEvent?.Invoke(sb);
 
-                if (reflectionConfig.NpcReflectionsOn)
-                    NpcsBehindTilesDrawMethod?.Invoke(Main.instance, null);
+                sb.End();
 
-                if (reflectionConfig.PlayerReflectionsOn)
-                    PlayerBehindNPCsDrawMethod?.Invoke(Main.instance, null);
 
-                if (reflectionConfig.NpcReflectionsOn)
-                    NpcsOverTilesDrawMethod?.Invoke(Main.instance, null);
-
-                if (reflectionConfig.ProjReflectionsOn)
+                if (isDrawReflectablesThisFrame)
                 {
-                    drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsBehindProjectiles, true });
-                    ProjectileDrawMethod?.Invoke(Main.instance, null);
+                    DrawReflectableEntities(GD, sb, reflectionConfig);
+                    ReflectionTarget.isDrawReflectablesThisFrame = false;
                 }
 
-                if (reflectionConfig.PlayerReflectionsOn)
-                    PlayerAfterProjDrawMethod?.Invoke(Main.instance, new object[] { });;
+                Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
+            }
 
-                if (reflectionConfig.ProjReflectionsOn) { }
-                    drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsOverPlayers, true });
+            canUseTarget = true;
+        }
+
+        private void DrawReflectableEntities(GraphicsDevice GD, SpriteBatch sb, ReflectionSubConfig reflectionConfig)
+        {
+            Main.NewText("drawing reflection");
+            GD.SetRenderTarget(Target);
+            GD.Clear(Color.Transparent);
+
+            if (reflectionConfig.NpcReflectionsOn)
+                NpcsBehindTilesDrawMethod?.Invoke(Main.instance, null);
+
+            if (reflectionConfig.PlayerReflectionsOn)
+                PlayerBehindNPCsDrawMethod?.Invoke(Main.instance, null);
+
+            if (reflectionConfig.NpcReflectionsOn)
+                NpcsOverTilesDrawMethod?.Invoke(Main.instance, null);
+
+            if (reflectionConfig.ProjReflectionsOn)
+            {
+                drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsBehindProjectiles, true });
+                ProjectileDrawMethod?.Invoke(Main.instance, null);
+            }
+
+            if (reflectionConfig.PlayerReflectionsOn)
+                PlayerAfterProjDrawMethod?.Invoke(Main.instance, new object[] { }); ;
+
+            if (reflectionConfig.ProjReflectionsOn) { }
+            drawCachedProjsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheProjsOverPlayers, true });
 
                 
                 if (reflectionConfig.NpcReflectionsOn)
@@ -155,69 +191,77 @@ namespace StarlightRiver.Content.CustomHooks
                     }
                 }
 
-                if (reflectionConfig.DustReflectionsOn)
+            if (reflectionConfig.DustReflectionsOn)
+            {
+                sb.Begin(SpriteSortMode.Deferred, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+                try
                 {
-                    sb.Begin(SpriteSortMode.Deferred, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-                    try
-                    {
-                        //tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
-                        goreDrawMethod?.Invoke(Main.instance, null);
-                    }
-                    catch (Exception e2)
-                    {
-                        TimeLogger.DrawException(e2);
-                    }
-                    sb.End();
-
-                    dustDrawMethod?.Invoke(Main.instance, null);
+                    //tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
+                    goreDrawMethod?.Invoke(Main.instance, null);
                 }
-
-                Overlays.Scene.Draw(sb, RenderLayers.Entities, true);
-
-                GD.SetRenderTarget(reflectionNormalMapTarget);
-                GD.Clear(Color.Transparent);
-
-                Main.GameViewMatrix.Zoom = originalZoom;
-
-                Main.spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-                DrawReflectionNormalMapEvent?.Invoke(sb);
+                catch (Exception e2)
+                {
+                    TimeLogger.DrawException(e2);
+                }
                 sb.End();
 
-                Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
+                dustDrawMethod?.Invoke(Main.instance, null);
             }
 
-            canUseTarget = true;
+            Overlays.Scene.Draw(sb, RenderLayers.Entities, true);
         }
 
         /// <summary>
-        /// draw background reflections immediately after non-solid tiles are drawn 
+        /// draw background reflections immediately after wall tiles are drawn 
         /// </summary>
         /// <param name="orig"></param>
         ///
-        public void DrawReflectionLayer(On.Terraria.Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
+        public void DrawWallReflectionLayer(On.Terraria.Main.orig_DoDraw_WallsAndBlacks orig, Main self)
         {
             orig(self);
 
+            if (ReflectionTarget.applyWallReflectionsThisFrame)
+            {
+                DrawReflection(Main.spriteBatch, screenPos: Vector2.Zero, normalMap: ReflectionTarget.reflectionNormalMapTarget, flatOffset: new Vector2(-0.0075f, 0.016f), offsetScale: 0.05f, restartSpriteBatch: true);
+                ReflectionTarget.applyWallReflectionsThisFrame = false;
+            }
+        }
+
+        /// <summary>
+        /// helper function to set params onto the reflection shader and draw to screen when called
+        /// </summary>
+        public static void DrawReflection(SpriteBatch spriteBatch, Vector2 screenPos, Texture2D normalMap, Vector2 flatOffset, float offsetScale, bool restartSpriteBatch = true)
+        {
             ReflectionSubConfig reflectionConfig = ModContent.GetInstance<GraphicsConfig>().ReflectionConfig;
 
             if (ReflectionTarget.canUseTarget && reflectionConfig.isReflectingAnything())
             {
-                SpriteBatch spriteBatch = Main.spriteBatch;
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                
+                if (restartSpriteBatch)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                }
 
-                DrawData data = new DrawData(ReflectionTarget.reflectionNormalMapTarget, Vector2.Zero, Color.White);
+                DrawData data = new DrawData(ReflectionTarget.Target, Vector2.Zero, Color.White);
 
-                GameShaders.Misc["StarlightRiver:TileReflection"].Shader.Parameters["ReflectionTarget"].SetValue(ReflectionTarget.Target);
-                GameShaders.Misc["StarlightRiver:TileReflection"].Shader.Parameters["flatOffset"].SetValue(new Vector2(-0.0075f, 0.015f) * Main.GameViewMatrix.Zoom);
-                GameShaders.Misc["StarlightRiver:TileReflection"].Shader.Parameters["offsetScale"].SetValue(0.05f * Main.GameViewMatrix.Zoom.Length());
+                //need to force the registers into using the proper data
+                Main.graphics.GraphicsDevice.Textures[1] = ReflectionTarget.reflectionNormalMapTarget;
+                Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearClamp;
 
-                GameShaders.Misc["StarlightRiver:TileReflection"].Apply(data);
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapSize"].SetValue(ReflectionTarget.reflectionNormalMapTarget.Size());
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["flatOffset"].SetValue(flatOffset * Main.GameViewMatrix.Zoom.Length());
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["offsetScale"].SetValue(offsetScale * Main.GameViewMatrix.Zoom);
+
+                GameShaders.Misc[simpleReflectionShaderPath].Apply(data);
 
                 data.Draw(spriteBatch);
 
-                spriteBatch.End();
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, (Effect)null, Main.Transform);
+                if (restartSpriteBatch)
+                {
+                    spriteBatch.End();
+                    spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, (Effect)null, Main.Transform);
+                }
             }
         }
 
@@ -229,7 +273,7 @@ namespace StarlightRiver.Content.CustomHooks
                 return;
 
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Texture, default, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
 
             shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
             shader.Parameters["uIntensity"].SetValue(0.5f);
@@ -258,6 +302,8 @@ namespace StarlightRiver.Content.CustomHooks
                             Texture2D tex = TextureAssets.Wall[type].Value;
                             //not sure if tile.WallFrame* is the correct value
                             if (tex != null) spriteBatch.Draw(TextureAssets.Wall[type].Value, pos - Main.screenPosition - new Vector2(8, 8), new Rectangle(tile.WallFrameX, tile.WallFrameY, 36, 36), new Color(128, 128, 255, 255));
+                            ReflectionTarget.isDrawReflectablesThisFrame = true;
+                            ReflectionTarget.applyWallReflectionsThisFrame = true;
                         }
                     }
 

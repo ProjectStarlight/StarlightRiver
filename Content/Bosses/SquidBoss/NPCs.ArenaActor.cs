@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void Load()
 		{
-            ReflectionTarget.DrawReflectionNormalMapEvent += DrawGlass;
+            ReflectionTarget.DrawWallReflectionNormalMapEvent += DrawGlass;
 		}
 
 		public override void SetDefaults()

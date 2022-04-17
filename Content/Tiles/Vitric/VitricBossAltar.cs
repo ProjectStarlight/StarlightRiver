@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Load()
         {
-            ReflectionTarget.DrawReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
+            ReflectionTarget.DrawWallReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
             
         }
 
@@ -229,6 +229,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (boss is null || arenaLeft is null || arenaRight is null)
                 findParent();
+                
 
             //This controls spawning the rest of the arena
             if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active && Main.netMode != NetmodeID.MultiplayerClient)
@@ -328,6 +329,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 BarrierProgress--;
         }
 
+        private bool checkIfDrawReflection()
+        {
+            Point16 parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
+            Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
+
+            return parent.TileFrameX < 90 && Projectile.getRect().Intersects(new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight));
+        }
+
         public override void PostDraw(Color lightColor) //actually drawing the barriers and Item indicator
         {
             var spriteBatch = Main.spriteBatch;
@@ -343,6 +352,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             else if (parent.TileFrameX < 90 && ReflectionTarget.canUseTarget)
             {
+                if (checkIfDrawReflection())
+                {
+                    ReflectionTarget.DrawReflection(spriteBatch, screenPos: Projectile.position - Main.screenPosition, normalMap: Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f);
+                    ReflectionTarget.isDrawReflectablesThisFrame = true;
+                }
+                    
                 Texture2D glow = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarGlow").Value;
                 spriteBatch.Draw(glow, Projectile.position - Main.screenPosition + new Vector2(-1, 7), glow.Frame(), Helper.IndicatorColorProximity(300, 600, Projectile.Center), 0, Vector2.Zero, 1, 0, 0);
             }
