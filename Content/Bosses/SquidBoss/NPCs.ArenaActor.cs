@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -52,6 +53,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             (fakeBoss.ModNPC as SquidBoss).QuickSetup();
         }
 
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            database.Entries.Remove(bestiaryEntry);
+        }
+
         public override void AI()
         {
             NPC.ai[1] += 0.04f; //used as timers for visuals
@@ -63,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 (fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
                 (fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
                 (fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
-                (fakeBoss.ModNPC as SquidBoss).Animate();
+                (fakeBoss.ModNPC as SquidBoss).Animate(6);
 
                 var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
 
@@ -201,7 +207,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Main.dedServ || !Helper.OnScreen(target)) return;
 
             //these should only initialize on the client!!!
-            if (ApplyEffect is null) ApplyEffect = Main.dedServ ? null : ApplyEffect = Filters.Scene["WaterShine"].GetShader().Shader;
+            if (ApplyEffect is null) ApplyEffect = Main.dedServ ? null : ApplyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
             if(buffer is null) buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
             if(verticies is null) verticies = new VertexPositionColorTexture[6];
 

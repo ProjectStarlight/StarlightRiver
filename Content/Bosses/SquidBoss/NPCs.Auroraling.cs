@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,7 +13,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class Auroraling : ModNPC
     {
         public override string Texture => AssetDirectory.SquidBoss + Name;
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
 
         public override void SetDefaults()
         {
@@ -23,6 +23,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.noGravity = true;
             NPC.aiStyle = -1;
             NPC.knockBackResist = 3f;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                new FlavorTextBestiaryInfoElement("Baby aurora squid are born with their light-sacs fully charged from the glow of their mother, and will rely on this energy untill they are old enough to venture to the surface to gather their own.")
+            });
         }
 
         public override void AI()
@@ -48,8 +56,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             target.noKnockback = true;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+            if (NPC.IsABestiaryIconDummy)
+			{
+                NPC.ai[0]++;
+                NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
+            }
+
             Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
 
@@ -62,6 +76,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.Draw(tex2, NPC.Center - screenPos, NPC.frame, color, NPC.rotation, NPC.Size / 2, 1, 0, 0);
 
             Lighting.AddLight(NPC.Center, color.ToVector3() * 0.5f);
+            return false;
         }
     }
 }

@@ -305,11 +305,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        internal void Animate()
+        internal void Animate(int fps)
 		{
             NPC.frame.Width = 188;
             NPC.frame.Height = 250;
-            NPC.Frame(0, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * 12) % 8));
+            NPC.Frame(0, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * fps) % 8));
 		}
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             GlobalTimer++;
 
             DoLighting();
-            Animate();
+            Animate(12);
 
             //boss health bar glow effects
 

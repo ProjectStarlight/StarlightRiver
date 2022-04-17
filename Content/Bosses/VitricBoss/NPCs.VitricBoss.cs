@@ -142,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] 
             {
                 Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Someone write an entry for this fella")
+				new FlavorTextBestiaryInfoElement("Much like a regular sentinel, this sentinel works to protect settlements and remote outposts from enemies that would ruin the landscape. Unlike other sentinels, this sentinel has a rather sassy tone.")
             });
         }
 

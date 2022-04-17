@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
@@ -41,6 +42,11 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
             NPC.aiStyle = -1;
             NPC.damage = 0;
             NPC.netAlways = true;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            database.Entries.Remove(bestiaryEntry);
         }
 
         public override sealed void SendExtraAI(BinaryWriter writer)
