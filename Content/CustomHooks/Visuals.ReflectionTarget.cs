@@ -243,15 +243,16 @@ namespace StarlightRiver.Content.CustomHooks
                     spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
                 }
 
-                DrawData data = new DrawData(ReflectionTarget.Target, Vector2.Zero, Color.White);
+                DrawData data = new DrawData(normalMap, screenPos, Color.White);
 
                 //need to force the registers into using the proper data
-                Main.graphics.GraphicsDevice.Textures[1] = ReflectionTarget.reflectionNormalMapTarget;
+                Main.graphics.GraphicsDevice.Textures[1] = ReflectionTarget.Target;
                 Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.LinearClamp;
 
-                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapSize"].SetValue(ReflectionTarget.reflectionNormalMapTarget.Size());
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["reflectionTargetSize"].SetValue(ReflectionTarget.Target.Size());
                 GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["flatOffset"].SetValue(flatOffset * Main.GameViewMatrix.Zoom.Length());
                 GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["offsetScale"].SetValue(offsetScale * Main.GameViewMatrix.Zoom);
+                GameShaders.Misc[simpleReflectionShaderPath].Shader.Parameters["normalMapPosition"].SetValue(new Vector2(screenPos.X / ReflectionTarget.Target.Width, screenPos.Y / ReflectionTarget.Target.Height));
 
                 GameShaders.Misc[simpleReflectionShaderPath].Apply(data);
 

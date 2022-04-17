@@ -129,36 +129,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         bool collisionHappened = false;
 
-        public override void Load()
-        {
-            ReflectionTarget.DrawWallReflectionNormalMapEvent += drawVitricAltarReflectionNormalMap;
-            
-        }
-
-        public void drawVitricAltarReflectionNormalMap(SpriteBatch spriteBatch)
-        {
-            Projectile proj = null;
-            for (int i = 0; i < Main.maxProjectiles; i++)
-            {
-                if (Main.projectile[i].active && Main.projectile[i].type == ModContent.ProjectileType<VitricBossAltarDummy>())
-                {
-                    proj = Main.projectile[i];
-                }
-            }
-
-            if (proj == null)
-                return;
-
-            Point16 parentPos = new Point16((int)proj.position.X / 16, (int)proj.position.Y / 16);
-            Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
-
-            if (parent.TileFrameX < 90)
-            {
-                Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.VitricTile + "VitricBossAltarReflectionMap").Value;
-                spriteBatch.Draw(reflectionMap, proj.position - Main.screenPosition, Color.White);
-            }
-        }
-
         public override void SafeSetDefaults()
         {
             Projectile.hide = true;

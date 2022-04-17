@@ -34,11 +34,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-		public override void Load()
-		{
-            ReflectionTarget.DrawWallReflectionNormalMapEvent += DrawGlass;
-		}
-
 		public override void SetDefaults()
         {
             NPC.dontTakeDamage = true;
@@ -267,21 +262,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             particle.Alpha = particle.Timer < 70 ? particle.Timer / 70f : particle.Timer > 630 ? 1 - (particle.Timer - 630) / 70f : 1;
         }
 
-        public void DrawGlass(SpriteBatch spriteBatch)
-        {
-            var arena = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
-
-            if (arena != null)
-            {
-                Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
-                Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDomeMap").Value;
-                var color = Color.White;
-                color.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 100 : 200);
-                spriteBatch.Draw(reflectionMap, arena.Center + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, null, color, 0, reflectionMap.Size() / 2, 1, 0, 0);
-                spriteBatch.Draw(dome, arena.Center - dome.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, null, color, 0, Vector2.Zero, 1, 0, 0);
-            }
-        }
-
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
             var drawCheck = new Rectangle(StarlightWorld.SquidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.SquidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.SquidBossArena.Width * 16, StarlightWorld.SquidBossArena.Height * 16);
@@ -326,7 +306,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
             Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;         
-            LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, backdrop);       
+            LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, backdrop);
 
             var shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - NPC.ai[0]) - Main.screenPosition;
             DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));
@@ -353,7 +333,27 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
 
             spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            drawReflections(spriteBatch);
+            spriteBatch.End();
+
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+        }
+
+        /// <summary>
+        /// small helper function to draw the reflections for the glass
+        /// </summary>
+        private void drawReflections(SpriteBatch spriteBatch)
+        {
+            Texture2D reflectionMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInMap").Value;
+            Texture2D domeMap = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDomeMap").Value;
+            var tintColor = Color.White;
+            tintColor.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 100 : 200);
+
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, restartSpriteBatch: false);
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, restartSpriteBatch: false);
+            ReflectionTarget.isDrawReflectablesThisFrame = true;
         }
 
         private void SpawnPlatform(int x, int y, bool small = false)
