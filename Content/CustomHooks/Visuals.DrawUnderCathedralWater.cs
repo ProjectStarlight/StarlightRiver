@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private delegate void DrawWaterDelegate();
 
-        private void DrawWater()
+        public static void DrawWater()
         {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
@@ -51,7 +51,8 @@ namespace StarlightRiver.Content.CustomHooks
 
             if(NPC != null && NPC.active)
             {
-                (NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+                if(ReflectionTarget.canUseTarget)
+                    (NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
                 int boss = -1;
                 List<NPC> drawCache = new List<NPC>();

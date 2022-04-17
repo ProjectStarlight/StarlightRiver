@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.Center = Vector2.SmoothStep(BasePoint, MovementTarget, (Timer - 60) / 60f); //Spawn animation
 
             //Colission for the stalks since tmod... dosent have a hook for this?
-            if (NPC.Center != BasePoint)
+            if (Vector2.Distance(NPC.Center, BasePoint) > 32)
             {
                 foreach (Player player in Main.player.Where(n => n.active))
                 {

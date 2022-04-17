@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 (fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
                 (fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
                 (fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
+                (fakeBoss.ModNPC as SquidBoss).Animate();
 
                 var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
 

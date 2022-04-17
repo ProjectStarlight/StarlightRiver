@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var lightColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
             var bodyColor = lightColor * 1.2f * Opacity;
             bodyColor.A = 255;
-            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, body.Frame(), bodyColor, NPC.rotation, body.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, bodyColor, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
             spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White * (0.5f + (Opacity * 0.5f)), NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
@@ -305,6 +305,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
+        internal void Animate()
+		{
+            NPC.frame.Width = 188;
+            NPC.frame.Height = 250;
+            NPC.Frame(0, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * 12) % 8));
+		}
+
         /// <summary>
         /// Only intended for use by the fake boss in the arena actor!
         /// </summary>
@@ -342,6 +349,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             GlobalTimer++;
 
             DoLighting();
+            Animate();
 
             //boss health bar glow effects
 
@@ -426,7 +434,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1);
                         (Main.npc[i].ModNPC as Tentacle).Parent = this;
-                        (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 600 - y);
+                        (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
                         (Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;
                         (Main.npc[i].ModNPC as Tentacle).BasePoint = Main.npc[i].Center;
                         (Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;

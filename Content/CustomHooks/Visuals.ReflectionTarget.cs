@@ -146,6 +146,13 @@ namespace StarlightRiver.Content.CustomHooks
                 if (reflectionConfig.NpcReflectionsOn)
                 {
                     drawCachedNPCsMethod?.Invoke(Main.instance, new object[] { Main.instance.DrawCacheNPCsOverPlayers, false });
+
+                    if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
+                    {
+                        Main.spriteBatch.Begin();
+                        DrawUnderCathedralWater.DrawWater();
+                        Main.spriteBatch.End();
+                    }
                 }
 
                 if (reflectionConfig.DustReflectionsOn)
