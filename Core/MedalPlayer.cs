@@ -99,10 +99,13 @@ namespace StarlightRiver.Core
 
 			medals = list;
 
+			var list3 = new List<DeathCounter>();
 			var list4 = tag.GetList<TagCompound>("deathCounters");
 
 			foreach (TagCompound c in list4)
-				deathCounters.Add(DeathCounter.Deserialize(c));
+				list3.Add(DeathCounter.Deserialize(c));
+
+			deathCounters = list3;
 		}
 
 		public Texture2D GetMedalTexture(string name)
