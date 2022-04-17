@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            Main.NewText("Poopsdsssdssy");
+            Main.NewText("Poopsdsssdsdssdsdsdsdsdssfdssy");
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
