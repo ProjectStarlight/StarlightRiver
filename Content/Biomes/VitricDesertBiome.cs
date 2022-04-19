@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
-		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 
 		public override void SetStaticDefaults()
 		{
