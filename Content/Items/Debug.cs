@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            Main.NewText(Main.cJump + " Is the key to jump. Or is it?");
+            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;

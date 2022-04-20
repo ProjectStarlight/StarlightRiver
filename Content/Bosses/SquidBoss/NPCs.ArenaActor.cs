@@ -130,9 +130,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 for (int k = 0; k < 10; k++)
                 {
-                    Lighting.AddLight(NPC.Center + new Vector2(0, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.65f);
-                    Lighting.AddLight(NPC.Center + new Vector2(-400, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.4f);
-                    Lighting.AddLight(NPC.Center + new Vector2(400, -200 + k * 60), new Vector3(1, 1.2f, 1.5f) * 0.4f);
+                    var y = -200 + k * 60;
+
+                    float opacity = 0.2f;
+
+                    if ((NPC.Center.Y + y + 60) - pos.Y < 30)
+                        opacity = Math.Clamp(1 - ((NPC.Center.Y + y + 60) - pos.Y) / 30f, 0.2f, 1);
+
+                    Lighting.AddLight(NPC.Center + new Vector2(0, y), new Vector3(1, 1.2f, 1.5f) * 0.65f * opacity);
+                    Lighting.AddLight(NPC.Center + new Vector2(-400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
+                    Lighting.AddLight(NPC.Center + new Vector2(400, y), new Vector3(1, 1.2f, 1.5f) * 0.4f * opacity);
                 }
             }
 
