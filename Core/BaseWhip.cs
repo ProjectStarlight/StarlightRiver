@@ -77,7 +77,9 @@ namespace StarlightRiver.Core
 			return false;
 		}
 
-		public Vector2 EndPoint { get => Projectile.WhipPointsForCollision[_segments - 1]; }
+		public float MiddleOfArc { get => _flyTime / 1.5f; }
+
+		public Vector2 EndPoint { get => Projectile.WhipPointsForCollision[_segments - 1] + new Vector2(Projectile.width * 0.5f, Projectile.height * 0.5f); }
 
 		public virtual void ArcAI() { }
 
@@ -156,7 +158,7 @@ namespace StarlightRiver.Core
 			for (int i = 0; i < points.Count - 2; i++)
 			{
 				Vector2 nextPoint = points[i + 1] - points[i];
-				Color color = Lighting.GetColor(points[i].ToTileCoordinates(), _stringColor);
+				Color color = _stringColor.MultiplyRGBA(Projectile.GetAlpha(Lighting.GetColor(points[i].ToTileCoordinates())));
 				Vector2 scale = new Vector2(1f, (nextPoint.Length() + 2f) / (float)TextureAssets.FishingLine.Height());
 				Main.EntitySpriteDraw(TextureAssets.FishingLine.Value, stringPoint - Main.screenPosition, null, color, nextPoint.ToRotation() - MathHelper.PiOver2, new Vector2(TextureAssets.FishingLine.Width() * 0.5f, 2f), scale, SpriteEffects.None, 0);
 				stringPoint += nextPoint;
@@ -196,6 +198,5 @@ namespace StarlightRiver.Core
 		public virtual int SegmentVariant(ref int segment) => (1 + (segment % 3));
 
 		public virtual bool ShouldDrawSegment(ref int segment) => segment % 2 == 0;
-
-	}
+    }
 }
