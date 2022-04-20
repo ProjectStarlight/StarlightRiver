@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.CustomHooks
                 effect.Parameters["speed"].SetValue(50f);
 
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect);
+                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
                 Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero, Color.White);
 
