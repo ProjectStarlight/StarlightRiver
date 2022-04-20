@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
             float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 1.5f);
             float cos = (float)Math.Cos(Main.GameUpdateCount * 0.05f);
-            BootlegHealthbar.glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * 0.8f;
+            BossBarOverlay.glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * 0.8f;
 
             if (Phase == (int)AIStates.SpawnEffects)
             {
@@ -382,6 +382,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
                         Player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
                 }
+
+                BossBarOverlay.SetTracked(NPC, ", The Venerated", Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value);
             }
 
             if (Phase == (int)AIStates.SpawnAnimation)
@@ -485,7 +487,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         mt.DownwardDrawDistance = 28;
                     }
 
-                    BootlegHealthbar.SetTracked(NPC, ", The Venerated", Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value);
                     Phase = (int)AIStates.FirstPhase;
                 }
             }
@@ -509,7 +510,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         AttackPhase++;
                         variantAttack = Main.rand.NextBool();
-                        if (AttackPhase > (Main.expertMode ? 4 : 5)) AttackPhase = 1;
+                        if (AttackPhase > (Main.expertMode ? 5 : 4)) AttackPhase = 1;
                     }
 
                 switch (AttackPhase)

@@ -355,8 +355,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 var timer = Helpers.Helper.BezierEase((AttackTimer - 130) / 250f);
 
-                tentacleL.StalkWaviness = timer * 0.3f;
-                tentacleR.StalkWaviness = timer * 0.3f;
+                tentacleL.StalkWaviness = timer * 0.45f;
+                tentacleR.StalkWaviness = timer * 0.45f;
 
                 tentacleL.BasePoint.X = Helpers.Helper.LerpFloat(tentacleL.MovementTarget.X, platforms[0].Center.X - 100, timer);
                 tentacleR.BasePoint.X = Helpers.Helper.LerpFloat(tentacleR.MovementTarget.X, platforms[0].Center.X + 100, timer);
@@ -402,6 +402,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if(AttackTimer > 580 && AttackTimer < 640)
 			{
+                Opacity = 0.5f + (AttackTimer - 580) / 60f * 0.5f;
+
                 tentacleL.DownwardDrawDistance--;
                 tentacleR.DownwardDrawDistance--;
             }
@@ -412,36 +414,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void ArenaSweep()
         {
+            if (AttackTimer == 1)
+                savedPoint = NPC.Center;
+
+            if(AttackTimer > 1 && AttackTimer < 120)
+			{
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -1300), AttackTimer / 120f);
+			}
+
             for (int k = 0; k < 4; k++)
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
-                if (AttackTimer == 1)
-                {
-                    tentacles[k].Center = spawnPoint + new Vector2(850, 0);
-                    tentacle.BasePoint = tentacles[k].Center;
-                }
 
-                if (AttackTimer > 30 + k * 60 && AttackTimer < (30 + k * 60) + 400)
-                {
-                    if (AttackTimer % 60 == 0)
-                    {
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, NPC.Center);
-                    }
-
-                    tentacles[k].position.X -= 4.25f;
-                    tentacle.BasePoint.X -= 4.25f;
-                    tentacles[k].position.Y = tentacle.BasePoint.Y - (1 + (float)Math.Cos(AttackTimer / 20f + k * -60)) * 500;
-                }
-
-                if (AttackTimer == (30 + k * 60) + 400) tentacle.MovementTarget = tentacles[k].Center;
-
-                if (AttackTimer > (30 + k * 60) + 400 && AttackTimer < ((30 + k * 60) + 400) + 40)
-                {
-                    float rel = (AttackTimer - ((30 + k * 60) + 400)) / 40f;
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, rel);
-                }
             }
 
             if (AttackTimer >= 660) ResetAttack();

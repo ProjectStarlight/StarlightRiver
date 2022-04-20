@@ -253,7 +253,7 @@ namespace StarlightRiver.Core
 
             rotation = 0;
 
-            BootlegHealthbar.tracked = null;
+            BossBarOverlay.tracked = null;
             Collection.ShouldReset = true;
             inTutorial = false;
 

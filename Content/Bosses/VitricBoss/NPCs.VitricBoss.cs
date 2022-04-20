@@ -521,11 +521,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 NPC.netUpdate = true;
             }
 
-            if (!BootlegHealthbar.visible && Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && Phase != (int)AIStates.SpawnEffects && Phase != (int)AIStates.SpawnAnimation && Main.netMode != NetmodeID.Server && arena.Contains(Main.LocalPlayer.Center.ToPoint()))
+            if (!BossBarOverlay.visible && Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && Main.netMode != NetmodeID.Server && arena.Contains(Main.LocalPlayer.Center.ToPoint()))
             {
                 //in case the player joined late or something for the hp bar
-                BootlegHealthbar.SetTracked(NPC, ", Shattered Sentinel", ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
-                BootlegHealthbar.visible = true;
+                BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
+                BossBarOverlay.visible = true;
             }
 
             float sin = (float)Math.Sin(Main.GameUpdateCount * 0.1f); //health bar glow color timer
@@ -562,7 +562,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.FirstPhase:
                  
-                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0.2f) * Math.Min(1, GlobalTimer / 60f) * 0.7f;
+                    BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0.2f) * Math.Min(1, GlobalTimer / 60f) * 0.7f;
 
                     if (shieldShaderTimer > 0)
                         shieldShaderTimer--;
@@ -612,7 +612,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Anger: //the short anger phase attack when the boss loses a crystal
 
-                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
+                    BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
 
                     AngerAttack();
                     break;
@@ -636,7 +636,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     else
                         NPC.dontTakeDamage = false;
 
-                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
+                    BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     NPC.dontTakeDamage = true;
 
@@ -647,7 +647,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.SecondPhase:
 
-                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Min(1, GlobalTimer / 60f) * 0.9f;
+                    BossBarOverlay.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Min(1, GlobalTimer / 60f) * 0.9f;
 
                     Vignette.offset = (NPC.Center - Main.LocalPlayer.Center) * 0.8f;
                     Vignette.opacityMult = 0.3f;
@@ -687,7 +687,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Leaving:
 
-                    BootlegHealthbar.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
+                    BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.7f;
 
                     NPC.position.Y += 7;
 
@@ -700,7 +700,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.Dying:
 
-                    BootlegHealthbar.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.9f;
+                    BossBarOverlay.glowColor = new Color(0.9f + 0.1f * sin, 0.5f + 0.1f * sin, 0) * Math.Max(0, 1 - GlobalTimer / 60f) * 0.9f;
 
                     DeathAnimation();
 

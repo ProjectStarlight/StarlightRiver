@@ -227,8 +227,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 if (Main.netMode != NetmodeID.Server)
                 {
-                    BootlegHealthbar.SetTracked(NPC, ", Shattered Sentinel", Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar").Value);
-                    BootlegHealthbar.visible = true;
+                    BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar").Value);
+                    BossBarOverlay.visible = true;
                 }
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
