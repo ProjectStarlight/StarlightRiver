@@ -219,8 +219,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            Projectile.width = 20;
-            Projectile.height = 20;
+            Projectile.width = 32;
+            Projectile.height = 32;
             Projectile.aiStyle = -1;
             Projectile.timeLeft = 300;
             Projectile.hostile = true;
@@ -229,7 +229,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void AI()
         {
-            Projectile.velocity.Y -= 0.14f;
+            Projectile.velocity.Y -= 0.11f;
             Projectile.velocity.X *= 0.9f;
 
             Projectile.ai[1] += 0.1f;
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if(Main.masterMode)
                     color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
-                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1, default, default);
+                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1.5f, default, default);
             }
 
             return false;

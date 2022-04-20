@@ -33,13 +33,13 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
             {
                 var squidDomeRect = StarlightWorld.SquidBossArena;
-                squidDomeRect.X += 22;
-                squidDomeRect.Width -= 44;
+                squidDomeRect.X += 26;
+                squidDomeRect.Width -= 52;
                 squidDomeRect.Y += 35;
-                squidDomeRect.Height = 70;
+                squidDomeRect.Height = 76;
                 if (squidDomeRect.Contains(x, y))
                 {
-                    outputColor += new Vector3(0.15f, 0.175f, 0.2f);
+                    outputColor += new Vector3(0.15f, 0.175f, 0.25f) * 1.25f;
                 }
             }
 

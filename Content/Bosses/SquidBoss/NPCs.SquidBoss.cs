@@ -368,6 +368,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     platforms.Add(NPC);
                 }
 
+                platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
+
                 spawnPoint = NPC.Center;
 
                 int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
@@ -507,7 +509,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         AttackPhase++;
                         variantAttack = Main.rand.NextBool();
-                        if (AttackPhase > (Main.expertMode ? 5 : 4)) AttackPhase = 1;
+                        if (AttackPhase > (Main.expertMode ? 4 : 5)) AttackPhase = 1;
                     }
 
                 switch (AttackPhase)
@@ -602,8 +604,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             GlobalTimer = 0;
                             AttackPhase = 0;
                             ResetAttack();
-
-                            platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
                             arenaBlocker.ai[1] = 1;
                             return;
                         }

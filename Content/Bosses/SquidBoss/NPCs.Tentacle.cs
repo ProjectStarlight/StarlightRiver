@@ -213,7 +213,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 foreach (Player player in Main.player.Where(n => n.active))
                 {
                     if (Helpers.Helper.CheckLinearCollision(NPC.Center, BasePoint, player.Hitbox, out Vector2 intersect))
+                    {
+                        if(NPC.Center.X < player.Center.X)
+                            player.velocity.X = Math.Max(6.5f, player.velocity.X * -1.05f);
+                        else
+                            player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
+                        
+
                         player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
+                    }
                 }
             }
         }

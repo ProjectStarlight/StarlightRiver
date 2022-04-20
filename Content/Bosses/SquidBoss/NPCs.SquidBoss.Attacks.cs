@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     int adj = (int)Main.player[NPC.target].velocity.X * 60; if (adj > 200) adj = 200;
                     tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, spawnPoint.Y - 50);
                     tentacle.BasePoint = tentacles[k].Center;
-                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -850);
+                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -950);
                     tentacle.NPC.netUpdate = true;
 
                     if(tentacle.State != 2)
@@ -288,22 +288,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void PlatformSweep()
         {
+            Tentacle tentacleL = tentacles[0].ModNPC as Tentacle;
+            Tentacle tentacleR = tentacles[3].ModNPC as Tentacle;
+
             if (AttackTimer == 1) //start by randomizing the platform order and assigning targets
             {
                 ShufflePlatforms();
 
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacles[k].Center = new Vector2(platforms[k].Center.X, tentacles[k].Center.Y);
-                    tentacle.BasePoint = tentacles[k].Center;
-                    tentacle.MovementTarget = platforms[k].Center + new Vector2(0, -70);
-                    tentacle.NPC.netUpdate = true;
+                tentacleL.NPC.Center = spawnPoint + new Vector2(-800, 0);
+                tentacleR.NPC.Center = spawnPoint + new Vector2(800, 0);
+                tentacleL.BasePoint = tentacleL.NPC.Center;
+                tentacleR.BasePoint = tentacleR.NPC.Center;
+                tentacleL.MovementTarget = tentacleL.NPC.Center + new Vector2(0, -1050);
+                tentacleR.MovementTarget = tentacleR.NPC.Center + new Vector2(0, -1050);
+                tentacleL.StalkWaviness = 0;
+                tentacleR.StalkWaviness = 0;
 
-                    tentacle.StalkWaviness = 0;
-
-                    SpawnTell(tentacle.MovementTarget + new Vector2(0, -64), tentacle.BasePoint);
-                }
+                SpawnTell(tentacleL.MovementTarget + new Vector2(0, 128), tentacleL.BasePoint);
+                SpawnTell(tentacleR.MovementTarget + new Vector2(0,128), tentacleR.BasePoint);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
             }
@@ -312,11 +314,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Opacity = 1 - AttackTimer / 60f * 0.5f;
 
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacle.DownwardDrawDistance++;
-                }
+                tentacleL.DownwardDrawDistance++;
+                tentacleR.DownwardDrawDistance++;
             }
 
             if (AttackTimer > 60 && AttackTimer < 100) //rising
@@ -327,65 +326,87 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, NPC.Center);
                 }
 
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - 60) / 40f);
+                var timer = (AttackTimer - 60) / 40f;
 
-                    if (AttackTimer == (Phase == (int)AIStates.FirstPhase ? 65 : 90))
-                    {
-                        SplashDust(k);
-                    }
-                }
+                tentacles[0].Center = Vector2.SmoothStep(tentacleL.BasePoint, tentacleL.MovementTarget, timer);
+                tentacles[3].Center = Vector2.SmoothStep(tentacleR.BasePoint, tentacleR.MovementTarget, timer);
+
+                tentacleL.ZSpin = timer * 6.28f * 2;
+                tentacleR.ZSpin = timer * 6.28f * 2;
             }
 
-            if (AttackTimer == 100)
-            {
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-
-                    int i = Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), platforms[k].Center + new Vector2(0, -22), Vector2.Zero, ModContent.ProjectileType<IcePlatformSpike>(), 20, 0, Main.myPlayer);
-                    var proj = Main.projectile[i].ModProjectile as IcePlatformSpike;
-                    proj.Parent = tentacle;
-                }
-            }
-
-            if (AttackTimer > 100 && AttackTimer < 360) //waving around
-            {
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacle.StalkWaviness = Math.Min(1, (AttackTimer - 100) / 30f);
-                }
-            }
-
-            if (AttackTimer > 360 && AttackTimer < 420) //going back
-            {
-                Opacity = 0.5f + (AttackTimer - 360) / 60f * 0.5f;
-
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 360) / 60f);
-
-                    if (AttackTimer == (Phase == (int)AIStates.FirstPhase ? 410 : 390))
-                    {
-                        SplashDustSmall(k);
-                    }
-                }
-            }
-
-            if(AttackTimer > 420 && AttackTimer < 480)
+            if(AttackTimer == 100)
 			{
-                for (int k = 0; k < 4; k++)
-                {
-                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacle.DownwardDrawDistance--;
-                }
+                Helpers.Helper.PlayPitched("ArenaHit", 0.75f, 1f, NPC.Center);
+
+                tentacleL.ZSpin = 0;
+                tentacleR.ZSpin = 0;
+
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
             }
 
-            if (AttackTimer == 520)
+            if(AttackTimer > 100 && AttackTimer < 130)
+			{
+                tentacles[0].Center += Vector2.UnitY * 2;
+                tentacles[3].Center += Vector2.UnitY * 2;
+            }
+
+            if (AttackTimer > 130 && AttackTimer < 380) //move in to crush
+            {
+                var timer = Helpers.Helper.BezierEase((AttackTimer - 130) / 250f);
+
+                tentacleL.StalkWaviness = timer * 0.3f;
+                tentacleR.StalkWaviness = timer * 0.3f;
+
+                tentacleL.BasePoint.X = Helpers.Helper.LerpFloat(tentacleL.MovementTarget.X, platforms[0].Center.X - 100, timer);
+                tentacleR.BasePoint.X = Helpers.Helper.LerpFloat(tentacleR.MovementTarget.X, platforms[0].Center.X + 100, timer);
+
+                tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.MovementTarget.X, platforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
+                tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.MovementTarget.X, platforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
+            }
+
+            if (AttackTimer == 260)
+                savedPoint = NPC.Center;
+
+            if (AttackTimer > 260 && AttackTimer < 340) //going to the side
+            {
+                Vector2 targetPoint = new Vector2(platforms[0].Center.X, spawnPoint.Y - 400);
+                NPC.Center = Vector2.SmoothStep(savedPoint, targetPoint, (AttackTimer - 260) / 80f);
+            }
+
+            if (AttackTimer == 360)
+                savedPoint = new Vector2(platforms[0].Center.X, spawnPoint.Y - 400);
+
+            if (AttackTimer > 360 && AttackTimer < 520)
+			{
+                if (AttackTimer % 30 == 0)
+                {
+                    var vel = Vector2.UnitX * Main.rand.Next(-5, 5);
+                    Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 50), vel, ModContent.ProjectileType<SpewBlob>(), 20, 1, Main.myPlayer);
+
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
+                }
+			}
+
+            if(AttackTimer == 520)
+			{
+                tentacleL.MovementTarget = tentacleL.NPC.Center;
+                tentacleR.MovementTarget = tentacleR.NPC.Center;
+            }
+
+            if(AttackTimer > 520 && AttackTimer < 580)
+			{
+                tentacleL.NPC.Center = Vector2.SmoothStep(tentacleL.MovementTarget, tentacleL.BasePoint, (AttackTimer - 520) / 60f);
+                tentacleR.NPC.Center = Vector2.SmoothStep(tentacleR.MovementTarget, tentacleR.BasePoint, (AttackTimer - 520) / 60f);
+            }
+
+            if(AttackTimer > 580 && AttackTimer < 640)
+			{
+                tentacleL.DownwardDrawDistance--;
+                tentacleR.DownwardDrawDistance--;
+            }
+
+            if (AttackTimer == 660)
                 ResetAttack();
         }
 

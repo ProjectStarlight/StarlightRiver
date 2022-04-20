@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Debug Stick");
-            Tooltip.SetDefault("Cooming and Cooming");
+            Tooltip.SetDefault("Dont use this if you're not me.");
         }
 
         public override void SetDefaults()
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            Main.NewText(Main.cJump);
+            Main.NewText(Main.cJump + " Is the key to jump. Or is it?");
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
