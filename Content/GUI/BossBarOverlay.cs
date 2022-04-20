@@ -67,8 +67,11 @@ namespace StarlightRiver.Content.GUI
             var pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(0, 1);
             var off = new Vector2(30, 12);
 
-            if (NPC is null)
+            if (NPC is null || !NPC.active || !Main.LocalPlayer.active)
+            {
+                BossBarOverlay.visible = false;
                 return;
+            }
 
             var texGlow = Request<Texture2D>(AssetDirectory.GUI + "BossbarGlow").Value;
 
