@@ -13,35 +13,44 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         int boostCD = 0;
         float targetRotation = 0;
         float realRotation = 0;
-        bool isSwimming = false;
         int emergeTime = 0;
+        public bool ShouldSwim { get; set; }
+        public float SwimSpeed { get; set; }
 
-        private bool ShouldSwim() //checks for if hte Player should be swimming
+        private void CheckAuroraSwimming() //checks for if hte Player should be swimming
         {
-            if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
-                return true;
-
-            for(int x = 0; x < 2; x++)
-                for(int y = 0; y < 3; y++)
-				{
-                    int realX = (int)(Player.position.X / 16) + x;
-                    int realY = (int)(Player.position.Y / 16) + y;
-
-                    if (WorldGen.InWorld(realX, realY))
-                    {
-                        Tile tile = Framing.GetTileSafely(realX, realY);
-                        if (tile.Get<AuroraWaterData>().HasAuroraWater) //PORTTODO: Integrate with properly ported aurora water system
-                            return true;
-                    }
+            if (Player.grapCount <= 0 && Player.mount == null)
+            {
+                if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
+                {
+                    ShouldSwim = true;
+                    SwimSpeed *= 0.7f;
                 }
-            return false;
+
+                for (int x = 0; x < 2; x++)
+                    for (int y = 0; y < 3; y++)
+                    {
+                        int realX = (int)(Player.position.X / 16) + x;
+                        int realY = (int)(Player.position.Y / 16) + y;
+
+                        if (WorldGen.InWorld(realX, realY))
+                        {
+                            Tile tile = Framing.GetTileSafely(realX, realY);
+                            if (tile.Get<AuroraWaterData>().HasAuroraWater) //PORTTODO: Integrate with properly ported aurora water system
+                            {
+                                ShouldSwim = true;
+                                SwimSpeed *= 0.7f;
+                            }
+                        }
+                    }
+            }
 		}
 
-        public override void PostUpdate()
+        public override void PreUpdate()
         {
-            isSwimming = ShouldSwim();
+            CheckAuroraSwimming();
 
-            if (!isSwimming) //reset stuff when the Player isnt swimming
+            if (!ShouldSwim) //reset stuff when the Player isnt swimming
             {
                 if (boostCD > 0)
                 {
@@ -53,9 +62,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                     return;
             }
 
-            Player.maxFallSpeed = 0;
-            Player.gravity = 0;
-            targetRotation = isSwimming ? Player.velocity.ToRotation() : 1.57f + 3.14f;
+            targetRotation = ShouldSwim ? Player.velocity.ToRotation() : 1.57f + 3.14f;
 
             realRotation %= 6.28f; //handles the rotation, ensures the Player wont randomly snap to rotation when entering/leaving swimming
 
@@ -69,17 +76,16 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
             }
             else realRotation = targetRotation;
 
-            Player.fullRotation = realRotation + ((float)Math.PI / 2f);
-            Player.fullRotation %= 6.28f;
-
             Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
+            Player.fullRotation = realRotation + MathHelper.PiOver2;
 
-           if (Player.itemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.itemAnimation == Player.itemAnimationMax - 1) //corrects the rotation on used Items
+            if (Player.itemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.itemAnimation == Player.itemAnimationMax - 1) //corrects the rotation on used Items
                 Player.itemRotation -= realRotation + 1.57f;
 
-            if (!isSwimming) //return later so rotation logic still runs
+            if (!ShouldSwim) //return later so rotation logic still runs
                 return;
 
+            Player.wingTime = -1;
             emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
 
             if (Player.itemAnimation == 0)
@@ -87,29 +93,29 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
             Player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);
 
-            if (Player.controlRight) Player.velocity.X += 0.2f; //there should probably be a better way of doing this?
-            if (Player.controlLeft) Player.velocity.X -= 0.2f;
-            if (Player.controlDown) Player.velocity.Y += 0.2f;
-            if (Player.controlUp) Player.velocity.Y -= 0.2f;
+            float speed = 0.2f * SwimSpeed;
+            if (Player.controlRight) Player.velocity.X += speed; //there should probably be a better way of doing this?
+            if (Player.controlLeft) Player.velocity.X -= speed;
+            if (Player.controlDown) Player.velocity.Y += speed;
+            if (Player.controlUp) Player.velocity.Y -= speed;
 
-            Player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
-
-            Player.velocity *= 0.97f;
+            //Player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
+            //so does this!
+            Player.gravity = 0;
+            Player.velocity *= 0.95f;
 
             if (Player.controlJump && boostCD <= 0)
-            {
-                boostCD = 90;
-            }
+                boostCD = 60;
 
-            if (boostCD > 60)
+            if (boostCD > 40)
             {
-                var timer = ((90 - boostCD) - 60) / 30f;
+                var timer = ((60 - boostCD) - 40) / 20f;
                 var angle = timer * 6.28f;
-                var off = new Vector2((float)Math.Cos(angle) * 40, (float)Math.Sin(angle) * 20);
+                var off = new Vector2((float)Math.Cos(angle) * 18, (float)Math.Sin(angle) * 4);
 
                 Player.UpdateRotation(angle);
-                Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>());
-                Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>());
+                Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>(), Alpha: 0);
+                Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>(), Alpha: 0);
 
                 Player.bodyFrame = new Rectangle(0, 0, 40, 56);
                 Player.legFrame = new Rectangle(0, 0, 40, 56);
@@ -121,6 +127,12 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
             if (boostCD > 0) boostCD--;
             if (emergeTime > 0) emergeTime--;
+        }
+
+        public override void ResetEffects()
+        {
+            ShouldSwim = false;
+            SwimSpeed = MathHelper.Lerp(SwimSpeed, 1f, 0.2f);
         }
     }
 }
