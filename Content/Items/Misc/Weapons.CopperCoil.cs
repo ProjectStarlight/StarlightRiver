@@ -48,31 +48,29 @@ namespace StarlightRiver.Content.Items.Misc
         public override int SegmentVariant(ref int segment)
         {
             int variant;
-            //vanilla does this!
             switch (segment)
             {
                 default:
                     variant = 1;
+                    break;
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    variant = 2;
                     break;
                 case 9:
                 case 10:
                 case 11:
                 case 12:
                 case 13:
-                    variant = 2;
-                    break;
-                case 14:
-                case 15:
-                case 16:
-                case 17:
-                case 18:
                     variant = 3;
                     break;
             }
             return variant;
         }
 
-        public override bool ShouldDrawSegment(ref int segment) => segment % 2 == 1;
+        public override bool ShouldDrawSegment(ref int segment) => segment % 2 == 0;
 
         public override void ArcAI()
         {
@@ -165,10 +163,7 @@ namespace StarlightRiver.Content.Items.Misc
                 nextPoint += velocity;
             }
             for (int i = 1; i < points.Count - 2; i++)
-            {
-                points[i] += Main.rand.NextVector2Circular(20, 20);
-                Lighting.AddLight(points[i], Color.DarkOrchid.ToVector3() * 0.3f);
-            }
+                points[i] += Main.rand.NextVector2Circular(30, 20).RotatedBy(points[i + 1].AngleTo(points[i]));
 
             if (Main.rand.Next(8) == 0)
             {
@@ -183,7 +178,15 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Projectile.timeLeft = 80;
+            target.AddBuff(ModContent.BuffType<Buffs.StaticShock>(), 180);
+            Projectile.timeLeft = 100;
+            canHit = false;
+        }
+
+        public override void OnHitPvp(Player target, int damage, bool crit)
+        {
+            target.AddBuff(ModContent.BuffType<Buffs.StaticShock>(), 180);
+            Projectile.timeLeft = 100;
             canHit = false;
         }
 
@@ -199,13 +202,13 @@ namespace StarlightRiver.Content.Items.Misc
             var texture = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail");
 
             float t = Utils.GetLerpValue(0, 80, Projectile.timeLeft, true);
-            Color glowColor = Color.Lerp(new Color(120, 230, 255), Color.AliceBlue, t);
+            Color glowColor = Color.Lerp(new Color(120, 230, 255), Color.AliceBlue, 0.5f);
             glowColor.A = 0;
             for (int i = 0; i < points.Count - 1; i++)
             {
                 Vector2 difference = points[i + 1] - points[i];
                 float directionalRot = difference.ToRotation();
-                Vector2 scale = new Vector2((difference.Length() + 1f) / texture.Width(), 16f / texture.Height() * t);
+                Vector2 scale = new Vector2((difference.Length() + 2f) / texture.Width(), 16f / texture.Height() * t);
                 Main.EntitySpriteDraw(texture.Value, points[i] - Main.screenPosition, null, glowColor, directionalRot, texture.Size() * new Vector2(0f, 0.5f), scale, SpriteEffects.None, 0);
             }
             return false;
