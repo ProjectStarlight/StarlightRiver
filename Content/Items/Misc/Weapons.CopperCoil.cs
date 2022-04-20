@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            Item.DefaultToWhip(ModContent.ProjectileType<CopperCoilWhip>(), 5, 1.2f, 4f, 30);
+            Item.DefaultToWhip(ModContent.ProjectileType<CopperCoilWhip>(), 5, 1.2f, 5f, 30);
             Item.SetShopValues(ItemRarityID.White, Item.sellPrice(0, 0, 50));
         }
 
@@ -73,11 +73,15 @@ namespace StarlightRiver.Content.Items.Misc
         public override void ArcAI()
         {
             float ai = Projectile.ai[0] * 0.5f; //Extra Update!
-            if (ai > 19 && ai < 21)
+            if (ai == 20)
             {
-                Dust d = Dust.NewDustPerfect(EndPoint, DustID.Electric, Vector2.Zero, 0, Color.LightCyan, 0.6f);
-                d.noGravity = true;
-                d.velocity += Main.rand.NextVector2Circular(2, 1).RotatedBy(Projectile.rotation);
+                for (int i = 0; i < Main.rand.Next(2, 5); i++)
+                {
+                    Dust d = Dust.NewDustPerfect(EndPoint, DustID.Electric, Vector2.Zero, 0, Color.LightCyan, 0.6f);
+                    d.noGravity = true;
+                    d.position += Main.rand.NextVector2Circular(5, 5);
+                    d.velocity += new Vector2(0f, -Main.rand.Next(1, 3)).RotatedBy(Projectile.rotation + i * 0.4f).RotatedByRandom(0.2f);
+                }
             }
         }
     }

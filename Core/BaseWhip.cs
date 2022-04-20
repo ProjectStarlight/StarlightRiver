@@ -164,7 +164,7 @@ namespace StarlightRiver.Core
 
 			//whip
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
-			Rectangle whipFrame = texture.Frame(1, 5);
+			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
 			for (int i = 0; i < points.Count - 1; i++)
@@ -173,12 +173,12 @@ namespace StarlightRiver.Core
 				bool draw = true;
 				if (i == 0)
 					origin.Y += _handleOffset;
-				if (i == points.Count - 2)
+				else if (i == points.Count - 2)
 					whipFrame.Y = height * 4;
 				else
 				{
-					draw = ShouldDrawSegment(ref i);
 					whipFrame.Y = height * SegmentVariant(ref i);
+					draw = ShouldDrawSegment(ref i);
 				}
 
 				Vector2 difference = points[i + 1] - points[i];
