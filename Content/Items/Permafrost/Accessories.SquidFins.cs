@@ -32,9 +32,9 @@ namespace StarlightRiver.Content.Items.Permafrost
         }
         public override void UpdateEquip(Player player)
         {
-            bool canSwim = player.grapCount <= 0 && player.mount == null && player.wet;
+            bool canSwim = player.grapCount <= 0 && player.wet && !player.mount.Active;
             player.GetModPlayer<SwimPlayer>().ShouldSwim = canSwim;
-            player.GetModPlayer<SwimPlayer>().SwimSpeed = 1.5f;
+            player.GetModPlayer<SwimPlayer>().SwimSpeed = 1.33f + (player.moveSpeed * 1.33f);
         }
     }
 }

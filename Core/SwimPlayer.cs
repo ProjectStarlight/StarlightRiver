@@ -19,7 +19,8 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
         private void CheckAuroraSwimming() //checks for if hte Player should be swimming
         {
-            if (Player.grapCount <= 0 && Player.mount == null)
+            bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
+            if (canSwim)
             {
                 if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
                 {
@@ -112,15 +113,17 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 var timer = ((60 - boostCD) - 40) / 20f;
                 var angle = timer * 6.28f;
                 var off = new Vector2((float)Math.Cos(angle) * 18, (float)Math.Sin(angle) * 4);
-
+                var vel = -Player.velocity * 0.5f;
                 Player.UpdateRotation(angle);
-                Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>(), Alpha: 0);
-                Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Starlight>(), Alpha: 0);
+                Dust l = Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
+                Dust r =Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
+                l.noGravity = true;
+                r.noGravity = true;
 
                 Player.bodyFrame = new Rectangle(0, 0, 40, 56);
                 Player.legFrame = new Rectangle(0, 0, 40, 56);
 
-                Player.velocity += Vector2.Normalize(Player.velocity) * 0.35f;
+                Player.velocity += Vector2.Normalize(Player.velocity) * 0.38f * SwimSpeed;
                 Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
             }
             else Player.UpdateRotation(0);
@@ -132,7 +135,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         public override void ResetEffects()
         {
             ShouldSwim = false;
-            SwimSpeed = MathHelper.Lerp(SwimSpeed, 1f, 0.2f);
+            SwimSpeed = 1f;
         }
     }
 }
