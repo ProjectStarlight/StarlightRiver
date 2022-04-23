@@ -466,20 +466,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Dying = 7
         }
 
-        /*public override void PostAI()
+        public override void PostAI()
         {
-            //NPC.life = 1;
+            if (!StarlightRiver.DebugMode)
+                return;
 
-            //if (Phase > (int)AIStates.SpawnAnimation && Phase < (int)AIStates.SecondPhase)
-                //Phase = (int)AIStates.SecondPhase;
-
-            //TODO: Remove later, debug only
             if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
             {
                 for (int k = 0; k < 12; k++)
                     AI();
             }
-        }*/
+        }
 
         public override void AI()
         {

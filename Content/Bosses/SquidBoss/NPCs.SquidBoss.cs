@@ -344,6 +344,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
+        public override void PostAI()
+        {
+            if (!StarlightRiver.DebugMode)
+                return;
+
+            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
+            {
+                for (int k = 0; k < 12; k++)
+                    AI();
+            }
+        }
+
         public override void AI()
         {
             GlobalTimer++;
@@ -510,7 +522,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         AttackPhase++;
                         variantAttack = Main.rand.NextBool();
-                        if (AttackPhase > (Main.expertMode ? 5 : 4)) AttackPhase = 1;
+                        if (AttackPhase > (Main.expertMode ? 5 : 4)) 
+                            AttackPhase = 1;
                     }
 
                 switch (AttackPhase)
@@ -555,15 +568,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         else //else advance the attack pattern
                         {
                             AttackPhase++;
-                            if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
+                            if (AttackPhase > (Main.expertMode ? 5 : 6)) 
+                                AttackPhase = 1;
                         }
 
                     switch (AttackPhase)
                     {
                         case 1: TentacleSpike(); break;
-                        case 2: InkBurst(); break;
+                        case 2: if (variantAttack) InkBurstAlt(); else InkBurst(); break;
                         case 3: PlatformSweep(); break;
-                        case 4: ArenaSweep(); break;
+                        case 4: if (variantAttack) TentacleSpike(); else InkBurstAlt(); break;
+                        case 5: InkBurst(); break;
+                        case 6: ArenaSweep(); break;
                     }
                 }
             }
@@ -590,13 +606,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     AttackTimer++;
 
-                    if (AttackPhase != 2 && AttackPhase != 4 && !(AttackPhase == 3 && variantAttack)) //when not lasering, passive movement
-                    {
-                        NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, 200))) * -0.2f;
-                        if (NPC.velocity.LengthSquared() > 20.25f) NPC.velocity = Vector2.Normalize(NPC.velocity) * 4.5f;
-                        NPC.rotation = NPC.velocity.X * 0.05f;
-                    }
-
                     if (AttackTimer == 1)
                     {
                         if (NPC.life < NPC.lifeMax / 4) //phasing logic
@@ -611,11 +620,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         AttackPhase++;
 
-                        variantAttack = false;
-                        if (AttackPhase == 3) variantAttack = Main.rand.Next(3) >= 1;
-                        if (AttackPhase == 4 && Main.expertMode) variantAttack = Main.rand.NextBool();
+                        variantAttack = Main.rand.NextBool();
 
-                        if (AttackPhase > 4) AttackPhase = 1;
+                        if (AttackPhase > 4) 
+                            AttackPhase = 4;
 
                         NPC.netUpdate = true;
                     }
@@ -624,8 +632,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         case 1: Spew(); break;
                         case 2: Laser(); break;
-                        case 3: if (variantAttack) Eggs(); else Spew(); break;
-                        case 4: if (variantAttack) LeapHard(); else Leap(); break;
+                        case 3: if (variantAttack) SpewAlternate(); else Spew(); break;
+                        case 4: Leap(); break;
                     }
                 }
             }

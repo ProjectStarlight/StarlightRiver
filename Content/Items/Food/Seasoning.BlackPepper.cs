@@ -11,8 +11,6 @@ namespace StarlightRiver.Content.Items.Food
         {
             Item.rare = ItemRarityID.White;
             Item.value = 500;
-            if(StarlightRiver.Instance.HasLoaded && Main.rand.Next(10000) == 0)
-                Item.SetNameOverride("Grandma's ashes");
         }
 
         public override void BuffEffects(Player Player, float multiplier)

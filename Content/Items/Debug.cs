@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            
             Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
             return true;
 
@@ -146,6 +147,33 @@ namespace StarlightRiver.Content.Items
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
 	}
+
+    class DebugModerEnabler : ModItem
+	{
+        public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Debug Mode");
+            Tooltip.SetDefault("Enables debug mode which does... stuff!\nHold Y to make bosses go at ludicrous speed.");
+        }
+
+        public override void SetDefaults()
+        {
+            Item.damage = 10;
+            Item.width = 38;
+            Item.height = 38;
+            Item.useTime = 15;
+            Item.useAnimation = 15;
+            Item.useStyle = ItemUseStyleID.Swing;
+        }
+
+        public override bool? UseItem(Player Player)
+        {
+            StarlightRiver.DebugMode = !StarlightRiver.DebugMode;
+            return true;
+        }
+    }
 
     class Eraser : ModItem
 	{

@@ -436,6 +436,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         #region phase 2
         private void Spew()
         {
+            NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, 200))) * -0.15f;
+
+            if (NPC.velocity.LengthSquared() > 20.25f)
+                NPC.velocity = Vector2.Normalize(NPC.velocity) * 4.5f;
+
+            NPC.rotation = NPC.velocity.X * 0.05f;
+
             if (AttackTimer % 100 == 0)
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
@@ -443,16 +450,46 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Main.expertMode) //spawn more + closer together on expert
                 {
                     for (int k = 0; k < 14; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
                 }
                 else
                 {
                     for (int k = 0; k < 10; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f);
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
                 }
             }
 
-            if (AttackTimer == 300) ResetAttack();
+            if (AttackTimer == 300) 
+                ResetAttack();
+        }
+
+        private void SpewAlternate()
+        {
+            NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, 300))) * -0.125f;
+
+            if (NPC.velocity.LengthSquared() > 20.25f)
+                NPC.velocity = Vector2.Normalize(NPC.velocity) * 4.5f;
+
+            NPC.rotation = NPC.velocity.X * 0.05f;
+
+            if (AttackTimer % 100 == 0)
+            {
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
+
+                if (AttackTimer % 200 == 0)
+                {
+                    for (int k = 0; k < 5; k++)
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 5, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == 2 ? 1.57f : k > 2 ? 3.14f : 0);
+                }
+                else
+                {
+                    for (int k = 0; k < 6; k++)
+                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 4, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k > 2 ? 3.14f : 0);
+                }
+            }
+
+            if (AttackTimer == 300)
+                ResetAttack();
         }
 
         private void Laser()
@@ -470,31 +507,60 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(-800, -500), AttackTimer / 60f);
                 NPC.rotation += 3.14f / 59f;
+
+                foreach(NPC npc in tentacles)
+				{
+                    var tentacle = npc.ModNPC as Tentacle;
+
+                    if(tentacle.DownwardDrawDistance > -10)
+                        tentacle.DownwardDrawDistance--;
+				}
             }
 
             if (AttackTimer == 60)
             {
                 savedPoint = NPC.Center; //leftmost point of laser
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
+                int i = Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
+                (Main.projectile[i].ModProjectile as Laser).Parent = NPC;
             }
 
             int laserTime = Main.expertMode ? 450 : 600; //faster in expert
 
             if (AttackTimer > 60 && AttackTimer < 60 + laserTime) //lasering
             {
-                if (AttackTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit53, NPC.Center);
+                if (AttackTimer % 10 == 0) 
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit53, NPC.Center);
+
                 NPC.Center = Vector2.Lerp(savedPoint, spawnPoint + new Vector2(800, -500), (AttackTimer - 60) / laserTime);
             }
 
-            if (AttackTimer == 60 + laserTime) savedPoint = NPC.Center; //end of laser
+            if (AttackTimer == 60 + laserTime) 
+                savedPoint = NPC.Center; //end of laser
+
+            if (AttackTimer > 60 + laserTime && AttackTimer < 90 + laserTime) //return to center of arena
+            {
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -300), (AttackTimer - (laserTime + 60)) / 60f);
+                NPC.rotation -= 3.14f / 29f;
+            }
 
             if (AttackTimer > 60 + laserTime && AttackTimer < 120 + laserTime) //return to center of arena
             {
                 NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -300), (AttackTimer - (laserTime + 60)) / 60f);
-                NPC.rotation -= 3.14f / 59f;
+
+                if(AttackTimer > 90 + laserTime)
+				{
+                    foreach (NPC npc in tentacles)
+                    {
+                        var tentacle = npc.ModNPC as Tentacle;
+
+                        if (tentacle.DownwardDrawDistance < 28)
+                            tentacle.DownwardDrawDistance += 2;
+                    }
+                }
             }
 
-            if (AttackTimer >= 120 + laserTime) ResetAttack();
+            if (AttackTimer >= 120 + laserTime) 
+                ResetAttack();
         }
 
         private void Leap()
@@ -505,27 +571,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.velocity *= 0;
                 NPC.rotation = 0;
 
-                for (int k = 0; k < 4; k++) //tentacles
+                for (int k = 1; k <= 2; k++) //tentacles
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
                     int off;
 
                     switch (k)
                     {
-                        case 0: off = -430; break;
-                        case 1: off = -150; break;
-                        case 2: off = 150; break;
-                        case 3: off = 430; break;
+                        case 1: off = -500; break;
+                        case 2: off = 500; break;
                         default: off = 0; break;
                     }
 
                     tentacles[k].Center = new Vector2(spawnPoint.X + off, spawnPoint.Y - 100);
                     tentacle.BasePoint = tentacles[k].Center;
-                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(off * 0.45f, -900);
-
-                    for (int n = 0; n < 40; n++)
-                        Dust.NewDustPerfect(Vector2.Lerp(tentacle.BasePoint, tentacle.MovementTarget, n / 30f), DustID.Fireworks, Vector2.Zero);
-
+                    tentacle.StalkWaviness = 0.5f;
+                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(off * 0.65f, -1200);
                 }
             }
 
@@ -533,7 +594,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -500), AttackTimer / 120f);
 
-                for (int k = 0; k < 4; k++) //tentacles
+                for (int k = 1; k <= 2; k++) //tentacles
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, AttackTimer / 120f);
@@ -543,57 +604,40 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
             }
 
-            if (AttackTimer == 120) NPC.velocity.Y = -15; //jump
+            if (AttackTimer == 120) 
+                NPC.velocity.Y = -30; //jump
+
+            if(AttackTimer > 60 && AttackTimer < 120)
+			{
+                for (int k = 1; k <= 2; k++) //tentacles
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    float prog = Helpers.Helper.BezierEase((AttackTimer - 60) / 60f);
+                    tentacles[k].Center = tentacle.BasePoint + (tentacle.NPC.Center - tentacle.BasePoint).RotatedBy(prog * (k == 1 ? 0.4f : -0.4f));
+                }
+            }
 
             if (AttackTimer == 150) //spawn Projectiles
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
 
-                for (float k = 0; k <= 3.14f; k += 3.14f / 4f)
+                for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
                     Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
-            if (AttackTimer > 120 && AttackTimer < 220) NPC.velocity.Y += 0.16f; //un-jump
+            if (AttackTimer > 120 && AttackTimer < 150)
+                NPC.velocity.Y += 1f; //un-jump
 
-            if (AttackTimer > 120)
+            if (AttackTimer > 240)
             {
-                for (int k = 0; k < 4; k++) //tentacles
-                {
-                    tentacles[k].Center = new Vector2(tentacles[k].Center.X + (float)Math.Sin(AttackTimer / 10f + k) * 4f, tentacles[k].Center.Y + (float)Math.Cos(AttackTimer / 10f + k) * 2f);
-                }
-            }
-
-            if (AttackTimer > 540)
-            {
-                for (int k = 0; k < 4; k++) //tentacles
+                for (int k = 1; k <= 2; k++) //tentacles
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
-                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 540) / 60f);
+                    tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 240) / 60f);
                 }
             }
 
-            if (AttackTimer == 600) ResetAttack();
-        }
-
-        private void Eggs()
-        {
-            if (AttackTimer == 1)
-            {
-                savedPoint = NPC.Center;
-                ShufflePlatforms();
-            }
-
-            if (AttackTimer < 60) NPC.Center = Vector2.SmoothStep(savedPoint, platforms[0].Center + new Vector2(0, -150), AttackTimer / 60);
-
-            if (AttackTimer == 60)
-            {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 120), Vector2.Zero, ModContent.ProjectileType<SquidEgg>(), 10, 0.2f);
-            }
-
-            if (AttackTimer > 120 && AttackTimer < 180) NPC.Center = Vector2.SmoothStep(platforms[0].Center + new Vector2(0, -150), savedPoint, (AttackTimer - 120) / 60);
-
-            if (AttackTimer == 180) ResetAttack();
+            if (AttackTimer == 300) ResetAttack();
         }
 
         private void LeapHard()

@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.rotation += Main.rand.NextFloat(0.2f);
             Projectile.scale = 0.5f;
 
-            Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / 120f * 3.14f * 3) * 0.75f;
+            Projectile.position += Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(Projectile.timeLeft / 120f * 3.14f * 3 + Projectile.ai[0]) * 0.75f;
 
             float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
             float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
@@ -225,14 +225,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.timeLeft = 300;
             Projectile.hostile = true;
             Projectile.damage = 20;
+            Projectile.extraUpdates = 1;
         }
 
         public override void AI()
         {
-            Projectile.velocity.Y -= 0.11f;
+            Projectile.velocity.Y -= 0.025f;
             Projectile.velocity.X *= 0.9f;
 
-            Projectile.ai[1] += 0.1f;
+            Projectile.ai[1] += 0.05f;
             Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
             float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
@@ -256,6 +257,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public void DrawAdditive(SpriteBatch spriteBatch)
 		{
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D star = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "OrbitalStrike").Value;
 
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
@@ -266,7 +268,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Main.masterMode)
                     color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
-                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 1.5f, default, default);
+                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 0.75f - (k / (float)Projectile.oldPos.Length * 0.75f), default, default);
+
+                if (k == 0)
+                {
+                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], star.Size() / 2, 0.65f, default, default);
+                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1] * -0.2f, star.Size() / 2, 0.85f, default, default);
+                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, 1.15f, default, default);
+                }
             }
         }
 

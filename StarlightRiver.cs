@@ -30,9 +30,9 @@ namespace StarlightRiver
 
         public static float Rotation;
 
-        public static LightingBuffer LightingBufferInstance = null;
+        public static bool DebugMode = false;
 
-        public bool HasLoaded;
+        public static LightingBuffer LightingBufferInstance = null;
 
         //debug hook to view RTs
         //public override void PostDrawInterface(SpriteBatch spriteBatch)
@@ -123,11 +123,6 @@ namespace StarlightRiver
             {
                 group.AddRecipeGroups();
             }
-        }
-
-        public override void PostAddRecipes()
-        {
-            HasLoaded = true;
         }
 
         public void CheckScreenSize()
