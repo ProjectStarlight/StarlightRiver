@@ -394,8 +394,6 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 effectiveOffset = 0;
             }
 
-
-
             if (projTarget is null)
                 endPoint = target.Center;
             else
@@ -422,6 +420,14 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 nodes.Add(point2);
             }
 
+            for (int n = 1; n < nodes.Count - 1; n++)
+            {
+                Vector2 prevPos = n == 1 ? startPoint : nodes[n - 1];
+                Vector2 dustVel = Vector2.Normalize(nodes[n] - prevPos) * Main.rand.NextFloat(-3, -2);
+                if (Main.rand.Next(20) == 0)
+                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), dustVel, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
+            }
+
             if (Projectile.timeLeft == 1)
                 PreKill(Projectile.timeLeft);
         }
@@ -446,9 +452,6 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 var color = new Color(200, 230, 255) * (Projectile.extraUpdates == 0 ? Projectile.timeLeft / 15f : 1);
 
                 sb.Draw(tex, target, null, color, rot, origin, 0, 0);
-
-                if (Main.rand.Next(20) == 0)
-                    Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
             }
         }
 

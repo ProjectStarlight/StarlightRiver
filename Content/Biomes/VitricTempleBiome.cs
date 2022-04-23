@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassTemple");
 
-		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+		public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
