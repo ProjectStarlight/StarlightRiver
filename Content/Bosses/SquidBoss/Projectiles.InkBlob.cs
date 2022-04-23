@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Aurora Shard");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 50;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Main.masterMode)
                     color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
-                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 0.75f - (k / (float)Projectile.oldPos.Length * 0.75f), default, default);
+                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 0.85f - (k / (float)Projectile.oldPos.Length * 0.85f), default, default);
 
                 if (k == 0)
                 {
