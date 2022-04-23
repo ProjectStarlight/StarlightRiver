@@ -623,7 +623,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         variantAttack = Main.rand.NextBool();
 
                         if (AttackPhase > 4) 
-                            AttackPhase = 4;
+                            AttackPhase = 1;
 
                         NPC.netUpdate = true;
                     }
