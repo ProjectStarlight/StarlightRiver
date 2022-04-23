@@ -181,8 +181,8 @@ namespace StarlightRiver.Core
 					whipFrame.Y = height * 4;
 				else
 				{
-					whipFrame.Y = height * SegmentVariant(ref i);
-					draw = ShouldDrawSegment(ref i);
+					whipFrame.Y = height * SegmentVariant(i);
+					draw = ShouldDrawSegment(i);
 				}
 
 				Vector2 difference = points[i + 1] - points[i];
@@ -197,8 +197,8 @@ namespace StarlightRiver.Core
 
 			return false;
         }
-		public virtual int SegmentVariant(ref int segment) => (1 + (segment % 3));
+		public virtual int SegmentVariant(int segment) => (1 + (segment % 3));
 
-		public virtual bool ShouldDrawSegment(ref int segment) => segment % 2 == 0;
+		public virtual bool ShouldDrawSegment(int segment) => segment % 2 == 0;
     }
 }

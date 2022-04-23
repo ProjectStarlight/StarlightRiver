@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public CopperCoilWhip() : base("Copper Coil", 15, 0.57f, new Color(153, 122, 97)) { }
 
-        public override int SegmentVariant(ref int segment)
+        public override int SegmentVariant(int segment)
         {
             int variant;
             switch (segment)
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
             return variant;
         }
 
-        public override bool ShouldDrawSegment(ref int segment) => segment % 2 == 0;
+        public override bool ShouldDrawSegment(int segment) => true;// segment % 2 == 0;
 
         public override void ArcAI()
         {
