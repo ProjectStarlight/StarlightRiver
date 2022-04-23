@@ -695,6 +695,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
                     tentacle.DownwardDrawDistance -= 2;
+                    tentacle.NPC.Center = tentacle.BasePoint;
                 }
             }
 
