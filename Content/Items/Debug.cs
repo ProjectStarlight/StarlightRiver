@@ -4,6 +4,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.MistSystem;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
@@ -49,6 +50,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            MistHook.MFH?.GenerateMistField(100, 1, Main.MouseWorld);
+            return true;
+
             Main.NewText(Main.cJump);
             return true;
 
