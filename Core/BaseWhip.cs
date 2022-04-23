@@ -44,7 +44,9 @@ namespace StarlightRiver.Core
 			Projectile.DefaultToWhip();
 		}
 
-		public override bool PreAI()
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => false;
+
+        public override bool PreAI()
 		{
 			Player player = Main.player[Projectile.owner];
 			_flyTime = player.itemAnimationMax * Projectile.MaxUpdates;
