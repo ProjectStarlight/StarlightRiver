@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        public sealed override void PostAI() //need to do this early to make sure all blocks get cucked
+        public sealed override void PostAI() //need to do this early to make sure all blocks get killed
         {
             foreach (Point16 point in ValidPoints.Where(n => !Main.tile[n.X, n.Y].HasTile))
             {

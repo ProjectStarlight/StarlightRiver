@@ -38,9 +38,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 int y = (int)Projectile.Center.Y / 16 - 28;
 
+                int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 22 : -78;
+
                 for (int k = 0; k < 58; k++)
                 {
-                    int x = (int)Projectile.Center.X / 16 + 22 + k;
+                    int x = (int)Projectile.Center.X / 16 + xOff + k;
                     ValidPoints.Add(new Point16(x, y));
                 }
             }

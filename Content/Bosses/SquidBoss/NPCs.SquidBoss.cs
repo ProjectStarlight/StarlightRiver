@@ -20,10 +20,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     {
         public List<NPC> tentacles = new List<NPC>(); //the tentacle NPCs which this boss controls
         public List<NPC> platforms = new List<NPC>(); //the big platforms the boss' arena has
+        public bool variantAttack;
         private NPC arenaBlocker;
         Vector2 spawnPoint;
-        Vector2 savedPoint;
-        bool variantAttack;
+        Vector2 savedPoint;     
 
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
@@ -630,7 +630,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     switch (AttackPhase)
                     {
-                        case 1: Spew(); break;
+                        case 1: if (variantAttack) SpewAlternate(); else Spew(); break;
                         case 2: Laser(); break;
                         case 3: if (variantAttack) SpewAlternate(); else Spew(); break;
                         case 4: Leap(); break;
@@ -661,7 +661,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (AttackPhase != 3)
                     {
                         NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, -300))) * -0.3f;
-                        if (NPC.velocity.LengthSquared() > 36) NPC.velocity = Vector2.Normalize(NPC.velocity) * 6;
+
+                        if (NPC.velocity.LengthSquared() > 36) 
+                            NPC.velocity = Vector2.Normalize(NPC.velocity) * 6;
+
                         NPC.rotation = NPC.velocity.X * 0.05f;
                     }
 

@@ -43,6 +43,20 @@ namespace StarlightRiver.Content.CustomHooks
                     if (region.Contains(new Point(x, y)))
                         return true;
                 }
+
+                Tile tile = Framing.GetTileSafely(x, y);
+
+                if (tile.WallType == WallType<AuroraBrickWall>())
+                {
+                    for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
+                    {
+                        Projectile proj = Main.projectile[k];
+
+                        if (proj.active && proj.timeLeft > 10 && proj.ModProjectile is InteractiveProjectile && (proj.ModProjectile as InteractiveProjectile).CheckPoint(x, y))
+                            return false;
+                    }
+                    return true;
+                }
             }
 
             return false;
@@ -145,24 +159,6 @@ namespace StarlightRiver.Content.CustomHooks
             if (Item.createTile != -1 || Item.createWall != -1 || forbiddenItemIds.Contains(Item.type))
             {
                 Point16 targetPoint = Main.SmartCursorIsUsed ? new Point16(Main.SmartCursorX, Main.SmartCursorY) : new Point16(Player.tileTargetX, Player.tileTargetY);
-
-                Tile tile = Framing.GetTileSafely(targetPoint.X, targetPoint.Y);
-
-                if (tile.WallType == WallType<AuroraBrickWall>())
-                {
-                    for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
-                    {
-                        Projectile proj = Main.projectile[k];
-
-                        if (proj.active && proj.timeLeft > 10 && proj.ModProjectile is InteractiveProjectile && (proj.ModProjectile as InteractiveProjectile).CheckPoint(targetPoint.X, targetPoint.Y))
-                        {
-                            return base.CanUseItem(Item, player);
-                        }
-                    }
-                    player.AddBuff(BuffID.Cursed, 10, false);
-                    FailFX(targetPoint);
-                    return false;
-                }
 
                 if (IsProtected(targetPoint.X, targetPoint.Y))
                 {
