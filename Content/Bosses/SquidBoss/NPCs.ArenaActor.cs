@@ -34,7 +34,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-		public override void SetDefaults()
+        private Vector2 domeOffset = new Vector2(0, -886);
+
+
+        public override void SetDefaults()
         {
             NPC.dontTakeDamage = true;
             NPC.dontCountMe = true;
@@ -321,7 +324,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDome").Value;
-            spriteBatch.Draw(dome, NPC.Center - dome.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, null, Color.White * 0.325f, 0, Vector2.Zero, 1, 0, 0);
+            spriteBatch.Draw(dome, NPC.Center - dome.Size() / 2 + domeOffset - Main.screenPosition, null, Color.White * 0.325f, 0, Vector2.Zero, 1, 0, 0);
 
             Texture2D glass = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowIn").Value;
             Texture2D glass2 = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowInGlow").Value;
@@ -358,8 +361,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var tintColor = Color.White;
             tintColor.A = (byte)(NPC.AnyNPCs(NPCType<SquidBoss>()) ? 25 : 100);
 
-            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.011f), offsetScale: 0.05f, tintColor: tintColor, restartSpriteBatch: false);
-            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + new Vector2(0, -974) - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(0f, 0.025f), offsetScale: 0.08f, tintColor: tintColor, restartSpriteBatch: false);
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - reflectionMap.Size() / 2 + new Vector2(0, -7 * 16 - 3) - Main.screenPosition, normalMap: reflectionMap, flatOffset: new Vector2(-0.0075f, 0.03f), offsetScale: 0.05f, tintColor: tintColor, restartSpriteBatch: false);
+            ReflectionTarget.DrawReflection(spriteBatch, screenPos: NPC.Center - domeMap.Size() / 2 + domeOffset - Main.screenPosition, normalMap: domeMap, flatOffset: new Vector2(0f, 0.1f), offsetScale: 0.08f, tintColor: tintColor, restartSpriteBatch: false);
             ReflectionTarget.isDrawReflectablesThisFrame = true;
         }
 
