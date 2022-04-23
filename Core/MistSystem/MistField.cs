@@ -363,6 +363,7 @@ namespace StarlightRiver.Core.MistSystem
 
             NavierStokes.Parameters["adDensity"].SetValue(Add);
 
+
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, Main.GameViewMatrix.TransformationMatrix);
 
             NavierStokes.Techniques[0].Passes[6].Apply();
@@ -449,10 +450,25 @@ namespace StarlightRiver.Core.MistSystem
             /*if (TileDrawOverLoader.tileTarget != null)
                  sb.Draw(TileDrawOverLoader.tileTarget, Vector2.Zero, Color.White);*/
 
-            sb.Begin(SpriteSortMode.Immediate, null, SamplerState.LinearClamp, null, null, null, Main.GameViewMatrix.TransformationMatrix);
-            
+            sb.Begin(SpriteSortMode.Immediate, default, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            NavierStokes.Techniques[0].Passes[7].Apply();
+            //Effect shader = Filters.Scene["ReflectionMapper"].GetShader().Shader;
+            //shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
+            //shader.Parameters["uIntensity"].SetValue(0.5f);
+            //shader.Techniques[0].Passes[0].Apply();
+
+            Matrix m = Matrix.CreateOrthographicOffCenter(0, N, N, 0, 0, -1);
+            m.M41 += -0.5f * m.M11;
+            m.M42 += -0.5f * m.M22;
+
+            Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Parameters["MATRIX"].SetValue(m);
+
+            Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Techniques[0].Passes[0].Apply();
+            Main.NewText(Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Techniques[0].Passes[0].Name);
+
+
+            //NavierStokes.Techniques[0].Passes[7].Apply();
+            //Main.NewText(NavierStokes.Techniques[0].Passes[7].Name);
             sb.Draw(DensityTarget, GlobalSpace - Main.screenPosition, Color.White);
 
             sb.End();
