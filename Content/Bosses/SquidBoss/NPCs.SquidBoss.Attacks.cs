@@ -416,8 +416,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     if(Main.masterMode)
 					{
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 50), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer);
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 50), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer, 3.14f);
+                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer, 3.14f);
                     }
                 }
 			}
