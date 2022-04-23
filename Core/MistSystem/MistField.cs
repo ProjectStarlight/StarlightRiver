@@ -457,12 +457,6 @@ namespace StarlightRiver.Core.MistSystem
             //shader.Parameters["uIntensity"].SetValue(0.5f);
             //shader.Techniques[0].Passes[0].Apply();
 
-            Matrix m = Matrix.CreateOrthographicOffCenter(0, N, N, 0, 0, -1);
-            m.M41 += -0.5f * m.M11;
-            m.M42 += -0.5f * m.M22;
-
-            Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Parameters["MATRIX"].SetValue(m);
-
             Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Techniques[0].Passes[0].Apply();
             Main.NewText(Filters.Scene["NavierStokesOnlyCursed"].GetShader().Shader.Techniques[0].Passes[0].Name);
 
