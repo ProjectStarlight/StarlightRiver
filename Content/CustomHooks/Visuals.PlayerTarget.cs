@@ -73,8 +73,16 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.Lighting.GetColor_Point += getColorOverride;
             On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
             On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
+            On.Terraria.Lighting.GetColorClamped += GetColorOverride;
         }
 
+        private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+        {
+            if (canUseTarget)
+                return orig.Invoke(x, y, oldColor);
+
+            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
+        }
 		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
 		{
             if (canUseTarget)
