@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightPlayer : ModPlayer
+    public partial class StarlightPlayer : ModPlayer
     {
         //for on-hit effects that require more specific effects, Projectiles
         public delegate void ModifyHitByProjectileDelegate(Player Player, Projectile proj, ref int damage, ref bool crit);
@@ -88,10 +88,10 @@ namespace StarlightRiver.Core
 
         public delegate void PostDrawDelegate(Player Player, SpriteBatch spriteBatch);
         public static event PostDrawDelegate PostDrawEvent;
-		public void PostDraw(Player Player, SpriteBatch spriteBatch)
-		{
-			PostDrawEvent?.Invoke(Player, Main.spriteBatch);
-		}
+        public void PostDraw(Player Player, SpriteBatch spriteBatch)
+        {
+            PostDrawEvent?.Invoke(Player, Main.spriteBatch);
+        }
 
         public delegate void PreDrawDelegate(Player Player, SpriteBatch spriteBatch);
         public static event PreDrawDelegate PreDrawEvent;

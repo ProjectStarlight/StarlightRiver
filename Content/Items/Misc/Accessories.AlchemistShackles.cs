@@ -21,7 +21,11 @@ namespace StarlightRiver.Content.Items.Misc
 			On.Terraria.Player.AddBuff += Player_AddBuff;
 		}
 
-		
+		public override void Unload()
+		{
+			On.Terraria.Player.AddBuff -= Player_AddBuff;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alchemist's Shackles");

@@ -13,6 +13,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public bool Broken = false;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Ancient Vitric Blade");
+            Tooltip.SetDefault("Shatters into enchanted glass shards \nUnable to be used while shattered");
+        }
+
         public override void SetDefaults()
         {
             Item.damage = 35;
@@ -28,12 +34,6 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = false;
             Item.useTurn = true;
-        }
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Ancient Vitric Blade");
-            Tooltip.SetDefault("Shatters into enchanted glass shards \nUnable to be used while shattered");
         }
 
 		public override bool? CanHitNPC(Player Player, NPC target)
@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     int dus = Dust.NewDust(Vector2.Lerp(player.Center, target.Center, 0.4f), 16, 16, ModContent.DustType<Dusts.GlassAttracted>(), (Vector2.Normalize(player.Center - target.Center) * vel).X, (Vector2.Normalize(player.Center - target.Center) * vel).Y);
                     Main.dust[dus].customData = player;
                 }
+
                 Broken = true;
             }
         }
@@ -68,6 +69,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 return false;
             else
                 Broken = false;
+
             return true;
         }
     }

@@ -22,6 +22,11 @@ namespace StarlightRiver.Content.Items.Misc
             On.Terraria.Player.HealEffect += HealEffect;
         }
 
+        public override void Unload()
+        {
+            On.Terraria.Player.HealEffect -= HealEffect;
+        }
+
         public override void SafeUpdateEquip(Player Player)
         {
             Player.GetModPlayer<HolyAmuletHealingTracker>().item = Item;

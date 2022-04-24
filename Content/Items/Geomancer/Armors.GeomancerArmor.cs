@@ -32,7 +32,12 @@ namespace StarlightRiver.Content.Items.Geomancer
             On.Terraria.Main.DrawPendingMouseText += SpoofMouseItem;
         }
 
-        public override void SetStaticDefaults()
+		public override void Unload()
+		{
+            On.Terraria.Main.DrawPendingMouseText -= SpoofMouseItem;
+        }
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Geomancer's Hood");
             //Tooltip.SetDefault("15% increased ranged critical strike damage");

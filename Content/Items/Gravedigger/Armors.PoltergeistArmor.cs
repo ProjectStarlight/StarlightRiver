@@ -30,8 +30,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
             //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
-            StarlightItem.CanUseItemEvent += ControlItemUse;
-            
+            StarlightItem.CanUseItemEvent += ControlItemUse;          
+        }
+
+		public override void Unload()
+		{
+            On.Terraria.Player.KeyDoubleTap -= HauntItem;
+            StarlightItem.CanUseItemEvent -= ControlItemUse;
         }
 
 		public override void SetStaticDefaults()

@@ -7,13 +7,15 @@ namespace StarlightRiver.Core.Loaders
 {
 	class ArmorEnchantLoader : IOrderedLoadable
     {
-        public static List<ArmorEnchantment> Enchantments = new List<ArmorEnchantment>();
+        public static List<ArmorEnchantment> Enchantments;
 
         public float Priority => 1.0f;
 
         public void Load()
         {
             Mod Mod = StarlightRiver.Instance;
+
+            Enchantments = new List<ArmorEnchantment>();
 
             foreach (Type t in Mod.Code.GetTypes())
             {
@@ -26,7 +28,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            Enchantments.Clear();
+            Enchantments = null;
         }
     }
 }

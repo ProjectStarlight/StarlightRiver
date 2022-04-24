@@ -24,16 +24,22 @@ namespace StarlightRiver.Content.Items.Misc
             StarlightPlayer.OnHitNPCEvent += OnHitNPCAccessory;
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
         }
+
+        public override void Unload()
+        {
+            StarlightPlayer.OnHitNPCEvent -= OnHitNPCAccessory;
+            StarlightPlayer.OnHitNPCWithProjEvent -= OnHitNPCWithProjAccessory;
+        }
+
         private void OnHit(Player Player, bool crit)
         {
             if (Equipped(Player) && crit && Main.rand.NextFloat() < 0.25f)
-            {
                 TransferRandomDebuffToNearbyEnemies(Player);
-            }
         }
 
         private void OnHitNPCAccessory(Player Player, Item Item, NPC target, int damage, float knockback, bool crit) 
             => OnHit(Player, crit);
+
         private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit) 
             => OnHit(Player, crit);
 
@@ -44,9 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
             for (int i = 0; i < Player.MaxBuffs; i++)
             {
                 if (Helper.IsValidDebuff(Player, i))
-                {
                     activeDebuffIds.Add(Player.buffType[i]);
-                }
             }
 
             int type = Main.rand.Next(activeDebuffIds);
@@ -56,9 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
                 NPC npc = Main.npc[i];
 
                 if (npc.CanBeChasedBy() && Vector2.DistanceSquared(Player.Center, npc.Center) < transferRadius * transferRadius)
-                {
                     npc.AddBuff(type, transferredBuffDuration);
-                }
             }
         }
     }

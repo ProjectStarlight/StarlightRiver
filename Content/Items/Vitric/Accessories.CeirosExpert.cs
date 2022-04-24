@@ -22,6 +22,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public CeirosExpert() : base("Shattered Aegis", "Releases a burning ring when damaged\n'Meet your foes head-on, and give them a scorching embrace'") { }
 
+        public override void Load()
+        {
+            StarlightPlayer.PreHurtEvent += PreHurtKnockback;
+        }
+
+        public override void Unload()
+        {
+            StarlightPlayer.PreHurtEvent -= PreHurtKnockback;
+        }
+
         public override void SafeSetDefaults()
         {
             Item.expert = true;
@@ -29,11 +39,6 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.accessory = true;
             Item.width = 32;
             Item.height = 32;
-        }
-
-        public override void Load()
-        {
-            StarlightPlayer.PreHurtEvent += PreHurtKnockback;
         }
 
 		public override void SafeUpdateEquip(Player Player)
