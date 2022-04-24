@@ -23,7 +23,6 @@ namespace StarlightRiver.Content.Menus
 		{
 			sparkles = new ParticleSystem(AssetDirectory.Dust + "MoonstoneShimmer", updateSparkles);
 			meteor = new ParticleSystem(AssetDirectory.MiscTextures + "MoonstoneMeteor", updateMeteor);
-			meteor.SetTexture((Texture2D)ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "MoonstoneMeteor"));
 		}
 
 
@@ -60,12 +59,13 @@ namespace StarlightRiver.Content.Menus
 			//Texture2D meteor = (Texture2D)ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "MoonstoneMeteor");
 			//spriteBatch.Draw(meteor, new Vector2(200, 200), new Color(130, 130, 130, 0));
 
-			if (Main.rand.NextBool(200))
+			if (Main.rand.NextBool(150))
 			{
 				float scale = Main.rand.NextFloat(0.4f, 1.6f);
 				Vector2 meteorpos = new Vector2(Main.rand.Next(10, (int)(Main.screenWidth * 1.5f)), -10);
 				var vel = new Vector2(-Main.rand.NextFloat(2.7f, 3.2f), Main.rand.NextFloat(2f, 2.3f));
 				var color = new Color(130, 130, 130, 0);
+				meteor.SetTexture((Texture2D)ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "MoonstoneMeteor"));
 				meteor.AddParticle(new Particle(meteorpos, vel * scale, 0, scale, color * scale, (int)((Main.screenHeight / 2.075f) / scale), Vector2.Zero, new Rectangle(0, 0, 82, 82)));
 			}
 
