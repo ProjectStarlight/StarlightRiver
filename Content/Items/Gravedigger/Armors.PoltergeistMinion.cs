@@ -79,7 +79,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				var helm = (owner.armor[0].ModItem as PoltergeistHead);
 
 				int sleepTimer = helm.sleepTimer;
-				float progress = Timer * 0.02f + helm.minions.IndexOf(Projectile) / (float)helm.minions.Count * 6.28f;
+				int index = helm.minions.IndexOf(Projectile);
+				float progress = helm.Timer * 0.02f + index / (float)helm.minions.Count * 6.28f;
 
 				Projectile.timeLeft = 2;
 				targetPos = owner.Center + new Vector2(0, -100 + (float)Math.Sin(progress * 3.4f) * 20) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);

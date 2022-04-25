@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
     public class PoltergeistHead : ModItem
     {
         public List<Projectile> minions = new List<Projectile>();
+        public int Timer;
         public int sleepTimer;
 
         public override string Texture => AssetDirectory.GravediggerItem + Name;
@@ -71,6 +72,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
                 "Haunted weapons become disinterested in non-magic users and can't be used while haunted";
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
+
+            Timer++;
 
             for (int k = 0; k < minions.Count; k++)
             {
