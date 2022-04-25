@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 
@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 	}
