@@ -34,8 +34,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.DamageType = DamageClass.Generic;
 			Item.width = 24;
 			Item.height = 24;
-			Item.useTime = 25;
-			Item.useAnimation = 25;
+			Item.useTime = 19;
+			Item.useAnimation = 19;
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.noMelee = true;
 			Item.knockBack = 0;
@@ -47,23 +47,23 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.consumable = true;
 			Item.maxStack = 999;
 		}
-    }
+	}
 
 	internal enum BottleType
-    { 
+	{
 		Regular = 0,
-		NoGravity = 1,
+		Bounce = 1,
 		Float = 2,
 		Slide = 3
 	}
 
 	internal enum LiquidType
-    {
+	{
 		Fire = 0,
 		Ice = 1,
 		Lightning = 2,
 		Poison = 3
-    }
+	}
 	public class BizarrePotionProj : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -73,6 +73,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private LiquidType liquidType;
 
 		private BottleType bottleType;
+
+		int bounces = 2;
 
 		private Player owner => Main.player[Projectile.owner];
 		public override void SetStaticDefaults()
@@ -92,8 +94,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.DamageType = DamageClass.Generic;
 		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
+		public override bool PreDraw(ref Color lightColor)
+		{
 			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 			int xFrameSize = texture.Width / 4;
 			int yFrameSize = texture.Height / 4;
@@ -104,17 +106,18 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(xFrameSize, yFrameSize) / 2, Projectile.scale, SpriteEffects.None, 0f);
 
-            Texture2D glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Main.spriteBatch.Draw(glowTexture, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(xFrameSize, yFrameSize) / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
-        public override void AI()
+		public override void AI()
 		{
 			if (!initialized)
 			{
 				initialized = true;
 				liquidType = (LiquidType)Main.rand.Next(4);
+				//liquidType = LiquidType.Lightning;
 				bottleType = (BottleType)Main.rand.Next(4);
 
 				switch (bottleType)
@@ -143,8 +146,8 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.rotation = 0f;
 					Projectile.velocity.Y += 0.3f;
 					break;
-				case BottleType.NoGravity:
-					Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+				case BottleType.Bounce:
+					Projectile.aiStyle = 2;
 					break;
 			}
 		}
@@ -152,26 +155,48 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (bottleType == BottleType.Slide)
-            {
+			{
 				if (oldVelocity.Y != Projectile.velocity.Y && oldVelocity.X == Projectile.velocity.X)
 					return false;
-            }
+			}
+			if (bottleType == BottleType.Bounce)
+			{
+				if (oldVelocity.Y != Projectile.velocity.Y)
+					Projectile.velocity.Y = -oldVelocity.Y * 0.8f;
+
+				if (oldVelocity.X != Projectile.velocity.X)
+					Projectile.velocity.X = -oldVelocity.X;
+
+				return (bounces-- <= 0);
+			}
 			return true;
 		}
 
-        public override void Kill(int timeLeft)
-        {
+		public override void Kill(int timeLeft)
+		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 107);
 			switch (liquidType)
-            {
-                case LiquidType.Fire:
+			{
+				case LiquidType.Fire:
 					Explode();
 					break;
-            }
-        }
+				case LiquidType.Lightning:
+					SpawnLightning();
+					break;
+			}
+		}
+
+		private void SpawnLightning()
+		{
+			var targets = Main.npc.Where(x => x.active && !x.townNPC/*  && !x.immortal && !x.dontTakeDamage&& !x.friendly*/ && x.Distance(Projectile.Center) < 400);
+			foreach (NPC target in targets)
+			{
+				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BizarreLightning>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI, target.Distance(Projectile.Center));
+			}
+		}
 
 		private void Explode()
-        {
+		{
 			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/FireHit"), Projectile.Center);
@@ -206,10 +231,10 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-        private Color GetColor()
-        {
+		private Color GetColor()
+		{
 			switch (liquidType)
-            {
+			{
 				case LiquidType.Fire:
 					return Color.Orange;
 				case LiquidType.Ice:
@@ -218,8 +243,142 @@ namespace StarlightRiver.Content.Items.Misc
 					return Color.Yellow;
 				case LiquidType.Poison:
 					return Color.Purple;
-            }
+			}
 			return Color.White;
-        }
+		}
 	}
+	public class BizarreLightning : ModProjectile, IDrawPrimitive
+	{
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+
+		private NPC target => Main.npc[(int)Projectile.ai[0]];
+
+		private float thickness = 2;
+
+		private int fadeTime = 30;
+
+		private int trailLength => (int)MathHelper.Clamp((int)(Projectile.ai[1] / 15), 2, 100);
+		private float fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / (float)fadeTime) : 1;
+
+		private List<Vector2> cache;
+		private List<Vector2> cache2;
+		private Trail trail;
+		private Trail trail2;
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 8;
+			Projectile.height = 8;
+			Projectile.friendly = true;
+			Projectile.timeLeft = 600;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Generic;
+			Projectile.extraUpdates = 14;
+			Projectile.penetrate = -1;
+			Projectile.hide = true;
+			Projectile.usesLocalNPCImmunity = true;
+		}
+
+        public override void AI()
+        {
+			if (Projectile.extraUpdates > 0)
+				Projectile.velocity = Projectile.DirectionTo(target.Center) * 4;
+			else
+				Projectile.velocity = Vector2.Zero;
+			ManageCaches();
+			ManageTrails();
+        }
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < trailLength; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
+			}
+
+			if (Projectile.extraUpdates > 0 && Projectile.timeLeft % 5 == 0)
+				cache.Add(Projectile.Center);
+
+			while (cache.Count > trailLength)
+            {
+                cache.RemoveAt(0);
+            }
+
+			if (Projectile.timeLeft % 5 == 0)
+			{
+				cache2 = new List<Vector2>();
+				for (int i = 0; i < cache.Count; i++)
+				{
+					Vector2 point = cache[i];
+					Vector2 nextPoint = i == cache.Count - 1 ? Projectile.Center + Projectile.velocity : cache[i + 1];
+					Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+					if (i > cache.Count - 3 || dir == Vector2.Zero)
+						cache2.Add(point);
+					else
+						cache2.Add(point + (dir * Main.rand.NextFloat(15)));
+				}
+			}
+		}
+
+		private void ManageTrails()
+        {
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, trailLength, new TriangularTip(4), factor => thickness * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+			{
+				if (factor.X > 0.99f)
+					return Color.Transparent;
+
+				return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * fade;
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, trailLength, new TriangularTip(4), factor => thickness * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			{
+				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+				return Color.Lerp(Color.Yellow, Color.Red, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * fade;
+			});
+
+			trail2.Positions = cache2.ToArray();
+			trail2.NextPosition = Projectile.Center + Projectile.velocity;
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(1f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+
+			trail?.Render(effect);
+			trail2?.Render(effect);
+		}
+
+
+		public override bool? CanHitNPC(NPC hitting)
+        {
+			if (Projectile.extraUpdates == 0)
+				return false;
+			if (target != hitting)
+				return false;
+            return base.CanHitNPC(hitting);
+        }
+
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+			Projectile.extraUpdates = 0;
+			Projectile.timeLeft = fadeTime;
+        }
+    }
 }
