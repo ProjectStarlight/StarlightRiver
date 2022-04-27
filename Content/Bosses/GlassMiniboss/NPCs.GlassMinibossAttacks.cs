@@ -87,10 +87,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void Hammer()
         {
-            if (AttackTimer <= 60)
-            {
-                glowStrength = 0.25f + ((60 - AttackTimer) / 60f * 0.75f);
-            }
 
             if (AttackTimer < 10) 
                 NPC.velocity *= 0.8f; //decelerate into position
@@ -105,30 +101,50 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 ResetAttack();
         }
 
-        private void Spears() //summon a wall of spears on one side of the arena, tentative keep?
+        //old spears attack
+        //private void Spears() //summon a wall of spears on one side of the arena, tentative keep?
+        //{
+        //    if (AttackTimer == 1)
+        //    {
+        //        NPC.TargetClosest();
+        //        moveTarget = PickSide();
+        //        moveStart = NPC.Center;
+        //    }
+
+        //    if (AttackTimer < 60) //go to the side away from the target
+        //        NPC.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
+
+        //    if (AttackTimer == 90) //spawn the Projectiles
+        //    {
+        //        int exclude = Main.rand.Next(3);
+        //        for (int k = 0; k < 6; k++)
+        //        {
+        //            if ((k / 2) != exclude) //leave an opening!
+        //                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
+        //        }
+        //    }
+
+        //    if (AttackTimer >= 210)
+        //        ResetAttack();
+        //}
+
+        private void Spears()
         {
+            int spearCountPerSide = 4; //increase with mode ?
+
             if (AttackTimer == 1)
             {
-                NPC.TargetClosest();
-                moveTarget = PickSide();
-                moveStart = NPC.Center;
-            }
-
-            if (AttackTimer < 60) //go to the side away from the target
-                NPC.Center = Vector2.SmoothStep(moveStart, moveTarget, AttackTimer / 60f);
-
-            if (AttackTimer == 90) //spawn the Projectiles
-            {
-                int exclude = Main.rand.Next(3);
-                for (int k = 0; k < 6; k++)
+                if (AttackTimer == 1)
                 {
-                    if ((k / 2) != exclude) //leave an opening!
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, k * 60, Direction);
+                    NPC.TargetClosest();
+                    moveTarget = PickSideClose();
+                    moveStart = NPC.Center;
                 }
             }
 
-            if (AttackTimer >= 210)
-                ResetAttack();
+            int opening = Main.rand.Next(spearCountPerSide);
+            if (AttackTimer % 7 == 0 && AttackTimer > 30 && AttackTimer != opening) { }
+
         }
     }
 }

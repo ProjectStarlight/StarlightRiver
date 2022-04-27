@@ -15,13 +15,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         bool attackVariant = false;
 
-        internal ref float GlobalTimer => ref NPC.ai[0];
-        internal ref float Phase => ref NPC.ai[1];
+        internal ref float Phase => ref NPC.ai[0];
+        internal ref float GlobalTimer => ref NPC.ai[1];
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
-
-        private float spinAngle = 0;
-        private float glowStrength = 0.25f;
 
         public static Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16);
 
@@ -36,8 +33,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             SpawnEffects = 0,
             SpawnAnimation = 1,
-            FirstPhase = 2,
-            DeathAnimation = 3
+            GauntletPhase = 2,
+            DirectPhase = 3,
+            DeathAnimation = 4
         }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
@@ -99,14 +97,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     else
                     {
-                        SetPhase(PhaseEnum.FirstPhase);
+                        SetPhase(PhaseEnum.DirectPhase);
                         ResetAttack();
                         NPC.noGravity = false;
                     }
 
                     break;
 
-                case (int)PhaseEnum.FirstPhase:
+                case (int)PhaseEnum.GauntletPhase:
+
+
+
+                    break;
+
+                case (int)PhaseEnum.DirectPhase:
 
                     if (AttackTimer == 1)
                     {
@@ -121,8 +125,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Knives(); break;
-                        case 1: Hammer(); break;
+                        case 0: Spears(); break;
+                        case 1: Spears(); break;
                         case 2: Spears(); break;
                     }
 
@@ -139,34 +143,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             attackVariant = reader.ReadBoolean();
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            NPC.frame.Width = 110;
-            NPC.frame.Height = 92;
-
-            Vector2 offset = new Vector2(0, 16);
-
-            if (spinAngle != 0)
-            {
-                float sin = (float)Math.Sin(spinAngle + 1.57f * NPC.direction);
-                int off = Math.Abs((int)(NPC.frame.Width * sin));
-
-                SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value,
-                    new Rectangle((int)(NPC.position.X - screenPos.X - off / 2 + NPC.width / 2),
-                    (int)(NPC.position.Y - screenPos.Y - 64), off, NPC.frame.Height),
-                    NPC.frame, drawColor, 0, Vector2.Zero, effect, 0);
-            }
-
-            else
-            {
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos - offset, NPC.frame, drawColor, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos - offset, NPC.frame, Color.White * glowStrength, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            }
-
-            if (glowStrength > 0.2f)
-                Lighting.AddLight(NPC.Center, new Vector3(1, 0.75f, 0.2f) * (glowStrength - 0.2f));
 
             return false;
         }

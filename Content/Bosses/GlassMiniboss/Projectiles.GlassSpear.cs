@@ -18,8 +18,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 64;
-            Projectile.height = 16;
+            Projectile.width = 32;
+            Projectile.height = 32;
             Projectile.timeLeft = 130;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
@@ -27,11 +27,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            //ai 0 is vertical position,
-            //ai 1 is direction
-            if (Projectile.velocity.X != 0) { }
-
-            Projectile.rotation = Projectile.ai[1] == 1 ? 1.57f : -1.57f;
+            Projectile.rotation = Projectile.velocity.ToRotation();
 
             int timer = 130 - Projectile.timeLeft;
 
@@ -56,20 +52,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
-            int timer = 130 - Projectile.timeLeft;
-            Texture2D backTex = Request<Texture2D>(Texture).Value;
-
-            Main.EntitySpriteDraw(backTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
-
-            if (timer < 60)
-            {
-                Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 2, 120)); //TODO, clean up the file this is from later
-                Texture2D tex = Request<Texture2D>(AssetDirectory.VitricItem + "VitricSummonJavelin").Value;
-                Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
-
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
-                Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
-            }
 
             return false;
         }
