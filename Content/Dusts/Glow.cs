@@ -12,7 +12,6 @@ namespace StarlightRiver.Content.Dusts
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
-            dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 64, 64);
 
             dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "GlowingDustPass");
@@ -50,7 +49,8 @@ namespace StarlightRiver.Content.Dusts
             dust.velocity *= 0.99f;
             dust.color *= 0.95f;
             
-            Lighting.AddLight(dust.position, dust.color.ToVector3());
+            if(!dust.noLight)
+                Lighting.AddLight(dust.position, dust.color.ToVector3());
 
             if (dust.scale < 0.05f)
                 dust.active = false;

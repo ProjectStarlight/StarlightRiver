@@ -28,19 +28,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.height = 1;
             Projectile.damage = 50;
             Projectile.hostile = true;
-            Projectile.timeLeft = Main.expertMode ? 450 : 600;
+            Projectile.timeLeft = Main.expertMode ? 510 : 660;
             Projectile.aiStyle = -1;
         }
 
         public override void AI()
         {
-            if (Projectile.timeLeft == 599 || Main.expertMode && Projectile.timeLeft == 449)
+            if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509)
             {
                 int y = (int)Projectile.Center.Y / 16 - 28;
 
-                int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 22 : -78;
+                int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
 
-                for (int k = 0; k < 58; k++)
+                for (int k = 0; k < 59; k++)
                 {
                     int x = (int)Projectile.Center.X / 16 + xOff + k;
                     ValidPoints.Add(new Point16(x, y));
@@ -65,13 +65,26 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             Height = height;
 
-            Rectangle rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height, Projectile.width, height);
+            Rectangle rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
 
             float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
             float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
-            Dust.NewDust(rect.TopLeft(), rect.Width, rect.Height, ModContent.DustType<Dusts.Glow>(), 1, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
+            for (int k = 0; k < rect.Height; k += 500)
+            {
+                int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
+                Main.dust[i].noLight = true;
+            }
+
+            if (Projectile.timeLeft > 30)
+            {
+                for (int k = 0; k < 5; k++)
+                {
+                    var vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(15);
+                    Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * (height - 84), ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
+                }
+            }
 
             foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect)))
             {
@@ -84,6 +97,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float sin = 1 + (float)Math.Sin(Projectile.ai[1] / 10f);
             float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
+
+            float alpha = Projectile.timeLeft > (Main.expertMode ? 480 : 630) ? 1 - (Projectile.timeLeft - (Main.expertMode ? 480 : 630)) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
+            color = color * alpha;
 
             var texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
             var texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
@@ -100,20 +116,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             float height = texBeam2.Height / 2f * 1.5f;
-            int width = Height;
+            int adjustedLaserHeight = Height - 32;
 
-            for (int k = 0; k <= Height; k += 500)
+            for (int k = 0; k <= adjustedLaserHeight; k += 500)
             {
+                if (k > (adjustedLaserHeight - 500)) //Change to end for the last segment
+                    texBeam2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
+
                 var pos = Projectile.Center + Vector2.UnitY * -k - Main.screenPosition;
-                var thisHeight = k > (Height - 500) ? (Height % 500) : 500;
+                var thisHeight = k > (adjustedLaserHeight - 500) ? (adjustedLaserHeight % 500) : 500;
 
                 var source = new Rectangle((int)(Projectile.ai[1] * 0.01f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
                 var source1 = new Rectangle((int)(Projectile.ai[1] * 0.023f * -texBeam.Width), 0, (int)(texBeam.Width * thisHeight / 500f), texBeam.Height);
-                var source2 = new Rectangle((int)(Projectile.ai[1] * 0.01f * -texBeam2.Width), 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
+                var source2 = new Rectangle(0, 0, (int)(texBeam2.Width * thisHeight / 500f), texBeam2.Height);
 
-                var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.5f));
-                var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)height);
-                var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, 50);
+                var target = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 1.25f * alpha));
+                var target2 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(height * 2.8f * alpha));
+                var target3 = new Rectangle((int)pos.X, (int)pos.Y, thisHeight, (int)(50 * alpha));
 
                 spriteBatch.Draw(texBeam, target, source, color * 0.65f, -1.57f, origin, 0, 0);
                 spriteBatch.Draw(texBeam, target, source1, color * 0.45f, -1.57f, origin, 0, 0);
@@ -123,9 +142,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Main.NewText(thisHeight);
             }
 
-            spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * Height - Main.screenPosition, null, color * 1.1f, 0, texStar.Size() / 2, 1, 0, 0);
-
-            var opacity = height / (texBeam.Height / 2f);
+            spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

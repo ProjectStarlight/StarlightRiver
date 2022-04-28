@@ -49,6 +49,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public override void PostDraw(Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "Highlight").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/SquareGlow").Value;
+
             int off = 16 * ((int)Projectile.ai[0] % 5);
 
             if (Projectile.timeLeft > 10)
@@ -56,6 +58,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     if (!Main.tile[point.X, point.Y].HasTile)
                         Main.spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
+
+                    float sin = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f);
+
+                    var colorGlow = new Color(50, 80, 150 + (int)(30 * sin));
+                    colorGlow.A = 0;
+
+                    Main.spriteBatch.Draw(tex2, point.ToVector2() * 16 - Main.screenPosition + Vector2.One * 8, null, colorGlow, 0, tex2.Size() / 2, 0.6f + 0.05f * sin, 0, 0);
                 }
 
             Projectile.ai[0] += 0.2f;

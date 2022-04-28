@@ -542,10 +542,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer < 60) //move to left of the arena
             {
-                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(-800, -500) : new Vector2(800, -500)), AttackTimer / 60f);
-                NPC.rotation += 3.14f / 59f;
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(-750, -500) : new Vector2(750, -500)), AttackTimer / 60f);
+                NPC.rotation = 3.14f * Helpers.Helper.BezierEase(AttackTimer / 60f);
 
-                foreach(NPC npc in tentacles)
+                foreach (NPC npc in tentacles)
 				{
                     var tentacle = npc.ModNPC as Tentacle;
 
@@ -556,46 +556,44 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 60)
             {
-                savedPoint = NPC.Center; //leftmost point of laser
+                savedPoint = NPC.Center; //farmost point of laser
                 int i = Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
                 (Main.projectile[i].ModProjectile as Laser).Parent = NPC;
             }
 
             int laserTime = Main.expertMode ? 450 : 600; //faster in expert
 
-            if (AttackTimer > 60 && AttackTimer < 60 + laserTime) //lasering
+            if (AttackTimer > 90 && AttackTimer < 90 + laserTime) //lasering
             {
                 if (AttackTimer % 10 == 0)
                     Helpers.Helper.PlayPitched("Magic/LightningShortest1", 1, 0, NPC.Center);
 
-                NPC.Center = Vector2.Lerp(savedPoint, spawnPoint + (variantAttack ? new Vector2(800, -500) : new Vector2(-800, -500)), (AttackTimer - 60) / laserTime);
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + (variantAttack ? new Vector2(750, -500) : new Vector2(-750, -500)), (AttackTimer - 90) / laserTime);
             }
 
-            if (AttackTimer == 60 + laserTime) 
+            if (AttackTimer == 120 + laserTime) 
                 savedPoint = NPC.Center; //end of laser
 
-            if (AttackTimer > 60 + laserTime && AttackTimer < 90 + laserTime) //return to center of arena
+            if (AttackTimer > 120 + laserTime && AttackTimer < 180 + laserTime) //return to center of arena
             {
-                NPC.rotation -= 3.14f / 29f;
+                if (AttackTimer < 150 + laserTime)
+                    NPC.rotation = 3.14f - 3.14f * Helpers.Helper.BezierEase((AttackTimer - (120 + laserTime)) / 30f);
+
+                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -500), (AttackTimer - (laserTime + 120)) / 60f);
             }
 
-            if (AttackTimer > 60 + laserTime && AttackTimer < 120 + laserTime) //return to center of arena
+            if (AttackTimer > 150 + laserTime)
             {
-                NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -500), (AttackTimer - (laserTime + 60)) / 60f);
+                foreach (NPC npc in tentacles)
+                {
+                    var tentacle = npc.ModNPC as Tentacle;
 
-                if(AttackTimer > 90 + laserTime)
-				{
-                    foreach (NPC npc in tentacles)
-                    {
-                        var tentacle = npc.ModNPC as Tentacle;
-
-                        if (tentacle.DownwardDrawDistance < 28)
-                            tentacle.DownwardDrawDistance += 2;
-                    }
+                    if (tentacle.DownwardDrawDistance < 28)
+                        tentacle.DownwardDrawDistance += 2;
                 }
             }
 
-            if (AttackTimer >= 120 + laserTime) 
+            if (AttackTimer >= 180 + laserTime) 
                 ResetAttack();
         }
 
