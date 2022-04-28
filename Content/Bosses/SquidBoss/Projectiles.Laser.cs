@@ -56,11 +56,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             for (int k = 0; k < 200; k++)
             {
-                Vector2 pos = Projectile.position + new Vector2(0, -16 * k);
+                Vector2 pos = Projectile.Center + new Vector2(0, -16 * k);
                 height += 16;
 
-                if (Main.tile[(int)pos.X / 16 + 2, (int)pos.Y / 16].HasTile || Main.tile[(int)pos.X / 16 - 2, (int)pos.Y / 16].HasTile)
-                    break;
+                for (int i = -2; i <= 2; i++)
+                {
+                    if (Main.tile[(int)pos.X / 16 + i, (int)pos.Y / 16].HasTile)
+                        k = 200;
+                }
             }
 
             Height = height;

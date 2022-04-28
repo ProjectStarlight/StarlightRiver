@@ -56,12 +56,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Projectile.timeLeft > 10)
                 foreach (Point16 point in ValidPoints)
                 {
-                    if (!Main.tile[point.X, point.Y].HasTile)
-                        Main.spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
-
                     float sin = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f);
+                    var colorGlow = new Color(35, 100, 40 + (int)(10 * sin));
 
-                    var colorGlow = new Color(50, 80, 150 + (int)(30 * sin));
+                    if (!Main.tile[point.X, point.Y].HasTile)
+                    {
+                        Main.spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
+                        colorGlow = new Color(50, 80, 150 + (int)(30 * sin));                       
+
+                    }
+                   
                     colorGlow.A = 0;
 
                     Main.spriteBatch.Draw(tex2, point.ToVector2() * 16 - Main.screenPosition + Vector2.One * 8, null, colorGlow, 0, tex2.Size() / 2, 0.6f + 0.05f * sin, 0, 0);
