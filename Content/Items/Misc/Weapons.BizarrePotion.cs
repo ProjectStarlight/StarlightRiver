@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				initialized = true;
 				liquidType = (LiquidType)Main.rand.Next(4);
-				liquidType = LiquidType.Poison;
+				//liquidType = LiquidType.Poison;
 				bottleType = (BottleType)Main.rand.Next(4);
 				//bottleType = BottleType.Slide;
 
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Misc
 					break;
 				case BottleType.Launch:
 					if (!launched)
-						target = Main.npc.Where(x => x.active && !x.townNPC/*  && !x.immortal && !x.dontTakeDamage&& !x.friendly*/ && x.Distance(Projectile.Center) < 1000).OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
+						target = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage&& !x.friendly && x.Distance(Projectile.Center) < 1000).OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
 					if (target != default && target.active)
 						posToBe = target.Center;
 					else if (posToBe == Vector2.Zero)
@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(Projectile.Center, 133, Main.rand.NextVector2Circular(3, 3)).noGravity = false;
 
-			var targets = Main.npc.Where(x => x.active && !x.townNPC/*  && !x.immortal && !x.dontTakeDamage&& !x.friendly*/ && x.Distance(Projectile.Center) < 200);
+			var targets = Main.npc.Where(x => x.active && !x.townNPC  && !x.immortal && !x.dontTakeDamage&& !x.friendly && x.Distance(Projectile.Center) < 200);
 			foreach (NPC target in targets)
 			{
 				if (dontHit == default || target != dontHit)
@@ -613,7 +613,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
-            var targets = Main.npc.Where(x => x.active && !x.townNPC/*  && !x.immortal && !x.dontTakeDamage&& !x.friendly*/ && x.Distance(Projectile.Center) < 73);
+            var targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage&& !x.friendly && x.Distance(Projectile.Center) < 73);
 			foreach (NPC target in targets)
             {
 				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 2);
