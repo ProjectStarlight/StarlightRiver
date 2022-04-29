@@ -81,13 +81,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 					var tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					var tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
-					if (!Main.tileSolid[tile1.TileType] && tile1.LiquidType == LiquidID.Water && tile1 .LiquidAmount > 0) //PORTTODO: change to proper new colission type check
+					if (!(tile1.HasTile && Main.tileSolid[tile1.TileType]) && tile1.LiquidType == LiquidID.Water && tile1.LiquidAmount > 0) //PORTTODO: change to proper new colission type check
 					{
-						if (tile2 .LiquidAmount == 0)
+						if (tile2.LiquidAmount == 0)
 						{
 							Lighting.AddLight(new Vector2(checkX1 * 16, checkY1 * 16), new Vector3(150, 220, 230) * 0.002f);
 
-							if (Main.rand.Next(40) == 0 && !Main.tileSolid[tile1.TileType])//not sure if correct way to check solid
+							if (Main.rand.Next(40) == 0 && !(tile2.HasTile && Main.tileSolid[tile2.TileType]))//not sure if correct way to check solid
 							{
 								var pos = Projectile.Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
 								Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));

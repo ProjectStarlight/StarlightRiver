@@ -67,13 +67,38 @@ namespace StarlightRiver.Content.CustomHooks
                 ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
             });
 
-            PlayerDrawMethod = typeof(Main).GetMethod("DrawPlayer", BindingFlags.Public | BindingFlags.Instance);
-
             On.Terraria.Main.SetDisplayMode += RefreshTargets;
             On.Terraria.Main.CheckMonoliths += DrawTargets;
             On.Terraria.Lighting.GetColor_int_int += getColorOverride;
+            On.Terraria.Lighting.GetColor_Point += getColorOverride;
             On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
+            On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
+            On.Terraria.Lighting.GetColorClamped += GetColorOverride;
         }
+
+        private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+        {
+            if (canUseTarget)
+                return orig.Invoke(x, y, oldColor);
+
+            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
+        }
+		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
+		{
+            if (canUseTarget)
+                return orig.Invoke(point, originalColor);
+
+            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
+        }
+
+		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_Point orig, Point point)
+        {
+            if (canUseTarget)
+                return orig.Invoke(point);
+
+            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
+        }
+
         public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int orig, int x, int y)
         {
             if (canUseTarget)
@@ -90,7 +115,6 @@ namespace StarlightRiver.Content.CustomHooks
             return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), c);
         }
 
-
         public static Rectangle getPlayerTargetSourceRectangle(int whoAmI)
         {
             if (PlayerIndexLookup.ContainsKey(whoAmI))
@@ -98,7 +122,6 @@ namespace StarlightRiver.Content.CustomHooks
 
             return Rectangle.Empty;
         }
-
 
         /// <summary>
         /// gets the whoAmI's Player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the Player's position in terms of screen coordinates
@@ -110,14 +133,10 @@ namespace StarlightRiver.Content.CustomHooks
             return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
         }
 
-
-
         private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-            {
                 ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
-            }
 
             orig(width, height, fullscreen);
         }
@@ -192,35 +211,37 @@ namespace StarlightRiver.Content.CustomHooks
             //Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow = 0f;
             for (int i = 0; i < Main.maxPlayers; i++)
             {
-                if (Main.player[i].active && Main.player[i].dye.Length > 0)
+                var player = Main.player[i];
+
+                if (player.active && player.dye.Length > 0)
                 {
-                    oldPos = Main.player[i].position;
-                    oldCenter = Main.player[i].Center;
-                    oldMountedCenter = Main.player[i].MountedCenter;
+                    oldPos = player.position;
+                    oldCenter = player.Center;
+                    oldMountedCenter = player.MountedCenter;
                     oldScreen = Main.screenPosition;
-                    oldItemLocation = Main.player[i].itemLocation;
-                    int oldHeldProj = Main.player[i].heldProj;
+                    oldItemLocation = player.itemLocation;
+                    int oldHeldProj = player.heldProj;
 
                     //temp change Player's actual position to lock into their frame
                     positionOffset = getPositionOffset(i);
-                    Main.player[i].position = positionOffset;
-                    Main.player[i].Center = oldCenter - oldPos + positionOffset;
-                    Main.player[i].itemLocation = oldItemLocation - oldPos + positionOffset;
-                    Main.player[i].MountedCenter = oldMountedCenter - oldPos + positionOffset;
-                    Main.player[i].heldProj = -1;
+                    player.position = positionOffset;
+                    player.Center = oldCenter - oldPos + positionOffset;
+                    player.itemLocation = oldItemLocation - oldPos + positionOffset;
+                    player.MountedCenter = oldMountedCenter - oldPos + positionOffset;
+                    player.heldProj = -1;
                     Main.screenPosition = Vector2.Zero;
-                    PlayerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, Main.player[i].fullRotation, Main.player[i].fullRotationOrigin, 0f });
 
-                    Main.player[i].position = oldPos;
-                    Main.player[i].Center = oldCenter;
+                    Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin, 0f);
+
+                    player.position = oldPos;
+                    player.Center = oldCenter;
                     Main.screenPosition = oldScreen;
-                    Main.player[i].itemLocation = oldItemLocation;
-                    Main.player[i].MountedCenter = oldMountedCenter;
-                    Main.player[i].heldProj = oldHeldProj;
+                    player.itemLocation = oldItemLocation;
+                    player.MountedCenter = oldMountedCenter;
+                    player.heldProj = oldHeldProj;
                 }
 
             }
-
 
             Main.spriteBatch.End();
 

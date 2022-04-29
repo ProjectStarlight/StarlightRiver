@@ -19,7 +19,13 @@ namespace StarlightRiver.Content.Items.Misc
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
         }
 
-        private void OnHit(Player Player, bool crit)
+		public override void Unload()
+		{
+            StarlightPlayer.OnHitNPCEvent -= OnHitNPCAccessory;
+            StarlightPlayer.OnHitNPCWithProjEvent -= OnHitNPCWithProjAccessory;
+        }
+
+		private void OnHit(Player Player, bool crit)
         {
             if (Equipped(Player) && crit)
             {

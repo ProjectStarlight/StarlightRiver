@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
     public class PoltergeistHead : ModItem
     {
         public List<Projectile> minions = new List<Projectile>();
-        public int manaRestrictFade = 0;
+        public int Timer;
         public int sleepTimer;
 
         public override string Texture => AssetDirectory.GravediggerItem + Name;
@@ -30,8 +30,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
             //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
-            StarlightItem.CanUseItemEvent += ControlItemUse;
-            
+            StarlightItem.CanUseItemEvent += ControlItemUse;          
+        }
+
+		public override void Unload()
+		{
+            On.Terraria.Player.KeyDoubleTap -= HauntItem;
+            StarlightItem.CanUseItemEvent -= ControlItemUse;
         }
 
 		public override void SetStaticDefaults()
@@ -68,18 +73,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
 
+            Timer++;
 
-            for (int k = 0; k < 4; k++) //smooth animation for restricting/unrestricting mana
+            for (int k = 0; k < minions.Count; k++)
             {
-                if (GetManaRestrict() > manaRestrictFade)
-                    manaRestrictFade++;
-
-                if (GetManaRestrict() < manaRestrictFade)
-                    manaRestrictFade--;
+                var proj = minions[k].ModProjectile as PoltergeistMinion;
+                player.GetModPlayer<ResourceReservationPlayer>().ReserveMana((int)(proj.Item.mana * (60f / proj.Item.useTime) * 2));
             }
-
-            if (player.statMana > player.statManaMax2 - manaRestrictFade) //restrict mana
-                player.statMana = player.statManaMax2 - manaRestrictFade;
 
             if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
                 Main.NewText("Your haunted weapons seem bored...", new Color(200, 120, 255));
@@ -93,28 +93,29 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
             if (keyDir == 0 && player.armor[0].type == ItemType<PoltergeistHead>())
             {
-                var Item = player.HeldItem;
+                var item = player.HeldItem;
                 var helm = player.armor[0].ModItem as PoltergeistHead;
+                var mp = player.GetModPlayer<ResourceReservationPlayer>();
 
-                if(Item.IsAir) //clear from empty hand
+                if (item.IsAir) //clear from empty hand
 				{
                     helm.minions.Clear();
                     orig(player, keyDir);
                     return;
                 }
 
-                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion).Item.type == Item.type)) //removal
+                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion).Item.type == item.type)) //removal
                 {
-                    helm.minions.RemoveAll(n => (n.ModProjectile as PoltergeistMinion).Item.type == Item.type);
+                    helm.minions.RemoveAll(n => (n.ModProjectile as PoltergeistMinion).Item.type == item.type);
                     orig(player, keyDir);
                     return;
                 }
 
-                if (Item.DamageType.CountsAs(DamageClass.Magic) && Item.mana > 0 && !Item.channel && Item.shoot > 0 && helm.GetManaRestrict(Item) <= player.statManaMax2) //addition
+                if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot > 0 && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
                 {                  
                     int i = Projectile.NewProjectile(player.GetProjectileSource_Misc(0), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI); //PORTTODO: Figure out source on this
                     var proj = Main.projectile[i];
-                    (proj.ModProjectile as PoltergeistMinion).Item = Item.Clone();
+                    (proj.ModProjectile as PoltergeistMinion).Item = item.Clone();
 
                     helm.minions.Add(proj);
                     helm.sleepTimer = 1200;
@@ -124,80 +125,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
             orig(player, keyDir);
         }
 
-        private int GetManaRestrict(Item add = null)
-		{
-            int manaRestrict = 0;
-            for (int k = 0; k < minions.Count; k++)
-            {
-                
-                var proj = minions[k].ModProjectile as PoltergeistMinion;
-                manaRestrict += (int)(proj.Item.mana * (60f / proj.Item.useTime) * 2);
-            }
-            return manaRestrict + (add is null ? 0 : ((int)(add.mana * (60f / add.useTime) * 2)));
-        }
-
-        private bool ControlItemUse(Item Item, Player Player)
+        private bool ControlItemUse(Item item, Player player)
         {
-            if (Player.armor[0].type == ItemType<PoltergeistHead>())
+            if (player.armor[0].type == ItemType<PoltergeistHead>())
             {
-                var helm = Player.armor[0].ModItem as PoltergeistHead;
+                var helm = player.armor[0].ModItem as PoltergeistHead;
 
-                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion)?.Item?.type == Item.type))
+                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion)?.Item?.type == item.type))
                     return false;
 
-                if (Item.DamageType.CountsAs(DamageClass.Magic))
+                if (item.DamageType.Type == DamageClass.Magic.Type)
                     helm.sleepTimer = 1200;
             }
 
             return true;
         }
-
-        /*
-        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig) //PORTTODO: Generalize to central "reserved mana" system
-        {
-            orig();
-
-            Player Player = Main.LocalPlayer;
-
-            if (Player.armor[0].type != ItemType<PoltergeistHead>())
-                return;
-
-            var helm = Player.armor[0].ModItem as PoltergeistHead;
-
-            for (int i = 1; i < Player.statManaMax2 / 20 + 1; i++) //iterate each mana star
-            {
-                int manaDrawn = i * 20; //the amount of mana drawn by this star and all before it
-
-                float starHeight = MathHelper.Clamp(((Main.player[Main.myPlayer].statMana - (i - 1) * 20) / 20f) / 4f + 0.75f, 0.75f, 1); //height of the current star based on current mana
-
-                if (Player.statMana <= i * 20 && Player.statMana >= (i - 1) * 20) //pulsing star for the "current" star
-                    starHeight += Main.cursorScale - 1;
-
-				var rottenManaAmount = Player.statManaMax2 - helm.manaRestrictFade; //amount of mana to draw as rotten
-
-				if (rottenManaAmount < manaDrawn)
-				{
-                    if(manaDrawn - rottenManaAmount < 20)
-					{
-                        var tex1 = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
-
-                        int off = (int)(rottenManaAmount % 20 / 20f * tex1.Height);
-                        var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
-                        pos1.Y += off;
-
-                        Main.spriteBatch.Draw(tex1, pos1, source, Color.White, 0f, tex1.Size() / 2, starHeight, 0, 0);
-                        continue;
-                    }
-
-                    var tex = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
-                    var pos = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
-
-                    Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, starHeight, 0, 0);
-                }
-            }
-        }
-        */
     }
 
     [AutoloadEquip(EquipType.Body)]

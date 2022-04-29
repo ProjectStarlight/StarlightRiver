@@ -20,6 +20,11 @@ namespace StarlightRiver.Content.Items.Misc
 			On.Terraria.Player.HealEffect += GrantRage;
 		}
 
+		public override void Unload()
+		{
+			On.Terraria.Player.HealEffect -= GrantRage;
+		}
+
 		private void GrantRage(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))

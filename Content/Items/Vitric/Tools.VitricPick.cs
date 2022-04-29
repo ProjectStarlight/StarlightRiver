@@ -21,7 +21,12 @@ namespace StarlightRiver.Content.Items.Vitric
             On.Terraria.Player.PickTile += GenerateHeat;           
         }
 
-        public override void SetStaticDefaults()
+		public override void Unload()
+		{
+            On.Terraria.Player.PickTile -= GenerateHeat;
+        }
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Pickaxe");
             Tooltip.SetDefault("Hellstone does not drop lava\nMining hellstone generates heat\n Heat increases speed");

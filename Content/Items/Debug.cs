@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-            player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
+            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(400);
         }
 
 		public override bool? UseItem(Player player)

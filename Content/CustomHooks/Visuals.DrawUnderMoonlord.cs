@@ -14,12 +14,12 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            IL.Terraria.Main.DoDraw += DrawMoonlordLayer;
+            //IL.Terraria.Main.DoDraw += DrawMoonlordLayer;
         }
 
         public override void Unload()
         {
-            IL.Terraria.Main.DoDraw -= DrawMoonlordLayer;
+            //IL.Terraria.Main.DoDraw -= DrawMoonlordLayer;
         }
 
         private void DrawMoonlordLayer(ILContext il)

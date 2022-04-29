@@ -15,8 +15,12 @@ namespace StarlightRiver.Content.Items.Forest
 
         public override void Load()
         {
-            StarlightItem.GetWeaponCritEvent += ReduceCrit;
-            
+            StarlightItem.GetWeaponCritEvent += ReduceCrit;           
+        }
+
+		public override void Unload()
+		{
+            StarlightItem.GetWeaponCritEvent -= ReduceCrit;
         }
 
 		private void ReduceCrit(Item Item, Player Player, ref int crit)

@@ -9,8 +9,8 @@ namespace StarlightRiver.Core.Loaders
 {
 	class UILoader : IOrderedLoadable
     {
-        public static List<UserInterface> UserInterfaces = new List<UserInterface>();
-        public static List<SmartUIState> UIStates = new List<SmartUIState>();
+        public static List<UserInterface> UserInterfaces;
+        public static List<SmartUIState> UIStates;
 
         public float Priority { get => 1.1f; }
 
@@ -20,6 +20,9 @@ namespace StarlightRiver.Core.Loaders
                 return;
 
             Mod Mod = StarlightRiver.Instance;
+
+            UserInterfaces = new List<UserInterface>();
+            UIStates = new List<SmartUIState>();
 
             foreach (Type t in Mod.Code.GetTypes())
             {
@@ -37,8 +40,8 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            UserInterfaces.Clear();
-            UIStates.Clear();
+            UserInterfaces = null;
+            UIStates = null;
         }
 
         public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)

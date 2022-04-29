@@ -18,11 +18,16 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyCrit;
-            StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyCritProj;
-            
+            StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyCritProj;         
         }
 
-        public override void SafeSetDefaults()
+		public override void Unload()
+		{
+            StarlightPlayer.ModifyHitNPCEvent -= ModifyCrit;
+            StarlightPlayer.ModifyHitNPCWithProjEvent -= ModifyCritProj;
+        }
+
+		public override void SafeSetDefaults()
         {
             Item.rare = ItemRarityID.Orange;
         }

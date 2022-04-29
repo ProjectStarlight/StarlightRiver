@@ -16,8 +16,13 @@ namespace StarlightRiver.Content.Items.Misc
         public override void Load()
         {
             StarlightPlayer.OnHitNPCEvent += OnHit;
-            StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
-            
+            StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;          
+        }
+
+		public override void Unload()
+		{
+            StarlightPlayer.OnHitNPCEvent -= OnHit;
+            StarlightProjectile.ModifyHitNPCEvent -= OnHitProjectile;
         }
 
 		private void OnHitProjectile(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

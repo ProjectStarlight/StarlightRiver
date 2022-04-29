@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            Item.DefaultToWhip(ModContent.ProjectileType<CopperCoilWhip>(), 5, 1.2f, 5f, 30);
+            Item.DefaultToWhip(ModContent.ProjectileType<CopperCoilWhip>(), 5, 1.2f, 5f, 25);
             Item.SetShopValues(ItemRarityID.White, Item.sellPrice(0, 0, 50));
         }
 
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public CopperCoilWhip() : base("Copper Coil", 15, 0.57f, new Color(153, 122, 97)) { }
 
-        public override int SegmentVariant(ref int segment)
+        public override int SegmentVariant(int segment)
         {
             int variant;
             switch (segment)
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Items.Misc
             return variant;
         }
 
-        public override bool ShouldDrawSegment(ref int segment) => segment % 2 == 0;
+        public override bool ShouldDrawSegment(int segment) => true;// segment % 2 == 0;
 
         public override void ArcAI()
         {
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Misc
                 d.position += Main.rand.NextVector2Circular(1, 8).RotatedBy(Projectile.rotation);
                 d.velocity += new Vector2(0f, -Main.rand.Next(1, 3)).RotatedBy(Projectile.rotation).RotatedByRandom(0.5f);
             }
-            if (Projectile.ai[0] == MiddleOfArc)
+            if (Projectile.ai[0] >= MiddleOfArc - 1 && Projectile.ai[0] < MiddleOfArc)
             {
                 int id = Projectile.FindTargetWithLineOfSight();
                 if (id >= 0)

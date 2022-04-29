@@ -18,6 +18,8 @@ namespace StarlightRiver.Content.CustomHooks
         public static RenderTarget2D hotspringMapTarget;
         public static RenderTarget2D hotspringShineTarget;
 
+        public static Vector2 oldScreenPos;
+
         //Creates a RenderTarget for the hotpsring water shader.
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
@@ -38,8 +40,14 @@ namespace StarlightRiver.Content.CustomHooks
         {
             orig();
 
-            if (Main.gameMenu) 
+            if (Main.gameMenu || !HotspringFountainDummy.AnyOnscreen) 
                 return;
+
+            var effect = Terraria.Graphics.Effects.Filters.Scene["HotspringWater"].GetShader().Shader;
+            effect.Parameters["offset"].SetValue((Main.screenPosition - oldScreenPos) * -1);
+            effect.Parameters["sampleTexture2"].SetValue(HotspringMapTarget.hotspringMapTarget);
+            effect.Parameters["sampleTexture3"].SetValue(HotspringMapTarget.hotspringShineTarget);
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
             var graphics = Main.graphics.GraphicsDevice;
 
@@ -74,7 +82,7 @@ namespace StarlightRiver.Content.CustomHooks
 
             Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
-            Vector2 screenSize = Helpers.Helper.ScreenSize;
+            /*Vector2 screenSize = Helpers.Helper.ScreenSize;
             Vector2 textureSize = tex2.Size();
 
             Vector2 texWrapCount = (screenSize / textureSize).Round().TwoValueMax(Vector2.One);
@@ -88,27 +96,26 @@ namespace StarlightRiver.Content.CustomHooks
                     Vector2 pos = new Vector2(i, j) * texOutSize;
                     Vector2 off = new Vector2((Main.screenPosition.X) % texOutSize.X, (Main.screenPosition.Y) % texOutSize.Y);
                     Main.spriteBatch.Draw(tex2, new Rectangle((int)(pos.X - off.X), (int)(pos.Y - off.Y), (int)texOutSize.X, (int)texOutSize.Y), null, Color.White);
-                }
+                }*/
 
             //The seam issue is not in this file, See StarlightRiver.cs and enable the commented out PostDrawInterface hook to view RTs
-            //for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
-            //    for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-            //    {
-            //        //the divide by 1.3 and 1.5 are what keep the tile tied to the world location, seems to be tied to the 2 magic numbers in HotspringAddon.cs
-            //        Vector2 pos = (new Vector2(i, j) - new Vector2((Main.screenPosition.X / 1.3f) % tex2.Width, (Main.screenPosition.Y / 1.5f) % tex2.Height));
-            //        Main.spriteBatch.Draw(tex2, pos, null, Color.White);
+            for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+                for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
+                {
+                    //the divide by 1.3 and 1.5 are what keep the tile tied to the world location, seems to be tied to the 2 magic numbers in HotspringAddon.cs
+                    Vector2 pos = (new Vector2(i, j));
+                    Main.spriteBatch.Draw(tex2, pos - new Vector2(Main.screenPosition.X % tex2.Width, Main.screenPosition.Y % tex2.Height), null, Color.White);
 
-            //        //Vector2 debugSize = new Vector2(32, 156);
+                    //Vector2 debugSize = new Vector2(32, 156);
 
-            //        //float posOffY = (float)Math.Sin(Main.GameUpdateCount / 15f) * (Main.screenHeight / 2.2f);
-            //        //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, Main.screenHeight / 2 + (int)posOffY, (int)debugSize.X, (int)debugSize.Y), Color.Red);
+                    //float posOffY = (float)Math.Sin(Main.GameUpdateCount / 15f) * (Main.screenHeight / 2.2f);
+                    //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, Main.screenHeight / 2 + (int)posOffY, (int)debugSize.X, (int)debugSize.Y), Color.Red);
 
-            //        //float posOffY2 = (float)Math.Sin(Main.GameUpdateCount / 13.33f) * (Main.screenHeight / 2.2f);
-            //        //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(Main.screenWidth - (int)debugSize.X, Main.screenHeight / 2 + (int)posOffY2, (int)debugSize.X, (int)debugSize.Y), Color.Red);
-            //    }
+                    //float posOffY2 = (float)Math.Sin(Main.GameUpdateCount / 13.33f) * (Main.screenHeight / 2.2f);
+                    //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(Main.screenWidth - (int)debugSize.X, Main.screenHeight / 2 + (int)posOffY2, (int)debugSize.X, (int)debugSize.Y), Color.Red);
+                }
 
             Main.spriteBatch.End();
-            //}
 
             Main.graphics.GraphicsDevice.SetRenderTarget(null);
         }

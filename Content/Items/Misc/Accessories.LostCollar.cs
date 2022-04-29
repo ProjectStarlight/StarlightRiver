@@ -22,8 +22,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load() //TODO: Make cursedaccessory.Load not hide this
 		{
-			StatusTrackingNPC.buffCompareEffects += CollarEffects;
-			
+			StatusTrackingNPC.buffCompareEffects += CollarEffects;			
+		}
+
+		public override void Unload()
+		{
+			StatusTrackingNPC.buffCompareEffects -= CollarEffects;
 		}
 
 		private void CollarEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)

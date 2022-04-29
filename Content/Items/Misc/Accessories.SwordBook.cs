@@ -28,6 +28,11 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightItem.CanUseItemEvent += OverrideSwordEffects;
 		}
 
+		public override void Unload()
+		{
+			StarlightItem.CanUseItemEvent -= OverrideSwordEffects;
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.rare = Terraria.ID.ItemRarityID.Orange;

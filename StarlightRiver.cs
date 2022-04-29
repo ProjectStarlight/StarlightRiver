@@ -53,6 +53,14 @@ namespace StarlightRiver
 
         private Viewport _lastViewPort;
 
+        public static void SetLoadingText(string text)
+        {
+            var Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var UIProgress_set_SubProgressText = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.UIProgress")!.GetProperty("SubProgressText", BindingFlags.Public | BindingFlags.Instance)!.GetSetMethod()!;
+
+            UIProgress_set_SubProgressText.Invoke(Interface_loadMods.GetValue(null), new object[] { text });
+        }
+
         public override void Load()
         {
             loadCache = new List<IOrderedLoadable>();
@@ -71,6 +79,7 @@ namespace StarlightRiver
             for (int k = 0; k < loadCache.Count; k++)
             {
                 loadCache[k].Load();
+                SetLoadingText("Loading " + loadCache[k].GetType().Name);
             }
 
             recipeGroupCache = new List<IRecipeGroup>();

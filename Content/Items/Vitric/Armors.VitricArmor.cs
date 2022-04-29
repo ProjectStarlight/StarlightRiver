@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Items.Vitric
             On.Terraria.Player.KeyDoubleTap += LoadShots;			
 		}
 
+		public override void Unload()
+		{
+            StarlightItem.PickAmmoEvent -= PickShardsWhenLoaded;
+            On.Terraria.Player.KeyDoubleTap -= LoadShots;
+        }
+
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Headgear");

@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyLeft = !tileLeft1.HasTile || tileLeft1.TileType != Type || tileLeft1.Slope == SlopeType.SlopeDownLeft || Main.tile[i - 1, j].HasTile;
 
                         emptyRight = !((tileRight1.HasTile && tileRight1.TileType == Type && !Main.tile[i + 1, j - 1].HasTile) || 
-                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
+                            (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
 
                         midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
                         yOffsetRight = 1f;
