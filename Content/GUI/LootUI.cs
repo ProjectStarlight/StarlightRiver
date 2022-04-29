@@ -140,7 +140,7 @@ namespace StarlightRiver.Content.GUI
     {
         internal Item Item;
 
-        public LootSelection(Item Item) { Item = Item; }
+        public LootSelection(Item Item) { this.Item = Item; }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
