@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				initialized = true;
 				liquidType = (LiquidType)Main.rand.Next(4);
-				//liquidType = LiquidType.Ice;
+				liquidType = LiquidType.Poison;
 				bottleType = (BottleType)Main.rand.Next(4);
 				//bottleType = BottleType.Slide;
 
@@ -299,6 +299,9 @@ namespace StarlightRiver.Content.Items.Misc
 				case LiquidType.Ice:
 					SpawnIce();
 					break;
+				case LiquidType.Poison:
+					SpawnPoison();
+					break;
 			}
 		}
 
@@ -353,6 +356,21 @@ namespace StarlightRiver.Content.Items.Misc
 				dust.velocity = vel * Main.rand.Next(2);
 				dust.scale = Main.rand.NextFloat(0.3f, 0.7f);
 				dust.alpha = 70 + Main.rand.Next(60);
+				dust.rotation = Main.rand.NextFloat(6.28f);
+			}
+		}
+
+		private void SpawnPoison()
+        {
+			Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BizarrePotionPoisonCloud>(), 0, 0, owner.whoAmI);
+			for (int i = 0; i < 60; i++)
+			{
+				float lerper = Main.rand.NextFloat();
+				Color color = Main.rand.NextBool() ? Color.Lerp(Color.Violet, Color.Purple, lerper) : Color.Lerp(Color.Purple, Color.Magenta, lerper);
+				Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<BizarrePoisonDust>(), default, default, default, color);
+				dust.velocity = Main.rand.NextVector2Circular(4, 4);
+				dust.scale = Main.rand.NextFloat(1, 1.25f) * 0.75f;
+				dust.alpha = Main.rand.Next(100);
 				dust.rotation = Main.rand.NextFloat(6.28f);
 			}
 		}
@@ -575,6 +593,34 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	public class BizarrePotionPoisonCloud : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 250;
+			Projectile.height = 250;
+			Projectile.friendly = true;
+			Projectile.timeLeft = 120;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.penetrate = -1;
+			Projectile.hide = true;
+			Projectile.usesLocalNPCImmunity = true;
+		}
+
+        public override void AI()
+        {
+            var targets = Main.npc.Where(x => x.active && !x.townNPC/*  && !x.immortal && !x.dontTakeDamage&& !x.friendly*/ && x.Distance(Projectile.Center) < 73);
+			foreach (NPC target in targets)
+            {
+				target.AddBuff(ModContent.BuffType<BizarrePotionPoisonDebuff>(), 2);
+            }
+		}
+    }
+
 	public class BizarreIce : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -687,7 +733,7 @@ namespace StarlightRiver.Content.Items.Misc
 				dust.alpha += 2;
 			}
 			else
-			{ 
+			{
 				dust.scale *= 1.01f;
 				dust.alpha += 4;
 			}
@@ -701,8 +747,71 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	public class BizarrePoisonDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.2f, 0.7f);
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			Color gray = new Color(105, 105, 105);
+			Color ret;
+			if (dust.alpha < 10)
+			{
+				ret = Color.Lerp(Color.Purple, dust.color, dust.alpha / 100f);
+			}
+			else if (dust.alpha < 200)
+			{
+				ret = Color.Lerp(dust.color, gray, (dust.alpha - 100) / 100f);
+			}
+			else
+				ret = gray;
+			return ret * ((255 - dust.alpha) / 255f) * 0.15f;
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.velocity.Length() > 2)
+				dust.velocity *= 0.9f;
+			else
+				dust.velocity *= 0.95f;
+
+			dust.alpha += 1;
+			if (dust.alpha > 100)
+			{
+				dust.scale *= 1.001f;
+			}
+			else
+			{
+				dust.scale *= 1.002f;
+			}
+			Lighting.AddLight(dust.position, Color.Violet.ToVector3() * ((255 - dust.alpha) / 255f));
+			dust.position += dust.velocity;
+			dust.rotation += 0.02f;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+	}
+
 	public class BizarrePotionGNPC : GlobalNPC
-    {
+	{
+		public override bool InstancePerEntity => true;
+
+		public bool infected = false;
+
+		public override void ResetEffects(NPC npc)
+		{
+			infected = false;
+		}
 		public override void SetupShop(int type, Chest shop, ref int nextSlot)
 		{
 			if (type == NPCID.SkeletonMerchant/* && Main.moonPhase > 2 && Main.moonPhase < 5*/)
@@ -710,6 +819,33 @@ namespace StarlightRiver.Content.Items.Misc
 				shop.item[nextSlot].SetDefaults(ModContent.ItemType<BizarrePotion>());
 				nextSlot++;
 			}
+		}
+		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		{
+			if (infected)
+            {
+				if (npc.lifeRegen > 0)
+				{
+					npc.lifeRegen = 0;
+				}
+				npc.lifeRegen -= 24;
+				if (damage < 3)
+				{
+					damage = 3;
+				}
+			}
+		}
+	}
+
+	class BizarrePotionPoisonDebuff : SmartBuff
+	{
+		public override string Texture => AssetDirectory.Debug;
+
+		public BizarrePotionPoisonDebuff() : base("Bizarre Poison", "You poisoned", true) { }
+
+		public override void Update(NPC NPC, ref int buffIndex)
+		{
+			NPC.GetGlobalNPC<BizarrePotionGNPC>().infected = true;
 		}
 	}
 }
