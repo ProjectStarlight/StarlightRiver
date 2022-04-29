@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            
+            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
             Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
             return true;
 

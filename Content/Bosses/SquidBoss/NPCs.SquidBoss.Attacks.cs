@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (possible.Count == 0)
             {
-                NPC.active = false;
+                Phase = (int)AIStates.Fleeing;
                 return;
             }
 

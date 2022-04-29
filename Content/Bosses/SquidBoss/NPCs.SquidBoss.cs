@@ -30,6 +30,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
 
+        internal ArenaActor Arena => Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ModNPC as ArenaActor;
+
         public float Opacity = 1;
         public bool OpaqueJelly = false;
 
@@ -41,7 +43,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             FirstPhaseTwo = 3,
             SecondPhase = 4,
             ThirdPhase = 5,
-            DeathAnimation = 6
+            DeathAnimation = 6,
+            Fleeing = 7
         }
 
         public override string Texture => AssetDirectory.Invisible;
@@ -538,14 +541,25 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.FirstPhaseTwo) //first phase, part 2. Tentacle attacks and ink. Raise water first.
             {
-                if (GlobalTimer == 1) savedPoint = NPC.Center;
+                if (GlobalTimer == 1) 
+                    savedPoint = NPC.Center;
+
+                if (GlobalTimer < 50)
+                    Arena.waterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 325) //water rising up
                 {
-                    Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ai[0]++;
+                    var x = GlobalTimer + 1;
+                    var fun = (float)(-937.5f * Math.Pow(x / 325f, 3) + 1406.25f * Math.Pow(x / 325f, 2) - 143.75 * x / 325f);
+                    var dif = fun - (float)(-937.5f * Math.Pow(GlobalTimer / 325f, 3) + 1406.25f * Math.Pow(GlobalTimer / 325f, 2) - 143.75 * GlobalTimer / 325f);
+                    Arena.NPC.ai[0] += dif;
+                    
                     NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
                     if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
                 }
+
+                if(GlobalTimer > 275 && GlobalTimer <= 325)
+                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
                     foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1)) tentacle.ai[0] = 0;
@@ -586,12 +600,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.SecondPhase) //second phase
             {
+                if (GlobalTimer < 50)
+                    Arena.waterfallWidth = (int)GlobalTimer;
+
                 if (GlobalTimer < 300) //water rising
                 {
-                    Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ai[0]++;
+                    var x = GlobalTimer + 1;
+                    var fun = (float)(-833.33f * Math.Pow(x / 325f, 3) + 1250f * Math.Pow(x / 325f, 2) - 116.66 * x / 325f);
+                    var dif = fun - (float)(-833.33f * Math.Pow(GlobalTimer / 325f, 3) + 1250f * Math.Pow(GlobalTimer / 325f, 2) - 116.66 * GlobalTimer / 325f);
+                    Arena.NPC.ai[0] += dif;
+
                     if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
                     arenaBlocker.position.Y -= 1f;
                 }
+
+                if (GlobalTimer > 250 && GlobalTimer <= 300)
+                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 250);
 
                 if (GlobalTimer == 300) //reset
                 {
@@ -656,6 +680,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center, 0);
                 }
 
+                if (GlobalTimer > 240 && GlobalTimer <= 290)
+                    Arena.waterfallWidth = (int)GlobalTimer - 240;
+
                 if (GlobalTimer > 240) //following unless using ink attack
                 {
                     if (AttackPhase != 3)
@@ -691,6 +718,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.DeathAnimation)
             {
+                if (GlobalTimer < 50)
+                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+
                 if (GlobalTimer == 1)
                 {
                     NPC.velocity *= 0;
@@ -722,6 +752,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 1.4f));
                     }
                 }
+            }
+
+            if(Phase == (int)AIStates.Fleeing)
+			{
+                if (GlobalTimer < 50)
+                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+
+                if (GlobalTimer > 50)
+                    NPC.active = false;
             }
         }
 
