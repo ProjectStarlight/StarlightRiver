@@ -1,11 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	internal partial class GlassMiniboss : ModNPC
+	public partial class GlassMiniboss : ModNPC
     {
         Vector2 moveStart;
         Vector2 moveTarget;
@@ -13,9 +14,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void ResetAttack() => AttackTimer = 0;
 
-        private Vector2 PickSide() => Main.player[NPC.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-532, 260) : spawnPos + new Vector2(532, 260); //picks the opposite side of the Player.
+        private Vector2 PickSide(int x = 1) => Main.player[NPC.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-520 * x, 240) : spawnPos + new Vector2(520 * x, 240); //picks the outer side.
 
-        private Vector2 PickSideClose() => Main.player[NPC.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-160, 60) : spawnPos + new Vector2(144, 60); //picks the same side of the Player.
+        private Vector2 PickSideClose(int x = 1) => Main.player[NPC.target].Center.X > spawnPos.X ? spawnPos + new Vector2(-160 * x, 40) : spawnPos + new Vector2(144 * x, 40); //picks the inner side.
 
         private int Direction => NPC.Center.X > spawnPos.X ? -1 : 1;
 
@@ -51,9 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void Idle(int duration)
         {
-            NPC.spriteDirection = NPC.velocity.X > 0 ? 1 : -1;
-
-            Frame = ((int)AttackTimer / 5) % 10;
+            NPC.direction = NPC.velocity.X > 0 ? 1 : -1;
 
             NPC.TargetClosest();
             NPC.velocity.X += Target.Center.X > NPC.Center.X ? 0.25f : -0.25f;
@@ -85,21 +84,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 ResetAttack();
 		}
 
-        private void Hammer()
-        {
+        //old hammer attack
+        //private void Hammer()
+        //{
+        //    if (AttackTimer < 10) 
+        //        NPC.velocity *= 0.8f; //decelerate into position
 
-            if (AttackTimer < 10) 
-                NPC.velocity *= 0.8f; //decelerate into position
+        //    if (AttackTimer == 30) //stop and spawn Projectile
+        //    {
+        //        NPC.velocity *= 0;
+        //        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.direction, NPC.whoAmI);
+        //    }
 
-            if (AttackTimer == 30) //stop and spawn Projectile
-            {
-                NPC.velocity *= 0;
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.direction, NPC.whoAmI);
-            }
-
-            if (AttackTimer >= 110)
-                ResetAttack();
-        }
+        //    if (AttackTimer >= 110)
+        //        ResetAttack();
+        //}
 
         //old spears attack
         //private void Spears() //summon a wall of spears on one side of the arena, tentative keep?
@@ -130,20 +129,63 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void Spears()
         {
-            int spearCountPerSide = 4; //increase with mode ?
+            AttackType = (int)AttackEnum.Spears;
+
+            int spearCount = 12;
 
             if (AttackTimer == 1)
             {
-                if (AttackTimer == 1)
-                {
-                    NPC.TargetClosest();
-                    moveTarget = PickSideClose();
-                    moveStart = NPC.Center;
-                }
+                NPC.TargetClosest();
+                moveStart = NPC.Center;
+                moveTarget = PickSideClose() + new Vector2(0, 50);
             }
 
-            int opening = Main.rand.Next(spearCountPerSide);
-            if (AttackTimer % 7 == 0 && AttackTimer > 30 && AttackTimer != opening) { }
+            if (AttackTimer > 1 && AttackTimer < 20)
+                NPC.velocity.Y = Helpers.Helper.BezierEase((20 - (AttackTimer - 5)) / 20f) * -0.02f * Math.Max(NPC.Distance(moveTarget), 3f);
+
+            if (AttackTimer > 10)
+            {
+                NPC.noGravity = true;
+                NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * Math.Max(NPC.Distance(moveTarget), 3f), 0.05f) * 0.2f * Utils.GetLerpValue(10, 20, AttackTimer, true);
+                NPC.Center += new Vector2((float)Math.Sin(AttackTimer * 0.04f % MathHelper.TwoPi), (float)Math.Cos(AttackTimer * 0.04f % MathHelper.TwoPi)) * 0.2f;
+                if (AttackTimer < 70)
+                    PickSide(); NPC.FaceTarget();
+            }
+
+            const int spearStart = 90;
+            if (AttackTimer % 5 == 0 && AttackTimer >= spearStart && AttackTimer < spearStart + (spearCount * 5f))
+            {
+                Vector2 staffPos = NPC.Center + new Vector2(40 * NPC.direction, -70).RotatedBy(NPC.rotation);
+                Vector2 spearTarget = PickSide(-1) + new Vector2((-360 + (200f / spearCount * ((AttackTimer - spearStart)))) * NPC.direction, 20);
+                Vector2 spearVel = Main.rand.NextVector2CircularEdge(3, 3) + Main.rand.NextVector2Circular(2, 2);
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), staffPos, spearVel, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, staffPos.AngleTo(spearTarget));
+            }
+
+            if (AttackTimer >= 300)
+                ResetAttack();
+        }
+
+        private void Hammer()
+        {
+            AttackType = (int)AttackEnum.Hammer;
+
+            if (AttackTimer == 1)
+            {
+                NPC.TargetClosest();
+                moveTarget = PickSide();
+                moveStart = NPC.Center;
+            }
+
+            if (AttackTimer > 1 && AttackTimer < 40)
+                NPC.velocity.Y -= 10;
+
+            if (AttackTimer > 1 && AttackTimer < 20)
+                NPC.velocity.X = NPC.direction * 5f;
+            else
+                NPC.velocity.X *= 0.8f;
+
+            if (AttackTimer > 300)
+                ResetAttack();
 
         }
     }

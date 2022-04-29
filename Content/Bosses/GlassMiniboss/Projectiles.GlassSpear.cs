@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -11,47 +13,53 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassSpear : ModProjectile
     {
-        Vector2 savedPoint;
-        Vector2 movePoint;
-
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassSpear";
+        public override string Texture => AssetDirectory.GlassMiniboss + "GlassSpear";
 
         public override void SetDefaults()
         {
-            Projectile.width = 32;
-            Projectile.height = 32;
-            Projectile.timeLeft = 130;
+            Projectile.width = 12;
+            Projectile.height = 12;
+            Projectile.timeLeft = 120;
             Projectile.hostile = true;
-            Projectile.tileCollide = false;
+            Projectile.tileCollide = true;
         }
 
         public override void AI()
         {
-            Projectile.rotation = Projectile.velocity.ToRotation();
+            Projectile.rotation = Projectile.ai[0] + MathHelper.PiOver2;
 
-            int timer = 130 - Projectile.timeLeft;
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.1f);
 
-            if (timer == 0) //set vectors to move to / from on spawn
-            {
-                savedPoint = Projectile.Center;
-                movePoint = Projectile.Center + Vector2.UnitY * -Projectile.ai[0];
-            }
+            //acceleration
+            if (Projectile.timeLeft < 80)
+                Projectile.velocity *= 1.15f;
 
-            if (timer < 40) //Spreading upwards
-                Projectile.Center = Vector2.SmoothStep(savedPoint, movePoint, timer / 40f);
-
-            if (timer > 40 && timer < 60) //draw back
-                Projectile.Center = Vector2.SmoothStep(movePoint, movePoint + Vector2.UnitX * -Projectile.ai[1] * 45, (timer - 40) / 20f);
-
-            if (timer == 60) //fire
-                Projectile.velocity = Vector2.UnitX * Projectile.ai[1] * 2;
-
-            if (timer > 60 && timer < 70) //accelerate
-                Projectile.velocity *= 1.28f;
+            if (Projectile.timeLeft > 100)
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0, Main.rand.Next(-40, 20)).RotatedBy(Projectile.rotation), DustType<Dusts.Glow>(), newColor: Color.OrangeRed, Scale: 0.5f);
         }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) => Projectile.timeLeft < 80;
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < projHitbox.Width + 10;
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Asset<Texture2D> spear = Request<Texture2D>(Texture);
+            Rectangle glassFrame = spear.Frame(2, 1, 0);
+            Rectangle hotFrame = spear.Frame(2, 1, 1);
+
+            Color fadeIn = Color.White * Utils.GetLerpValue(120, 110, Projectile.timeLeft, true);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, fadeIn, Projectile.rotation, glassFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(120, 114, Projectile.timeLeft, true) * Utils.GetLerpValue(75, 90, Projectile.timeLeft, true);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+
+            //tell
+            Asset<Texture2D> tell = TextureAssets.Extra[98];
+            float tellLength = Helpers.Helper.BezierEase(Utils.GetLerpValue(120, 95, Projectile.timeLeft, true)) * 8f;
+            Color tellFade = Color.OrangeRed * Utils.GetLerpValue(90, 120, Projectile.timeLeft, true);
+            tellFade.A = 0;
+            Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.33f, tellLength), SpriteEffects.None, 0);
 
             return false;
         }
@@ -61,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
             for (int k = 0; k < 10; k++)
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>());
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0, Main.rand.Next(-40, 20)).RotatedBy(Projectile.rotation), DustType<Dusts.GlassGravity>());
         }
     }
 }
