@@ -207,6 +207,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 int delay = Main.masterMode ? 10 : Main.expertMode ? 15 : 20;
 
+                ManualAnimate(1, (int)((AttackTimer % delay / delay) * 4));
+
                 if (AttackTimer % delay == 0)
                 {
                     Vector2 speed = new Vector2(Main.masterMode ? 12 : 8, 0).RotatedBy(angle + Main.rand.NextFloat(-0.5f, 0.5f));
@@ -225,7 +227,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void InkBurstAlt()
 		{
-            if(AttackTimer == 60)
+            if(AttackTimer > 45 && AttackTimer < 60)
+                ManualAnimate(1, (int)((AttackTimer - 45) / 15f * 4));
+
+            if (AttackTimer == 60)
 			{
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
@@ -244,7 +249,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.Center = Vector2.Lerp(savedPoint, spawnPoint + new Vector2(0, -200), prog);
 			}
 
-            if(AttackTimer == 130)
+            if (AttackTimer > 115 && AttackTimer < 130)
+                ManualAnimate(1, (int)((AttackTimer - 115) / 15f * 4));
+
+            if (AttackTimer == 130)
 			{
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                 Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
@@ -405,8 +413,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer == 360)
                 savedPoint = new Vector2(platforms[0].Center.X, spawnPoint.Y - 400);
 
-            if (AttackTimer > 360 && AttackTimer < 520)
+            if (AttackTimer >= 360 && AttackTimer < 520)
 			{
+                if(AttackTimer % 40 < 15)
+                    ManualAnimate(1, (int)((AttackTimer % 40 / 15) * 4));
+
                 if (AttackTimer % 40 == 0)
                 {
                     var vel = Vector2.UnitX * (Main.rand.NextBool() ? -5 : 5);
@@ -477,13 +488,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             NPC.rotation = NPC.velocity.X * 0.05f;
 
-            if(AttackTimer % 100 == 40)
+            if(AttackTimer % 100 < 15)
+                ManualAnimate(1, (int)((AttackTimer % 100 / 15) * 4));
+
+            if (AttackTimer % 100 == 40)
                 Helpers.Helper.PlayPitched("Magic/FrostCast", 1, 0.5f, NPC.Center);
 
             if (AttackTimer % 100 == 0)
-            {
-                
-
+            {               
                 if (Main.expertMode) //spawn more + closer together on expert
                 {
                     for (int k = 0; k < 14; k++)
@@ -508,6 +520,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.velocity = Vector2.Normalize(NPC.velocity) * 4.5f;
 
             NPC.rotation = NPC.velocity.X * 0.05f;
+
+            if (AttackTimer % 100 < 15)
+                ManualAnimate(1, (int)((AttackTimer % 100 / 15) * 4));
 
             if (AttackTimer % 100 == 0)
             {
@@ -562,6 +577,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
 
             int laserTime = Main.expertMode ? 450 : 600; //faster in expert
+
+            if(AttackTimer > 60 && AttackTimer < 90 + laserTime)
+                Animate(12, 1, 4);
 
             if (AttackTimer > 90 && AttackTimer < 90 + laserTime) //lasering
             {
@@ -654,6 +672,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacles[k].Center = tentacle.BasePoint + (tentacle.NPC.Center - tentacle.BasePoint).RotatedBy(prog * (k == 1 ? 0.4f : -0.4f));
                 }
             }
+
+            if (AttackTimer > 135 && AttackTimer <= 150)
+                ManualAnimate(1, (int)((AttackTimer - 135) / 15f * 4));
 
             if (AttackTimer == 150) //spawn Projectiles
             {

@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var bodyColor = lightColor * 1.2f * Opacity;
             bodyColor.A = 255;
             spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, bodyColor, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, bodyGlow.Frame(), Color.White * (0.5f + (Opacity * 0.5f)), NPC.rotation, bodyGlow.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, NPC.frame, Color.White * (0.5f + (Opacity * 0.5f)), NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
@@ -308,12 +308,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        internal void Animate(int fps)
+        internal void Animate(int fps, int animation, int frames)
 		{
             NPC.frame.Width = 188;
-            NPC.frame.Height = 250;
-            NPC.Frame(0, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * fps) % 8));
+            NPC.frame.Height = 200;
+            NPC.Frame(NPC.frame.Width * animation, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * fps) % frames));
 		}
+
+        internal void ManualAnimate(int frameX, int frameY)
+		{
+            NPC.frame.Width = 188;
+            NPC.frame.Height = 200;
+            NPC.Frame(NPC.frame.Width * frameX, NPC.frame.Height * frameY);
+        }
 
         /// <summary>
         /// Only intended for use by the fake boss in the arena actor!
@@ -364,7 +371,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             GlobalTimer++;
 
             DoLighting();
-            Animate(12);
+
+            Animate(12, 0, 8);
 
             //boss health bar glow effects
 
