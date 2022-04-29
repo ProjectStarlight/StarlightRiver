@@ -82,11 +82,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Projectile.timeLeft > 30)
             {
+                var endPos = Projectile.Center - Vector2.UnitY * (height - 84);
+
                 for (int k = 0; k < 5; k++)
                 {
                     var vel = Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(15);
-                    Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * (height - 84), ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
+                    Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
                 }
+
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)Math.Max(0, 3 - Vector2.Distance(Main.LocalPlayer.Center, endPos) * 0.005f);
             }
 
             foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect)))
