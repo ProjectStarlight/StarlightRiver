@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void CustomTransformations(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
         {
+            orig(ref drawinfo);
             for (int k = 0; k < drawinfo.DrawDataCache.Count; k++)
             {
                 drawinfo.DrawDataCache[k] = ManipulateDrawInfo(drawinfo.DrawDataCache[k], drawinfo.drawPlayer);

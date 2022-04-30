@@ -110,7 +110,7 @@ namespace StarlightRiver.Core
 
             trueInvisible = false;
 
-            Player.fullRotation = 0;
+            //Player.fullRotation = MathHelper.Lerp(Player.fullRotation, 0, 0.1f);
 
             shouldSendHitPacket = false;
 
