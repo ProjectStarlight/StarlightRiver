@@ -16,6 +16,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core.Loaders;
+using Terraria.Graphics.CameraModifiers;
 
 namespace StarlightRiver.Core
 {
@@ -176,41 +177,44 @@ namespace StarlightRiver.Core
             if (Main.myPlayer != Player.whoAmI)
                 return;
 
-            var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
-            Main.screenPosition -= adj;
+            //old screenshake code
+            //var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
+            //Main.screenPosition -= adj;
 
-            if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
-            {
-                Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ClampedExtraZoomTarget;
+            //if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
+            //{
+            //    Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ClampedExtraZoomTarget;
 
-                if (ScreenMoveTimer <= 30) //go out
-                    Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);
-                else if (ScreenMoveTimer >= ScreenMoveTime - 30) //go in
-                    Main.screenPosition = Vector2.SmoothStep((ScreenMovePan == Vector2.Zero ? ScreenMoveTarget : ScreenMovePan) + off, Main.LocalPlayer.Center + off, (ScreenMoveTimer - (ScreenMoveTime - 30)) / 30f);
-                else
-                {
-                    if (ScreenMovePan == Vector2.Zero)
-                        Main.screenPosition = ScreenMoveTarget + off; //stay on target
+            //    if (ScreenMoveTimer <= 30) //go out
+            //        Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);
+            //    else if (ScreenMoveTimer >= ScreenMoveTime - 30) //go in
+            //        Main.screenPosition = Vector2.SmoothStep((ScreenMovePan == Vector2.Zero ? ScreenMoveTarget : ScreenMovePan) + off, Main.LocalPlayer.Center + off, (ScreenMoveTimer - (ScreenMoveTime - 30)) / 30f);
+            //    else
+            //    {
+            //        if (ScreenMovePan == Vector2.Zero)
+            //            Main.screenPosition = ScreenMoveTarget + off; //stay on target
 
-                    else if (ScreenMoveTimer <= ScreenMoveTime - 150)
-                        Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
+            //        else if (ScreenMoveTimer <= ScreenMoveTime - 150)
+            //            Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
 
-                    else
-                        Main.screenPosition = ScreenMovePan + off;
-                }
-            }
+            //        else
+            //            Main.screenPosition = ScreenMovePan + off;
+            //    }
+            //}
+
+
+            //Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
+            //Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
 
             float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
-            mult *= Main.screenWidth / 2048f; //normalize for screen resolution
-
-            Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
-            Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
+            mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
+            Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), Shake * mult, 15f, 30, 2000, "Starlight Shake"));
 
             if (Shake > 0)
                 Shake--;
 
-            Main.screenPosition.X = (int)Main.screenPosition.X;
-            Main.screenPosition.Y = (int)Main.screenPosition.Y;
+            //Main.screenPosition.X = (int)Main.screenPosition.X;
+            //Main.screenPosition.Y = (int)Main.screenPosition.Y;
         }
 
         /// <summary>

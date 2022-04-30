@@ -136,9 +136,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Spears(); break;
+                        case 0: Hammer(); break;
                         case 1: Hammer(); break;
-                        case 2: Spears(); break;
+                        case 2: Hammer(); break;
                         case 3: Hammer(); break;
                     }
 
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> weaverSolid = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossSolid");
             Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossGlow");
 
-            Rectangle frame = weaver.Frame(1, 4, 0, 0);
+            Rectangle frame = weaver.Frame(1, 5, 0, 0);
             frame.Width = 136;
             float trailOpacity = 0f;
 
@@ -178,18 +178,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                                 frame.Y = 300;
                             trailOpacity = 0.4f;
                             break;
+
                         case (int)AttackEnum.Hammer:
-                            if (AttackTimer < 40)
-                            {
+
+                            float hammerTimer = AttackTimer - hammerSpawn;
+                            if (AttackTimer < 75)
                                 frame.Y = 150;
-                            }
-                            else
+                            else if (hammerTimer < 150)
                             {
                                 frame.X = 138;
                                 frame.Width = 180;
 
-                                int swing = 0;
-                                frame.Y = 150 * swing;
+                                if (hammerTimer <= 55)
+                                {
+                                    frame.Y = 0;
+                                    bool secFrame = (hammerTimer >= 20) && (hammerTimer < 40);
+                                    if (secFrame)
+                                        frame.Y = 150;
+                                }
+                                else
+                                {
+                                    float swingAccel = Utils.GetLerpValue(55, 70, hammerTimer, true);
+                                    frame.Y = 150 + (150 * (int)(1f + (swingAccel * 2f)));
+                                }
                             }
                             break;
                     }
