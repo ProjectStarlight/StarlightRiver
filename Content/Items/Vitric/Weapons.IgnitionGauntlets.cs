@@ -45,14 +45,28 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noUseGraphic = true;
 		}
 
+		public override bool AltFunctionUse(Player player) => true;
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-
-			if (player.velocity.Length() < 6 && !(player.controlUp || player.controlDown || player.controlLeft || player.controlRight))
+			if (player.altFunctionUse == 2)
+            {
+				if (player.GetModPlayer<IgnitionPlayer>().charge > 0)
+				{
+					if (!player.GetModPlayer<IgnitionPlayer>().launching)
+					{
+						Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), damage, knockback, player.whoAmI);
+						player.velocity = player.DirectionTo(Main.MouseWorld) * 20;
+					}
+					player.GetModPlayer<IgnitionPlayer>().launching = true;
+				}
+				return false;
+            }
+			/*if (player.velocity.Length() < 6 && !(player.controlUp || player.controlDown || player.controlLeft || player.controlRight))
             {
 				Vector2 dir = player.DirectionTo(Main.MouseWorld) * 0.6f;
 				player.velocity.X += dir.X;
-            }
+            }*/
 
 			if (handCounter % 2 == 0)
 			{
@@ -195,6 +209,11 @@ namespace StarlightRiver.Content.Items.Vitric
             {
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
             }
+
+			if (owner.GetModPlayer<IgnitionPlayer>().charge < 150)
+				owner.GetModPlayer<IgnitionPlayer>().charge += 5;
+
+			Main.NewText(owner.GetModPlayer<IgnitionPlayer>().charge);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -317,4 +336,65 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail2?.Render(effect);
 		}
 	}
+
+	public class IgnitionPlayer : ModPlayer
+    {
+		public int charge = 0;
+		public bool launching = false;
+
+        public override void PreUpdate()
+        {
+            if (launching)
+            {
+				charge--;
+				if (charge <= 0)
+					launching = false;
+
+				Player.fullRotationOrigin = Player.Size / 2;
+				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation();
+				Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20, 0.1f);
+
+			}
+        }
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
+			if (launching)
+            {
+				return false;
+            }
+            return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+        }
+    }
+
+	public class IgnitionGauntletLaunch : ModProjectile
+    {
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+		private Player owner => Main.player[Projectile.owner];
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ignition Gauntlets");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.hostile = false;
+			Projectile.friendly = true;
+			Projectile.timeLeft = 9999;
+			Projectile.width = Projectile.height = 50;
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+			Projectile.hide = true;
+		}
+
+        public override void AI()
+        {
+			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
+			Projectile.Center = owner.Center;
+			if (!modPlayer.launching)
+				Projectile.Kill();
+        }
+    }
 }
