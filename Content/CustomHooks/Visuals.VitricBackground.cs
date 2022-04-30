@@ -183,6 +183,64 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
+        public static void DrawTitleVitricBackground()
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+
+            for (int k = 5; k >= 0; k--)
+            {
+                if (k == 3)
+                    BackgroundParticles.DrawParticles(Main.spriteBatch);
+
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value;
+
+                float heightRatio = tex.Height / Main.screenHeight;
+                int width = (int)(tex.Width / heightRatio);
+                Vector2 pos = new Vector2(((int)(Main.screenPosition.X * 0.035f * -(k - 5)) % width), 0);
+
+                for (int h = 0; h < Main.screenWidth + width; h += width)//during loading the texture has a width of one
+                    Main.spriteBatch.Draw(tex, new Rectangle((h - (int)pos.X), (int)pos.Y, width, Main.screenHeight), null, Color.White, 0, default, 0, 0);
+
+                if (k == 0)
+                {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+
+                    var progress = (float)Math.Sin(Main.screenPosition.X * 0.005f);
+                    var colorAdd = 0f;
+                    var color = new Color(255, 255, 100) * (0.45f + (progress + colorAdd) * 0.2f);
+
+                    if (!Main.dayTime)    colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);//causes the brightness to jump on the title screen
+
+                    for (float h = 0; h < Main.screenWidth + width; h += width)
+                    {
+                        Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value;
+                        Rectangle rect = new Rectangle((int)(h - pos.X), (int)pos.Y, width, Main.screenHeight);
+                        Main.spriteBatch.Draw(texGlow, rect, null, color, 0, Vector2.UnitY + Vector2.One * progress * 2, 0, 0);
+                        Main.spriteBatch.Draw(texGlow, rect, null, color, 0, Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, 0, 0);
+                    }
+                    
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+                }
+
+                if (k == 1)
+                    ForegroundParticles.DrawParticles(Main.spriteBatch);
+            }
+
+            int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
+            for (int k = (int)(screenCenterX - Main.screenPosition.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - Main.screenPosition.X) + (int)(Main.screenWidth * 1.5f); k += 30)
+            {
+                Vector2 spawnPos = new Vector2(Main.screenWidth, 600);
+                if (Main.rand.NextBool(400))
+                    BackgroundParticles.AddParticle(new Particle(new Vector2(0, 400), new Vector2(0, Main.rand.NextFloat(-1.3f, -0.4f)), 0, 0, Color.White, 2400, spawnPos));
+
+                if (Main.rand.NextBool(1000))
+                    ForegroundParticles.AddParticle(new Particle(new Vector2(0, 400), new Vector2(0, Main.rand.NextFloat(-1.9f, -0.4f)), 0, 0, Color.White, 1800, spawnPos));
+            }
+        }
+
         private void DrawTilingBackground(SpriteBatch spriteBatch)
         {
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSand").Value;
@@ -246,6 +304,12 @@ namespace StarlightRiver.Content.CustomHooks
                 if (x > -texture.Width && x < Main.screenWidth + 30)
                     Main.spriteBatch.Draw(texture, new Vector2(x, y), null, color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);
             }
+        }
+
+        private static int GetParallaxOffset2(float startpoint, float factor)
+        {
+            float vanillaParallax = 1 - (Main.caveParallax - 0.8f) / 0.2f;
+            return (int)((Main.screenWidth / 2 - startpoint) * factor * vanillaParallax);
         }
 
         private static int GetParallaxOffset(float startpoint, float factor)

@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.ModifyHitByProjectileEvent += BloodAmuletOnhitProjectile;
 		}
 
+		public override void Unload()
+		{
+			StarlightPlayer.ModifyHitByNPCEvent -= BloodAmuletOnhit;
+			StarlightPlayer.ModifyHitByProjectileEvent -= BloodAmuletOnhitProjectile;
+		}
+
 		public override void SafeSetDefaults()
         {
             Item.value = Item.sellPrice(0, 2, 0, 0);

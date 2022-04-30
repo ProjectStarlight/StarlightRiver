@@ -40,6 +40,15 @@ namespace StarlightRiver.Content.Items.Moonstone
             StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
 		}
 
+		public override void Unload()
+		{
+            On.Terraria.Player.KeyDoubleTap -= ActivateSpear;
+            On.Terraria.Main.DrawPendingMouseText -= SpoofMouseItem;
+            StarlightPlayer.PreDrawEvent -= DrawMoonCharge;
+            StarlightPlayer.OnHitNPCEvent -= ChargeFromMelee;
+            StarlightPlayer.OnHitNPCWithProjEvent -= ChargeFromProjectile;
+        }
+
 		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			if(proj.DamageType.Type == DamageClass.Melee.Type && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Player))

@@ -19,11 +19,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 	public class AquaSapphire : ModItem
 	{
 		public override string Texture => AssetDirectory.DungeonItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aqua sapphire");
 			Tooltip.SetDefault("Barrier negates 5% more damage \n+10 Barrier");
-
 		}
 
 		public override void SetDefaults()
@@ -39,7 +39,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 10;
 			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction += 0.05f;
-
 		}
 	}
 }

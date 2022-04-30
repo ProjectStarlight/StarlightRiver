@@ -58,6 +58,20 @@ namespace StarlightRiver.Content.CustomHooks
 
 			IL.Terraria.Main.DoDraw += AddWaterShader;
 			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//PORTTODO: Figure out where this logic moved in vanilla
+
+			//On.Terraria.Main.DoDraw += DebugTest;
+		}
+
+		private void DebugTest(On.Terraria.Main.orig_DoDraw orig, Main self, GameTime gameTime)
+		{
+			orig(self, gameTime);
+
+			if(!Main.gameMenu && Main.LocalPlayer.controlHook)
+			{
+				Main.spriteBatch.Begin();
+				NewDraw();
+				Main.spriteBatch.End();
+			}
 		}
 
 		private void UpdateActiveAddon(Player Player)
@@ -107,7 +121,8 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdfld<Main>("backWaterTarget"));
-			c.Index -= 2;
+			c.Index -= 1;
+			c.Emit(OpCodes.Pop);
 			c.EmitDelegate<Action>(NewDrawBack);
 			c.Emit(OpCodes.Br, label);
 
@@ -119,7 +134,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label2 = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdsfld<Main>("waterTarget"));
-			c.Index--;
+			c.Emit(OpCodes.Pop);
 			c.EmitDelegate<Action>(NewDraw);
 			c.Emit(OpCodes.Br, label2);
 		}
@@ -139,7 +154,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 
@@ -158,7 +173,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 	}

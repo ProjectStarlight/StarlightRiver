@@ -23,7 +23,12 @@ namespace StarlightRiver.Content.Items.Misc
             StarlightPlayer.PreHurtEvent += PreHurtAccessory;
         }
 
-        public override void SafeUpdateEquip(Player Player)
+		public override void Unload()
+		{
+            StarlightPlayer.PreHurtEvent -= PreHurtAccessory;
+        }
+
+		public override void SafeUpdateEquip(Player Player)
         {
             Player.runAcceleration *= 2;
             Player.maxRunSpeed *= 2;

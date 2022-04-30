@@ -37,6 +37,8 @@ namespace StarlightRiver.Compat.BossChecklist
 
 		public void PostLoad()
 		{
+			return; //disable for now
+
 			if (ModLoader.TryGetMod("BossChecklist", out var bcl))
 			{
 				typeInfo = bcl.Code.GetType("BossChecklist.UIElements.BossLogUIElements").GetNestedType("BossLogPanel", BindingFlags.NonPublic);

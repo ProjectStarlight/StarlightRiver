@@ -19,7 +19,7 @@ namespace StarlightRiver.Core
 
         public ParticleSystem(string texture, Update updateDelegate, int styles = 1)
         {
-            Texture = Request<Texture2D>(texture).Value;
+            Texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
             UpdateDelegate = updateDelegate;
             Styles = styles;
         }

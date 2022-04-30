@@ -9,7 +9,7 @@ namespace StarlightRiver.Core.Loaders
 {
 	class ForegroundLoader : IOrderedLoadable
 	{
-        public static List<Foreground> Foregrounds = new List<Foreground>();
+        public static List<Foreground> Foregrounds;
 
         public float Priority => 1.0f;
 
@@ -19,6 +19,8 @@ namespace StarlightRiver.Core.Loaders
         {
             if (Main.dedServ)
                 return;
+
+            Foregrounds = new List<Foreground>();
 
             Mod Mod = StarlightRiver.Instance;
 
@@ -33,7 +35,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            Foregrounds.Clear();
+            Foregrounds = null;
         }
     }
 }
