@@ -1,46 +1,57 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	internal partial class GlassMiniboss : ModNPC
+	public partial class GlassMiniboss : ModNPC
     {
         bool attackVariant = false;
 
-        internal ref float GlobalTimer => ref NPC.ai[0];
-        internal ref float Phase => ref NPC.ai[1];
+        internal ref float Phase => ref NPC.ai[0];
+        internal ref float GlobalTimer => ref NPC.ai[1];
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
-
-        private float spinAngle = 0;
-        private float glowStrength = 0.25f;
+        internal ref float AttackType => ref NPC.localAI[0];
 
         public static Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16);
-
-        //Animation tracking utils
-        private int Frame
-        {
-            set => NPC.frame.Y = value * 128;
-        }
 
         //Phase tracking utils
         public enum PhaseEnum
         {
             SpawnEffects = 0,
             SpawnAnimation = 1,
-            FirstPhase = 2,
-            DeathAnimation = 3
+            GauntletPhase = 2,
+            ComeBack = 3,
+            DirectPhase = 4,
+            DeathAnimation = 5
         }
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
+        public enum AttackEnum
+        {
+            None = 0,
+            Slash = 1,
+            Spinjitzu = 2,
+            Spears = 3,
+            Hammer = 4,
+            BigBrightBubble = 5,
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Glassweaver"); 
+            NPCID.Sets.TrailCacheLength[Type] = 10;
+            NPCID.Sets.TrailingMode[Type] = 1;
+        }
 
         public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
@@ -57,7 +68,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.knockBackResist = 0;
             NPC.boss = true;
             NPC.defense = 14;
-            Music = SoundLoader.GetSoundSlot(Mod, "Sounds/Music/Miniboss");
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -94,25 +105,32 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 case (int)PhaseEnum.SpawnAnimation:
 
-                    if (AttackTimer <= 90) 
-                        SpawnAnimation();
+                    //if (AttackTimer <= 90) 
+                    //    SpawnAnimation();
 
-                    else
-                    {
-                        SetPhase(PhaseEnum.FirstPhase);
-                        ResetAttack();
-                        NPC.noGravity = false;
-                    }
+                    //else
+                    //{
+                    SetPhase(PhaseEnum.DirectPhase);
+                    ResetAttack();
+                    //    NPC.noGravity = false;
+                    //}
 
                     break;
 
-                case (int)PhaseEnum.FirstPhase:
+                case (int)PhaseEnum.GauntletPhase:
 
+
+
+                    break;
+
+                case (int)PhaseEnum.DirectPhase:
+
+                    NPC.noGravity = false;
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
 
-                        if (AttackPhase > 2) 
+                        if (AttackPhase > 3) 
                             AttackPhase = 0;
 
                         attackVariant = Main.rand.NextBool();
@@ -121,9 +139,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Knives(); break;
+                        case 0: Spears(); break;
                         case 1: Hammer(); break;
                         case 2: Spears(); break;
+                        case 3: Hammer(); break;
                     }
 
                     break;
@@ -139,36 +158,85 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             attackVariant = reader.ReadBoolean();
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            NPC.frame.Width = 110;
-            NPC.frame.Height = 92;
+            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMiniboss");
+            Asset<Texture2D> weaverSolid = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossSolid");
+            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossGlow");
 
-            Vector2 offset = new Vector2(0, 16);
+            Rectangle frame = weaver.Frame(1, 5, 0, 0);
+            frame.Width = 136;
+            float trailOpacity = 0f;
 
-            if (spinAngle != 0)
+            switch (Phase)
             {
-                float sin = (float)Math.Sin(spinAngle + 1.57f * NPC.direction);
-                int off = Math.Abs((int)(NPC.frame.Width * sin));
+                case (int)PhaseEnum.DirectPhase:
 
-                SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                    switch (AttackType)
+                    {
+                        case (int)AttackEnum.Spears:
 
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value,
-                    new Rectangle((int)(NPC.position.X - screenPos.X - off / 2 + NPC.width / 2),
-                    (int)(NPC.position.Y - screenPos.Y - 64), off, NPC.frame.Height),
-                    NPC.frame, drawColor, 0, Vector2.Zero, effect, 0);
+                            if (AttackTimer > 10)
+                                frame.Y = 300;
+                            trailOpacity = 0.4f;
+                            break;
+
+                        case (int)AttackEnum.Hammer:
+
+                            float hammerTimer = AttackTimer - hammerSpawn;
+                            if (AttackTimer < 75)
+                                frame.Y = 150;
+                            else if (hammerTimer < 150)
+                            {
+                                frame.X = 138;
+                                frame.Width = 180;
+
+                                if (hammerTimer <= 55)
+                                {
+                                    frame.Y = 0;
+                                    bool secFrame = (hammerTimer >= 20) && (hammerTimer < 40);
+                                    if (secFrame)
+                                        frame.Y = 150;
+                                }
+                                else
+                                {
+                                    float swingAccel = Utils.GetLerpValue(55, 70, hammerTimer, true);
+                                    frame.Y = 150 + (150 * (int)(1f + (swingAccel * 2f)));
+                                }
+                            }
+                            break;
+                    }
+
+                    break;
             }
 
-            else
-            {
-                spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos - offset, NPC.frame, drawColor, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-                spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos - offset, NPC.frame, Color.White * glowStrength, 0, NPC.frame.Size() / 2, NPC.scale, NPC.direction > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
-            }
+            Vector2 origin = frame.Size() * new Vector2(0.5f, 1f);
+            Vector2 drawPos = new Vector2(0, 48) - Main.screenPosition;
 
-            if (glowStrength > 0.2f)
-                Lighting.AddLight(NPC.Center, new Vector3(1, 0.75f, 0.2f) * (glowStrength - 0.2f));
+            for (int i = 0; i < 10; i++)
+            {
+                Color trailColor = new Color(230, 60, 16, 0) * trailOpacity * ((10 - i) / 10f);
+                float scale = 0.8f + (((10 - i) / 10f) * 0.2f);
+                Main.EntitySpriteDraw(weaverSolid.Value, NPC.oldPos[i] + (NPC.Size * 0.5f) + drawPos, frame, trailColor, NPC.oldRot[i], origin, NPC.scale * scale, GetSpriteEffects(), 0);
+            }
+            Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+            Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+            
+            //switch (Phase)
+            //{
+            //    case (int)PhaseEnum.DirectPhase:
+
+            //        switch (AttackType)
+            //        {
+            //        }
+
+            //        break;
+            //}
 
             return false;
         }
+
+        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None; 
     }
 }

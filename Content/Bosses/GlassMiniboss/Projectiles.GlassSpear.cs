@@ -1,8 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -11,75 +14,90 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassSpear : ModProjectile
     {
-        Vector2 savedPoint;
-        Vector2 movePoint;
-
-        public override string Texture => "StarlightRiver/Assets/Bosses/GlassMiniboss/GlassSpear";
+        public override string Texture => AssetDirectory.GlassMiniboss + "GlassSpear";
 
         public override void SetDefaults()
         {
-            Projectile.width = 64;
-            Projectile.height = 16;
+            Projectile.width = 12;
+            Projectile.height = 12;
             Projectile.timeLeft = 130;
             Projectile.hostile = true;
-            Projectile.tileCollide = false;
+            Projectile.tileCollide = true;
         }
 
         public override void AI()
         {
-            //ai 0 is vertical position,
-            //ai 1 is direction
-            if (Projectile.velocity.X != 0) { }
+            Projectile.rotation = Projectile.ai[0] + MathHelper.PiOver2;
 
-            Projectile.rotation = Projectile.ai[1] == 1 ? 1.57f : -1.57f;
+            Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.1f);
 
-            int timer = 130 - Projectile.timeLeft;
+            //acceleration
+            if (Projectile.timeLeft < 80)
+                Projectile.velocity *= 1.15f;
 
-            if (timer == 0) //set vectors to move to / from on spawn
-            {
-                savedPoint = Projectile.Center;
-                movePoint = Projectile.Center + Vector2.UnitY * -Projectile.ai[0];
-            }
+            if (Projectile.timeLeft > 100)
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), DustType<Dusts.GlowFastDecelerate>(), newColor: Color.DarkOrange, Scale: 0.3f);
 
-            if (timer < 40) //Spreading upwards
-                Projectile.Center = Vector2.SmoothStep(savedPoint, movePoint, timer / 40f);
-
-            if (timer > 40 && timer < 60) //draw back
-                Projectile.Center = Vector2.SmoothStep(movePoint, movePoint + Vector2.UnitX * -Projectile.ai[1] * 45, (timer - 40) / 20f);
-
-            if (timer == 60) //fire
-                Projectile.velocity = Vector2.UnitX * Projectile.ai[1] * 2;
-
-            if (timer > 60 && timer < 70) //accelerate
-                Projectile.velocity *= 1.28f;
+            Projectile.localAI[0]++;
         }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Dust.NewDust(Projectile.Center - new Vector2(4), 8, 8, DustType<Dusts.GlassGravity>());
+            Projectile.velocity *= 0;
+            return false;
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) { }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < projHitbox.Width + 10;
 
         public override bool PreDraw(ref Color lightColor)
         {
-            int timer = 130 - Projectile.timeLeft;
-            Texture2D backTex = Request<Texture2D>(Texture).Value;
+            Asset<Texture2D> spear = Request<Texture2D>(Texture);
+            Rectangle glassFrame = spear.Frame(2, 1, 0);
+            Rectangle hotFrame = spear.Frame(2, 1, 1);
 
-            Main.EntitySpriteDraw(backTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, backTex.Size() / 2, 1, 0, 0);
+            float scale = Utils.GetLerpValue(95, 90, Projectile.timeLeft, true) * Projectile.scale;
 
-            if (timer < 60)
-            {
-                Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min(timer * 2, 120)); //TODO, clean up the file this is from later
-                Texture2D tex = Request<Texture2D>(AssetDirectory.VitricItem + "VitricSummonJavelin").Value;
-                Rectangle frame = new Rectangle(tex.Width / 2, 0, tex.Width / 2, tex.Height);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, lightColor, Projectile.rotation, glassFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
 
-                Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, frame.Size() / 2, 1, 0, 0);
-                Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
-            }
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(66, 80, Projectile.timeLeft, true);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
+
+            //tell
+            Asset<Texture2D> tell = TextureAssets.Extra[98];
+            float tellLength = Helpers.Helper.BezierEase(Utils.GetLerpValue(110, 85, Projectile.timeLeft, true)) * 8f;
+            Color tellFade = Color.OrangeRed * Utils.GetLerpValue(80, 110, Projectile.timeLeft, true);
+            tellFade.A = 0;
+            Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.33f, tellLength), SpriteEffects.None, 0);
+
+            DrawHotBall();
 
             return false;
         }
 
+        private void DrawHotBall()
+        {
+            Asset<Texture2D> hotBall = Request<Texture2D>(AssetDirectory.GlassMiniboss + "HotGlassBall");
+            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+            Rectangle ballFrame = hotBall.Frame(1, 3, 0, (int)(Projectile.localAI[0] * 0.5f % 3f));
+
+            float scale = Utils.GetLerpValue(150, 125, Projectile.timeLeft, true) * Utils.GetLerpValue(90, 110, Projectile.timeLeft, true);
+
+            Main.EntitySpriteDraw(hotBall.Value, Projectile.Center - Main.screenPosition, ballFrame, new Color(255, 255, 255, 128), Projectile.rotation * 0.2f, ballFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
+            Color bloomColor = Color.OrangeRed;
+            bloomColor.A = 0;
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation * 0.2f, bloom.Size() * 0.5f, scale * 0.5f, SpriteEffects.None, 0);
+
+        }
+
         public override void Kill(int timeLeft)
         {
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+            Helpers.Helper.PlayPitched("GlassMinibossSword", 1f, 0.9f, Projectile.Center);
 
             for (int k = 0; k < 10; k++)
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>());
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0, Main.rand.Next(-40, 20)).RotatedBy(Projectile.rotation), DustType<Dusts.GlassGravity>());
         }
     }
 }
