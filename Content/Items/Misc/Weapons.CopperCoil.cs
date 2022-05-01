@@ -94,7 +94,6 @@ namespace StarlightRiver.Content.Items.Misc
                         Projectile bolt = Projectile.NewProjectileDirect(Projectile.GetItemSource_FromThis(), EndPoint, vel, ModContent.ProjectileType<CoilStaticShock>(), (int)(Projectile.damage * 1.2f), 0.5f, Main.player[Projectile.owner].whoAmI);
                         bolt.ai[0] = id;
                         bolt.localAI[0] = vel.ToRotation();
-                        Helpers.Helper.PlayPitched("ShockHit", 0.9f, Main.rand.NextFloat(-0.3f, 0.8f), EndPoint);
                     }
                 }
             }
@@ -147,7 +146,10 @@ namespace StarlightRiver.Content.Items.Misc
         {
             NPC target = Main.npc[(int)Projectile.ai[0]];
             if (Projectile.ai[1] == 0)
-                startPoint = Projectile.Center;
+            {
+                startPoint = Projectile.Center; 
+                Helpers.Helper.PlayPitched("Impacts/ShockHit", 0.9f, Main.rand.NextFloat(-0.3f, 0.8f), Projectile.Center);
+            }
             Projectile.ai[1]++;
             Projectile.velocity = Vector2.Zero;
 

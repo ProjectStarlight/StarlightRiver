@@ -39,8 +39,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public enum AttackEnum
         {
             None = 0,
-            Spears = 1,
-            Hammer = 2,
+            Slash = 1,
+            Spinjitzu = 2,
+            Spears = 3,
+            Hammer = 4,
+            BigBrightBubble = 5,
         }
 
         public override void SetStaticDefaults()
@@ -65,7 +68,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.knockBackResist = 0;
             NPC.boss = true;
             NPC.defense = 14;
-            Music = SoundLoader.GetSoundSlot(Mod, "Sounds/Music/Miniboss");
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -136,9 +139,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Hammer(); break;
+                        case 0: Spears(); break;
                         case 1: Hammer(); break;
-                        case 2: Hammer(); break;
+                        case 2: Spears(); break;
                         case 3: Hammer(); break;
                     }
 

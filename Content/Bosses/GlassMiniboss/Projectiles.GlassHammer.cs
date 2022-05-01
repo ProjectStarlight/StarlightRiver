@@ -39,8 +39,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (Projectile.timeLeft == 120)
             {
-                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * 9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]); //Shockwave spawners
-                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * -9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]);
+                //TODO: figure out the shockwave
+                //Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * 9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]); //Shockwave spawners
+                //Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * -9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]);
             }
 
             float swingAccel = Utils.GetLerpValue(92f, 80f, Projectile.timeLeft, true);
@@ -74,10 +75,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Projectile.timeLeft == 80)
             {
-                Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.7f, 1.5f, Projectile.Center);
+                Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.7f, 1.33f, Projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
                 for (int i = 0; i < 30; i++)
-                    Dust.NewDust(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.Stone>(), 0, -4, newColor: Color.BurlyWood);
+                    Dust.NewDust(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.GlassGravity>(), 0, -4);
             }
 
             if (Projectile.timeLeft > 120)
@@ -89,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if (Projectile.timeLeft <= 90 && Projectile.timeLeft >= 70)
+            if (Projectile.timeLeft <= 90 && Projectile.timeLeft >= 75)
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
         }
 
