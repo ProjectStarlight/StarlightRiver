@@ -67,19 +67,20 @@ namespace StarlightRiver.Content.Items.Vitric
 				Vector2 dir = player.DirectionTo(Main.MouseWorld) * 0.6f;
 				player.velocity.X += dir.X;
             }*/
-
+			handCounter++;
 			if (handCounter % 2 == 0)
 			{
 				Projectile proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI, (handCounter % 4) / 2);
 				var mp = proj.ModProjectile as IgnitionPunchPhantom;
 				mp.directionVector = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.2f);
-			}
+			
 
-			int offset = Main.rand.Next(-20, 20);
-			Vector2 vel = new Vector2(7, offset * 0.4f);
-			Vector2 offsetV = new Vector2(Main.rand.Next(-20,20), offset);
-			float rot = position.DirectionTo(Main.MouseWorld).ToRotation();
-			Projectile.NewProjectileDirect(source, position + offsetV.RotatedBy(rot), vel.RotatedBy(rot), ModContent.ProjectileType<IgnitionPunch>(), damage, knockback, player.whoAmI, handCounter++ % 2);
+				int offset = Main.rand.Next(-20, 20);
+				Vector2 vel = new Vector2(7, offset * 0.4f);
+				Vector2 offsetV = new Vector2(Main.rand.Next(-20,20), offset);
+				float rot = position.DirectionTo(Main.MouseWorld).ToRotation();
+				Projectile.NewProjectileDirect(source, position + offsetV.RotatedBy(rot), vel.RotatedBy(rot), ModContent.ProjectileType<IgnitionPunch>(), damage, knockback, player.whoAmI, (handCounter % 4) / 2);
+			}
 			return false;
         }
     }
@@ -210,8 +211,8 @@ namespace StarlightRiver.Content.Items.Vitric
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
             }
 
-			if (owner.GetModPlayer<IgnitionPlayer>().charge < 150)
-				owner.GetModPlayer<IgnitionPlayer>().charge += 5;
+			if (owner.GetModPlayer<IgnitionPlayer>().charge < 75)
+				owner.GetModPlayer<IgnitionPlayer>().charge += 1;
 
 			Main.NewText(owner.GetModPlayer<IgnitionPlayer>().charge);
         }
@@ -221,21 +222,23 @@ namespace StarlightRiver.Content.Items.Vitric
             Texture2D tex = ModContent.Request<Texture2D>(Texture + (front ? "" : "_Back")).Value;
 			Texture2D afterTex = ModContent.Request<Texture2D>(Texture + "_After").Value;
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			/*Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
 			for (int k = Projectile.oldPos.Length - 1; k > 0; k--) 
 			{
 				Vector2 drawPos = Projectile.oldPos[k] + (new Vector2(Projectile.width, Projectile.height) / 2);
-				Color color = Color.OrangeRed * (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length)) * fade;
+
+				float progress = (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length));
+				Color color = Color.White * progress * fade * 0.8f;
 				if (k > 0 && k < oldRotation.Count)
-					Main.spriteBatch.Draw(afterTex, drawPos - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);
 			}
 
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			/*Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fade, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}
@@ -342,19 +345,36 @@ namespace StarlightRiver.Content.Items.Vitric
 		public int charge = 0;
 		public bool launching = false;
 
-        public override void PreUpdate()
+		private int rotationCounter = 0;
+
+        public override void PreUpdate() //TODO: some rotdifference shenanagins here to make the rotation transition smoother
         {
             if (launching)
             {
 				charge--;
 				if (charge <= 0)
+				{
 					launching = false;
+					Player.fullRotation = 0;
+					return;
+				}
 
 				Player.fullRotationOrigin = Player.Size / 2;
-				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation();
+
+				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f;
+
+				float lerper = MathHelper.Min(rotationCounter / 8f, charge / 15f);
+				Player.fullRotation *= lerper;
 				Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20, 0.1f);
 
+				if (rotationCounter < 8)
+					rotationCounter++;
+
 			}
+			else
+            {
+				rotationCounter = 0;
+            }
         }
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
@@ -394,7 +414,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Projectile.Center = owner.Center;
 			if (!modPlayer.launching)
+			{ 
 				Projectile.Kill();
+			}
         }
     }
 }
