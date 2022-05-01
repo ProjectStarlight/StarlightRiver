@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WindowSmallItem : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
+        public override string Texture => AssetDirectory.OvergrowTile + "WindowSmall";
 
         public WindowSmallItem() : base("Smol Window", "Debug Item", "WindowSmall", 1) { }
     }

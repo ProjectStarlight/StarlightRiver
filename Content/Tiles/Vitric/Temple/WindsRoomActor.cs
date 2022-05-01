@@ -20,8 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class WindsRoomActorItem  : QuickTileItem
 	{
-        public WindsRoomActorItem() : base("Winds Room Actor", "Debug Item", "WindsRoomActor", 0, AssetDirectory.Debug, true) { }
-
+        public WindsRoomActorItem() : base("Winds Room Actor", "Debug Item", "WindsRoomActor", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
     }
 
     class WindsRoomActorDummy : Dummy
