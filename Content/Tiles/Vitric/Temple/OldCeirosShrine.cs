@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Update()
 		{
-            if (Main.rand.Next(20) == 0)
+            if (Main.rand.NextBool(20))
             {
                 var pos = Projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
                 Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
@@ -108,6 +108,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class OldCeirosShrineItem : QuickTileItem 
     {
-        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0, AssetDirectory.Debug, true) { }
+        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0) { }
     }
 }
