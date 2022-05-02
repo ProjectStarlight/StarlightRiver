@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private void AllowBigHotkeying(ILContext il)
 		{
 			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchStloc(30), n => n.MatchLdcI4(0), n => n.MatchStloc(31), n => n.MatchLdsfld<Main>("drawingPlayerChat"));
+			c.TryGotoNext(n => n.MatchStloc(29), n => n.MatchLdcI4(0), n => n.MatchStloc(30), n => n.MatchLdsfld<Main>("drawingPlayerChat"));
 			c.Index += 9;
 
 			ILLabel label = il.DefineLabel(c.Next);
