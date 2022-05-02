@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					}
 					if(Main.rand.NextBool(3))
 					{
-						Gore gore = Gore.NewGoreDirect(Projectile.Center, Main.rand.NextVector2Circular(2, 2), GoreID.ChimneySmoke1);
+						Gore gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(2, 2), GoreID.ChimneySmoke1);
 						gore.rotation = Main.rand.NextFloatDirection();
 						gore.timeLeft = 10;
 

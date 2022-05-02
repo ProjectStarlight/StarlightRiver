@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			for (int i = 1; i < 8; i++)
 			{
-				Gore.NewGore(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderCrawler_Gore" + i.ToString()).Type, 1f);
+				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderCrawler_Gore" + i.ToString()).Type, 1f);
 			}
 		}
 
@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.frameCounter = 0;
 
 				Vector2 pos = Projectile.Center + (GunOffset().RotatedBy(Projectile.rotation));
-				Gore.NewGore(pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+				Gore.NewGore(Projectile.GetSource_FromThis(), pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
 				gunRotation -= Math.Sign(dir.X) * 0.3f;
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }

@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 1; i <= 5; i++)
             {
-				Gore.NewGore(Projectile.Center, Main.rand.NextVector2Circular(3,3), Mod.Find<ModGore>("BizarrePotionGore" + i).Type, 1f);
+				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(3,3), Mod.Find<ModGore>("BizarrePotionGore" + i).Type, 1f);
 			}
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 107);
 			switch (liquidType)

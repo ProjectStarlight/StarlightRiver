@@ -271,7 +271,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     {
                         for (int k = 1; k < 4; k++)
                         {
-                            Gore.NewGore(position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderSelector_Gore" + k.ToString()).Type, 1f);
+                            Gore.NewGore(Projectile.GetSource_FromThis(), position + Main.rand.NextVector2Circular(15, 15), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderSelector_Gore" + k.ToString()).Type, 1f);
                         }
                     }
 

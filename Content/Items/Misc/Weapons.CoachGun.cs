@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + (offset * 70), Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
 
-				Gore.NewGore(player.Center + (offset * 20), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+				Gore.NewGore(source, player.Center + (offset * 20), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
 
 				return false;
             }

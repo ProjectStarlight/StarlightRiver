@@ -7,6 +7,8 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -101,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                         {
                             for (int k = -1; k <= 1; k++)
-                                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
                         }
 
                         NPC.velocity = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center) * -5.5f;
@@ -129,7 +131,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 4; k++)
-                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>("CrystalPopperGore" + k).Type);
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, Vector2.Zero, Mod.Find<ModGore>("CrystalPopperGore" + k).Type);
             }
 
             if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)

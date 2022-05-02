@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 5; k++)
-                    Gore.NewGoreDirect(NPC.position, Vector2.Zero, Mod.Find<ModGore>("SnakeGore" + k).Type);
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, Vector2.Zero, Mod.Find<ModGore>("SnakeGore" + k).Type);
             }
         }
 
