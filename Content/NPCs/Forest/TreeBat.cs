@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.NPCs.Forest
                         if (Main.npc.Any(n => n.type == NPC.type && n.position == new Vector2(realX * 16 + 8, realY * 16 + 24)))
                             continue;
 
-                        NPC.NewNPC(NPC.GetSpawnSourceForNaturalSpawn(), realX * 16 + 8, realY * 16 + 28, NPC.type);
+                        NPC.NewNPC(NPC.GetSource_NaturalSpawn(), realX * 16 + 8, realY * 16 + 28, NPC.type);
                         return 0;
 					}
 				}
