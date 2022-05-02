@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                         NPC.frame.Y = NPC.height * (7 - (int)(((ActionTimer - 30) / 20f) * 5));
 
                     if (ActionTimer == 20 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Normalize(target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
                     if (ActionTimer == 140)
                         ChangeState(2, 2);

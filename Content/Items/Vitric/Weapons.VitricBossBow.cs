@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-            tooltips.Find(n => n.Name == "Speed" && n.mod == "Terraria").text = "Slow charge";
+            tooltips.Find(n => n.Name == "Speed" && n.Mod == "Terraria").Text = "Slow charge";
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

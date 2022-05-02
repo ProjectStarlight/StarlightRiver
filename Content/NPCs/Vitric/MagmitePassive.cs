@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -201,7 +202,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
     {
 		public override string Texture => AssetDirectory.VitricNpc + "MagmiteGore";
 
-		public override void OnSpawn(Gore gore)
+        public override void OnSpawn(Gore gore, IEntitySource source)
         {
             gore.timeLeft = 180;
             gore.sticky = true;

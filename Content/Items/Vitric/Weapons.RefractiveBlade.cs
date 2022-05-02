@@ -596,7 +596,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             if (Inflicted(NPC))
             {
-                if (Item.DamageType.CountsAs(DamageClass.Melee))
+                if (Item.DamageType.Type == DamageClass.Melee.Type)
                     damage = (int)(damage * 1.25f);
             }
 		}
@@ -605,7 +605,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
             if (Inflicted(NPC))
             {
-                if (Projectile.DamageType.CountsAs(DamageClass.Melee))
+                if (Projectile.DamageType.Type == DamageClass.Melee.Type)
                     damage = (int)(damage * 1.25f);
 
                 if (Projectile.type == ProjectileType<RefractiveBladeProj>())

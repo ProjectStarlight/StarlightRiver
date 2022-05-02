@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
-        public override string TownNPCName() => "";
+        //public override string TownNPCName() => "";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
 
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (firstButton)
             {
-                NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassMiniboss>());
+                NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassMiniboss>());
                 NPC.active = false;
             }
         }

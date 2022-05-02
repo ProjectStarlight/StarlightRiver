@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Starwood
         private void spawnStar(Vector2 position)
         {
             var player = Main.player[Item.playerIndexTheItemIsReservedFor];
-            int item = Item.NewItem(player.GetItemSource_Misc(player.whoAmI), position, ItemID.Star, 1, true, 0, true);
+            int item = Item.NewItem(player.GetSource_Loot(), position, ItemID.Star, 1, true, 0, true);
 
 
             if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)

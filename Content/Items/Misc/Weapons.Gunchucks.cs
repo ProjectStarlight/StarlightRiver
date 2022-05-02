@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.AddTile(TileID.Anvils);
 		}
 
-		public override float UseTimeMultiplier(Player Player) => base.UseTimeMultiplier(Player) * Player.meleeSpeed; //Scale with melee speed buffs, like whips
+		public override float UseTimeMultiplier(Player Player) => base.UseTimeMultiplier(Player) * Player.GetTotalAttackSpeed(DamageClass.Melee); //Scale with melee speed buffs, like whips
 	}
 
 	public class GunchuckProj : ModProjectile

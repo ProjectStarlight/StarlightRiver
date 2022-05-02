@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (shardTimer == 210)
                 {
-                    int i = Projectile.NewProjectile(player.GetProjectileSource_SetBonus(player.whoAmI), player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI, 0, shardCount);
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<VitricArmorProjectileIdle>(), 1, 1, player.whoAmI, 0, shardCount);
                     var proj = Main.projectile[i].ModProjectile as VitricArmorProjectileIdle;
                     proj.parent = this;
                 }

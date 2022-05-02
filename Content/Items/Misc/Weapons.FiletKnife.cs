@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
                         itemType = ModContent.ItemType<FiletGiblet3>();
                         break;
                 }
-                Item.NewItem(player.GetSource_OnHit(target, target.whoAmI), target.Center, itemType);
+                Item.NewItem(player.GetSource_OnHit(target), target.Center, itemType);
 
                 if (target.GetGlobalNPC<FiletNPC>().DOT < 3) //TODO: Port to a proper stacking buff system later
                     target.GetGlobalNPC<FiletNPC>().DOT += 1;
@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void Update(Player Player, ref int buffIndex)
         {
-            Player.meleeSpeed += 0.3f;
+            Player.GetAttackSpeed(DamageClass.Melee) += 0.3f;
         }
     }
 }

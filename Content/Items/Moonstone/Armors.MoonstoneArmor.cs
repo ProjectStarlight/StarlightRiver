@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 if (!Player.controlUp)
                 {
                     TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 if (!Player.controlUp)
                 {
                     TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }
@@ -339,7 +339,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 if (!Player.controlUp)
                 {
                     TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }

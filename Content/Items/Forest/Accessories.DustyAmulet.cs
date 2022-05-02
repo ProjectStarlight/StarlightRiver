@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Forest
             StarlightItem.GetWeaponCritEvent -= ReduceCrit;
         }
 
-		private void ReduceCrit(Item Item, Player Player, ref int crit)
+		private void ReduceCrit(Item Item, Player Player, ref float crit)
 		{
             if(Equipped(Player))
                 crit = (int)(crit * 0.8f);

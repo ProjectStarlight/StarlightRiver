@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void GoreMe(Vector2 pos, Vector2 offset, string tex)
 		{
             var texture = Request<Texture2D>(AssetDirectory.VitricBoss + "Gore/" + tex).Value;
-            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
+            Gore.NewGorePerfect(parent.NPC.GetSource_FromThis(), pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
         }
     }
 }

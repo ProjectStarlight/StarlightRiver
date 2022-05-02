@@ -142,12 +142,12 @@ namespace StarlightRiver.Content.Items.Vitric
                     Projectile.timeLeft += 2;
             }
             
-            if (Projectile.timeLeft > (int)(20 * Player.meleeSpeed) && Projectile.timeLeft < (int)(50 * Player.meleeSpeed))
+            if (Projectile.timeLeft > (int)(20 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)))
                 Projectile.extraUpdates = 8;
             else  
                 Projectile.extraUpdates = 0;
             
-            if (Projectile.timeLeft == (int)(25 * Player.meleeSpeed))
+            if (Projectile.timeLeft == (int)(25 * Player.GetTotalAttackSpeed(DamageClass.Melee)))
             {
                 Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
 
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool? CanHitNPC(NPC target)
         {
             var Player = Main.player[Projectile.owner];
-            return (Projectile.timeLeft < (int)(50 * Player.meleeSpeed)) && target.active && !target.dontTakeDamage && !target.townNPC;
+            return (Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee))) && target.active && !target.dontTakeDamage && !target.townNPC;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private void findIfHit()
         {
-            foreach (NPC NPC in Main.npc.Where(n => n.active  && !n.dontTakeDamage && !n.townNPC && n.life > 0 && Projectile.timeLeft < (int)(50 * Main.player[Projectile.owner].meleeSpeed) && n.immune[Projectile.owner] <= 0 &&  n.Hitbox.Intersects(Projectile.Hitbox) ))
+            foreach (NPC NPC in Main.npc.Where(n => n.active  && !n.dontTakeDamage && !n.townNPC && n.life > 0 && Projectile.timeLeft < (int)(50 * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee)) && n.immune[Projectile.owner] <= 0 &&  n.Hitbox.Intersects(Projectile.Hitbox) ))
             {
                 int zero = 0;
                 float zerof = 0f;

@@ -157,7 +157,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            if (spawnInfo.player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type)) //they should only spawn at night in the forest after EoC is dead, and one max
+            if (spawnInfo.Player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type)) //they should only spawn at night in the forest after EoC is dead, and one max
                 return 0.25f;
 
             return 0;

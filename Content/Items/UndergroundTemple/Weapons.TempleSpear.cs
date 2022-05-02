@@ -49,13 +49,13 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
             //Dust effects
             Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity.RotatedBy(-0.5f));
             d.noGravity = true;
-            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed));
-            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed);
+            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee)));
+            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee));
 
             d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity.RotatedBy(0.5f));
             d.noGravity = true;
-            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed));
-            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].meleeSpeed);
+            d.color = new Color(255, 255, 200) * (Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee)));
+            d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee));
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)

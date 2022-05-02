@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.GUI
                 CookIngredient(Item, SideSlot1);
                 CookIngredient(Item, SeasonSlot);
                 Item.position = Main.LocalPlayer.Center;
-                Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetItemSource_Misc(0), Item);
+                Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
             }

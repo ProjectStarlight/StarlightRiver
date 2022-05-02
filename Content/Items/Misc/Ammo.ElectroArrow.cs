@@ -41,8 +41,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.FirstOrDefault(n => n.Name == "Damage").text = "Deals 25% bow damage";
-            tooltips.FirstOrDefault(n => n.Name == "CritChance").text = "Cannot critically strike";
+            tooltips.FirstOrDefault(n => n.Name == "Damage").Text = "Deals 25% bow damage";
+            tooltips.FirstOrDefault(n => n.Name == "CritChance").Text = "Cannot critically strike";
         }
 
         public override void AddRecipes()

@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-            tooltips[0].overrideColor = new Color(100, 255, 255);
+            tooltips[0].OverrideColor = new Color(100, 255, 255);
 		}
     }
 

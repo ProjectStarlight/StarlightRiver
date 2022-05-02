@@ -22,9 +22,9 @@ namespace StarlightRiver.Core
 				var mp = Main.player[Projectile.owner].GetModPlayer<CritMultiPlayer>();
 				float toMult = mp.AllCritMult;
 
-				if (Projectile.DamageType.CountsAs(DamageClass.Melee)) toMult += mp.MeleeCritMult;
-				if (Projectile.DamageType.CountsAs(DamageClass.Ranged)) toMult += mp.RangedCritMult;
-				if (Projectile.DamageType.CountsAs(DamageClass.Magic)) toMult += mp.MagicCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Melee.Type) toMult += mp.MeleeCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Ranged.Type) toMult += mp.RangedCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Magic.Type) toMult += mp.MagicCritMult;
 
 				float multiplier = 1 + toMult / 2;
 				damage = (int)(damage * multiplier);
@@ -37,9 +37,9 @@ namespace StarlightRiver.Core
 			{
 				float toMult = AllCritMult;
 
-				if (Item.DamageType.CountsAs(DamageClass.Melee)) toMult += MeleeCritMult;
-				if (Item.DamageType.CountsAs(DamageClass.Ranged)) toMult += RangedCritMult;
-				if (Item.DamageType.CountsAs(DamageClass.Magic)) toMult += MagicCritMult;
+				if (Item.DamageType.Type == DamageClass.Melee.Type) toMult += MeleeCritMult;
+				if (Item.DamageType.Type == DamageClass.Ranged.Type) toMult += RangedCritMult;
+				if (Item.DamageType.Type == DamageClass.Magic.Type) toMult += MagicCritMult;
 
 				float multiplier = 1 + toMult / 2;
 				damage = (int)(damage * multiplier);
@@ -61,9 +61,9 @@ namespace StarlightRiver.Core
 
 			float multiplier = mp.AllCritMult;
 
-			if (Projectile.DamageType.CountsAs(DamageClass.Melee)) multiplier += mp.MeleeCritMult;
-			if (Projectile.DamageType.CountsAs(DamageClass.Ranged)) multiplier += mp.RangedCritMult;
-			if (Projectile.DamageType.CountsAs(DamageClass.Magic)) multiplier += mp.MagicCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Melee.Type) multiplier += mp.MeleeCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Ranged.Type) multiplier += mp.RangedCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Magic.Type) multiplier += mp.MagicCritMult;
 
 			return multiplier;
 		}
@@ -75,9 +75,9 @@ namespace StarlightRiver.Core
 
 			float multiplier = mp.AllCritMult;
 
-			if (Item.DamageType.CountsAs(DamageClass.Melee)) multiplier += mp.MeleeCritMult;
-			if (Item.DamageType.CountsAs(DamageClass.Ranged)) multiplier += mp.RangedCritMult;
-			if (Item.DamageType.CountsAs(DamageClass.Magic)) multiplier += mp.MagicCritMult;
+			if (Item.DamageType.Type == DamageClass.Melee.Type) multiplier += mp.MeleeCritMult;
+			if (Item.DamageType.Type == DamageClass.Ranged.Type) multiplier += mp.RangedCritMult;
+			if (Item.DamageType.Type == DamageClass.Magic.Type) multiplier += mp.MagicCritMult;
 
 			return multiplier;
 		}

@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 SpawnPlatform(-340, 240, true);
                 SpawnPlatform(340, 240, true);
 
-                NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
+                NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
             }
 
             Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -NPC.ai[0]);
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     if (Item.type == ItemType<SquidBossSpawn>() && NPC.ai[0] == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
                     {
-                        NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
+                        NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
                         Item.active = false;
                         Item.TurnToAir();
 
@@ -429,8 +429,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void SpawnPlatform(int x, int y, bool small = false)
         {
-            if (small) NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatformSmall>());
-            else NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatform>());
+            if (small) NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatformSmall>());
+            else NPC.NewNPC(NPC.GetSource_FromThis(), (int)(NPC.Center.X + x), (int)(NPC.Center.Y + y), NPCType<IcePlatform>());
         }
 
         private Rectangle GetSource(float offset, Texture2D tex)

@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Vector2 pos = new Vector2(NPC.ai[2] == 1 ? NPC.position.X + NPC.width - NPC.ai[0] : NPC.position.X + NPC.ai[0], NPC.position.Y + 48);
 
                         if (Main.netMode != NetmodeID.MultiplayerClient)
-                            Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
+                            Projectile.NewProjectile(NPC.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<CrystalWave>(), 20, 1);
                     }
                     if (NPC.ai[0] > NPC.width)
                     {
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 for (int k = 0; k < Main.rand.Next(6); k++)
                 {
                     var type = Mod.Find<ModGore>("MagmiteGore").Type;
-                    Gore.NewGoreDirect(Projectile.Center - Vector2.UnitY * 16, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
+                    Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - Vector2.UnitY * 16, (Vector2.UnitY * -8).RotatedByRandom(0.2f), type, Main.rand.NextFloat(0.3f, 0.5f));
                     Dust.NewDustPerfect(Projectile.Center - Vector2.UnitY * 16, DustType<Dusts.Glow>(), (Vector2.UnitY * Main.rand.Next(-5, -2)).RotatedByRandom(0.8f), 0, new Color(255, 200, 100), 0.3f);
                 }
 

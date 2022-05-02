@@ -129,19 +129,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 			if (item.prefix == 77)
 			{
-				Player.meleeSpeed += 0.01f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.01f;
 			}
 			if (item.prefix == 78)
 			{
-				Player.meleeSpeed += 0.02f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.02f;
 			}
 			if (item.prefix == 79)
 			{
-				Player.meleeSpeed += 0.03f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.03f;
 			}
 			if (item.prefix == 80)
 			{
-				Player.meleeSpeed += 0.04f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.04f;
 			}
 		}
 
@@ -155,24 +155,24 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                     if (line.Name == "ItemName")
                     {
-                        line.text = line.text.Insert(0, "Twice ");
-                        line.overrideColor = RelicColor(k);
+                        line.Text = line.Text.Insert(0, "Twice ");
+                        line.OverrideColor = RelicColor(k);
                     }
 
-					if (line.isModifier)
+					if (line.IsModifier)
 					{
-						line.overrideColor = RelicColor(k);
+						line.OverrideColor = RelicColor(k);
 
 						if (item.accessory)
-							line.text = DoubleIntValues(line.text);
+							line.Text = DoubleIntValues(line.Text);
 					}
 
-                    if (line.isModifierBad)
-                        line.overrideColor = RelicColorBad(k);
+                    if (line.IsModifierBad)
+                        line.OverrideColor = RelicColorBad(k);
                 }
 
                 var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged");
-                newLine.overrideColor = new Color(255, 180, 100);
+                newLine.OverrideColor = new Color(255, 180, 100);
                 tooltips.Add(newLine);
             }
         }

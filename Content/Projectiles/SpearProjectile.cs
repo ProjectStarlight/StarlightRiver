@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Projectiles
             Player.heldProj = Projectile.whoAmI;
             Player.itemTime = Player.itemAnimation;
 
-            int realDuration = (int)(Duration * Player.meleeSpeed);
+            int realDuration = (int)(Duration * Player.GetTotalAttackSpeed(DamageClass.Melee));
             if (Projectile.timeLeft == Duration) Projectile.timeLeft = realDuration;
             Projectile.velocity = Vector2.Normalize(Projectile.velocity);
 

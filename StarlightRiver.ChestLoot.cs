@@ -99,7 +99,7 @@ namespace StarlightRiver
                 Item Item = chest.item[i];
 
                 // Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
-                if (Item.accessory || (Item.damage > 0 && Item.notAmmo && (Item.DamageType.CountsAs(DamageClass.Melee) || Item.DamageType.CountsAs(DamageClass.Ranged) || Item.DamageType.CountsAs(DamageClass.Magic) || Item.DamageType.CountsAs(DamageClass.Magic)) && Item.maxStack == 1))
+                if (Item.accessory || (Item.damage > 0 && Item.notAmmo && Item.maxStack == 1))
                 {
                     type = chest.item[i].type;
 

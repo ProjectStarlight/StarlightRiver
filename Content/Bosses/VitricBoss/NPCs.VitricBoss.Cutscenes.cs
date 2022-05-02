@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 for (int k = 0; k < 10; k++)
-                    Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+                    Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 for (int k = 0; k < 10; k++)
-                    Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+                    Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -120,7 +120,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 for (int k = 0; k < 10; k++)
-                    Gore.NewGorePerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
+                    Gore.NewGorePerfect(NPC.GetSource_FromThis(), arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), Vector2.UnitY * Main.rand.NextFloat(-1, 2), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 19)).Type);
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustPerfect(arena.Center() + new Vector2(Main.rand.Next(-600, 600), -450), DustID.Stone, Vector2.UnitY * Main.rand.NextFloat(6, 12), 0, default, Main.rand.NextFloat(1, 3));
@@ -151,9 +151,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 for (int k = 0; k < 40; k++)
-                    Gore.NewGorePerfect(NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 20)).Type);
+                    Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(20), Mod.Find<ModGore>("Cluster" + Main.rand.Next(1, 20)).Type);
 
-                Gore.NewGorePerfect(NPC.Center + new Vector2(-112, 50), Vector2.Zero, Mod.Find<ModGore>("TempleHole").Type);
+                Gore.NewGorePerfect(NPC.GetSource_FromThis(), NPC.Center + new Vector2(-112, 50), Vector2.Zero, Mod.Find<ModGore>("TempleHole").Type);
 
                 Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
             }
@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (GlobalTimer == 540 + k * 5)
                     {
                         Vector2 target = new Vector2(NPC.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
-                        int index = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone form
+                        int index = NPC.NewNPC(NPC.GetSource_FromThis(), (int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone form
                         (Main.npc[index].ModNPC as VitricBossCrystal).Parent = this;
                         (Main.npc[index].ModNPC as VitricBossCrystal).StartPos = target;
                         (Main.npc[index].ModNPC as VitricBossCrystal).TargetPos = NPC.Center + new Vector2(0, -180).RotatedBy(6.28f / 4 * k);
@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    int index = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<ArenaBottom>());
+                    int index = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<ArenaBottom>());
                     (Main.npc[index].ModNPC as ArenaBottom).Parent = this;
                 }
 
@@ -460,7 +460,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, new Color(255, 150, 50), 0.6f);
 
                     for (int k = 0; k < 40; k++)
-                        Gore.NewGoreDirect(NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.7f, 1.5f));
+                        Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-20, -8)).RotatedByRandom(0.6f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.7f, 1.5f));
 
                     body.SpawnGores2();
 

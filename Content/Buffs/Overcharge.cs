@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Buffs
                     NPC NPC = Main.npc[k];
                     if (NPC.active && Vector2.Distance(NPC.Center, Player.Center) < 100)
                     {
-                        var proj = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
                         proj.friendly = false;
                         proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
                         DrawHelper.DrawElectricity(Player.Center, NPC.Center, DustType<Content.Dusts.Electric>());
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Buffs
                     NPC target = Main.npc[k];
                     if (target.active && Vector2.Distance(target.Center, NPC.Center) < 200)
                     {
-                        var proj = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
+                        var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), target.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, 0, 2, 100);
                         proj.friendly = false;
                         proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
                         DrawHelper.DrawElectricity(NPC.Center, target.Center, DustType<Content.Dusts.Electric>());

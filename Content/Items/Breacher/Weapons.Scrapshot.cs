@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (Main.myPlayer == player.whoAmI)
             {
-                damage = (int)(Item.damage * player.GetDamage(DamageClass.Ranged));
+                damage = (int)(Item.damage * player.GetDamage(DamageClass.Ranged).Multiplicative);
                 float rotation = (player.Center - Main.MouseWorld).ToRotation() - 1.57f;
                 speedX = speed * (float)Math.Sin(rotation);
                 speedY = speed * -(float)Math.Cos(rotation);

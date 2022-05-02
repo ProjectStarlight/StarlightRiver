@@ -77,13 +77,13 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			var tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-			var spawnPoint = new Vector2(spawnInfo.spawnTileX, spawnInfo.spawnTileY) * 16;
+			var tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
+			var spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
 
-			return spawnInfo.player.ZoneCorrupt && 
+			return spawnInfo.Player.ZoneCorrupt && 
 				tile.WallType == WallID.EbonstoneUnsafe && 
 				tile .LiquidAmount == 0 &&
-				Lighting.Brightness(spawnInfo.spawnTileX, spawnInfo.spawnTileY) <= 0.1f &&
+				Lighting.Brightness(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) <= 0.1f &&
 				!Main.npc.Any(n => n.type == NPCType<Stalker>() && Vector2.Distance(n.Center, spawnPoint) < 320) ? 1 : 0;
 		}
 

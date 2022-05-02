@@ -85,13 +85,13 @@ namespace StarlightRiver.Content.Items.Food
 
             foreach (TooltipLine line in tooltips)
             {
-                if (line.mod == "Terraria" && line.Name == "Tooltip0") { line.text = description; line.overrideColor = nameColor; } //PORTTODO: Replace line.Mod with something
-                if (line.mod == "Terraria" && line.Name == "Tooltip1") { line.text = ItemTooltip; line.overrideColor = descriptionColor; }
+                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.Text = description; line.OverrideColor = nameColor; } //PORTTODO: Replace line.Mod with something
+                if (line.Mod == "Terraria" && line.Name == "Tooltip1") { line.Text = ItemTooltip; line.OverrideColor = descriptionColor; }
             }
 
             TooltipLine fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
             {
-                overrideColor = new Color(110, 235, 255)
+                OverrideColor = new Color(110, 235, 255)
             };
 
             tooltips.Add(fullLine);

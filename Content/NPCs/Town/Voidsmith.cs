@@ -44,18 +44,6 @@ namespace StarlightRiver.NPCs.Town
             NPC.knockBackResist = 0.5f;          
         }
 
-        public override string TownNPCName()
-        {
-            switch (WorldGen.genRand.Next(3))
-            {
-                case 0: return "PH Name 0";
-                case 1: return "PH Name 1";
-                case 2: return "PH Name 2";
-
-                default: return "Error";
-            }
-        }
-
         public override string GetChat()
         {
             return "No Text";

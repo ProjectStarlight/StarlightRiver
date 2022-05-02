@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Items.Misc
             DisplayName.SetDefault("Tin Coil");
             Tooltip.SetDefault("Strikes nearby enemies with static electricity");
             CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
-            ItemID.Sets.SummonerWeaponThatScalesWithAttackSpeed[Type] = true;
         }
 
         public override void SetDefaults()

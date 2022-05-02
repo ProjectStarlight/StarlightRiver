@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.GUI
             if (Selections[1] != null)
             {
                 Visible = false;
-                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), BigItem); //PORTTODO: Pass coords to this so source can be assigned correctly
-                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), Selections[0], Selections[0].stack);
-                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetItemSource_Misc(0), Selections[1], Selections[1].stack);
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), BigItem);
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[0], Selections[0].stack);
+                Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[1], Selections[1].stack);
             }
             base.Update(gameTime);
         }

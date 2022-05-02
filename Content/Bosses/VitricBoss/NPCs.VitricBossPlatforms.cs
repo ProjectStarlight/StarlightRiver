@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (masterExpirationTimer > 150)
                     {
                         DontCollide = true;
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
                     }
                 }
                 else
@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (masterExpirationTimer > 150)
                     {
                         DontCollide = true;
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
                     }
                 }
                 else

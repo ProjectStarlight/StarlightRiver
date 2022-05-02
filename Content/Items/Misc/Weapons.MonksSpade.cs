@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     if (Main.rand.NextFloat() < ownerSpade.bonusChance)
                     {
-                        Item.NewItem(Projectile.GetSource_OnHit(target, target.whoAmI), target.Center, ItemID.Heart);
+                        Item.NewItem(Projectile.GetSource_OnHit(target), target.Center, ItemID.Heart);
                         ownerSpade.bonusChance = 0;
                     }
                     else

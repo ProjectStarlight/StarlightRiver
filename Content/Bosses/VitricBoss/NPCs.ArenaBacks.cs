@@ -297,7 +297,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (rising && Timer == Risetime - (int)(y / 880f * Risetime))
             {
-                var i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.position.X + x, (int)NPC.position.Y - 2, type, 0, 0, Risetime - Timer); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
+                var i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.position.X + x, (int)NPC.position.Y - 2, type, 0, 0, Risetime - Timer); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
                 if (Main.npc[i].type == type)
                     (Main.npc[i].ModNPC as VitricBossPlatformUp).parent = this;
 
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             }
             else if (!rising)
             {
-                var i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.position.X + x, (int)NPC.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
+                var i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.position.X + x, (int)NPC.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
                 if (Main.npc[i].type == type)
                     (Main.npc[i].ModNPC as VitricBossPlatformUp).parent = this;
 

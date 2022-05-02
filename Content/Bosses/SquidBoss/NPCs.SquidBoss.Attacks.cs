@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void SpawnTell(Vector2 start, Vector2 end)
 		{
-            int i = Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), start, Vector2.Zero, ModContent.ProjectileType<TentacleTell>(), 0, 0, Main.myPlayer);
+            int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<TentacleTell>(), 0, 0, Main.myPlayer);
             var proj = Main.projectile[i];
 
             if (proj.ModProjectile is TentacleTell)
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         for (int i = 0; i < 2; i++)
                         {
-                            Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), tentacle.NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -10 : 10, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), tentacle.NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -10 : 10, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
                         }
                     }
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         for (int i = 0; i < 2; i++)
                         {
-                            Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), tentacle.NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -20 : 20, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
+                            Projectile.NewProjectile(NPC.GetSource_FromAI(), tentacle.NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -20 : 20, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
                         }
                     }
                 }
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (AttackTimer % delay == 0)
                 {
                     Vector2 speed = new Vector2(Main.masterMode ? 12 : 8, 0).RotatedBy(angle + Main.rand.NextFloat(-0.5f, 0.5f));
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), speed, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), speed, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                 }
 
                 if (AttackTimer % delay == 0)
@@ -232,11 +232,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 60)
 			{
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
 
@@ -254,18 +254,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 130)
 			{
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(-0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -150), new Vector2(0, -20).RotatedBy(0.125f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 
                 if(Main.masterMode)
 				{
                     for (int i = 0; i < 2; i++)
                     {
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -10 : 10, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -40 : 40, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -10 : 10, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + new Vector2(0, -150), new Vector2(i == 0 ? -40 : 40, 0), ModContent.ProjectileType<SpewBlob>(), 30, 1, Main.myPlayer);
                     }
                 }
 
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (AttackTimer % 5 == 0)
                 {
-                    int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y + 220, ModContent.NPCType<Auroraling>());
+                    int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 220, ModContent.NPCType<Auroraling>());
                     Main.npc[i].velocity += Vector2.UnitY.RotatedByRandom(1) * 20;
 
                     for (int k = 0; k < 20; k++)
@@ -378,7 +378,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 tentacleL.ZSpin = 0;
                 tentacleR.ZSpin = 0;
 
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
             }
 
             if(AttackTimer > 100 && AttackTimer < 130)
@@ -421,14 +421,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (AttackTimer % 40 == 0)
                 {
                     var vel = Vector2.UnitX * (Main.rand.NextBool() ? -5 : 5);
-                    Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 50), vel, ModContent.ProjectileType<SpewBlob>(), 20, 1, Main.myPlayer);
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), savedPoint + new Vector2(0, 50), vel, ModContent.ProjectileType<SpewBlob>(), 20, 1, Main.myPlayer);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
 
                     if(Main.masterMode)
 					{
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer);
-                        Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer, 3.14f);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), savedPoint + new Vector2(0, 40), new Vector2(0, -6), ModContent.ProjectileType<InkBlob>(), 20, 1, Main.myPlayer, 3.14f);
                     }
                 }
 			}
@@ -499,12 +499,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Main.expertMode) //spawn more + closer together on expert
                 {
                     for (int k = 0; k < 14; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
                 }
                 else
                 {
                     for (int k = 0; k < 10; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 20, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
                 }
             }
 
@@ -531,12 +531,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (AttackTimer % 200 == 0)
                 {
                     for (int k = 0; k < 5; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 5, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == 2 ? 1.57f : k > 2 ? 3.14f : 0);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 5, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == 2 ? 1.57f : k > 2 ? 3.14f : 0);
                 }
                 else
                 {
                     for (int k = 0; k < 6; k++)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 4, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k > 2 ? 3.14f : 0);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 4, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k > 2 ? 3.14f : 0);
                 }
             }
 
@@ -572,7 +572,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer == 60)
             {
                 savedPoint = NPC.Center; //farmost point of laser
-                int i = Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
+                int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
                 (Main.projectile[i].ModProjectile as Laser).Parent = NPC;
             }
 
@@ -681,7 +681,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
 
                 for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
             if (AttackTimer > 120 && AttackTimer < 150)
@@ -752,7 +752,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
 
                 for (float k = 0; k <= 3.14f; k += 3.14f / 6f)
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
             if (AttackTimer > 120 && AttackTimer < 220) NPC.velocity.Y += 0.16f; //un-jump
@@ -913,7 +913,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
                     {
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
                     }
                 }

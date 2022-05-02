@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.Misc
         private void LeechStaminaRanged(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
             if (Equipped(Main.player[Projectile.owner]))
-                Main.player[Projectile.owner].GetHandler().Stamina += damage / (Projectile.DamageType.CountsAs(DamageClass.Melee) ? 100f : 200f);
+                Main.player[Projectile.owner].GetHandler().Stamina += damage / (Projectile.DamageType == DamageClass.Melee ? 100f : 200f);
         }
 
         private void LeechStaminaMelee(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)

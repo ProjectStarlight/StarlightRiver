@@ -395,7 +395,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spawnPoint = NPC.Center;
 
-                int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
+                int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
                 arenaBlocker = Main.npc[i];
 
                 for (int k = 0; k < Main.maxPlayers; k++)
@@ -459,7 +459,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             default: x = 0; y = 0; xb = 0; break;
                         }
 
-                        int i = NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1);
+                        int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1);
                         (Main.npc[i].ModNPC as Tentacle).Parent = this;
                         (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
                         (Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;

@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
 
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
-                Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged)), 1.5f, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);
         }
     }
 

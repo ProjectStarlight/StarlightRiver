@@ -368,10 +368,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
 
             if ((state == 3 && Main.masterMode) && Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 150);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 150);
 
             else if ((state == 3 || Main.masterMode) && Main.netMode != NetmodeID.MultiplayerClient)
-                Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 100);
 
             for (int k = 0; k < 40; k++)
                 Dust.NewDustPerfect(NPC.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(7));

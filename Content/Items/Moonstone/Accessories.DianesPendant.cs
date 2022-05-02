@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Projectile.timeLeft = 216000;
             Projectile.tileCollide = false;
             Projectile.ignoreWater = true;
-            Projectile.DamageType.CountsAs(DamageClass.Magic);
+            Projectile.DamageType = DamageClass.Magic;
         }
 
         public override void AI()

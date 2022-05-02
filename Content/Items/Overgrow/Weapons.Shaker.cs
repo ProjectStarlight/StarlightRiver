@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            tooltips.FirstOrDefault(tooltip => tooltip.Name == "Speed" && tooltip.mod == "Terraria").text = "Snail Speed";
+            tooltips.FirstOrDefault(tooltip => tooltip.Name == "Speed" && tooltip.Mod == "Terraria").Text = "Snail Speed";
         }
     }
 
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
             if (Projectile.timeLeft < 2) Projectile.timeLeft = 2;
             Projectile.scale = Timer < 10 ? (Timer / 10f) : 1;
-            Projectile.damage = (int)(Timer * 1.2f * player.GetDamage(DamageClass.Melee));
+            Projectile.damage = (int)(Timer * 1.2f * player.GetDamage(DamageClass.Melee).Multiplicative);
 
             if (Timer == 100)
             {

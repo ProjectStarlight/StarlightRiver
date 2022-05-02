@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
-                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.mod == "Terraria").text = "Replica " + item.Name;
+                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = "Replica " + item.Name;
             }
         }
 

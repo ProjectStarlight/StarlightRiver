@@ -109,7 +109,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Vector2 staffPos = NPC.Center + new Vector2(28 * NPC.direction, -88).RotatedBy(NPC.rotation);
                 Vector2 spearTarget = PickSideClose(-1) + new Vector2(Main.rand.Next(-200, 100) * NPC.direction, 50);
                 Vector2 spearVel = Main.rand.NextVector2CircularEdge(4, 4) + Main.rand.NextVector2Circular(4, 4);
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), staffPos, spearVel, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, staffPos.AngleTo(spearTarget));
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, spearVel, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, staffPos.AngleTo(spearTarget));
             }
 
             if (AttackTimer >= 350)
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.X *= 0.8f;
 
             if (AttackTimer == hammerSpawn)
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI);
 
             if (AttackTimer > 250)
                 ResetAttack();
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 NPC.FaceTarget();
                 Vector2 staffPos = NPC.Center + new Vector2(28 * NPC.direction, -88).RotatedBy(NPC.rotation);
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), staffPos, Vector2.Zero, ProjectileType<GlassSpear>(), 50, 2f, Main.myPlayer);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassSpear>(), 50, 2f, Main.myPlayer);
             }
         }
     }

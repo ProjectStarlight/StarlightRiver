@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 2;
 			Projectile.damage = 0;
 			Projectile.height = 2;
-			Projectile.DamageType.CountsAs(DamageClass.Ranged);
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.timeLeft = 5;
 			Projectile.friendly = false;
 		}
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.width = 18;
 			Projectile.damage = 0;
 			Projectile.height = 18;
-			Projectile.DamageType.CountsAs(DamageClass.Ranged);
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.timeLeft = 150;
 			Projectile.aiStyle = 14;
 			Projectile.friendly = false;
@@ -556,7 +556,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-			if (Projectile.DamageType.CountsAs(DamageClass.Ranged) && damageIncreased)
+			if (Projectile.DamageType == DamageClass.Ranged && damageIncreased)
 				damage = (int)(damage * 1.2f);
         }
     }

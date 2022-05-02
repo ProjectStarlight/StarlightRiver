@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (NPC.type == NPCID.Frog || (Main.rand.NextBool(5) && NPC.catchItem > 0))
             {
-                NPC frog = Main.npc[NPC.NewNPC(NPC.GetSpawnSourceForNPCFromNPCAI(), (int)NPC.Center.X, (int)NPC.Center.Y + 5, NPCID.Frog)];
+                NPC frog = Main.npc[NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 5, NPCID.Frog)];
                 if (NPC.type == NPCID.Frog)
                 {
                     frog.scale = NPC.scale + 0.01f;

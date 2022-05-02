@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			timer++;
 
 			Player Player = Main.player[Projectile.owner];
-			Projectile.damage = (int)(Player.HeldItem.damage * Player.GetDamage(DamageClass.Magic));
+			Projectile.damage = (int)(Player.HeldItem.damage * Player.GetDamage(DamageClass.Magic).Multiplicative);
 
 			direction = Main.MouseWorld - (Player.Center);
 			direction.Normalize();

@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -10,7 +11,7 @@ namespace StarlightRiver.Gores
     {
         public override string Texture => AssetDirectory.Debug;
 
-        public override void OnSpawn(Gore gore)
+        public override void OnSpawn(Gore gore, IEntitySource source)
         {
             gore.numFrames = 15;
             gore.behindTiles = true;
@@ -47,7 +48,7 @@ namespace StarlightRiver.Gores
                     gore.frame += 1;
                     if (gore.frame == 5)
                     {
-                        int droplet = Gore.NewGore(gore.position, gore.velocity, gore.type, 1f);
+                        int droplet = Gore.NewGore(new EntitySource_Misc("Spawned from another gore"), gore.position, gore.velocity, gore.type, 1f);
                         Main.gore[droplet].frame = 9;
                         Main.gore[droplet].velocity *= 0f;
                     }

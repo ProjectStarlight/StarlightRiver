@@ -70,21 +70,21 @@ namespace StarlightRiver.Content.Items.Food
 
             string fullName = mainName + sidesName;
 
-            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.mod == "Terraria").text = fullName; 
+            tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = fullName; 
 
             foreach (Item Item in Ingredients.Where(n => n.ModItem is Ingredient))
             {
                 TooltipLine line = new TooltipLine(Mod, "StarlightRiver: Ingredient", (Item.ModItem as Ingredient).ItemTooltip)
                 {
-                    overrideColor = (Item.ModItem as Ingredient).GetColor()
+                    OverrideColor = (Item.ModItem as Ingredient).GetColor()
                 };
                 tooltips.Add(line);
             }
 
-            TooltipLine durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", Fullness / 60 + " seconds duration") { overrideColor = new Color(110, 235, 255) };
+            TooltipLine durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", Fullness / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
             tooltips.Add(durationLine);
 
-            TooltipLine cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f) / 60 + " seconds fullness") { overrideColor = new Color(255, 170, 120) };
+            TooltipLine cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
             tooltips.Add(cooldownLine);
         }
 

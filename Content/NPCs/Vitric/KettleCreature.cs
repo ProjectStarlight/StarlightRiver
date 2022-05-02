@@ -131,12 +131,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 
 
-                    Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.UnitY.RotatedBy(angle) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedBy(angle) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
                 }
 
                 for (int k = 0; k < 2; k++)
                     if (Timer == 30 + k * 5)
-                        Projectile.NewProjectile(NPC.GetSpawnSourceForProjectileNPC(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedByRandom(1) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
 
                 if (Timer == 60)
                 {

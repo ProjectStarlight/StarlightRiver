@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Utility
             for (int k = 0; k < Items.Count; k++)
             {
                 var a = new TooltipLine(Mod, "test", Items[k].Name);
-                a.overrideColor = ItemRarity.GetColor(Items[k].rare);
+                a.OverrideColor = ItemRarity.GetColor(Items[k].rare);
                 tooltips.Add(a);
             }
         }

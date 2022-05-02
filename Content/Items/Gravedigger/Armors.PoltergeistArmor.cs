@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
                 if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot > 0 && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
                 {                  
-                    int i = Projectile.NewProjectile(player.GetProjectileSource_Misc(0), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI); //PORTTODO: Figure out source on this
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI); //PORTTODO: Figure out source on this
                     var proj = Main.projectile[i];
                     (proj.ModProjectile as PoltergeistMinion).Item = item.Clone();
 

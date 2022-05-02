@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Utility
                         if (storedArmor[k].IsAir)
                             continue;
 
-                        var index = Item.NewItem(Player.GetItemSource_Misc(Player.whoAmI), Player.Center, storedArmor[k].type);
+                        var index = Item.NewItem(Player.GetSource_ItemUse(Item), Player.Center, storedArmor[k].type);
                         Main.item[index] = storedArmor[k].Clone();
                         storedArmor[k].TurnToAir();
                     }
@@ -115,21 +115,21 @@ namespace StarlightRiver.Content.Items.Utility
             TooltipLine armorLineHead = new TooltipLine(Mod, "HelmetSlot",
                 (storedArmor[0].IsAir) ? "No helmet" : storedArmor[0].Name)
             {
-                overrideColor = (storedArmor[0].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[0].rare)
+                OverrideColor = (storedArmor[0].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[0].rare)
             };
             tooltips.Add(armorLineHead);
 
             TooltipLine armorLineChest = new TooltipLine(Mod, "ChestSlot",
                 (storedArmor[1].IsAir) ? "No chestplate" : storedArmor[1].Name)
             {
-                overrideColor = (storedArmor[1].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[1].rare)
+                OverrideColor = (storedArmor[1].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[1].rare)
             };
             tooltips.Add(armorLineChest);
 
             TooltipLine armorLineLegs = new TooltipLine(Mod, "LegsSlot",
                 (storedArmor[2].IsAir) ? "No leggings" : storedArmor[2].Name)
             {
-                overrideColor = (storedArmor[2].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[2].rare)
+                OverrideColor = (storedArmor[2].IsAir) ? new Color(150, 150, 150) : ItemRarity.GetColor(storedArmor[2].rare)
             };
             tooltips.Add(armorLineLegs);
 

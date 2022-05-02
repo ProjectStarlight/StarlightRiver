@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     Vector2 position = new Vector2(npc.Center.X, npc.Center.Y - 700).RotatedBy(rotationAmount, npc.Center);
                     Vector2 velocity = (Vector2.Normalize(npc.Center + new Vector2(0, -20) - position) * speed + npc.velocity / (speed / 1.5f) * 10f) * (Math.Abs(rotationAmount) + 1f);
 
-                    Projectile.NewProjectile(npc.GetSpawnSource_NPCHurt(), position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
+                    Projectile.NewProjectile(npc.GetSource_OnHurt(Main.player[lasthitPlayer]), position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
 
                     score = 0;
                     resetCounter = 0;

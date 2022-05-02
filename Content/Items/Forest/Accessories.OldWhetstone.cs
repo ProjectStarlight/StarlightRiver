@@ -25,10 +25,10 @@ namespace StarlightRiver.Content.Items.Forest
             StarlightItem.ModifyWeaponDamageEvent -= AddDamage;
         }
 
-		private void AddDamage(Item Item, Player Player, ref StatModifier statModifier, ref float flat)
+		private void AddDamage(Item Item, Player Player, ref StatModifier statModifier)
 		{
             if (Equipped(Player))
-                flat += 1;
+                statModifier.Flat += 1;
         }
 	}
 }

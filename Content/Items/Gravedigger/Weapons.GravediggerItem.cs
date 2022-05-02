@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 
 				var pos = npc.Center + new Vector2(0, npc.height / 2);
-				var damage = (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee));
+				var damage = (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee).Multiplicative);
 
 				Projectile.NewProjectile(new EntitySource_Buff(npc, Type, buffIndex), pos, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), damage, 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, npc.Center);

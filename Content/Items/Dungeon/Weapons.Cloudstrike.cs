@@ -167,9 +167,9 @@ namespace StarlightRiver.Content.Items.Dungeon
                 mp.baseColor = Color.Cyan;
         }
 
-        public override void ModifyWeaponDamage(Player player, ref StatModifier damage, ref float flat)
+        public override void ModifyWeaponDamage(Player player, ref StatModifier damage)
         {
-            flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * player.GetDamage(DamageClass.Magic));
+            damage.Flat = (int)((MathHelper.Lerp(10, 100, chargeRatio) - 45) * player.GetDamage(DamageClass.Magic).Multiplicative);
         }
 
         public override void AddRecipes()

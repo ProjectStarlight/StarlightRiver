@@ -14,7 +14,7 @@ namespace StarlightRiver.Core
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {

@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
     {
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
         public bool forestIvyPoisonVine;
 
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Items.ForestIvy
     {
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
         // TODO: probably needs syncing in mp
         public int forestIvyPoisonVineCount;

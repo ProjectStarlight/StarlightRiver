@@ -50,8 +50,8 @@ namespace StarlightRiver.Core
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
                 TooltipLine line = new TooltipLine(StarlightRiver.Instance, "CustomPrefix", prefixLine);
-                line.isModifier = true;
-                line.isModifierBad = false;
+                line.IsModifier = true;
+                line.IsModifierBad = false;
                 tooltips.Insert(index + 1, line);
             }
 
@@ -69,13 +69,13 @@ namespace StarlightRiver.Core
                     var mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
                     float mult = 2;
-                    if (Item.DamageType.CountsAs(DamageClass.Melee)) mult += mp.MeleeCritMult;
-                    if (Item.DamageType.CountsAs(DamageClass.Ranged)) mult += mp.RangedCritMult;
-                    if (Item.DamageType.CountsAs(DamageClass.Magic)) mult += mp.MagicCritMult;
+                    if (Item.DamageType.Type == DamageClass.Melee.Type) mult += mp.MeleeCritMult;
+                    if (Item.DamageType.Type == DamageClass.Ranged.Type) mult += mp.RangedCritMult;
+                    if (Item.DamageType.Type == DamageClass.Magic.Type) mult += mp.MagicCritMult;
                     mult += mp.AllCritMult;
 
-                    line.text = $"{(int)(Item.damage * mult)} critical strike damage";
-                    line.overrideColor = new Color(255, 200, 100);
+                    line.Text = $"{(int)(Item.damage * mult)} critical strike damage";
+                    line.OverrideColor = new Color(255, 200, 100);
                     tooltips.Insert(index + 1, line);
                 }
             }
@@ -89,7 +89,7 @@ namespace StarlightRiver.Core
                 var critLine = tooltips.Find(n => n.Name == "Knockback");
                 int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
-                line.text += $"[i:{ Item.useAmmo}]";
+                line.Text += $"[i:{ Item.useAmmo}]";
 
                 tooltips.Insert(index + 1, line);
             }
