@@ -7,6 +7,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
+using Terraria.GameContent.ObjectInteractions;
 
 namespace StarlightRiver.Core
 {
@@ -216,7 +217,7 @@ namespace StarlightRiver.Core
             AdjTiles = new int[] { TileID.Beds };
         }
 
-        public override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override bool RightClick(int i, int j)
         {
@@ -419,7 +420,7 @@ namespace StarlightRiver.Core
             AdjTiles = new int[] { TileID.GrandfatherClocks };
         }
 
-        public override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override bool RightClick(int x, int y)
         {
@@ -519,7 +520,7 @@ namespace StarlightRiver.Core
             OpenDoorID = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
         }
 
-        public override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override void MouseOver(int i, int j)
         {
@@ -587,7 +588,7 @@ namespace StarlightRiver.Core
             CloseDoorID = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
         }
 
-        public override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override void MouseOver(int i, int j)
         {
@@ -635,7 +636,7 @@ namespace StarlightRiver.Core
             DresserDrop = Mod.Find<ModItem>(name).Type;
         }
 
-        public override bool HasSmartInteract() => true;
+        public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
         public override void KillMultiTile(int i, int j, int frameX, int frameY)
         {

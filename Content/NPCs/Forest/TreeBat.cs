@@ -157,14 +157,14 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            if (!spawnInfo.player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
+            if (!spawnInfo.Player.ZoneForest() || Main.dayTime || Main.time > 24000) //they should only spawn late at night in the forest
                 return 0;
 
             for (int x = -30; x < 30; x++)
                 for(int y = -30; y < 30; y++)
 				{
-                    var realX = spawnInfo.spawnTileX + x;
-                    var realY = spawnInfo.spawnTileY + y;
+                    var realX = spawnInfo.SpawnTileX + x;
+                    var realY = spawnInfo.SpawnTileY + y;
 
                     var tile = Framing.GetTileSafely(realX, realY);
                     var tileUnder = Framing.GetTileSafely(realX, realY + 1);
