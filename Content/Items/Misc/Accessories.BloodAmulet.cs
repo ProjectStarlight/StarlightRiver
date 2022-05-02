@@ -79,12 +79,12 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
         {
             if (dropHeart && NPC.life <= 0)
-				Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, ItemID.Heart);
+				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
 		}
         public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
         {
 			if (dropHeart && NPC.life <= 0)
-				Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, ItemID.Heart);
+				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
 		}
     }
 

@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Starwood
         {
             if (DropStar && Main.rand.Next(2) == 0)
             {
-                Item.NewItem(npc.GetItemSource_Loot(), npc.Center, ItemID.Star);
+                Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Star);
             }
         }
     }

@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnKill(NPC npc)
 		{
             if (DropStamina)
-                Item.NewItem(npc.GetItemSource_Loot(), npc.Hitbox, ItemType<StaminaPickup>());
+                Item.NewItem(npc.GetSource_Loot(), npc.Hitbox, ItemType<StaminaPickup>());
         }
     }
 }

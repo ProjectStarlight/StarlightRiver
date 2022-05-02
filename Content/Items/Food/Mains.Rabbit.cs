@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Food
         private void LootRabbit(NPC NPC)
         {
             if (NPC.type == NPCID.Bunny && Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.GetItemSource_Loot(), NPC.Center, Item.type);
+                Item.NewItem(NPC.GetSource_Loot(), NPC.Center, Item.type);
         }
     }
 }

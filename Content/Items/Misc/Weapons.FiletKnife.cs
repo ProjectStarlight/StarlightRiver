@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnKill(NPC npc) //TODO: Figure out how to integrate this with the vanilla drop rule system later?
         {
             if (hasSword && Main.rand.NextBool(3))
-                Item.NewItem(npc.GetItemSource_Loot(), npc.Center, ModContent.ItemType<FiletKnife>());
+                Item.NewItem(npc.GetSource_Loot(), npc.Center, ModContent.ItemType<FiletKnife>());
 
             base.OnKill(npc);
         }

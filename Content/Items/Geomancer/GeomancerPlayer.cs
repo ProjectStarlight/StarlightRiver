@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 int numStars = Main.rand.Next(3) + 1;
                 for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
                 {
-                    Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
+                    Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
                 }
             }
 
@@ -331,7 +331,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
             {
-                Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
+                Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
             }
 
             if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
@@ -387,7 +387,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             ItemType = ItemTypes[Main.rand.Next(ItemTypes.Count)];
 
-            Item.NewItem(target.GetItemSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
+            Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
         }
 
         public static void PickOldGem(Player Player)
