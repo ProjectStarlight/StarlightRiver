@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature)) //damaging, large branches
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, charge, 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, charge, 1);
                 proj.timeLeft = (int)((Projectile.timeLeft - 25) * 0.75f) + 25;
 
                 var modProj = proj.ModProjectile as CloudstrikeShot;
@@ -322,7 +322,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (Main.rand.NextBool(10 + (int)Math.Sqrt((Cloudstrike.MAXCHARGE + 2) - charge)) && !(branch || miniature)) //small, non damaging branches
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, 1, 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, 1, 1);
                 proj.timeLeft = Math.Min(Main.rand.Next(40,70), Projectile.timeLeft);
 
                 var modProj = proj.ModProjectile as CloudstrikeShot;

@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					float rot = (target.Center - Projectile.Center).ToRotation();
 
 					if (Main.myPlayer == owner.whoAmI)
-						Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(rot) * Item.shootSpeed, Item.shoot, Item.damage / 2, Item.knockBack, Projectile.owner);
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(rot) * Item.shootSpeed, Item.shoot, Item.damage / 2, Item.knockBack, Projectile.owner);
 
 					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
 					targetRotation = rot + (Item.staff[Item.type] ? 1.57f / 2 : 0);

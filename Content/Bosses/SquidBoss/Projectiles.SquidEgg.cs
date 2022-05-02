@@ -25,14 +25,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Projectile.ai[0] % 100 == 0)
             {
-                NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, NPCType<Auroraling>());
+                NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, NPCType<Auroraling>());
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item86, Projectile.Center);
             }
         }
 
         public override void Kill(int timeLeft)
         {
-            NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, Main.expertMode ? NPCType<Auroraborn>() : NPCType<Auroraling>());
+            NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, Main.expertMode ? NPCType<Auroraborn>() : NPCType<Auroraling>());
         }
     }
 }

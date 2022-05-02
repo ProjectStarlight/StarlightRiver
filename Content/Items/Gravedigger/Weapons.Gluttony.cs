@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (damageDone > 150 && Player.ownedProjectileCounts[ModContent.ProjectileType<GluttonyGhoul>()] < 10)
             {
 				damageDone = 0;
-				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), Projectile.damage / 2, Projectile.knockBack, Player.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), Projectile.damage / 2, Projectile.knockBack, Player.whoAmI);
             }
 
         }

@@ -43,12 +43,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
         {
-            if (!Broken)//Projectile.GetProjectileSource_FromThis()
+            if (!Broken)//Projectile.GetSource_FromThis()
             {
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107);
-                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center) * -32, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
-                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
-                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center) * -32, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
 
                 for (int k = 0; k <= 20; k++)
                 {

@@ -323,7 +323,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (Projectile.timeLeft == 30)
 			{
-				int i = Terraria.NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
+				int i = Terraria.NPC.NewNPC(Projectile.GetSource_FromThis(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)SpawnType);
 				var NPC = Main.npc[i];
 				NPC.alpha = 255;
 				NPC.GivenName = "Shadow";

@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
                 }
             }
         }

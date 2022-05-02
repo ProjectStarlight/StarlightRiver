@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Misc
                     if (EndPoint.Distance(target.Center) < 300)
                     {
                         Vector2 vel = Main.player[Projectile.owner].DirectionTo(EndPoint) * 5f;
-                        Projectile bolt = Projectile.NewProjectileDirect(Projectile.GetItemSource_FromThis(), EndPoint, vel, ModContent.ProjectileType<CoilStaticShock>(), (int)(Projectile.damage * 1.2f), 0.5f, Main.player[Projectile.owner].whoAmI);
+                        Projectile bolt = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), EndPoint, vel, ModContent.ProjectileType<CoilStaticShock>(), (int)(Projectile.damage * 1.2f), 0.5f, Main.player[Projectile.owner].whoAmI);
                         bolt.ai[0] = id;
                         bolt.localAI[0] = vel.ToRotation();
                     }

@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Vitric
             }
 
             if (Projectile.ai[0] % 2 == 0)
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0, 2, ProjectileType<VitricBookProjectiletileCheck>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0, 2, ProjectileType<VitricBookProjectiletileCheck>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
             Projectile.ai[0] += 1;
         }
     }
@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Main.dust[num316].fadeIn = 0.5f;
             }
 
-            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0, 0, ProjectileType<VitricBookSpikeTrap>(), Projectile.damage, 0, Projectile.owner, 12);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center.X, Projectile.Center.Y, 0, 0, ProjectileType<VitricBookSpikeTrap>(), Projectile.damage, 0, Projectile.owner, 12);
 
             return false;
         }

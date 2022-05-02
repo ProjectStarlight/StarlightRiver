@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 									}
 									if (Charge > 0)
 									{
-										Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+										Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
 
 										if (proj.ModProjectile is QuarterOrb modproj)
 										{
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 								Player.GetModPlayer<StarlightPlayer>().Shake += 12;
 								angularVelocity = 0;
 								attackDuration = 30;
-								Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+								Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
 							}
 
 							if (LENGTH < LENGTH + SWAY)

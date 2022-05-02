@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 }
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                    Item.NewItem(Projectile.GetItemSource_FromThis(), Projectile.Center, ItemID.Heart);
+                    Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, ItemID.Heart);
 
                 Projectile.netUpdate = true;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
@@ -138,7 +138,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Gore.NewGore(Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 5, Mod.Find<ModGore>("Mine" + k).Type);
                 if (Main.netMode != NetmodeID.MultiplayerClient)
-                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -Main.rand.NextFloat(3, 5), ProjectileType<Items.Vitric.NeedlerEmber>(), 0, 0, 0);
             }
 
             foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, Projectile.Center) < 1500))
@@ -154,7 +154,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if(Main.masterMode)
 			{
                 for (int k = 0; k < 8; k++)
-                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * 18, ProjectileType<TelegraphedGlassSpike>(), 20, 1, Main.myPlayer);
 			}
         }
     }

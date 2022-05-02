@@ -201,7 +201,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				chargeCounter++;
 
             if (chargeCounter == 299)
-                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, owner.whoAmI);
+                Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, owner.whoAmI);
 
             if (chargeCounter < 20)
 				return;
@@ -250,7 +250,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				if (colliding) 
 				{
                     owner.GetModPlayer<StarlightPlayer>().Shake +=7;
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
 					newProj.originalDamage = (int)(proj.damage * chargeRatio);
 
                     if (modProj is not AuroraBellRing)
@@ -290,7 +290,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             if (Projectile.sentry && timeLeft > 0)
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellProj>(), 0, 0, owner.whoAmI, Projectile.ai[0], Projectile.ai[1]);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellProj>(), 0, 0, owner.whoAmI, Projectile.ai[0], Projectile.ai[1]);
                 proj.timeLeft = 40;
                 proj.sentry = false;
 
@@ -351,7 +351,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             if (Projectile.timeLeft == 15 && Projectile.ai[0] > 0)
             {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1);
                 var mp = proj.ModProjectile as AuroraBellRing;
                 mp.radiusMult = radiusMult;
             }

@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 if (charge == 1)
                 {
                     if (Main.myPlayer == Projectile.owner)
-                        Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
+                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
                     Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
                 }
                 if (Main.myPlayer == Projectile.owner)
@@ -132,8 +132,8 @@ namespace StarlightRiver.Content.Items.Vitric
                     {
                         if (charge == 19 * k + 1)
                         {
-                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
-                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * 0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy((k - 1) * -0.3f), ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, k);
                         }
                     }
                 }

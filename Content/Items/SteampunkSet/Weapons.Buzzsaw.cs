@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             {
                 float speed = MathHelper.Lerp(8f, 12f, Charge / (float)MAXCHARGE);
                 float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / (float)MAXCHARGE);
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
             }
         }
 
@@ -348,7 +348,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             if (justLaunched && Main.myPlayer == Projectile.owner)
             {
-                int proj = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
                 ((PhantomBuzzsaw)Main.projectile[proj].ModProjectile).parent = Projectile;
                 justLaunched = false;
             }
@@ -461,7 +461,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
                     int spriteDirection = Math.Sign(direction.X);
 
-                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), target.Center, Vector2.Zero, bloodID, 0, 0, Projectile.owner);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, bloodID, 0, 0, Projectile.owner);
                     proj.spriteDirection = -spriteDirection;
                 }
 

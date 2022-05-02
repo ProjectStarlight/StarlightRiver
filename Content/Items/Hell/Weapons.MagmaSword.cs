@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Hell
                     {
                         Vector2 pos = new Vector2((int)Projectile.Center.X / 16 + x, (int)Projectile.Center.Y / 16 + y) * 16 + Vector2.One * 8;
                         if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<MagmaSwordBurn>() && n.Center == pos))
-                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, Vector2.Zero, ProjectileType<MagmaSwordBurn>(), 5, 0, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<MagmaSwordBurn>(), 5, 0, Projectile.owner);
                         else Main.projectile.FirstOrDefault(n => n.active && n.type == ProjectileType<MagmaSwordBurn>() && n.Center == pos).timeLeft = 180;
                     }
                 }

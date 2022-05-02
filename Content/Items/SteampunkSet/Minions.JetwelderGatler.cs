@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 bulletOffset = bulletOffset.RotatedBy(currentRotation);
 
                 Gore.NewGore(Projectile.Center, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("JetwelderCasing").Type, 1f); 
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + bulletOffset, dir.RotatedByRandom(0.13f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
             }
         }
 

@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Items.Misc
 			while (StoredDamage > 25)
 			{
 				StoredDamage -= 25;
-				Projectile.NewProjectile(player.GetProjectileSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
 			}
 		}
 	}

@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             while (cumulativeAmountHealed >= 25)
             {
-                Projectile.NewProjectile(Player.GetProjectileSource_Accessory(item),Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI); 
+                Projectile.NewProjectile(Player.GetSource_Accessory(item),Player.Center, Vector2.UnitX.RotatedBy(rotation) * 16, ModContent.ProjectileType<HolyAmuletOrb>(), 10, 2.5f, Player.whoAmI); 
 
                 rotation += step;
 

@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (Player.whoAmI == Main.myPlayer)
             {
-                Projectile.NewProjectile(Player.GetProjectileSource_Item(Item), Player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetSource_ItemUse(Item), Player.Center, Vector2.Zero, ProjectileType<TwistSwordProjectile>(), Item.damage, Item.knockBack, Player.whoAmI);
                 return true;
             }
             return false;

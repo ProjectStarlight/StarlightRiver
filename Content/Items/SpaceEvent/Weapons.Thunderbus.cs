@@ -655,7 +655,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                     var NPC = Main.npc[k];
                     if (NPC.active && NPC.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
                     {
-                        int i = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
+                        int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
                         var proj = Main.projectile[i].ModProjectile as ThunderbussShot;
 
                         proj.target = NPC;

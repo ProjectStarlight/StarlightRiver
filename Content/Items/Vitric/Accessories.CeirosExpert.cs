@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Equipped(player) && instance.cooldown <= 0)
             {
                 Helper.PlayPitched("Magic/FireSpell", 1, 0.75f, player.Center);
-                Projectile.NewProjectile(player.GetProjectileSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, player.whoAmI);
                 instance.cooldown = 60;
             }
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
                 Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
 
                 //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustTwo>(), vel);
                 //Dust.NewDustPerfect(target.Center, ModContent.DustType<NeedlerDustFour>(), vel);

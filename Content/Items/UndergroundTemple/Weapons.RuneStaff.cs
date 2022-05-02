@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
                 {
                     int index = charge / 30;
                     float rot = MathHelper.Pi / 3f * index - MathHelper.Pi / 3f;
-                    int i = Projectile.NewProjectile(player.GetProjectileSource_Item(Item), player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, player.whoAmI, 0, charge);
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, player.whoAmI, 0, charge);
                     Main.projectile[i].frame = index;
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item8, player.Center);
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void Kill(int timeLeft)
         {
-            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<RuneStaffExplosion>(), Projectile.ai[0] == 0 ? 120 : 20, 2, Projectile.owner);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<RuneStaffExplosion>(), Projectile.ai[0] == 0 ? 120 : 20, 2, Projectile.owner);
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
         }
 

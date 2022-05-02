@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
                 damage += 5;
                 damage += (int)(target.defense / 5f);
-                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
                 for (int i = 0; i < 16; i++)
                     Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(Main.rand.NextFloat(6.28f)) * Main.rand.NextFloat(12), 0, new Color(50, 50, 255), 0.4f);
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     }
                 }
                 Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
-                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
+                Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
                 stuck = true;
                 Projectile.extraUpdates = 0;

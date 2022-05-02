@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 
         public override bool? UseItem(Player player)
         {
-            int proj = Projectile.NewProjectile(player.GetProjectileSource_Item(Item), player.position + new Vector2(0, -32), Vector2.Zero, ProjectileType<ShakerBall>(), Item.damage, Item.knockBack);
+            int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.position + new Vector2(0, -32), Vector2.Zero, ProjectileType<ShakerBall>(), Item.damage, Item.knockBack);
             Main.projectile[proj].owner = player.whoAmI;
             return true;
         }

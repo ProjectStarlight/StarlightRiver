@@ -41,10 +41,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                         {
-                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of Projectiles
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of Projectiles
 
                             if(Main.masterMode)
-                                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation - rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the second flury in master
+                                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation - rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the second flury in master
                         }
 
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);

@@ -222,7 +222,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * target.width;
                     var velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
 
-                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner, target.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner, target.whoAmI);
                 }
             }
 

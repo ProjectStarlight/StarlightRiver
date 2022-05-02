@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Items.Misc
                         {
                             Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
                             Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-                            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
                         }
                     }
                 }

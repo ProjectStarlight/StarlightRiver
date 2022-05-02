@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     Vector2 velocity = proj.velocity.RotatedByRandom(MathHelper.Pi / 6f);
                     velocity *= Main.rand.NextFloat(0.5f, 0.75f);
-                    Projectile.NewProjectile(Player.GetProjectileSource_Accessory(Item), proj.Center, velocity, ModContent.ProjectileType<Vitric.VitricArrowShattered>(), (int)(damage * 0.2f), knockback * 0.15f, Player.whoAmI);
+                    Projectile.NewProjectile(Player.GetSource_Accessory(Item), proj.Center, velocity, ModContent.ProjectileType<Vitric.VitricArrowShattered>(), (int)(damage * 0.2f), knockback * 0.15f, Player.whoAmI);
                 }
             }
         }

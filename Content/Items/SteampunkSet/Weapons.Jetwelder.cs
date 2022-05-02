@@ -465,7 +465,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     ItemType = ModContent.ItemType<JetwelderScrap4>();
                     break;
             }
-            Item.NewItem(Projectile.GetItemSource_FromThis(), position, ItemType);
+            Item.NewItem(Projectile.GetSource_FromThis(), position, ItemType);
         }
     }
     public abstract class JetwelderScrap : ModItem

@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 		public override void SpinExtras(Player Player)
 		{
 			if(++Projectile.localAI[0] % 4 == 0)
-				Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[Projectile.owner].velocity / 5), ModContent.ProjectileType<AstrofloraGas>(), Projectile.damage * 3, 0, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[Projectile.owner].velocity / 5), ModContent.ProjectileType<AstrofloraGas>(), Projectile.damage * 3, 0, Projectile.owner);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 122).WithPitchVariance(0.2f).WithVolume(0.3f), Projectile.Center);
 				for (int i = 0; i < 3; i++)
 				{
-					Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AstrofloraSpark>(), 0, 0, Projectile.owner, Main.rand.NextVector2Unit().ToRotation(), Main.rand.NextBool() ? -1 : 1);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AstrofloraSpark>(), 0, 0, Projectile.owner, Main.rand.NextVector2Unit().ToRotation(), Main.rand.NextBool() ? -1 : 1);
 				}
 			}
 		}

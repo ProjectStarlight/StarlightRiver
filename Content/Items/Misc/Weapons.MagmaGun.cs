@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
             {
-				proj = Projectile.NewProjectileDirect(player.GetProjectileSource_Item(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
             }
         }
 

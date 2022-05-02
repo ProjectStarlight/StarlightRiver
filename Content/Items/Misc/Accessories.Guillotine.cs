@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (Main.myPlayer == owner)
             {
-                Projectile.NewProjectile(Main.player[owner].GetProjectileSource_Accessory(Item), NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
+                Projectile.NewProjectile(Main.player[owner].GetSource_Accessory(Item), NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
                 NPC.StrikeNPC(9999, 0f, 1, false, true, false);// kill NPC
             }
         }

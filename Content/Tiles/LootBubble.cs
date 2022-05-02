@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Tiles
             if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
             {
                 Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-                Item.NewItem(Projectile.GetItemSource_FromThis(), Projectile.Center, loot.Type, loot.GetCount());
+                Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, loot.Type, loot.GetCount());
                 bubble.PickupEffects(Projectile.Center);
 
                 WorldGen.KillTile(ParentX, ParentY);

@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 {
                     var velocity = direction * Helper.LerpFloat(minVelocity, maxVelocity, charge);
                     var damage = (int)Helper.LerpFloat(minDamage, maxDamage, charge);
-                    int proj = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<StarwoodSlingshotStar>(), damage, Projectile.knockBack, Projectile.owner);
+                    int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<StarwoodSlingshotStar>(), damage, Projectile.knockBack, Projectile.owner);
                     Main.projectile[proj].frame = (int)(charge * 5) - 1;
 
                     if ((int)(charge * 5) == 0)
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Starwood
                 for (int k = 0; k < 4; k++)
                 {
                     var velocity = -Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.25f, 0.25f)) * Main.rand.NextFloat(0.5f, 0.8f);
-                    Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.position, velocity, ModContent.ProjectileType<StarwoodSlingshotFragment>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, Main.rand.Next(2));
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.position, velocity, ModContent.ProjectileType<StarwoodSlingshotFragment>(), Projectile.damage / 2, Projectile.knockBack, Projectile.owner, Main.rand.Next(2));
                 }
         }
 

@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Misc
                     for (int i = 0; i < 5; i++)
                     {
                         Vector2 projDir = dir.RotatedByRandom(1.4f);
-                        Projectile.NewProjectileDirect(Player.GetProjectileSource_Accessory(Item), Player.Center - (projDir * 20), projDir * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<ThrusterEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+                        Projectile.NewProjectileDirect(Player.GetSource_Accessory(Item), Player.Center - (projDir * 20), projDir * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<ThrusterEmber>(), 0, 0, Player.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
                     }
                 }
 

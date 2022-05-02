@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
 
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
-                Projectile.NewProjectile(Player.GetProjectileSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged)), 1.5f, Player.whoAmI);
+                Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged)), 1.5f, Player.whoAmI);
         }
     }
 
@@ -452,7 +452,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 Vector2 direction = new Vector2(0, -1);
                 direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + (direction * 800), direction * -10, ModContent.ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
             }
             Charges--;
         }
@@ -615,7 +615,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 Dust.NewDustPerfect(Projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustThree>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
                 Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<BreacherDustTwo>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
             }
-            Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
         }
     }
 

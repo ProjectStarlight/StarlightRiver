@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Buffs
 
             if (Projectile.ai[0] > 0 && chosenTarget != null) //spawns the next node and VFX if more nodes are available and a target is also available
             {
-                Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), chosenTarget.Center, Vector2.Zero, ProjectileType<LightningNode>(), damage, knockback, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
                 DrawHelper.DrawElectricity(target.Center, chosenTarget.Center, DustType<Content.Dusts.Electric>());
             }
             Projectile.timeLeft = 0;

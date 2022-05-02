@@ -223,13 +223,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
                 if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    int index = NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
+                    int index = NPC.NewNPC(Projectile.GetSource_FromThis(), (int)center.X + 352, (int)center.Y, NPCType<VitricBackdropRight>(), 0, timerset);
                     arenaRight = Main.npc[index];
 
                     if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].ModNPC is VitricBackdropRight)
                         (Main.npc[index].ModNPC as VitricBackdropRight).SpawnPlatforms(false);
 
-                    index = NPC.NewNPC(Projectile.GetNPCSource_FromThis(), (int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
+                    index = NPC.NewNPC(Projectile.GetSource_FromThis(), (int)center.X - 352, (int)center.Y, NPCType<VitricBackdropLeft>(), 0, timerset);
                     arenaLeft = Main.npc[index];
 
                     if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && Main.npc[index].ModNPC is VitricBackdropLeft)

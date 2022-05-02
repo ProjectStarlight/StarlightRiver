@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         {
             //inflicting debuff + light orbs on kill
             target.AddBuff(BuffType<Buffs.Illuminant>(), 600);
-            if (damage >= target.life) Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(), target.Center, new Vector2(0, -1), ProjectileType<TempleSpearLight>(), 0, 0);
+            if (damage >= target.life) Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, new Vector2(0, -1), ProjectileType<TempleSpearLight>(), 0, 0);
         }
     }
 

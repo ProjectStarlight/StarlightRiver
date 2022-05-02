@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Vector2 direction = new Vector2(0, -1);
 			direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-			Projectile.NewProjectile(Player.GetProjectileSource_Accessory(acc), Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
+			Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
 		}
 	}
 	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive

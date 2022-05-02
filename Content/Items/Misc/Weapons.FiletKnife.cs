@@ -65,12 +65,12 @@ namespace StarlightRiver.Content.Items.Misc
                         itemType = ModContent.ItemType<FiletGiblet3>();
                         break;
                 }
-                Item.NewItem(player.GetItemSource_OnHit(target, target.whoAmI), target.Center, itemType);
+                Item.NewItem(player.GetSource_OnHit(target, target.whoAmI), target.Center, itemType);
 
                 if (target.GetGlobalNPC<FiletNPC>().DOT < 3) //TODO: Port to a proper stacking buff system later
                     target.GetGlobalNPC<FiletNPC>().DOT += 1;
 
-                Projectile.NewProjectile(player.GetProjectileSource_Item(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<FiletSlash>(), 0, 0, player.whoAmI, target.whoAmI);
 
                 Vector2 direction = Vector2.Normalize(target.Center - player.Center);
                 for (int j = 0; j < 15; j++)
