@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.penetrate = 1;
 			Projectile.tileCollide = false;
 			Projectile.hostile = false;
-			Projectile.friendly = true;
+			Projectile.friendly = false;
 			Projectile.timeLeft = 13;
 			Projectile.width = Projectile.height = 20;
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
@@ -138,9 +138,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			Projectile.penetrate++;
-			Projectile.friendly = false;
-			owner.velocity = -owner.DirectionTo(Projectile.Center) * 6;
+			//Projectile.penetrate++;
+			//Projectile.friendly = false;
+			//owner.velocity = -owner.DirectionTo(Projectile.Center) * 6;
         }
     }
 	public class IgnitionPunch : ModProjectile
@@ -205,6 +205,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+			int distance = (int)(owner.Center - Projectile.Center).Length();
+			float pushback = (float)Math.Sqrt(200 * EaseFunction.EaseCubicIn.Ease((200 - distance) / 200f));
+			Vector2 direction = target.DirectionTo(owner.Center);
+			owner.velocity += direction * pushback * 0.15f;
+
 			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15,25), Projectile.velocity.ToRotation());
 			for (int i = 0; i < 7; i++)
             {
