@@ -98,7 +98,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.dontTakeDamage = true;
         }
 
-		public override void BossLoot(ref string name, ref int potionType)
+		public override ModNPC Clone(NPC npc)
+        {
+            var newNpc = base.Clone(npc) as SquidBoss;
+            newNpc.tentacles = new List<NPC>();
+            newNpc.platforms = new List<NPC>();
+            newNpc.arenaBlocker = null;
+            return newNpc;
+        }
+
+        public override void BossLoot(ref string name, ref int potionType)
         {
             for (int k = 0; k < Main.maxPlayers; k++)
             {

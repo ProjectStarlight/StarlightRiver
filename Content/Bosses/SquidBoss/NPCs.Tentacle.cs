@@ -59,6 +59,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
 
                 Color glowColor;
+                Color auroraColor;
+
+                float sin1 = 1 + (float)Math.Sin(Timer / 10f);
+                float cos1 = 1 + (float)Math.Cos(Timer / 10f);
+                auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
 
                 switch (State) //Select the color of this tentacle's glow
                 {
@@ -69,10 +74,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         break;
                     
                     case 1: //invulnerable
-
-                        float sin1 = 1 + (float)Math.Sin(Timer / 10f);
-                        float cos1 = 1 + (float)Math.Cos(Timer / 10f);
-                        glowColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+                        glowColor = auroraColor;
 
                         if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase) 
                             glowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
@@ -113,7 +115,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             {
                                 var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "InkBlob").Value;
                                 var target = new Rectangle((int)pos.X, (int)pos.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
-                                spriteBatch.Draw(portal, target, top.Frame(), glowColor, 0, portal.Size() / 2, 0, 0);
+                                spriteBatch.Draw(portal, target, top.Frame(), auroraColor, 0, portal.Size() / 2, 0, 0);
                             }
                             else
                             {
@@ -158,7 +160,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         var target = new Rectangle((int)BasePoint.X, (int)BasePoint.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
                         var rotation = (NPC.Center - BasePoint).ToRotation();
 
-                        spriteBatch.Draw(portal, target, top.Frame(), glowColor, rotation, portal.Size() / 2, 0, 0);
+                        spriteBatch.Draw(portal, target, top.Frame(), auroraColor, rotation, portal.Size() / 2, 0, 0);
                     }
 
                     for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)

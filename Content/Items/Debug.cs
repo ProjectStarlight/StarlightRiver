@@ -49,10 +49,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
-
-            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
-            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
+            for (int k = 0; k < Main.npc.Length; k++)
+                Main.NewText("Index: " + k + " Name: " + Main.npc[k].FullName + " Active: " + Main.npc[k].active);
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
