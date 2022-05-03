@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     {
         public NPC fakeBoss;
 
-        readonly int whitelistID = WallType<AuroraBrickWall>();
+        private int WhitelistID => WallType<AuroraBrickWall>();
 
         public int waterfallWidth = 0;
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     if (!WorldGen.InWorld((int)pos.X / 16, (int)pos.Y / 16)) return;
 
-                    if (Framing.GetTileSafely(target).WallType == whitelistID)
+                    if (Framing.GetTileSafely(target).WallType == WhitelistID)
                     {
                         float sin = (float)Math.Sin(NPC.ai[1] + k);
                         float sin2 = (float)Math.Sin(NPC.ai[2] + k * 0.2f);

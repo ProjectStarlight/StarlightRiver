@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public Vector2 MovementTarget;
         public Vector2 BasePoint;
         public int OffsetFromParentBody;
+        public bool DrawPortal;
 
         public float StalkWaviness = 1;
         public float ZSpin = 0;
@@ -57,13 +58,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
                 Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
 
-                Color GlowColor;
+                Color glowColor;
 
                 switch (State) //Select the color of this tentacle's glow
                 {
                     case 0: //vulnerable
                         float sin0 = 1 + (float)Math.Sin(Timer / 10f);
-                        GlowColor = new Color(255, 100 + (int)(sin0 * 50), 40);
+                        glowColor = new Color(255, 100 + (int)(sin0 * 50), 40);
 
                         break;
                     
@@ -71,25 +72,28 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         float sin1 = 1 + (float)Math.Sin(Timer / 10f);
                         float cos1 = 1 + (float)Math.Cos(Timer / 10f);
-                        GlowColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+                        glowColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
 
                         if (Parent.Phase == (int)SquidBoss.AIStates.ThirdPhase) 
-                            GlowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
+                            glowColor = new Color(1.2f + sin1 * 0.1f, 0.7f + sin1 * -0.25f, 0.25f) * 0.8f;
 
                         break;
 
                     case 2: //dead
-                        GlowColor = new Color(100, 100, 150) * 0.5f;
+                        glowColor = new Color(100, 100, 150) * 0.5f;
                         
                         break;
 
-                    default: GlowColor = Color.Black; break;
+                    default: glowColor = Color.Black; break;
                 }
 
                 if (NPCLayer == 0)
                 {
                     var extraLength = (int)(Math.Abs(OffsetFromParentBody) * 0.15f);
                     var maxSegments = DownwardDrawDistance + extraLength;
+
+                    if (DrawPortal) 
+                        maxSegments = Math.Min(maxSegments, 40 + extraLength);
 
                     for (int k = 0; k <= maxSegments; k++)
                     {
@@ -105,15 +109,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         if (k == maxSegments)
                         {
-                            var topOriginBody = new Vector2(top.Width / 2, top.Height);
-                            var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
-                            
-                            spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
-                            spriteBatch.Draw(glow, pos, glow.Frame(), GlowColor * 0.325f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
+                            if (DrawPortal && maxSegments >= 40 + extraLength)
+                            {
+                                var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "InkBlob").Value;
+                                var target = new Rectangle((int)pos.X, (int)pos.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
+                                spriteBatch.Draw(portal, target, top.Frame(), glowColor, 0, portal.Size() / 2, 0, 0);
+                            }
+                            else
+                            {
+                                var topOriginBody = new Vector2(top.Width / 2, top.Height);
+                                var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
 
-                            var glow2Color = GlowColor;
-                            glow2Color.A = 0;
-                            spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
+                                spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
+                                spriteBatch.Draw(glow, pos, glow.Frame(), glowColor * 0.325f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
+
+                                var glow2Color = glowColor;
+                                glow2Color.A = 0;
+                                spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
+                            }
                         }
                     }
                 }
@@ -131,13 +144,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
 
                     spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
-                    spriteBatch.Draw(glow, topTarget, glow.Frame(), GlowColor * 0.65f, rot, topOrigin, 0, 0);
+                    spriteBatch.Draw(glow, topTarget, glow.Frame(), glowColor * 0.65f, rot, topOrigin, 0, 0);
 
-                    var glow2Color = GlowColor;
+                    var glow2Color = glowColor;
                     glow2Color.A = 0;
                     spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
 
-                    Lighting.AddLight(NPC.Center, GlowColor.ToVector3() * 0.2f);
+                    Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
+
+                    if (DrawPortal)
+                    {
+                        var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "InkBlob").Value;
+                        var target = new Rectangle((int)BasePoint.X, (int)BasePoint.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
+                        var rotation = (NPC.Center - BasePoint).ToRotation();
+
+                        spriteBatch.Draw(portal, target, top.Frame(), glowColor, rotation, portal.Size() / 2, 0, 0);
+                    }
 
                     for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)
                     {
@@ -149,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                         if (k == 0 && State != 2)
                         {
-                            spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), GlowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
+                            spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), glowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
                         }
 
                         k += 10 * size;

@@ -471,6 +471,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
+                if (AttackTimer == 150 + k * 10)
+                    tentacle.DrawPortal = true;
+
+                if(AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
+                    tentacle.DownwardDrawDistance++;
+
+
 
             }
 
