@@ -51,14 +51,9 @@ namespace StarlightRiver.Content.Items.Vitric
         {
 			if (player.altFunctionUse == 2)
             {
-				if (player.GetModPlayer<IgnitionPlayer>().charge > 0)
+				if (player.GetModPlayer<IgnitionPlayer>().charge > 0 && player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
 				{
-					if (!player.GetModPlayer<IgnitionPlayer>().launching)
-					{
-						Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), damage, knockback, player.whoAmI);
-						player.velocity = player.DirectionTo(Main.MouseWorld) * 20;
-					}
-					player.GetModPlayer<IgnitionPlayer>().launching = true;
+					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCharge>(), damage, knockback, player.whoAmI);
 				}
 				return false;
             }
@@ -73,11 +68,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI, (handCounter % 4) / 2);
 				var mp = proj.ModProjectile as IgnitionPunchPhantom;
 				mp.directionVector = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.2f);
-			
 
+				int offsetFactor = Main.rand.Next(10, 20);
 				int offset = Main.rand.Next(-20, 20);
 				Vector2 vel = new Vector2(7, offset * 0.4f);
-				Vector2 offsetV = new Vector2(Main.rand.Next(-20,20), offset);
+				Vector2 offsetV = new Vector2(Main.rand.Next(-offsetFactor, offsetFactor), offset);
 				float rot = position.DirectionTo(Main.MouseWorld).ToRotation();
 				Projectile.NewProjectileDirect(source, position + offsetV.RotatedBy(rot), vel.RotatedBy(rot), ModContent.ProjectileType<IgnitionPunch>(), damage, knockback, player.whoAmI, (handCounter % 4) / 2);
 			}
@@ -153,6 +148,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private bool front => Projectile.ai[0] == 0;
 
 		private List<float> oldRotation = new List<float>();
+		private List<Vector2> oldPosition = new List<Vector2>();
 
 		private bool initialized = false;
 
@@ -163,8 +159,6 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ignition Gauntlets");
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 3;
-			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
 		public override void SetDefaults()
@@ -174,9 +168,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.hostile = false;
 			Projectile.friendly = true;
 			Projectile.timeLeft = 20;
-			Projectile.extraUpdates = 1;
+			Projectile.extraUpdates = 2;
 			Projectile.width = Projectile.height = 18;
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 12;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 		public override void AI()
@@ -187,14 +181,19 @@ namespace StarlightRiver.Content.Items.Vitric
 				Vector2 direction = owner.DirectionTo(Main.MouseWorld);
 				posToBe = owner.Center + (direction * 200);
 			}
-			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(posToBe) * 7, 0.25f);
-			Projectile.rotation = Projectile.velocity.ToRotation();
-
-			oldRotation.Add(Projectile.rotation);
-			while (oldRotation.Count > Projectile.oldPos.Length)
+			if (Projectile.extraUpdates != 0)
 			{
-				oldRotation.RemoveAt(0);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(posToBe) * 7, 0.25f);
+				Projectile.rotation = Projectile.velocity.ToRotation();
+				oldRotation.Add(Projectile.rotation);
+				oldPosition.Add(Projectile.Center);
 			}
+
+			if (oldRotation.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
+				oldRotation.RemoveAt(0);
+			if (oldPosition.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
+				oldPosition.RemoveAt(0);
+
 			if (Projectile.timeLeft < 7)
 			{
 				Projectile.friendly = false;
@@ -216,11 +215,17 @@ namespace StarlightRiver.Content.Items.Vitric
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
             }
 
-			if (owner.GetModPlayer<IgnitionPlayer>().charge < 75)
-				owner.GetModPlayer<IgnitionPlayer>().charge += 1;
+			if (owner.GetModPlayer<IgnitionPlayer>().charge < 150)
+				owner.GetModPlayer<IgnitionPlayer>().charge += 5;
 
 			Main.NewText(owner.GetModPlayer<IgnitionPlayer>().charge);
-        }
+
+			Projectile.penetrate += 2;
+			Projectile.timeLeft = 20;
+			Projectile.extraUpdates = 0;
+			Projectile.friendly = false;
+			Projectile.velocity = Vector2.Zero;
+		}
 
         public override bool PreDraw(ref Color lightColor)
         {
@@ -230,20 +235,20 @@ namespace StarlightRiver.Content.Items.Vitric
 			/*Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			for (int k = Projectile.oldPos.Length - 1; k > 0; k--) 
+			for (int k = 15; k > 0; k--) 
 			{
-				Vector2 drawPos = Projectile.oldPos[k] + (new Vector2(Projectile.width, Projectile.height) / 2);
 
 				float progress = (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length));
 				Color color = Color.White * progress * fade * 0.8f;
 				if (k > 0 && k < oldRotation.Count)
-					Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);
 			}
 
 			/*Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			if (Projectile.extraUpdates != 0)
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}
@@ -268,6 +273,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 10;
+			Projectile.extraUpdates = 1;
 		}
 
 		public override void SetStaticDefaults()
@@ -348,6 +354,8 @@ namespace StarlightRiver.Content.Items.Vitric
 	public class IgnitionPlayer : ModPlayer
     {
 		public int charge = 0;
+
+		public int loadedCharge = 0;
 		public bool launching = false;
 
 		private int rotationCounter = 0;
@@ -356,19 +364,30 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             if (launching)
             {
-				charge--;
-				if (charge <= 0)
+				loadedCharge--;
+				if (loadedCharge <= 0)
 				{
 					launching = false;
 					Player.fullRotation = 0;
 					return;
 				}
 
+
+
+				for (int i = 0; i < 4; i++)
+				{
+					var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
+					Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f) * Main.rand.NextFloat(6.5f));
+					dust.scale = Main.rand.NextFloat(0.35f, 0.75f);
+					dust.alpha = Main.rand.Next(50);
+					dust.rotation = Main.rand.NextFloatDirection();
+				}
+
 				Player.fullRotationOrigin = Player.Size / 2;
 
 				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f;
 
-				float lerper = MathHelper.Min(rotationCounter / 8f, charge / 15f);
+				float lerper = MathHelper.Min(rotationCounter / 8f, loadedCharge / 15f);
 				Player.fullRotation *= lerper;
 				Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20, 0.1f);
 
@@ -391,11 +410,73 @@ namespace StarlightRiver.Content.Items.Vitric
         }
     }
 
-	public class IgnitionGauntletLaunch : ModProjectile
-    {
+	public class IgnitionGauntletCharge : ModProjectile
+	{
+		int charge = 0;
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 		private Player owner => Main.player[Projectile.owner];
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Ignition Gauntlets");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.hostile = false;
+			Projectile.friendly = false;
+			Projectile.timeLeft = 9999;
+			Projectile.width = Projectile.height = 50;
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+			Projectile.hide = true;
+		}
+
+		public override void AI()
+		{
+			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
+			Projectile.Center = owner.Center;
+			if (Main.mouseRight)
+            {
+				if (modPlayer.charge > charge)
+                {
+					charge++;
+                }
+				Main.NewText(charge.ToString(), 255, 0, 100);
+            }
+			else
+            {
+				if (!owner.GetModPlayer<IgnitionPlayer>().launching)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+					owner.velocity = owner.DirectionTo(Main.MouseWorld) * 20;
+				}
+				//modPlayer.charge -= charge;
+				modPlayer.loadedCharge = charge;
+				owner.GetModPlayer<IgnitionPlayer>().launching = true;
+				Projectile.active = false;
+			}
+		}
+	}
+
+	public class IgnitionGauntletLaunch : ModProjectile
+    {
+		public override string Texture => AssetDirectory.VitricItem + Name;
+		private Player owner => Main.player[Projectile.owner];
+
+		public float noiseRotation;
+
+		public override void Load()
+		{
+			On.Terraria.Main.DrawDust += DrawCone;
+		}
+
+		public override void Unload()
+		{
+			On.Terraria.Main.DrawDust -= DrawCone;
+		}
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ignition Gauntlets");
@@ -416,12 +497,134 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AI()
         {
+			if (noiseRotation < 0.02f)
+				noiseRotation = Main.rand.NextFloat(6.28f);
+			noiseRotation += 0.07f;
+
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Projectile.Center = owner.Center;
+
+			Projectile.rotation = owner.fullRotation;
 			if (!modPlayer.launching)
 			{ 
 				Projectile.Kill();
 			}
         }
-    }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+			return false;
+		}
+
+		private void DrawCone(On.Terraria.Main.orig_DrawDust orig, Main self)
+		{
+			orig(self);
+
+			Color color = Color.OrangeRed;
+			color.A = 0;
+
+			foreach (Projectile Projectile in Main.projectile)
+            {
+				Player player = Main.player[Projectile.owner];
+				if (Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Projectile.active && player.GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
+                {
+					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
+					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+
+					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);
+					effect.Parameters["rotation"].SetValue(mp.noiseRotation);
+					effect.Parameters["transparency"].SetValue(0.8f);
+
+
+					effect.Parameters["color"].SetValue(color.ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
+
+					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(100, 50), new Vector2(1.2f, 0.8f), SpriteEffects.None, 0f);
+
+					Main.spriteBatch.End();
+				}
+            }
+		}
+	}
+
+	public class IgnitionGauntletSmoke : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.scale *= 0.3f;
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			Color gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 40)
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
+			else if (dust.alpha < 80)
+				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 40) / 40f);
+			else if (dust.alpha < 160)
+				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
+			else
+				ret = gray;
+
+			return ret * ((255 - dust.alpha) / 255f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.customData == null)
+            {
+				dust.customData = 0;
+            }
+
+			if ((int)dust.customData < 10)
+            {
+				dust.scale *= 1.1f;
+				dust.customData = (int)dust.customData + 1;
+            }
+			else
+            {
+				if (dust.alpha > 60)
+				{
+					dust.scale *= 0.96f;
+				}
+				else
+				{
+					dust.scale *= 0.93f;
+				}
+			}
+
+
+			if (dust.velocity.Length() > 3)
+				dust.velocity *= 0.85f;
+			else
+				dust.velocity *= 0.92f;
+
+			if (dust.alpha > 60)
+			{
+				dust.alpha += 12;
+			}
+			else
+			{
+				dust.alpha += 8;
+			}
+
+			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
+
+			dust.position += dust.velocity;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+	}
 }
