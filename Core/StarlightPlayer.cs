@@ -207,11 +207,11 @@ namespace StarlightRiver.Core
             //Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
 
             float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
-            mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
+            mult *= Main.screenWidth / 2048f * 1.1f; //normalize for screen resolution AND intensify slightly
+            
             Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), Shake * mult, 15f, 30, 2000, "Starlight Shake"));
 
-            if (Shake > 0)
-                Shake--;
+            if (Shake > 0) Shake--;
 
             //Main.screenPosition.X = (int)Main.screenPosition.X;
             //Main.screenPosition.Y = (int)Main.screenPosition.Y;

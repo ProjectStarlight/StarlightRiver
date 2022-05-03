@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	public partial class GlassMiniboss : ModNPC
     {
         bool attackVariant = false;
+        bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
 
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
@@ -23,15 +24,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         internal ref float AttackTimer => ref NPC.ai[3];
         internal ref float AttackType => ref NPC.localAI[0];
 
-        public static Vector2 spawnPos => StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16);
+        public Vector2 arenaPos;
 
         //Phase tracking utils
         public enum PhaseEnum
         {
             SpawnEffects = 0,
-            SpawnAnimation = 1,
+            JumpToBackground = 1,
             GauntletPhase = 2,
-            ComeBack = 3,
+            ReturnToForeground = 3,
             DirectPhase = 4,
             DeathAnimation = 5
         }
@@ -95,22 +96,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 case (int)PhaseEnum.SpawnEffects:
 
-                    ResetAttack();
+                    arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
 
                     //UILoader.GetUIState<TextCard>().Display("Glassweaver", "the", null, 240, 1, true);
 
-                    SetPhase(PhaseEnum.SpawnAnimation);
+                    SetPhase(PhaseEnum.JumpToBackground);
+                    ResetAttack();
 
                     break;
 
-                case (int)PhaseEnum.SpawnAnimation:
+                case (int)PhaseEnum.JumpToBackground:
 
                     //if (AttackTimer <= 90) 
                     //    SpawnAnimation();
 
                     //else
                     //{
-                    SetPhase(PhaseEnum.DirectPhase);
+                    SetPhase(PhaseEnum.GauntletPhase);
                     ResetAttack();
                     //    NPC.noGravity = false;
                     //}
@@ -119,13 +121,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 case (int)PhaseEnum.GauntletPhase:
 
+                    SetPhase(PhaseEnum.ReturnToForeground);
+                    ResetAttack();
 
+                    break;                
+                
+                case (int)PhaseEnum.ReturnToForeground:
+
+                    SetPhase(PhaseEnum.DirectPhase);
+                    ResetAttack();
 
                     break;
 
                 case (int)PhaseEnum.DirectPhase:
 
                     NPC.noGravity = false;
+
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
@@ -139,10 +150,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Spears(); break;
-                        case 1: Hammer(); break;
-                        case 2: Spears(); break;
-                        case 3: Hammer(); break;
+                        case 0: BigBrightBubble(); break;
+                        //case 1: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 1: BigBrightBubble(); break;
+                        case 2: BigBrightBubble(); break;
+                        case 3: HammerVariant(); break;
                     }
 
                     break;
@@ -162,47 +174,45 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMiniboss");
-            Asset<Texture2D> weaverSolid = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossSolid");
             Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossGlow");
 
             Rectangle frame = weaver.Frame(1, 5, 0, 0);
             frame.Width = 136;
-            float trailOpacity = 0f;
 
             switch (Phase)
             {
                 case (int)PhaseEnum.DirectPhase:
 
+
                     switch (AttackType)
                     {
                         case (int)AttackEnum.Spears:
 
-                            if (AttackTimer > 10)
+                            if (AttackTimer > 10 && AttackTimer < spearTime - spearSpawn)
                                 frame.Y = 300;
-                            trailOpacity = 0.4f;
                             break;
 
                         case (int)AttackEnum.Hammer:
 
-                            float hammerTimer = AttackTimer - hammerSpawn;
-                            if (AttackTimer < 75)
+                            float hammerTimer = AttackTimer - hammerSpawn + 5;
+                            if (AttackTimer < 61)
                                 frame.Y = 150;
-                            else if (hammerTimer < 150)
+                            else if (hammerTimer <= hammerTime + 60)
                             {
                                 frame.X = 138;
                                 frame.Width = 180;
 
-                                if (hammerTimer <= 55)
+                                if (hammerTimer <= hammerTime * 0.87f)
                                 {
                                     frame.Y = 0;
-                                    bool secFrame = (hammerTimer >= 20) && (hammerTimer < 40);
+                                    bool secFrame = (hammerTimer >= hammerTime * 0.33f) && (hammerTimer < hammerTime * 0.66f);
                                     if (secFrame)
                                         frame.Y = 150;
                                 }
                                 else
                                 {
-                                    float swingAccel = Utils.GetLerpValue(55, 70, hammerTimer, true);
-                                    frame.Y = 150 + (150 * (int)(1f + (swingAccel * 2f)));
+                                    float swingTime = Utils.GetLerpValue(hammerTime * 0.87f, hammerTime * 0.98f, hammerTimer, true);
+                                    frame.Y = 150 + (150 * (int)(1f + (swingTime * 2f)));
                                 }
                             }
                             break;
@@ -214,25 +224,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Vector2 origin = frame.Size() * new Vector2(0.5f, 1f);
             Vector2 drawPos = new Vector2(0, 48) - Main.screenPosition;
 
-            for (int i = 0; i < 10; i++)
-            {
-                Color trailColor = new Color(230, 60, 16, 0) * trailOpacity * ((10 - i) / 10f);
-                float scale = 0.8f + (((10 - i) / 10f) * 0.2f);
-                Main.EntitySpriteDraw(weaverSolid.Value, NPC.oldPos[i] + (NPC.Size * 0.5f) + drawPos, frame, trailColor, NPC.oldRot[i], origin, NPC.scale * scale, GetSpriteEffects(), 0);
-            }
             Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
-            
-            //switch (Phase)
-            //{
-            //    case (int)PhaseEnum.DirectPhase:
 
-            //        switch (AttackType)
-            //        {
-            //        }
-
-            //        break;
-            //}
 
             return false;
         }
