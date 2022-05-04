@@ -57,6 +57,19 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				return false;
             }
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
+			{
+				IgnitionPlayer modPlayer = player.GetModPlayer<IgnitionPlayer>();
+				if (modPlayer.loadedCharge > 20)
+                {
+					modPlayer.loadedCharge = 20;
+					modPlayer.flipping = true;
+					player.velocity *= -0.5f;
+					player.itemTime = player.itemAnimation = 20;
+					player.direction *= Math.Sign(player.Center.Y - Main.MouseWorld.Y);
+					return false;
+				}
+			}
 			/*if (player.velocity.Length() < 6 && !(player.controlUp || player.controlDown || player.controlLeft || player.controlRight))
             {
 				Vector2 dir = player.DirectionTo(Main.MouseWorld) * 0.6f;
@@ -357,6 +370,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public int loadedCharge = 0;
 		public bool launching = false;
+		public bool flipping = false;
 
 		private int rotationCounter = 0;
 
@@ -369,27 +383,41 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					launching = false;
 					Player.fullRotation = 0;
+					flipping = false;
 					return;
 				}
 
 
-
-				for (int i = 0; i < 4; i++)
+				if (!flipping)
 				{
-					var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
-					Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f) * Main.rand.NextFloat(6.5f));
-					dust.scale = Main.rand.NextFloat(0.35f, 0.75f);
-					dust.alpha = Main.rand.Next(50);
-					dust.rotation = Main.rand.NextFloatDirection();
+					for (int i = 0; i < 4; i++)
+					{
+						var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
+						Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f) * Main.rand.NextFloat(6.5f));
+						dust.scale = Main.rand.NextFloat(0.35f, 0.75f);
+						dust.alpha = Main.rand.Next(50);
+						dust.rotation = Main.rand.NextFloatDirection();
+					}
+
+					for (int j = 0; j < 16; j++)
+					{
+						var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
+						Dust dust2 = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke2>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(3.0f) * Main.rand.NextFloat(12.5f));
+						dust2.scale = Main.rand.NextFloat(0.25f, 0.45f);
+						dust2.alpha = Main.rand.Next(50);
+						dust2.rotation = Main.rand.NextFloatDirection();
+					}
+					Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20, 0.1f);
 				}
 
 				Player.fullRotationOrigin = Player.Size / 2;
 
 				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f;
+				if (flipping)
+					Player.fullRotation += 6.28f;
 
-				float lerper = MathHelper.Min(rotationCounter / 8f, loadedCharge / 15f);
+				float lerper = MathHelper.Min(rotationCounter / 8f, loadedCharge / 20f);
 				Player.fullRotation *= lerper;
-				Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20, 0.1f);
 
 				if (rotationCounter < 8)
 					rotationCounter++;
@@ -468,6 +496,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public float noiseRotation;
 
+		public float noiseRotation2;
+
 		public override void Load()
 		{
 			On.Terraria.Main.DrawDust += DrawCone;
@@ -499,7 +529,11 @@ namespace StarlightRiver.Content.Items.Vitric
         {
 			if (noiseRotation < 0.02f)
 				noiseRotation = Main.rand.NextFloat(6.28f);
-			noiseRotation += 0.07f;
+			noiseRotation += 0.12f;
+
+			if (noiseRotation2 < 0.02f)
+				noiseRotation2 = Main.rand.NextFloat(6.28f);
+			noiseRotation2 -= 0.12f;
 
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Projectile.Center = owner.Center;
@@ -533,16 +567,26 @@ namespace StarlightRiver.Content.Items.Vitric
 					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-
 					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);
 					effect.Parameters["rotation"].SetValue(mp.noiseRotation);
-					effect.Parameters["transparency"].SetValue(0.8f);
-
-
-					effect.Parameters["color"].SetValue(color.ToVector4());
+					effect.Parameters["transparency"].SetValue(1f);
+					effect.Parameters["pallette"].SetValue(ModContent.Request<Texture2D>(Texture + "_pallette").Value);
+					effect.Parameters["color"].SetValue(Color.White.ToVector4());
 					effect.CurrentTechnique.Passes[0].Apply();
 
-					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(100, 50), new Vector2(1.2f, 0.8f), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
+
+					Main.spriteBatch.End();
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+					effect.Parameters["vnoise"].SetValue(ModContent.Request<Texture2D>(Texture + "_noise").Value);
+					effect.Parameters["rotation"].SetValue(mp.noiseRotation2);
+					effect.Parameters["transparency"].SetValue(1f);
+					effect.Parameters["pallette"].SetValue(ModContent.Request<Texture2D>(Texture + "_pallette").Value);
+					effect.Parameters["color"].SetValue(Color.White.ToVector4());
+					effect.CurrentTechnique.Passes[0].Apply();
+
+					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 
 					Main.spriteBatch.End();
 				}
@@ -581,17 +625,17 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool Update(Dust dust)
 		{
 			if (dust.customData == null)
-            {
+			{
 				dust.customData = 0;
-            }
+			}
 
 			if ((int)dust.customData < 10)
-            {
+			{
 				dust.scale *= 1.1f;
 				dust.customData = (int)dust.customData + 1;
-            }
+			}
 			else
-            {
+			{
 				if (dust.alpha > 60)
 				{
 					dust.scale *= 0.96f;
@@ -616,6 +660,76 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				dust.alpha += 8;
 			}
+
+			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
+
+			dust.position += dust.velocity;
+
+			if (dust.alpha >= 255)
+				dust.active = false;
+
+			return false;
+		}
+	}
+	public class IgnitionGauntletSmoke2 : ModDust
+	{
+		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+			dust.scale *= 0.3f;
+			dust.frame = new Rectangle(0, 0, 34, 36);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			Color gray = new Color(25, 25, 25);
+			Color ret;
+			if (dust.alpha < 40)
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
+			else if (dust.alpha < 80)
+				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 40) / 40f);
+			else if (dust.alpha < 160)
+				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
+			else
+				ret = gray;
+
+			return ret * ((255 - dust.alpha) / 255f);
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.customData == null)
+			{
+				dust.customData = 0;
+			}
+
+			if ((int)dust.customData < 10)
+			{
+				dust.scale *= 1.07f;
+				dust.customData = (int)dust.customData + 1;
+			}
+			else
+			{
+				if (dust.alpha > 60)
+				{
+					dust.scale *= 0.98f;
+				}
+				else
+				{
+					dust.scale *= 0.96f;
+				}
+			}
+
+
+			if (dust.velocity.Length() > 3)
+				dust.velocity *= 0.92f;
+			else
+				dust.velocity *= 0.96f;
+
+			dust.alpha += 30;
 
 			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
 
