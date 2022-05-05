@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	public partial class GlassMiniboss : ModNPC
     {
-        bool attackVariant = false;
-        bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
+        public bool attackVariant = false;
+        //bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
 
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
@@ -136,6 +136,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 case (int)PhaseEnum.DirectPhase:
 
                     NPC.noGravity = false;
+                    NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
                     if (AttackTimer == 1)
                     {
@@ -152,9 +153,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         case 0: BigBrightBubble(); break;
                         //case 1: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 1: BigBrightBubble(); break;
+                        case 1: Spears(); break;
                         case 2: BigBrightBubble(); break;
-                        case 3: HammerVariant(); break;
+                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
                     }
 
                     break;
@@ -171,6 +172,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             attackVariant = reader.ReadBoolean();
         }
 
+        public override ModNPC Clone(NPC npc)
+        {
+            var newNPC = base.Clone(npc) as GlassMiniboss;
+            newNPC.moveTarget = new Vector2();
+            newNPC.moveStart = new Vector2();
+            newNPC.attackVariant = false;
+            newNPC.hammerIndex = -1;
+            newNPC.bubbleIndex = -1;
+            return newNPC;
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMiniboss");
@@ -183,12 +195,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 case (int)PhaseEnum.DirectPhase:
 
-
                     switch (AttackType)
                     {
                         case (int)AttackEnum.Spears:
 
-                            if (AttackTimer > 10 && AttackTimer < spearTime - spearSpawn)
+                            if (AttackTimer < spearTime - spearSpawn)
                                 frame.Y = 300;
                             break;
 
@@ -199,7 +210,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                                 frame.Y = 150;
                             else if (hammerTimer <= hammerTime + 60)
                             {
-                                frame.X = 138;
+                                frame.X = 136;
                                 frame.Width = 180;
 
                                 if (hammerTimer <= hammerTime * 0.87f)
@@ -216,13 +227,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                                 }
                             }
                             break;
+
+                        case (int)AttackEnum.BigBrightBubble:
+
+                            if (AttackTimer < 55)
+                                frame.Y = 150;
+                            else
+                            {
+                                if (AttackTimer < 330)
+                                    frame.Y = 450;
+                                else if (AttackTimer < bubbleRecoil)
+                                    frame.Y = 150;
+                                else if (AttackTimer > bubbleRecoil && AttackTimer < bubbleRecoil + 50)
+                                    frame.Y = 600;
+                            }
+
+                            break;
                     }
 
                     break;
             }
 
-            Vector2 origin = frame.Size() * new Vector2(0.5f, 1f);
-            Vector2 drawPos = new Vector2(0, 48) - Main.screenPosition;
+            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
+            Vector2 drawPos = new Vector2(0, -24) - Main.screenPosition;
 
             Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
