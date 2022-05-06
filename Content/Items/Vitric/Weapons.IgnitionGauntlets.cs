@@ -598,7 +598,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Lighting.AddLight(Player.Center, Color.OrangeRed.ToVector3());
 					for (int i = 0; i < 4; i++)
 					{
-						var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
+						var pos = (Player.Center + new Vector2(9,9)) - (Player.velocity * Main.rand.NextFloat(2));
 						Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f) * Main.rand.NextFloat(6.5f));
 						dust.scale = Main.rand.NextFloat(0.35f, 0.75f);
 						dust.alpha = Main.rand.Next(50);
@@ -607,17 +607,22 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					for (int j = 0; j < 16; j++)
 					{
-						var pos = (Player.Center - new Vector2(4, 4)) - (Player.velocity * Main.rand.NextFloat(2));
+						var pos = (Player.Center + new Vector2(9, 9)) - (Player.velocity * Main.rand.NextFloat(2));
 						Dust dust2 = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke2>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(3.0f) * Main.rand.NextFloat(12.5f));
 						dust2.scale = Main.rand.NextFloat(0.25f, 0.45f);
 						dust2.alpha = Main.rand.Next(50);
 						dust2.rotation = Main.rand.NextFloatDirection();
 					}
 
+					var pos2 = (Player.Center + new Vector2(9, 9)) - (Player.velocity * Main.rand.NextFloat(2));
+					Dust dust3 = Dust.NewDustPerfect(pos2, ModContent.DustType<IgnitionGlowDust>(), Vector2.Normalize(-Player.velocity).RotatedByRandom(2.6f) * Main.rand.NextFloat(6.5f), 0, Color.OrangeRed);
+					dust3.scale = Main.rand.NextFloat(0.35f, 1.35f);
+					dust3.alpha = Main.rand.Next(50);
+
 					Vector2 offset = Vector2.Normalize(Player.velocity.RotatedBy(1.57f)) * Main.rand.Next(-30, 30);
-					Dust dust3 = Dust.NewDustPerfect(Player.Center + offset + (Player.velocity * 5), ModContent.DustType<IgnitionGauntletWind>(), Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6.5f), 0, Color.White, 1.5f);
-					dust3.rotation = dust3.velocity.ToRotation();
-					dust3.position -= (dust3.rotation - 1.57f).ToRotationVector2() * 35;
+					Dust dust4 = Dust.NewDustPerfect(Player.Center + offset + (Player.velocity * 5), ModContent.DustType<IgnitionGauntletWind>(), Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6.5f), 0, Color.White, 1.5f);
+					dust4.rotation = dust4.velocity.ToRotation();
+					dust4.position -= (dust4.rotation - 1.57f).ToRotationVector2() * 35;
 					Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20 * (float)Math.Sqrt(lerper), 0.15f * acceleration);
 				}
 				Player.fullRotationOrigin = Player.Size / 2;
@@ -840,7 +845,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
 					handOffset = handOffset.RotatedBy(player.fullRotation);
-					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, Color.White * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 1.5f + (0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, new Color(255,255,255,0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
 					Main.spriteBatch.End();
 
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
@@ -907,6 +912,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (dust.customData == null)
 			{
+				dust.position -= Vector2.One * 35 * dust.scale;
 				dust.customData = 0;
 			}
 
@@ -984,6 +990,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (dust.customData == null)
 			{
+				dust.position -= Vector2.One * 35 * dust.scale;
 				dust.customData = 0;
 			}
 
@@ -1158,7 +1165,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			dust.noGravity = true;
 			dust.noLight = true;
-			dust.frame = new Rectangle(0, 0, 18, 18);
+			dust.frame = new Rectangle(0, 0, 74, 74);
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+			dust.shader.UseColor(Color.White);
 
 		}
 
@@ -1169,13 +1178,63 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool Update(Dust dust)
         {
-			dust.rotation += 0.125f * dust.scale;
+			dust.shader.UseColor(Color.White);
+
+			dust.rotation += 0.25f * dust.scale;
 			dust.position += dust.velocity;
 			dust.fadeIn++;
-			dust.scale = 1 + (float)(2 * Math.Sin(dust.fadeIn * 0.157f));
+			dust.scale = (1 + (float)(2 * Math.Sin(dust.fadeIn * 0.157f))) * 0.3f;
 			if (dust.scale <= 0)
 				dust.active = false;
 			return false;
         }
     }
+	class IgnitionGlowDust : ModDust
+	{
+		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			var curveOut = Curve(1 - dust.fadeIn / 20f);
+			var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 10f);
+			dust.color = color * (curveOut + 0.4f);
+			return new Color(255, 100, 0);
+		}
+
+		float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
+		{
+			return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
+		}
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.color = Color.Transparent;
+			dust.fadeIn = 0;
+			dust.noLight = false;
+			dust.scale *= 0.3f;
+			dust.frame = new Rectangle(0, 0, 64, 64);
+			dust.velocity *= 2;
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.fadeIn == 0)
+				dust.position -= Vector2.One * 32 * dust.scale;
+
+			//dust.rotation += dust.velocity.Y * 0.1f;
+			dust.position += dust.velocity;
+			dust.velocity *= 0.86f;
+			dust.shader.UseColor(dust.color);
+			dust.scale *= 0.95f;
+			dust.fadeIn++;
+
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
+
+			if (dust.fadeIn > 25)
+				dust.active = false;
+
+			return false;
+		}
+	}
 }
