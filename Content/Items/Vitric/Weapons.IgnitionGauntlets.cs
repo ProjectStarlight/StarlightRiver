@@ -46,13 +46,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.noUseGraphic = true;
 		}
 
-        public override void HoldItem(Player player)
-        {
+		public override void HoldItem(Player player)
+		{
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletChargeUI>()] == 0)
 				Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletChargeUI>(), 0, 0, player.whoAmI);
-        }
+		}
 
-        public override bool AltFunctionUse(Player player) => true;
+		public override bool AltFunctionUse(Player player) => true;
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
@@ -69,6 +69,12 @@ namespace StarlightRiver.Content.Items.Vitric
 				IgnitionPlayer modPlayer = player.GetModPlayer<IgnitionPlayer>();
 				if (modPlayer.loadedCharge > 20)
 				{
+					float damagelerper = (modPlayer.loadedCharge - 15) / 135f;
+					damagelerper = MathHelper.Max(damagelerper, 0.5f);
+					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), (int)(damage * 4 * damagelerper), knockback, player.whoAmI, (float)Math.Sqrt(damagelerper));
+
+					damagelerper = (float)Math.Sqrt(damagelerper);
+
 					modPlayer.loadedCharge = 20;
 					modPlayer.flipping = true;
 
@@ -76,26 +82,37 @@ namespace StarlightRiver.Content.Items.Vitric
 					{
 						var pos = position;
 						float lerper = Main.rand.NextFloat();
-						Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke3>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.8f) * 50.5f * lerper);
-						dust.scale = Main.rand.NextFloat(0.75f, 1.25f) * MathHelper.Lerp(0.4f,1f,lerper);
+						Dust dust = Dust.NewDustPerfect(pos, ModContent.DustType<IgnitionGauntletSmoke3>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.8f) * 50.5f * lerper * damagelerper);
+						dust.scale = Main.rand.NextFloat(0.75f, 1.25f) * MathHelper.Lerp(0.4f, 1f, lerper) * damagelerper;
 						dust.alpha = Main.rand.Next(50);
 						dust.rotation = Main.rand.NextFloatDirection();
 					}
+		
+					for (int k = 0; k < 12; k++)
+					{
+						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(1.2f) * Main.rand.Next(3, 30) * damagelerper, 0, Color.Yellow, 2.4f * damagelerper); ;
+					}
+					for (int k = 0; k < 12; k++)
+					{
+						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.5f) * Main.rand.Next(3, 15) * damagelerper, 0, Color.Yellow, 1.3f * damagelerper);
+					}
 
-					for (int k = 0; k < 12; k++)
-					{
-						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(1.2f) * Main.rand.Next(3, 30), 0, Color.Yellow, 2.4f);;
-					}
-					for (int k = 0; k < 12; k++)
-					{
-						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.5f) * Main.rand.Next(3, 15), 0, Color.Yellow, 1.3f);
-					}
+					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
+					handOffset = handOffset.RotatedBy(player.fullRotation);
+					Dust star = Dust.NewDustPerfect(handOffset + player.Center, ModContent.DustType<IgnitionGauntletStar>(), player.DirectionTo(Main.MouseWorld) * 5);
+					star.scale = 1.5f;
+					star.rotation = Main.GameUpdateCount * 0.085f;
+
+					Projectile proj = Projectile.NewProjectileDirect(source, position, player.DirectionTo(Main.MouseWorld) * 10 * damagelerper, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, player.whoAmI, Main.rand.Next(150, 250) * damagelerper, player.DirectionTo(Main.MouseWorld).ToRotation());
+					var mp = proj.ModProjectile as IgnitionGauntletsImpactRing;
+					mp.timeLeftStart = 50;
+					proj.timeLeft = 50;
+					proj.extraUpdates = 3;
 
 					player.velocity *= -0.5f;
 					player.itemTime = player.itemAnimation = 20;
 					player.direction *= Math.Sign(player.Center.Y - Main.MouseWorld.Y);
-
-					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), damage, knockback, player.whoAmI);
+					player.GetModPlayer<StarlightPlayer>().Shake += (int)(12 * damagelerper);
 					return false;
 				}
 			}
@@ -107,7 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (handCounter % 2 == 0)
 			{
 				Projectile proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI, (handCounter % 4) / 2);
-				var mp = proj.ModProjectile as IgnitionPunchPhantom; 
+				var mp = proj.ModProjectile as IgnitionPunchPhantom;
 				mp.directionVector = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.2f);
 
 				int offsetFactor = Main.rand.Next(10, 20);
@@ -121,7 +138,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	public class IgnitionGauntletChargeUI : ModProjectile,IDrawPrimitive
+	public class IgnitionGauntletChargeUI : ModProjectile, IDrawPrimitive
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 		private Player owner => Main.player[Projectile.owner];
@@ -167,7 +184,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 
 		public override bool PreDraw(ref Color lightColor)
-        {
+		{
+			return false;
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["IgnitionFlames"].GetShader().Shader;
@@ -246,6 +264,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public void DrawPrimitives()
 		{
+			return;
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Effect effect = Filters.Scene["IgnitionFlames"].GetShader().Shader;
 
@@ -448,7 +467,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		private Trail trail;
 		private Trail trail2;
 
-		private float Progress => 1 - (Projectile.timeLeft / 10f);
+		public int timeLeftStart = 10;
+		private float Progress => 1 - (Projectile.timeLeft / (float)timeLeftStart);
 
 		private float Radius => Projectile.ai[0] * (float)Math.Sqrt(Math.Sqrt(Progress));
 
@@ -459,7 +479,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.friendly = false;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = 10;
+			Projectile.timeLeft = timeLeftStart;
 			Projectile.extraUpdates = 1;
 		}
 
@@ -470,6 +490,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
+			Projectile.velocity *= 0.95f;
 			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
@@ -542,6 +563,8 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public int charge = 0;
 
+		public int potentialCharge = 0;
+
 		public int loadedCharge = 0;
 		public bool launching = false;
 		public bool flipping = false;
@@ -571,6 +594,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (!flipping)
 				{
+					Player.GetModPlayer<StarlightPlayer>().Shake = (int)(2 * lerper);
 					Lighting.AddLight(Player.Center, Color.OrangeRed.ToVector3());
 					for (int i = 0; i < 4; i++)
 					{
@@ -589,9 +613,13 @@ namespace StarlightRiver.Content.Items.Vitric
 						dust2.alpha = Main.rand.Next(50);
 						dust2.rotation = Main.rand.NextFloatDirection();
 					}
+
+					Vector2 offset = Vector2.Normalize(Player.velocity.RotatedBy(1.57f)) * Main.rand.Next(-30, 30);
+					Dust dust3 = Dust.NewDustPerfect(Player.Center + offset + (Player.velocity * 5), ModContent.DustType<IgnitionGauntletWind>(), Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6.5f), 0, Color.White, 1.5f);
+					dust3.rotation = dust3.velocity.ToRotation();
+					dust3.position -= (dust3.rotation - 1.57f).ToRotationVector2() * 35;
 					Player.velocity = Vector2.Lerp(Player.velocity, Player.DirectionTo(Main.MouseWorld) * 20 * (float)Math.Sqrt(lerper), 0.15f * acceleration);
 				}
-
 				Player.fullRotationOrigin = Player.Size / 2;
 
 				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f;
@@ -606,6 +634,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			else
 			{
 				rotationCounter = 0;
+			}
+		}
+
+		public override void PostUpdate()
+		{
+			if (launching && !flipping)
+			{
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 1.57f * Player.direction);
 			}
 		}
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -650,19 +686,22 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				if (modPlayer.charge > charge)
 				{
-					charge++;
+					charge += 3;
 				}
+				modPlayer.potentialCharge = charge;
 				Main.NewText(charge.ToString(), 255, 0, 100);
 			}
 			else
 			{
+				modPlayer.potentialCharge = 0;
 				if (!owner.GetModPlayer<IgnitionPlayer>().launching)
 				{
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 					//owner.velocity = owner.DirectionTo(Main.MouseWorld) * 20;
 				}
 
-				modPlayer.charge -= charge;
+				//UNCOMMENT THIS BEFORE RELEASE
+				//modPlayer.charge -= charge;
 				modPlayer.loadedCharge = charge;
 				owner.GetModPlayer<IgnitionPlayer>().launching = true;
 				Projectile.active = false;
@@ -677,8 +716,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public Vector2 directionVector = Vector2.Zero;
 		private Player owner => Main.player[Projectile.owner];
-
-		private bool front => Projectile.ai[0] == 0;
 
 		public override void SetStaticDefaults()
 		{
@@ -707,7 +744,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			for (float i = -0.7f; i < 0.7f; i += 0.05f)
 			{
-				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + ((Projectile.rotation + i).ToRotationVector2() * 220)))
+				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + ((Projectile.rotation + i).ToRotationVector2() * 220 * Projectile.ai[0])))
 					return true;
 			}
 			return false;
@@ -781,9 +818,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		private void DrawCone(On.Terraria.Main.orig_DrawDust orig, Main self)
+		private void DrawCone(On.Terraria.Main.orig_DrawDust orig, Main self) //putting this here so I dont have to load another detour to get it to load in front of the fist
 		{
 			orig(self);
+
+			//putting this here so I dont have to load another detour to get it to load in front of the fist
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+
+			Main.spriteBatch.End();
 
 			Color color = Color.OrangeRed;
 			color.A = 0;
@@ -791,8 +833,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			foreach (Projectile Projectile in Main.projectile)
 			{
 				Player player = Main.player[Projectile.owner];
+				Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
+
 				if (Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Projectile.active && player.GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
+					handOffset = handOffset.RotatedBy(player.fullRotation);
+					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, Color.White * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 1.5f + (0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
+					Main.spriteBatch.End();
+
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
@@ -1054,7 +1104,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - (dust.fadeIn / 20f))), 0, 0) * mult);
 			dust.shader.UseColor(dust.color * mult);
-			dust.fadeIn+= 2;
+			dust.fadeIn += 2;
 
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);
 
@@ -1063,4 +1113,69 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+	class IgnitionGauntletWind : BuzzSpark
+	{
+		public override bool Update(Dust dust)
+		{
+			if (dust.customData is null)
+			{
+				dust.position -= new Vector2(2.5f, 25).RotatedBy(dust.rotation) * dust.scale;
+				dust.customData = 1;
+			}
+
+			dust.frame.Y++;
+			dust.frame.Height--;
+
+			dust.rotation = dust.velocity.ToRotation() + 1.57f;
+			dust.position += dust.velocity;
+
+			dust.color.G -= 8;
+			dust.color.A -= 5;
+
+			dust.velocity.X *= 0.98f;
+			dust.velocity.Y *= 0.95f;
+
+			dust.velocity.Y += 0.15f;
+
+			float mult = MathHelper.Min(dust.fadeIn / 15f, (45 - dust.fadeIn) / 15f);
+
+			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - (dust.fadeIn / 20f))), 0, 0) * mult);
+			dust.shader.UseColor(dust.color * mult);
+			dust.fadeIn += 2;
+
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.02f);
+
+			if (dust.fadeIn > 45)
+				dust.active = false;
+			return false;
+		}
+	}
+	public class IgnitionGauntletStar : ModDust
+	{
+		public override string Texture => AssetDirectory.VitricItem + "IgnitionGauntletStar";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.noLight = true;
+			dust.frame = new Rectangle(0, 0, 18, 18);
+
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return Color.White;
+		}
+
+		public override bool Update(Dust dust)
+        {
+			dust.rotation += 0.125f * dust.scale;
+			dust.position += dust.velocity;
+			dust.fadeIn++;
+			dust.scale = 1 + (float)(2 * Math.Sin(dust.fadeIn * 0.157f));
+			if (dust.scale <= 0)
+				dust.active = false;
+			return false;
+        }
+    }
 }
