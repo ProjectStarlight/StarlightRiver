@@ -32,12 +32,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Color gray = new Color(25, 25, 25);
 			Color ret;
-			if (dust.alpha < 40)
-				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
-			else if (dust.alpha < 80)
-				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 40) / 40f);
+			if (dust.alpha < 80)
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
 			else if (dust.alpha < 160)
-				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
+				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 80) / 80f);
+			else if (dust.alpha < 240)
+				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 160) / 80f);
 			else
 				ret = gray;
 
@@ -110,12 +110,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Color gray = new Color(25, 25, 25);
 			Color ret;
-			if (dust.alpha < 40)
-				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
-			else if (dust.alpha < 80)
-				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 40) / 40f);
+			if (dust.alpha < 80)
+				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
 			else if (dust.alpha < 160)
-				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
+				ret = Color.Lerp(Color.Orange, Color.Red, (dust.alpha - 80) / 80f);
+			else if (dust.alpha < 240)
+				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 160) / 80f);
 			else
 				ret = gray;
 

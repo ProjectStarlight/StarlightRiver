@@ -71,7 +71,6 @@ namespace StarlightRiver.Content.Items.Vitric
 					dust.customData = owner.whoAmI;
 				}
 				modPlayer.potentialCharge = charge;
-				Main.NewText(charge.ToString(), 255, 0, 100);
 			}
 			else
 			{

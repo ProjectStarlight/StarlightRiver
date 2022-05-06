@@ -51,15 +51,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			IgnitionPlayer modPlayer = player.GetModPlayer<IgnitionPlayer>();
 			Lighting.AddLight(player.Center, Color.OrangeRed.ToVector3() * modPlayer.charge / 150f * Main.rand.NextFloat());
 
-			if (Main.rand.NextBool(2) && modPlayer.potentialCharge == 0 && modPlayer.charge > 0)
+			if (Main.rand.NextBool(2) && modPlayer.charge - modPlayer.potentialCharge > 0)
 			{
 				Dust dust = Dust.NewDustPerfect(player.Center, ModContent.DustType<IgnitionChargeDustPassive>(), default, default, Color.OrangeRed);
 				dust.customData = player.whoAmI;
 				dust.scale = Main.rand.NextFloat(0.25f, 0.45f);
 				dust.alpha = Main.rand.Next(100);
-				if (modPlayer.charge >= 75)
+				if (modPlayer.charge - modPlayer.potentialCharge  >= 75)
 					dust.alpha += 100;
-				if (modPlayer.charge >= 150)
+				if (modPlayer.charge - modPlayer.potentialCharge >= 150)
 					dust.alpha += 100;
 			}
 		}
@@ -83,9 +83,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					float damagelerper = (modPlayer.loadedCharge - 15) / 135f;
 					damagelerper = MathHelper.Max(damagelerper, 0.5f);
-					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), (int)(damage * 4 * damagelerper), knockback, player.whoAmI, (float)Math.Sqrt(damagelerper));
+
+					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), (int)(damage * 4 * damagelerper), knockback, player.whoAmI, 1);
 
 					damagelerper = (float)Math.Sqrt(damagelerper);
+					damagelerper = 1;
 
 					modPlayer.loadedCharge = 20;
 					modPlayer.flipping = true;

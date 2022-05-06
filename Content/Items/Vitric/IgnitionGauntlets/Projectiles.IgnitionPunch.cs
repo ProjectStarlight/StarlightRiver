@@ -105,8 +105,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (owner.GetModPlayer<IgnitionPlayer>().charge < 150)
 				owner.GetModPlayer<IgnitionPlayer>().charge += 2;
 
-			Main.NewText(owner.GetModPlayer<IgnitionPlayer>().charge);
-
 			Projectile.penetrate += 2;
 			Projectile.timeLeft = 20;
 			Projectile.extraUpdates = 0;
@@ -134,7 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			/*Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade) * 0.7f, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)EaseFunction.EaseQuarticOut.Ease(fade), Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0f);
 			return false;
 		}
 	}
