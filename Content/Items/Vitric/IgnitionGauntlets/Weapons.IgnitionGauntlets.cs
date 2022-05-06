@@ -48,8 +48,20 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void HoldItem(Player player)
 		{
-			if (player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletChargeUI>()] == 0)
-				Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletChargeUI>(), 0, 0, player.whoAmI);
+			IgnitionPlayer modPlayer = player.GetModPlayer<IgnitionPlayer>();
+			Lighting.AddLight(player.Center, Color.OrangeRed.ToVector3() * modPlayer.charge / 150f * Main.rand.NextFloat());
+
+			if (Main.rand.NextBool(2) && modPlayer.potentialCharge == 0 && modPlayer.charge > 0)
+			{
+				Dust dust = Dust.NewDustPerfect(player.Center, ModContent.DustType<IgnitionChargeDustPassive>(), default, default, Color.OrangeRed);
+				dust.customData = player.whoAmI;
+				dust.scale = Main.rand.NextFloat(0.25f, 0.45f);
+				dust.alpha = Main.rand.Next(100);
+				if (modPlayer.charge >= 75)
+					dust.alpha += 100;
+				if (modPlayer.charge >= 150)
+					dust.alpha += 100;
+			}
 		}
 
 		public override bool AltFunctionUse(Player player) => true;

@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private bool front => Projectile.ai[0] == 0;
 
+		private bool fading = false;
+
 		private List<float> oldRotation = new List<float>();
 		private List<Vector2> oldPosition = new List<Vector2>();
 
@@ -32,7 +34,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private Vector2 posToBe = Vector2.Zero;
 
-		private float fade => Math.Min(1, Projectile.timeLeft / 7f);
+		private float fade => Math.Min(1, Projectile.timeLeft / 20f);
 
 		public override void SetStaticDefaults()
 		{
@@ -55,6 +57,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (!initialized)
 			{
+				oldRotation = new List<float>();
+				oldPosition = new List<Vector2>();
 				initialized = true;
 				Vector2 direction = owner.DirectionTo(Main.MouseWorld);
 				posToBe = owner.Center + (direction * 200);
@@ -72,8 +76,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (oldPosition.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
 				oldPosition.RemoveAt(0);
 
-			if (Projectile.timeLeft < 7)
+			if (Projectile.timeLeft == 2 && Projectile.extraUpdates != 0)
 			{
+				Projectile.penetrate += 2;
+				Projectile.timeLeft = 20;
+				Projectile.extraUpdates = 0;
+				Projectile.friendly = false;
+				Projectile.velocity = Vector2.Zero;
 				Projectile.friendly = false;
 			}
 			else
@@ -94,7 +103,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (owner.GetModPlayer<IgnitionPlayer>().charge < 150)
-				owner.GetModPlayer<IgnitionPlayer>().charge += 5;
+				owner.GetModPlayer<IgnitionPlayer>().charge += 2;
 
 			Main.NewText(owner.GetModPlayer<IgnitionPlayer>().charge);
 
@@ -116,8 +125,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			for (int k = 15; k > 0; k--)
 			{
 
-				float progress = (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length));
-				Color color = Color.White * progress * fade * 0.8f;
+				float progress = 1 - (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length));
+				Color color = Color.White * EaseFunction.EaseQuarticOut.Ease(progress) * EaseFunction.EaseQuarticOut.Ease(fade) * 0.2f;
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);
 			}
@@ -125,8 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			/*Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);*/
 
-			if (Projectile.extraUpdates != 0)
-				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * (float)Math.Sqrt(fade) * 0.7f, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}

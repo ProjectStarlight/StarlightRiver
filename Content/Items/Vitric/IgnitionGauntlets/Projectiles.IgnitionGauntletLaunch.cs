@@ -93,15 +93,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Player player = Main.player[Projectile.owner];
 				Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
-
 				if (Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Projectile.active && player.GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
-					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
-					handOffset = handOffset.RotatedBy(player.fullRotation);
-					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, new Color(255, 255, 255, 0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
-					Main.spriteBatch.End();
-
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;
 					Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 					Effect effect = Filters.Scene["ConicalNoise"].GetShader().Shader;
@@ -128,6 +121,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 
+					Main.spriteBatch.End();
+
+					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
+					handOffset = handOffset.RotatedBy(player.fullRotation);
+					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, new Color(255, 255, 255, 0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
 					Main.spriteBatch.End();
 				}
 			}
