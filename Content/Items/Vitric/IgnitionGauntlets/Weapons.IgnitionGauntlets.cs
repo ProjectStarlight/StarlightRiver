@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					proj.timeLeft = 50;
 					proj.extraUpdates = 3;
 
-					player.velocity *= -0.5f;
+					player.velocity *= -0.75f;
 					player.itemTime = player.itemAnimation = 20;
 					player.direction *= Math.Sign(player.Center.Y - Main.MouseWorld.Y);
 					player.GetModPlayer<StarlightPlayer>().Shake += (int)(12 * damagelerper);
