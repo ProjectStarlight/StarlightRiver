@@ -42,6 +42,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             Projectile.localAI[0] = (int)TotalTime;
             Projectile.timeLeft = (int)TotalTime + 50;
+            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
         }
 
         public override void AI()
@@ -54,11 +55,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float swingAccel = Utils.GetLerpValue(TotalTime * 0.18f, 0, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.18f, TotalTime * 0.02f, Projectile.localAI[0], true);
             //10 degree drop
             //30 degree lift
-            //170 degree swing to floor
+            //165 degree swing to floor
 
             float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(10), 0, dropLerp)
                 - MathHelper.Lerp(MathHelper.ToRadians(30), 0, liftLerp)
-                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(10), swingAccel);
+                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(15), swingAccel);
 
             Vector2 handleOffset;
             int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
@@ -85,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Projectile.localAI[0] == 0)
             {
-                Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.7f, 1.33f, Projectile.Center);
+                Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
                 for (int i = 0; i < 30; i++)
                 {
@@ -112,10 +113,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
         }
 
-
         public override void Kill(int timeLeft)
         {
-            Helpers.Helper.PlayPitched("GlassMinibossSword", 1f, 0.9f, Projectile.Center);
+            Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDustPerfect(Vector2.Lerp(origin, Projectile.Center, Main.rand.NextFloat()), DustType<Dusts.GlassGravity>());

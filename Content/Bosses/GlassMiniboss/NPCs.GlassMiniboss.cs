@@ -29,22 +29,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         //Phase tracking utils
         public enum PhaseEnum
         {
-            SpawnEffects = 0,
-            JumpToBackground = 1,
-            GauntletPhase = 2,
-            ReturnToForeground = 3,
-            DirectPhase = 4,
-            DeathAnimation = 5
+            SpawnEffects,
+            DespawnEffects,
+            JumpToBackground,
+            GauntletPhase,
+            ReturnToForeground,
+            DirectPhase,
+            DeathEffects
         }
 
         public enum AttackEnum
         {
-            None = 0,
-            Slash = 1,
-            Spinjitzu = 2,
-            Spears = 3,
-            Hammer = 4,
-            BigBrightBubble = 5,
+            None,
+            Jump,
+            SpinJump,
+            Slash,
+            SpinSlash,
+            Spears,
+            Hammer,
+            BigBrightBubble
         }
 
         public override void SetStaticDefaults()
@@ -60,8 +63,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            NPC.width = 110;
-            NPC.height = 92;
+            NPC.width = 82;
+            NPC.height = 75;
             NPC.lifeMax = 1500;
             NPC.damage = 20;
             NPC.aiStyle = -1;
@@ -91,6 +94,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             AttackTimer++;
+            if (NPC.life < 1)
+                NPC.life = 1;
 
             switch (Phase)
             {
@@ -138,11 +143,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.noGravity = false;
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
+                    const int maxAttacks = 4;
+
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
 
-                        if (AttackPhase > 3) 
+                        if (AttackPhase > maxAttacks) 
                             AttackPhase = 0;
 
                         attackVariant = Main.rand.NextBool();
@@ -151,11 +158,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: BigBrightBubble(); break;
-                        //case 1: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 0: Hammer(); break;
                         case 1: Spears(); break;
-                        case 2: BigBrightBubble(); break;
-                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 2: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 3: Spears(); break;
+                        case 4: BigBrightBubble(); break;
                     }
 
                     break;
@@ -197,6 +204,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackType)
                     {
+                        case (int)AttackEnum.Jump:
+                            frame.Y = 150;
+                            break;
+
+                        case (int)AttackEnum.SpinJump:
+                            frame.Y = 600;
+                            break;
+
                         case (int)AttackEnum.Spears:
 
                             if (AttackTimer < spearTime - spearSpawn)
@@ -206,9 +221,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         case (int)AttackEnum.Hammer:
 
                             float hammerTimer = AttackTimer - hammerSpawn + 5;
-                            if (AttackTimer < 61)
-                                frame.Y = 150;
-                            else if (hammerTimer <= hammerTime + 60)
+
+                            if (hammerTimer <= hammerTime + 60)
                             {
                                 frame.X = 136;
                                 frame.Width = 180;
@@ -238,8 +252,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                                     frame.Y = 450;
                                 else if (AttackTimer < bubbleRecoil)
                                     frame.Y = 150;
-                                else if (AttackTimer > bubbleRecoil && AttackTimer < bubbleRecoil + 50)
-                                    frame.Y = 600;
                             }
 
                             break;
@@ -249,7 +261,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             }
 
             Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
-            Vector2 drawPos = new Vector2(0, -24) - Main.screenPosition;
+            Vector2 drawPos = new Vector2(0, -35) - Main.screenPosition;
 
             Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);

@@ -3,8 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -25,15 +27,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.tileCollide = true;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 1f, Projectile.Center);
+        }
+
         public override void AI()
         {
-            Projectile.rotation = Projectile.ai[0] + MathHelper.PiOver2;
+            if (Projectile.velocity.Length() > 0.5f)
+                Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
             Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.1f);
 
             //acceleration
             if (Projectile.timeLeft < 80)
-                Projectile.velocity *= 1.15f;
+                Projectile.velocity *= 0.9f + (Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.3f);
 
             if (Projectile.timeLeft > 100)
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), DustType<Dusts.GlowFastDecelerate>(), newColor: Color.DarkOrange, Scale: 0.3f);
@@ -44,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
             Dust.NewDust(Projectile.Center - new Vector2(4), 8, 8, DustType<Dusts.GlassGravity>());
-            Projectile.velocity *= 0;
+            Projectile.velocity = Vector2.Zero;
             return false;
         }
 
@@ -62,17 +70,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, lightColor, Projectile.rotation, glassFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(66, 80, Projectile.timeLeft, true);
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(56, 70, Projectile.timeLeft, true);
             Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
+
+            DrawHotBall();
 
             //tell
             Asset<Texture2D> tell = TextureAssets.Extra[98];
-            float tellLength = Helpers.Helper.BezierEase(Utils.GetLerpValue(110, 85, Projectile.timeLeft, true)) * 8f;
-            Color tellFade = Color.OrangeRed * Utils.GetLerpValue(80, 110, Projectile.timeLeft, true);
+            float tellLength = Helpers.Helper.BezierEase(Utils.GetLerpValue(120, 70, Projectile.timeLeft, true)) * 8f;
+            Color tellFade = Color.OrangeRed * Utils.GetLerpValue(40, 110, Projectile.timeLeft, true);
             tellFade.A = 0;
-            Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, Projectile.rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.33f, tellLength), SpriteEffects.None, 0);
-
-            DrawHotBall();
+            Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, Projectile.ai[0] + MathHelper.PiOver2, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.4f, tellLength), SpriteEffects.None, 0);
 
             return false;
         }
@@ -83,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
             Rectangle ballFrame = hotBall.Frame(1, 3, 0, (int)(Projectile.localAI[0] * 0.5f % 3f));
 
-            float scale = Utils.GetLerpValue(150, 125, Projectile.timeLeft, true) * Utils.GetLerpValue(90, 110, Projectile.timeLeft, true);
+            float scale = Utils.GetLerpValue(150, 125, Projectile.timeLeft, true) * Utils.GetLerpValue(70, 90, Projectile.timeLeft, true);
 
             Main.EntitySpriteDraw(hotBall.Value, Projectile.Center - Main.screenPosition, ballFrame, new Color(255, 255, 255, 128), Projectile.rotation * 0.2f, ballFrame.Size() * 0.5f, scale, SpriteEffects.None, 0);
             Color bloomColor = Color.OrangeRed;
@@ -94,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void Kill(int timeLeft)
         {
-            Helpers.Helper.PlayPitched("GlassMinibossSword", 1f, 0.9f, Projectile.Center);
+            Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDustPerfect(Projectile.Center + new Vector2(0, Main.rand.Next(-40, 20)).RotatedBy(Projectile.rotation), DustType<Dusts.GlassGravity>());
