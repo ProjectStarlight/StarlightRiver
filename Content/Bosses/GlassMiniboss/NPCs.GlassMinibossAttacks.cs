@@ -31,13 +31,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         }
 
         //according to the targets position,
-        private Vector2 PickSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-510 * x, 40) : arenaPos + new Vector2(510 * x, 40); //picks the outer side.
+        private const int distX = 500;
+        private const int distY = 30;
+        private const int distShortX = 120;
+        private const int distShortY = -10;
 
-        private Vector2 PickCloseSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-140 * x, 0) : arenaPos + new Vector2(140 * x, 0); //picks the inner side.
+        private Vector2 PickSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distX * x, distY) : arenaPos + new Vector2(distX * x, distY); //picks the outer side.
 
-        private Vector2 PickSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(510 * x, 40) : arenaPos + new Vector2(-510 * x, 40); //picks the outer side.
+        private Vector2 PickCloseSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distShortX * x, -distShortY) : arenaPos + new Vector2(distShortX * x, -distShortY); //picks the inner side.
 
-        private Vector2 PickCloseSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(140 * x, 0) : arenaPos + new Vector2(-140 * x, 0); //picks the inner side.
+        private Vector2 PickSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distX * x, distY) : arenaPos + new Vector2(-distX * x, distY); //picks the outer side.
+
+        private Vector2 PickCloseSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distShortX * x, -distShortY) : arenaPos + new Vector2(-distShortX * x, -distShortY); //picks the inner side.
 
         private int Direction => NPC.Center.X > arenaPos.X ? -1 : 1;
 
@@ -71,26 +76,31 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             }
         }
 
+        private int jumpStart;
+        private int jumpEnd;
+
         private void JumpToTarget(int timeStart, int timeEnd, float yStrength = 1f)
         {
             AttackType = (int)AttackEnum.Jump;
+            jumpStart = timeStart;
+            jumpEnd = timeEnd;
+
             float progress = Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true);
 
             if (AttackTimer <= timeStart)
                 moveStart = NPC.position;
             if (AttackTimer == timeStart + 1)
-                NPC.velocity.Y = -(10f + ((NPC.Center.Y - moveTarget.Y) / 64f)) * yStrength;
+                NPC.velocity.Y = -(10f - ((float)Math.Abs(moveStart.Y - moveTarget.Y) / 32f)) * yStrength;
 
             if (progress <= 0.6f)
-            {
-                NPC.velocity.X = (moveStart.X - moveTarget.X) * -0.015f;
                 moveStart.X += NPC.velocity.X * 0.15f;
-            }
             else
                 NPC.velocity.Y += progress * progress * 0.7f;
 
             if (AttackTimer >= timeStart && AttackTimer <= timeEnd)
                 NPC.position.X = MathHelper.SmoothStep(moveStart.X, moveTarget.X, progress) - (NPC.width / 2f);
+            else
+                NPC.velocity.X *= 0.01f;
         }
 
         private void SpinJumpToTarget(int timeStart, int timeEnd, float totalRotations = 5, int direction = 1)
@@ -137,7 +147,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer > 1 && AttackTimer < 20)
                 NPC.velocity.Y = -Helpers.Helper.SwoopEase(Utils.GetLerpValue(0, 15, AttackTimer, true)) * 2f;
 
-            moveTarget.X = MathHelper.Lerp(moveTarget.X, Target.Center.X, 0.005f);
+            moveTarget.X = MathHelper.Lerp(moveTarget.X, Target.Center.X, 0.002f);
 
             if (AttackTimer > 10 && AttackTimer < 210 + (spearCount * betweenSpearTime))
             {
@@ -153,10 +163,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.FaceTarget();
                 float whatSpear = (AttackTimer - spearSpawn) / spearCount;
 
-                Vector2 staffPos = NPC.Center + new Vector2(28 * NPC.direction, -92).RotatedBy(NPC.rotation);
-                Vector2 spearTarget = PickCloseSide(-1) + new Vector2(whatSpear * 100 * NPC.direction, 40);
-                Vector2 spearVel = new Vector2(5f * NPC.direction, 3f).RotatedBy(whatSpear * 4f);
-                float angle = (staffPos).AngleTo(spearTarget - (spearVel * 5f));
+                Vector2 staffPos = NPC.Center + new Vector2(32 * NPC.direction, -100).RotatedBy(NPC.rotation);
+                Vector2 spearTarget = arenaPos + new Vector2(whatSpear * 130 * NPC.direction, 40);
+                Vector2 spearVel = new Vector2(Main.rand.NextFloat(9, 12) * NPC.direction, 3f).RotatedBy(whatSpear * 4f);
+                float angle = (staffPos).AngleTo(spearTarget - (spearVel * 2f));
 
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, spearVel, ProjectileType<GlassSpear>(), 30, 1, Main.myPlayer, angle);
             }
@@ -177,14 +187,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 moveStart = NPC.Center;
             }
 
-            if (AttackTimer > 1 && AttackTimer < 80)
+            if (AttackTimer > 1 && AttackTimer <= 75)
             {
                 JumpToTarget(5, 75);
+                NPC.velocity.X = Direction;
                 NPC.direction = Direction;
             }
 
             if (!(AttackTimer > 70 && AttackTimer < 100))
-                NPC.velocity.X *= 0.9f;
+                NPC.velocity.X *= 0.8f;
 
             if (AttackTimer == hammerSpawn)
                 hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI, hammerTime);
@@ -207,14 +218,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 moveStart = NPC.Center;
             }
 
-            if (AttackTimer > 1 && AttackTimer < 80)
+            if (AttackTimer > 1 && AttackTimer <= 75)
             {
                 JumpToTarget(5, 75);
+                                NPC.velocity.X = Direction;
                 NPC.direction = Direction;
             }
 
             if (!(AttackTimer > 70 && AttackTimer < 100))
-                NPC.velocity.X *= 0.9f;
+                NPC.velocity.X *= 0.8f;
 
             if (AttackTimer == hammerSpawn)
                 hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI, hammerTime);
@@ -232,13 +244,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 NPC.TargetClosest();
                 moveStart = NPC.Center;
-                moveTarget = arenaPos - new Vector2(0, -200);
+                moveTarget = PickCloseSideSelf();
             }
 
-            if (AttackTimer < 75)
+            if (AttackTimer <= 70)
             {
                 NPC.direction = NPC.velocity.X < 0 ? -1 : 1;
-                JumpToTarget(2, 70);
+                JumpToTarget(1, 70);
             }
 
             NPC.noGravity = AttackTimer > 75 && AttackTimer < bubbleRecoil;
@@ -247,17 +259,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == 80)
             {
-                bubbleIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassBubble>(), 50, 2f, Main.myPlayer, 0, NPC.whoAmI);
+                NPC.direction = Direction;
+                bubbleIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, Vector2.Zero, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI);
                 NPC.velocity.Y -= 4f;
-                NPC.velocity.X = 0;
             }
 
             if (AttackTimer <= 300 && AttackTimer > 80)
             {
                 Main.projectile[bubbleIndex].Center = staffPos + (Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true));
-                NPC.velocity *= 0.93f;
+                NPC.velocity *= 0.87f;
                 NPC.velocity.Y -= 0.01f;
-                NPC.velocity.X += NPC.DirectionTo(moveTarget).X * 0.01f;
             }
 
             if (AttackTimer == 300)
@@ -265,31 +276,37 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer > 300 && AttackTimer < bubbleRecoil - 1)
             {
-                NPC.FaceTarget();
-                Vector2 target = Vector2.Lerp(Target.Center, PickSide(-1), 0.7f);
-                if (AttackTimer < bubbleRecoil - 35)
+                Vector2 target = Vector2.Lerp(Target.Center, PickSideSelf(-1), 0.8f);
+                if (AttackTimer < bubbleRecoil - 20)
                 {
-                    if (AttackTimer > bubbleRecoil - 40)
+                    if (AttackTimer > bubbleRecoil - 30)
                         NPC.Center += new Vector2(10, 0).RotatedBy(NPC.AngleTo(moveTarget));
                     else
                         NPC.Center = Vector2.Lerp(NPC.Center, moveTarget - new Vector2(120, 0).RotatedBy(moveTarget.AngleTo(target)), 0.05f);
                 }
-                else if (AttackTimer == bubbleRecoil - 30)
-                    HitBubble(NPC.AngleTo(PickSide(-1)).ToRotationVector2());
+                else if (AttackTimer == bubbleRecoil - 20)
+                    HitBubble(NPC.AngleTo(target).ToRotationVector2());
 
-                //NPC.rotation = Helpers.Helper.BezierEase(Utils.GetLerpValue(360, 395, AttackTimer, true)) * (NPC.AngleTo(moveTarget)- MathHelper.PiOver2);
+                NPC.FaceTarget();
+
+                NPC.rotation = (float)Math.Pow(Utils.GetLerpValue(390, bubbleRecoil - 20, AttackTimer, true), 2) * MathHelper.TwoPi * 4f * NPC.direction;
             }
 
             if (AttackTimer == bubbleRecoil - 1)
-                moveTarget = PickSideSelf(-1);
+            {
+                moveTarget = PickSideSelf();
+                moveStart = NPC.Center;
+            }
  
             if (AttackTimer > bubbleRecoil - 1)
             {
                 if (AttackTimer <= bubbleRecoil + 50)
-                    SpinJumpToTarget(bubbleRecoil, bubbleRecoil + 50, 10, -1);
-                
-                NPC.velocity.X *= 0.87f;
-                NPC.FaceTarget();
+                    SpinJumpToTarget(bubbleRecoil, bubbleRecoil + 50, 3, -1);
+                else
+                {
+                    NPC.velocity.X *= 0.87f;
+                    NPC.FaceTarget();
+                }
             }
 
             if (AttackTimer > 630)
@@ -299,7 +316,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private void HitBubble(Vector2 direction)
         {
             Projectile bubble = Main.projectile[bubbleIndex];
-            float speed = 4f;
+            float speed = 4.77f;
             if (Main.projectile.IndexInRange(bubbleIndex))
             {
                 if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
@@ -307,7 +324,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
                     bubble.velocity = direction * speed;
-                    bubble.ai[0] = 1;
+                    bubble.ai[1] = 1;
                 }
             }
         }

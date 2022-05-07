@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPCID.Sets.TrailingMode[Type] = 1;
         }
 
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.GlassMiniboss + "Glassweaver";
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
 
@@ -83,7 +83,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool CheckDead()
         {
             StarlightWorld.Flag(WorldFlags.DesertOpen);
-            return true;
+
+            NPC.life = 1;
+            NPC.dontTakeDamage = true;
+
+            return false;
         }
 
         private void SetPhase(PhaseEnum phase)
@@ -94,8 +98,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             AttackTimer++;
-            if (NPC.life < 1)
-                NPC.life = 1;
 
             switch (Phase)
             {
@@ -158,10 +160,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Hammer(); break;
-                        case 1: Spears(); break;
-                        case 2: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 3: Spears(); break;
+                        case 0: Spears(); break;
+                        case 1: BigBrightBubble(); break;
+                        case 2: BigBrightBubble(); break;
+                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
                         case 4: BigBrightBubble(); break;
                     }
 
@@ -179,6 +181,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             attackVariant = reader.ReadBoolean();
         }
 
+        //i hate this specific thing right here
         public override ModNPC Clone(NPC npc)
         {
             var newNPC = base.Clone(npc) as GlassMiniboss;
@@ -192,11 +195,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMiniboss");
-            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassMinibossGlow");
+            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "Glassweaver");
+            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassweaverGlow");
 
             Rectangle frame = weaver.Frame(1, 5, 0, 0);
-            frame.Width = 136;
+            frame.Width = 144;
+
+            const int frameHeight = 152;
 
             switch (Phase)
             {
@@ -205,17 +210,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     switch (AttackType)
                     {
                         case (int)AttackEnum.Jump:
-                            frame.Y = 150;
+
+                            bool goodVelocity = Math.Abs(NPC.velocity.Y) > 1;
+                            float jT = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
+                            bool inTimeRange = jT < 0.7f && jT > 0.3f;
+                            if (inTimeRange || goodVelocity)
+                                frame.Y = frameHeight;
+
                             break;
 
                         case (int)AttackEnum.SpinJump:
-                            frame.Y = 600;
+
+                            frame.Y = frameHeight * 4;
+
                             break;
 
                         case (int)AttackEnum.Spears:
 
                             if (AttackTimer < spearTime - spearSpawn)
-                                frame.Y = 300;
+                                frame.Y = frameHeight * 2;
                             break;
 
                         case (int)AttackEnum.Hammer:
@@ -224,7 +237,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             if (hammerTimer <= hammerTime + 60)
                             {
-                                frame.X = 136;
+                                frame.X = 144;
                                 frame.Width = 180;
 
                                 if (hammerTimer <= hammerTime * 0.87f)
@@ -232,27 +245,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                                     frame.Y = 0;
                                     bool secFrame = (hammerTimer >= hammerTime * 0.33f) && (hammerTimer < hammerTime * 0.66f);
                                     if (secFrame)
-                                        frame.Y = 150;
+                                        frame.Y = frameHeight;
                                 }
                                 else
                                 {
                                     float swingTime = Utils.GetLerpValue(hammerTime * 0.87f, hammerTime * 0.98f, hammerTimer, true);
-                                    frame.Y = 150 + (150 * (int)(1f + (swingTime * 2f)));
+                                    frame.Y = frameHeight + (frameHeight * (int)(1f + (swingTime * 2f)));
                                 }
                             }
                             break;
 
                         case (int)AttackEnum.BigBrightBubble:
 
-                            if (AttackTimer < 55)
-                                frame.Y = 150;
-                            else
-                            {
-                                if (AttackTimer < 330)
-                                    frame.Y = 450;
-                                else if (AttackTimer < bubbleRecoil)
-                                    frame.Y = 150;
-                            }
+                            if (AttackTimer < 330)
+                                frame.Y = frameHeight * 3;
+                            else if (AttackTimer < bubbleRecoil - 60)
+                                frame.Y = frameHeight;
+                            else if (AttackTimer < bubbleRecoil + 10)
+                                frame.Y = frameHeight * 4;
 
                             break;
                     }
