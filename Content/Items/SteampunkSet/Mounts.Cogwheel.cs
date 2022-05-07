@@ -82,6 +82,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void UpdateEffects(Player player)
 		{
+			MountData.heightBoost = 52;
+			MountData.yOffset = 14;
+			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(4 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
 			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += player.GetModPlayer<CogwheelPlayer>().climbing ? (player.velocity.Y * Math.Sign(player.GetModPlayer<CogwheelPlayer>().oldSpeed)) / -40f : player.velocity.X / 40f;
 		}
 
@@ -98,8 +101,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Texture2D platformTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount").Value;
 				Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Wheel").Value;
 				var drawPos = drawPosition;
-				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
-				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, (platformTex.Size() / 2) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17 + (int)(4 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, (platformTex.Size() / 2) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
 			}
 
 			// by returning true, the regular drawing will still happen.
