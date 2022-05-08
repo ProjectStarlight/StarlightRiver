@@ -45,9 +45,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            Projectile.rotation += Projectile.velocity.X * 0.05f;
-            Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
-
             Timer++;
 
             if (Timer < 180)
@@ -57,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.velocity = Vector2.Zero;
             }
 
-            Projectile.tileCollide = Projectile.ai[1] <= 0;
+            Projectile.tileCollide = Projectile.ai[1] > 0;
 
             if (Projectile.localAI[1] > 0)
                 Projectile.localAI[1]--;
@@ -65,7 +62,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.ai[1] == 1)
             {
                 if (Timer < explosionTime - 30)
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 3f, 0.05f);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.01f);
                 else
                 {
                     if (Timer <= explosionTime + 20)
@@ -84,21 +81,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Timer > explosionTime + 100)
                 Explode();
+
+            Projectile.rotation += Projectile.velocity.X * 0.05f;
+            Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
+
+            Lighting.AddLight(Projectile.Center, Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true)).ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 4;
+            if (Timer < explosionTime + 100 && Projectile.ai[1] == 1)
+            {
+                Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 4;
 
-            if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
-                Projectile.velocity.X = -oldVelocity.X * 1.05f;
+                if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
+                    Projectile.velocity.X = -oldVelocity.X * 1.05f;
 
-            if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
-                Projectile.velocity.Y = -oldVelocity.Y * 1.05f;
+                if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
+                    Projectile.velocity.Y = -oldVelocity.Y * 1.05f;
 
-            Projectile.velocity = Projectile.velocity.RotatedByRandom(0.1f);
-            Projectile.localAI[1] += 4;
+                Projectile.velocity = Projectile.velocity.RotatedByRandom(0.1f);
+                Projectile.localAI[1] += 2;
+            }
 
             if (Timer < explosionTime)
                 Timer = explosionTime;
@@ -108,14 +113,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if (Timer < explosionTime)
-                Timer = explosionTime;
-            if (Projectile.localAI[1] == 0)
+            if (Projectile.ai[1] == 1)
             {
-                Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 3;
-                Projectile.velocity += Projectile.DirectionFrom(target.Center) * 7.77f;
-                Projectile.localAI[1] += 8;
+                if (Timer < explosionTime)
+                    Timer = explosionTime;
+                if (Projectile.localAI[1] == 0 && Timer < explosionTime + 100)
+                {
+                    Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
+                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 3;
+                    Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
+                    Projectile.localAI[1] += 30;
+                }
             }
         }
 
@@ -171,9 +179,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             //shine
             Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
             Color shine = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true))
-                * Utils.GetLerpValue(130, 250, Timer, true) * Utils.GetLerpValue(explosionTime + 60, explosionTime + 100, Timer, true) * 0.8f;
+                * Utils.GetLerpValue(120, 210, Timer, true) * Utils.GetLerpValue(explosionTime + 70, explosionTime + 100, Timer, true);
             shine.A = 0;
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
 
         }
 
@@ -189,13 +197,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void DrawVignette()
         {
-            float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(explosionTime + 105, explosionTime + 80, Timer, true);
+            float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(explosionTime + 105, explosionTime + 90, Timer, true);
             Asset<Texture2D> dark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack");
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 8; i++)
             {
-                float rotation = MathHelper.TwoPi / 5 * i;
+                float rotation = MathHelper.TwoPi / 8 * i;
                 Vector2 pos = Projectile.Center + new Vector2(90, 0).RotatedBy(rotation);
-                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.5f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
+                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.33f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
             }
         }
 

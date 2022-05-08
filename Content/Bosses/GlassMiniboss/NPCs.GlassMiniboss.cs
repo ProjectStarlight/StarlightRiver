@@ -145,7 +145,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.noGravity = false;
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
-                    const int maxAttacks = 4;
+                    const int maxAttacks = 7;
 
                     if (AttackTimer == 1)
                     {
@@ -160,11 +160,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: Spears(); break;
-                        case 1: BigBrightBubble(); break;
-                        case 2: BigBrightBubble(); break;
-                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 4: BigBrightBubble(); break;
+                        //case 0: Spears(); break;//slash
+                        //case 1: Spears(); break;//thrust
+                        //case 2: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 3: Spears(); break;
+                        //case 4: Spears(); break;//slash or bigger variant
+                        //case 5: BigBrightBubble(); break;//spin
+                        //case 6: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 7: Spears(); break;
+                        default: if (attackVariant) Hammer(); else HammerVariant(); break;
                     }
 
                     break;
@@ -199,9 +203,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassweaverGlow");
 
             Rectangle frame = weaver.Frame(1, 5, 0, 0);
+            frame.X = 0;
             frame.Width = 144;
 
             const int frameHeight = 152;
+
+            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
+            Vector2 drawPos = new Vector2(0, -35) - Main.screenPosition;
 
             switch (Phase)
             {
@@ -211,10 +219,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         case (int)AttackEnum.Jump:
 
-                            bool goodVelocity = Math.Abs(NPC.velocity.Y) > 1;
-                            float jT = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
-                            bool inTimeRange = jT < 0.7f && jT > 0.3f;
-                            if (inTimeRange || goodVelocity)
+                            float jumpProgress = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
+                            if (jumpProgress < 0.66f || Math.Abs(NPC.velocity.Y) > 1f)
                                 frame.Y = frameHeight;
 
                             break;
@@ -227,7 +233,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                         case (int)AttackEnum.Spears:
 
-                            if (AttackTimer < spearTime - spearSpawn)
+                            if (AttackTimer < spearTime - spearSpawn + 10)
                                 frame.Y = frameHeight * 2;
                             break;
 
@@ -235,7 +241,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             float hammerTimer = AttackTimer - hammerSpawn + 5;
 
-                            if (hammerTimer <= hammerTime + 60)
+                            if (hammerTimer <= hammerTime + 55 && AttackTimer > 50)
                             {
                                 frame.X = 144;
                                 frame.Width = 180;
@@ -257,21 +263,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                         case (int)AttackEnum.BigBrightBubble:
 
-                            if (AttackTimer < 330)
-                                frame.Y = frameHeight * 3;
-                            else if (AttackTimer < bubbleRecoil - 60)
-                                frame.Y = frameHeight;
-                            else if (AttackTimer < bubbleRecoil + 10)
-                                frame.Y = frameHeight * 4;
+                            if (AttackTimer > 50)
+                            {
+                                if (AttackTimer < 330)
+                                    frame.Y = frameHeight * 3;
+                                else if (AttackTimer < bubbleRecoil - 60)
+                                    frame.Y = frameHeight;
+                                else if (AttackTimer < bubbleRecoil + 10)
+                                    frame.Y = frameHeight * 4;
+                            }
 
                             break;
                     }
 
                     break;
             }
-
-            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
-            Vector2 drawPos = new Vector2(0, -35) - Main.screenPosition;
 
             Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);

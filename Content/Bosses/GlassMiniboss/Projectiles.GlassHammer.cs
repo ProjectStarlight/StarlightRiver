@@ -52,30 +52,30 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             float dropLerp = Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.5f, Projectile.localAI[0], true);
             float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.15f, Projectile.localAI[0], true));
-            float swingAccel = Utils.GetLerpValue(TotalTime * 0.18f, 0, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.18f, TotalTime * 0.02f, Projectile.localAI[0], true);
+            float swingAccel = Utils.GetLerpValue(TotalTime * 0.16f, 0, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.16f, TotalTime * 0.02f, Projectile.localAI[0], true);
             //10 degree drop
             //30 degree lift
-            //165 degree swing to floor
+            //160 degree swing to floor
 
             float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(10), 0, dropLerp)
                 - MathHelper.Lerp(MathHelper.ToRadians(30), 0, liftLerp)
-                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(15), swingAccel);
+                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(20), swingAccel);
 
             Vector2 handleOffset;
             int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
             switch (handleFrame)
             {
                 default:
-                    handleOffset = new Vector2(-25, 5);
+                    handleOffset = new Vector2(-28, 2);
                     break;
                 case 1:
-                    handleOffset = new Vector2(10, -15);
+                    handleOffset = new Vector2(40, 5);
                     break;
                 case 2:
-                    handleOffset = new Vector2(32, -20);
+                    handleOffset = new Vector2(42, 7);
                     break;
                 case 3:
-                    handleOffset = new Vector2(48, 8);
+                    handleOffset = new Vector2(48, 9);
                     break;
             }
             handleOffset.X *= Parent.direction;
