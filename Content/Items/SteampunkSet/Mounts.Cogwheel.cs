@@ -193,15 +193,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.NewProjectile(Player.GetSource_None(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CogwheelHitbox>(), 15, 2, Player.whoAmI);
 
 			Vector2 dustPos = Player.Center + new Vector2(Player.velocity.X * 2, 64);
+			Vector2 direction = new Vector2(Player.direction, 0);
 			if (climbing)
 			{
+				direction = new Vector2(0, -1);
 				dustPos = Player.Center + new Vector2(Player.direction * 15, 25 + (Player.velocity.Y * 1));
 			}
 			if ((Player.velocity.X == 0 && climbing) || Player.velocity.Y == 0)
 			{
 				for (int j = 0; j < Player.velocity.Length() * 0.05f; j++)
 				{
-					Vector2 direction = Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f).RotatedBy(1.57f + (0.6f * Player.direction));
+					direction = Vector2.Normalize(-direction).RotatedByRandom(0.6f).RotatedBy(1.57f + (0.6f * Player.direction));
 					Dust.NewDustPerfect(dustPos + new Vector2(0, 15), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 5), 0, new Color(255, 255, 60) * 0.8f, 1.3f);
 				}
 			}
