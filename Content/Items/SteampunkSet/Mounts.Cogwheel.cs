@@ -82,15 +82,26 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void UpdateEffects(Player player)
 		{
+			CogwheelPlayer modPlayer = player.GetModPlayer<CogwheelPlayer>();
 			MountData.heightBoost = 52;
 			MountData.yOffset = 14;
-			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(4 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
-			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += player.GetModPlayer<CogwheelPlayer>().climbing ? (player.velocity.Y * Math.Sign(player.GetModPlayer<CogwheelPlayer>().oldSpeed)) / -40f : player.velocity.X / 40f;
+			MountData.bodyFrame = 0;
+			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(2 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
+			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += modPlayer.climbing ? (player.velocity.Y * Math.Sign(modPlayer.oldSpeed)) / -40f : player.velocity.X / 40f;
+
+			modPlayer.armLerper = EaseFunction.EaseQuadIn.Ease(0.5f + (0.5f * (float)Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 1.1f)));
 		}
 
 		public override void SetMount(Player player, ref bool skipDust)
 		{
+			for (int j = 0; j < 17; j++)
+			{
+				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
+				Dust.NewDustPerfect((player.Center + (direction * 6) + new Vector2(0, 40)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f); 
+			}
+			skipDust = true;
 			player.mount._mountSpecificData = new CogWheelSpecificData();
+
 		}
 
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
@@ -100,9 +111,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				Texture2D platformTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount").Value;
 				Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Wheel").Value;
+				Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Base").Value;
 				var drawPos = drawPosition;
-				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
-				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17 + (int)(4 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, (platformTex.Size() / 2) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(baseTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, ((baseTex.Size() / 2) / new Vector2(1, 3)) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17 + (int)(1 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, ((platformTex.Size() / 2) / new Vector2(1, 3)) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
 			}
 
 			// by returning true, the regular drawing will still happen.
@@ -133,6 +146,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public float oldSpeed;
 
+		public float armLerper;
+
 		public static float Acceleration = 0.17f;
 		public static int RunSpeed = 11;
 
@@ -145,6 +160,34 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
 			if (!mounted)
 				return;
+
+			Vector2 dustPos = Player.Center + new Vector2(Player.velocity.X * 2, 64);
+			if (climbing)
+			{
+				dustPos = Player.Center + new Vector2(Player.direction * 15, 25 + (Player.velocity.Y * 1));
+			}
+			if ((Player.velocity.X == 0 && climbing) || Player.velocity.Y == 0)
+			{
+				for (int j = 0; j < Player.velocity.Length() * 0.05f; j++)
+				{
+					Vector2 direction = Vector2.Normalize(-Player.velocity).RotatedByRandom(0.6f).RotatedBy(1.57f + (0.6f * Player.direction));
+					Dust.NewDustPerfect(dustPos + new Vector2(0, 15), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 5), 0, new Color(255, 255, 60) * 0.8f, 1.3f);
+				}
+			}
+
+			if (oldSpeed == 0)
+            {
+				if (Player.controlLeft)
+					oldSpeed = -0.01f;
+				if (Player.controlRight)
+					oldSpeed = 0.01f;
+			}
+
+			if (Player.itemAnimation == 0 && Player.velocity.Length() > 1)
+			{
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(5, 5.4f, armLerper) * Player.direction);
+				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(1.4f, 1f, armLerper) * Player.direction);
+			}
 
 			Player.fullRotationOrigin = new Vector2(Player.Size.X / 2, Player.Size.Y + 17);
 			Player.fullRotation = (float)Math.Sqrt(Math.Abs(climbing ? Player.velocity.Y : Player.velocity.X)) * 0.025f * Math.Sign(oldSpeed);
@@ -162,11 +205,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				if (climbing)
                 {
-					Player.velocity.Y = 0;
-					if (Player.controlLeft)
+					Player.velocity.Y *= 0.75f;
+					/*if (Player.controlLeft)
 						Player.velocity.X = climbSpeed;
 					else if (Player.controlRight)
-						Player.velocity.X = -climbSpeed;
+						Player.velocity.X = -climbSpeed;*/
 				}
 				else
                 {
