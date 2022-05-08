@@ -38,7 +38,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 0;
-			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
+			Item.rare = ItemRarityID.Green;
 			Item.shoot = ModContent.ProjectileType<RebarProj>();
 			Item.shootSpeed = 25f;
 			Item.autoReuse = true;

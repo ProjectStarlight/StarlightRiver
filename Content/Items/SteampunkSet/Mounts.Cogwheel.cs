@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Cogwheel");
-			Tooltip.SetDefault("Egshels update this lol");
+			Tooltip.SetDefault("Summons a ridable Cogwheel mount");
 		}
 
 		public override void SetDefaults() {
@@ -28,8 +28,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.height = 30;
 			Item.useTime = 20;
 			Item.useAnimation = 20;
-			Item.useStyle = ItemUseStyleID.Swing; 
-			Item.value = Item.sellPrice(gold: 3);
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.rare = ItemRarityID.Green;
 			Item.UseSound = SoundID.Item79; 
 			Item.noMelee = true; 
@@ -77,15 +77,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			MountData.xOffset = 0;
 			MountData.yOffset = 14;
 			MountData.bodyFrame = 0;
-			MountData.playerHeadOffset = 0;
+			MountData.playerHeadOffset = 52;
 		}
 
-		public override void UpdateEffects(Player player)
+        public override void Dismount(Player player, ref bool skipDust)
+        {
+			for (int j = 0; j < 17; j++)
+			{
+				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
+				Dust.NewDustPerfect((player.Center + (direction * 6) + new Vector2(0, 40)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+			}
+			skipDust = true;
+        }
+        public override void UpdateEffects(Player player)
 		{
 			CogwheelPlayer modPlayer = player.GetModPlayer<CogwheelPlayer>();
-			MountData.heightBoost = 52;
-			MountData.yOffset = 14;
-			MountData.bodyFrame = 0;
 			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(2 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
 			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += modPlayer.climbing ? (player.velocity.Y * Math.Sign(modPlayer.oldSpeed)) / -40f : player.velocity.X / 40f;
 
@@ -126,9 +132,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
-		public CogwheelBuff() : base("Cogwheel", "Egshels update this lol", false) { }
+		public CogwheelBuff() : base("Cogwheel", "They see me rollin'", false, true) { }
 
-		public override void Update(Player player, ref int buffIndex)
+        public override void SafeSetDetafults()
+        {
+			Main.buffNoTimeDisplay[Type] = true;
+        }
+        public override void Update(Player player, ref int buffIndex)
 		{
 			player.mount.SetMount(ModContent.MountType<CogwheelMount>(), player);
 			player.buffTime[buffIndex] = 10; // reset buff time
@@ -151,6 +161,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public static float Acceleration = 0.17f;
 		public static int RunSpeed = 11;
 
+		private bool rotationReset = true;
+
         public override void ResetEffects()
         {
 			mounted = false;
@@ -159,7 +171,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void PostUpdate()
         {
 			if (!mounted)
+			{
+				if (!rotationReset)
+                {
+					Player.fullRotationOrigin = new Vector2(Player.Size.X / 2, Player.Size.Y / 2);
+					Player.fullRotation = 0;
+					rotationReset = true;
+				}
 				return;
+			}
+			rotationReset = false;
+
+			if (Player.ownedProjectileCounts[ModContent.ProjectileType<CogwheelHitbox>()] == 0 && !Player.dead)
+				Projectile.NewProjectile(Player.GetSource_None(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CogwheelHitbox>(), 15, 2, Player.whoAmI);
 
 			Vector2 dustPos = Player.Center + new Vector2(Player.velocity.X * 2, 64);
 			if (climbing)
@@ -219,6 +243,65 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				climbing = false;
 			}
 			base.PostUpdate();
+        }
+    }
+
+	public class CogwheelCollisionGNPC : GlobalNPC
+    {
+        public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
+        {
+			CogwheelPlayer modPlayer = target.GetModPlayer<CogwheelPlayer>();
+			if (modPlayer.mounted && !(npc.Hitbox.Intersects(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height - 34))))
+				return false;
+            return base.CanHitPlayer(npc, target, ref cooldownSlot);
+        }
+    }
+	public class CogwheelHitbox : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+
+		private Player Player => Main.player[Projectile.owner];
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Cogwheel");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 34;
+			Projectile.height = 34;
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 700;
+			Projectile.tileCollide = false;
+			Projectile.hide = true;
+		}
+
+        public override void AI()
+        {
+			CogwheelPlayer modPlayer = Player.GetModPlayer<CogwheelPlayer>();
+
+			if (modPlayer.mounted && !Player.dead)
+			{
+				Projectile.Center = Player.Bottom - new Vector2(0, 17);
+			}
+			else
+				Projectile.active = false;
+        }
+
+        public override bool? CanHitNPC(NPC target)
+        {
+			if (Player.velocity.Length() < 1)
+				return false;
+            return base.CanHitNPC(target);
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			hitDirection = Math.Sign(Player.direction);
+            base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
     }
 }
