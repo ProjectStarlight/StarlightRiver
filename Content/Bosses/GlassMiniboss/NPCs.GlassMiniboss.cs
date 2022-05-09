@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.knockBackResist = 0;
             NPC.boss = true;
             NPC.defense = 14;
-            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+            //Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)

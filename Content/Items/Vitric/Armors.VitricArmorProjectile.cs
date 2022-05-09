@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 
             if(State == 0)
-                spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, VitricSummonOrb.MoltenGlow(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
+                spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, Helper.MoltenVitricGlow(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
 
             if (State == 1)
                 spriteBatch.Draw(texHot, Projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), Projectile.rotation, texHot.Size() / 2, Projectile.scale, 0, 0);

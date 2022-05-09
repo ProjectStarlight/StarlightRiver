@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Dusts
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			return VitricSummonOrb.MoltenGlow(dust.fadeIn * 3);
+			return Helpers.Helper.MoltenVitricGlow(dust.fadeIn * 3);
         }
 	}
 

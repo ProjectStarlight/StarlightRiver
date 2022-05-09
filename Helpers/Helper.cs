@@ -71,6 +71,16 @@ namespace StarlightRiver.Helpers
             return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / (maxRadius - minRadius)));
 		}
 
+        public static Color MoltenVitricGlow(float time)
+        {
+            Color MoltenGlowc = Color.White;
+            if (time > 30 && time < 60)
+                MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f, 1f));
+            else if (time >= 60)
+                MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
+            return MoltenGlowc;
+        }
+
         /// <summary>
         /// determines if an NPC is "fleshy" based on it's hit sound
         /// </summary>
@@ -487,6 +497,62 @@ namespace StarlightRiver.Helpers
             }
 
             return Point16.Zero;
+        }
+
+        //adapted from deerclops
+        public static int FindBestAnchorY(Point center, Vector2 targetPos)
+        {
+            int result = center.Y;
+
+            int direction = Math.Sign((int)(targetPos.Y / 16f) - result);
+            int targAnchorY = (int)(targetPos.Y / 16f) + direction * 15;
+            int? resAnchorY = null;
+            float maxDistance = float.PositiveInfinity;
+            for (int i = result; i != targAnchorY; i += direction)
+            {
+                if (WorldGen.ActiveAndWalkableTile(center.X, i))
+                {
+                    float distanceToTarget = new Point(center.X, i).ToWorldCoordinates().Distance(targetPos);
+                    if (!resAnchorY.HasValue || !(distanceToTarget >= maxDistance))
+                    {
+                        resAnchorY = i;
+                        maxDistance = distanceToTarget;
+                    }
+                }
+            }
+
+            if (resAnchorY.HasValue)
+                result = resAnchorY.Value;
+
+            for (int j = 0; j < 20; j++)
+            {
+                if (result < 10)
+                    break;
+
+                if (!WorldGen.SolidTile(center.X, result))
+                    break;
+                result--;
+            }
+
+            for (int k = 0; k < 20; k++)
+            {
+                if (result > Main.maxTilesY - 10)
+                    break;
+
+                if (WorldGen.ActiveAndWalkableTile(center.X, result))
+                    break;
+
+                result++;
+            }
+
+            return result;
+        }
+
+        public static Vector2 QuickBestPosition(Vector2 center, Vector2 target)
+        {
+            int goodY = FindBestAnchorY(center.ToTileCoordinates(), target) * 16 - 8;
+            Vector2 result = new Vector2(center.X, goodY);
+            return result;
         }
     }
 }
