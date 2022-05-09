@@ -218,8 +218,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			if (Player.itemAnimation == 0 && Player.velocity.Length() > 1)
 			{
-				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(5, 5.4f, armLerper) * Player.direction);
-				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(1.4f, 1f, armLerper) * Player.direction);
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(6.11f, 6.28f, armLerper) - (0.13f * MathHelper.Min(Player.velocity.Length(), 11)) * Player.direction);
+				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(0.17f, 0f, armLerper) + (0.13f * MathHelper.Min(Player.velocity.Length(), 11)) * Player.direction);
 			}
 
 			Player.fullRotationOrigin = new Vector2(Player.Size.X / 2, Player.Size.Y + 17);
