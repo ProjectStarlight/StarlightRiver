@@ -158,6 +158,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public float armLerper;
 
+		private float armRotFront = 0f;
+
+		private float armRotBack = 0f;
+
 		public static float Acceleration = 0.17f;
 		public static int RunSpeed = 11;
 
@@ -215,11 +219,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (Player.controlRight)
 					oldSpeed = 0.01f;
 			}
+			armRotFront = MathHelper.Lerp(armRotFront, (0.13f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
+			armRotBack = MathHelper.Lerp(armRotBack, (0.13f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
 
-			if (Player.itemAnimation == 0 && Player.velocity.Length() > 1)
+			if (Player.itemAnimation == 0)
 			{
-				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(6.11f, 6.28f, armLerper) - (0.13f * MathHelper.Min(Player.velocity.Length(), 11)) * Player.direction);
-				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(0.17f, 0f, armLerper) + (0.13f * MathHelper.Min(Player.velocity.Length(), 11)) * Player.direction);
+
+				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(6.11f, 6.28f, armLerper) - armRotFront * Player.direction);
+				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(0.17f, 0f, armLerper) + armRotBack * Player.direction);
 			}
 
 			Player.fullRotationOrigin = new Vector2(Player.Size.X / 2, Player.Size.Y + 17);
