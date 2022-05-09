@@ -193,6 +193,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 			rotationReset = false;
 
+			Player.legFrame = new Rectangle(0, 56 * 3, 40, 56);
+
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<CogwheelHitbox>()] == 0 && !Player.dead)
 				Projectile.NewProjectile(Player.GetSource_None(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CogwheelHitbox>(), 15, 2, Player.whoAmI);
 
