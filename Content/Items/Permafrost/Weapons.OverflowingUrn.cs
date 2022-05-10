@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog * 0.7f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f * new Vector2(1,1.5f), 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog * 0.7f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f * new Vector2(1 + (0.035f * (float)Math.Sin(Main.GameUpdateCount * 0.1f)), 1.5f + (0.05f * (float)Math.Cos(Main.GameUpdateCount * 0.1f))), 0, 0);
             //spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
             Main.spriteBatch.End();
