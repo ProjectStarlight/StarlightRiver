@@ -63,6 +63,20 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private Player owner => Main.player[Projectile.owner];
 
+        private float windStrength => MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
+
+        private bool windBlowing = false;
+
+        private List<Vector2> cache;
+        private Trail trail;
+
+        private float currentRotation = 0f;
+        private Vector2 currentPoint => Projectile.Center - ((currentRotation).ToRotationVector2() * 500 * windStrength);
+        private Vector2 controlPoint => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 350 * windStrength);
+
+        private Vector2 controlPointSmall => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 50 * windStrength);
+
+        private Vector2 controlPointMedium => Projectile.Center - ((Projectile.rotation + 1.57f - (currentRotation - (Projectile.rotation + 1.57f))).ToRotationVector2() * 150 * windStrength);
 
         private int attackCounter = 0;
 
@@ -101,6 +115,24 @@ namespace StarlightRiver.Content.Items.Permafrost
             {
                 Projectile.timeLeft = 20;
             }
+
+            float rotDifference = (((((Projectile.rotation + 1.57f) - currentRotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+
+            currentRotation = MathHelper.Lerp(currentRotation, currentRotation + rotDifference, 0.15f);
+
+            if (windStrength > 0)
+            {
+                if (!windBlowing)
+                {
+                    currentRotation = Projectile.rotation + 1.57f;
+                    windBlowing = true;
+                }
+            }
+            else
+            {
+                windBlowing = false;
+            }
+
             capLeaving = false;
             if (owner.channel)
             {
@@ -114,8 +146,6 @@ namespace StarlightRiver.Content.Items.Permafrost
                     attackCounter++;
                     if (attackCounter % 2 == 0)
                     {
-                        Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20), Projectile.DirectionTo(Main.MouseWorld).RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 10), ModContent.ProjectileType<UrnWind>(), Projectile.damage, Projectile.knockBack, owner.whoAmI);
-
                         float lerper = Main.rand.NextFloat();
                         Dust dust = Dust.NewDustPerfect(Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20) + (Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8,8,lerper)), ModContent.DustType<UrnWindLine>(), Projectile.DirectionTo(Main.MouseWorld).RotatedBy(MathHelper.Lerp(0.6f,-0.6f, lerper)) * Main.rand.NextFloat(5, 10), 0, Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.6f));
                     }
@@ -136,19 +166,28 @@ namespace StarlightRiver.Content.Items.Permafrost
             Projectile.velocity = Vector2.Zero;
             Projectile.Center = owner.Center - new Vector2(0, 50 + (5 * (float)Math.Sin(hoverCounter)));
 
-            float rotDifference = ((((Projectile.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f - Projectile.rotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+            float rotDifference2 = ((((Projectile.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f - Projectile.rotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.15f);
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference2, 0.15f);
 
             capCounter = (int)MathHelper.Clamp(capCounter, 0, 20);
             appearCounter++;
             Projectile.scale = opacity = MathHelper.Min(Projectile.timeLeft / 20f, appearCounter / 20f);
             owner.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
+
+            if (Main.netMode != NetmodeID.Server)
+            {
+                ManageCaches();
+                ManageTrails();
+            }
         }
+
+
 
         public override bool PreDraw(ref Color lightColor)
         {
-            DrawWind();
+            if (windStrength > 0)
+                DrawWind();
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D topTex = ModContent.Request<Texture2D>(Texture + "_Top").Value;
             float capOpacity = owner.channel ? 1 - (capCounter / 20f) : 1 - MathHelper.Clamp(((capCounter - 6) / 14f), 0, 1);
@@ -170,11 +209,37 @@ namespace StarlightRiver.Content.Items.Permafrost
             return false;
         }
 
+        private void ManageCaches()
+        {
+            cache = new List<Vector2>();
+            Vector2 goff = new Vector2(0, owner.gfxOffY) + ((Projectile.rotation - 1.57f).ToRotationVector2() * 12);
+            BezierCurve curve = new BezierCurve(new Vector2[] { Projectile.Center + goff,  controlPointSmall + goff, controlPointMedium + goff, controlPoint + goff, currentPoint + goff });
+            cache = curve.GetPoints(120);
+            cache.Reverse();
+        }
+
+        private void ManageTrails()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => 174 * windStrength, factor =>
+            {
+                return Lighting.GetColor(Projectile.Center.ToTileCoordinates());
+            });
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center;
+        }
+
         private void DrawWind()
         {
             var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
-            float prog = MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
-            var effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
+            Main.spriteBatch.End();
+            Effect effect1 = Filters.Scene["CycloneIce"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+
+            effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * 0.02f);
             effect1.Parameters["brightness"].SetValue(10);
             effect1.Parameters["MainScale"].SetValue(1.0f);
@@ -185,74 +250,15 @@ namespace StarlightRiver.Content.Items.Permafrost
             effect1.Parameters["Resolution"].SetValue(tex.Size());
             effect1.Parameters["startColor"].SetValue(Color.Cyan.ToVector3());
             effect1.Parameters["endColor"].SetValue(Color.White.ToVector3());
-
+            effect1.Parameters["sampleTexture"].SetValue(tex);
             effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 
-            //Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f * new Vector2(1, 1.5f), 0, 0);
+            BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+            trail?.Render(effect1);
+            Main.graphics.GraphicsDevice.BlendState = oldState;
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
-
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog * 0.7f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f * new Vector2(1 + (0.035f * (float)Math.Sin(Main.GameUpdateCount * 0.1f)), 1.5f + (0.05f * (float)Math.Cos(Main.GameUpdateCount * 0.1f))), 0, 0);
-            //spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-        }
-    }
-    public class UrnWind : ModProjectile
-    {
-        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
-
-        private Player owner => Main.player[Projectile.owner];
-
-        public Color color = Color.Cyan;
-
-
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Urn Wind");
-
-        public override void SetDefaults()
-        {
-            Projectile.hostile = false;
-            Projectile.DamageType = DamageClass.Magic;
-            Projectile.width = 32;
-            Projectile.height = 32;
-            Projectile.aiStyle = -1;
-            Projectile.friendly = true;
-            Projectile.penetrate = -1;
-            Projectile.tileCollide = true;
-            Projectile.timeLeft = 50;
-            Projectile.ignoreWater = true;
-            Projectile.alpha = 100;
-        }
-
-        public override void OnSpawn(IEntitySource source)
-        {
-            Projectile.rotation = Main.rand.NextFloat(6.28f);
-            Projectile.scale = Main.rand.NextFloat(0.85f, 1.15f);
-            color = Color.Lerp(Color.LightBlue, Color.Cyan, Main.rand.NextFloat());
-        }
-
-        public override void AI()
-        {
-            if (Projectile.extraUpdates == 0)
-                Projectile.velocity *= 0.99f;
-            Projectile.alpha = (int)MathHelper.Lerp(100, 255, 1 - (Projectile.timeLeft / 50f));
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor.MultiplyRGB(color) * (1 - (Projectile.alpha / 255f)), Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
-            return false;
-        }
-
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-            Projectile.extraUpdates = 2;
-            Projectile.friendly = false;
-            Projectile.velocity = oldVelocity / 3;
-            return false;
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
     class UrnWindLine : ModDust
