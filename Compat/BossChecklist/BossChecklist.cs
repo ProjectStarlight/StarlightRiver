@@ -20,6 +20,14 @@ namespace StarlightRiver.Compat.BossChecklist
                     () => true,
                     SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The permafrost cathedral falls silent.");
 
+                //Glassweaver
+                List<int> vitricMinibossCollection = new List<int>();
+                string vitricMinibossInfo = "Challenge the glassweaver in his forge in the vitric desert.";
+                bcl.Call("AddMiniBoss", StarlightRiver.Instance, "Glassweaver", ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassMiniboss>(), 4.8999f,
+                    () => StarlightWorld.HasFlag(WorldFlags.DesertOpen),
+                    () => true,
+                    vitricMinibossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricMinibossInfo, "The glassweaver claims victory.");
+
                 //Ceiros
                 List<int> vitricBossCollection = new List<int>()
                 {
@@ -29,8 +37,16 @@ namespace StarlightRiver.Compat.BossChecklist
                 string vitricBossInfo = "Use a Glass Idol at cerios' atop the vitric temple, after breaking the crystal covering it.";
                 bcl.Call("AddBoss", StarlightRiver.Instance, "Ceiros", ModContent.NPCType<Content.Bosses.VitricBoss.VitricBoss>(), 4.9f,
                     () => StarlightWorld.HasFlag(WorldFlags.VitricBossDowned),
-                    () => StarlightWorld.HasFlag(WorldFlags.DesertOpen),
+                    () => true,
                     vitricBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossInfo, "The vitric forge falls silent.", CeirosPortrait.DrawCeirosPortrait);
+
+                //OG Boss
+                List<int> ogBossCollection = new List<int>();
+                string ogBossInfo = "Implement";
+                bcl.Call("AddBoss", StarlightRiver.Instance, "???", ModContent.NPCType<Content.NPCs.Overgrow.Crusher>(), 7f,
+                    () => StarlightWorld.HasFlag(WorldFlags.OvergrowBossDowned),
+                    () => true,
+                    ogBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), ogBossInfo, "[PH]OG boss loss message");
             }
         }
     }
