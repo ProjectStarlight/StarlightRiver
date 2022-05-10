@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Compat
+namespace StarlightRiver.Compat.BossChecklist
 {
     public static class BossChecklistCalls
     {
@@ -12,32 +12,41 @@ namespace StarlightRiver.Compat
         {
             if (ModLoader.TryGetMod("BossChecklist", out Mod bcl))
             {
+                //Auroracle
                 List<int> SquidBossCollection = new List<int>();
-                List<int> SquidBossLoot = new List<int>();
                 string SquidBossInfo = "Drop Auroracle Bait into the prismatic waters of the permafrost shrine.";
-                bcl.Call("AddBoss", 2.6f, ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>(), StarlightRiver.Instance, "Auroracle", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned)), ModContent.ItemType<SquidBossSpawn>(), SquidBossCollection, SquidBossLoot, SquidBossInfo, null, "StarlightRiver/Assets/BossChecklist/SquidBoss");
+                bcl.Call("AddBoss", StarlightRiver.Instance, "Auroracle", ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>(), 2.6f, 
+                    () => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned), 
+                    () => true,
+                    SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The permafrost cathedral falls silent.");
 
-                List<int> vitricMiniBossCollection = new List<int>();
-                List<int> vitricMiniBossLoot = new List<int>();
-                string vitricMiniBossInfo = "Talk to the glassweaver in the vitric desert.";
-                bcl.Call("AddMiniBoss", 4.1f, ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassMiniboss>(), StarlightRiver.Instance, "Glassweaver", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.DesertOpen)), null, vitricMiniBossCollection, vitricMiniBossLoot, vitricMiniBossInfo);
+                //Glassweaver
+                List<int> vitricMinibossCollection = new List<int>();
+                string vitricMinibossInfo = "Challenge the glassweaver in his forge in the vitric desert.";
+                bcl.Call("AddMiniBoss", StarlightRiver.Instance, "Glassweaver", ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassMiniboss>(), 4.8999f,
+                    () => StarlightWorld.HasFlag(WorldFlags.DesertOpen),
+                    () => true,
+                    vitricMinibossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricMinibossInfo, "The glassweaver claims victory.");
 
+                //Ceiros
                 List<int> vitricBossCollection = new List<int>()
                 {
                     ModContent.ItemType<Content.Tiles.Trophies.CeirosTrophyItem>()
                 };
-                List<int> vitricBossLoot = new List<int>()
-                {
-                    ModContent.ItemType<Content.Items.Vitric.VitricBossBag>(),
-                    ModContent.ItemType<Content.Items.Vitric.BossSpear>(),
-                    ModContent.ItemType<Content.Items.Vitric.RefractiveBlade>(),
-                    ModContent.ItemType<Content.Items.Vitric.VitricBossBow>(),
-                    ModContent.ItemType<Content.Items.Vitric.Needler>(),
-                    ModContent.ItemType<Content.Items.Misc.StaminaUp>(),
-                    ModContent.ItemType<Content.Items.Vitric.CeirosExpert>()
-                };
+
                 string vitricBossInfo = "Use a Glass Idol at cerios' atop the vitric temple, after breaking the crystal covering it.";
-                bcl.Call("AddBoss", 4.9f, ModContent.NPCType<Content.Bosses.VitricBoss.VitricBoss>(), StarlightRiver.Instance, "Ceiros", (Func<bool>)(() => StarlightWorld.HasFlag(WorldFlags.VitricBossDowned)), ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossCollection, vitricBossLoot, vitricBossInfo, null, "StarlightRiver/Assets/BossChecklist/VitricBoss");
+                bcl.Call("AddBoss", StarlightRiver.Instance, "Ceiros", ModContent.NPCType<Content.Bosses.VitricBoss.VitricBoss>(), 4.9f,
+                    () => StarlightWorld.HasFlag(WorldFlags.VitricBossDowned),
+                    () => true,
+                    vitricBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossInfo, "The vitric forge falls silent.", CeirosPortrait.DrawCeirosPortrait);
+
+                //OG Boss
+                List<int> ogBossCollection = new List<int>();
+                string ogBossInfo = "Implement";
+                bcl.Call("AddBoss", StarlightRiver.Instance, "???", ModContent.NPCType<Content.NPCs.Overgrow.Crusher>(), 7f,
+                    () => StarlightWorld.HasFlag(WorldFlags.OvergrowBossDowned),
+                    () => true,
+                    ogBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), ogBossInfo, "[PH]OG boss loss message");
             }
         }
     }
