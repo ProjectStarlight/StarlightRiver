@@ -221,8 +221,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (Player.controlRight)
 					oldSpeed = 0.01f;
 			}
-			armRotFront = MathHelper.Lerp(armRotFront, (0.13f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
-			armRotBack = MathHelper.Lerp(armRotBack, (0.13f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
+			armRotFront = MathHelper.Lerp(armRotFront, (0.105f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
+			armRotBack = MathHelper.Lerp(armRotBack, (0.105f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
 
 			if (Player.itemAnimation == 0)
 			{
