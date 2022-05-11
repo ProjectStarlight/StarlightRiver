@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-			return item.TryGetGlobalItem<TransformableItem>(out var gi) ? gi : this;
+			return item.TryGetGlobalItem<TransformableItem>(out var gi) ? gi : base.Clone(item, itemClone);
 		}
 
 		public override void SetDefaults(Item Item) //TOOD: Probably move this later or make it modular? pee pee poo poo
