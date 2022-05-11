@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using System.Linq;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -28,21 +29,28 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            Item.damage = 15;
+            Item.damage = 20;
             Item.channel = true;
             Item.DamageType = DamageClass.Magic;
-            Item.mana = 10;
+            Item.mana = 6;
             Item.width = 2;
             Item.height = 34;
             Item.useTime = 8;
             Item.useAnimation = 8;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 0f;
+            Item.crit = -4;
             Item.shoot = ModContent.ProjectileType<OverflowingUrnProj>();
             Item.shootSpeed = 15f;
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.autoReuse = true;
+        }
+
+        public override void ModifyTooltips(List<TooltipLine> tooltips)
+        {
+            tooltips.FirstOrDefault(n => n.Name == "Damage").Text = tooltips.FirstOrDefault(n => n.Name == "Damage").Text.Replace("damage", "damage over time");
+            tooltips.FirstOrDefault(n => n.Name == "CritChance").Text = "Cannot critically strike";
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -137,7 +145,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             }
 
             capLeaving = false;
-            if (owner.channel)
+            if (owner.channel && owner.statMana > owner.HeldItem.mana)
             {
                 if (capCounter < 20)
                 {
