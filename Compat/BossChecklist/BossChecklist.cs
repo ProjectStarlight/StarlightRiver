@@ -18,7 +18,7 @@ namespace StarlightRiver.Compat.BossChecklist
                 bcl.Call("AddBoss", StarlightRiver.Instance, "Auroracle", ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>(), 2.6f, 
                     () => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned), 
                     () => true,
-                    SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The permafrost cathedral falls silent.");
+                    SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The permafrost cathedral falls silent.", AuroraclePortrait.DrawAuroraclePortrait);
 
                 //Glassweaver
                 List<int> vitricMinibossCollection = new List<int>();

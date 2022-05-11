@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -112,6 +114,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             newNpc.platforms = new List<NPC>();
             newNpc.arenaBlocker = null;
             return newNpc;
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+            {
+                ItemType<OverflowingUrn>()
+            }
+            ));
         }
 
         public override void BossLoot(ref string name, ref int potionType)
