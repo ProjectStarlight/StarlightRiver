@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Item.noMelee = true;
             Item.knockBack = 1.5f;
             Item.value = Item.sellPrice(0, 1, 0, 0);
-            Item.rare = 3;
+            Item.rare = ItemRarityID.Green;
             Item.autoReuse = false;
             Item.shoot = ModContent.ProjectileType<BuzzsawProj>();
             Item.shootSpeed = 2f;
