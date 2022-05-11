@@ -19,12 +19,20 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     class OverflowingUrn : ModItem
     {
+        public int freezeTimer;
+        public float animationTimer;
+
         public override string Texture => AssetDirectory.PermafrostItem + Name;
 
-        public override void SetStaticDefaults()
+		public override void Load()
+		{
+            StarlightPlayer.PostDrawEvent += PostDrawIcon;
+		}
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Overflowing Urn");
-            Tooltip.SetDefault("egshels update this lol");
+            Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will freeze you\nYou have greatly increased defense while frozen");
         }
 
         public override void SetDefaults()
@@ -53,6 +61,19 @@ namespace StarlightRiver.Content.Items.Permafrost
             tooltips.FirstOrDefault(n => n.Name == "CritChance").Text = "Cannot critically strike";
         }
 
+        private void PostDrawIcon(Player Player, SpriteBatch spriteBatch)
+        {
+            if (Player.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
+			{
+                var item = Player.HeldItem.ModItem as OverflowingUrn;
+                var tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
+                var source = new Rectangle(32 * (int)(item.freezeTimer / 300f * 3), 0, 32, 46);
+
+                if (item.animationTimer > 0)
+                    spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, source, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+            }         
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             return false;
@@ -62,30 +83,35 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             if (player.ownedProjectileCounts[Item.shoot] == 0)
                 Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI);
+
+            if (player.channel && player.statMana > Item.mana)
+                freezeTimer++;
+            else if (freezeTimer > 0)
+                freezeTimer--;
+
+            if (freezeTimer >= 300)
+            {
+                player.AddBuff(ModContent.BuffType<UrnFreeze>(), 180);
+                freezeTimer = 0;
+            }
+
+            if (freezeTimer > 0 && animationTimer < 1)
+                animationTimer += 0.1f;
+            else if (freezeTimer <= 0 && animationTimer > 0)
+                animationTimer -= 0.1f;
+
             base.HoldItem(player);
         }
     }
+
     public class OverflowingUrnProj : ModProjectile
     {
-        public override string Texture => AssetDirectory.PermafrostItem + Name;
-
-        private Player owner => Main.player[Projectile.owner];
-
-        private float windStrength => MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
-
         private bool windBlowing = false;
 
         private List<Vector2> cache;
         private Trail trail;
 
         private float currentRotation = 0f;
-        private Vector2 currentPoint => Projectile.Center - ((currentRotation).ToRotationVector2() * 500 * windStrength);
-        private Vector2 controlPoint => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 350 * windStrength);
-
-        private Vector2 controlPointSmall => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 50 * windStrength);
-
-        private Vector2 controlPointMedium => Projectile.Center - ((Projectile.rotation + 1.57f - (currentRotation - (Projectile.rotation + 1.57f))).ToRotationVector2() * 150 * windStrength);
-
         private int attackCounter = 0;
 
         private int appearCounter = 0;
@@ -95,6 +121,16 @@ namespace StarlightRiver.Content.Items.Permafrost
         private float opacity = 0;
 
         private Microsoft.Xna.Framework.Audio.SoundEffectInstance sound;
+
+        private Vector2 currentPoint => Projectile.Center - ((currentRotation).ToRotationVector2() * 500 * windStrength);
+        private Vector2 controlPoint => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 350 * windStrength);
+        private Vector2 controlPointSmall => Projectile.Center - ((Projectile.rotation + 1.57f).ToRotationVector2() * 50 * windStrength);
+        private Vector2 controlPointMedium => Projectile.Center - ((Projectile.rotation + 1.57f - (currentRotation - (Projectile.rotation + 1.57f))).ToRotationVector2() * 150 * windStrength);
+
+        private Player owner => Main.player[Projectile.owner];
+        private float windStrength => MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
+
+        public override string Texture => AssetDirectory.PermafrostItem + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Overflowing Urn");
 
