@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             NPC.width = 80;
             NPC.height = 100;
-            NPC.lifeMax = 225;
+            NPC.lifeMax = 500;
             NPC.damage = 20;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
@@ -48,7 +48,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.HitSound = Terraria.ID.SoundID.NPCHit1;
         }
 
-        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
+		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		{
+            NPC.lifeMax = Main.masterMode ? (int)(1000 * bossLifeScale) : (int)(750 * bossLifeScale);
+        }
+
+		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
             if (Parent != null)
             {
@@ -113,7 +118,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         {
                             if (DrawPortal && maxSegments >= 40 + extraLength)
                             {
-                                var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "InkBlob").Value;
+                                var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
                                 var target = new Rectangle((int)pos.X, (int)pos.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
                                 spriteBatch.Draw(portal, target, top.Frame(), auroraColor, 0, portal.Size() / 2, 0, 0);
                             }
@@ -133,50 +138,52 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     }
                 }
 
-                if (NPCLayer == 1 && Timer > 60 && Vector2.Distance(NPC.Center, BasePoint) > 8)
+                if (NPCLayer == 1 && Timer > 60)
                 {
-                    float rot = (BasePoint - NPC.Center).ToRotation() - 1.57f;
-                    float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
-
-                    rot += tentacleSin * 0.5f;
-
-                    var topOrigin = new Vector2(top.Width / 2, top.Height + 10);
-                    var litColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 2.6f;
-                    var topPos = NPC.Center + new Vector2(tentacleSin * 30, 36);
-                    var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
-
-                    spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
-                    spriteBatch.Draw(glow, topTarget, glow.Frame(), glowColor * 0.65f, rot, topOrigin, 0, 0);
-
-                    var glow2Color = glowColor;
-                    glow2Color.A = 0;
-                    spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
-
-                    Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
-
                     if (DrawPortal)
                     {
-                        var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "InkBlob").Value;
-                        var target = new Rectangle((int)BasePoint.X, (int)BasePoint.Y, (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
-                        var rotation = (NPC.Center - BasePoint).ToRotation();
+                        var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
+                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), (int)((DownwardDrawDistance - 28) / 12f * portal.Width), portal.Height / 2);
+                        var rotation = (MovementTarget - BasePoint).ToRotation() - 1.57f;
 
                         spriteBatch.Draw(portal, target, top.Frame(), auroraColor, rotation, portal.Size() / 2, 0, 0);
                     }
 
-                    for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)
+                    if (Vector2.Distance(NPC.Center, BasePoint) > 8)
                     {
-                        float segmentSin = (float)Math.Sin(Timer / 20f + k * 0.02f);
-                        float magnitude = Math.Max(0, 30 - k * 0.05f) * StalkWaviness;
-                        float size = Math.Max(1, 2 - k * 0.005f);
-                        Vector2 pos = new Vector2(segmentSin * magnitude, 0) + Vector2.Lerp(NPC.Center + new Vector2(0, 36), BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
-                        spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 2.6f, rot + segmentSin * 0.25f, body.Size() / 2, size, 0, 0);
+                        float rot = (BasePoint - NPC.Center).ToRotation() - 1.57f;
+                        float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
 
-                        if (k == 0 && State != 2)
+                        rot += tentacleSin * 0.5f;
+
+                        var topOrigin = new Vector2(top.Width / 2, top.Height + 10);
+                        var litColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 2.6f;
+                        var topPos = NPC.Center + new Vector2(tentacleSin * 30, 0).RotatedBy(rot) + Vector2.UnitY * 36;
+                        var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
+
+                        spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
+                        spriteBatch.Draw(glow, topTarget, glow.Frame(), glowColor * 0.65f, rot, topOrigin, 0, 0);
+
+                        var glow2Color = glowColor;
+                        glow2Color.A = 0;
+                        spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
+
+                        Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
+
+                        for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)
                         {
-                            spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), glowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
-                        }
+                            float segmentSin = (float)Math.Sin(Timer / 20f + k * 0.02f);
+                            float magnitude = Math.Max(0, 30 - k * 0.05f) * StalkWaviness;
+                            float size = Math.Max(1, 2 - k * 0.005f);
+                            Vector2 pos = new Vector2(segmentSin * magnitude, 0).RotatedBy(rot) + Vector2.Lerp(NPC.Center + new Vector2(0, 36), BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
 
-                        k += 10 * size;
+                            if (k == 0 && State != 2)
+                                spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), glowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
+                            else
+                                spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 2.6f, rot + segmentSin * 0.25f, body.Size() / 2, size, 0, 0);
+
+                            k += 10 * size;
+                        }
                     }
                 }
             }
@@ -193,20 +200,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Dust.NewDust(NPC.position + new Vector2(0, 30), NPC.width, 16, 131, 0, 0, 0, default, 0.5f);
 
             return false;
-        }
-
-        //TODO: Give this another look/find a better way to deplete main HP
-
-        public override void ModifyHitByProjectile(Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (NPC.life - damage <= 0) damage = NPC.life;
-            Parent.NPC.life -= damage;
-        }
-
-        public override void ModifyHitByItem(Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
-        {
-            if (NPC.life - damage <= 0) damage = NPC.life;
-            Parent.NPC.life -= damage;
         }
 
 		public override void AI()

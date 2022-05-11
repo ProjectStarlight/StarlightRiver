@@ -471,17 +471,48 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
-                if (AttackTimer == 150 + k * 10)
+                if (AttackTimer == 150 + k * 20)
+                {
                     tentacle.DrawPortal = true;
+                    tentacle.NPC.Center = platforms[k].Center + new Vector2(0, -100);
+                    tentacle.BasePoint = tentacle.NPC.Center;
+                    tentacle.MovementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
+                    tentacle.StalkWaviness = 0.5f;
+                }
 
-                if(AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
+                if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
                     tentacle.DownwardDrawDistance++;
 
+                if (k <= 2)
+                {
+                    if (AttackTimer > 200 + k * 20 && AttackTimer < 260 + k * 20)
+                    {
+                        tentacle.NPC.Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - (200 + k * 20)) / 60f);
+                    }
 
+                    if (AttackTimer > 360 + k * 20 && AttackTimer < 390 + k * 20)
+                    {
+                        tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - (360 + k * 20)) / 30f);
+                    }
+                }
+                else
+				{
+                    if (AttackTimer > 300 + k * 20 && AttackTimer < 420 + k * 20)
+                    {
+                        tentacle.BasePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (300 + k * 20)) / 120f)) * 1200;
+                        tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (300 + k * 20)) / 120f) * 3.14f) * -900;
+                    }
+				}
 
+                if (AttackTimer > 600 + k * 10 && AttackTimer < 630 + k * 10)
+                    tentacle.DownwardDrawDistance--;
+
+                if (AttackTimer == 630 + k * 10)
+                    tentacle.DrawPortal = false;
             }
 
-            if (AttackTimer >= 660) ResetAttack();
+            if (AttackTimer >= 660) 
+                ResetAttack();
         }
         #endregion
 

@@ -15,7 +15,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public bool CheckPoint(int x, int y) => ValidPoints.Contains(new Point16(x, y));
 
-        public virtual void SafeKill(int timeLeft) { }
+		public override ModProjectile Clone(Projectile projectile)
+		{
+            var clone = base.Clone(projectile);
+            (clone as InteractiveProjectile).ValidPoints = new List<Point16>();
+            return clone;
+		}
+
+		public virtual void SafeKill(int timeLeft) { }
 
         public sealed override void Kill(int timeLeft)
         {

@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public List<NPC> tentacles = new List<NPC>(); //the tentacle NPCs which this boss controls
         public List<NPC> platforms = new List<NPC>(); //the big platforms the boss' arena has
         public bool variantAttack;
+        public int baseLife;
         private NPC arenaBlocker;
         Vector2 spawnPoint;
         Vector2 savedPoint;     
@@ -53,8 +54,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
 
-        public override void ScaleExpertStats(int numPlayers, float bossLifeScale) => NPC.lifeMax = (int)(6000 * bossLifeScale);
-
         public override bool CheckActive() => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
@@ -85,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetDefaults()
         {
-            NPC.lifeMax = 3250;
+            NPC.lifeMax = 4000;
             NPC.width = 80;
             NPC.height = 80;
             NPC.boss = true;
@@ -96,9 +95,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.noTileCollide = true;
             NPC.knockBackResist = 0;
             NPC.dontTakeDamage = true;
+
+            baseLife = 2000;
         }
 
-		public override ModNPC Clone(NPC npc)
+        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+        {
+            NPC.lifeMax = Main.masterMode ? (int)(8000 * bossLifeScale) : (int)(6000 * bossLifeScale);
+            baseLife = Main.masterMode ? (int)(4000 * bossLifeScale) : (int)(3000 * bossLifeScale);
+        }
+
+        public override ModNPC Clone(NPC npc)
         {
             var newNpc = base.Clone(npc) as SquidBoss;
             newNpc.tentacles = new List<NPC>();
@@ -531,6 +538,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
                 NPC.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
+                int tentacleLife = 0;
+                foreach(var tentacle in tentacles)
+				{
+                    tentacleLife += tentacle.life;
+				}
+
+                NPC.life = baseLife + tentacleLife;
+
                 if (AttackTimer == 1)
                     if (tentacles.Count(n => n.ai[0] == 2) == 2) //phasing logic
                     {
@@ -558,6 +573,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.FirstPhaseTwo) //first phase, part 2. Tentacle attacks and ink. Raise water first.
             {
+                int tentacleLife = 0;
+                foreach (var tentacle in tentacles)
+                {
+                    tentacleLife += tentacle.life;
+                }
+
+                NPC.life = baseLife + tentacleLife;
+
                 if (GlobalTimer == 1) 
                     savedPoint = NPC.Center;
 
