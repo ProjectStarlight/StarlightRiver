@@ -114,6 +114,9 @@ namespace StarlightRiver.Content.Items.Permafrost
         private float currentRotation = 0f;
         private int attackCounter = 0;
 
+        private int freezeTimer = 0;
+        private bool frozenShut = false;
+
         private int appearCounter = 0;
         private float hoverCounter = 0;
         private int capCounter = 0;
@@ -180,8 +183,26 @@ namespace StarlightRiver.Content.Items.Permafrost
                 windBlowing = false;
             }
 
+            if (owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
+            {
+                freezeTimer++;
+            }
+            else
+            {
+                if (freezeTimer > 0)
+                {
+                    frozenShut = true;
+                    freezeTimer = 0;
+                }
+                if (frozenShut)
+                {
+                    if (!Main.mouseLeft && capCounter <= 0)
+                        frozenShut = false;
+                }
+            }
+
             capLeaving = false;
-            if (owner.channel && owner.statMana > owner.HeldItem.mana)
+            if ((owner.channel && owner.statMana > owner.HeldItem.mana && !frozenShut) || owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
             {
                 if (capCounter < 20)
                 {
@@ -225,6 +246,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 if (capCounter > 0)
                     capCounter--;
 
+                if (capCounter > 6 && frozenShut)
+                        capCounter-= 2;
                 if (capCounter > 6)
                     capCounter--;
                 else
@@ -240,7 +263,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             float rotDifference2 = ((((Projectile.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f - Projectile.rotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference2, 0.15f);
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference2 + (Main.rand.NextFloat(-0.7f,0.7f) * freezeTimer / 180f), 0.15f);
 
             capCounter = (int)MathHelper.Clamp(capCounter, 0, 20);
             appearCounter++;
@@ -286,6 +309,11 @@ namespace StarlightRiver.Content.Items.Permafrost
             {
                 float shake = (float)Math.Sin(3.14f * Math.Clamp(capCounter / 6f, 0, 1)) * 3;
                 rot = (float)Math.Sin(6.28f * Math.Clamp(capCounter / 6f, 0, 1)) * 0.03f;
+                if (frozenShut)
+                {
+                    rot *= 3;
+                    shake *= 3;
+                }
                 capPos += shake * rotationVector;
                 urnPos += shake * rotationVector;
             }
@@ -306,7 +334,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void ManageTrails()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => 174 * windStrength, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => (174 * windStrength) + (0.3f * freezeTimer), factor =>
             {
                 return Lighting.GetColor(Projectile.Center.ToTileCoordinates());
             });
@@ -326,13 +354,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 
             effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect1.Parameters["NoiseOffset"].SetValue(Vector2.One * Main.GameUpdateCount * 0.02f);
+            effect1.Parameters["NoiseOffset"].SetValue((Vector2.One * Main.GameUpdateCount * (0.02f)) + (Vector2.One * (0.0003f * (float)Math.Pow(freezeTimer, 1.5f))));
             effect1.Parameters["brightness"].SetValue(10);
             effect1.Parameters["MainScale"].SetValue(1.0f);
             effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
             effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
             effect1.Parameters["width"].SetValue(0.85f);
-            effect1.Parameters["time"].SetValue(Main.GameUpdateCount * 0.15f);
+            effect1.Parameters["time"].SetValue((Main.GameUpdateCount * 0.15f) + (0.003f * (float)Math.Pow(freezeTimer, 1.5f)));
             effect1.Parameters["distort"].SetValue(0.75f);
             effect1.Parameters["progMult"].SetValue(3.7f);
             effect1.Parameters["Resolution"].SetValue(tex.Size());
