@@ -49,6 +49,18 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            string message = "Test: ";
+            string subtext = "Test: ";
+
+            while (Main.rand.Next(20) <= 18)
+                message += Main.rand.Next(10);
+
+            while (Main.rand.Next(20) <= 18)
+                subtext += Main.rand.Next(10);
+
+            UILoader.GetUIState<TextCard>().Display(message, subtext, null, 240, 1.25f, false, "Testing testing testing\nWow this is testing\nOvercomplicated description of a thing");
+            return true;
+
             for (int k = 0; k < Main.npc.Length; k++)
                 Main.NewText("Index: " + k + " Name: " + Main.npc[k].FullName + " Active: " + Main.npc[k].active);
             return true;
