@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         Vector2 origin;
 
-        public override string Texture => AssetDirectory.GlassMiniboss + "GlassHammer";
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
 
@@ -82,12 +82,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.rotation = (chargeRot * -Parent.direction) + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
             origin = Parent.Center + handleOffset;
             Projectile.Center = origin + new Vector2(70, -80).RotatedBy(Projectile.rotation - (Parent.direction < 0 ? MathHelper.PiOver2 : 0));
-
-            if (Projectile.localAI[0] == 30)
-            {
-                Projectile.NewProjectile(Entity.InheritSource(Projectile), Parent.Center, Vector2.UnitX * 18f, ProjectileType<HammerShockwave>(), 0, 0f, Main.myPlayer, Projectile.ai[0]);
-                Projectile.NewProjectile(Entity.InheritSource(Projectile), Parent.Center, -Vector2.UnitX * 18f, ProjectileType<HammerShockwave>(), 0, 0f, Main.myPlayer, Projectile.ai[0]);
-            }
             
             if (Projectile.localAI[0] == 0)
             {
@@ -149,36 +143,91 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         }
     }
 
-    class HammerShockwave : ModProjectile
+    class GlassRaisedSpike : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;
+        public override string Texture => AssetDirectory.Invisible;// + Name;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass");
 
         public override void SetDefaults()
         {
-            Projectile.width = 16;
-            Projectile.height = 32;
+            Projectile.width = 60;
+            Projectile.height = 170;
+            Projectile.hostile = true;
+            Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
+            Projectile.timeLeft = 240;
+            Projectile.hide = true;
         }
 
-        public NPC Parent => Main.npc[(int)Projectile.ai[0]];
+        public const int raise = 40;
 
-        public override bool OnTileCollide(Vector2 oldVelocity) => Math.Abs(Projectile.velocity.X) < 0.1f;
+        public ref float Time => ref Projectile.ai[0];
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.rotation += Main.rand.NextFloat(-0.1f, 0.1f);
+        }
 
         public override void AI()
         {
-            Projectile.localAI[0]++;
+            Time++;
+            if (Projectile.localAI[0] > 0)
+                Projectile.localAI[0]--;
 
-            Projectile.velocity.X *= 0.988f;
-            //Projectile.velocity.Y = 9.8f;
-
-            if (Projectile.localAI[0] % 15 == 0 && Projectile.localAI[0] > 5)
+            if (Time == raise)
             {
-                Vector2 spawnPos = Helpers.Helper.QuickBestPosition(Projectile.Center, Parent.GetTargetData().Center);
-                Dust.NewDustPerfect(spawnPos, DustID.AncientLight, -Vector2.UnitY * 1f);
+                //shotgun projectiles up
             }
+
+            if (Time < raise)
+            {
+                Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
+                Vector2 dustVel = new Vector2(0, Main.rand.Next(-12, -8));
+                Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.3f);
+                glow.noGravity = false;
+            }
+
+        }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            if (Time >= raise && Time < raise + 2)
+                target.velocity.Y = -13;
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            bool properTime = Time > raise && Time < raise + 120;
+            bool inSpike = projHitbox.Intersects(targetHitbox);
+            return properTime && inSpike;
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            //spike
+
+            //spike heat
+
+            //tell
+            if (Time < raise + 120)
+                DrawGroundTell();
+
+            return false;
+        }
+
+        private void DrawGroundTell()
+        {
+            Asset<Texture2D> tellTex = TextureAssets.Extra[98];
+            Rectangle tellFrame = tellTex.Frame(1, 2); //half
+            Vector2 tellOrigin = tellFrame.Size() * new Vector2(0.5f, 1f);
+
+            Color fade = Color.OrangeRed * Utils.GetLerpValue(0, 20, Time, true) * Utils.GetLerpValue(raise + 20, raise - 20, Time, true);
+            fade.A = 0;
+            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - Main.screenPosition, tellFrame, fade, Projectile.rotation * 0.2f, tellOrigin, 1f, 0, 0);
         }
     }
 }

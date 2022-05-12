@@ -182,6 +182,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             AttackType = (int)AttackEnum.Hammer;
             hammerTime = 80;
+            int spikeCount = 5;
+            if (Main.masterMode)
+                spikeCount = 12;
+            else if (Main.expertMode)
+                spikeCount = 8;
 
             if (AttackTimer == 1)
             {
@@ -203,7 +208,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == hammerSpawn)
                 hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI, hammerTime);
 
-            if (AttackTimer > 180 + hammerTime)
+            int spikeSpawn = hammerSpawn + hammerTime - 50;
+            if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * 3) && AttackTimer % 3 == 0)
+            {
+                float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * 3), AttackTimer, true);
+                Vector2 spikeX = Vector2.Lerp(PickSideSelf(), new Vector2(PickSideSelf(-1).X + (150 * Direction), NPC.Center.Y), dist);
+                Vector2 spikePos = new Vector2(spikeX.X, Helpers.Helper.QuickGlassablePos(spikeX, Target.Center).Y - 85);//half the spike's height
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 30, 1f, Main.myPlayer);
+            }
+
+            if (AttackTimer > spikeSpawn + (spikeCount * 3) + 120)
                 ResetAttack();
 
         }

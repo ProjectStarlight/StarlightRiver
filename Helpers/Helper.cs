@@ -499,60 +499,68 @@ namespace StarlightRiver.Helpers
             return Point16.Zero;
         }
 
-        //adapted from deerclops
-        public static int FindBestAnchorY(Point center, Vector2 targetPos)
+        public static Point FindGlassableGroundPosition(Vector2 start, Vector2 target, int halfwidth)
         {
-            int result = center.Y;
-
-            int direction = Math.Sign((int)(targetPos.Y / 16f) - result);
-            int targAnchorY = (int)(targetPos.Y / 16f) + direction * 15;
-            int? resAnchorY = null;
-            float maxDistance = float.PositiveInfinity;
-            for (int i = result; i != targAnchorY; i += direction)
+            Point result = start.ToTileCoordinates();
+            int targYTile = (int)(target.Y / 16f);
+            int direction = Math.Sign(targYTile - result.Y);
+            int checkHeightTarget = targYTile + direction * 15;
+            int? checkedHeight = null;
+            float maxDist = float.PositiveInfinity;
+            for (int i = result.Y; i != checkHeightTarget; i += direction)
             {
-                if (WorldGen.ActiveAndWalkableTile(center.X, i))
+                if (WorldGen.ActiveAndWalkableTile(result.X, i))
                 {
-                    float distanceToTarget = new Point(center.X, i).ToWorldCoordinates().Distance(targetPos);
-                    if (!resAnchorY.HasValue || !(distanceToTarget >= maxDistance))
+                    if (halfwidth != 0)
                     {
-                        resAnchorY = i;
-                        maxDistance = distanceToTarget;
+                        bool notWideEnough = false;
+                        for (int j = -halfwidth; j <= halfwidth; j++)
+                        {
+                            if (!WorldGen.ActiveAndWalkableTile(result.X + j, result.Y))
+                            {
+                                notWideEnough = true;
+                                result.Y += direction;
+                                break;
+                            }
+                        }
+                        if (notWideEnough)
+                            continue;
+                        break;
+                    }
+                    if (!checkedHeight.HasValue || result.ToWorldCoordinates().Distance(target) < maxDist)
+                    {
+                        checkedHeight = i;
+                        maxDist = result.ToWorldCoordinates().Distance(target);
                     }
                 }
             }
 
-            if (resAnchorY.HasValue)
-                result = resAnchorY.Value;
+            if (checkedHeight.HasValue)
+                result.Y = checkedHeight.Value;
 
             for (int j = 0; j < 20; j++)
             {
-                if (result < 10)
+                if (result.Y < 10 || !WorldGen.SolidTile(result.X, result.Y))
                     break;
 
-                if (!WorldGen.SolidTile(center.X, result))
-                    break;
-                result--;
+                result.Y--;
             }
 
             for (int k = 0; k < 20; k++)
             {
-                if (result > Main.maxTilesY - 10)
+                if (result.Y > Main.maxTilesY - 10 || WorldGen.ActiveAndWalkableTile(result.X, result.Y))
                     break;
 
-                if (WorldGen.ActiveAndWalkableTile(center.X, result))
-                    break;
-
-                result++;
+                result.Y++;
             }
 
             return result;
         }
 
-        public static Vector2 QuickBestPosition(Vector2 center, Vector2 target)
+        public static Vector2 QuickGlassablePos(Vector2 start, Vector2 target)
         {
-            int goodY = FindBestAnchorY(center.ToTileCoordinates(), target) * 16 - 8;
-            Vector2 result = new Vector2(center.X, goodY);
-            return result;
+            Point viableTile = FindGlassableGroundPosition(start, target, 2);
+            return viableTile.ToVector2() * 16f + new Vector2(8, 0);
         }
     }
 }

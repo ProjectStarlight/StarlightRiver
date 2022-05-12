@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.height = 12;
             Projectile.timeLeft = 130;
             Projectile.hostile = true;
+            Projectile.aiStyle = -1;
             Projectile.tileCollide = true;
         }
 
@@ -56,12 +57,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
             Dust.NewDust(Projectile.Center - new Vector2(4), 8, 8, DustType<Dusts.GlassGravity>());
             Projectile.velocity = Vector2.Zero;
+            Projectile.tileCollide = false;
             return false;
         }
-
-        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) { }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < projHitbox.Width + 10;
 

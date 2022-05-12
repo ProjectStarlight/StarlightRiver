@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public const int explosionTime = 850;
         public const float explosionRadius = 300f;
 
-        public override string Texture => AssetDirectory.GlassMiniboss + "GlassBubble";
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
         public override void SetStaticDefaults()
         {
@@ -31,6 +31,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.width = 44;
             Projectile.height = 44;
             Projectile.hostile = true;
+            Projectile.aiStyle = -1;
             Projectile.timeLeft = 2400; //failsafe
             Projectile.tileCollide = false;
         }
@@ -230,6 +231,27 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Timer > explosionTime + 130)
                 Projectile.Kill();
+        }
+    }
+
+    class GlassBubbleFragment : ModProjectile
+    {
+        public override string Texture => AssetDirectory.Invisible;
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Shard");
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 44;
+            Projectile.height = 44;
+            Projectile.hostile = true;
+            Projectile.aiStyle = -1;
+        }
+
+
+
+        public override void Kill(int timeLeft)
+        {
         }
     }
 }

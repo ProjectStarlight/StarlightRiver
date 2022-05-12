@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
+        //internal ref float Wave => ref NPC.ai[2];
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
         internal ref float AttackType => ref NPC.localAI[0];
@@ -168,7 +169,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         //case 5: BigBrightBubble(); break;//spin
                         //case 6: if (attackVariant) Hammer(); else HammerVariant(); break;
                         //case 7: Spears(); break;
-                        default: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        default: Hammer(); break;
                     }
 
                     break;
