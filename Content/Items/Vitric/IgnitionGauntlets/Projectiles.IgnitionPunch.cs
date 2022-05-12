@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (oldPosition.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
 				oldPosition.RemoveAt(0);
 
-			if (Projectile.timeLeft == 2 && Projectile.extraUpdates != 0)
+			/*if (Projectile.timeLeft == 2 && Projectile.extraUpdates != 0)
 			{
 				Projectile.penetrate += 2;
 				Projectile.timeLeft = 20;
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.friendly = false;
 				Projectile.velocity = Vector2.Zero;
 				Projectile.friendly = false;
-			}
+			}*/
 			else
 				Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * 0.4f);
 		}

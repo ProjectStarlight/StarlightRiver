@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (climbing)
 			{
 				direction = new Vector2(0, -1);
-				dustPos = Player.Center + new Vector2(Player.direction * 15, 25 + (Player.velocity.Y * 1));
+				dustPos = Player.Center + new Vector2(Player.direction * 15, 45 + (Player.velocity.Y * 2));
 			}
 			if ((Player.velocity.X == 0 && climbing) || Player.velocity.Y == 0)
 			{
@@ -319,6 +319,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			hitDirection = Math.Sign(Player.direction);
+			damage = (int)(damage * MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f));
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
     }

@@ -50,8 +50,8 @@ namespace StarlightRiver.Content.Items.Vitric
         {
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Texture2D starTex = ModContent.Request<Texture2D>(Texture).Value;
-			Vector2 handOffset = new Vector2(8 * owner.direction, 0);
-			Main.spriteBatch.Draw(starTex, (owner.Center + handOffset) - Main.screenPosition, null, new Color(255, 255, 255, 0) * ((float)charge / (float)modPlayer.charge), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
+			Vector2 handOffset = new Vector2(8 * owner.direction, 0).RotatedBy(owner.fullRotation);
+			Main.spriteBatch.Draw(starTex, (owner.MountedCenter + handOffset) - Main.screenPosition, null, new Color(255, 255, 255, 0) * ((float)charge / (float)modPlayer.charge), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
 			return false;
         }
         public override void AI()

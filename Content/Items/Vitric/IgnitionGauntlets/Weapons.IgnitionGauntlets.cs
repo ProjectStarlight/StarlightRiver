@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (player.altFunctionUse == 2)
 			{
-				if (player.GetModPlayer<IgnitionPlayer>().charge > 0 && player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
+				if (player.GetModPlayer<IgnitionPlayer>().charge > 20 && player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
 				{
 					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCharge>(), damage, knockback, player.whoAmI);
 				}
