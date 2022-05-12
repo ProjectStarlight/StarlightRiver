@@ -75,7 +75,16 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool CheckActive() => Phase == (int)AIStates.Leaving;
 
-        public override void SetStaticDefaults()
+		public override ModNPC Clone(NPC npc)
+		{
+            var clone = base.Clone(npc) as VitricBoss;
+            clone.crystals = new List<NPC>();
+            clone.crystalLocations = new List<Vector2>();
+
+            return clone;
+        }
+
+		public override void SetStaticDefaults()
         { 
             DisplayName.SetDefault("Ceiros");
 

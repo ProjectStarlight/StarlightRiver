@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 120, 70), 0.6f);
                     d.noGravity = false;
                 }
+
+                if(Main.masterMode)
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<NPCs.Vitric.SnakeSpit>(), Projectile.damage, 1, Projectile.owner);
             }
         }
 
