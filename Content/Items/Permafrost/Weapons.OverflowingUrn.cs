@@ -74,17 +74,29 @@ namespace StarlightRiver.Content.Items.Permafrost
                 var tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
                 var overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay").Value;
                 var icicleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Icicle").Value;
+                var whiteTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_White").Value;
+                var dividerTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Divider").Value;
+
 
                 if (item.animationTimer > 0)
                 {
                     spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
 
                     float rectLerper = MathHelper.Clamp(item.freezeTimer / 360f, 0, 1);
-                    Rectangle topFrame = new Rectangle(0, 0, 32, (int)(32 * (1 - rectLerper)));
+                    Rectangle topFrame = new Rectangle(0, 0, 32, (int)(32 * (1 - rectLerper)) - 2);
+                    Rectangle middleFrame = new Rectangle(0, (int)(32 * (1 - rectLerper)) - 2, 32, 2);
                     Rectangle bottomFrame = new Rectangle(0, (int)(32 * (1 - rectLerper)), 32, (int)(32 * rectLerper));
-                    spriteBatch.Draw(overlayTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition) , topFrame, Color.White * item.animationTimer * 0.4f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+                    spriteBatch.Draw(overlayTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition), topFrame, Color.White * item.animationTimer * 0.3f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+                    if ((rectLerper * 32) + 2 < 32 && rectLerper * 32 > 0)
+                        spriteBatch.Draw(dividerTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition) + new Vector2(0, (int)(32 * (1 - rectLerper)) - 2), middleFrame, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
                     spriteBatch.Draw(overlayTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition) + new Vector2(0, (int)(32 * (1 - rectLerper))), bottomFrame, Color.White * item.animationTimer * 0.8f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
 
+                    if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
+                    {
+                        float opacityLerper = MathHelper.Max(0, (item.freezeTimer - 330) / 30f);
+                        float opacity = (float)Math.Sin(opacityLerper * 3.14f);
+                        spriteBatch.Draw(whiteTex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer * opacity, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+                    }
                 }
             }         
         }
