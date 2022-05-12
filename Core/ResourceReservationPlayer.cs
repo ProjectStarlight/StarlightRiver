@@ -129,7 +129,7 @@ namespace StarlightRiver.Core
 					var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
 					Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
 
-					if (k == fullHeartsToDraw)
+					if (k == fullHeartsToDraw && Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > 0)
 					{
 						var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
 						Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
@@ -277,7 +277,7 @@ namespace StarlightRiver.Core
 				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
 				Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
 
-				if (k == fullStarsToDraw)
+				if (k == fullStarsToDraw && Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > 0)
 				{
 					var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
 					Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
