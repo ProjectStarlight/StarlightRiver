@@ -44,25 +44,16 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(400);
+            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
         }
 
 		public override bool? UseItem(Player player)
         {
-            string message = "Test: ";
-            string subtext = "Test: ";
+            player.statLifeMax = 100;
+            UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
 
-            while (Main.rand.Next(20) <= 18)
-                message += Main.rand.Next(10);
-
-            while (Main.rand.Next(20) <= 18)
-                subtext += Main.rand.Next(10);
-
-            UILoader.GetUIState<TextCard>().Display(message, subtext, null, 240, 1.25f, false, "Testing testing testing\nWow this is testing\nOvercomplicated description of a thing");
-            return true;
-
-            for (int k = 0; k < Main.npc.Length; k++)
-                Main.NewText("Index: " + k + " Name: " + Main.npc[k].FullName + " Active: " + Main.npc[k].active);
+            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
+            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
