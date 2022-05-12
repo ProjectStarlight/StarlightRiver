@@ -19,6 +19,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
     class OverflowingUrn : ModItem
     {
+
+        public const int FREEZETIME = 180;
+
         public int freezeTimer;
         public float animationTimer;
 
@@ -67,10 +70,20 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
                 var item = Player.HeldItem.ModItem as OverflowingUrn;
                 var tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder").Value;
-                var source = new Rectangle(32 * (int)(item.freezeTimer / 300f * 3), 0, 32, 46);
+                var overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay").Value;
+                var icicleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Icicle").Value;
 
                 if (item.animationTimer > 0)
-                    spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, source, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+                {
+                    spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+
+                    float rectLerper = MathHelper.Clamp(item.freezeTimer / 360f, 0, 1);
+                    Rectangle topFrame = new Rectangle(0, 0, 32, (int)(32 * (1 - rectLerper)));
+                    Rectangle bottomFrame = new Rectangle(0, (int)(32 * (1 - rectLerper)), 32, (int)(32 * rectLerper));
+                    spriteBatch.Draw(overlayTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition) , topFrame, Color.White * item.animationTimer * 0.4f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+                    spriteBatch.Draw(overlayTex, (Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition) + new Vector2(0, (int)(32 * (1 - rectLerper))), bottomFrame, Color.White * item.animationTimer * 0.8f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+
+                }
             }         
         }
 
@@ -84,16 +97,16 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (player.ownedProjectileCounts[Item.shoot] == 0)
                 Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI);
 
-            if (player.channel && player.statMana > Item.mana)
+            if (player.channel && player.statMana > Item.mana && !player.HasBuff(ModContent.BuffType<UrnFreeze>()))
                 freezeTimer++;
             else if (freezeTimer > 0)
                 freezeTimer--;
 
-            if (freezeTimer >= 300)
-            {
-                player.AddBuff(ModContent.BuffType<UrnFreeze>(), 180);
-                freezeTimer = 0;
-            }
+            if (freezeTimer >= 360)
+                player.AddBuff(ModContent.BuffType<UrnFreeze>(), FREEZETIME);
+
+            if (player.HasBuff(ModContent.BuffType<UrnFreeze>()) && freezeTimer > 0)
+                freezeTimer -= 1;
 
             if (freezeTimer > 0 && animationTimer < 1)
                 animationTimer += 0.1f;
@@ -111,11 +124,15 @@ namespace StarlightRiver.Content.Items.Permafrost
         private List<Vector2> cache;
         private Trail trail;
 
+        private Vector2 offsetVector = Vector2.Zero;
+
         private float currentRotation = 0f;
         private int attackCounter = 0;
 
-        private int freezeTimer = 0;
-        private bool frozenShut = false;
+        public int freezeTimer = 0;
+        public bool frozenShut = false;
+
+        private bool capOpen = false;
 
         private int appearCounter = 0;
         private float hoverCounter = 0;
@@ -204,6 +221,10 @@ namespace StarlightRiver.Content.Items.Permafrost
             capLeaving = false;
             if ((owner.channel && owner.statMana > owner.HeldItem.mana && !frozenShut) || owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
             {
+                if (capCounter > 10)
+                {
+                    capOpen = true;
+                }
                 if (capCounter < 20)
                 {
                     capCounter++;
@@ -211,6 +232,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 }
                 else
                 {
+
+                    offsetVector -= (Projectile.rotation - 1.57f).ToRotationVector2() * (0.2f + (freezeTimer * 0.004f));
                     attackCounter++;
 
                     if (attackCounter % 180 == 0 || attackCounter == 1)
@@ -219,25 +242,27 @@ namespace StarlightRiver.Content.Items.Permafrost
                         sound = Terraria.Audio.SoundEngine.PlaySound(SoundID.BlizzardStrongLoop, Projectile.Center);
                         sound.Volume *= 4;
                     }
-                        //Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, Main.rand.NextFloat(-0.5f, -0.2f), Projectile.Center);
-
-                    if (attackCounter % 2 == 0)
+                    //Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, Main.rand.NextFloat(-0.5f, -0.2f), Projectile.Center);
+                    for (int i = 0; i < (freezeTimer / 100) + 1; i++)
                     {
-                        float lerper = Main.rand.NextFloat();
-                        var pos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20) + (Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8, 8, lerper));
-                        var vel = Projectile.DirectionTo(Main.MouseWorld).RotatedBy(MathHelper.Lerp(0.4f, -0.4f, lerper)) * Main.rand.NextFloat(5, 40);
-                        var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), vel, 0, Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.6f));
-                        d.customData = Main.rand.NextFloat(0.6f, 1.2f);
-                        d.rotation = Main.rand.NextFloat(6.28f);
-                    }
+                        if (attackCounter % 2 == 0)
+                        {
+                            float lerper = Main.rand.NextFloat();
+                            var pos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20) + (Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8, 8, lerper));
+                            var vel = Projectile.DirectionTo(Main.MouseWorld).RotatedBy(MathHelper.Lerp(0.4f + (0.003f * freezeTimer), -(0.4f + (0.003f * freezeTimer)), lerper)) * Main.rand.NextFloat(5, 40);
+                            var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), vel, 0, Color.Lerp(Color.Cyan, Color.LightBlue, Main.rand.NextFloat()), Main.rand.NextFloat(0.4f, 0.6f));
+                            d.customData = Main.rand.NextFloat(0.6f, 1.2f);
+                            d.rotation = Main.rand.NextFloat(6.28f);
+                        }
 
-                    for(int k = 0; k < 20; k++)
-					{
-                        float lerper = Main.rand.NextFloat();
-                        var pos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20) + (Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8, 8, lerper));
-                        var vel = Projectile.DirectionTo(Main.MouseWorld).RotatedByRandom(0.3f) * Main.rand.NextFloat(8, 18);
-                        Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(255, 255, 255) * 0.1f, Main.rand.NextFloat(4.5f, 6.5f));
-					}
+                        for (int k = 0; k < 20; k++)
+                        {
+                            float lerper = Main.rand.NextFloat();
+                            var pos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 20) + (Projectile.rotation.ToRotationVector2() * MathHelper.Lerp(-8, 8, lerper));
+                            var vel = Projectile.DirectionTo(Main.MouseWorld).RotatedByRandom(0.3f + (0.003f * freezeTimer)) * (Main.rand.NextFloat(8, 18) + (0.05f * freezeTimer));
+                            Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(255, 255, 255) * 0.1f, Main.rand.NextFloat(4.5f, 6.5f));
+                        }
+                    }
                     
                 }
             }
@@ -251,7 +276,17 @@ namespace StarlightRiver.Content.Items.Permafrost
                 if (capCounter > 6)
                     capCounter--;
                 else
+                {
+                    if (capOpen)
+                    {
+                        capOpen = false;
+                        int shake = 2;
+                        if (frozenShut)
+                            shake = 12;
+                        owner.GetModPlayer<StarlightPlayer>().Shake =+ shake;
+                    }
                     attackCounter = 0;
+                }
 
                 sound?.Stop(true);
             }
@@ -259,11 +294,12 @@ namespace StarlightRiver.Content.Items.Permafrost
             hoverCounter += 0.03f;
 
             Projectile.velocity = Vector2.Zero;
-            Projectile.Center = owner.Center - new Vector2(0, 50 + (5 * (float)Math.Sin(hoverCounter)));
+            Projectile.Center = (owner.Center + offsetVector) - new Vector2(0, 50 + (5 * (float)Math.Sin(hoverCounter)));
+            offsetVector *= 0.97f;
 
             float rotDifference2 = ((((Projectile.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f - Projectile.rotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
 
-            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference2 + (Main.rand.NextFloat(-0.7f,0.7f) * freezeTimer / 180f), 0.15f);
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference2 + (Main.rand.NextFloat(-0.4f,0.4f) * ((float)freezeTimer / OverflowingUrn.FREEZETIME)), 0.15f);
 
             capCounter = (int)MathHelper.Clamp(capCounter, 0, 20);
             appearCounter++;
@@ -311,8 +347,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 rot = (float)Math.Sin(6.28f * Math.Clamp(capCounter / 6f, 0, 1)) * 0.03f;
                 if (frozenShut)
                 {
-                    rot *= 3;
-                    shake *= 3;
+                    rot *= 7;
+                    shake *= 7;
                 }
                 capPos += shake * rotationVector;
                 urnPos += shake * rotationVector;
@@ -334,7 +370,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void ManageTrails()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => (174 * windStrength) + (0.3f * freezeTimer), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => (174 * windStrength) + (0.9f * freezeTimer), factor =>
             {
                 return Lighting.GetColor(Projectile.Center.ToTileCoordinates());
             });
@@ -354,13 +390,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 
             effect1.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect1.Parameters["NoiseOffset"].SetValue((Vector2.One * Main.GameUpdateCount * (0.02f)) + (Vector2.One * (0.0003f * (float)Math.Pow(freezeTimer, 1.5f))));
+            effect1.Parameters["NoiseOffset"].SetValue((Vector2.One * Main.GameUpdateCount * (0.02f)) + (Vector2.One * (0.003f * (float)Math.Pow(freezeTimer, 1.5f))));
             effect1.Parameters["brightness"].SetValue(10);
             effect1.Parameters["MainScale"].SetValue(1.0f);
             effect1.Parameters["CenterPoint"].SetValue(new Vector2(0.5f, 1f));
             effect1.Parameters["TrailDirection"].SetValue(new Vector2(0, -1));
             effect1.Parameters["width"].SetValue(0.85f);
-            effect1.Parameters["time"].SetValue((Main.GameUpdateCount * 0.15f) + (0.003f * (float)Math.Pow(freezeTimer, 1.5f)));
+            effect1.Parameters["time"].SetValue(Main.GameUpdateCount * 0.15f);
             effect1.Parameters["distort"].SetValue(0.75f);
             effect1.Parameters["progMult"].SetValue(3.7f);
             effect1.Parameters["Resolution"].SetValue(tex.Size());
