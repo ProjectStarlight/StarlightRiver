@@ -121,11 +121,22 @@ namespace StarlightRiver.Core
 					if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation >= (k + 1) * lifePerHeart)
 						width2 = texBar.Width;
 					else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > k * lifePerHeart)
+					{
 						width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart) / lifePerHeart * texBar.Width);
+					}
 
 					var source2 = new Rectangle(0, 0, width2, texBar.Height);
 					var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
 					Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
+
+					if (k == fullHeartsToDraw)
+					{
+						var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
+						Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
+
+						var targetLine2 = new Rectangle((int)pos.X + width2 - 2, (int)pos.Y, 2, texBar.Height);
+						Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine2, null, new Color(119, 149, 139));
+					}
 
 					continue;
 				}
@@ -243,29 +254,36 @@ namespace StarlightRiver.Core
 			Player Player = Main.LocalPlayer;
 
 			int vanillaStars = Math.Min(20, Player.statManaMax2 / 20);
+			int fullStarsToDraw = Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation / 20;
 
-			for (int k = 0; k <= vanillaStars; k++)
+			for (int k = 0; k <= fullStarsToDraw; k++)
 			{
 				Vector2 pos = Vector2.Zero;
 
-				if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+				var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+
+				pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, 48f);
+
+				int width2 = 0;
+
+				if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation >= (k + 1) * 20)
+					width2 = texBar.Width;
+				else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > k * 20)
 				{
-					var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+					width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation % 20) / 20f * texBar.Width);
+				}
 
-					pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, 48f);
+				var source2 = new Rectangle(0, 0, width2, texBar.Height);
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
+				Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
 
-					int width2 = 0;
+				if (k == fullStarsToDraw)
+				{
+					var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
+					Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
 
-					if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation >= (k + 1) * 20)
-						width2 = texBar.Width;
-					else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > k * 20)
-						width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation % 20) / 20f * texBar.Width);
-
-					var source2 = new Rectangle(0, 0, width2, texBar.Height);
-					var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
-					Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
-
-					continue;
+					var targetLine2 = new Rectangle((int)pos.X + width2 - 2, (int)pos.Y, 2, texBar.Height);
+					Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine2, null, new Color(119, 149, 139));
 				}
 			}
 		}
