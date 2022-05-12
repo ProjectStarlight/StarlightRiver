@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Items.Permafrost
         public int freezeTimer;
         public float animationTimer;
 
+        private bool released = false;
+
         public override string Texture => AssetDirectory.PermafrostItem + Name;
 
 		public override void Load()
@@ -97,13 +99,21 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (player.ownedProjectileCounts[Item.shoot] == 0)
                 Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI);
 
-            if (player.channel && player.statMana > Item.mana && !player.HasBuff(ModContent.BuffType<UrnFreeze>()))
+            if (player.channel && player.statMana > Item.mana && !player.HasBuff(ModContent.BuffType<UrnFreeze>()) && !released)
+            {
                 freezeTimer++;
+            }
             else if (freezeTimer > 0)
                 freezeTimer--;
 
             if (freezeTimer >= 360)
+            {
                 player.AddBuff(ModContent.BuffType<UrnFreeze>(), FREEZETIME);
+                released = true;
+            }
+
+            if (!Main.mouseLeft && !player.HasBuff(ModContent.BuffType<UrnFreeze>()))
+                released = false;
 
             if (player.HasBuff(ModContent.BuffType<UrnFreeze>()) && freezeTimer > 0)
                 freezeTimer -= 1;
