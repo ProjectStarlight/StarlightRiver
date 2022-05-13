@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.channel = true;
             Item.DamageType = DamageClass.Magic;
             Item.mana = 6;
-            Item.width = 2;
+            Item.width = 1;
             Item.height = 34;
             Item.useTime = 8;
             Item.useAnimation = 8;
