@@ -26,6 +26,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public ref float State => ref NPC.ai[0];
         public ref float Timer => ref NPC.ai[1];
 
+        internal ArenaActor Arena => Parent.Arena;
+
         public enum TentacleStates
         {
             SpawnAnimation = 0,
@@ -36,7 +38,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-        public override void SetDefaults()
+		public override void SetStaticDefaults()
+		{
+            Terraria.ID.NPCID.Sets.TrailingMode[Type] = 1;
+            Terraria.ID.NPCID.Sets.TrailCacheLength[Type] = 1;
+        }
+
+		public override void SetDefaults()
         {
             NPC.width = 80;
             NPC.height = 100;
@@ -218,6 +226,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if ((State == 0 || State == 1) && Timer == 0) 
                 BasePoint = NPC.Center;
+
+            if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld) || (NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld))
+            {
+                Helpers.Helper.PlayPitched("Magic/WaterWoosh", 1, 0, NPC.Center);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X, Arena.WaterLevelWorld -41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
+            }
 
             Timer++;
 

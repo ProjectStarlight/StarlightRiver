@@ -125,14 +125,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.StalkWaviness = 0;
                     tentacle.ZSpin = (time / 30f * 6.28f);
 
-                    if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 40 : 57))
-                    {
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, NPC.Center);
-
-                        SplashDust(k);
-                    }
-
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, time / 40f);
                 }
 
@@ -166,11 +158,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     if (AttackTimer > k * 100 + 250)
                         tentacle.DownwardDrawDistance -= 2;
-
-                    if (AttackTimer == k * 100 + (Phase == (int)AIStates.FirstPhase ? 260 : 205))
-                    {
-                        SplashDustSmall(k);
-                    }
                 }
 
                 if (AttackTimer == k * 100 + 300)
@@ -692,9 +679,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         tentacle.DownwardDrawDistance++;
 
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, AttackTimer / 120f);
-
-                    if (AttackTimer == 110)
-                        SplashDust(k);
                 }
             }
 
@@ -958,27 +942,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
 
             if (AttackTimer == 76) ResetAttack();
-        }
-        #endregion
-
-        #region visual helpers
-        private void SplashDustSmall(int k)
-        {
-            for (int i = 0; i < 30; i++)
-            {
-                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(4), 0, default, 2);
-                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(40), 0, default, Main.rand.NextFloat());
-            }
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, tentacles[k].Center);
-        }
-
-        private void SplashDust(int k)
-        {
-            for (int i = 0; i < 50; i++)
-            {
-                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(12), 0, default, 2);
-                Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
-            }
         }
         #endregion
     }

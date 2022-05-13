@@ -39,9 +39,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (NPC.position.Y >= NPC.ai[2]) NPC.ai[1] = 0;
 
-                if (NPC.position.Y + 18 >= actor.WaterLevel) NPC.ai[1] = 1;
+                if (NPC.position.Y + 18 >= actor.WaterLevelWorld) NPC.ai[1] = 1;
 
-                if (NPC.ai[1] == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevel - 18 > NPC.position.Y)) NPC.position.Y = actor.WaterLevel - 18;
+                if (NPC.ai[1] == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y)) NPC.position.Y = actor.WaterLevelWorld - 18;
             }
         }
     }

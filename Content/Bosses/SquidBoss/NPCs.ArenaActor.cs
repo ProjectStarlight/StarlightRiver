@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public int waterfallWidth = 0;
 
-        public float WaterLevel { get => NPC.Center.Y + 35 * 16 - NPC.ai[0]; }
+        public float WaterLevelWorld { get => NPC.Center.Y + 35 * 16 - NPC.ai[0]; }
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y - 8, 200 * 16, 16)))
                 {
-                    Item.position.Y = WaterLevel - 16 + (float)Math.Sin((NPC.ai[1] + Item.position.X) % 6.28f) * 4;
+                    Item.position.Y = WaterLevelWorld - 16 + (float)Math.Sin((NPC.ai[1] + Item.position.X) % 6.28f) * 4;
 
                     if (Item.type == ItemType<SquidBossSpawn>() && NPC.ai[0] == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
                     {
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 );
 
             ApplyEffect.Parameters["drawSize"].SetValue(target.Size());
-            ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevel - Main.screenPosition.Y) / 2f));
+            ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
             ApplyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects/ 75f);
 
             ApplyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
