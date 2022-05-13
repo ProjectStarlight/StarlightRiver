@@ -307,9 +307,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                             shake = 12;
                         owner.GetModPlayer<StarlightPlayer>().Shake =+ shake;
                     }
-                    attackCounter = 0;
                 }
-
+                attackCounter = 0;
                 sound?.Stop(true);
             }
 
