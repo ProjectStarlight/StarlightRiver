@@ -17,7 +17,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.frozen = true;
+			player.velocity.X = 0;
+			if (player.velocity.Y < 0)
+				player.velocity.Y = 0.1f;
+			//player.frozen = true;
 			player.statDefense += 40;
 		}
 	}

@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (scaleCounter < 15)
                 scaleCounter++;
 
-            Projectile.scale = scaleCounter / 15f;
+            Projectile.scale = EaseFunction.EaseCircularOut.Ease(scaleCounter / 15f);
 
 			Projectile.rotation = (float)(Math.Sin((Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection) + startRotation)) * (float)Math.Pow(1 - chargeRatio, 2f);
             Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
