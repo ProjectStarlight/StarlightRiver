@@ -249,6 +249,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding) 
 				{
+                    Helper.PlayPitched("Magic/AuroraBell", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
                     owner.GetModPlayer<StarlightPlayer>().Shake +=7;
                     Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
 					newProj.originalDamage = (int)(proj.damage * chargeRatio);
