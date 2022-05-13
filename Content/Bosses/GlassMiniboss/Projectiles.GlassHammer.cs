@@ -24,8 +24,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 40;
-            Projectile.height = 40;
+            Projectile.width = 64;
+            Projectile.height = 64;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
@@ -68,21 +68,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     handleOffset = new Vector2(-28, 2);
                     break;
                 case 1:
-                    handleOffset = new Vector2(40, 5);
+                    handleOffset = new Vector2(20, 5);
                     break;
                 case 2:
-                    handleOffset = new Vector2(42, 7);
+                    handleOffset = new Vector2(25, 7);
                     break;
                 case 3:
-                    handleOffset = new Vector2(48, 9);
+                    handleOffset = new Vector2(28, 9);
                     break;
             }
             handleOffset.X *= Parent.direction;
 
             Projectile.rotation = (chargeRot * -Parent.direction) + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
             origin = Parent.Center + handleOffset;
-            Projectile.Center = origin + new Vector2(70, -80).RotatedBy(Projectile.rotation - (Parent.direction < 0 ? MathHelper.PiOver2 : 0));
-            
+            Projectile.Center = origin + new Vector2(64, -64).RotatedBy(Projectile.rotation - (Parent.direction < 0 ? MathHelper.PiOver2 : 0));
+
             if (Projectile.localAI[0] == 0)
             {
                 Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
@@ -90,10 +90,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 for (int i = 0; i < 30; i++)
                 {
-                    Dust.NewDust(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.GlassGravity>(), Main.rand.Next(-1, 1), -4);
+                    Dust.NewDust(Projectile.Center - new Vector2(8, -4), 16, 4, DustType<Dusts.GlassGravity>(), Main.rand.Next(-1, 1), -4);
                     if (Main.rand.NextBool())
                     {
-                        Dust glow = Dust.NewDustDirect(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.Glow>(), Main.rand.Next(-1, 1), -4, newColor: Color.DarkOrange);
+                        Dust glow = Dust.NewDustDirect(Projectile.Bottom - new Vector2(8, 4), 16, 4, DustType<Dusts.Glow>(), Main.rand.Next(-1, 1), -4, newColor: Color.DarkOrange);
                         glow.noGravity = false;
                     }
                 }
@@ -151,13 +151,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 60;
-            Projectile.height = 170;
+            Projectile.width = 48;
+            Projectile.height = 200;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 240;
+            Projectile.timeLeft = 360;
+            Projectile.tileCollide = true;
             Projectile.hide = true;
         }
 
@@ -165,10 +166,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public ref float Time => ref Projectile.ai[0];
 
+        public ref float WhoAmI => ref Projectile.ai[1];
+
         public override void OnSpawn(IEntitySource source)
         {
+            Time -= 2;
             Projectile.rotation += Main.rand.NextFloat(-0.1f, 0.1f);
         }
+
+        public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override void AI()
         {
@@ -176,15 +182,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.localAI[0] > 0)
                 Projectile.localAI[0]--;
 
+            Projectile.velocity.Y = 80;
+
             if (Time == raise)
             {
                 //shotgun projectiles up
             }
 
-            if (Time < raise)
+            if (Time < raise + 10 && Time > 0 && Main.rand.Next(raise) > Time)
             {
                 Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
-                Vector2 dustVel = new Vector2(0, Main.rand.Next(-12, -8));
+                Vector2 dustVel = new Vector2(0, Main.rand.Next(-8, -5));
                 Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.3f);
                 glow.noGravity = false;
             }
@@ -194,13 +202,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
             if (Time >= raise && Time < raise + 2)
-                target.velocity.Y = -13;
+                target.velocity -= new Vector2(0, 10).RotatedBy(Projectile.rotation);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            bool properTime = Time > raise && Time < raise + 120;
+            bool properTime = Time > raise && Time < raise + 50;
             bool inSpike = projHitbox.Intersects(targetHitbox);
+
             return properTime && inSpike;
         }
 
@@ -208,13 +217,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
+            Asset<Texture2D> glassTex = Request<Texture2D>(Texture);
             //spike
 
-            //spike heat
-
-            //tell
             if (Time < raise + 120)
                 DrawGroundTell();
+
+            //spike heat
 
             return false;
         }
@@ -222,12 +231,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private void DrawGroundTell()
         {
             Asset<Texture2D> tellTex = TextureAssets.Extra[98];
-            Rectangle tellFrame = tellTex.Frame(1, 2); //half
-            Vector2 tellOrigin = tellFrame.Size() * new Vector2(0.5f, 1f);
+            Vector2 tellOrigin = tellTex.Size() * new Vector2(0.5f, 0.8f);
 
-            Color fade = Color.OrangeRed * Utils.GetLerpValue(0, 20, Time, true) * Utils.GetLerpValue(raise + 20, raise - 20, Time, true);
+            Color fade = Color.OrangeRed * Utils.GetLerpValue(0, 10, Time, true) * Utils.GetLerpValue(raise * 0.9f, raise * 0.4f, Time, true);
             fade.A = 0;
-            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - Main.screenPosition, tellFrame, fade, Projectile.rotation * 0.2f, tellOrigin, 1f, 0, 0);
+            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.9f, Time, true)) * (5 + (WhoAmI * 5f));
+            float width = 0.5f + (Utils.GetLerpValue(raise * 0.5f, raise, Time, true) * 15f);
+            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - Main.screenPosition, null, fade, Projectile.rotation, tellOrigin, new Vector2(width, height), 0, 0);
         }
     }
 }

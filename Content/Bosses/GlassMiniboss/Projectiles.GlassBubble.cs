@@ -248,8 +248,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.aiStyle = -1;
         }
 
-
-
         public override void Kill(int timeLeft)
         {
         }
