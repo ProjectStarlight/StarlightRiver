@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Vector2 offset = new Vector2(1, -0.12f * player.direction).RotatedBy(rot);
 
-			for (int k = 0; k < 15; k++)
+			for (int k = 0; k < 5; k++)
 			{
 				var direction = offset.RotatedByRandom(spread);
 
