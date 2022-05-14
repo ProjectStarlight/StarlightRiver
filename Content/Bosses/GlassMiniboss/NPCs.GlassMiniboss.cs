@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         //case 5: BigBrightBubble(); break;//spin
                         //case 6: if (attackVariant) Hammer(); else HammerVariant(); break;
                         //case 7: Spears(); break;
-                        default: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        default: BigBrightBubble(); break;
                     }
 
                     break;

@@ -216,7 +216,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 Vector2 spikeX = Vector2.Lerp(PickSideSelf(), new Vector2(PickSideSelf(-1).X + (102 * Direction), NPC.Center.Y), dist);
                 Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
-                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, 0, dist);
+                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }
 
@@ -264,14 +264,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf(-1).X + (102 * Direction), NPC.Center.Y), dist);
                 Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
-                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, 0, dist);
+                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }
             if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && (AttackTimer + 1) % betweenSpikes == 0)
             {
                 Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf().X + (102 * -Direction), NPC.Center.Y), dist);
                 Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
-                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, 0, dist);
+                Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaisedSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = -NPC.direction;
             }
 
@@ -312,6 +312,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Main.projectile[bubbleIndex].Center = staffPos + (Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true));
                 NPC.velocity *= 0.87f;
                 NPC.velocity.Y -= 0.01f;
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(AttackTimer / 200f);
             }
 
             if (AttackTimer == 300)

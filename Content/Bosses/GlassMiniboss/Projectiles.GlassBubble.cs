@@ -179,11 +179,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             //shine
             Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            Color shine = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true))
-                * Utils.GetLerpValue(120, 210, Timer, true) * Utils.GetLerpValue(explosionTime + 70, explosionTime + 100, Timer, true);
+            Color shine = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true));
             shine.A = 0;
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
+            float appear = Utils.GetLerpValue(120, 210, Timer, true);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.5f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
 
+            float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.3f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
         }
 
         private void DrawExplosionTell()
@@ -204,7 +206,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 float rotation = MathHelper.TwoPi / 8 * i;
                 Vector2 pos = Projectile.Center + new Vector2(90, 0).RotatedBy(rotation);
-                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.33f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
+                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.4f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
             }
         }
 
@@ -213,11 +215,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Timer == explosionTime + 105)
             {
                 Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.1f, Projectile.Center);
-                //shards
+
+                int shardCount = Main.rand.Next(10, 15);
+                if (Main.masterMode)
+                    shardCount += 20;
+                else if (Main.expertMode)
+                    shardCount += 10;
+                for (int i = 0; i < shardCount; i++)
+                {
+                    Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
+                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.2f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
+                }
             }
             if (Timer <= explosionTime + 105)
             {
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 6;
 
                 for (int i = 0; i < 50; i++)
                 {
@@ -236,20 +248,83 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
     class GlassBubbleFragment : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Shard");
 
         public override void SetDefaults()
         {
-            Projectile.width = 44;
-            Projectile.height = 44;
+            Projectile.width = 12;
+            Projectile.height = 12;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
+            Projectile.timeLeft = 540;
+            Projectile.tileCollide = true;
+        }
+
+        public int variant;
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            variant = Main.rand.Next(3);
+        }
+
+        public override void AI()
+        {
+            if (Projectile.localAI[0] < 5)
+                Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
+            Projectile.localAI[0]++;
+
+            if (Projectile.tileCollide == true)
+            {
+                if (Projectile.localAI[0] > 20)
+                    Projectile.velocity *= 1.11f;
+            }
+            else
+                Projectile.velocity *= 0.2f;
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (Projectile.timeLeft > 5)
+                return Projectile.Distance(targetHitbox.Center.ToVector2()) < 24;
+            else
+                return Projectile.Distance(targetHitbox.Center.ToVector2()) < 50;
+        }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 30;
+            return false;
         }
 
         public override void Kill(int timeLeft)
         {
+            Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.2f, Projectile.Center);
+
+            for (int i = 0; i < 30; i++)
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Asset<Texture2D> fragment = Request<Texture2D>(Texture);
+            Rectangle fragFrame = fragment.Frame(4, 2, variant, 0);
+            Rectangle hotFrame = fragment.Frame(4, 2, variant, 1);
+
+            Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, fragFrame, lightColor, Projectile.rotation, fragFrame.Size() * 0.5f, Projectile.scale, 0, 0);
+
+            Color hotFade = new Color(255, 255, 255, 128);
+            Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, Projectile.scale, 0, 0);
+
+            Asset<Texture2D> fragGlow = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+            Color glowFade = Color.OrangeRed;
+            glowFade.A = 0;
+            Vector2 stretch = new Vector2(0.4f, Utils.GetLerpValue(-5, 10, Projectile.velocity.Length(), true) * 2f);
+            Main.EntitySpriteDraw(fragGlow.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, fragGlow.Size() * 0.5f, stretch, 0, 0);
+
+            return false;
         }
     }
 }

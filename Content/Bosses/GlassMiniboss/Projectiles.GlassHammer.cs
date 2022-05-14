@@ -168,11 +168,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public ref float WhoAmI => ref Projectile.ai[1];
 
-        public override void OnSpawn(IEntitySource source)
-        {
-            Time -= 2;
-            Projectile.rotation += Main.rand.NextFloat(-0.1f, 0.1f);
-        }
+        public override void OnSpawn(IEntitySource source) => Projectile.rotation += Main.rand.NextFloat(-0.1f, 0.1f);
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
@@ -187,12 +183,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Time == raise)
             {
                 //shotgun projectiles up
+
+                for (int i = 0; i < 60; i++)
+                {
+                    Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
+                    Vector2 dustVel = new Vector2(0, -(i / 6f)).RotatedBy(Projectile.rotation);
+                    Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.8f);
+                }
             }
 
             if (Time < raise + 10 && Time > 0 && Main.rand.Next(raise) > Time)
             {
                 Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
-                Vector2 dustVel = new Vector2(0, Main.rand.Next(-8, -5));
+                Vector2 dustVel = new Vector2(0, Main.rand.Next(-8, -5)).RotatedBy(Projectile.rotation);
                 Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.3f);
                 glow.noGravity = false;
             }

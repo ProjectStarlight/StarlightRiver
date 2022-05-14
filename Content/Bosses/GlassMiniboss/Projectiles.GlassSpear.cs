@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void OnSpawn(IEntitySource source)
         {
-            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.2f), Projectile.Center);
+            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
         }
 
         public override void AI()
@@ -43,28 +43,35 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else if (Projectile.velocity.Length() > 0.5f)
                 Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation() + MathHelper.PiOver2, 0.12f);
 
-            Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.166f);
-
-            //acceleration
-            if (Projectile.timeLeft < 80)
-                Projectile.velocity *= 0.96f + (Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f);
+            if (Projectile.tileCollide == true)
+            {
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.166f);
+                //acceleration
+                if (Projectile.timeLeft < 80)
+                    Projectile.velocity *= 0.96f + (Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f);
+            }
+            else
+                Projectile.velocity *= 0.1f;
 
             if (Projectile.timeLeft > 100)
-                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), DustType<Dusts.GlowFastDecelerate>(), newColor: Color.DarkOrange, Scale: 0.3f);
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), DustType<Dusts.Glow>(), newColor: Color.DarkOrange, Scale: 0.3f);
 
             Projectile.localAI[0]++;
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < 32;
+
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            Helpers.Helper.PlayPitched("Impacts/StabTiny", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
-            Dust.NewDust(Projectile.Center - new Vector2(4), 8, 8, DustType<Dusts.GlassGravity>());
-            Projectile.velocity = Vector2.Zero;
             Projectile.tileCollide = false;
+
+            Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(0.1f), Projectile.Center);
+            
+            for (int i = 0; i < 4; i++)
+                Dust.NewDust(Projectile.Center - new Vector2(4), 8, 8, DustType<Dusts.GlassGravity>());
+
             return false;
         }
-
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < projHitbox.Width + 10;
 
         public override bool PreDraw(ref Color lightColor)
         {
