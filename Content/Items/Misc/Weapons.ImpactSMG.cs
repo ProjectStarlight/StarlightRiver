@@ -231,7 +231,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 10, factor =>
 			{
-				return Color.DarkGray.MultiplyRGB(Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)) * 0.3f * factor.X;
+				return Color.Lerp(Color.DarkGray, Color.White, 1 - factor.X).MultiplyRGB(Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)) * 0.5f * factor.X;
 			});
 
 			trail.Positions = cache.ToArray();
