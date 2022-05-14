@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -26,6 +27,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public float damageBoost = 1;
 
 		private int reloadTimer = 0;
+
+		public override void Load()
+		{
+			StarlightPlayer.PostDrawEvent += PostDrawIcon;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -52,7 +58,21 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.autoReuse = true;
 		}
 
-        public override void HoldItem(Player player)
+		private void PostDrawIcon(Player Player, SpriteBatch spriteBatch)
+		{
+			if (Player.HeldItem.type == ModContent.ItemType<ImpactSMG>())
+			{
+				var item = Player.HeldItem.ModItem as ImpactSMG;
+
+				Vector2 origin = new Vector2(6, 13);
+
+				int num = (int)((item.damageBoost - 1) / 0.05f);
+				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value,  "x" + num.ToString(), (Player.Center - new Vector2(0,40)) - Main.screenPosition, Color.White, 0f, origin, Vector2.One); 
+			}
+		}
+
+
+		public override void HoldItem(Player player)
         {
 			if (ammo == -1)
 				reloadTimer++;
