@@ -30,6 +30,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore1");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore2");
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore3");
 			StarlightPlayer.PostDrawEvent += PostDrawIcon;
 		}
 
@@ -184,6 +187,15 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.DamageType = DamageClass.Ranged;
 		}
 
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+			for (int i = 1; i < 4; i++)
+				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(5,5), Mod.Find<ModGore>("ImpactSMG_Gore" + i.ToString()).Type, 1f);
+			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), 0, 0, owner.whoAmI);
+			proj.rotation = oldVelocity.ToRotation() - 1.57f;
+			return true;
+        }
+
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
 			if (Collision.CheckAABBvAABBCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projHitbox.TopLeft() - new Vector2(8, 8), projHitbox.Size() + new Vector2(16, 16)))
@@ -202,6 +214,7 @@ namespace StarlightRiver.Content.Items.Misc
 			owner.GetModPlayer<StarlightPlayer>().Shake += 3;
 
 			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
+			proj.extraUpdates = 0;
 			for (int i = 0; i < 7; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
@@ -275,4 +288,43 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
+
+	internal class ImpactSMGExplosion : ModProjectile
+	{
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Impact SMG");
+			Main.projFrames[Projectile.type] = 10;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.friendly = false;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(32, 32);
+			Projectile.penetrate = -1;
+		}
+		public override void AI()
+		{
+			Projectile.frameCounter++;
+			if (Projectile.frameCounter % 3 == 0)
+				Projectile.frame++;
+			if (Projectile.frame >= Main.projFrames[Projectile.type])
+				Projectile.active = false;
+		}
+
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
+			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(tex.Width * 0.5f, frameHeight * 0.75f), Projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
 }
