@@ -182,10 +182,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Color shine = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true));
             shine.A = 0;
             float appear = Utils.GetLerpValue(120, 210, Timer, true);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.5f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.33f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
 
             float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.3f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.33f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
         }
 
         private void DrawExplosionTell()
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < shardCount; i++)
                 {
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
-                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.2f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
+                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.5f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
                 }
             }
             if (Timer <= explosionTime + 105)
@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
                     Vector2 vel = Main.rand.NextVector2Circular(15, 15);
                     Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), vel, 0, Color.DarkOrange, 0.7f);
-                    if (Main.rand.Next(5) == 0)
+                    if (Main.rand.NextBool(5))
                         Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
                 }
             }
@@ -254,8 +254,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 12;
-            Projectile.height = 12;
+            Projectile.width = 15;
+            Projectile.height = 15;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
             Projectile.timeLeft = 540;
@@ -279,6 +279,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 if (Projectile.localAI[0] > 20)
                     Projectile.velocity *= 1.11f;
+
+                Projectile.velocity.Y += 0.01f;
             }
             else
                 Projectile.velocity *= 0.2f;
@@ -295,16 +297,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
             Projectile.tileCollide = false;
-            Projectile.timeLeft = 30;
-            return false;
-        }
+            Projectile.timeLeft = 10;
 
-        public override void Kill(int timeLeft)
-        {
             Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.2f, Projectile.Center);
 
             for (int i = 0; i < 30; i++)
-                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));
+
+            return false;
         }
 
         public override bool PreDraw(ref Color lightColor)

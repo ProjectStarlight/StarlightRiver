@@ -44,9 +44,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             None,
             Jump,
             SpinJump,
-            Slash,
-            SpinSlash,
-            Spears,
+            TripleSlash,
+            Thrust,
+            Whirlwind,
+            Javelins,
             Hammer,
             BigBrightBubble
         }
@@ -73,6 +74,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.knockBackResist = 0;
             NPC.boss = true;
             NPC.defense = 14;
+            NPC.HitSound = SoundID.DD2_OgreRoar;
             //Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
@@ -146,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.noGravity = false;
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
-                    const int maxAttacks = 7;
+                    const int maxAttacks = 8;
 
                     if (AttackTimer == 1)
                     {
@@ -161,20 +163,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        //case 0: Spears(); break;//slash
-                        //case 1: Spears(); break;//thrust
-                        //case 2: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 3: Spears(); break;
-                        //case 4: Spears(); break;//slash or bigger variant
-                        //case 5: BigBrightBubble(); break;//spin
-                        //case 6: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 7: Spears(); break;
-                        default: BigBrightBubble(); break;
+                        //case 0: TripleSlash(); break;
+                        //case 1: Thrust(); break;//thrust
+                        //case 2: Javelins(); break;
+                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 4: BigBrightBubble(); break;
+                        //case 5: TripleSlash(); break;
+                        //case 6: if (attackVariant) TripleSlash(); else BigSlash(); break;
+                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 8: Javelins(); break;
+                        default: if (attackVariant) TripleSlash(); else BigSlash(); break;
                     }
 
                     break;
             }
         }
+
+        public override bool? CanFallThroughPlatforms() => NPC.Bottom.Y < Target.Top.Y;
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -203,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "Glassweaver");
             Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassweaverGlow");
 
-            Rectangle frame = weaver.Frame(1, 5, 0, 0);
+            Rectangle frame = weaver.Frame(1, 6, 0, 0);
             frame.X = 0;
             frame.Width = 144;
 
@@ -221,21 +226,51 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         case (int)AttackEnum.Jump:
 
                             float jumpProgress = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
-                            if (jumpProgress < 0.66f || Math.Abs(NPC.velocity.Y) > 1f)
+                            if (jumpProgress < 0.55f || Math.Abs(NPC.velocity.Y) < -1f)
                                 frame.Y = frameHeight;
-
+                            else if (NPC.velocity.Y >= 0)
+                                frame.Y = frameHeight * 2;
+                            
                             break;
 
                         case (int)AttackEnum.SpinJump:
 
-                            frame.Y = frameHeight * 4;
+                            frame.Y = frameHeight * 5;
 
                             break;
 
-                        case (int)AttackEnum.Spears:
+                        case (int)AttackEnum.TripleSlash:
 
-                            if (AttackTimer < spearTime - spearSpawn + 10)
-                                frame.Y = frameHeight * 2;
+                            if (AttackTimer > 55 && AttackTimer < 240)
+                            {
+                                frame.X = 144;
+
+                                //using a lerp wouldn't mesh well with the animation, so a little bit of clunk
+                                if (AttackTimer > 180)
+                                    frame.Y = frameHeight * 3;
+                                else if (AttackTimer > 150)
+                                    frame.Y = frameHeight * 2;                                
+                                else if (AttackTimer > 100)
+                                    frame.Y = frameHeight;
+                            }
+
+                            break;
+                                                 
+                        case (int)AttackEnum.Thrust:
+
+                            break;
+
+                        case (int)AttackEnum.Whirlwind:
+
+                            if (AttackTimer < 190)
+                                frame.Y = frameHeight * 3;
+
+                            break;
+
+                        case (int)AttackEnum.Javelins:
+
+                            if (AttackTimer < javelinTime - javelinSpawn + 10)
+                                frame.Y = frameHeight * 3;
                             break;
 
                         case (int)AttackEnum.Hammer:
@@ -244,7 +279,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             if (hammerTimer <= hammerTime + 55 && AttackTimer > 50)
                             {
-                                frame.X = 144;
+                                frame.X = 288;
                                 frame.Width = 180;
 
                                 if (hammerTimer <= hammerTime * 0.87f)
@@ -267,11 +302,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             if (AttackTimer > 50)
                             {
                                 if (AttackTimer < 330)
-                                    frame.Y = frameHeight * 3;
+                                    frame.Y = frameHeight * 4;
                                 else if (AttackTimer < bubbleRecoil - 60)
                                     frame.Y = frameHeight;
                                 else if (AttackTimer < bubbleRecoil + 10)
-                                    frame.Y = frameHeight * 4;
+                                    frame.Y = frameHeight * 5;
                             }
 
                             break;
@@ -280,9 +315,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     break;
             }
 
-            Main.EntitySpriteDraw(weaver.Value, NPC.Center + drawPos, frame, drawColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
-            Main.EntitySpriteDraw(weaverGlow.Value, NPC.Center + drawPos, frame, new Color(255, 255, 255, 128), NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+            Color shinyBlue = new Color(60, 190, 170, 0);
 
+            Color baseColor = drawColor;
+            Color glowColor = new Color(255, 255, 255, 128);
+
+            if (AttackType == (int)AttackEnum.Whirlwind)
+            {
+                float fadeOutToSlash = Utils.GetLerpValue(0, 20, AttackTimer, true) * Utils.GetLerpValue(190, 160, AttackTimer, true);
+                baseColor = Color.Lerp(drawColor, Color.Transparent, fadeOutToSlash);
+                glowColor = Color.Lerp(new Color(255, 255, 255, 128), new Color(255, 255, 255, 0), fadeOutToSlash);
+            }
+
+            spriteBatch.Draw(weaver.Value, NPC.Center + drawPos, frame, baseColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+            spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
 
             return false;
         }

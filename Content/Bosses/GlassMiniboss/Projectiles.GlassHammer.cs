@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
+            if (!Parent.active || Parent.type != NPCType<GlassMiniboss>())
+                Projectile.Kill();
+
             Projectile.localAI[0]--;
 
             float dropLerp = Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.5f, Projectile.localAI[0], true);
