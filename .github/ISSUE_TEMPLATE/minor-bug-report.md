@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 ## Issue Description
-A thorough description of the problem, including:
+**A thorough description of the problem, including:**
     Expected behavior: [What was supposed to happen?]
     Actual behavior: [What did happen?]
     Mod list: [What mods you have loaded?]
