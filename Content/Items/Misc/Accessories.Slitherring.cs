@@ -44,11 +44,11 @@ namespace StarlightRiver.Content.Items.Misc
 
     public class SlitherringGItem : GlobalItem
     {
+
         public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (player.GetModPlayer<SlitherringPlayer>().equipped && ProjectileID.Sets.IsAWhip[type] && Main.rand.NextBool())
             {
-                Main.NewText("Here");
                 Projectile proj = Projectile.NewProjectileDirect(source, position, velocity * 0.75f, ModContent.ProjectileType<SlitherringWhip>(), (int)(damage * 0.5f), knockback, player.whoAmI, -1);
                 proj.originalDamage = damage / 2;
             }    
@@ -67,13 +67,13 @@ namespace StarlightRiver.Content.Items.Misc
             switch (segment)
             {
                 default:
-                    variant = 1;
+                    variant = 2;
                     break;
                 case 5:
                 case 6:
                 case 7:
                 case 8:
-                    variant = 2;
+                    variant = 1;
                     break;
                 case 9:
                 case 10:
@@ -90,13 +90,12 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreAI()
         {
+
             Player player = Main.player[Projectile.owner];
             _flyTime = player.itemAnimationMax * Projectile.MaxUpdates * 2;
             if (Projectile.ai[0] == -1)
-            {
-                Main.NewText("FLs");
                 Projectile.ai[0] = _flyTime;
-            }
+            
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
             Projectile.ai[0]--;
             Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
@@ -111,7 +110,6 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Projectile.WhipPointsForCollision.Clear();
                 SetPoints(Projectile.WhipPointsForCollision);
-                Vector2 position = Projectile.WhipPointsForCollision[Projectile.WhipPointsForCollision.Count - 1];
             }
             if (Utils.GetLerpValue(0.1f, 0.7f, Projectile.ai[0] / _flyTime, true) * Utils.GetLerpValue(0.9f, 0.7f, Projectile.ai[0] / _flyTime, true) > 0.5f)
             {
