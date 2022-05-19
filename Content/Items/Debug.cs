@@ -49,11 +49,15 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            player.statLifeMax = 100;
-            UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
+            int tx = (int)Main.MouseWorld.X / 16;
+            int ty = (int)Main.MouseWorld.Y / 16;
 
-            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
-            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
+            for(int x = 0; x < 2; x++)
+                for(int y = 0; y < 20; y++)
+				{
+                    WorldGen.PlaceTile(tx + x, ty - y, ModContent.TileType<Tiles.Forest.ThickTree>(), false, true);
+				}
+
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
