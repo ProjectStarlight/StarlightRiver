@@ -80,6 +80,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private float zRotation = 0;
 
+		private float rotVel = 0f;
+
+		private int growCounter = 0;
+
+		private Trail trail;
+		private List<Vector2> cache;
+
 		private bool FirstTickOfSwing
 		{
 			get => Projectile.ai[0] == 0;
@@ -99,9 +106,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(42, 42);
 			Projectile.penetrate = -1;
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 16;
 			Projectile.ownerHitCheck = true;
+			Projectile.extraUpdates = 3;
 		}
 
         public override void AI()
@@ -140,22 +146,22 @@ namespace StarlightRiver.Content.Items.Misc
                 {
 					case CurrentAttack.Down:
 						endRotation = rot + (2f * owner.direction);
-						attackDuration = 40;
+						attackDuration = 120;
 						break;
                     case CurrentAttack.FirstUp:
 						endRotation = rot - (2f * owner.direction);
-						attackDuration = 40;
+						attackDuration = 120;
 						break;
 					case CurrentAttack.Spin:
-						attackDuration = 50;
+						attackDuration = 140;
 						endRotation = rot;
                         break;
                     case CurrentAttack.SecondUp:
 						endRotation = rot - (2f * owner.direction);
-						attackDuration = 40;
+						attackDuration = 120;
 						break;
                     case CurrentAttack.Crit:
-						attackDuration = 75;
+						attackDuration = 220;
 						endRotation = rot + (7f * owner.direction);
 						break;
                     case CurrentAttack.Reset:
@@ -164,14 +170,15 @@ namespace StarlightRiver.Content.Items.Misc
                 }
             }
 
-
 			if (Projectile.ai[0] < 1)
             {
-				Projectile.timeLeft = 25;
+				Projectile.timeLeft = 50;
 				Projectile.ai[0] += 1f / attackDuration;
+				rotVel = Math.Abs(EaseProgress(Projectile.ai[0]) - EaseProgress(Projectile.ai[0] - (1f / attackDuration))) * 2;
 			}
 			else
             {
+				rotVel = 0f;
 				if (Main.mouseLeft)
                 {
 					Projectile.ai[0] = 0;
@@ -188,7 +195,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = EaseProgress(Projectile.ai[0]);
 
-			float rotDifference = ((((endRotation - startRotation) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
 
 			Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
 
@@ -203,10 +210,18 @@ namespace StarlightRiver.Content.Items.Misc
 				owner.itemRotation = MathHelper.Clamp(wrappedRotation, -1.57f, -4.71f);
 			owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation - (facingRight ? 0 : MathHelper.Pi));
 			owner.itemAnimation = owner.itemTime = 5;
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
+			if (rotVel < 0.005f)
+				return false;
 			float collisionPoint = 0f;
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + (42 * Projectile.rotation.ToRotationVector2()), 20, ref collisionPoint))
 				return true;
@@ -215,6 +230,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(ref Color lightColor)
         {
+			DrawTrail(Main.spriteBatch);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
 			bool flip = false;
@@ -245,18 +261,71 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
         }
 
-        private float EaseProgress(float input)
+		private void ManageCaches()
+        {
+			Vector2 off = Projectile.rotation.ToRotationVector2() * 35;
+			off.X *= (float)Math.Cos(zRotation);
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 60; i++)
+				{
+					cache.Add(Projectile.Center + off);
+				}
+			}
+
+			cache.Add(Projectile.Center + off);
+
+			while (cache.Count > 60)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+		private void ManageTrail()
+        {
+			Vector2 off = (Projectile.rotation + rotVel).ToRotationVector2() * 35;
+			off.X *= (float)Math.Cos(zRotation);
+
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 12, factor =>
+			{
+				Color trailColor = Color.DarkGray * MathHelper.Min(rotVel * 18, 0.75f);
+				return trailColor;
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + off;
+		}
+
+		private void DrawTrail(SpriteBatch spriteBatch)
+		{
+			spriteBatch.End();
+			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
+
+			trail?.Render(effect);
+
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		private float EaseProgress(float input)
         {
 			switch (currentAttack)
             {
 				case CurrentAttack.Down:
-					return EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularInOut.Ease(input));
+					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.FirstUp:
-					return EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularInOut.Ease(input));
+					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.Spin:
-					return EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularInOut.Ease(input));
+					return input;
 				case CurrentAttack.SecondUp:
-					return EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseCircularInOut.Ease(input));
+					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.Crit:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				default:
