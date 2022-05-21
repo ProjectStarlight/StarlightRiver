@@ -253,7 +253,12 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+        {
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, target.Center);
+		}
+
+        public override bool PreDraw(ref Color lightColor)
 		{
 			//DrawTrail(Main.spriteBatch);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -433,68 +438,66 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			Helper.PlayPitched("Impacts/PanBonk", 0.7f, 0f, target.Center);
+
+			owner.GetModPlayer<StarlightPlayer>().Shake += 10;
+			for (int j = 0; j < 17; j++)
+			{
+				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
+				Dust.NewDustPerfect((target.Center + (direction * 20) + new Vector2(0, 40)), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+			}
+
+			Projectile.friendly = false;
 			Vector2 dir = -Vector2.UnitY.RotatedByRandom(0.3f) * 6;
-			Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);
-			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, dir, ModContent.ProjectileType<FryingPanBonk>(), 0, 0, owner.whoAmI);
+			/*Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);
+			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);*/
 		}
 	}
-	public class FryingPanBonk : ModDust
+	internal class FryingPanBonk : ModProjectile
 	{
 		public override string Texture => AssetDirectory.MiscItem + "FryingPanBonk";
-		public override void OnSpawn(Dust dust)
+		Player owner => Main.player[Projectile.owner];
+
+		float bgRotation = 0;
+
+		public override void SetStaticDefaults()
 		{
-			dust.noGravity = true;
-			dust.frame = new Rectangle(0, 0, 92, 46);
+			DisplayName.SetDefault("Frying Pan");
 		}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
+		public override void SetDefaults()
 		{
-			return new Color(255, 255, 255, 0) * Math.Min(1, Math.Min((90 - dust.alpha) / 15f, dust.alpha / 15f));
+			Projectile.friendly = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(32, 32);
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 90;
 		}
 
-		public override bool Update(Dust dust)
+		public override void AI()
 		{
-			dust.alpha++;
-			dust.scale = 1;
-			dust.position += dust.velocity;
+			Projectile.alpha++;
 
-			dust.velocity *= 0.92f;
+			Projectile.velocity *= 0.92f;
 
-			dust.rotation += 0.004f;
+			Projectile.rotation -= 0.002f;
+			bgRotation += 0.002f;
+		}
 
-			if (dust.alpha > 90)
-				dust.active = false;
+        public override bool PreDraw(ref Color lightColor)
+        {
+			float colorMult = Math.Min(1, Math.Min((90 - Projectile.alpha) / 15f, Projectile.alpha / 15f));
+			Color bgColor = Color.White * colorMult;
+			Texture2D bgTex = ModContent.Request<Texture2D>(Texture + "_BG").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+			Color color = new Color(255, 255, 255, 0) * colorMult;
+
+			Main.spriteBatch.Draw(bgTex, Projectile.Center - Main.screenPosition, null, bgColor, bgRotation, bgTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, bgColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
-	}
-
-	public class FryingPanBonkBG : ModDust
-	{
-		public override string Texture => AssetDirectory.MiscItem + "FryingPanBonkBG";
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.frame = new Rectangle(0, 0, 108, 94);
-		}
-
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return Color.White * Math.Min(1, Math.Min((90 - dust.alpha) / 15f, dust.alpha / 15f));
-		}
-
-		public override bool Update(Dust dust)
-		{
-			dust.alpha++;
-			dust.scale = 1;
-			dust.position += dust.velocity;
-
-			dust.velocity *= 0.92f;
-
-			dust.rotation -= 0.004f;
-
-			if (dust.alpha > 90)
-				dust.active = false;
-			return false;
-		}
-	}
+    }
 }
