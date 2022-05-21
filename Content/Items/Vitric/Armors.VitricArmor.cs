@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Vitric
             orig(Player, keyDir);
         }
 
-        private void PickShardsWhenLoaded(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref int damage, ref float knockback)
+        private void PickShardsWhenLoaded(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
         {
             if (Player.armor[0].type == ItemType<VitricHead>() && ammo.ammo == AmmoID.Arrow)
             {
@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     Helper.PlayPitched("Magic/FireHit", 1, 0, Player.Center);
                     type = ProjectileType<VitricArmorProjectile>();
                     speed = 10;
-                    damage = weapon.damage + 100;
+                    damage.Base = weapon.damage + 100;
                     helm.shardCount--;
 
                     if (helm.shardCount <= 0)

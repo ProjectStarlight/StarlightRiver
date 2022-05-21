@@ -129,10 +129,7 @@ namespace StarlightRiver.Content.Items.Breacher
                 sample.SetDefaults(type);
                 sample.useAmmo = AmmoID.Bullet;
 
-                bool shoot = true;
-
-                player.PickAmmo(sample, ref type, ref speed, ref shoot, ref damage, ref knockback, out int ammoID, !CanConsumeAmmo(player));
-                shoot = player.HasAmmo(sample, shoot);
+                var shoot = player.HasAmmo(player.HeldItem);
 
                 if (!shoot)
                     return false;
@@ -198,7 +195,7 @@ namespace StarlightRiver.Content.Items.Breacher
             return true;
         }
 
-        public override bool CanConsumeAmmo(Player Player)
+        public override bool CanConsumeAmmo(Item ammo, Player Player)
         {
             return Player.altFunctionUse != 2;
         }

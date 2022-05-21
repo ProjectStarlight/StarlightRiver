@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             return false;
 		}
 
-		public override void OnCatchNPC(Player Player, Item Item)
+		public override void OnCaughtBy(Player player, Item item, bool failed)
 		{
             for (int k = 0; k < 20; k++)
                 Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);

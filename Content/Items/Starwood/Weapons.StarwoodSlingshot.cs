@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Starwood
             Item.noUseGraphic = true;
         }
 
-		public override bool CanConsumeAmmo(Player player)
+		public override bool CanConsumeAmmo(Item ammo, Player player)
 		{
             timesShot++;
             if (timesShot >= 50)
