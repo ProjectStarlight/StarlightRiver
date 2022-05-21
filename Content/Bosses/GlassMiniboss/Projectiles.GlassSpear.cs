@@ -36,11 +36,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (!Parent.active || Parent.type != NPCType<GlassMiniboss>())
                 Projectile.Kill();
 
+            Projectile.velocity = Parent.velocity;
+            Projectile.Center = Parent.Center;
+
             Timer++;
+
+            if (Timer > 150)
+                Projectile.Kill();
         }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => projHitbox.Intersects(targetHitbox) && Timer > 50;
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
+            if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
+            {
+                Parent.velocity.X = -oldVelocity.X;
+                Parent.velocity.Y = Parent.velocity.RotatedByRandom(0.2f).Y;
+            }
+            if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon)
+            {
+                Parent.velocity.Y = -oldVelocity.Y; 
+                Parent.velocity.X = Parent.velocity.RotatedByRandom(0.2f).X;
+            }
             return false;
         }
 

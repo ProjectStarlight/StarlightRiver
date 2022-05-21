@@ -45,6 +45,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Jump,
             SpinJump,
             TripleSlash,
+            BigSlash,
             Thrust,
             Whirlwind,
             Javelins,
@@ -67,14 +68,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             NPC.width = 82;
             NPC.height = 75;
-            NPC.lifeMax = 1500;
+            NPC.lifeMax = 1800;
             NPC.damage = 20;
             NPC.aiStyle = -1;
             NPC.noGravity = true;
             NPC.knockBackResist = 0;
             NPC.boss = true;
             NPC.defense = 14;
-            NPC.HitSound = SoundID.DD2_OgreRoar;
+            NPC.HitSound = SoundID.NPCHit52;
             //Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
@@ -101,6 +102,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override void AI()
         {
             AttackTimer++;
+
+            NPC.noGravity = false;
 
             switch (Phase)
             {
@@ -138,17 +141,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 
                 case (int)PhaseEnum.ReturnToForeground:
 
-                    SetPhase(PhaseEnum.DirectPhase);
-                    ResetAttack();
+                    AttackTimer++;
+
+                    if (AttackTimer == 40)
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake = 15;
+
+                    if (AttackTimer > 38 && AttackTimer < 140)
+                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2;
+
+                    if (AttackTimer > 210)
+                    {
+                        SetPhase(PhaseEnum.DirectPhase);
+                        ResetAttack();
+                        AttackPhase = 0;
+                    }
 
                     break;
 
                 case (int)PhaseEnum.DirectPhase:
 
-                    NPC.noGravity = false;
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
+                    NPC.defense = 14;
 
-                    const int maxAttacks = 8;
+                    const int maxAttacks = 9;
 
                     if (AttackTimer == 1)
                     {
@@ -163,23 +178,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        //case 0: TripleSlash(); break;
-                        //case 1: Thrust(); break;//thrust
-                        //case 2: Javelins(); break;
-                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 4: BigBrightBubble(); break;
-                        //case 5: TripleSlash(); break;
-                        //case 6: if (attackVariant) TripleSlash(); else BigSlash(); break;
-                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 8: Javelins(); break;
-                        default: if (attackVariant) TripleSlash(); else BigSlash(); break;
+                        case 0: TripleSlash(); break;
+                        case 1: BigSlash(); break;//thrust
+                        case 2: Javelins(); break;
+                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 4: BigBrightBubble(); break;
+                        case 5: TripleSlash(); break;
+                        case 6: if (attackVariant) TripleSlash(); else BigSlash(); break;
+                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 8: Javelins(); break;
+                        case 9: BigBrightBubble(); break;
                     }
 
                     break;
             }
         }
 
-        public override bool? CanFallThroughPlatforms() => NPC.Bottom.Y < Target.Top.Y;
+        public override bool? CanFallThroughPlatforms() => Target.Bottom.Y > NPC.Top.Y;
 
         public override void SendExtraAI(BinaryWriter writer)
         {
@@ -217,8 +232,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
             Vector2 drawPos = new Vector2(0, -35) - Main.screenPosition;
 
+            //gravity frame
+            if (NPC.velocity.Y > 0)
+                frame.Y = frameHeight * 2;
+
             switch (Phase)
             {
+                case (int)PhaseEnum.ReturnToForeground:
+
+                    if (AttackTimer > 30 & AttackTimer < 180)
+                        return false;
+
+                    break;
+
                 case (int)PhaseEnum.DirectPhase:
 
                     switch (AttackType)
@@ -226,10 +252,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         case (int)AttackEnum.Jump:
 
                             float jumpProgress = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
-                            if (jumpProgress < 0.55f || Math.Abs(NPC.velocity.Y) < -1f)
+                            if (jumpProgress < 0.33f || NPC.velocity.Y < 0f)
                                 frame.Y = frameHeight;
-                            else if (NPC.velocity.Y >= 0)
-                                frame.Y = frameHeight * 2;
                             
                             break;
 
@@ -243,14 +267,28 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             if (AttackTimer > 55 && AttackTimer < 240)
                             {
-                                frame.X = 144;
+                                //using a lerp wouldn't look well with the animation, so a little bit of clunk
+                                if (AttackTimer < slashTime[2] + 60)
+                                {
+                                    frame.X = 142;
 
-                                //using a lerp wouldn't mesh well with the animation, so a little bit of clunk
-                                if (AttackTimer > 180)
-                                    frame.Y = frameHeight * 3;
-                                else if (AttackTimer > 150)
-                                    frame.Y = frameHeight * 2;                                
-                                else if (AttackTimer > 100)
+                                    if (AttackTimer > slashTime[2])
+                                        frame.Y = frameHeight * 3;
+                                    else if (AttackTimer > slashTime[1])
+                                        frame.Y = frameHeight * 2;
+                                    else if (AttackTimer > slashTime[0])
+                                        frame.Y = frameHeight;
+                                }
+                            }
+
+                            break;
+
+                        case (int)AttackEnum.BigSlash:
+
+                            if (AttackTimer > 70 && AttackTimer < 200)
+                            {
+                                frame.X = 142;
+                                if (AttackTimer > 120 && AttackTimer < 200)
                                     frame.Y = frameHeight;
                             }
 
@@ -314,8 +352,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     break;
             }
-
-            Color shinyBlue = new Color(60, 190, 170, 0);
 
             Color baseColor = drawColor;
             Color glowColor = new Color(255, 255, 255, 128);

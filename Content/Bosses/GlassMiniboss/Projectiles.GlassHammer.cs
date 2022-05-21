@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Projectile.rotation = (chargeRot * -Parent.direction) + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
             origin = Parent.Center + handleOffset;
-            Projectile.Center = origin + new Vector2(64, -64).RotatedBy(Projectile.rotation - (Parent.direction < 0 ? MathHelper.PiOver2 : 0));
+            Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation);
 
             if (Projectile.localAI[0] == 0)
             {
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < 30; i++)
                 {
                     Dust.NewDust(Projectile.Center - new Vector2(8, -4), 16, 4, DustType<Dusts.GlassGravity>(), Main.rand.Next(-1, 1), -4);
-                    if (Main.rand.NextBool())
+                    if (Main.rand.NextBool(2))
                     {
                         Dust glow = Dust.NewDustDirect(Projectile.Bottom - new Vector2(8, 4), 16, 4, DustType<Dusts.Glow>(), Main.rand.Next(-1, 1), -4, newColor: Color.DarkOrange);
                         glow.noGravity = false;
@@ -146,9 +146,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         }
     }
 
-    class GlassRaisedSpike : ModProjectile
+    class GlassRaiseSpike : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;// + Name;
+        public override string Texture => AssetDirectory.GlassMiniboss + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass");
 
@@ -224,7 +224,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool PreDraw(ref Color lightColor)
         {
             Asset<Texture2D> glassTex = Request<Texture2D>(Texture);
-            //spike
+
+            //spike growth
 
             if (Time < raise + 120)
                 DrawGroundTell();
@@ -236,13 +237,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void DrawGroundTell()
         {
-            Asset<Texture2D> tellTex = TextureAssets.Extra[98];
-            Vector2 tellOrigin = tellTex.Size() * new Vector2(0.5f, 0.8f);
+            Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassRaiseTell");
+            Vector2 tellOrigin = tellTex.Size() * new Vector2(0.5f, 1f);
 
             Color fade = Color.OrangeRed * Utils.GetLerpValue(0, 10, Time, true) * Utils.GetLerpValue(raise * 0.9f, raise * 0.4f, Time, true);
             fade.A = 0;
-            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.9f, Time, true)) * (5 + (WhoAmI * 5f));
-            float width = 0.5f + (Utils.GetLerpValue(raise * 0.5f, raise, Time, true) * 15f);
+            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.9f, Time, true)) * (4 + (WhoAmI * 2f));
+            float width = 0.5f + (Utils.GetLerpValue(raise * 0.5f, raise, Time, true) * 3f);
             Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - Main.screenPosition, null, fade, Projectile.rotation, tellOrigin, new Vector2(width, height), 0, 0);
         }
     }
