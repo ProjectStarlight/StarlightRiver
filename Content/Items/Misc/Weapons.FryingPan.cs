@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, target.Center);
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, target.Center);
 		}
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
