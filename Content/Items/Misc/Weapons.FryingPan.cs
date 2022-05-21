@@ -177,13 +177,14 @@ namespace StarlightRiver.Content.Items.Misc
 						attackDuration = 120;
 						break;
 					case CurrentAttack.Crit:
-						attackDuration = 320;
+						attackDuration = 220;
 						endRotation = rot + (10f * owner.direction);
 						break;
 					case CurrentAttack.Reset:
 						Projectile.active = false;
 						break;
 				}
+				Projectile.ai[0] += 30f / attackDuration;
 			}
 
 			if (Projectile.ai[0] < 1)
