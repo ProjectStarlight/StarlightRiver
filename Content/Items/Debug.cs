@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            Item.createTile = ModContent.TileType<Tiles.Forest.ThickTreeBase>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -49,6 +49,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            //return true;
+
             int tx = (int)Main.MouseWorld.X / 16;
             int ty = (int)Main.MouseWorld.Y / 16;
 
