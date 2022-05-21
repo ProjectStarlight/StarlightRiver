@@ -452,7 +452,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Helper.PlayPitched("Impacts/PanBonk", 0.7f, 0f, target.Center);
+			Helper.PlayPitched("Impacts/PanBonk", 0.7f, Main.rand.NextFloat(-0.2f,0.2f), target.Center);
 
 			owner.GetModPlayer<StarlightPlayer>().Shake += 10;
 			for (int j = 0; j < 17; j++)
