@@ -177,8 +177,9 @@ namespace StarlightRiver.Content.Items.Misc
 						attackDuration = 120;
 						break;
 					case CurrentAttack.Crit:
-						attackDuration = 220;
+						attackDuration = 180;
 						endRotation = rot + (10f * owner.direction);
+						Projectile.ai[0] -= 15f / attackDuration;
 						break;
 					case CurrentAttack.Reset:
 						Projectile.active = false;
@@ -229,7 +230,7 @@ namespace StarlightRiver.Content.Items.Misc
 			owner.itemAnimation = owner.itemTime = 5;
 
 			float throwingAngle = MathHelper.WrapAngle(owner.DirectionTo(Main.MouseWorld).ToRotation());
-			if (currentAttack == CurrentAttack.Crit && Math.Abs(wrappedRotation - throwingAngle) < 0.3f && Projectile.ai[0] > 0.4f)
+			if (currentAttack == CurrentAttack.Crit && Math.Abs(wrappedRotation - throwingAngle) < 0.3f && Projectile.ai[0] > 0.6f)
 			{
 				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, owner.DirectionTo(Main.MouseWorld) * 12, ModContent.ProjectileType<FryingPanThrownProj>(), Projectile.damage, Projectile.knockBack, owner.whoAmI).rotation = Projectile.rotation + 0.78f;
 				Projectile.active = false;
@@ -379,7 +380,7 @@ namespace StarlightRiver.Content.Items.Misc
 				case CurrentAttack.SecondUp:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.Crit:
-					return EaseFunction.EaseCircularInOut.Ease(input);
+					return EaseFunction.EaseQuadInOut.Ease(input);
 				default:
 					return input;
 			}
