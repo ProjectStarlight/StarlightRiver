@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         SetPhase(PhaseEnum.DirectPhase);
                         ResetAttack();
-                        AttackPhase = 0;
+                        AttackPhase = -1;
                     }
 
                     break;
@@ -178,16 +178,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: TripleSlash(); break;
-                        case 1: BigSlash(); break;//thrust
-                        case 2: Javelins(); break;
-                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 4: BigBrightBubble(); break;
-                        case 5: TripleSlash(); break;
-                        case 6: if (attackVariant) TripleSlash(); else BigSlash(); break;
-                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 8: Javelins(); break;
-                        case 9: BigBrightBubble(); break;
+                        //case 0: TripleSlash(); break;
+                        //case 1: BigSlash(); break;//thrust
+                        //case 2: Javelins(); break;
+                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 4: BigBrightBubble(); break;
+                        //case 5: TripleSlash(); break;
+                        //case 6: if (attackVariant) BigSlash(); else BigSlash(); break;//thrust or big
+                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 8: Javelins(); break;
+                        //case 9: BigBrightBubble(); break;
+                        default: HammerVariant(); break;
                     }
 
                     break;

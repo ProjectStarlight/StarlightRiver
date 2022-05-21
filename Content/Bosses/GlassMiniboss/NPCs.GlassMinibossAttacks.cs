@@ -311,7 +311,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 spikeCount = 8;
 
             int spikeSpawn = hammerSpawn + hammerTime - 65;
-            int betweenSpikes = 2;
+            int betweenSpikes = 5;
             float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * betweenSpikes), AttackTimer, true);
             if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
             {
@@ -359,16 +359,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 spikeCount = 4;
 
             int spikeSpawn = hammerSpawn + hammerTime - 65;
-            int betweenSpikes = 2;
+            int betweenSpikes = 5;
             float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * betweenSpikes), AttackTimer, true);
-            if (AttackTimer >= spikeSpawn - betweenSpikes && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
+            if (AttackTimer >= spikeSpawn - 1 && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
             {
                 Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf(-1).X + (102 * Direction), NPC.Center.Y), dist);
                 Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
                 Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }
-            if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && (AttackTimer + 1) % betweenSpikes == 0)
+            if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && (AttackTimer - 1) % betweenSpikes == 0)
             {
                 Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf().X + (102 * -Direction), NPC.Center.Y), dist);
                 Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             AttackType = (int)AttackEnum.BigBrightBubble;
 
-            NPC.defense = 50;
+            NPC.defense = 100;
 
             if (AttackTimer == 1)
             {

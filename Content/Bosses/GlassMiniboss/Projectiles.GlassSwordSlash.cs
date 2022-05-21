@@ -46,7 +46,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Timer++;
 
-            if (Timer > 20)
+            Lighting.AddLight(Projectile.Center, new Color(60, 190, 170, 0).ToVector3());
+
+            if (Timer > 22)
                 Projectile.Kill();
         }
 
@@ -61,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
             {
-                Parent.velocity.X = -oldVelocity.X * 0.5f;
+                Parent.velocity.X = -oldVelocity.X * 0.7f;
                 Parent.velocity.Y -= 1;
             }
             return false;
@@ -82,11 +84,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Rectangle glowFrame = slashTexture.Frame(1, 2, 0, 1);
             Vector2 origin = glowFrame.Size() * new Vector2(0.6f, 0.5f);
 
-            float scaleX = 0.9f + Utils.GetLerpValue(7, 25, Timer, true) * 0.7f;
-            float scaleY = 0.7f + Utils.GetLerpValue(0, 22, Timer, true) * 0.3f;
+            float scaleX = 0.9f + Utils.GetLerpValue(5, 22, Timer, true) * 0.7f;
+            float scaleY = 0.7f + Utils.GetLerpValue(15, 22, Timer, true) * 0.4f;
 
-            Color slashColor = new Color(60, 180, 140, 0) * (float)Math.Pow(Utils.GetLerpValue(23, 17, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
-            Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(23, 17, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            Color slashColor = new Color(60, 180, 140, 0) * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
 
             float rotOff = (Parent.direction < 0 ? MathHelper.Pi : 0) + (Parent.direction * (Variant % 2 == 0 ? -0.14f : 0.14f));
             Main.EntitySpriteDraw(slashTexture.Value, Projectile.Center - Main.screenPosition, slashFrame, slashColor, Projectile.rotation + rotOff, origin, Projectile.scale * new Vector2(scaleX, scaleY), Direction(), 0);
@@ -100,7 +102,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Parent.direction < 0)
                 effects = SpriteEffects.FlipVertically;
 
-            if (Variant % 2 == 1)
+            if (Variant % 3 != 0)
                 effects = effects == 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             return effects; 

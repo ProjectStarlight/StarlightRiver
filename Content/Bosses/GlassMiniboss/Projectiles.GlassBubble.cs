@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.height = 44;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
-            Projectile.timeLeft = 2400; //failsafe
+            Projectile.timeLeft = 1100; //failsafe
             Projectile.tileCollide = false;
         }
 
