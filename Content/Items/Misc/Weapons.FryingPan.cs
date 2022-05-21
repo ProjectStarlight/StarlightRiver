@@ -265,6 +265,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, target.Center);
 		}
 
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			hitDirection = Math.Sign(target.Center.X - owner.Center.X);
+        }
+
         public override bool PreDraw(ref Color lightColor)
 		{
 			//DrawTrail(Main.spriteBatch);
