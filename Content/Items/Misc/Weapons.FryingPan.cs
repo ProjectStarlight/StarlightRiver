@@ -87,6 +87,9 @@ namespace StarlightRiver.Content.Items.Misc
 		private Trail trail;
 		private List<Vector2> cache;
 
+		private List<float> oldRotation = new List<float>();
+		private List<Vector2> oldPosition = new List<Vector2>();
+
 		private bool FirstTickOfSwing
 		{
 			get => Projectile.ai[0] == 0;
@@ -96,6 +99,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Frying Pan");
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 4;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 			Main.projFrames[Projectile.type] = 1;
 		}
 
@@ -110,20 +115,20 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.extraUpdates = 3;
 		}
 
-        public override void AI()
-        {
+		public override void AI()
+		{
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = Main.GetPlayerArmPosition(Projectile);
 			if (currentAttack == CurrentAttack.Spin)
-            {
+			{
 				Vector2 spinOffset = Main.GetPlayerArmPosition(Projectile) - owner.Center;
 				spinOffset.X *= (float)Math.Cos(zRotation);
 				Projectile.Center = owner.Center + spinOffset;
-            }
+			}
 			owner.heldProj = Projectile.whoAmI;
 
 			if (FirstTickOfSwing)
-            {
+			{
 				if (owner.DirectionTo(Main.MouseWorld).X > 0)
 					facingRight = true;
 				else
@@ -131,67 +136,71 @@ namespace StarlightRiver.Content.Items.Misc
 
 				float rot = owner.DirectionTo(Main.MouseWorld).ToRotation();
 				if (!initialized)
-                {
+				{
 					initialized = true;
 					endRotation = rot - (1f * owner.direction);
-                }
+
+					oldRotation = new List<float>();
+					oldPosition = new List<Vector2>();
+
+				}
 				else
-                {
+				{
 					currentAttack = (CurrentAttack)((int)currentAttack + 1);
-                }
+				}
 
 				startRotation = endRotation;
 
 				switch (currentAttack)
-                {
+				{
 					case CurrentAttack.Down:
 						endRotation = rot + (2f * owner.direction);
 						attackDuration = 120;
 						break;
-                    case CurrentAttack.FirstUp:
+					case CurrentAttack.FirstUp:
 						endRotation = rot - (2f * owner.direction);
 						attackDuration = 120;
 						break;
 					case CurrentAttack.Spin:
 						attackDuration = 140;
-						endRotation = rot;
-                        break;
-                    case CurrentAttack.SecondUp:
+						endRotation = rot + (2f * owner.direction);
+						break;
+					case CurrentAttack.SecondUp:
 						endRotation = rot - (2f * owner.direction);
 						attackDuration = 120;
 						break;
-                    case CurrentAttack.Crit:
-						attackDuration = 220;
-						endRotation = rot + (7f * owner.direction);
+					case CurrentAttack.Crit:
+						attackDuration = 320;
+						endRotation = rot + (10f * owner.direction);
 						break;
-                    case CurrentAttack.Reset:
+					case CurrentAttack.Reset:
 						Projectile.active = false;
 						break;
-                }
-            }
+				}
+			}
 
 			if (Projectile.ai[0] < 1)
-            {
+			{
 				Projectile.timeLeft = 50;
 				Projectile.ai[0] += 1f / attackDuration;
 				rotVel = Math.Abs(EaseProgress(Projectile.ai[0]) - EaseProgress(Projectile.ai[0] - (1f / attackDuration))) * 2;
 			}
 			else
-            {
+			{
 				rotVel = 0f;
 				if (Main.mouseLeft)
-                {
+				{
 					Projectile.ai[0] = 0;
 					return;
-                }
-            }
-			if (currentAttack == CurrentAttack.Spin && Projectile.ai[0] < 1)
+				}
+			}
+			/*if (currentAttack == CurrentAttack.Spin && Projectile.ai[0] < 1)
 			{
 				zRotation = 6.28f * EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
 				owner.UpdateRotation(zRotation + (facingRight ? 3.14f : 0));
 			}
 			else
-				owner.UpdateRotation(0);
+				owner.UpdateRotation(0);*/
 
 			float progress = EaseProgress(Projectile.ai[0]);
 
@@ -211,40 +220,56 @@ namespace StarlightRiver.Content.Items.Misc
 			owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation - (facingRight ? 0 : MathHelper.Pi));
 			owner.itemAnimation = owner.itemTime = 5;
 
+			float throwingAngle = MathHelper.WrapAngle(owner.DirectionTo(Main.MouseWorld).ToRotation());
+			if (currentAttack == CurrentAttack.Crit && Math.Abs(wrappedRotation - throwingAngle) < 0.3f && Projectile.ai[0] > 0.4f)
+			{
+				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, owner.DirectionTo(Main.MouseWorld) * 12, ModContent.ProjectileType<FryingPanThrownProj>(), Projectile.damage, Projectile.knockBack, owner.whoAmI).rotation = Projectile.rotation + 0.78f;
+				Projectile.active = false;
+			}
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
 				ManageTrail();
 			}
+
+			oldRotation.Add(Projectile.rotation);
+			oldPosition.Add(Projectile.Center);
+
+			if (oldRotation.Count > 16)
+				oldRotation.RemoveAt(0);
+			if (oldPosition.Count > 16)
+				oldPosition.RemoveAt(0);
+
 		}
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-        {
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
 			if (rotVel < 0.005f)
 				return false;
 			float collisionPoint = 0f;
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + (42 * Projectile.rotation.ToRotationVector2()), 20, ref collisionPoint))
 				return true;
 			return false;
-        }
+		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
-			DrawTrail(Main.spriteBatch);
+		public override bool PreDraw(ref Color lightColor)
+		{
+			//DrawTrail(Main.spriteBatch);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
 			bool flip = false;
 			SpriteEffects effects = SpriteEffects.None;
-			if (zRotation > 1.57f && zRotation < 4.71f)
+			/*if (zRotation > 1.57f && zRotation < 4.71f)
 			{
 				flip = true;
 				effects = facingRight ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
-			}
+			}*/
 
 			Vector2 origin = new Vector2(0, tex.Height);
 
 			Vector2 scaleVec = Vector2.One;
-			if (flip)
+			/*if (flip)
             {
 				if (facingRight)
 				{
@@ -256,13 +281,22 @@ namespace StarlightRiver.Content.Items.Misc
 					scaleVec.Y = (float)Math.Abs(Math.Cos(zRotation));
 					origin = new Vector2(0, 0);
 				}
-            }
+            }*/
+			for (int k = 16; k > 0; k--)
+			{
+
+				float progress = 1 - (float)(((float)(16 - k) / (float)16));
+				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
+				if (k > 0 && k < oldRotation.Count)
+					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, oldRotation[k] + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
+			}
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
 			return false;
-        }
+		}
 
 		private void ManageCaches()
-        {
+		{
 			Vector2 off = Projectile.rotation.ToRotationVector2() * 35;
 			off.X *= (float)Math.Cos(zRotation);
 			if (cache == null)
@@ -283,7 +317,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 		private void ManageTrail()
-        {
+		{
 			Vector2 off = (Projectile.rotation + rotVel).ToRotationVector2() * 35;
 			off.X *= (float)Math.Cos(zRotation);
 
@@ -315,22 +349,152 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		private float EaseProgress(float input)
-        {
+		{
 			switch (currentAttack)
-            {
+			{
 				case CurrentAttack.Down:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.FirstUp:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.Spin:
-					return input;
+					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.SecondUp:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				case CurrentAttack.Crit:
 					return EaseFunction.EaseCircularInOut.Ease(input);
 				default:
 					return input;
-            }
-        }
-    }
+			}
+		}
+	}
+
+	internal class FryingPanThrownProj : ModProjectile
+	{
+		public override string Texture => AssetDirectory.MiscItem + "FryingPan";
+
+		private Player owner => Main.player[Projectile.owner];
+
+		private List<float> oldRotation = new List<float>();
+		private List<Vector2> oldPosition = new List<Vector2>();
+		private bool initialized = false;
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 30;
+			Projectile.height = 30;
+			Projectile.aiStyle = 3;
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 700;
+			Projectile.extraUpdates = 1;
+			Projectile.tileCollide = true;
+		}
+		public override void AI()
+		{
+			if (!initialized)
+			{
+				oldRotation = new List<float>();
+				oldPosition = new List<Vector2>();
+				initialized = true;
+			}
+			owner.itemTime = owner.itemAnimation = 5;
+			owner.itemRotation = owner.DirectionTo(Projectile.Center).ToRotation();
+			owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation - ((Projectile.Center.X > owner.Center.X) ? 0 : MathHelper.Pi));
+
+			oldRotation.Add(Projectile.rotation);
+			oldPosition.Add(Projectile.Center);
+
+			if (oldRotation.Count > 8)
+				oldRotation.RemoveAt(0);
+			if (oldPosition.Count > 8)
+				oldPosition.RemoveAt(0);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			SpriteEffects effects = SpriteEffects.None;
+
+			Vector2 origin = new Vector2(tex.Width, tex.Height) / 2;
+
+			for (int k = 8; k > 0; k--)
+			{
+
+				float progress = 1 - (float)(((float)(8 - k) / (float)8));
+				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.2f;
+				if (k > 0 && k < oldRotation.Count)
+					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], origin, Projectile.scale, effects, 0f);
+			}
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, origin, Projectile.scale, effects, 0f);
+			return false;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			Vector2 dir = -Vector2.UnitY.RotatedByRandom(0.3f) * 6;
+			Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);
+			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);
+		}
+	}
+	public class FryingPanBonk : ModDust
+	{
+		public override string Texture => AssetDirectory.MiscItem + "FryingPanBonk";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.frame = new Rectangle(0, 0, 92, 46);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return new Color(255, 255, 255, 0) * Math.Min(1, Math.Min((90 - dust.alpha) / 15f, dust.alpha / 15f));
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.alpha++;
+			dust.scale = 1;
+			dust.position += dust.velocity;
+
+			dust.velocity *= 0.92f;
+
+			dust.rotation += 0.004f;
+
+			if (dust.alpha > 90)
+				dust.active = false;
+			return false;
+		}
+	}
+
+	public class FryingPanBonkBG : ModDust
+	{
+		public override string Texture => AssetDirectory.MiscItem + "FryingPanBonkBG";
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.frame = new Rectangle(0, 0, 108, 94);
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return Color.White * Math.Min(1, Math.Min((90 - dust.alpha) / 15f, dust.alpha / 15f));
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.alpha++;
+			dust.scale = 1;
+			dust.position += dust.velocity;
+
+			dust.velocity *= 0.92f;
+
+			dust.rotation -= 0.004f;
+
+			if (dust.alpha > 90)
+				dust.active = false;
+			return false;
+		}
+	}
 }
