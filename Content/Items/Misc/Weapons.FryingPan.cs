@@ -25,12 +25,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Frying Pan");
-			Tooltip.SetDefault("Update this egshels");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 16;
+			Item.damage = 12;
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 36;
 			Item.height = 44;
@@ -40,15 +39,23 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6.5f;
-			Item.value = Item.sellPrice(0, 1, 0, 0);
-			Item.crit = 4;
-			Item.rare = 2;
+			Item.crit = 9;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
 			Item.shoot = ProjectileType<FryingPanProj>();
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.autoReuse = false;
+			Item.value = Item.sellPrice(0, 0, 20, 0);
+			Item.rare = ItemRarityID.Blue;
+		}
+
+		public override void AddRecipes()
+		{
+			CreateRecipe()
+				.AddIngredient(RecipeGroupID.IronBar, 15)
+				.AddTile(TileID.Anvils)
+				.Register();
 		}
 	}
 
