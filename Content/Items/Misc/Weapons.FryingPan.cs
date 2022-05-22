@@ -136,6 +136,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (FirstTickOfSwing)
 			{
+				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				if (owner.DirectionTo(Main.MouseWorld).X > 0)
 					facingRight = true;
 				else
@@ -399,8 +400,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 30;
-			Projectile.height = 30;
+			Projectile.width = 20;
+			Projectile.height = 20;
 			Projectile.aiStyle = 3;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Melee;
