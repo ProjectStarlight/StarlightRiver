@@ -95,6 +95,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Main.EntitySpriteDraw(slashTexture.Value, Projectile.Center - Main.screenPosition, glowFrame, glowColor, Projectile.rotation + rotOff, origin, Projectile.scale * new Vector2(scaleX, scaleY), Direction(), 0);
         }
 
+        private void DrawSword()
+        {
+
+        }
+
         private SpriteEffects Direction()
         {
             SpriteEffects effects = SpriteEffects.None;

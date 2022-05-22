@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             SpinJump,
             TripleSlash,
             BigSlash,
-            Thrust,
+            SpearThrust,
             Whirlwind,
             Javelins,
             Hammer,
@@ -163,6 +163,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
                     NPC.defense = 14;
 
+                    if (NPC.velocity.Y > 0f && NPC.collideY)
+                        Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.4f, NPC.Center);
+
                     const int maxAttacks = 9;
 
                     if (AttackTimer == 1)
@@ -188,7 +191,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                         //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
                         //case 8: Javelins(); break;
                         //case 9: BigBrightBubble(); break;
-                        default: HammerVariant(); break;
+                        default: Hammer(); break;
                     }
 
                     break;
@@ -295,7 +298,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             break;
                                                  
-                        case (int)AttackEnum.Thrust:
+                        case (int)AttackEnum.SpearThrust:
 
                             break;
 

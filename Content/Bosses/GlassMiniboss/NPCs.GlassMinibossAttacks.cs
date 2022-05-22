@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.Y = -MathHelper.Lerp(7f, 8f, moveStart.Distance(moveTarget) * 0.003f) * yStrength;
             }
             if (AttackTimer == timeStart + 3 && !spin)
-                Helpers.Helper.PlayPitched("GlassMiniboss/Jump", 0.33f, 0.1f, NPC.Center);
+                Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.1f, NPC.Center);
 
             if (progress <= 0.6f)
                 moveStart.X += NPC.velocity.X * 0.15f;
@@ -224,6 +224,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 ResetAttack();
         }
 
+        private void SpearThrust()
+        {
+            AttackType = (int)AttackEnum.SpearThrust;
+
+        }
+
         private void Javelins()
         {
             AttackType = (int)AttackEnum.Javelins;
@@ -287,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
             {
                 NPC.TargetClosest();
-                moveTarget = PickSide(-1);
+                moveTarget = PickSide();
                 moveStart = NPC.Center;
             }
 
@@ -315,8 +321,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * betweenSpikes), AttackTimer, true);
             if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
             {
-                Vector2 spikeX = Vector2.Lerp(PickSideSelf(), new Vector2(PickSideSelf(-1).X + (102 * Direction), NPC.Center.Y), dist);
-                Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
+                float spikeX = MathHelper.Lerp(PickSideSelf().X, PickSideSelf(-1).X + (102 * Direction), dist);
+                float spikeY = arenaPos.Y - 150;
+                Vector2 spikePos = new Vector2(spikeX, spikeY);
                 Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }

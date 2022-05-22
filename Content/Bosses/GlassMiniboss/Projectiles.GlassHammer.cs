@@ -181,12 +181,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void OnSpawn(IEntitySource source)
         {
-            Projectile.rotation += Main.rand.NextFloat(-0.1f, 0.1f);
-            maxSpikes = Main.rand.Next(15, 20);
+            Projectile.rotation += Main.rand.NextFloat(-0.01f, 0.01f);
+            maxSpikes = 3 + Main.rand.Next(18, 20);
             points = new Vector2[maxSpikes];
             offsets = new float[maxSpikes];
             for (int i = 0; i < maxSpikes; i++)
-                offsets[i] = (float)Math.Sin(i * MathHelper.PiOver4) * Main.rand.NextFloatDirection();
+                offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
@@ -197,38 +197,54 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.localAI[0] > 0)
                 Projectile.localAI[0]--;
 
+            Projectile.height = (int)(Utils.GetLerpValue(1.4f, 0.8f, WhoAmI, true) * 240f);
+
             if (Time == raise - 59)
+            {
                 Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
 
-            Projectile.velocity.Y = 80;
+                int x = (int)(Projectile.Center.X / 16f);
+                int y = (int)(Projectile.Center.Y / 16f);
+                for (int i = y; i < y + 20; i++)
+                {
+                    if (WorldGen.ActiveAndWalkableTile(x, i))
+                    {
+                        Projectile.Bottom = new Vector2(Projectile.Center.X, i * 16f);
+                        break;
+                    }
+                }
+            }
 
-            Projectile.height = (int)(Utils.GetLerpValue(1.8f, 0.5f, WhoAmI, true) * 240f);
+            //Projectile.velocity.Y = 80;
 
             if (Time == raise)
             {
-                Helpers.Helper.PlayPitched("GlassMiniboss/Jump", 0.5f, 0.3f, Projectile.Center);
-                //shotgun projectiles up
+                Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundGlassRaise", 0.5f, 0.3f, Projectile.Center);
+                //shotgun projectiles up ?
 
-                for (int i = 0; i < 60; i++)
+                for (int i = 0; i < 70; i++)
                 {
-                    Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
-                    Vector2 dustVel = new Vector2(0, -(i / 12f)).RotatedBy(Projectile.rotation);
+                    Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(50, 10);
+                    Vector2 dustVel = new Vector2(0, -Main.rand.Next(i) / 4f).RotatedBy(Projectile.rotation);
                     Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.8f);
                 }
             }
 
             if (Time < raise + 10 && Time > 0 && Main.rand.Next(raise) > Time)
             {
-                Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
-                Vector2 dustVel = new Vector2(0, Main.rand.Next(-10, -7)).RotatedBy(Projectile.rotation);
-                Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), dustVel, 0, Color.DarkOrange, 0.3f);
-                glow.noGravity = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
+                    Vector2 dustVel = new Vector2(0, Main.rand.Next(-5, -2)).RotatedBy(Projectile.rotation);
+                    Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.GlowFastDecelerate>(), dustVel, 0, Color.DarkOrange, 0.5f);
+                    glow.noGravity = false;
+                }
             }
 
-            if (Time > raise + 140 && Time < raise + 190)
+            if (Time > raise + 160 && Time < raise + 200)
             {
-                int dustPos = (int)(Utils.GetLerpValue(raise + 140, raise + 195, Time, true) * maxSpikes);
-                Dust.NewDustPerfect(points[dustPos], DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.5f) * 5);
+                int dustPos = (int)(Utils.GetLerpValue(raise + 160, raise + 205, Time, true) * maxSpikes);
+                Dust.NewDustPerfect(points[dustPos], DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.2f) * 5);
             }
 
             if (Time > raise + 210)
@@ -237,13 +253,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if (Time >= raise && Time < raise + 5)
-                target.velocity -= new Vector2(0, 3).RotatedBy(Projectile.rotation);
+            if (Time >= raise && Time < raise + 3)
+                target.velocity -= new Vector2(0, 7).RotatedBy(Projectile.rotation);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            bool properTime = Time > raise + 10 && Time < raise + 50;
+            bool properTime = Time > raise && Time < raise + 120;
             bool inSpike = projHitbox.Intersects(targetHitbox);
 
             return properTime && inSpike;
@@ -253,27 +269,46 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
-            int baseWidth = 24;
-            int totalHeight = Projectile.height;
+            int baseWidth = 20;
+            int totalHeight = Projectile.height + 30;
 
             if (Time < raise + 10)
                 DrawGroundTell();
+
+            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
 
             if (Time > raise - 10)
             {
                 for (int i = 0; i < maxSpikes; i++)
                 {
-                    float lerp = Utils.GetLerpValue(0f, maxSpikes, i, true);
-                    float height = -totalHeight * lerp * (float)Math.Sqrt(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 18 + (7f * lerp), Time, true));
-                    float width = baseWidth * (1f - lerp);
+                    float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                    float closeIn = Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 300, raise + 150, Time, true));
+                    float height = -totalHeight * lerp * (float)Math.Sqrt(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 30 + (7f * lerp), Time, true)) * closeIn;
+                    float width = baseWidth * (1.1f - lerp);
 
-                    points[i] = Projectile.Bottom + new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation);
+                    points[i] = Projectile.Bottom + new Vector2(offsets[i] * width * closeIn, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation);
                     int j = maxSpikes - i - 1;
-                    float rotation = Projectile.rotation + offsets[j] * lerp * 0.7f;
-                    if (Time > raise + 90 - i * 3)
-                        points[j] += Main.rand.NextVector2Circular(2, 2);
+                    float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.5f);
+                    if (Time > raise + 125 - i * 3)
+                        points[j] += Main.rand.NextVector2Circular(1, 3);
 
-                    DrawSpikeGrowth(points[j], rotation, (int)(lerp * 5f), Utils.GetLerpValue(raise + 20 - lerp * 20, raise + 210 - lerp * 40, Time, true));
+                    int growthSize = (int)((float)Math.Sqrt(lerp) * 5f);
+                    float growthProg = Utils.GetLerpValue(raise + 20 - lerp * 20, raise + 210 - lerp * 40, Time, true);
+                    DrawSpikeGrowth(points[j], rotation, growthSize, growthProg);
+                }
+
+                for (int i = 0; i < maxSpikes; i++)
+                {
+                    float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                    int j = maxSpikes - i - 1;
+                    float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.5f);
+
+                    int bloomSize = (int)((float)Math.Sqrt(lerp) * 5f);
+                    float bloomProg = Utils.GetLerpValue(raise + 20 - lerp * 20, raise + 210 - lerp * 40, Time, true);
+                    Vector2 bloomScale = new Vector2(1f, 1.5f) * Utils.GetLerpValue(-5, 5, bloomSize, true);
+                    Color bloomFade = Color.OrangeRed * Utils.GetLerpValue(0.6f, 0.1f, bloomProg, true) * ((bloomSize + 1) / 5f) * Utils.GetLerpValue(0, 0.1f, bloomProg, true);
+                    bloomFade.A = 0;
+                    Main.EntitySpriteDraw(bloom.Value, points[j] - Main.screenPosition, null, bloomFade, rotation, bloom.Size() * 0.5f, bloomScale, 0, 0);
                 }
             }
 
@@ -285,7 +320,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> growth = Request<Texture2D>(Texture);
             Rectangle frame = growth.Frame(5, 2, size, 0);
             Rectangle hotFrame = growth.Frame(5, 2, size, 1);
-            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.82f);
+            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.77f);
 
             Color lightColor = Lighting.GetColor((int)position.X / 16, (int)position.Y / 16);
             float scaleW = Utils.GetLerpValue(-0.05f, 0.05f, progress, true) * Helpers.Helper.SwoopEase(Utils.GetLerpValue(1, 0.8f, progress, true));
@@ -296,11 +331,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Color hotFade = new Color(255, 255, 255, 0) * Utils.GetLerpValue(0.6f, 0.3f, progress, true);
             Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, hotFrame, hotFade, rotation, origin, scale, 0, 0);
-
-            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            Color bloomFade = Color.OrangeRed * Utils.GetLerpValue(0.4f, 0.2f, progress, true) * 0.8f * ((size + 1) / 5f);
-            bloomFade.A = 0;
-            Main.EntitySpriteDraw(bloom.Value, position - Main.screenPosition, null, bloomFade, rotation, bloom.Size() * 0.5f, scale, 0, 0);
         }
 
         private void DrawGroundTell()
@@ -313,6 +343,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.9f, Time, true)) * 3f + (WhoAmI * 3f);
             float width = 0.4f + (Utils.GetLerpValue(raise * 0.17f, raise, Time, true) * 3f);
             Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom + new Vector2(0, 10) - Main.screenPosition, null, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
+            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom + new Vector2(0, 10) - Main.screenPosition, null, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1.2f, height * 0.6f), 0, 0);
         }
     }
 }
