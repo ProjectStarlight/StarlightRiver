@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Timer++;
 
-            Lighting.AddLight(Projectile.Center, new Color(60, 190, 170, 0).ToVector3());
+            Lighting.AddLight(Projectile.Center, GlassMiniboss.GlassColor.ToVector3());
 
             if (Timer > 22)
                 Projectile.Kill();
@@ -82,12 +82,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> slashTexture = Request<Texture2D>(Texture);
             Rectangle slashFrame = slashTexture.Frame(1, 2, 0, 0);
             Rectangle glowFrame = slashTexture.Frame(1, 2, 0, 1);
-            Vector2 origin = glowFrame.Size() * new Vector2(0.6f, 0.5f);
+            Vector2 origin = glowFrame.Size() * new Vector2(0.5f, 0.5f);
 
-            float scaleX = 0.9f + Utils.GetLerpValue(5, 22, Timer, true) * 0.7f;
-            float scaleY = 0.7f + Utils.GetLerpValue(15, 22, Timer, true) * 0.4f;
+            float scaleX = 0.9f + Utils.GetLerpValue(12, 22, Timer, true) * 0.7f;
+            float scaleY = 0.8f + Utils.GetLerpValue(10, 22, Timer, true) * 0.2f;
 
-            Color slashColor = new Color(60, 180, 140, 0) * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            Color slashColor = GlassMiniboss.GlassColor * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            slashColor.A = 0;
             Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
 
             float rotOff = (Parent.direction < 0 ? MathHelper.Pi : 0) + (Parent.direction * (Variant % 2 == 0 ? -0.14f : 0.14f));

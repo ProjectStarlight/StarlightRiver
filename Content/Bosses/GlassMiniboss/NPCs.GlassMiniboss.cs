@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.boss = true;
             NPC.defense = 14;
             NPC.HitSound = SoundID.NPCHit52;
-            //Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.defense = 14;
 
                     if (NPC.velocity.Y > 0f && NPC.collideY)
-                        Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.4f, NPC.Center);
+                        Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
                     const int maxAttacks = 9;
 
@@ -181,17 +181,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        //case 0: TripleSlash(); break;
-                        //case 1: BigSlash(); break;//thrust
-                        //case 2: Javelins(); break;
-                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 4: BigBrightBubble(); break;
-                        //case 5: TripleSlash(); break;
-                        //case 6: if (attackVariant) BigSlash(); else BigSlash(); break;//thrust or big
-                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 8: Javelins(); break;
-                        //case 9: BigBrightBubble(); break;
-                        default: Hammer(); break;
+                        case 0: TripleSlash(); break;
+                        case 1: BigSlash(); break;//thrust
+                        case 2: Javelins(); break;
+                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 4: BigBrightBubble(); break;
+                        case 5: TripleSlash(); break;
+                        case 6: if (attackVariant) BigSlash(); else BigSlash(); break;//thrust or big
+                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 8: Javelins(); break;
+                        case 9: BigBrightBubble(); break;
                     }
 
                     break;
@@ -373,6 +372,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             return false;
         }
 
-        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None; 
+        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.33f);
+        public static readonly Color GlassColor = new Color(60, 190, 150);
+
     }
 }

@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.Y = -MathHelper.Lerp(7f, 8f, moveStart.Distance(moveTarget) * 0.003f) * yStrength;
             }
             if (AttackTimer == timeStart + 3 && !spin)
-                Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.1f, NPC.Center);
+                Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 
             if (progress <= 0.6f)
                 moveStart.X += NPC.velocity.X * 0.15f;

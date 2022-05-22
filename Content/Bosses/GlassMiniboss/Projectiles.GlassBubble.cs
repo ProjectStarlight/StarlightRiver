@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Timer < 180)
             {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(70, 70);
-                Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), pos.DirectionTo(Projectile.Center) * Main.rand.NextFloat(), newColor: Color.DarkOrange, Scale: Main.rand.NextFloat());
+                Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), pos.DirectionTo(Projectile.Center) * Main.rand.NextFloat(3f), newColor: GlassMiniboss.GlowDustOrange, Scale: Main.rand.NextFloat(1.5f));
                 Projectile.velocity = Vector2.Zero;
             }
 
@@ -179,7 +179,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             //shine
             Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            Color shine = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true));
+            Color shine = Color.Lerp(GlassMiniboss.GlassColor, Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true));
             shine.A = 0;
             float appear = Utils.GetLerpValue(120, 210, Timer, true);
             Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.33f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
                     Vector2 vel = Main.rand.NextVector2Circular(15, 15);
-                    Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), vel, 0, Color.DarkOrange, 0.7f);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, GlassMiniboss.GlowDustOrange, 0.7f);
                     if (Main.rand.NextBool(5))
                         Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
                 }
@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.2f, Projectile.Center);
 
             for (int i = 0; i < 30; i++)
-                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Color.DarkOrange, Main.rand.NextFloat(0.5f));
 
             return false;
         }
