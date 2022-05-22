@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.velocity *= 0.2f;
 
             if (Projectile.timeLeft > 100)
-                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 15), DustType<Dusts.Glow>(), newColor: Color.DarkOrange, Scale: 0.3f);
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustType<Dusts.Cinder>(), default, 0, GlassMiniboss.GlowDustOrange, 0.5f);
 
             Projectile.localAI[0]++;
         }
