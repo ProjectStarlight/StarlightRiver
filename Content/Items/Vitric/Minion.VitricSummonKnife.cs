@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public VitricSummonKnife()
         {
-            strikeWhere = Projectile.Center;
+            strikeWhere = Vector2.Zero;
             enemySize = Vector2.One;
         }
 

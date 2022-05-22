@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
                 MapColor == default ? new Color(200, 255, 220) : MapColor,
                 false, false, MapName, anchor, TopAnchorOverride, valid.ToArray());
 
-            ItemDrop = Mod.Find<ModItem>(DropType).Type;
+            //ItemDrop = Mod.Find<ModItem>(DropType).Type; PORTTODO: What the fuck was this doing before and why does it crash now?
 
             FrameHeight = 16 * Height;
             LastFrame = (FrameCount - 1) * FrameHeight;

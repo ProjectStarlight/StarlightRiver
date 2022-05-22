@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public VitricSummonJavelin()
         {
-            strikeWhere = Projectile.Center;
+            strikeWhere = Vector2.Zero;
             enemySize = Vector2.One;
             Vector2 offset = Vector2.Zero;
         }

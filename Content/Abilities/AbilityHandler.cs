@@ -205,11 +205,6 @@ namespace StarlightRiver.Content.Abilities
 
         public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
 
-		public override void SendClientChanges(ModPlayer clientPlayer) //TODO: Implement ablity packet
-		{
-			base.SendClientChanges(clientPlayer);
-		}
-
         public override void SaveData(TagCompound tag)
         {
             tag[nameof(Shards)] = Shards.ToList();

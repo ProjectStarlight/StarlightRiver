@@ -57,7 +57,6 @@ namespace StarlightRiver.Core
 			this.MaxChargeTime = MaxChargeTime;
 			this.spinningdistance = spinningdistance;
 			this.degreespertick = degreespertick;
-			Projectile.netUpdate = true;
 		}
 
 		public override void SetDefaults()

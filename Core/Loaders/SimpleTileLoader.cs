@@ -96,6 +96,7 @@ namespace StarlightRiver.Core.Loaders
         public void PostLoadUnload() { }
     }
 
+    [Autoload(false)]
     public class LoaderTile : ModTile
     {
         public string InternalName;
@@ -136,6 +137,7 @@ namespace StarlightRiver.Core.Loaders
 		}
 	}
 
+    [Autoload(false)]
     public class LoaderFurniture : ModTile
     {
         public string InternalName;
