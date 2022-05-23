@@ -25,6 +25,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Frying Pan");
+			Tooltip.SetDefault("Attacks in close-range melee before being thrown to ring some chrome domes\n" +
+			"'Evil-looking runes are inscribed on the bottom'");
 		}
 
 		public override void SetDefaults()
@@ -269,7 +271,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, target.Center);
+			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			owner.GetModPlayer<StarlightPlayer>().Shake += 2;
 		}
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -457,7 +460,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Helper.PlayPitched("Impacts/PanBonk", 0.7f, Main.rand.NextFloat(-0.2f,0.2f), target.Center);
+			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f,0.2f), target.Center);
 
 			owner.GetModPlayer<StarlightPlayer>().Shake += 10;
 			for (int j = 0; j < 17; j++)
