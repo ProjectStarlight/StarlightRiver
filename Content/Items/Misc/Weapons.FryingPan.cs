@@ -99,6 +99,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<float> oldRotation = new List<float>();
 		private List<Vector2> oldPosition = new List<Vector2>();
 
+		private List<NPC> hit = new List<NPC>();
+
 		private bool FirstTickOfSwing
 		{
 			get => Projectile.ai[0] == 0;
@@ -138,6 +140,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (FirstTickOfSwing)
 			{
+				hit = new List<NPC>();
 				if (owner.DirectionTo(Main.MouseWorld).X > 0)
 					facingRight = true;
 				else
@@ -269,8 +272,15 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
+        public override bool? CanHitNPC(NPC target)
+        {
+			if (hit.Contains(target))
+				return false;
+            return base.CanHitNPC(target);
+        }
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
+			hit.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			owner.GetModPlayer<StarlightPlayer>().Shake += 2;
 		}
@@ -436,6 +446,7 @@ namespace StarlightRiver.Content.Items.Misc
 				oldRotation.RemoveAt(0);
 			if (oldPosition.Count > 8)
 				oldPosition.RemoveAt(0);
+
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -460,20 +471,30 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f,0.2f), target.Center);
+			Bonk(target.Center);
+			/*Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);
+			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);*/
+		}
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+			Bonk(Projectile.Center);
+			return base.OnTileCollide(oldVelocity);
+        }
+
+        private void Bonk(Vector2 position)
+        {
+			Projectile.friendly = false;
+			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
 
 			owner.GetModPlayer<StarlightPlayer>().Shake += 10;
 			for (int j = 0; j < 17; j++)
 			{
 				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-				Dust.NewDustPerfect((target.Center + (direction * 20) + new Vector2(0, 40)), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+				Dust.NewDustPerfect((position + (direction * 20) + new Vector2(0, 40)), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
 			}
-
-			Projectile.friendly = false;
 			Vector2 dir = -Vector2.UnitY.RotatedByRandom(0.3f) * 6;
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, dir, ModContent.ProjectileType<FryingPanBonk>(), 0, 0, owner.whoAmI);
-			/*Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);
-			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);*/
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, dir, ModContent.ProjectileType<FryingPanBonk>(), 0, 0, owner.whoAmI);
 		}
 	}
 	internal class FryingPanBonk : ModProjectile
