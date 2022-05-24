@@ -45,7 +45,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackgroundGlow").Value;
 			Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdrop);
+            var bgTarget = backdrop.Size().ToRectangle();
+            bgTarget.Offset(pos.ToPoint());
+            //bgTarget.Offset((-Main.screenPosition).ToPoint());
+            TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
+
+            LightingBufferRenderer.DrawWithLighting(pos, backdrop);
 			spriteBatch.Draw(backdropGlow, pos, Color.White);
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -400), new Vector3(1, 0.8f, 0.5f));
