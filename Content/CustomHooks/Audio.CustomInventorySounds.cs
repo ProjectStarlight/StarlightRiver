@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using ReLogic.Utilities;
 using StarlightRiver.Configs;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -17,9 +18,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Load()
 		{
-			IL.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += PlayCustomSound;
+			//TODO: Reimplement
+			//IL.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += PlayCustomSound;
 		}
 
+        /*
 		private void PlayCustomSound(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);
@@ -44,12 +47,12 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		private SoundEffectInstance PlayNewSound(int originalSoundID, Item Item)
+		private SlotId PlayNewSound(int originalSoundID, Item Item)
 		{
 			AudioConfig config = GetInstance<AudioConfig>();
 
 			if (config.InvSounds == CustomSounds.None)
-				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
+				return SlotId.Invalid;
 
 			float pitch = -0.6f;
 
@@ -120,5 +123,6 @@ namespace StarlightRiver.Content.CustomHooks
 			else
 				return Terraria.Audio.SoundEngine.PlaySound(originalSoundID, -1, -1, 1, 1, 0);
 		}
+        */
 	}
 }

@@ -488,7 +488,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override bool ItemSpace(Player Player) => true;
         public override bool OnPickup(Player Player)
         {
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)Player.position.X, (int)Player.position.Y);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
             if (Player.GetModPlayer<JetwelderPlayer>().scrap < 20)
                 Player.GetModPlayer<JetwelderPlayer>().scrap++;
 

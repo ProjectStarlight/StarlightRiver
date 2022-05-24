@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     offset.X = 1;
                     Projectile.velocity = (Projectile.rotation * Projectile.spriteDirection).ToRotationVector2() * 10f * Projectile.spriteDirection;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 1, 0.75f, -0.5f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1 with { Volume = 0.75f, Pitch = -0.5f }, Projectile.Center);
                     Projectile.localAI[0] = 300;
                 }
 
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Dust.NewDustPerfect(Projectile.position + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.width)), dusttype, ((Projectile.velocity + vari) / num315).RotatedBy(angle), 100, default, num315 / 4f);
             }
 
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.Center.X, (int)Projectile.Center.Y, 27, 0.75f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27 with { Volume = 0.75f }, Projectile.Center);
             return true;
         }
 

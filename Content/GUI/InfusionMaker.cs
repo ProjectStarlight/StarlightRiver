@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using Terraria.GameContent;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -288,7 +289,13 @@ namespace StarlightRiver.Content.GUI
                 Task.Factory.StartNew(n => LoadGif(token), token);
             }
 
-            Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.5f, 2.5f);
+            var soundStyle = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Slot")
+            {
+                Volume = 0.5f,
+                Pitch = 1f,
+            };
+
+            SoundEngine.PlaySound(soundStyle);
         }
 
         private void LoadGif(CancellationToken token)
@@ -320,18 +327,23 @@ namespace StarlightRiver.Content.GUI
             if ((Parent as InfusionMaker).crafting)
                 return;
 
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Slot")
+            {
+                Volume = 0.75f
+            };
+
             if (Main.mouseItem.ModItem is InfusionItem)
             {
                 Item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.75f, 0.5f);
+                SoundEngine.PlaySound(style with { Pitch = 0.5f });
                 (Parent as InfusionMaker).PopulateList();
             }
             else if (Main.mouseItem.IsAir && !Item.IsAir)
             {
                 Main.mouseItem = Item.Clone();
                 Item.TurnToAir();
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").SoundId, -1, -1, SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/Slot").Style, 0.75f, 0.1f);
+                SoundEngine.PlaySound(style with { Pitch = 0.1f });
             }
         }
 

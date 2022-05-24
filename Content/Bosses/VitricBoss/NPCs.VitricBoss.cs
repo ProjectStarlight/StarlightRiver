@@ -18,6 +18,7 @@ using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
 using Terraria.GameContent.Bestiary;
 using StarlightRiver.Content.Biomes;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             NPC.dontTakeDamageFromHostiles = true;
             NPC.behindTiles = true;
 
-            NPC.HitSound = SoundLoader.GetLegacySoundSlot("Sounds/VitricBoss/ceramicimpact");
+            NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact");
 
             Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
 

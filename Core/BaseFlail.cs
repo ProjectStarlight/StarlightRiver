@@ -101,7 +101,7 @@ namespace StarlightRiver.Core
 				Projectile.tileCollide = false;
 				Projectile.rotation = Projectile.AngleFrom(Owner.MountedCenter);
 				if (++Timer % 20 == 0)
-					Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 19).WithPitchVariance(0.1f).WithVolume(0.5f), Projectile.Center);
+					SoundEngine.PlaySound(SoundID.Item19 with { Volume = 0.5f, PitchVariance = 0.1f }, Projectile.Center);
 
 				ChargeTime = MathHelper.Clamp(Timer / 60, MaxChargeTime / 6, MaxChargeTime);
 

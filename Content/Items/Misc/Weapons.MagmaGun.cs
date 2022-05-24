@@ -280,8 +280,8 @@ namespace StarlightRiver.Content.Items.Misc
             }
 			if (counter % 5 == 0)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(19, (int)position.X, (int)position.Y, 1, 1, Main.rand.NextFloat(0.45f, 0.55f));
-				Terraria.Audio.SoundEngine.PlaySound(2, (int)position.X, (int)position.Y, 13);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.SplashWeak with { PitchRange = (0.45f, 0.55f) }, position);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item13, position);
 			}
 			for (int i = 0; i < 3; i++)
 			{
@@ -379,7 +379,7 @@ namespace StarlightRiver.Content.Items.Misc
 			scale = Math.Min(endScale, endScale * (timeLeft / 20f)) * fadeIn;
 
 			if (Main.rand.NextBool(2000))
-				Terraria.Audio.SoundEngine.PlaySound(19, Center, 1);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.SplashWeak, Center);
 			if (Main.rand.NextBool(100))
             {
 				Dust.NewDustPerfect(Center, ModContent.DustType<Dusts.MagmaSmoke>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15, 45)), Color.White, Main.rand.NextFloat(0.4f, 1f));
@@ -464,7 +464,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (embedTimer < 0)
 				{
 					if (Main.rand.NextBool(40))
-						Terraria.Audio.SoundEngine.PlaySound(19, Center, 1);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.SplashWeak, Center);
 					stoppedInTile = true;
 					oldVel = Velocity;
 					Velocity = Vector2.Zero;
