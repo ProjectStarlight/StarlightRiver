@@ -10,6 +10,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent;
 using Terraria.DataStructures;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
         private const int maxLocks = 3;
 
-        private const string SoundPath = "Sounds/Custom/Astroflora/";
+        private const string SoundPath = $"{nameof(StarlightRiver)}/Sounds/Custom/Astroflora/";
 
         public bool CursorShouldBeRed { get; private set; }
 
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Items.Astroflora
             {
                 Player.GetModPlayer<StarlightPlayer>().Shake = 5;
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, $"{SoundPath}Failure"), Player.Center);
+                SoundEngine.PlaySound(new SoundStyle($"{SoundPath}Failure"), Player.Center);
 
                 Say("No Locks!", Player);
 

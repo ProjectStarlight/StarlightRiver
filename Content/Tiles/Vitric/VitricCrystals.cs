@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
     internal abstract class VitricCrystal : WalkableCrystal
     {
         protected VitricCrystal(int maxWidth, int maxHeight, string dummyName, int variantCount = 1, string drop = null) :
-            base(maxWidth, maxHeight, dummyName, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.GlassGravity>(), new Color(115, 202, 158), 2, 27)
+            base(maxWidth, maxHeight, dummyName, AssetDirectory.VitricTile, AssetDirectory.VitricCrystalStructs, variantCount, drop, DustType<Dusts.GlassGravity>(), new Color(115, 202, 158), SoundID.Item27)
         { }
 
         public override void SafeSetDefaults() =>

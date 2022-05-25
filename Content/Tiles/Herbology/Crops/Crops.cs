@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         protected readonly int FrameCount;
         protected readonly int DustType;
-        protected readonly int SoundType;
+        protected readonly SoundStyle SoundType;
         protected readonly string DropType;
 
         protected readonly string MapName;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public int FrameHeight;
         public int LastFrame;
 
-        public Crop(string dropType, string mapName, string texturePath, int frameCount, int height = 3, int dustType = DustID.Grass, int soundType = SoundID.Grass, Color mapColor = default, AnchorData topAnchorOverride = default, AnchorData bottomAnchorOverride = default, int[] extraGroundTypes = null, string[] extraGroundNames = null, bool customGroundOnly = false)
+        public Crop(string dropType, string mapName, string texturePath, int frameCount, int height = 3, int dustType = DustID.Grass, SoundStyle? soundType = null, Color mapColor = default, AnchorData topAnchorOverride = default, AnchorData bottomAnchorOverride = default, int[] extraGroundTypes = null, string[] extraGroundNames = null, bool customGroundOnly = false)
         {
             DropType = dropType;
 
@@ -48,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             FrameCount = frameCount;
             Height = height;
             DustType = dustType;
-            SoundType = soundType;
+            SoundType = soundType ?? SoundID.Grass;
 
             MapName = mapName;
             MapColor = mapColor;

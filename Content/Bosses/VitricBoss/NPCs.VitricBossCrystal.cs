@@ -169,8 +169,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
                             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
 
-                        Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.DD2_WitherBeastCrystalImpact, (int)NPC.Center.X, (int)NPC.Center.Y);
-                        Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)NPC.Center.X, (int)NPC.Center.Y, Terraria.ID.SoundID.Item70.Style, 2, -0.5f);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, NPC.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -0.5f }, NPC.Center);
 
                         Player.GetModPlayer<Abilities.AbilityHandler>().ActiveAbility?.Deactivate();
                         Player.velocity = Vector2.Normalize(Player.velocity) * -5f;
@@ -362,9 +362,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private void Impact()
         {
             NPC.velocity *= 0;
-            phase = 0; //turn it idle
-            Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCHit42); //boom
-            Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.Item70.SoundId, (int)NPC.Center.X, (int)NPC.Center.Y, Terraria.ID.SoundID.Item70.Style, 1, -1); //boom
+            phase = 0; //turn it idle            
+
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42); //boom
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -1f }, NPC.Center); //boom
+
             Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
 
             if ((state == 3 && Main.masterMode) && Main.netMode != NetmodeID.MultiplayerClient)

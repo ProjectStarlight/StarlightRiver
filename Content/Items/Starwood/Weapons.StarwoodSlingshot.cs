@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				if (charge < 1)
 				{
 					if ((charge + chargeRate) >= 1)
-						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, (int)Projectile.Center.X, (int)Projectile.Center.Y, 1, 1, -0.25f);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.25f }, Projectile.Center);
 
 					charge += chargeRate;
 				}

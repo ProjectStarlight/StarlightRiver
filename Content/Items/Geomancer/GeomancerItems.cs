@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override bool OnPickup(Player Player)
         {
             SetBonus(Player);
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)Player.position.X, (int)Player.position.Y);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
             Player.GetModPlayer<GeomancerPlayer>().timer = 1200;
             return false;
         }
