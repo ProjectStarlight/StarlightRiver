@@ -251,7 +251,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             var nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (nextTarget != default)
             {
-                oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedByRandom(2f);
+                float degrees = 0.5f + (Projectile.Distance(nextTarget.Center) / 600f);
+                if (alreadyHit.Count % 2 == 0)
+                    degrees *= -1;
+                oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedBy(degrees);
             }
             else
                 oldVel = Vector2.Normalize(Projectile.velocity);
@@ -329,7 +332,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             if (arcTimer < 1)
                 arcTimer += 0.05f;
 
-            Projectile.rotation += Projectile.velocity.Length() * 0.02f;
+            Projectile.rotation += Projectile.velocity.Length() * 0.05f;
             Projectile.friendly = true;
             speed = MathHelper.Lerp(30, 40, chargeRatio);
             var target = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
@@ -373,6 +376,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 direction.Normalize();
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction.RotatedByRandom(1.5f) * speed, 0.01f);
             }
+            else if (Projectile.velocity == Vector2.Zero)
+                Projectile.velocity = Projectile.DirectionTo(Player.Center);
 
 
             if (chargeRatio >= 1)
