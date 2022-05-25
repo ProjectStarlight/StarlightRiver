@@ -55,8 +55,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else
                 Projectile.velocity *= 0.2f;
 
-            if (Projectile.timeLeft > 70)
-                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.7f) * 0.3f, 0, Glassweaver.GlowDustOrange);
+            if (Projectile.timeLeft > 60)
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Glassweaver.GlowDustOrange, 0.6f);
 
         }
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
             Projectile.tileCollide = false;
-
+            
             Helpers.Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(0.1f), Projectile.Center);
             
             for (int i = 0; i < 4; i++)
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             //normal spear
             float scale = Utils.GetLerpValue(100, 80, Projectile.timeLeft, true) * Projectile.scale;
-            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, lightColor, Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, Color.Lerp(lightColor, Color.White, 0.2f), Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
 
             //hot overlay
             Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(50, 80, Projectile.timeLeft, true);

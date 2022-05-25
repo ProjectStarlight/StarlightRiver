@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private int javelinTime;
         private int hammerTime;
-        private int[] slashTime = new int[] { 80, 120, 140 };
+        private int[] slashTime = new int[] { 70, 105, 120 };
         private const int javelinSpawn = 90;
         private const int hammerSpawn = 90;
         private const int bubbleRecoil = 450;
@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, (Target.Top - NPC.Center).Y * 0.003f, 0.1f);
             }
 
-            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2] + 60;
+            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2] + 20;
 
             if (AttackTimer == slashTime[0] || AttackTimer == slashTime[1] || AttackTimer == slashTime[2])
             {
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.X += NPC.direction * MathHelper.Lerp(20f, 50f, (AttackTimer - slashTime[0] - 1) / 80f);
             }
 
-            if (AttackTimer > 250)
+            if (AttackTimer > slashTime[2] + 50)
                 ResetAttack();
         }        
         
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.Y -= 5;
             }
 
-            if (AttackTimer == 120)
+            if (AttackTimer == 90)
             {
                 NPC.FaceTarget();
                 NPC.velocity.X += NPC.direction * 10f;
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 betweenSpearTime = 4;
             }
 
-            javelinTime = 210 + javelinSpawn + (spearCount * betweenSpearTime);
+            javelinTime = 170 + javelinSpawn + (spearCount * betweenSpearTime);
 
             NPC.TargetClosest();
             NPC.FaceTarget();
@@ -260,7 +260,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             moveTarget.X = MathHelper.Lerp(moveTarget.X, Target.Center.X, 0.002f);
 
-            if (AttackTimer > 10 && AttackTimer < 210 + (spearCount * betweenSpearTime))
+            if (AttackTimer > 10 && AttackTimer < javelinTime - javelinSpawn)
             {
                 NPC.noGravity = true;
                 NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * NPC.Distance(moveTarget), 0.1f) * 0.2f;
@@ -434,7 +434,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 if (AttackTimer < bubbleRecoil - 20)
                 {
                     if (AttackTimer > bubbleRecoil - 30)
-                        NPC.Center += new Vector2(10, 0).RotatedBy(NPC.AngleTo(moveTarget));
+                        NPC.Center = Vector2.SmoothStep(NPC.Center, moveTarget - new Vector2(150 * Utils.GetLerpValue(bubbleRecoil - 23, bubbleRecoil - 30, AttackTimer, true), 0).RotatedBy(moveTarget.AngleTo(target)), 0.3f);
                     else
                         NPC.Center = Vector2.Lerp(NPC.Center, moveTarget - new Vector2(120, 0).RotatedBy(moveTarget.AngleTo(target)), 0.05f);
                 }
@@ -463,7 +463,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 }
             }
 
-            if (AttackTimer > 630)
+            if (AttackTimer > bubbleRecoil + 80)
                 ResetAttack();
         }
 
@@ -479,6 +479,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
                     bubble.velocity = direction * speed;
                     bubble.ai[1] = 1;
+                    for (int i = 0; i < 30; i++)
+                        Dust.NewDustPerfect(bubble.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 3).RotatedBy(NPC.AngleTo(bubble.Center)), 0, GlassColor);
                 }
             }
         }

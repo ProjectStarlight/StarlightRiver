@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.boss = true;
             NPC.defense = 14;
             NPC.HitSound = SoundID.NPCHit52;
-            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -167,17 +167,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        //case 0: TripleSlash(); break;
-                        //case 1: SpearThrust(); break;//thrust
-                        //case 2: Javelins(); break;
-                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 4: BigBrightBubble(); break;
-                        //case 5: TripleSlash(); break;
-                        //case 6: if (attackVariant) SlashLob(); else SpearThrust(); break;
-                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        //case 8: Javelins(); break;
+                        case 0: TripleSlash(); break;
+                        case 1: SpearThrust(); break;
+                        case 2: Javelins(); break;
+                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 4: BigBrightBubble(); break;
+                        case 5: TripleSlash(); break;
+                        case 6: if (attackVariant) SlashLob(); else SpearThrust(); break;
+                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 8: Javelins(); break;
                         case 9: BigBrightBubble(); break;
-                        default: BigBrightBubble(); break;
                     }
 
                     break;
@@ -258,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             if (AttackTimer > 55 && AttackTimer < 240)
                             {
                                 //using a lerp wouldn't look well with the animation, so a little bit of clunk
-                                if (AttackTimer < slashTime[2] + 60)
+                                if (AttackTimer < slashTime[2] + 30)
                                 {
                                     frame.X = 142;
 
@@ -361,8 +360,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.4f);
-        public static readonly Color GlassColor = new Color(60, 190, 150);
+        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.36f);
+        public static readonly Color GlassColor = new Color(60, 200, 175);
 
     }
 }

@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             Timer++;
 
-            if (Timer < 180)
+            if (Timer < 180 && Main.rand.Next((int)Timer) < 70)
             {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(200, 200);
                 Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 3f * Main.rand.NextFloatDirection()) * 2f;
@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.ai[1] == 1)
             {
                 if (Timer < crackTime - 30)
-                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.01f);
+                    Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.004f);
                 else
                 {
                     if (Timer <= crackTime + 20)
@@ -89,7 +89,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.rotation += Projectile.velocity.X * 0.05f;
             Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
 
-            Lighting.AddLight(Projectile.Center, Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true)).ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
+            Color lightColor = Color.Lerp(Glassweaver.GlassColor, Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
+
+            if (Main.rand.NextBool(5) && Timer > 120)
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40, 40), DustType<Dusts.Cinder>(), Vector2.Zero, 0, lightColor, 0.7f);
+
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
         }
 
         private void Explode()
@@ -117,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 {
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
                     Vector2 vel = Main.rand.NextVector2Circular(15, 15);
-                    Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, Glassweaver.GlowDustOrange, 0.7f);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, Glassweaver.GlowDustOrange, 1.3f);
                     if (Main.rand.NextBool(5))
                         Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
                 }
@@ -218,10 +223,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
             effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
             effect.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
-            effect.Parameters["uTime"].SetValue(1f);
+            effect.Parameters["uTime"].SetValue(crackProgress);
             effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
-
-            effect.Parameters["sourceFrame"].SetValue(new Vector4((int)Projectile.position.X, (int)Projectile.position.Y, 54, 54));
             effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
             Main.spriteBatch.End();

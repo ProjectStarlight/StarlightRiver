@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.9f : 0.1f, 0.9f);
 
-            Color fadeIn = lightColor * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
+            Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
             Main.EntitySpriteDraw(hammer.Value, origin - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, 1, effects, 0);
 
             Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.87f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.55f, TotalTime * 0.83f, Projectile.localAI[0], true);
@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(40, 2) - Vector2.UnitY * 2;
                     Vector2 dustVel = new Vector2(0, -Main.rand.Next(15)).RotatedBy(dustPos.AngleFrom(Projectile.Bottom) + MathHelper.PiOver2).RotatedBy(Projectile.rotation);
                     dustVel.X *= (float)Projectile.width / Projectile.height;
-                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel, 0, Glassweaver.GlowDustOrange, 0.8f);
+                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel, 0, Glassweaver.GlowDustOrange, 1.2f);
                 }
             }
 
@@ -248,14 +248,30 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Dust.NewDustPerfect(points[dustPos] + Main.rand.NextVector2Circular(50 * up, 40 * up), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.3f) * 2f);
             }
 
+            if (Timer > raise + 60 && Timer < raise + 170)
+            {
+                for (int i = 3; i < maxSpikes; i++)
+                {
+                    if (Main.rand.NextBool(80 + (maxSpikes - i) * 3))
+                    {
+                        float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                        Vector2 shinePos = Projectile.Bottom + Vector2.Lerp(new Vector2(Main.rand.Next(-50, 50), 5), new Vector2(Main.rand.Next(-4, 4), -Projectile.height + Main.rand.Next(-15, 5)).RotatedBy(Projectile.rotation), lerp);
+                        Dust.NewDustPerfect(shinePos, DustType<Dusts.Cinder>(), -Vector2.UnitY * 0.2f, 0, Glassweaver.GlassColor, 0.7f);
+                    }
+                }
+            }
+
             if (Timer > raise + 190)
                 Projectile.Kill();
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if (Timer >= raise + 8 && Timer < raise + 12)
-                target.velocity -= new Vector2(0, 5).RotatedBy(Projectile.rotation);
+            if (Timer >= raise + 8 && Timer < raise + 60)
+            {
+                target.Center -= new Vector2(0, 5).RotatedBy(Projectile.rotation);
+                target.velocity.Y -= 0.5f;
+            }
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -328,7 +344,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float scaleH = Helpers.Helper.SwoopEase(Utils.GetLerpValue(0, 0.1f, progress, true)) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.85f, progress, true));
             Vector2 scale = Projectile.scale * new Vector2(scaleW, scaleH);
 
-            Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, frame, lightColor, rotation, origin, scale, 0, 0);
+            Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, frame, Color.Lerp(lightColor, Color.White, 0.2f), rotation, origin, scale, 0, 0);
 
             Color hotFade = new Color(255, 255, 255, 128) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0.45f, 0.2f, progress, true));
             Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, hotFrame, hotFade, rotation, origin, scale, 0, 0);
