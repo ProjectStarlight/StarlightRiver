@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Item.width = 30;
 			Item.height = 28;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Green;
 			Item.value = Item.buyPrice(0, 5, 0, 0);
 			Item.accessory = true;
 		}
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void OnMissingMana(Item item, int neededMana)
         {
-            if (Active)
+            if (Active && charge >= 40)
             {
                 for (int i = 0; i < Main.projectile.Length; i++)
                 {
@@ -114,11 +114,17 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private int charge = 0;
 
+        private float flashTimer = 1;
+        private bool fullyCharged = false;
+
         private float chargeRatio => charge / 500f;
 
         public bool attacking = false;
 
         private float speed = 10;
+
+        private Vector2 oldVel = Vector2.Zero;
+        private int pauseTimer = 0;
 
         private List<NPC> alreadyHit = new List<NPC>();
 
@@ -179,18 +185,13 @@ namespace StarlightRiver.Content.Items.Moonstone
             oldRotation.Add(Projectile.rotation);
             oldPosition.Add(Projectile.Center);
 
-            if (oldRotation.Count > AFTERIMAGELENGTH)
+            while (oldRotation.Count > AFTERIMAGELENGTH)
                 oldRotation.RemoveAt(0);
-            if (oldPosition.Count > AFTERIMAGELENGTH)
+            while (oldPosition.Count > AFTERIMAGELENGTH)
                 oldPosition.RemoveAt(0);
 
-            Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
-
-            if (Main.rand.Next(6) == 0)
-            {
-                var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
-                d.customData = Main.rand.NextFloat(0.6f, 1.3f);
-            }
+            if (flashTimer < 1)
+                flashTimer += 0.04f;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -211,6 +212,13 @@ namespace StarlightRiver.Content.Items.Moonstone
             }
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+            if (flashTimer < 1)
+            {
+                float transparency = (float)Math.Pow(1 - flashTimer, 2);
+                float scale = 1 + flashTimer;
+                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale, SpriteEffects.None, 0f);
+            }
+
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
             Color glowColor = new Color(150, 120, 255, 0) * 0.5f;
@@ -227,12 +235,29 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            alreadyHit.Add(target);
-            Projectile.velocity *= -2;
+            Player Player = Main.player[Projectile.owner];
+            BarrierPlayer modPlayer = Player.GetModPlayer<BarrierPlayer>();
+            int barrierRecovery = (int)MathHelper.Lerp(2, 6, chargeRatio);
+
+            if (modPlayer.Barrier < modPlayer.MaxBarrier - barrierRecovery)
+                modPlayer.Barrier += barrierRecovery;
+            else
+                modPlayer.Barrier = modPlayer.MaxBarrier;
+                alreadyHit.Add(target);
+            Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 7;
+            var nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
+            if (nextTarget != default)
+            {
+                pauseTimer = 10;
+                oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedByRandom(2f) * Projectile.velocity.Length() * 0.5f;
+            }
+            else
+                oldVel = Projectile.velocity;
         }
 
         public void StartAttack()
         {
+            fullyCharged = false;
             Projectile.friendly = true;
             Projectile.damage = (int)MathHelper.Lerp(10, 50, chargeRatio);
             attacking = true;
@@ -287,14 +312,20 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void AttackMovement(Player Player)
         {
+            pauseTimer--;
+            if (pauseTimer > 0)
+            {
+                Projectile.velocity = Vector2.Zero;
+                return;
+            }
+            if (pauseTimer == 0)
+                Projectile.velocity = oldVel;
             Projectile.rotation += Projectile.velocity.Length() * 0.01f;
             Projectile.friendly = true;
             speed = MathHelper.Lerp(20, 30, chargeRatio);
             var target = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (target == default)
             {
-                oldPosition = new List<Vector2>();
-                oldRotation = new List<float>();
                 Projectile.velocity *= 0.4f;
                 attacking = false;
             }
@@ -304,9 +335,10 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, MathHelper.Lerp(0.1f, 0.2f, chargeRatio));
             }
 
-            Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+            for (int k = 0; k < 2; k++)
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<DianeGlow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
 
-            if (Main.rand.Next(6) == 0)
+            if (Main.rand.Next(3) == 0)
             {
                 var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
                 d.customData = Main.rand.NextFloat(0.6f, 1.3f);
@@ -319,10 +351,35 @@ namespace StarlightRiver.Content.Items.Moonstone
             speed = 20;
             Projectile.friendly = false;
             Vector2 direction = Player.Center - Projectile.Center;
+            if (direction.Length() > 1500)
+            {
+                direction.Normalize();
+                Projectile.Center = Player.Center + Main.rand.NextVector2Circular(100, 100);
+            }
+
             if (direction.Length() > 100)
             {
                 direction.Normalize();
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction.RotatedByRandom(1.5f) * speed, 0.01f);
+            }
+
+
+            if (chargeRatio >= 1)
+            {
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<DianeGlow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+
+                if (Main.rand.Next(6) == 0)
+                {
+                    var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+                    d.customData = Main.rand.NextFloat(0.6f, 1.3f);
+                }
+
+
+                if (!fullyCharged)
+                {
+                    fullyCharged = true;
+                    flashTimer = 0;
+                }
             }
         }
 
@@ -348,6 +405,23 @@ namespace StarlightRiver.Content.Items.Moonstone
             trail2?.Render(effect);
 
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        }
+    }
+
+    public class DianeGlow : Glow
+    {
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return dust.color * Math.Min(dust.fadeIn / 20f, 1);
+        }
+
+        public override bool Update(Dust dust)
+        {
+            dust.fadeIn++;
+            dust.scale *= 1.02f;
+            base.Update(dust);
+            dust.shader.UseColor(dust.color * Math.Min(dust.fadeIn / 20f, 1));
+            return false;
         }
     }
 }
