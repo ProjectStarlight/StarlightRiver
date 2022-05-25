@@ -103,6 +103,11 @@ namespace StarlightRiver.Content.Items.Moonstone
     {
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
+        private int AFTERIMAGELENGTH => (int)MathHelper.Lerp(11,22,chargeRatio);
+        private List<Vector2> oldPosition = new List<Vector2>();
+        private List<float> oldRotation = new List<float>();
+        private bool initialized = false;
+
         private List<Vector2> cache;
         private Trail trail;
         private Trail trail2;
@@ -140,10 +145,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void AI()
         {
-            Main.projPet[Projectile.type] = false;
+            if (!initialized)
+            {
+                initialized = true;
+                oldPosition = new List<Vector2>();
+                oldRotation = new List<float>();
+            }
+
             Player Player = Main.player[Projectile.owner];
 
             Projectile.rotation += Projectile.velocity.Length() * 0.01f;
+
+            Color lightColor = new Color(150, 120, 255);
+            Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * 0.6f);
 
             if (Player.dead)
                 Projectile.active = false;
@@ -161,13 +175,46 @@ namespace StarlightRiver.Content.Items.Moonstone
                 ManageCaches();
                 ManageTrail();
             }
+
+            oldRotation.Add(Projectile.rotation);
+            oldPosition.Add(Projectile.Center);
+
+            if (oldRotation.Count > AFTERIMAGELENGTH)
+                oldRotation.RemoveAt(0);
+            if (oldPosition.Count > AFTERIMAGELENGTH)
+                oldPosition.RemoveAt(0);
+
+            Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+
+            if (Main.rand.Next(6) == 0)
+            {
+                var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+                d.customData = Main.rand.NextFloat(0.6f, 1.3f);
+            }
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            DrawTrail(Main.spriteBatch);
+            //DrawTrail(Main.spriteBatch);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+            for (int k = AFTERIMAGELENGTH; k > 0; k--)
+            {
+
+                float progress = 1 - (float)(((float)(AFTERIMAGELENGTH - k) / (float)AFTERIMAGELENGTH));
+                Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress) * MathHelper.Lerp(0.45f, 0.75f, chargeRatio);
+                if (k > 0 && k < oldRotation.Count)
+                    Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0f);
+            }
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
+            Color glowColor = new Color(150, 120, 255, 0) * 0.5f;
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
@@ -246,6 +293,8 @@ namespace StarlightRiver.Content.Items.Moonstone
             var target = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (target == default)
             {
+                oldPosition = new List<Vector2>();
+                oldRotation = new List<float>();
                 Projectile.velocity *= 0.4f;
                 attacking = false;
             }
@@ -253,6 +302,14 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 Vector2 direction = Projectile.DirectionTo(target.Center);
                 Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, MathHelper.Lerp(0.1f, 0.2f, chargeRatio));
+            }
+
+            Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+
+            if (Main.rand.Next(6) == 0)
+            {
+                var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
+                d.customData = Main.rand.NextFloat(0.6f, 1.3f);
             }
         }
 
