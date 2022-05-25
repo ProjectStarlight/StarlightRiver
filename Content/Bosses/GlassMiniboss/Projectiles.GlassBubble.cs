@@ -16,10 +16,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassBubble : ModProjectile
     {
-        public const int explosionTime = 850;
+        public const int crackTime = 850;
         public const float explosionRadius = 300f;
 
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
         public override void SetStaticDefaults()
         {
@@ -50,8 +50,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Timer < 180)
             {
-                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(70, 70);
-                Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), pos.DirectionTo(Projectile.Center) * Main.rand.NextFloat(3f), newColor: GlassMiniboss.GlowDustOrange, Scale: Main.rand.NextFloat(1.5f));
+                Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(200, 200);
+                Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 3f * Main.rand.NextFloatDirection()) * 2f;
+                Dust swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: Glassweaver.GlowDustOrange, Scale: Main.rand.NextFloat(1f, 2f));
+                swirl.customData = Projectile.Center;
+                
                 Projectile.velocity = Vector2.Zero;
             }
 
@@ -62,36 +65,71 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Projectile.ai[1] == 1)
             {
-                if (Timer < explosionTime - 30)
+                if (Timer < crackTime - 30)
                     Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.01f);
                 else
                 {
-                    if (Timer <= explosionTime + 20)
+                    if (Timer <= crackTime + 20)
                         Projectile.velocity += Projectile.DirectionTo(Parent.GetTargetData().Center) * 0.1f;
 
                     Projectile.velocity *= 0.97f;
-                    Projectile.Center += Main.rand.NextVector2Circular(5, 5) * Utils.GetLerpValue(explosionTime + 30, explosionTime + 100, Timer, true);
-                    Projectile.rotation += Main.rand.NextFloat(-0.33f, 0.33f) * Utils.GetLerpValue(explosionTime + 40, explosionTime + 100, Timer, true);
+                    Projectile.Center += Main.rand.NextVector2Circular(5, 5) * Utils.GetLerpValue(crackTime + 30, crackTime + 100, Timer, true);
+                    Projectile.rotation += Main.rand.NextFloat(-0.33f, 0.33f) * Utils.GetLerpValue(crackTime + 40, crackTime + 100, Timer, true);
                 }
 
-                if (Timer == explosionTime + 30)
+                if (Timer == crackTime + 30)
                     Helpers.Helper.PlayPitched("GlassMiniboss/GlassExplode", 1.1f, 0f, Projectile.Center);
             }
             else if (Timer > 360)
                 Timer = 360;
 
-            if (Timer > explosionTime + 100)
+            if (Timer > crackTime + 100)
                 Explode();
 
             Projectile.rotation += Projectile.velocity.X * 0.05f;
             Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
 
-            Lighting.AddLight(Projectile.Center, Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true)).ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
+            Lighting.AddLight(Projectile.Center, Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true)).ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
+        }
+
+        private void Explode()
+        {
+            if (Timer == crackTime + 101)
+            {
+                //Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.1f, Projectile.Center);
+
+                int shardCount = Main.rand.Next(5, 10);
+                if (Main.masterMode)
+                    shardCount += 15;
+                else if (Main.expertMode)
+                    shardCount += 5;
+                for (int i = 0; i < shardCount; i++)
+                {
+                    Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
+                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
+                }
+            }
+            if (Timer <= crackTime + 105)
+            {
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 6;
+
+                for (int i = 0; i < 50; i++)
+                {
+                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
+                    Vector2 vel = Main.rand.NextVector2Circular(15, 15);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, Glassweaver.GlowDustOrange, 0.7f);
+                    if (Main.rand.NextBool(5))
+                        Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
+                }
+            }
+
+            if (Timer > crackTime + 130)
+                Projectile.Kill();
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (Timer < explosionTime + 100 && Projectile.ai[1] == 1)
+            if (Timer < crackTime + 100 && Projectile.ai[1] == 1)
             {
                 Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 4;
@@ -106,8 +144,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Projectile.localAI[1] += 2;
             }
 
-            if (Timer < explosionTime)
-                Timer = explosionTime;
+            if (Timer < crackTime)
+                Timer = crackTime;
 
             return false;
         }
@@ -116,9 +154,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (Projectile.ai[1] == 1)
             {
-                if (Timer < explosionTime)
-                    Timer = explosionTime;
-                if (Projectile.localAI[1] == 0 && Timer < explosionTime + 100)
+                if (Timer < crackTime)
+                    Timer = crackTime;
+                if (Projectile.localAI[1] == 0 && Timer < crackTime + 100)
                 {
                     Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 3;
@@ -132,16 +170,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            float glowScale = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
-            Color glowFade = Color.OrangeRed * glowScale * Utils.GetLerpValue(250, 80, Timer, true);
-            glowFade.A = 0;
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * glowScale, SpriteEffects.None, 0);
+            //Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+            //float glowScale = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
+            //Color glowFade = Color.OrangeRed * glowScale * Utils.GetLerpValue(250, 80, Timer, true);
+            //glowFade.A = 0;
+            //Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * glowScale, SpriteEffects.None, 0);
 
             //if (Timer > explosionTime - 70)
             //    DrawExplosionTell();
 
-            if (Timer < explosionTime + 100)
+            if (Timer < crackTime + 100)
                 DrawBubble(ref lightColor);
 
             return false;
@@ -151,12 +189,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             Asset<Texture2D> glassBall = Request<Texture2D>(Texture);
             Asset<Texture2D> growingBall = Request<Texture2D>(Texture + "Growing");
-            Asset<Texture2D> crackingBall = Request<Texture2D>(Texture + "Cracking");
 
             int growFrameY = (int)(Utils.GetLerpValue(50, 120, Timer, true) * 5f);
-            Rectangle growFrame = growingBall.Frame(1, 6, 0, growFrameY);            
-            int crackFrameY = (int)((1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(explosionTime + 105, explosionTime - 10, Timer, true))) * 5f);
-            Rectangle crackFrame = growingBall.Frame(1, 6, 0, crackFrameY);
+            Rectangle growFrame = growingBall.Frame(1, 6, 0, growFrameY);
 
             //regular ball
             float fadeIn = Utils.GetLerpValue(120, 130, Timer, true);
@@ -167,40 +202,63 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Main.EntitySpriteDraw(growingBall.Value, Projectile.Center - Main.screenPosition, growFrame, hotFade, Projectile.rotation, growFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
             //cracking
-            Color crackFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(explosionTime - 10, explosionTime + 50, Timer, true);
-            Main.EntitySpriteDraw(crackingBall.Value, Projectile.Center - Main.screenPosition, crackFrame, crackFade, Projectile.rotation, crackFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+            //Main.EntitySpriteDraw(crackingBall.Value, Projectile.Center - Main.screenPosition, crackFrame, crackFade, Projectile.rotation, crackFrame.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+            if (Timer > crackTime - 11)
+                DrawBubbleCracks();
 
             DrawVignette();
 
             DrawBloom();
         }
 
+        private void DrawBubbleCracks()
+        {
+            float crackProgress = (float)Math.Pow(Utils.GetLerpValue(crackTime - 10, crackTime + 105, Timer, true), 2);
+
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
+            effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
+            effect.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+            effect.Parameters["uTime"].SetValue(1f);
+            effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
+
+            effect.Parameters["sourceFrame"].SetValue(new Vector4((int)Projectile.position.X, (int)Projectile.position.Y, 54, 54));
+            effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+            Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+        }
+
         private void DrawBloom()
         {
             //shine
             Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            Color shine = Color.Lerp(GlassMiniboss.GlassColor, Color.OrangeRed, Utils.GetLerpValue(explosionTime, explosionTime + 40, Timer, true));
+            Color shine = Color.Lerp(Glassweaver.GlassColor, Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
             shine.A = 0;
             float appear = Utils.GetLerpValue(120, 210, Timer, true);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.33f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.7f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
 
             float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.33f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.2f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
         }
 
         private void DrawExplosionTell()
         {
-            Asset<Texture2D> explodeTell = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassTellAlpha");
-            Color radFade = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(explosionTime + 30, explosionTime + 60, Timer, true)) 
-                * Utils.GetLerpValue(explosionTime - 70, explosionTime, Timer, true) * Utils.GetLerpValue(explosionTime + 110, explosionTime + 90, Timer, true) * 0.5f;
+            Asset<Texture2D> explodeTell = Request<Texture2D>(AssetDirectory.Glassweaver + "GlassTellAlpha");
+            Color radFade = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(crackTime + 30, crackTime + 60, Timer, true)) 
+                * Utils.GetLerpValue(crackTime - 70, crackTime, Timer, true) * Utils.GetLerpValue(crackTime + 110, crackTime + 90, Timer, true) * 0.5f;
             radFade.A = 0;
-            Vector2 size = new Vector2(explosionRadius * 2f / explodeTell.Width(), explosionRadius * 2f / explodeTell.Height()) * Helpers.Helper.BezierEase(Utils.GetLerpValue(explosionTime - 70, explosionTime + 40, Timer, true));
+            Vector2 size = new Vector2(explosionRadius * 2f / explodeTell.Width(), explosionRadius * 2f / explodeTell.Height()) * Helpers.Helper.BezierEase(Utils.GetLerpValue(crackTime - 70, crackTime + 40, Timer, true));
             Main.EntitySpriteDraw(explodeTell.Value, Projectile.Center - Main.screenPosition, null, radFade, Projectile.rotation, explodeTell.Size() * 0.5f, size, SpriteEffects.None, 0);
         }
 
         private void DrawVignette()
         {
-            float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(explosionTime + 105, explosionTime + 90, Timer, true);
+            float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(crackTime + 105, crackTime + 90, Timer, true);
             Asset<Texture2D> dark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack");
             for (int i = 0; i < 8; i++)
             {
@@ -209,46 +267,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.4f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
             }
         }
-
-        private void Explode()
-        {
-            if (Timer == explosionTime + 105)
-            {
-                Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.1f, Projectile.Center);
-
-                int shardCount = Main.rand.Next(10, 15);
-                if (Main.masterMode)
-                    shardCount += 20;
-                else if (Main.expertMode)
-                    shardCount += 10;
-                for (int i = 0; i < shardCount; i++)
-                {
-                    Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
-                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.5f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
-                }
-            }
-            if (Timer <= explosionTime + 105)
-            {
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 6;
-
-                for (int i = 0; i < 50; i++)
-                {
-                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
-                    Vector2 vel = Main.rand.NextVector2Circular(15, 15);
-                    Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, GlassMiniboss.GlowDustOrange, 0.7f);
-                    if (Main.rand.NextBool(5))
-                        Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
-                }
-            }
-
-            if (Timer > explosionTime + 130)
-                Projectile.Kill();
-        }
     }
 
     class GlassBubbleFragment : ModProjectile
     {
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Shard");
 
@@ -271,16 +294,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            if (Projectile.localAI[0] < 5)
+            if (Projectile.velocity.Length() > 0.1f)
                 Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
             Projectile.localAI[0]++;
 
             if (Projectile.tileCollide == true)
             {
                 if (Projectile.localAI[0] > 20)
-                    Projectile.velocity *= 1.11f;
-
-                Projectile.velocity.Y += 0.01f;
+                    Projectile.velocity *= 1.09f;
             }
             else
                 Projectile.velocity *= 0.2f;
@@ -321,8 +342,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> fragGlow = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
             Color glowFade = Color.OrangeRed;
             glowFade.A = 0;
-            Vector2 stretch = new Vector2(0.4f, Utils.GetLerpValue(-5, 10, Projectile.velocity.Length(), true) * 2f);
-            Main.EntitySpriteDraw(fragGlow.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, fragGlow.Size() * 0.5f, stretch, 0, 0);
+            Main.EntitySpriteDraw(fragGlow.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, fragGlow.Size() * 0.5f, Projectile.scale, 0, 0);
 
             return false;
         }

@@ -37,8 +37,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             var spriteBatch = Main.spriteBatch;
 
             Vector2 pos = Projectile.position + new Vector2(-608, -289) - Main.screenPosition;
-            Texture2D backdrop = Request<Texture2D>(AssetDirectory.GlassMiniboss + "Backdrop").Value;
-            Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "BackdropGlow").Value;
+            Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
+            Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
 
             var frame = new Rectangle(0, (backdrop.Height / 3) * (int)(Main.GameUpdateCount / 8 % 3), backdrop.Width, backdrop.Height / 3);
 

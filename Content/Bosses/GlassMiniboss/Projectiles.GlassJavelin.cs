@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassJavelin : ModProjectile
     {
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
         public override void SetDefaults()
         {
@@ -35,6 +35,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
+            Projectile.localAI[0]++;
+
             if (Projectile.timeLeft > 100)
             {
                 Projectile.rotation += 0.3f * Projectile.direction;
@@ -53,10 +55,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else
                 Projectile.velocity *= 0.2f;
 
-            if (Projectile.timeLeft > 100)
-                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustType<Dusts.Cinder>(), default, 0, GlassMiniboss.GlowDustOrange, 0.5f);
+            if (Projectile.timeLeft > 70)
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.7f) * 0.3f, 0, Glassweaver.GlowDustOrange);
 
-            Projectile.localAI[0]++;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < 32;

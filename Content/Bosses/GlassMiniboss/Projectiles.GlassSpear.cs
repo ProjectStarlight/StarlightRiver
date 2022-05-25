@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            if (!Parent.active || Parent.type != NPCType<GlassMiniboss>())
+            if (!Parent.active || Parent.type != NPCType<Glassweaver>())
                 Projectile.Kill();
 
             Projectile.velocity = Parent.velocity;

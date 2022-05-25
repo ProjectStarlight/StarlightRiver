@@ -23,7 +23,7 @@ namespace StarlightRiver.Compat.BossChecklist
                 //Glassweaver
                 List<int> vitricMinibossCollection = new List<int>();
                 string vitricMinibossInfo = "Challenge the glassweaver in his forge in the vitric desert.";
-                bcl.Call("AddMiniBoss", StarlightRiver.Instance, "Glassweaver", ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassMiniboss>(), 4.8999f,
+                bcl.Call("AddMiniBoss", StarlightRiver.Instance, "Glassweaver", ModContent.NPCType<Content.Bosses.GlassMiniboss.Glassweaver>(), 4.8999f,
                     () => StarlightWorld.HasFlag(WorldFlags.DesertOpen),
                     () => true,
                     vitricMinibossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricMinibossInfo, "The glassweaver claims victory.");

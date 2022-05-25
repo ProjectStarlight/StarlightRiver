@@ -20,7 +20,7 @@ float2 uTargetPosition;
 float4 PixelShaderFunction(float2 coords : TEXCOORD0) : COLOR0
 {
 	float4 color = tex2D(uImage0, float2(abs(fmod(coords.x, 1.0)), coords.y));
-	float3 bright = color.xyz * color.w * uColor + (color.w > 0.4 ? ( (color.w - 0.4) * 2.5) : float3(0, 0, 0));
+	float3 bright = color.xyz * color.w * uColor + (color.w > 0.4 ? ((color.w - 0.4) * 2.5) : float3(0, 0, 0));
 	 
 	float avg = ((uColor.x + uColor.y + uColor.z) / 3.0);
 

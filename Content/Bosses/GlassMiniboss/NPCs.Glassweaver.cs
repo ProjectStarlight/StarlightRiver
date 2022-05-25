@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	public partial class GlassMiniboss : ModNPC
+	public partial class Glassweaver : ModNPC
     {
         public bool attackVariant = false;
         //bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Jump,
             SpinJump,
             TripleSlash,
-            BigSlash,
+            SlashLob,
             SpearThrust,
             Whirlwind,
             Javelins,
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPCID.Sets.TrailingMode[Type] = 1;
         }
 
-        public override string Texture => AssetDirectory.GlassMiniboss + "Glassweaver";
+        public override string Texture => AssetDirectory.Glassweaver + "Glassweaver";
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
 
@@ -141,21 +141,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 
                 case (int)PhaseEnum.ReturnToForeground:
 
-                    AttackTimer++;
-
-                    if (AttackTimer == 40)
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake = 15;
-
-                    if (AttackTimer > 38 && AttackTimer < 140)
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2;
-
-                    if (AttackTimer > 210)
-                    {
-                        SetPhase(PhaseEnum.DirectPhase);
-                        ResetAttack();
-                        AttackPhase = -1;
-                    }
-
+                    JumpBackAnimation();
                     break;
 
                 case (int)PhaseEnum.DirectPhase:
@@ -181,16 +167,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: TripleSlash(); break;
-                        case 1: BigSlash(); break;//thrust
-                        case 2: Javelins(); break;
-                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 4: BigBrightBubble(); break;
-                        case 5: TripleSlash(); break;
-                        case 6: if (attackVariant) BigSlash(); else BigSlash(); break;//thrust or big
-                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 8: Javelins(); break;
+                        //case 0: TripleSlash(); break;
+                        //case 1: SpearThrust(); break;//thrust
+                        //case 2: Javelins(); break;
+                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 4: BigBrightBubble(); break;
+                        //case 5: TripleSlash(); break;
+                        //case 6: if (attackVariant) SlashLob(); else SpearThrust(); break;
+                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        //case 8: Javelins(); break;
                         case 9: BigBrightBubble(); break;
+                        default: BigBrightBubble(); break;
                     }
 
                     break;
@@ -212,7 +199,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         //i hate this specific thing right here
         public override ModNPC Clone(NPC npc)
         {
-            var newNPC = base.Clone(npc) as GlassMiniboss;
+            var newNPC = base.Clone(npc) as Glassweaver;
             newNPC.moveTarget = new Vector2();
             newNPC.moveStart = new Vector2();
             newNPC.attackVariant = false;
@@ -223,8 +210,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.GlassMiniboss + "Glassweaver");
-            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.GlassMiniboss + "GlassweaverGlow");
+            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + "Glassweaver");
+            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "GlassweaverGlow");
 
             Rectangle frame = weaver.Frame(1, 6, 0, 0);
             frame.X = 0;
@@ -233,7 +220,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             const int frameHeight = 152;
 
             Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
-            Vector2 drawPos = new Vector2(0, -35) - Main.screenPosition;
+            Vector2 drawPos = new Vector2(0, -35) - screenPos;
 
             //gravity frame
             if (NPC.velocity.Y > 0)
@@ -286,7 +273,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             break;
 
-                        case (int)AttackEnum.BigSlash:
+                        case (int)AttackEnum.SlashLob:
 
                             if (AttackTimer > 70 && AttackTimer < 200)
                             {
@@ -374,7 +361,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.33f);
+        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.4f);
         public static readonly Color GlassColor = new Color(60, 190, 150);
 
     }

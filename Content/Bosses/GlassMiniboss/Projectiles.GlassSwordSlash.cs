@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassSwordSlash : ModProjectile
     {
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Sword");
 
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void AI()
         {
-            if (!Parent.active || Parent.type != NPCType<GlassMiniboss>())
+            if (!Parent.active || Parent.type != NPCType<Glassweaver>())
                 Projectile.Kill();
 
             Projectile.velocity = Parent.velocity;
@@ -46,9 +46,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Timer++;
 
-            Lighting.AddLight(Projectile.Center, GlassMiniboss.GlassColor.ToVector3());
+            Lighting.AddLight(Projectile.Center, Glassweaver.GlassColor.ToVector3());
 
-            if (Timer > 22)
+            if (Timer > 30)
                 Projectile.Kill();
         }
 
@@ -71,25 +71,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
-            if (Timer > -5)
-                DrawSlash();
 
             return false;
         }
 
-        private void DrawSlash()
+        private void DrawSlashOld()
         {
             Asset<Texture2D> slashTexture = Request<Texture2D>(Texture);
             Rectangle slashFrame = slashTexture.Frame(1, 2, 0, 0);
             Rectangle glowFrame = slashTexture.Frame(1, 2, 0, 1);
-            Vector2 origin = glowFrame.Size() * new Vector2(0.5f, 0.5f);
+            Vector2 origin = glowFrame.Size() * new Vector2(0.55f, 0.5f);
 
-            float scaleX = 0.9f + Utils.GetLerpValue(12, 22, Timer, true) * 0.7f;
-            float scaleY = 0.8f + Utils.GetLerpValue(10, 22, Timer, true) * 0.2f;
+            float scaleX = 1f + Utils.GetLerpValue(12, 28, Timer, true) * 0.12f;
+            float scaleY = 1f - Utils.GetLerpValue(12, 28, Timer, true) * 0.05f;
 
-            Color slashColor = GlassMiniboss.GlassColor * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            Color slashColor = Glassweaver.GlassColor * (float)Math.Pow(Utils.GetLerpValue(30, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
             slashColor.A = 0;
-            Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(20, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
+            Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(30, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
 
             float rotOff = (Parent.direction < 0 ? MathHelper.Pi : 0) + (Parent.direction * (Variant % 2 == 0 ? -0.14f : 0.14f));
             Main.EntitySpriteDraw(slashTexture.Value, Projectile.Center - Main.screenPosition, slashFrame, slashColor, Projectile.rotation + rotOff, origin, Projectile.scale * new Vector2(scaleX, scaleY), Direction(), 0);
@@ -108,7 +106,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Parent.direction < 0)
                 effects = SpriteEffects.FlipVertically;
 
-            if (Variant % 3 != 0)
+            if (Variant % 2 == 1)
                 effects = effects == 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
             return effects; 

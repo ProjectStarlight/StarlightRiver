@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -8,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	public partial class GlassMiniboss : ModNPC
+	public partial class Glassweaver : ModNPC
     {
         Vector2 moveStart;
         Vector2 moveTarget;
@@ -36,19 +37,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private const int distShortX = 130;
         private const int distShortY = -10;
 
-        private Vector2 PickSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distX * x, distY) : arenaPos + new Vector2(distX * x, distY); //picks the outer side.
+        private Vector2 PickSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distX * x, distY) : arenaPos + new Vector2(distX * x, distY); //picks the outer side.
 
-        private Vector2 PickCloseSide(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distShortX * x, -distShortY) : arenaPos + new Vector2(distShortX * x, -distShortY); //picks the inner side.
+        private Vector2 PickCloseSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distShortX * x, -distShortY) : arenaPos + new Vector2(distShortX * x, -distShortY); //picks the inner side.
 
-        private Vector2 PickSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distX * x, distY) : arenaPos + new Vector2(-distX * x, distY); //picks the outer side.
+        private Vector2 PickSpotSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distX * x, distY) : arenaPos + new Vector2(-distX * x, distY); //picks the outer side.
 
-        private Vector2 PickCloseSideSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distShortX * x, -distShortY) : arenaPos + new Vector2(-distShortX * x, -distShortY); //picks the inner side.
+        private Vector2 PickCloseSideSpot(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distShortX * x, -distShortY) : arenaPos + new Vector2(-distShortX * x, -distShortY); //picks the inner side.
 
         private Vector2 PickNearestSpot(Vector2 target)
         {
-            if (target.Distance(PickSide(-1)) < target.Distance(PickCloseSide(-1)))
-                return PickSide(-1);
-            return PickCloseSide(-1);
+            if (target.Distance(PickSpot(-1)) < target.Distance(PickCloseSpot(-1)))
+                return PickSpot(-1);
+            return PickCloseSpot(-1);
         }
 
         private int Direction => NPC.Center.X > arenaPos.X ? -1 : 1;
@@ -113,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer >= timeStart && AttackTimer <= timeEnd)
                 NPC.position.X = MathHelper.Lerp(MathHelper.SmoothStep(moveStart.X, moveTarget.X, MathHelper.Min(progress * 1.1f, 1f)), moveTarget.X, progress) - (NPC.width / 2f);
             else
-                NPC.velocity.X *= 0.01f; 
+                NPC.velocity.X *= 0.01f;
         }
 
         private void SpinJumpToTarget(int timeStart, int timeEnd, float totalRotations = 5, int direction = 1)
@@ -186,14 +187,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 ResetAttack();
         }        
         
-        private void BigSlash()
+        private void SlashLob()
         {
-            AttackType = (int)AttackEnum.BigSlash;
+            AttackType = (int)AttackEnum.SlashLob;
 
             if (AttackTimer == 1)
             {
                 NPC.TargetClosest();
-                moveTarget = PickNearestSpot(Target.Center);
+                moveTarget = PickCloseSpot();
             }
 
             if (AttackTimer <= 70)
@@ -227,7 +228,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private void SpearThrust()
         {
             AttackType = (int)AttackEnum.SpearThrust;
-
+            ResetAttack();
         }
 
         private void Javelins()
@@ -251,7 +252,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
             {
                 moveStart = NPC.Center;
-                moveTarget = PickCloseSide() - new Vector2(0, 80);
+                moveTarget = PickCloseSpot() - new Vector2(0, 80);
             }
 
             if (AttackTimer > 1 && AttackTimer < 20)
@@ -293,7 +294,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
             {
                 NPC.TargetClosest();
-                moveTarget = PickSide();
+                moveTarget = PickSpot();
                 moveStart = NPC.Center;
             }
 
@@ -321,9 +322,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * betweenSpikes), AttackTimer, true);
             if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
             {
-                float spikeX = MathHelper.Lerp(PickSideSelf().X, PickSideSelf(-1).X + (102 * Direction), dist);
-                float spikeY = arenaPos.Y - 150;
-                Vector2 spikePos = new Vector2(spikeX, spikeY);
+                float spikeX = MathHelper.Lerp(PickSpotSelf().X, PickSpotSelf(-1).X + (102 * Direction), dist);
+                Vector2 spikePos = new Vector2(spikeX, arenaPos.Y - 120);
                 Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }
@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
             {
                 NPC.TargetClosest();
-                moveTarget = PickCloseSide();
+                moveTarget = PickCloseSpot();
                 moveStart = NPC.Center;
             }
 
@@ -370,15 +370,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float dist = Utils.GetLerpValue(spikeSpawn - 1.5f, spikeSpawn + (spikeCount * betweenSpikes), AttackTimer, true);
             if (AttackTimer >= spikeSpawn - 1 && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && AttackTimer % betweenSpikes == 0)
             {
-                Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf(-1).X + (102 * Direction), NPC.Center.Y), dist);
-                Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
+                float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf(-1).X + (102 * Direction), dist);
+                Vector2 spikePos = new Vector2(spikeX, arenaPos.Y - 120);
                 Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = NPC.direction;
             }
             if (AttackTimer >= spikeSpawn && AttackTimer < spikeSpawn + (spikeCount * betweenSpikes) && (AttackTimer - 1) % betweenSpikes == 0)
             {
-                Vector2 spikeX = Vector2.Lerp(arenaPos, new Vector2(PickSideSelf().X + (102 * -Direction), NPC.Center.Y), dist);
-                Vector2 spikePos = new Vector2(spikeX.X, NPC.Top.Y - 100);//half the spike's height
+                float spikeX = MathHelper.Lerp(arenaPos.X, PickSpotSelf().X + (102 * -Direction), dist);
+                Vector2 spikePos = new Vector2(spikeX, arenaPos.Y - 120);
                 Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 40, 1f, Main.myPlayer, -20, dist);
                 raise.direction = -NPC.direction;
             }
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 NPC.TargetClosest();
                 moveStart = NPC.Center;
-                moveTarget = PickCloseSide();
+                moveTarget = PickCloseSpot();
             }
 
             if (AttackTimer <= 70)
@@ -430,7 +430,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer > 300 && AttackTimer < bubbleRecoil - 1)
             {
-                Vector2 target = Vector2.Lerp(Target.Center, PickSideSelf(-1) - new Vector2(0, 70), 0.8f);
+                Vector2 target = Vector2.Lerp(Target.Center, PickSpotSelf(-1) - new Vector2(0, 70), 0.8f);
                 if (AttackTimer < bubbleRecoil - 20)
                 {
                     if (AttackTimer > bubbleRecoil - 30)
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == bubbleRecoil - 1)
             {
-                moveTarget = PickSideSelf();
+                moveTarget = PickSpotSelf();
                 moveStart = NPC.Center;
             }
  
