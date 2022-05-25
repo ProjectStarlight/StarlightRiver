@@ -253,6 +253,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             else
                 oldVel = Projectile.velocity;
             pauseTimer = 10;
+            flashTimer = 0;
         }
 
         public void StartAttack()
@@ -315,6 +316,8 @@ namespace StarlightRiver.Content.Items.Moonstone
             pauseTimer--;
             if (pauseTimer > 0)
             {
+                if (flashTimer < 1)
+                    flashTimer += 0.04f;
                 Projectile.velocity = Vector2.Zero;
                 return;
             }
