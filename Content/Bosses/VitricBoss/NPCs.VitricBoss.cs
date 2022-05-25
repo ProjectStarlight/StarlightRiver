@@ -581,7 +581,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             shieldShaderTimer = 120;
 
                             NPC.life = NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
-                            Terraria.Audio.SoundEngine.PlaySound(SoundID.ForceRoar, NPC.Center, 0);
                         }
 
                         NPC.dontTakeDamage = true; //boss is immune at phase gate
