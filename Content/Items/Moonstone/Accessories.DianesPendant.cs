@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (alreadyHit.Contains(target))
+            if (alreadyHit.Contains(target) || pauseTimer > 0)
                 return false;
             return base.CanHitNPC(target);
         }
@@ -248,11 +248,11 @@ namespace StarlightRiver.Content.Items.Moonstone
             var nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (nextTarget != default)
             {
-                pauseTimer = 10;
                 oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedByRandom(2f) * Projectile.velocity.Length() * 0.5f;
             }
             else
                 oldVel = Projectile.velocity;
+            pauseTimer = 10;
         }
 
         public void StartAttack()
