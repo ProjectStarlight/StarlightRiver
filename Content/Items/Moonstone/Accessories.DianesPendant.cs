@@ -153,6 +153,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void AI()
         {
+            Projectile.scale = MathHelper.Lerp(0.75f, 1f, chargeRatio);
             if (!initialized)
             {
                 initialized = true;
@@ -340,6 +341,9 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 Projectile.velocity *= 0.4f;
                 attacking = false;
+
+                for (int k = 0; k < 9; k++)
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
             }
             else
             {
