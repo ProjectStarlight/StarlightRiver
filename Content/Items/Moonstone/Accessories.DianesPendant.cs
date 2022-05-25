@@ -128,6 +128,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private List<NPC> alreadyHit = new List<NPC>();
 
+        private float arcTimer = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crescant");
@@ -243,17 +245,19 @@ namespace StarlightRiver.Content.Items.Moonstone
                 modPlayer.Barrier += barrierRecovery;
             else
                 modPlayer.Barrier = modPlayer.MaxBarrier;
-                alreadyHit.Add(target);
+
+            alreadyHit.Add(target);
             Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 7;
             var nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (nextTarget != default)
             {
-                oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedByRandom(2f) * Projectile.velocity.Length() * 0.5f;
+                oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedByRandom(2f);
             }
             else
-                oldVel = Projectile.velocity;
+                oldVel = Vector2.Normalize(Projectile.velocity);
             pauseTimer = 10;
             flashTimer = 0;
+            arcTimer = 0;
         }
 
         public void StartAttack()
@@ -321,11 +325,13 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Projectile.velocity = Vector2.Zero;
                 return;
             }
-            if (pauseTimer == 0)
-                Projectile.velocity = oldVel;
-            Projectile.rotation += Projectile.velocity.Length() * 0.01f;
+
+            if (arcTimer < 1)
+                arcTimer += 0.05f;
+
+            Projectile.rotation += Projectile.velocity.Length() * 0.02f;
             Projectile.friendly = true;
-            speed = MathHelper.Lerp(20, 30, chargeRatio);
+            speed = MathHelper.Lerp(30, 40, chargeRatio);
             var target = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (target == default)
             {
@@ -334,8 +340,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             }
             else
             {
-                Vector2 direction = Projectile.DirectionTo(target.Center);
-                Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, MathHelper.Lerp(0.1f, 0.2f, chargeRatio));
+                float rotDifference = ((((Projectile.DirectionTo(target.Center).ToRotation() - oldVel.ToRotation()) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+
+                Vector2 direction = (oldVel.ToRotation() + (rotDifference * arcTimer)).ToRotationVector2();
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction * speed, MathHelper.Lerp(0.01f, 0.02f, chargeRatio) + (MathHelper.Max(0, 300 - Projectile.Distance(target.Center)) / 1500f));
             }
 
             for (int k = 0; k < 2; k++)
