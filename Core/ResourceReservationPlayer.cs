@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
 
 		public override void PostUpdate()
 		{
-			if(Player.statLife > Player.statLifeMax2 - ReservedLifeAnimation)
+			if (Player.statLife > Player.statLifeMax2 - ReservedLifeAnimation)
 				Player.statLife = Player.statLifeMax2 - ReservedLifeAnimation;
 
 			if (Player.statMana > Player.statManaMax2 - ReservedManaAnimation)
@@ -93,6 +93,9 @@ namespace StarlightRiver.Core
 
 			if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
 				DrawReservedManaFancy();
+
+			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+				DrawReservedManaBars();
 		}
 
 		private void DrawReservedLife()
@@ -106,6 +109,37 @@ namespace StarlightRiver.Core
 			for (int k = 0; k <= fullHeartsToDraw; k++)
 			{
 				Vector2 pos = Vector2.Zero;
+
+				if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+				{
+					var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+
+					pos = new Vector2(Main.screenWidth - 60 - vanillaHearts * 12 + k * 12, 24f);
+
+					int width2 = 0;
+
+					if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation >= (k + 1) * lifePerHeart)
+						width2 = texBar.Width;
+					else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > k * lifePerHeart)
+					{
+						width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart) / lifePerHeart * texBar.Width);
+					}
+
+					var source2 = new Rectangle(0, 0, width2, texBar.Height);
+					var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
+					Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
+
+					if (k == fullHeartsToDraw && Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > 0)
+					{
+						var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
+						Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
+
+						var targetLine2 = new Rectangle((int)pos.X + width2 - 2, (int)pos.Y, 2, texBar.Height);
+						Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine2, null, new Color(119, 149, 139));
+					}
+
+					continue;
+				}
 
 				if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
 				{
@@ -211,6 +245,45 @@ namespace StarlightRiver.Core
 					var pos = new Vector2(Main.screenWidth - 25, 38 + (22 * (i - 1)));
 
 					Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, 1, 0, 0);
+				}
+			}
+		}
+
+		private void DrawReservedManaBars()
+		{
+			Player Player = Main.LocalPlayer;
+
+			int vanillaStars = Math.Min(20, Player.statManaMax2 / 20);
+			int fullStarsToDraw = Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation / 20;
+
+			for (int k = 0; k <= fullStarsToDraw; k++)
+			{
+				Vector2 pos = Vector2.Zero;
+
+				var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+
+				pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, 48f);
+
+				int width2 = 0;
+
+				if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation >= (k + 1) * 20)
+					width2 = texBar.Width;
+				else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > k * 20)
+				{
+					width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation % 20) / 20f * texBar.Width);
+				}
+
+				var source2 = new Rectangle(0, 0, width2, texBar.Height);
+				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width2, texBar.Height);
+				Main.spriteBatch.Draw(texBar, target2, source2, Color.White);
+
+				if (k == fullStarsToDraw && Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > 0)
+				{
+					var targetLine = new Rectangle((int)pos.X + width2, (int)pos.Y, 2, texBar.Height);
+					Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine, null, new Color(19, 16, 37));
+
+					var targetLine2 = new Rectangle((int)pos.X + width2 - 2, (int)pos.Y, 2, texBar.Height);
+					Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLine2, null, new Color(119, 149, 139));
 				}
 			}
 		}

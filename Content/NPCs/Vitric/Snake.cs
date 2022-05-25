@@ -242,6 +242,27 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             if (Projectile.timeLeft < 90)
                 Projectile.velocity.Y += 0.1f;
+
+            if(Main.masterMode)
+			{
+                float shortest = float.MaxValue;
+                Player target = null;
+
+                for(int k = 0; k < Main.maxPlayers; k++)
+				{
+                    var player = Main.player[k];
+                    var dist = Vector2.Distance(player.Center, Projectile.Center);
+
+                    if (player.active && dist < shortest)
+					{
+                        shortest = dist;
+                        target = player;
+					}
+				}
+
+                if (target != null)
+                    Projectile.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.3f;
+			}
         }
 
         public override void Kill(int timeLeft)

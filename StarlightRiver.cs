@@ -107,8 +107,6 @@ namespace StarlightRiver
                 AbilityKeys = new AbilityHotkeys(this);
                 AbilityKeys.LoadDefaults();
             }
-
-            Compat.BossChecklistCalls.CallBossChecklist();
         }
 
         public override void Unload()
@@ -151,15 +149,13 @@ namespace StarlightRiver
             }
         }
 
-        #region NetEasy
         public override void PostSetupContent()
         {
+            Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
 
             NetEasy.NetEasy.Register(this);
 
             AutoloadChestItems();
-
-            //CallBossChecklist();
 
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
             {
@@ -176,6 +172,5 @@ namespace StarlightRiver
         {
             NetEasy.NetEasy.HandleModule(reader, whoAmI);
         }
-        #endregion
     }
 }

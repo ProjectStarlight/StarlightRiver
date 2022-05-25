@@ -8,6 +8,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -146,7 +147,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 boomTimer++;
 
             if (boomTimer == 1)
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/MysticCast"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
@@ -154,7 +155,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                 Item.TurnToAir();
 ;
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/Shadow2"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {

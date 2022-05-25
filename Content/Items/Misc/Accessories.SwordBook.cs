@@ -74,7 +74,9 @@ namespace StarlightRiver.Content.Items.Misc
 						pitch = 1;
 
 					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
-					Terraria.Audio.SoundEngine.PlaySound(item.UseSound, player.Center);
+
+					if (Item.UseSound.HasValue)
+						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, player.Center);
 
 					comboState++;
 					comboState %= 4;

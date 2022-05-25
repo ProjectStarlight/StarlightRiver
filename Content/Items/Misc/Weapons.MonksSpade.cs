@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -29,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.knockBack = 2.5f;
             Item.autoReuse = true;
 
-            Item.UseSound = SoundLoader.GetLegacySoundSlot(Mod, "Sounds/GlassMinibossSword");
+            Item.UseSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/GlassMinibossSword");
 
             Item.shoot = ProjectileType<MonkSpadeProjectile>();
             Item.shootSpeed = 1;

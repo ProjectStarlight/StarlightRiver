@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             if (Projectile.ai[0] == 119)
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, (int)Projectile.Center.X, (int)Projectile.Center.Y, 0, 1, -2);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink with { Pitch = -1f }, Projectile.Center);
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 7;
             }
         }

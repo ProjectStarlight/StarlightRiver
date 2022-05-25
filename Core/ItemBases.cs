@@ -131,6 +131,7 @@ namespace StarlightRiver.Core
         }
     }
 
+    [Autoload(false)]
     public class QuickTileItem : ModItem 
     {
         public string InternalName = "";
@@ -142,6 +143,8 @@ namespace StarlightRiver.Core
         private readonly string TexturePath;
         private readonly bool PathHasName;
         private readonly int ItemValue;
+
+        public QuickTileItem() { }
 
         public QuickTileItem(string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
         {
@@ -180,6 +183,9 @@ namespace StarlightRiver.Core
 
         public override void SetDefaults()
         {
+            if (Tilename is null)
+                return;
+
             Item.width = 16;
             Item.height = 16;
             Item.maxStack = 999;

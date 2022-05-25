@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
                 TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
             TileObjectData.addTile(Type);
-            SoundType = SoundID.Shatter;
+            HitSound = SoundID.Shatter;
             DustType = DustType<Dusts.GlassGravity>();
             AddMapEntry(new Color(80, 131, 142));
         }

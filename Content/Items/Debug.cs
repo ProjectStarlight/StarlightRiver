@@ -44,11 +44,12 @@ namespace StarlightRiver.Content.Items
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(400);
+            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
         }
 
 		public override bool? UseItem(Player player)
         {
+            player.statLifeMax = 100;
             UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
 
             StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);

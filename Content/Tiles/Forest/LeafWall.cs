@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             Main.wallHouse[Type] = false;
             WallID.Sets.Conversion.Grass[Type] = true;
             DustType = DustID.Grass;
-            SoundType = SoundID.Grass;
+            HitSound = SoundID.Grass;
             AddMapEntry(new Color(50, 140, 90));
         }
 

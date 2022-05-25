@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 Projectile.frame = ((counter / 5) % 2) + 2;
 
                 if (counter % 30 == 1)
-                    Terraria.Audio.SoundEngine.PlaySound(2, Projectile.Center, 22); //Chainsaw sound
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item22, Projectile.Center); //Chainsaw sound
 
                 ReleaseSteam(Player);
             }

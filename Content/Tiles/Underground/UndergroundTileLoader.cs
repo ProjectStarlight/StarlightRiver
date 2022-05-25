@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustID.Stone,
-					soundType: SoundID.Tink,
+					hitSound: SoundID.Tink,
 					mapColor: new Color(86, 88, 91),
 					stone: true
 					)
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					width: 2,
 					height: 2,
 					dustType: DustID.Stone,
-					soundType: SoundID.Tink,
+					hitSound: SoundID.Tink,
 					tallBottom: false,
 					mapColor: new Color(100, 100, 100)
 					)
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					width: 2,
 					height: 2,
 					dustType: DustID.Stone,
-					soundType: SoundID.Tink,
+					hitSound: SoundID.Tink,
 					tallBottom: false,
 					mapColor: new Color(50, 50, 50)
 					)

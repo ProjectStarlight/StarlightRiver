@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -87,7 +88,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     if (projOwner.controlUseItem || Projectile.ai[1] >= maxChargeTime - 5)
                     {
                         if (Projectile.ai[1] == 0)
-                            Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/ImpactHeal"), Projectile.Center);
+                            Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ImpactHeal"), Projectile.Center);
 
                         chargeMult = Projectile.ai[1] / (maxChargeTime + 3);
                         Projectile.ai[1]++;
@@ -124,7 +125,7 @@ namespace StarlightRiver.Content.Items.Starwood
                         {
                             Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
                             Lighting.AddLight(Projectile.Center, lightColor * 2);
-                            Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/MagicAttack"), Projectile.Center);
+                            Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/MagicAttack"), Projectile.Center);
 
                             for (int k = 0; k < 50; k++)
                             {

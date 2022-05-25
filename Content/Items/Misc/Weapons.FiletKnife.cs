@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             player.AddBuff(BuffID.WellFed, 18000);
             player.AddBuff(ModContent.BuffType<FiletFrenzyBuff>(), 600);
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, player.position);
             return false;
         }
     }
