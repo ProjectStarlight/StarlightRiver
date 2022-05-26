@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Brewing
             recipe.AddIngredient(ItemID.BottledWater, 1);
             recipe.AddIngredient(ItemType<ForestBerries>(), 5);
             recipe.AddIngredient(ItemType<Ivy>(), 20);
-            //recipe.AddTile(TileType<HerbStation>()); PORTTODO: Herb station doesn't exist anymore, replace it with something?
+            recipe.AddTile(TileID.Bottles);
         }
     }
 }

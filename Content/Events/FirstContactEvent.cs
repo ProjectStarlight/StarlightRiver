@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
-            TargetHost.Maps?.OrderedShaderPass();
+            TargetHost.Maps?.OrderedShaderPass(); //PORTTODO: Why is this here?
             TargetHost.Maps?.OrderedRenderPassBatched(Main.spriteBatch, Main.graphics.GraphicsDevice);
 
             if (FirstContactFade > 0) //PORTTODO: Move this to a ModSceneEffect

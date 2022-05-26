@@ -48,8 +48,8 @@ namespace StarlightRiver.Content.Items.Misc
             Item.noUseGraphic = true;
 		}
 
-		public override bool CanConsumeAmmo(Player Player)
-        {
+		public override bool CanConsumeAmmo(Item ammo, Player player)
+		{
             return false;
         }
 
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Items.Misc
             return type;
         }
 
-        public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref int damage, ref float knockback)
+        public override void PickAmmo(Item weapon, Item ammo, Player player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
         {
             if (weapon.type != ModContent.ItemType<DualCross>())
             {

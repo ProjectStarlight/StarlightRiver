@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -59,7 +60,7 @@ namespace StarlightRiver.Keys
                 else KeyInventory.keys.Add(new KeyIcon(this, false));
                 OnPickup();
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyGet"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyGet"));
             }
         }
 
@@ -72,7 +73,7 @@ namespace StarlightRiver.Keys
                 KeyIcon icon = KeyInventory.keys.FirstOrDefault(n => n.parent == key);
                 KeyInventory.keys.Remove(icon);
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyUse"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyUse"));
                 return true;
             }
             else

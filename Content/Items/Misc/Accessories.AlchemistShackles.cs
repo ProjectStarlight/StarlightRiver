@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public AlchemistShackles() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
 
-		public override void Load() //PORTTODO: Make it so cursed accessories don't hide load()
+		public override void Load()
 		{
 			On.Terraria.Player.AddBuff += Player_AddBuff;
 		}

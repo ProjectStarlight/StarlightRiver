@@ -72,6 +72,7 @@ namespace StarlightRiver.Core
         }
     }
 
+    [Autoload(false)]
     class GenericFurnitureItem : QuickTileItem
     {
         private readonly string internalName;
@@ -79,6 +80,8 @@ namespace StarlightRiver.Core
         private readonly int craftingQuantity;
         private readonly int craftingMaterial;
         private readonly string texture;
+
+        public GenericFurnitureItem() { }
 
         public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", name.Replace(" ", ""), 0)
         {

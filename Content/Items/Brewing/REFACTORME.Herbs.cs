@@ -13,30 +13,4 @@ namespace StarlightRiver.Items.Herbology.Materials
     {
         public IvySeeds() : base("Forest Ivy Seeds", "Can grow in hanging planters", 99, 0, 1, AssetDirectory.BrewingItem) { }
     }
-
-    /*public class Deathstalk : ModItem //PORTTODO: Figure out whether this should be deleted
-    {
-        public override string Texture => AssetDirectory.BrewingItem + Name;
-
-        public override void SetStaticDefaults()
-        {
-            Tooltip.SetDefault("Grows on Rich Soil");
-            DisplayName.SetDefault("Deathstalk");
-        }
-
-        public override void SetDefaults()
-        {
-            Item.width = 16;
-            Item.height = 16;
-            Item.maxStack = 999;
-            Item.rare = ItemRarityID.Green;
-            Item.useTurn = true;
-            Item.autoReuse = true;
-            Item.useAnimation = 15;
-            Item.useTime = 10;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.consumable = true;
-            //Item.createTile = TileType<Deathstalk>();
-        }
-    }*/
 }

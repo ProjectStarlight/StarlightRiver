@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                     if (Main.rand.Next(2) == 0) vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8); Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
                     Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);
                 }
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70.WithPitchVariance(0.6f), NPC.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { PitchVariance = 0.6f }, NPC.Center);
 
                 foreach (Player Player in Main.player.Where(Player => Vector2.Distance(Player.Center, NPC.Center) <= 250))
                     Player.GetModPlayer<StarlightPlayer>().Shake = (250 - (int)Vector2.Distance(Player.Center, NPC.Center)) / 12;

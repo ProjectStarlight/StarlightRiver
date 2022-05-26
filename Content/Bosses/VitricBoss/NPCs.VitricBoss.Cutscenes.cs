@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -382,7 +383,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (checkSpecificTime(1))
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetSoundSlot("Sounds/VitricBossDeath"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBossDeath"));
 
                 startPos = NPC.Center;
                 NPC.rotation = 0;
@@ -417,7 +418,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     mp.Shake += 60;
                 }
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center, 0);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 
                 Filters.Scene.Deactivate("Shockwave");
             }

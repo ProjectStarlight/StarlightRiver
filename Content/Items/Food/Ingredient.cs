@@ -30,11 +30,6 @@ namespace StarlightRiver.Content.Items.Food
 
         public override string Texture => AssetDirectory.FoodItem + Name;
 
-        public override void Load()
-        {
-            
-        }
-
         public override void AddRecipes() //this is dumb, too bad!
         {
             ChefBag.ingredientTypes.Add(Item.type);
@@ -49,8 +44,6 @@ namespace StarlightRiver.Content.Items.Food
         public virtual void ResetBuffEffects(Player Player, float multiplier) { }
 
         public virtual void SafeSetDefaults() { }
-
-        //public override bool CloneNewInstances => true; //PORTTODO: Test to make sure commenting this out doesn't mess this up
 
         public override void SetStaticDefaults()
         {
@@ -85,7 +78,7 @@ namespace StarlightRiver.Content.Items.Food
 
             foreach (TooltipLine line in tooltips)
             {
-                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.Text = description; line.OverrideColor = nameColor; } //PORTTODO: Replace line.Mod with something
+                if (line.Mod == "Terraria" && line.Name == "Tooltip0") { line.Text = description; line.OverrideColor = nameColor; }
                 if (line.Mod == "Terraria" && line.Name == "Tooltip1") { line.Text = ItemTooltip; line.OverrideColor = descriptionColor; }
             }
 

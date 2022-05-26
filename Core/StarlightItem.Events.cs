@@ -26,9 +26,9 @@ namespace StarlightRiver.Core
 			GetWeaponCritEvent?.Invoke(Item, Player, ref crit);
 		}
 
-        public delegate void PickAmmoDelegate(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref int damage, ref float knockback);
+        public delegate void PickAmmoDelegate(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref StatModifier damage, ref float knockback);
         public static event PickAmmoDelegate PickAmmoEvent;
-		public override void PickAmmo(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref int damage, ref float knockback)
+		public override void PickAmmo(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
 		{
             PickAmmoEvent?.Invoke(weapon, ammo, Player, ref type, ref speed, ref damage, ref knockback);
 		}
