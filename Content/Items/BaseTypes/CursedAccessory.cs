@@ -185,7 +185,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
-            if(/*line.Mod == "Terraria" && */line.Name == "ItemName")//PORTTODO: Replace line.mod with something to make sure it just checks the vanilla one
+            if(line.Mod == "Terraria" && line.Name == "ItemName")
 			{
                 var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
                 var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;

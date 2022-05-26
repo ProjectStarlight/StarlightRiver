@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 
 	}
-	public class ReactivePlatingHelper : IOrderedLoadable //PORTTODO: Replace drawplayer detour with something else
+	public class ReactivePlatingHelper : IOrderedLoadable
 	{
 
 		public float Priority => 1.05f; 
@@ -100,22 +100,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			//On.Terraria.Main.DrawPlayer += Main_DrawPlayer; PORTTODO: find out what this is replaced with
+			StarlightPlayer.PostDrawEvent += DrawOverlay;
+		}
+
+		private void DrawOverlay(Player player, SpriteBatch spriteBatch)
+		{
+			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+
+			if (modPlayer.Shield)
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, player);
 		}
 
 		public void Unload() { }
-
-		/* PORTTODO: find out what this is replaced with
-		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
-		{
-			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
-
-			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-
-			if (modPlayer.Shield)
-				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, drawPlayer);
-		}
-		*/
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {

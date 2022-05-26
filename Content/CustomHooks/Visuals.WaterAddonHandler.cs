@@ -58,20 +58,6 @@ namespace StarlightRiver.Content.CustomHooks
 
 			IL.Terraria.Main.DoDraw += AddWaterShader;
 			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//PORTTODO: Figure out where this logic moved in vanilla
-
-			//On.Terraria.Main.DoDraw += DebugTest;
-		}
-
-		private void DebugTest(On.Terraria.Main.orig_DoDraw orig, Main self, GameTime gameTime)
-		{
-			orig(self, gameTime);
-
-			if(!Main.gameMenu && Main.LocalPlayer.controlHook)
-			{
-				Main.spriteBatch.Begin();
-				NewDraw();
-				Main.spriteBatch.End();
-			}
 		}
 
 		private void UpdateActiveAddon(Player Player)

@@ -52,7 +52,7 @@ namespace StarlightRiver.Core
 
             DustType = FountainDustType;
             AnimationFrameHeight = Height * 18;
-            
+
             //ItemType = Mod.Find<ModItem>(ItemName).Type; PORTTODO: Why is this in here?
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 

@@ -29,7 +29,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void Load()
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
-            //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Replace this detour with something
             StarlightItem.CanUseItemEvent += ControlItemUse;          
         }
 
@@ -113,7 +112,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
                 if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot > 0 && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
                 {                  
-                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI); //PORTTODO: Figure out source on this
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI);
                     var proj = Main.projectile[i];
                     (proj.ModProjectile as PoltergeistMinion).Item = item.Clone();
 

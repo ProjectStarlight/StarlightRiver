@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.GUI
                     pos.Y += objective.DrawText(spriteBatch, pos);
                 }
 
-                spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, Helpers.Helper.WrapString(selected.output.Item.ToolTip.GetLine(0), 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+                spriteBatch.DrawString(FontAssets.ItemStack.Value, Helpers.Helper.WrapString(selected.output.Item.ToolTip.GetLine(0), 130, FontAssets.ItemStack.Value, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
                 if (previewFade < 1 && !crafting)
                     previewFade += 0.05f;
@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.GUI
             byte[] file = GetFileBytes(output.PreviewVideo + ".gif");
             Stream stream = new MemoryStream(file);
 
-            //var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2); //PORTTODO: Update interchange ref //PORTTODO: Re-enable this
+            var gif = GIFBuilder.FromGIFFile(stream, Main.graphics.GraphicsDevice, 2);
 
             if (token.IsCancellationRequested)
                 return;
