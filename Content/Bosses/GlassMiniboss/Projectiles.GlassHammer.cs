@@ -56,29 +56,29 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float dropLerp = Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.5f, Projectile.localAI[0], true);
             float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.15f, Projectile.localAI[0], true));
             float swingAccel = Utils.GetLerpValue(TotalTime * 0.16f, 0, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.16f, TotalTime * 0.02f, Projectile.localAI[0], true);
-            //10 degree drop
+            //20 degree drop
             //30 degree lift
-            //160 degree swing to floor
+            //163 degree swing to floor
 
-            float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(10), 0, dropLerp)
+            float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), 0, dropLerp)
                 - MathHelper.Lerp(MathHelper.ToRadians(30), 0, liftLerp)
-                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(20), swingAccel);
+                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(17), swingAccel);
 
             Vector2 handleOffset;
             int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
             switch (handleFrame)
             {
                 default:
-                    handleOffset = new Vector2(-28, 2);
+                    handleOffset = new Vector2(-55, 2);
                     break;
                 case 1:
-                    handleOffset = new Vector2(20, 5);
+                    handleOffset = new Vector2(25, -5);
                     break;
                 case 2:
-                    handleOffset = new Vector2(25, 7);
+                    handleOffset = new Vector2(32, -7);
                     break;
                 case 3:
-                    handleOffset = new Vector2(28, 9);
+                    handleOffset = new Vector2(35, 2);
                     break;
             }
             handleOffset.X *= Parent.direction;
@@ -103,10 +103,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 }
             }
 
-            if (Projectile.localAI[0] > TotalTime * 0.55f)
+            if (Projectile.localAI[0] > TotalTime * 0.8f)
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Cinder>(), Vector2.UnitX.RotatedByRandom(3.14f), 0, Glassweaver.GlowDustOrange, 0.8f);
+
+            if (Projectile.localAI[0] > TotalTime * 0.5f && Projectile.localAI[0] < TotalTime * 0.9f)
             {
-                Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(20, 20).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
-                Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), -Vector2.UnitY.RotatedByRandom(0.7f), 0, Glassweaver.GlowDustOrange, 0.8f);
+                Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
+                Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), origin.DirectionTo(alongHammer).RotatedByRandom(0.5f) * 2f, 0, Glassweaver.GlowDustOrange, 0.8f);
             }
         }
 
@@ -129,18 +132,30 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool PreDraw(ref Color lightColor)
         {
             Asset<Texture2D> hammer = Request<Texture2D>(Texture);
+            Asset<Texture2D> hammerGlow = Request<Texture2D>(Texture + "Bloom");
             Rectangle frame = hammer.Frame(1, 2, 0, 0);
             Rectangle hotFrame = hammer.Frame(1, 2, 0, 1);
 
             SpriteEffects effects = Parent.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.9f : 0.1f, 0.9f);
+            Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.2f : 0.8f, 0.2f);
+
+            float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, Projectile.localAI[0], true));
 
             Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
-            Main.EntitySpriteDraw(hammer.Value, origin - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, 1, effects, 0);
+            Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, scaleIn, effects, 0);
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.87f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.55f, TotalTime * 0.83f, Projectile.localAI[0], true);
-            Main.EntitySpriteDraw(hammer.Value, origin - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, 1, effects, 0);
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.9f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.4f, TotalTime * 0.83f, Projectile.localAI[0], true);
+            Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, scaleIn, effects, 0);
+            
+            Color bloomFade = Color.OrangeRed * 0.7f * Utils.GetLerpValue(TotalTime, TotalTime * 0.9f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.4f, TotalTime * 0.83f, Projectile.localAI[0], true);
+            bloomFade.A = 0;
+            Main.EntitySpriteDraw(hammerGlow.Value, Projectile.Center - Main.screenPosition, null, bloomFade, Projectile.rotation, handle + frame.Size() * 0.25f, scaleIn, effects, 0);
+
+
+            Asset<Texture2D> hammerSmall = Request<Texture2D>(Texture + "Small");
+            float scaleOut = Projectile.scale * Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.8f, Projectile.localAI[0], true);
+            Main.EntitySpriteDraw(hammerSmall.Value, Projectile.Center - Main.screenPosition, null, hotFade, Projectile.rotation, hammerSmall.Size() * 0.5f, scaleOut, effects, 0);
 
             return false;
         }

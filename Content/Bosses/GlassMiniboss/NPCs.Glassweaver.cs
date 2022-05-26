@@ -45,8 +45,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Jump,
             SpinJump,
             TripleSlash,
-            SlashLob,
-            SpearThrust,
+            LavaLob,
             Whirlwind,
             Javelins,
             Hammer,
@@ -137,6 +136,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     SetPhase(PhaseEnum.ReturnToForeground);
                     ResetAttack();
 
+
+                    //check if wave npcs are alive
+                    //if not, increment wave
+                    //
+
                     break;                
                 
                 case (int)PhaseEnum.ReturnToForeground:
@@ -167,16 +171,28 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: TripleSlash(); break;
-                        case 1: SpearThrust(); break;
-                        case 2: Javelins(); break;
-                        case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 4: BigBrightBubble(); break;
-                        case 5: TripleSlash(); break;
-                        case 6: if (attackVariant) SlashLob(); else SpearThrust(); break;
-                        case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-                        case 8: Javelins(); break;
-                        case 9: BigBrightBubble(); break;
+                        //case 0: TripleSlash(); break;
+
+                        //case 1: Whirlwind(); break;
+
+                        //case 2: Javelins(); break;
+
+                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+
+                        //case 4: BigBrightBubble(); break;
+
+                        //case 5: TripleSlash(); break;
+
+                        //case 6: if (attackVariant) Whirlwind(); else SpearThrust(); break;
+
+                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
+
+                        //case 8: Javelins(); break;
+
+                        //case 9: BigBrightBubble(); break;
+
+
+                        default: Whirlwind(); break;
                     }
 
                     break;
@@ -271,19 +287,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             }
 
                             break;
-
-                        case (int)AttackEnum.SlashLob:
-
-                            if (AttackTimer > 70 && AttackTimer < 200)
-                            {
-                                frame.X = 142;
-                                if (AttackTimer > 120 && AttackTimer < 200)
-                                    frame.Y = frameHeight;
-                            }
-
-                            break;
-                                                 
-                        case (int)AttackEnum.SpearThrust:
+                
+                        case (int)AttackEnum.LavaLob:
 
                             break;
 
@@ -308,6 +313,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             {
                                 frame.X = 288;
                                 frame.Width = 180;
+                                origin.X = frame.Width / 2f;
 
                                 if (hammerTimer <= hammerTime * 0.87f)
                                 {
@@ -347,7 +353,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackType == (int)AttackEnum.Whirlwind)
             {
-                float fadeOutToSlash = Utils.GetLerpValue(0, 20, AttackTimer, true) * Utils.GetLerpValue(190, 160, AttackTimer, true);
+                float fadeOutToSlash = Utils.GetLerpValue(50, 70, AttackTimer, true) * Utils.GetLerpValue(190, 160, AttackTimer, true);
                 baseColor = Color.Lerp(drawColor, Color.Transparent, fadeOutToSlash);
                 glowColor = Color.Lerp(new Color(255, 255, 255, 128), new Color(255, 255, 255, 0), fadeOutToSlash);
             }
