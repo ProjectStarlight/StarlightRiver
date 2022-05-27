@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 		{
-            if (controller != null && controller.NPC.active || angleTimer > 0)
+            if (controller != null && controller.NPC.active || angleTimer > 1)
             {
                 drawInfo.drawPlayer.fullRotationOrigin = drawInfo.drawPlayer.Size / 2;
                 drawInfo.drawPlayer.fullRotation = realAngle + (float)Math.PI * 0.5f * angleTimer / 59f;
@@ -90,6 +90,9 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
         public override void PostUpdate()
         {
+            if (angleTimer > 0 && angleTimer <= 4)
+                Player.fullRotation = 0;
+
             if (controller != null && controller.NPC.active)
             {
                 Player.MountedCenter = controller.NPC.Center + Vector2.UnitX.RotatedBy(angle) * (controller.radius + Player.height / 2 + (controller.attract - controller.attract * (angleTimer / 60f)));
@@ -109,12 +112,18 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
                     angleTimer += (int)attractSpeed;
                     attractSpeed += Player.gravity * (float)Math.Max(0, Math.Sin(angle));
                 }
-                if (angleTimer > 60) angleTimer = 60;
+
+                if (angleTimer > 60) 
+                    angleTimer = 60;
             }
             else
             {
-                if (angleTimer > 0) angleTimer -= 3;
-                if (cooldown > 0) cooldown--;
+                if (angleTimer > 0) 
+                    angleTimer -= 3;
+
+                if (cooldown > 0) 
+                    cooldown--;
+
                 controller = null;
             }
         }
