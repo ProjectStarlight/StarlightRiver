@@ -121,6 +121,7 @@ namespace StarlightRiver
             {
                 Instance = null;
                 AbilityKeys.Unload();
+                LightingBufferInstance = null;
             }
         }
 
