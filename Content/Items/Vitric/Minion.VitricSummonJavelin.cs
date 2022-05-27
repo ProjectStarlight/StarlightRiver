@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public VitricSummonJavelin()
         {
-            strikeWhere = Projectile.Center;
+            strikeWhere = Vector2.Zero;
             enemySize = Vector2.One;
             Vector2 offset = Vector2.Zero;
         }
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                     offset.X = 1;
                     Projectile.velocity = (Projectile.rotation * Projectile.spriteDirection).ToRotationVector2() * 10f * Projectile.spriteDirection;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.Center.X, (int)Projectile.Center.Y, 75, 0.75f, -0.50f);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item75 with { Volume = 0.75f, Pitch = -0.5f }, Projectile.Center);
 
                 }
             }
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     Dust.NewDustPerfect(Projectile.Center + offset + randomoffsetreboiled, dusttype, new Vector2(velo.X * Projectile.spriteDirection, velo.Y), 100, default, num315 / 2f);
                 }
 
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, (int)Projectile.Center.X, (int)Projectile.Center.Y, 0, 0.75f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter with { Volume = 0.75f }, Projectile.Center);
             return true;
         }
 

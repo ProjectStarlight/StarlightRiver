@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -24,8 +25,7 @@ namespace StarlightRiver.Core
         public readonly int VariantCount;
         protected readonly Color? MapColor;
         protected readonly int CrystalDustType;
-        protected readonly int Sound;
-        protected readonly int CrystalSoundStyle;
+        protected readonly SoundStyle? CrystalSound;
         public readonly int MaxWidth;
         public readonly int MaxHeight;
         protected readonly string TexturePath;
@@ -36,7 +36,7 @@ namespace StarlightRiver.Core
 
         public override bool SpawnConditions(int i, int j) => Main.tile[i, j].TileFrameX > 0;
 
-        protected WalkableCrystal(int maxWidth, int maxHeight, string dummyType, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, int sound = 1, int soundStyleVar = 1)
+        protected WalkableCrystal(int maxWidth, int maxHeight, string dummyType, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, SoundStyle? sound = null)
         {
             ItemName = drop;
             TexturePath = path;
@@ -46,8 +46,7 @@ namespace StarlightRiver.Core
             CrystalDustType = dust;
             MaxHeight = maxHeight;
             MaxWidth = maxWidth;
-            Sound = sound;
-            CrystalSoundStyle = soundStyleVar;
+            CrystalSound = sound;
             DummyName = dummyType;
         }
 
@@ -61,7 +60,7 @@ namespace StarlightRiver.Core
 
         public override void SetStaticDefaults()
         {
-            (this).QuickSet(int.MaxValue, CrystalDustType, Sound, MapColor ?? Color.Transparent, -1, default, default, default, CrystalSoundStyle);
+            (this).QuickSet(int.MaxValue, CrystalDustType, CrystalSound, MapColor ?? Color.Transparent, -1, default, default, default);
             Main.tileBlockLight[Type] = false;
             Main.tileFrameImportant[Type] = true;
             TileID.Sets.DrawsWalls[Type] = true;

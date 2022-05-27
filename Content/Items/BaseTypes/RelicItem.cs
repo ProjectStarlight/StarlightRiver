@@ -16,10 +16,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool InstancePerEntity => true;
 
-		//public override bool CloneNewInstances => true; //PORTTODO: Double check that commenting this out doesn't fuck everything up
-
-		//public override bool NeedsSaving(Item Item) => isRelic; //PORTTODO: Double check that commenting this out doesn't fuck everything up
-
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 

@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				{
 					if (proj.ai[0] == 0)
 					{
-						Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 110).WithPitchVariance(0.1f).WithVolume(0.6f), Projectile.Center);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item110 with { PitchVariance = 0.1f, Volume = 0.6f }, Projectile.Center);
 						proj.ai[0] = 1;
 						proj.velocity += Projectile.velocity.RotatedByRandom(MathHelper.Pi / 8) / 3;
 						for (int i = 0; i < 4; i++)
@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 			if (++Projectile.localAI[0] % 15 == 0)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 122).WithPitchVariance(0.2f).WithVolume(0.3f), Projectile.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item122 with { Volume = 0.3f, PitchVariance = 0.2f }, Projectile.Center);
 				for (int i = 0; i < 3; i++)
 				{
 					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AstrofloraSpark>(), 0, 0, Projectile.owner, Main.rand.NextVector2Unit().ToRotation(), Main.rand.NextBool() ? -1 : 1);
@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					if (Projectile.ai[1] == chargetime)
 					{
 						Projectile.scale = 1.2f;
-						Terraria.Audio.SoundEngine.PlaySound(new LegacySoundStyle(SoundID.Item, 14).WithVolume(0.4f).WithPitchVariance(0.1f), Projectile.Center);
+						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.4f, PitchVariance = 0.1f }, Projectile.Center);
 						Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 8;
 					}
 					Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3());

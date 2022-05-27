@@ -274,7 +274,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             BarrierPlayer shieldPlayer = Player.GetModPlayer<BarrierPlayer>();
             if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxBarrier - shieldPlayer.Barrier < 100)
-                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI); //PORTTODO: Figure out what source to use here, how does set bonus entity source work?
+                Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
 
             if (storedGem == StoredGem.All)
             {
@@ -336,16 +336,15 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
             {
-                Projectile.NewProjectile(null, Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); //PORTTODO: Figure out source for this
+                Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); 
             }
 
             if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
             {
                 if (Main.rand.Next(Math.Max(((10 / Player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
                 {
-                    //PORTTODO: Figure out source for this
                     Projectile.NewProjectile(
-                        null,
+                        Player.GetSource_ItemUse(Player.armor[0]),
                         target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
                         Vector2.Zero,
                         ModContent.ProjectileType<AmethystShard>(),

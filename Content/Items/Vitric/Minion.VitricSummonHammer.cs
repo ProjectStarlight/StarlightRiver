@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
 
         public VitricSummonHammer()
         {
-            strikeWhere = Projectile.Center;
+            strikeWhere = Vector2.Zero;
             enemySize = Vector2.One;
         }
 

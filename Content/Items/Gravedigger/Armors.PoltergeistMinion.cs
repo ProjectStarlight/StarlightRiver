@@ -105,7 +105,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					if (Main.myPlayer == owner.whoAmI)
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX.RotatedBy(rot) * Item.shootSpeed, Item.shoot, Item.damage / 2, Item.knockBack, Projectile.owner);
 
-					Terraria.Audio.SoundEngine.PlaySound(Item.UseSound, Projectile.Center);
+					if (Item.UseSound.HasValue)
+						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Projectile.Center);
+                    
 					targetRotation = rot + (Item.staff[Item.type] ? 1.57f / 2 : 0);
 				}
 			}

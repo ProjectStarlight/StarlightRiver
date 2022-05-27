@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria;
+using Terraria.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
@@ -330,7 +331,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				NPC.lavaImmune = true;
 				NPC.trapImmune = true;
 				NPC.HitSound = SoundID.NPCHit7;
-				NPC.DeathSound = SoundLoader.GetLegacySoundSlot(Mod, "Sounds/ShadowDeath");
+				NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ShadowDeath");
 				NPC.GetGlobalNPC<StarlightNPC>().dontDropItems = true;
 
 				if (hpOverride != -1) { NPC.lifeMax = (int)(NPC.lifeMax * hpOverride); NPC.life = (int)(NPC.life * hpOverride); }

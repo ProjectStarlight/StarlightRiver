@@ -174,8 +174,14 @@ namespace StarlightRiver.Content.Items.Vitric
             hitDirection = Main.player[Projectile.owner].direction;
             if (BuffPower > 0)
             {
-                var slot2 = SoundID.DD2_BetsyFireballImpact;
-                Terraria.Audio.SoundEngine.PlaySound(slot2.SoundId, (int)Projectile.Center.X, (int)Projectile.Center.Y, slot2.Style, 1, -3.5f);
+                var slot2 = SoundID.DD2_BetsyFireballImpact with
+                {
+                    Volume = 1f,
+                    Pitch = -1f
+                };
+
+                Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
+
                 damage = (int)(damage * (1 + BuffPower / 50f));
                 knockback *= 3;
 

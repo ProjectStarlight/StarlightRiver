@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         internal static Item dummyItem = new Item();
 
-        public override void Load() //PORTTODO: replace this with something else
+        public override void Load()
         {
             On.Terraria.Main.DrawPendingMouseText += SpoofMouseItem;
         }

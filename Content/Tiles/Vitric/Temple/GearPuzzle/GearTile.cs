@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<GearTileEntity>().Hook_AfterPlacement, -1, 0, false);
-			QuickBlock.QuickSetFurniture(this, 1, 1, 1, 1, new Color(1, 1, 1));
+			QuickBlock.QuickSetFurniture(this, 1, 1, 1, SoundID.PlayerHit, new Color(1, 1, 1)); // Is the sound correct..?
 		}
 
 		public virtual void OnEngage(GearTileEntity entity) { }
