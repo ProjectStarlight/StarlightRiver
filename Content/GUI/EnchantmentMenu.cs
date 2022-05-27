@@ -146,7 +146,13 @@ namespace StarlightRiver.Content.GUI
             ArmorEnchantment.ArmorEnchantment.EnchantArmor(slots[0].Item, slots[1].Item, slots[2].Item, enchant);
             return true;
         }
-    }
+
+		public override void Unload()
+		{
+            slots = null;
+            buttons = null;
+		}
+	}
 
     class ArmorSlot : UIElement
     {

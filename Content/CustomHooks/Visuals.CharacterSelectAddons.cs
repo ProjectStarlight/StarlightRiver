@@ -37,7 +37,12 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.GameContent.UI.Elements.UICharacterListItem.ctor += ShiftTextOver;
         }
 
-        private static void updateSparkles(Particle particle)
+		public override void Unload()
+		{
+            sparkles = null;
+		}
+
+		private static void updateSparkles(Particle particle)
         {
             particle.Timer--;
 

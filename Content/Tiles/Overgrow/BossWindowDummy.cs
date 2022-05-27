@@ -190,5 +190,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 spriteBatch.Draw(walltex2, dpos + new Vector2(0, -282 - Projectile.ai[0] / 360), sourceRect2, new Color(255, 255, 200), 0, walltex2.Frame().Size() / 2, 1, 0, 0); //frame
             }
         }
-    }
+
+		public override void Unload()
+		{
+            particles = null;
+		}
+	}
 }
