@@ -15,7 +15,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	class VitricBossBow : ModItem
+	class Coalescence : ModItem
     {
         public int manaCharge = 0;
 
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public ref float State => ref Projectile.ai[0];
         public ref float Angle => ref Projectile.ai[1];
 
-        public override string Texture => AssetDirectory.VitricItem + "VitricBossBow";
+        public override string Texture => AssetDirectory.VitricItem + "Coalescence";
 
         public override void SetDefaults()
 		{
@@ -439,9 +439,9 @@ namespace StarlightRiver.Content.Items.Vitric
             int lifeTime = 122 - Projectile.timeLeft;
             int timeToMerge = (int)(Math.Min(0.4f, targetDist / 1200f) * 90);
 
-            if (Math.Abs(lifeTime - timeToMerge) <= 5 && owner.HeldItem.ModItem is VitricBossBow)
+            if (Math.Abs(lifeTime - timeToMerge) <= 5 && owner.HeldItem.ModItem is Coalescence)
             {
-                var mi = (owner.HeldItem.ModItem as VitricBossBow);
+                var mi = (owner.HeldItem.ModItem as Coalescence);
                 mi.manaCharge++;
 
                 if (mi.manaCharge >= 5)

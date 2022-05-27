@@ -333,8 +333,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
             npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
             { 
-                ItemType<BossSpear>(),
-                ItemType<VitricBossBow>(),
+                ItemType<FacetAndLattice>(),
+                ItemType<Coalescence>(),
                 ItemType<Needler>(),
                 ItemType<RefractiveBlade>()
             }
