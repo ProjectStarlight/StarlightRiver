@@ -467,7 +467,6 @@ namespace StarlightRiver.Content.Items.Vitric
             sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
             var target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
-            Main.NewText(target.Width + " | " + target.Height + " | " + prog + " | " + rotation);
             sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
             sb.End();
