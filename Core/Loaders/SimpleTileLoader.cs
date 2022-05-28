@@ -98,6 +98,15 @@ namespace StarlightRiver.Core.Loaders
     }
 
     [Autoload(false)]
+    public class LoaderTileItem : QuickTileItem
+	{
+        public LoaderTileItem() { }
+
+        public LoaderTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0) : 
+            base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue) { }
+	}
+
+    [Autoload(false)]
     public class LoaderTile : ModTile
     {
         public string InternalName;
