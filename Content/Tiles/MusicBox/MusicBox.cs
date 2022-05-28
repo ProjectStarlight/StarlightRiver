@@ -30,6 +30,12 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 			LoadMusicBox("Overgrow", "Music Box (Overgrow)", "Sounds/Music/Overgrow");
 		}
 
+		public override void Unload()
+		{
+			boxData = default;
+			anchor = default;
+		}
+
 		private void LoadMusicBox(string name, string displayName, string path)
 		{
 			LoadFurniture(name, displayName, boxData);

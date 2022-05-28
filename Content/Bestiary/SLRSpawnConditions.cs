@@ -8,8 +8,13 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bestiary
 {
-    public static class SLRSpawnConditions
+    public static class SLRSpawnConditions 
     {
-        public static ModBiomeSpawnCondition VitricDesert = new ModBiomeSpawnCondition("Vitric Desert", AssetDirectory.Biomes + "VitricDesertIcon", AssetDirectory.MapBackgrounds + "GlassMap", Color.Teal);
-    }
+		public static ModBiomeSpawnCondition VitricDesert = new ModBiomeSpawnCondition("Vitric Desert", AssetDirectory.Biomes + "VitricDesertIcon", AssetDirectory.MapBackgrounds + "GlassMap", Color.Teal);
+
+		public static void Unload()
+		{
+			VitricDesert = null;
+		}
+	}
 }

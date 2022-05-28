@@ -47,6 +47,9 @@ namespace StarlightRiver.Content.Items.Moonstone
             StarlightPlayer.PreDrawEvent -= DrawMoonCharge;
             StarlightPlayer.OnHitNPCEvent -= ChargeFromMelee;
             StarlightPlayer.OnHitNPCWithProjEvent -= ChargeFromProjectile;
+
+            dummySpear.TurnToAir();
+            dummySpear = null;
         }
 
 		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)

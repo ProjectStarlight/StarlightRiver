@@ -17,6 +17,7 @@ using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bestiary;
 
 namespace StarlightRiver
 {
@@ -115,6 +116,7 @@ namespace StarlightRiver
             {
                 loadable.Unload();
             }
+
             loadCache = null;
 
             if (!Main.dedServ)
@@ -122,6 +124,9 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
                 LightingBufferInstance = null;
+                chestItems = null;
+
+                SLRSpawnConditions.Unload();
             }
         }
 

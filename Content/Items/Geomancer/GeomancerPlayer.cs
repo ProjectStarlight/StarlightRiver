@@ -59,11 +59,15 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void Load()
         {
-            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
-            
+            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;          
         }
 
-        private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
+		public override void Unload()
+		{
+            rainbowDye = null;
+		}
+
+		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
         {
             if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
                 return;

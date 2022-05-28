@@ -135,6 +135,8 @@ namespace StarlightRiver.Core
             PreDrawEvent = null;
             PreHurtEvent = null;
             ResetEffectsEvent = null;
+
+            spawners = null;
 		}
 	}
 }

@@ -67,7 +67,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			addons.Clear();
+			addons = null;
+			activeAddon = null;
 		}
 
 		private void SwapBlockTexture(ILContext il)
