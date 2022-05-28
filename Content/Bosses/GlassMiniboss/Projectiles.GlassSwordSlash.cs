@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassSwordSlash : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;
+        public override string Texture => AssetDirectory.Glassweaver + "GlassSword";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Sword");
 
@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
             Projectile.ignoreWater = true;
+            Projectile.manualDirectionChange = true;
         }
 
         public ref float Timer => ref Projectile.ai[0];
@@ -35,19 +36,107 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
+        private Vector2 gripPos;
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.rotation = 2f * Parent.direction;
+        }
+
         public override void AI()
         {
             if (!Parent.active || Parent.type != NPCType<Glassweaver>())
                 Projectile.Kill();
 
+            Timer++;
+
             Projectile.velocity = Parent.velocity;
             Projectile.Center = Parent.Center + new Vector2(30 * Parent.direction, -20);
 
-            Timer++;
-
             Lighting.AddLight(Projectile.Center, Glassweaver.GlassColor.ToVector3());
+            Projectile.direction = -1;
 
-            if (Timer > 30)
+            int[] slashTime = new int[] { 70, 105, 120 };
+            Vector2 swordOff = Vector2.Zero;
+            float swordTargetRot = 0f;
+            switch (Variant)
+            {
+                case 0:
+
+                    swordOff = new Vector2(-10, 10);
+                    swordTargetRot = 4.2f;
+                    if (Timer > slashTime[0])
+                    {
+                        swordOff = new Vector2(32, -55);
+                        swordTargetRot = -0.4f;
+                        Projectile.direction = -1;
+                    }
+                    else
+                        Projectile.direction = -1;
+                    if (Timer > slashTime[1])
+                    {
+                        swordOff = new Vector2(34, 25);
+                        swordTargetRot = 3.5f;
+                    }
+                    if (Timer > slashTime[2])
+                    {
+                        swordOff = new Vector2(48, -25);
+                        swordTargetRot = -0.1f;
+                    }
+
+                    break;
+                case 1:
+                    swordOff = new Vector2(-20, 10);
+                    swordTargetRot = 4.2f;
+                    Projectile.direction = 1;
+                    if (Timer > slashTime[0])
+                    {
+                        swordOff = new Vector2(24, 5);
+                        swordTargetRot = 0.44f;
+                    }
+                    if (Timer > slashTime[1])
+                    {
+                        swordOff = new Vector2(-38, 0);
+                        swordTargetRot = 4.2f;
+                    }
+                    if (Timer > slashTime[2])
+                    {
+                        swordOff = new Vector2(48, -25);
+                        swordTargetRot = -0.44f;
+                    }
+
+                    break;
+                case 2:
+                    swordOff = new Vector2(-10, 0);
+                    swordTargetRot = 4.2f;
+                    if (Timer > slashTime[0])
+                    {
+                        swordOff = new Vector2(-36, 20);
+                        swordTargetRot = 4.1f;
+                    }
+                    if (Timer > slashTime[1])
+                    {
+                        swordOff = new Vector2(-24, 12);
+                        swordTargetRot = 3.9f;
+                    }
+                    if (Timer > slashTime[2])
+                    {
+                        swordOff = new Vector2(48, -25);
+                        swordTargetRot = -0.8f;
+                    }
+
+                    break;
+            }
+            swordOff.X *= Parent.direction;
+            swordTargetRot *= Parent.direction;
+
+            gripPos = Parent.Center + swordOff.RotatedBy(Parent.rotation);
+            Projectile.rotation = MathHelper.Lerp(Projectile.rotation, swordTargetRot, 0.38f) + Parent.rotation;
+
+            int extraTime = 27;
+            if (Variant == 1)
+                extraTime = 12;
+            if (Timer > extraTime + slashTime[(int)Variant])
                 Projectile.Kill();
         }
 
@@ -65,45 +154,26 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(ref Color lightColor)
         {
-
+            DrawSword(lightColor);
             return false;
         }
 
-        private void DrawSlashOld()
+        private void DrawSword(Color lightColor)
         {
-            Asset<Texture2D> slashTexture = Request<Texture2D>(Texture);
-            Rectangle slashFrame = slashTexture.Frame(1, 2, 0, 0);
-            Rectangle glowFrame = slashTexture.Frame(1, 2, 0, 1);
-            Vector2 origin = glowFrame.Size() * new Vector2(0.55f, 0.5f);
+            Asset<Texture2D> sword = Request<Texture2D>(Texture);
+            Vector2 origin = sword.Size() * new Vector2(0.5f, 0.8f);
 
-            float scaleX = 1f + Utils.GetLerpValue(12, 28, Timer, true) * 0.12f;
-            float scaleY = 1f - Utils.GetLerpValue(12, 28, Timer, true) * 0.05f;
+            Color fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(115 - (20 * Variant), 70, Timer, true));
 
-            Color slashColor = Glassweaver.GlassColor * (float)Math.Pow(Utils.GetLerpValue(30, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
-            slashColor.A = 0;
-            Color glowColor = new Color(255, 255, 255, 0) * (float)Math.Pow(Utils.GetLerpValue(30, 15, Timer, true), 2) * Utils.GetLerpValue(-2, 1, Timer, true);
-
-            float rotOff = (Parent.direction < 0 ? MathHelper.Pi : 0) + (Parent.direction * (Variant % 2 == 0 ? -0.14f : 0.14f));
-            Main.EntitySpriteDraw(slashTexture.Value, Projectile.Center - Main.screenPosition, slashFrame, slashColor, Projectile.rotation + rotOff, origin, Projectile.scale * new Vector2(scaleX, scaleY), Direction(), 0);
-            Main.EntitySpriteDraw(slashTexture.Value, Projectile.Center - Main.screenPosition, glowFrame, glowColor, Projectile.rotation + rotOff, origin, Projectile.scale * new Vector2(scaleX, scaleY), Direction(), 0);
-        }
-
-        private void DrawSword()
-        {
+            Main.EntitySpriteDraw(sword.Value, gripPos - Main.screenPosition, null, fadeIn, Projectile.rotation, origin, Projectile.scale, Direction(), 0);
 
         }
 
         private SpriteEffects Direction()
         {
-            SpriteEffects effects = SpriteEffects.None;
+            SpriteEffects effect = Projectile.direction * Parent.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            if (Parent.direction < 0)
-                effects = SpriteEffects.FlipVertically;
-
-            if (Variant % 2 == 1)
-                effects = effects == 0 ? SpriteEffects.FlipVertically : SpriteEffects.None;
-
-            return effects; 
+            return effect;
         }
     }
 }

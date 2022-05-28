@@ -15,15 +15,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             AttackTimer++;
 
             if (AttackTimer == 40)
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake = 15;
+                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake = 8;
 
-            if (AttackTimer > 38 && AttackTimer < 140)
+            if (AttackTimer > 38 && AttackTimer < 160)
                 Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2;
 
-            if (AttackTimer > 210)
+            if (AttackTimer > 410)
             {
                 SetPhase(PhaseEnum.DirectPhase);
                 ResetAttack();
+                NPC.dontTakeDamage = false;
                 AttackPhase = -1;
             }
 

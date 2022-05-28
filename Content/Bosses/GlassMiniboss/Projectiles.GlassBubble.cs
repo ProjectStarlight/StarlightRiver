@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 float rotation = MathHelper.TwoPi / 8 * i;
                 Vector2 pos = Projectile.Center + new Vector2(90, 0).RotatedBy(rotation);
-                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.4f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
+                Main.EntitySpriteDraw(dark.Value, pos - Main.screenPosition, null, Color.Black * 0.2f * fade, rotation, new Vector2(dark.Width() * 0.5f, 0), 12, 0, 0);
             }
         }
     }

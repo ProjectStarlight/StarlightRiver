@@ -52,16 +52,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             Projectile.localAI[0]--;
 
-            float dropLerp = Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.5f, Projectile.localAI[0], true);
-            float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.15f, Projectile.localAI[0], true));
+            float dropLerp = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.55f, Projectile.localAI[0], true), 3f);
+            float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, Projectile.localAI[0], true));
             float swingAccel = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.16f, 0, Projectile.localAI[0], true), 1.7f);
-            //20 degree drop
-            //30 degree lift
+            //20 degree spawn
+            //10 degree drop
+            //40 degree lift
             //180 degree swing
             //17 degree finish
 
-            float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), 0, dropLerp)
-                - MathHelper.Lerp(MathHelper.ToRadians(30), 0, liftLerp)
+            float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), MathHelper.ToRadians(10), dropLerp)
+                - MathHelper.Lerp(MathHelper.ToRadians(40), 0, liftLerp)
                 + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(17), swingAccel);
 
             Vector2 handleOffset;
@@ -141,7 +142,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
             Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, scaleIn, effects, 0);
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.95f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.35f, TotalTime * 0.83f, Projectile.localAI[0], true);
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.95f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.35f, TotalTime * 0.45f, Projectile.localAI[0], true);
             Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, scaleIn, effects, 0);
             
             Asset<Texture2D> hammerSmall = Request<Texture2D>(Texture + "Small");
@@ -156,7 +157,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         public override string Texture => AssetDirectory.Glassweaver + Name;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass");
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass Structure");
 
         public override void SetDefaults()
         {

@@ -58,9 +58,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             DisplayName.SetDefault("Glassweaver"); 
             NPCID.Sets.TrailCacheLength[Type] = 10;
             NPCID.Sets.TrailingMode[Type] = 1;
+            NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
         }
 
-        public override string Texture => AssetDirectory.Glassweaver + "Glassweaver";
+        public override string Texture => AssetDirectory.Glassweaver + Name;
+
+        public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_Head";
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
 
@@ -77,6 +80,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPC.defense = 14;
             NPC.HitSound = SoundID.NPCHit52;
             Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+            NPC.dontTakeDamage = true;
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -110,9 +114,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 case (int)PhaseEnum.SpawnEffects:
 
                     arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
-
-                    //UILoader.GetUIState<TextCard>().Display("Glassweaver", "the", null, 240, 1, true);
-
                     SetPhase(PhaseEnum.JumpToBackground);
                     ResetAttack();
 
@@ -134,26 +135,26 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                 case (int)PhaseEnum.GauntletPhase:
 
-                    SetPhase(PhaseEnum.ReturnToForeground);
-                    ResetAttack();
-
-
                     //check if wave npcs are alive
                     //if not, increment wave
-                    //
+                    
+                    SetPhase(PhaseEnum.ReturnToForeground);
+                    ResetAttack();
 
                     break;                
                 
                 case (int)PhaseEnum.ReturnToForeground:
 
+                    if (AttackTimer == 1)
+                        UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
+
                     JumpBackAnimation();
+
                     break;
 
                 case (int)PhaseEnum.DirectPhase:
 
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
-                    NPC.defense = 14;
-
                     if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
                         Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
@@ -161,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     {
                         AttackPhase++;
 
-                        if (AttackPhase > 4) 
+                        if (AttackPhase > 8) 
                             AttackPhase = 0;
 
                         attackVariant = Main.rand.NextBool(2);
@@ -176,15 +177,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: TripleSlash(); break;
+                        //case 0: TripleSlash(); break;
 
-                        case 1: MagmaSpear(); break;
+                        //case 1: Whirlwind(); break;
 
-                        case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
+                        //case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
 
-                        case 3: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+                        //case 3: BigBrightBubble(); break;
 
-                        case 4: BigBrightBubble(); break;
+                        //case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+
+                        //case 5: JavelinRain(); break;
+
+                        //case 6: TripleSlash(); break;
+
+                        //case 7: MagmaSpear(); break;
+
+                        //case 8: BigBrightBubble(); break;
+
+                        default: TripleSlash(); break;
                     }
 
                     break;

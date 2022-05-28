@@ -407,14 +407,9 @@ namespace StarlightRiver.Helpers
                     i--;
                 }
             }*/
-
-            var type = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).SoundId;
-            var style = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path).Style;
-
-            if (position != default)
-                return Terraria.Audio.SoundEngine.PlaySound(type, (int)position.X, (int)position.Y, style, volume, pitch);
-            else
-                return Terraria.Audio.SoundEngine.PlaySound(type, -1, -1, style, volume, pitch);
+            
+            Terraria.Audio.LegacySoundStyle type = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path);
+            return PlayPitched(type, volume, pitch, position);
 
             /*float distFactor = 1;
 
@@ -436,7 +431,7 @@ namespace StarlightRiver.Helpers
             if (position == default)
                 position = Vector2.One * -1;
 
-            return Terraria.Audio.SoundEngine.PlaySound(style.SoundId, (int)position.X, (int)position.Y, style.Style, volume, pitch);
+            return Terraria.Audio.SoundEngine.PlaySound(style.WithVolume(volume).WithPitchVariance(pitch), position);
         }
 
         public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)

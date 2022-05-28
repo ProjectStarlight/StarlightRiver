@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Color fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(150, 0, Timer, true));
             Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, spearOrigin, scaleIn, 0, 0);
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(70, 40, Timer, true);
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(70, 55, Timer, true);
             Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, spearOrigin, scaleIn, 0, 0);
 
             float scaleOut = Projectile.scale * Utils.GetLerpValue(80, 70, Timer, true);
