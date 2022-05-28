@@ -60,8 +60,12 @@ namespace StarlightRiver.Content.Dusts
                 if (dust.fadeIn > 20)
                     dust.velocity *= 0.98f;
             }
-            else if (dust.fadeIn > 15)
-                dust.velocity.Y += 0.2f;
+            else if (dust.fadeIn > 10)
+            {
+                dust.velocity.Y += 0.25f;
+                if (Collision.SolidTiles(dust.position + new Vector2(0, 22), 8, 8))
+                    dust.velocity = Vector2.Zero;
+            }
 
             dust.velocity *= 0.98f;
 

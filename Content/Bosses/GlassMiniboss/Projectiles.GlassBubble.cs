@@ -28,8 +28,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 44;
-            Projectile.height = 44;
+            Projectile.width = 50;
+            Projectile.height = 50;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
             Projectile.timeLeft = 1100; //failsafe
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Timer < 180 && Main.rand.Next((int)Timer) < 70)
             {
                 Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(200, 200);
-                Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 3f * Main.rand.NextFloatDirection()) * 2f;
+                Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(4f);
                 Dust swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: Glassweaver.GlowDustOrange, Scale: Main.rand.NextFloat(1f, 2f));
                 swirl.customData = Projectile.Center;
                 
@@ -220,17 +220,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             float crackProgress = (float)Math.Pow(Utils.GetLerpValue(crackTime - 10, crackTime + 105, Timer, true), 2);
 
-            Effect effect = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
-            effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
-            effect.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
-            effect.Parameters["uTime"].SetValue(crackProgress);
-            effect.Parameters["drawColor"].SetValue(Color.White.ToVector4());
-            effect.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
+            Effect crack = Terraria.Graphics.Effects.Filters.Scene["MagmaCracks"].GetShader().Shader;
+            crack.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
+            crack.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+            crack.Parameters["uTime"].SetValue(crackProgress);
+            crack.Parameters["drawColor"].SetValue((Color.PaleGoldenrod * crackProgress * 1.5f).ToVector4());
+            crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
+            crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+            Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, crack, Main.GameViewMatrix.TransformationMatrix);
 
-            Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, Color.Black, Projectile.rotation, Request<Texture2D>(Texture).Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);

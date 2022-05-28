@@ -26,12 +26,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
             Projectile.tileCollide = true;
+            Projectile.decidesManualFallThrough = true;
+            Projectile.shouldFallThrough = false;
         }
 
-        public override void OnSpawn(IEntitySource source)
-        {
-            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
-        }
+        public override void OnSpawn(IEntitySource source) => Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
 
         public override void AI()
         {
@@ -84,7 +83,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             //normal spear
             float scale = Utils.GetLerpValue(100, 80, Projectile.timeLeft, true) * Projectile.scale;
-            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, Color.Lerp(lightColor, Color.White, 0.2f), Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
+            Color light = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(0, 80, Projectile.timeLeft, true) * 0.8f);
+            Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, light, Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
 
             //hot overlay
             Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(50, 80, Projectile.timeLeft, true);

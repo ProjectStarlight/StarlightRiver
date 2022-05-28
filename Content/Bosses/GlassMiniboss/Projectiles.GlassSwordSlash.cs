@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
     class GlassSwordSlash : ModProjectile
     {
-        public override string Texture => AssetDirectory.Glassweaver + Name;
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Sword");
 
@@ -26,7 +26,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.height = 110;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
-            Projectile.tileCollide = true;
             Projectile.ignoreWater = true;
         }
 
@@ -61,11 +60,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
-            {
-                Parent.velocity.X = -oldVelocity.X * 0.7f;
-                Parent.velocity.Y -= 1;
-            }
             return false;
         }
 

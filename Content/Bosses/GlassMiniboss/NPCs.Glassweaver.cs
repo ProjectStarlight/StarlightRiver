@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	public partial class Glassweaver : ModNPC
     {
         public bool attackVariant = false;
+        public bool disableJumpSound = false;
         //bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
 
         internal ref float Phase => ref NPC.ai[0];
@@ -45,10 +46,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Jump,
             SpinJump,
             TripleSlash,
-            LavaLob,
+            MagmaSpear,
             Whirlwind,
-            Javelins,
-            Hammer,
+            JavelinRain,
+            GlassRaise,
             BigBrightBubble
         }
 
@@ -153,50 +154,43 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
                     NPC.defense = 14;
 
-                    if (NPC.velocity.Y > 0f && NPC.collideY)
+                    if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
                         Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
-
-                    const int maxAttacks = 9;
 
                     if (AttackTimer == 1)
                     {
                         AttackPhase++;
 
-                        if (AttackPhase > maxAttacks) 
+                        if (AttackPhase > 4) 
                             AttackPhase = 0;
 
-                        attackVariant = Main.rand.NextBool();
+                        attackVariant = Main.rand.NextBool(2);
                         NPC.netUpdate = true;
                     }
 
+                    //target
+                    //target
+                    //side specific
+                    //sweep
+                    //target
+
                     switch (AttackPhase)
                     {
-                        //case 0: TripleSlash(); break;
+                        case 0: TripleSlash(); break;
 
-                        //case 1: Whirlwind(); break;
+                        case 1: MagmaSpear(); break;
 
-                        //case 2: Javelins(); break;
+                        case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
 
-                        //case 3: if (attackVariant) Hammer(); else HammerVariant(); break;
+                        case 3: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
 
-                        //case 4: BigBrightBubble(); break;
-
-                        //case 5: TripleSlash(); break;
-
-                        //case 6: if (attackVariant) Whirlwind(); else SpearThrust(); break;
-
-                        //case 7: if (attackVariant) Hammer(); else HammerVariant(); break;
-
-                        //case 8: Javelins(); break;
-
-                        //case 9: BigBrightBubble(); break;
-
-
-                        default: Whirlwind(); break;
+                        case 4: BigBrightBubble(); break;
                     }
 
                     break;
             }
+
+            disableJumpSound = false;
         }
 
         public override bool? CanFallThroughPlatforms() => Target.Bottom.Y > NPC.Top.Y;
@@ -288,24 +282,28 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             break;
                 
-                        case (int)AttackEnum.LavaLob:
+                        case (int)AttackEnum.MagmaSpear:
+
+                            if (AttackTimer < 170 && AttackTimer > 10)
+                            {
+                                frame.X = 142;
+                                frame.Y = frameHeight * (4 + (NPC.velocity.Y != 0 ? 0 : 1));
+                            }
 
                             break;
 
                         case (int)AttackEnum.Whirlwind:
 
-                            if (AttackTimer < 190)
-                                frame.Y = frameHeight * 3;
 
                             break;
 
-                        case (int)AttackEnum.Javelins:
+                        case (int)AttackEnum.JavelinRain:
 
                             if (AttackTimer < javelinTime - javelinSpawn + 10)
                                 frame.Y = frameHeight * 3;
                             break;
 
-                        case (int)AttackEnum.Hammer:
+                        case (int)AttackEnum.GlassRaise:
 
                             float hammerTimer = AttackTimer - hammerSpawn + 5;
 
@@ -351,13 +349,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Color baseColor = drawColor;
             Color glowColor = new Color(255, 255, 255, 128);
 
-            if (AttackType == (int)AttackEnum.Whirlwind)
-            {
-                float fadeOutToSlash = Utils.GetLerpValue(50, 70, AttackTimer, true) * Utils.GetLerpValue(190, 160, AttackTimer, true);
-                baseColor = Color.Lerp(drawColor, Color.Transparent, fadeOutToSlash);
-                glowColor = Color.Lerp(new Color(255, 255, 255, 128), new Color(255, 255, 255, 0), fadeOutToSlash);
-            }
-
             spriteBatch.Draw(weaver.Value, NPC.Center + drawPos, frame, baseColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
 
@@ -366,7 +357,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.36f);
+        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.45f);
         public static readonly Color GlassColor = new Color(60, 200, 175);
 
     }

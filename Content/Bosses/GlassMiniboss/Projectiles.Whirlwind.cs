@@ -22,11 +22,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetDefaults()
         {
-            Projectile.width = 150;
-            Projectile.height = 120;
+            Projectile.width = 200;
+            Projectile.height = 100;
             Projectile.hostile = true;
             Projectile.aiStyle = -1;
-            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = true;
         }
 
         public ref float Timer => ref Projectile.ai[0];
@@ -38,16 +39,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (!Parent.active || Parent.type != NPCType<Glassweaver>())
                 Projectile.Kill();
 
-            Projectile.velocity = Parent.velocity;
-            Projectile.Center = Parent.Center;
-
             Timer++;
-            if (Timer > 15 && Timer < 20)
-                Timer = 16;
+
+            Projectile.Center = Parent.Center;
+            Projectile.velocity = Parent.velocity;
+
+            if (Timer < 50)
+                Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation(), 0.5f);
 
             Lighting.AddLight(Projectile.Center, Glassweaver.GlassColor.ToVector3());
 
-            if (Timer > 30)
+            if (Timer > 70)
                 Projectile.Kill();
         }
 
@@ -55,16 +57,28 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             Rectangle slashBox = projHitbox;
             slashBox.Inflate(30, 10);
-            return Timer > 8 && slashBox.Intersects(targetHitbox);
+            return Timer > 10 && slashBox.Intersects(targetHitbox);
         }
+
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            if (Math.Abs(Parent.velocity.X - oldVelocity.X) > 0)
+                Parent.velocity.X = -oldVelocity.X;            
+            if (Math.Abs(Parent.velocity.Y - oldVelocity.Y) > 0)
+                Parent.velocity.Y = -oldVelocity.Y;
+            return false;
+        }
+
 
         public override bool PreDraw(ref Color lightColor)
         {
             Asset<Texture2D> spinTexture = Request<Texture2D>(Texture);
 
-            Color glowColor = Glassweaver.GlassColor * Utils.GetLerpValue(0, 15, Timer, true) * Utils.GetLerpValue(40, 25, Timer, true);
+            Color glowColor = Glassweaver.GlassColor * Utils.GetLerpValue(0, 15, Timer, true) * Utils.GetLerpValue(70, 25, Timer, true) * 0.5f;
             glowColor.A = 0;
-            Main.EntitySpriteDraw(spinTexture.Value, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(1.5f, 1f), 0, 0);
+            Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
+            Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(16, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
+            Main.EntitySpriteDraw(spinTexture.Value, Parent.Center + Main.rand.NextVector2Circular(10, 1) - Main.screenPosition, null, glowColor, Projectile.rotation, spinTexture.Size() * 0.5f, Projectile.scale * new Vector2(2f, 2f), 0, 0);
 
             return false;
         }
