@@ -202,7 +202,8 @@ namespace StarlightRiver.Content.Items.Vitric
             if (effect is null)
                 return;
 
-            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uTime"].SetValue(rotation);
+            effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
             effect.Parameters["uColor"].SetValue(color.ToVector3());
             effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.Parameters["uOpacity"].SetValue(prog);

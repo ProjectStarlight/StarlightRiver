@@ -446,8 +446,8 @@ namespace StarlightRiver.Content.Items.Vitric
                 prog2 *= (120 - LaserTimer) / 40f;
             }
 
-            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.01f, prog1, new Color(255, 240, 120));
-            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.015f, prog2, new Color(255, 180, 120));
+            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
+            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
 
             return false;
         }
@@ -457,7 +457,8 @@ namespace StarlightRiver.Content.Items.Vitric
             var texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
             var effect = Filters.Scene["BowRing"].GetShader().Shader;
 
-            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uTime"].SetValue(rotation);
+            effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
             effect.Parameters["uColor"].SetValue(color.ToVector3());
             effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.Parameters["uOpacity"].SetValue(prog);
@@ -466,6 +467,7 @@ namespace StarlightRiver.Content.Items.Vitric
             sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
             var target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
+            Main.NewText(target.Width + " | " + target.Height + " | " + prog + " | " + rotation);
             sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
             sb.End();
