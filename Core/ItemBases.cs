@@ -131,8 +131,7 @@ namespace StarlightRiver.Core
         }
     }
 
-    [Autoload(false)]
-    public class QuickTileItem : ModItem 
+    public abstract class QuickTileItem : ModItem 
     {
         public string InternalName = "";
         public string Itemname;
