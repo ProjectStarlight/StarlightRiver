@@ -113,7 +113,6 @@ namespace StarlightRiver.Content.GUI
                     else if (mp.Stamina > k)
 					{
                         var width = (int)(fill.Width * (mp.Stamina % 1f));
-                        Main.NewText(width);
                         var target = new Rectangle((int)pos.X + (fill.Width - width), (int)pos.Y + 6, width, fill.Height);
                         spriteBatch.Draw(fill, target, new Rectangle(fill.Width - width, 0, width, fill.Height), Color.White, 0, Vector2.Zero, SpriteEffects.None, 0);
                     }

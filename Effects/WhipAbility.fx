@@ -44,7 +44,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float3 color2 = tex2D(samplerTex, st + float2(-time * 1.5, 0)).xyz * 0.5;
     color2 += tex2D(samplerTex2, st + float2(-time * 1.5, 0)).xyz * 0.5 * secondaryColor;
 
-    return float4((color + color2) * input.Color * (1.0 + color.x * 2.0), color.x * input.Color.w);
+    return float4((color + color2) * input.Color * (1.0 + color.x * 1.1), color.x * input.Color.w);
 }
 
 technique Technique1

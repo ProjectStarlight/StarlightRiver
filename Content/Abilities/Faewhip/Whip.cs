@@ -41,6 +41,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
         public Vector2 extraVelocity;
         public float targetRot;
 
+        public float endScale;
+
         public NPC attachedNPC; //if the whip is attached to an NPC, what is it attached to?
 
         public override void Reset()
@@ -50,12 +52,15 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
         public override void OnActivate()
         {
+            effect = null;
+            endScale = 0;
+
             Player.mount.Dismount(Player);
             startPoint = Vector2.Zero;
 
             targetRot = (Main.MouseWorld - Player.Center).ToRotation();
             tipsPosition = Player.Center;
-            tipVelocity = 4;
+            tipVelocity = 2;
 
             for(int k = 0; k < 50; k++)
                 Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(1) * Main.rand.NextFloat(0, 9), 1, new Color(255, 190, 50), 0.5f);
@@ -88,18 +93,35 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
             Player.GetHandler().Stamina -= 0.0025f;
 
-            if (!endRooted)
+            if (!attached)
             {
                 var dist = Vector2.Distance(Player.Center, tipsPosition);
 
-                for (int k = 0; k < 4; k++)
+                for (int k = 0; k < 8; k++)
                 {
                     if (dist < 700)
                         tipsPosition += Vector2.UnitX.RotatedBy(targetRot) * tipVelocity;
 
-                    if (Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16).BlockType == BlockType.Solid) //debug
+                    for (int i = 0; i < Main.maxNPCs; i++)
+                    {
+                        if (Main.npc[i].active && Main.npc[i].Hitbox.Contains(tipsPosition.ToPoint()))
+                        {
+                            attachedNPC = Main.npc[i];
+                            attached = true;
+
+                            if(attachedNPC.knockBackResist == 0)
+                                endRooted = true;
+
+                            return;
+                        }
+                    }
+
+                    var tile = Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16);
+
+                    if (tile.HasTile && Main.tileSolid[tile.TileType]) //debug
                     {
                         endRooted = true;
+                        attached = true;
 
                         for (int i = 0; i < 50; i++)
                             Dust.NewDustPerfect(tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4), 1, new Color(255, 190, 50), 0.3f);
@@ -118,23 +140,51 @@ namespace StarlightRiver.Content.Abilities.Faewhip
             }
             else
             {
-                if (attachedNPC != null && attachedNPC.active)
+                if (endScale < 1.5f)
+                    endScale += 0.1f;
+
+                if (endRooted)
+                {
+                    if (attachedNPC != null && attachedNPC.active)
+                        tipsPosition = attachedNPC.Center;
+
+                    Player.velocity -= extraVelocity;
+
+                    Player.velocity.Y -= 0.43f;
+
+                    Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
+
+                    if (Player.velocity.Length() > 18)
+                        Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
+
+                    Player.velocity *= 0.92f;
+
+                    Vector2 pullPoint = tipsPosition + Vector2.Normalize(Player.Center - tipsPosition) * length;
+                    Player.velocity += (pullPoint - Player.Center) * 0.06f;
+                    extraVelocity = (pullPoint - Player.Center) * 0.05f;
+                }
+                else
+				{
+                    if (attachedNPC is null || !attachedNPC.active)
+                    {
+                        attached = false;
+                        attachedNPC = null;
+                        Deactivate();
+                        return;
+                    }
+
                     tipsPosition = attachedNPC.Center;
 
-                Player.velocity -= extraVelocity;
+                    Vector2 targetPoint = Player.Center + Vector2.UnitX.RotatedBy((Main.MouseWorld - Player.Center).ToRotation()) * Math.Min(700, Vector2.Distance(Player.Center, Main.MouseWorld));
+                    attachedNPC.velocity += (targetPoint - attachedNPC.Center) * (0.1f);
 
-                Player.velocity.Y -= 0.43f;
+                    if (attachedNPC.velocity.Length() > 18)
+                        attachedNPC.velocity = Vector2.Normalize(attachedNPC.velocity) * 17.99f;
 
-                Player.velocity += (Main.MouseWorld - tipsPosition) * -(0.05f - Helper.BezierEase(Player.velocity.Length() / 24f) * 0.025f);
+                    attachedNPC.velocity *= 0.92f;
 
-                if (Player.velocity.Length() > 18)
-                    Player.velocity = Vector2.Normalize(Player.velocity) * 17.99f;
-
-                Player.velocity *= 0.92f;
-
-                Vector2 pullPoint = tipsPosition + Vector2.Normalize(Player.Center - tipsPosition) * length;
-                Player.velocity += (pullPoint - Player.Center) * 0.06f;
-                extraVelocity = (pullPoint - Player.Center) * 0.05f;
+                    //attachedNPC.velocity += (attachedNPC.Center - Player.Center) * -0.05f;
+                }
             }
 
             for (int k = 0; k < 100; k++) //dust
@@ -155,7 +205,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                 trail = new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4),  n => 20 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
             if (glowTrail is null)
-                glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 46 + n * 0, n => new Color(255, 180, 100) * 0.35f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+                glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 36 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
             trail.Positions = trailPoints;
             glowTrail.Positions = trailPoints;
@@ -171,21 +221,27 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
             if (startPoint != Vector2.Zero)
             {
+                spriteBatch.End();
+
+                var tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+                var tex1 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
                 Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
                 Matrix view = Main.GameViewMatrix.ZoomMatrix;
                 Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-                effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.05f);
+                effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
                 effect.Parameters["repeats"].SetValue(2f);
                 effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-                effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+                effect.Parameters["sampleTexture"].SetValue(tex0);
 
                 trail?.Render(effect);
 
-                effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+                effect.Parameters["sampleTexture"].SetValue(tex1);
 
                 glowTrail?.Render(effect);
+
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
             if (startPoint == Vector2.Zero)
@@ -199,8 +255,21 @@ namespace StarlightRiver.Content.Abilities.Faewhip
             startPoint = Player.Center;
             midPoint += (Vector2.Lerp(Player.Center, tipsPosition, 0.5f) - midPoint) * 0.075f;
 
-            Utils.DrawBorderString(spriteBatch, Player.velocity.Length() + " m/s", Player.Center + Vector2.UnitY * -40 - Main.screenPosition, Color.White);
-		}
+            if (attached)
+            {
+                spriteBatch.End();
+                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+                var endTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/" + (endRooted ? "WhipEndRoot" : "WhipEndGrab")).Value;
+                var endGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+
+                spriteBatch.Draw(endTex, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.75f, 0, 0);
+                spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);
+
+                spriteBatch.End();
+                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }
+        }
 
         private Vector2 PointOnSpline(float progress) //someone force me to generalize this stuff later lol
         {
