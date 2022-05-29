@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             handPos.X *= Parent.direction;
 
-            origin = Parent.Center + handPos;
+            origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
             Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
             Projectile.velocity = Parent.velocity;
 

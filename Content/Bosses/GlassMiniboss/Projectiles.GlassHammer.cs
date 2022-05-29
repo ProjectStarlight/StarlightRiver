@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 }
             }
 
-            if (Projectile.localAI[0] > TotalTime * 0.5f && Projectile.localAI[0] < TotalTime * 0.9f)
+            if (Projectile.localAI[0] > TotalTime * 0.5f)
             {
                 Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
                 Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), origin.DirectionTo(alongHammer).RotatedByRandom(0.5f) * 2f, 0, Glassweaver.GlowDustOrange, 0.8f);

@@ -156,37 +156,40 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 NPC.FaceTarget();
                 JumpToTarget(2, 50);
+                NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, NPC.DirectionTo(moveTarget).Y * NPC.Distance(moveTarget) * 0.1f, 0.1f);
             }
+            
+            if (AttackTimer < 65 && AttackTimer > 30)
+                NPC.velocity.Y *= 0.3f;
 
-            if (AttackTimer == 60)
+            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2] + 20;
+
+            if (AttackTimer == 48)
             {
                 NPC.velocity.X = -NPC.direction * 4f;
-                NPC.velocity.Y -= 2;
                 NPC.FaceTarget();
                 for (int s = 0; s < 3; s++)
                 {
-                    int slash = Projectile.NewProjectile(Entity.InheritSource(NPC), NPC.Center, Vector2.Zero, ProjectileType<GlassSwordSlash>(), 10, 0.2f, Main.myPlayer, AttackTimer - 4, NPC.whoAmI);
+                    int slash = Projectile.NewProjectile(Entity.InheritSource(NPC), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Main.myPlayer, AttackTimer - 2, NPC.whoAmI);
                     Main.projectile[slash].localAI[0] = s;
                 }
             }
 
             if (AttackTimer < slashTime[2] + 60 && AttackTimer > 40)
             {
-                NPC.velocity.X *= 0.77f;
-                NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, (Target.Top - NPC.Center).Y * 0.003f, 0.1f);
+                NPC.velocity.X *= 0.92f;
+                NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, (Target.Top - NPC.Center).Y * 0.005f, 0.05f);
             }
 
-            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2] + 20;
-
-            if (AttackTimer == slashTime[0] || AttackTimer == slashTime[1] || AttackTimer == slashTime[2])
+            if (AttackTimer == slashTime[0] || AttackTimer == slashTime[1] || AttackTimer == slashTime[2] - 1)
             {
                 Helpers.Helper.PlayPitched("GlassMiniboss/GlassSlash", 1f, 0.1f, NPC.Center);
-                if (AttackTimer == slashTime[2])
+                if (AttackTimer == slashTime[2] - 1)
                 {
                     NPC.TargetClosest();
                     NPC.FaceTarget();
                 }
-                NPC.velocity.X += NPC.direction * MathHelper.Lerp(20f, 50f, (AttackTimer - slashTime[0] - 1) / 80f);
+                NPC.velocity.X += NPC.direction * MathHelper.Lerp(7f, 60f, (float)Math.Pow((AttackTimer - slashTime[0] - 1) / 80f, 2f));
             }
 
             if (AttackTimer > slashTime[2] + 50)

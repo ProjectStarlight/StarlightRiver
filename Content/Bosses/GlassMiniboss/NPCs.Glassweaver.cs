@@ -177,23 +177,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        case 0: TripleSlash(); break;
+                        //case 0: TripleSlash(); break;
 
-                        case 1: Whirlwind(); break;
+                        //case 1: Whirlwind(); break;
 
-                        case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
+                        //case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
 
-                        case 3: BigBrightBubble(); break;
+                        //case 3: BigBrightBubble(); break;
 
-                        case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+                        //case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
 
-                        case 5: JavelinRain(); break;
+                        //case 5: JavelinRain(); break;
 
-                        case 6: TripleSlash(); break;
+                        //case 6: TripleSlash(); break;
 
-                        case 7: MagmaSpear(); break;
+                        //case 7: MagmaSpear(); break;
 
-                        case 8: BigBrightBubble(); break;
+                        //case 8: BigBrightBubble(); break;
+
+                        default: TripleSlash(); break;
                     }
 
                     break;
@@ -273,7 +275,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                         case (int)AttackEnum.TripleSlash:
 
-                            if (AttackTimer > 55 && AttackTimer < 240)
+                            if (AttackTimer > 40 && AttackTimer < 240)
                             {
                                 //using a lerp wouldn't look well with the animation, so a little bit of clunk
                                 if (AttackTimer < slashTime[2] + 30)
