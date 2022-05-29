@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer < 65 && AttackTimer > 30)
                 NPC.velocity.Y *= 0.3f;
 
-            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2] + 20;
+            NPC.noGravity = AttackTimer > 40 && AttackTimer < slashTime[2];
 
             if (AttackTimer == 48)
             {
@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer < slashTime[2] + 60 && AttackTimer > 40)
             {
                 NPC.velocity.X *= 0.92f;
-                NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, (Target.Top - NPC.Center).Y * 0.005f, 0.05f);
+                NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, (Target.Top - NPC.Center).Y * 0.001f, 0.05f);
             }
 
             if (AttackTimer == slashTime[0] || AttackTimer == slashTime[1] || AttackTimer == slashTime[2] - 1)
