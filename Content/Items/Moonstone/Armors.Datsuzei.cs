@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
         }
 
-        new public void Unload()
+        public override void Unload()
         {
             StarlightPlayer.PostUpdateEvent -= PlayerFrame;
             On.Terraria.Main.DrawInterface_30_Hotbar -= OverrideHotbar;

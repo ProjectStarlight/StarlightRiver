@@ -41,11 +41,6 @@ namespace StarlightRiver.Core
         public static int SquidNPCProgress = 0;
         public static Rectangle SquidBossArena = new Rectangle();
 
-        //Handling Keys
-        public static List<Key> Keys = new List<Key>();
-
-        public static List<Key> KeyInventory = new List<Key>();
-
         public static Rectangle VitricBossArena => new Rectangle(VitricBiome.X + VitricBiome.Width / 2 - 59, VitricBiome.Y - 1, 108, 74); //ceiros arena
 
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
@@ -122,9 +117,6 @@ namespace StarlightRiver.Core
             //SquidBoss arena
             if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
                 NPC.NewNPC(new EntitySource_WorldEvent(), SquidBossArena.Center.X * 16 + 8, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
-
-            //Keys
-            foreach (Key key in Keys) key.Update();
         }
 
 		public override void OnWorldLoad()
@@ -232,18 +224,20 @@ namespace StarlightRiver.Core
             Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
             Chungus = MathHelper.Clamp(Chungus, 0, 1);
 
-            foreach (Key key in KeyInventory)
-            {
-                Content.GUI.KeyInventory.keys.Add(new Content.GUI.KeyIcon(key, false));
-            }
-
             //setup overlays
             if (Main.netMode == NetmodeID.SinglePlayer)
                 CreateCutaways();
 
-            Physics.VerletChain.toDraw.Clear();
+            Physics.VerletChainSystem.toDraw.Clear();
 
             DummyTile.dummies.Clear();
         }
-    }
+
+		public override void Unload()
+		{
+            cathedralOverlay = null;
+            TownUpgrades = null;
+            genNoise = null;
+		}
+	}
 }

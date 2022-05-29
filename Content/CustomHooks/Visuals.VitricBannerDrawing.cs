@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.CustomHooks
         private void RefreshBannerTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (width != Main.screenWidth || height != Main.screenHeight)
-                VerletChain.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                VerletChainSystem.target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, width / 2, height / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
             orig(width, height, fullscreen);
         }
@@ -55,19 +55,19 @@ namespace StarlightRiver.Content.CustomHooks
 
             if (Main.gameMenu)
             {
-                VerletChain.toDraw.Clear(); // we clear because the toDraw list is static and we need to manually clear when we're not in a world so we don't get ghost freezeframes when rejoining a multiPlayer world (singlePlayer could be cleared on world load potentially)
+                VerletChainSystem.toDraw.Clear(); // we clear because the toDraw list is static and we need to manually clear when we're not in a world so we don't get ghost freezeframes when rejoining a multiPlayer world (singlePlayer could be cleared on world load potentially)
                 return;
             }
                 
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
-            graphics.SetRenderTarget(VerletChain.target);
+            graphics.SetRenderTarget(VerletChainSystem.target);
             graphics.Clear(Color.Transparent);
 
             graphics.BlendState = BlendState.Opaque;
 
-            foreach (var i in VerletChain.toDraw)
+            foreach (var i in VerletChainSystem.toDraw)
                 i.DrawStrip(i.scale);
 
             graphics.SetRenderTarget(null);

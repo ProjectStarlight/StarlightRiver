@@ -17,9 +17,15 @@ using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bestiary;
 
 namespace StarlightRiver
 {
+    public class TemporaryFix : PreJITFilter
+	{
+        public override bool ShouldJIT(MemberInfo member) => false;
+	}
+
 	public partial class StarlightRiver : Mod
     {
         public AbilityHotkeys AbilityKeys { get; private set; }
@@ -43,7 +49,11 @@ namespace StarlightRiver
 
         public static StarlightRiver Instance { get; set; }
 
-        public StarlightRiver() => Instance = this;
+        public StarlightRiver()
+        {
+            Instance = this;
+            PreJITFilter = new TemporaryFix();
+        }
 
         public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
 
@@ -115,12 +125,17 @@ namespace StarlightRiver
             {
                 loadable.Unload();
             }
+
             loadCache = null;
 
             if (!Main.dedServ)
             {
                 Instance = null;
                 AbilityKeys.Unload();
+                LightingBufferInstance = null;
+                chestItems = null;
+
+                SLRSpawnConditions.Unload();
             }
         }
 

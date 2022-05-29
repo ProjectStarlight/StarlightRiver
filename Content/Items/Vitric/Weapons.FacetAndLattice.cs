@@ -15,7 +15,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	class BossSpear : ModItem
+	class FacetAndLattice : ModItem
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.width = 32;
             Item.height = 32;
             Item.knockBack = 8;
-            Item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
+            Item.shoot = ModContent.ProjectileType<FacetProjectile>();
             Item.shootSpeed = 1;
             Item.rare = ItemRarityID.Green;
             Item.useStyle = ItemUseStyleID.Shoot;
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
             {
-                Item.shoot = ModContent.ProjectileType<BossSpearShieldProjectile>();
+                Item.shoot = ModContent.ProjectileType<LatticeProjectile>();
                 Item.UseSound = SoundID.DD2_CrystalCartImpact;
                 Item.useAnimation = 80;
                 Item.useTime = 80;
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.Items.Vitric
             }
             else
             {
-                Item.shoot = ModContent.ProjectileType<BossSpearProjectile>();
+                Item.shoot = ModContent.ProjectileType<FacetProjectile>();
                 Item.UseSound = SoundID.DD2_MonkStaffSwing;
                 Item.useAnimation = 35;
                 Item.useTime = 35;
@@ -114,14 +114,14 @@ namespace StarlightRiver.Content.Items.Vitric
         }
     }
 
-    class BossSpearProjectile : SpearProjectile, IDrawAdditive
+    class FacetProjectile : SpearProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public ref float DrawbackTime => ref Projectile.ai[0];
         public ref float BuffPower => ref Projectile.ai[1];
 
-        public BossSpearProjectile() : base(50, 74, 164) { }
+        public FacetProjectile() : base(50, 74, 164) { }
 
         public override void SetStaticDefaults()
         {
@@ -130,7 +130,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SafeAI()
         {
-            var Player = Main.player[Projectile.owner];
+            var player = Main.player[Projectile.owner];
+            var speed = 1f / player.GetTotalAttackSpeed(DamageClass.Melee);
 
             DrawbackTime++;
 
@@ -142,19 +143,17 @@ namespace StarlightRiver.Content.Items.Vitric
                     Projectile.timeLeft += 2;
             }
             
-            if (Projectile.timeLeft > (int)(20 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)))
+            if (Projectile.timeLeft > (int)(20 * speed) && Projectile.timeLeft < (int)(50 * speed))
                 Projectile.extraUpdates = 8;
             else  
                 Projectile.extraUpdates = 0;
             
-            if (Projectile.timeLeft == (int)(25 * Player.GetTotalAttackSpeed(DamageClass.Melee)))
+            if (Projectile.timeLeft == (int)(25 * speed))
             {
-                Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<Dusts.AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
+                Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
 
-                 Player.velocity += Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
+                 player.velocity += Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
             }
-
-
         }
 
         public override void PostAI()
@@ -232,8 +231,10 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool PreDraw(ref Color lightColor)
         {
             var tex = TextureAssets.Projectile[Projectile.type].Value;
-            var color = lightColor * (DrawbackTime < 10 ? (DrawbackTime / 10f) : 1); //fadein   why did I write it like this? idk lol shoot me
-            if (Projectile.timeLeft <= 5) color *= Projectile.timeLeft / 5f; //fadeout
+            var color = lightColor * (DrawbackTime < 10 ? (DrawbackTime / 10f) : 1); 
+
+            if (Projectile.timeLeft <= 5) 
+                color *= Projectile.timeLeft / 5f; //fadeout
 
             Main.EntitySpriteDraw(tex, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY),
                 tex.Frame(), color, Projectile.rotation - (float)Math.PI / 4f, new Vector2(tex.Width / 2, 0), Projectile.scale, 0, 0);
@@ -258,7 +259,7 @@ namespace StarlightRiver.Content.Items.Vitric
         }
     }
 
-    class BossSpearShieldProjectile : ModProjectile
+    class LatticeProjectile : ModProjectile
     {
         public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -311,7 +312,7 @@ namespace StarlightRiver.Content.Items.Vitric
             var Player = Main.player[Projectile.owner];
             Player.velocity += Vector2.Normalize(Player.Center - target.Center) * 3;
 
-            var Item = (Player.HeldItem.ModItem as BossSpear);
+            var Item = (Player.HeldItem.ModItem as FacetAndLattice);
 
             target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
@@ -393,7 +394,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 {
                     var diff = (proj.damage * 2) - ShieldLife;
 
-                    var Item = (Player.HeldItem.ModItem as BossSpear);
+                    var Item = (Player.HeldItem.ModItem as FacetAndLattice);
 
                     if(Item != null && !Item.buffed)
                     {

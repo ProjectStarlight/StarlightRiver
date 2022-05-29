@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Abilities
             unlockedAbilities = new Dictionary<Type, Ability>();
         }
 
-        public override void Load()
+		public override void Load()
 		{
             StarlightPlayer.PostDrawEvent += PostDrawAbility;
 		}

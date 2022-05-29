@@ -59,11 +59,15 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void Load()
         {
-            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
-            
+            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;          
         }
 
-        private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
+		public override void Unload()
+		{
+            rainbowDye = null;
+		}
+
+		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
         {
             if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
                 return;
@@ -171,7 +175,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 
         //TODO: port this over to the IArmorLayerDrawable system
-        //public override void ModifyDrawLayers(List<PlayerLayer> layers) //PORTTODO: Port this over to new system
+        //public override void ModifyDrawLayers(List<PlayerLayer> layers) //TODO: Port this over to new system
         //{
         //    if (SetBonusActive && storedGem != StoredGem.None)
         //    {
@@ -210,7 +214,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         //    }
         //}
 
-        //public void DrawGemArmor(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation) //PORTTODO: Port this over to new system
+        //public void DrawGemArmor(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation) //TODO: Port this over to new system
         //{
         //    Player armorOwner = info.drawPlayer;
 

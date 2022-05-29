@@ -35,6 +35,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
+            Foregrounds.ForEach(t => t.Unload());   
             Foregrounds = null;
         }
     }

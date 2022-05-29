@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
-	class CritMultiPlayer : ModPlayer //PortTODO: Make compatible with new damage type hoo-hah
+	class CritMultiPlayer : ModPlayer //TODO: Make compatible with new damage type hoo-hah
 	{
 		public float MeleeCritMult = 0;
 		public float RangedCritMult = 0;

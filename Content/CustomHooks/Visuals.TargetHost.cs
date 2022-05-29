@@ -37,5 +37,10 @@ namespace StarlightRiver.Content.CustomHooks
                 }
             }
         }
-    }
+
+		public override void Unload()
+		{
+            Maps = null;
+		}
+	}
 }

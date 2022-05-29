@@ -40,7 +40,8 @@ namespace StarlightRiver.Content.Lavas
             IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw -= DrawSpecialLava;
             IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
 
-            lavas.Clear();
+            lavas = null;
+            ActiveStyle = null;
         }
 
         public float Priority => 1;

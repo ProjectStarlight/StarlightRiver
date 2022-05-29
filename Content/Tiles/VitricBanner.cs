@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override void Kill(int timeLeft)
         {
-            VerletChain.toDraw.Remove(Chain);
+            VerletChainSystem.toDraw.Remove(Chain);
         }
     }
 }

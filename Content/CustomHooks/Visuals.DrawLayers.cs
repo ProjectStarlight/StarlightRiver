@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
         {
-            foreach (Key key in StarlightWorld.Keys)
+            foreach (Key key in KeySystem.Keys)
                 key.Draw(Main.spriteBatch);
 
             orig(self);

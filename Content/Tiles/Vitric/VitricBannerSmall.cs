@@ -63,8 +63,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Chain.ropeSegments[index].color = color;
         }
 
-        public override void Kill(int timeLeft) => 
-            VerletChain.toDraw.Remove(Chain);
+        public override void Kill(int timeLeft) =>
+            VerletChainSystem.toDraw.Remove(Chain);
     }
 
     class VitricBannerSmallItem : QuickTileItem

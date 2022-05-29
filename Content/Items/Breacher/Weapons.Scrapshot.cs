@@ -140,7 +140,6 @@ namespace StarlightRiver.Content.Items.Breacher
                 if (Main.myPlayer == player.whoAmI)
                     Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 8;
                 
-
                 if (hook != null && hook.Projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.Projectile.active && hook.isHooked)
                 {
                     hook.struck = true;
@@ -178,7 +177,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
                     if (Main.myPlayer == player.whoAmI)
                     {
-                        int i = Projectile.NewProjectile(player.GetSource_ItemUse_WithPotentialAmmo(Item, Item.useAmmo), player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, (int)Item.knockBack, player.whoAmI); //PORTODO: Figure out how to get the projectile source outside of ModItem.Shoot (and put it here)
+                        int i = Projectile.NewProjectile(player.GetSource_ItemUse_WithPotentialAmmo(Item, Item.useAmmo), player.Center + (offset * 25), direction * Item.shootSpeed, type, damage, (int)Item.knockBack, player.whoAmI); 
 
                         if (type != ModContent.ProjectileType<ScrapshotShrapnel>())
                             Main.projectile[i].timeLeft = 30;
@@ -244,7 +243,7 @@ namespace StarlightRiver.Content.Items.Breacher
             Projectile.friendly = true;
             Projectile.timeLeft = 60;
             Projectile.aiStyle = -1;
-            Projectile.penetrate = 2;
+            Projectile.penetrate = -1;
         }
 
         private void findIfHit()
@@ -267,7 +266,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void AI()
         {
-
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             if (Projectile.timeLeft < 40)//slows down the Projectile by 8%, for about 10 ticks before it retracts
@@ -343,9 +341,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
             if (struck)
             {
-                Player.fullRotation += (Projectile.timeLeft / 20f) * 3.14f * Player.direction;
+                Player.fullRotation = (Projectile.timeLeft / 20f) * 3.14f * Player.direction;
                 Player.fullRotationOrigin = Player.Size / 2;
                 Player.velocity *= 0.95f;
+
+                if (Projectile.timeLeft == 1)
+                    Player.fullRotation = 0;
             }
         }
 
