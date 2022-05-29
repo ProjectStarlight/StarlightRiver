@@ -53,7 +53,7 @@ namespace StarlightRiver.Core
             DustType = FountainDustType;
             AnimationFrameHeight = Height * 18;
 
-            //ItemType = Mod.Find<ModItem>(ItemName).Type; PORTTODO: Why is this in here?
+            //ItemType = Mod.Find<ModItem>(ItemName).Type; TODO: Why is this in here?
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
             AdjTiles = new int[] { TileID.WaterFountain };
@@ -182,7 +182,7 @@ namespace StarlightRiver.Core
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));
-            //ItemType = Mod.Find<ModItem>(ItemName).Type; //PORTTODO: Figure out why this is causing load errors
+            //ItemType = Mod.Find<ModItem>(ItemName).Type; //TODO: Figure out why this is causing load errors
             DustType = -1;
 
             SafeSetDefaults();
@@ -195,7 +195,7 @@ namespace StarlightRiver.Core
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                //PORTTODO: Restore banner functionality
+                //TODO: Restore banner functionality
             }
         }
 

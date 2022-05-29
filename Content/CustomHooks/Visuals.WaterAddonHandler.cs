@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.CustomHooks
 			StarlightPlayer.PostUpdateEvent += UpdateActiveAddon;
 
 			IL.Terraria.Main.DoDraw += AddWaterShader;
-			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//PORTTODO: Figure out where this logic moved in vanilla
+			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//TODO: Figure out where this logic moved in vanilla
 		}
 
 		private void UpdateActiveAddon(Player Player)

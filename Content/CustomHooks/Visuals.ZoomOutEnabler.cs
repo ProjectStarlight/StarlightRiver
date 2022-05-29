@@ -1,4 +1,4 @@
-﻿/*using Microsoft.Xna.Framework; //PORTTODO: Dear god x2.
+﻿/*using Microsoft.Xna.Framework; //TODO: Dear god x2.
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.CustomHooks
 			//This is... a thing
 			IL.Terraria.Lighting.AddLight_int_int_float_float_float += ResizeLighting;
 
-			IL.Terraria.Lighting.LightTiles += ResizeLighting; //PORTTODO: Dear god.
+			IL.Terraria.Lighting.LightTiles += ResizeLighting; //TODO: Dear god.
 			IL.Terraria.Lighting.PreRenderPhase += ResizeLighting;
 			IL.Terraria.Lighting.PreRenderPhase += ResizeOcclusion;
 			IL.Terraria.Lighting.Brightness += ResizeLighting;
