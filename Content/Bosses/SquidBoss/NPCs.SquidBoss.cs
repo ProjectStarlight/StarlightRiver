@@ -500,7 +500,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     savedPoint = NPC.Center;
 
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = (int)GlobalTimer;
+                    Arena.WaterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 325) //water rising up
                 {
@@ -514,7 +514,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if(GlobalTimer > 275 && GlobalTimer <= 325)
-                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 275);
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
                     foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1)) tentacle.ai[0] = 0;
@@ -556,7 +556,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Phase == (int)AIStates.SecondPhase) //second phase
             {
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = (int)GlobalTimer;
+                    Arena.WaterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 300) //water rising
                 {
@@ -570,7 +570,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (GlobalTimer > 250 && GlobalTimer <= 300)
-                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 250);
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 250);
 
                 if (GlobalTimer == 300) //reset
                 {
@@ -636,7 +636,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (GlobalTimer > 240 && GlobalTimer <= 290)
-                    Arena.waterfallWidth = (int)GlobalTimer - 240;
+                    Arena.WaterfallWidth = (int)GlobalTimer - 240;
 
                 if (GlobalTimer > 240) //following unless using ink attack
                 {
@@ -674,7 +674,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Phase == (int)AIStates.DeathAnimation)
             {
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
                 if (GlobalTimer == 1)
                 {
@@ -713,7 +713,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if(Phase == (int)AIStates.Fleeing)
 			{
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
                 if (GlobalTimer > 50)
                     NPC.active = false;

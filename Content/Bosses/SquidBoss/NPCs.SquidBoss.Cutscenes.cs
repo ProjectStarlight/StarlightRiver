@@ -22,12 +22,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         public void SpawnAnimation()
 		{
             if (GlobalTimer == 1)
-                savedPoint = Arena.fakeBoss.Center;
+                savedPoint = Arena.FakeBoss.Center;
 
             if (GlobalTimer > 1 && GlobalTimer < 100)
             {
                 float progress = Helper.BezierEase(GlobalTimer / 100f);
-                Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+                Arena.FakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
             }
 
             if (GlobalTimer == 300)

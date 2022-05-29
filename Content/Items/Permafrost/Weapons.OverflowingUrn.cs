@@ -241,6 +241,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             }
 
             capLeaving = false;
+
             if ((owner.channel && owner.statMana > owner.HeldItem.mana && !frozenShut) || owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
             {
                 if (capCounter > 10)
@@ -254,14 +255,15 @@ namespace StarlightRiver.Content.Items.Permafrost
                 }
                 else
                 {
-
                     offsetVector -= (Projectile.rotation - 1.57f).ToRotationVector2() * (0.2f + (freezeTimer * 0.004f));
                     attackCounter++;
 
                     if (attackCounter % 180 == 0 || attackCounter == 1)
                     {
                         sound?.Stop(true);
-                        sound = Terraria.Audio.SoundEngine.PlaySound(SoundID.BlizzardStrongLoop, Projectile.Center);
+                        var slot = Terraria.Audio.SoundEngine.PlaySound(SoundID.BlizzardStrongLoop, Projectile.Center);
+                        Terraria.Audio.SoundEngine.TryGetActiveSound(slot, out var soundInstance);
+                        sound = soundInstance?.Sound;
                         sound.Volume *= 4;
                     }
                     //Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, Main.rand.NextFloat(-0.5f, -0.2f), Projectile.Center);
