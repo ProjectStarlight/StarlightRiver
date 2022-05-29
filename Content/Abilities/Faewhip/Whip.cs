@@ -127,6 +127,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
                         for (int i = 0; i < 50; i++)
                             Dust.NewDustPerfect(tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4), 1, new Color(255, 190, 50), 0.3f);
+
+                        return;
                     }
                 }
 
