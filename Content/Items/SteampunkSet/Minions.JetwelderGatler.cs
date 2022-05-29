@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             for (int i = 1; i < 9; i++)
             {
-                Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderGatler_Gore" + i.ToString()).Type, 1f); //PORTTODO: Fix default gores
+                Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("JetwelderGatler_Gore" + i.ToString()).Type, 1f); //TODO: Fix default gores
             }
         }
 

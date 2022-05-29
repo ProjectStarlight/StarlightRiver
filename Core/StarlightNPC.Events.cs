@@ -47,5 +47,15 @@ namespace StarlightRiver.Core
         {
             ResetEffectsEvent?.Invoke(NPC);
         }
-    }
+
+		public override void Unload()
+		{
+            PostAIEvent = null;
+            OnKillEvent = null;
+            ModifyHitByItemEvent = null;
+            ModifyHitByProjectileEvent = null;
+            ModifyHitPlayerEvent = null;
+            ResetEffectsEvent = null;
+		}
+	}
 }

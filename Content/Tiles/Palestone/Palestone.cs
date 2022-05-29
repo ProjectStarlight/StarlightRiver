@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Palestone
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileStone[Type] = true;
-            SoundType = Terraria.ID.SoundID.Tink;
+            HitSound = Terraria.ID.SoundID.Tink;
 
             DustType = Terraria.ID.DustID.Stone;
             ItemDrop = ItemType<PalestoneItem>();

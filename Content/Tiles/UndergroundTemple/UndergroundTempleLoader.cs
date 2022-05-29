@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
                 new TileLoadData(
                     minPick: 0,
                     dustType: DustID.Stone,
-                    soundType: SoundID.Tink,
+                    hitSound: SoundID.Tink,
                     mapColor: new Color(150, 150, 150),
                     stone: true
                     )

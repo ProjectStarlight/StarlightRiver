@@ -15,6 +15,10 @@ namespace StarlightRiver.Content.Menus
 {
 	internal class DefaultStarlightMenu : ModMenu
 	{
+		const int LifeTime = 120;
+		const float SinTime = LifeTime / (float)Math.PI;
+		const float ScaleMultiplier = 0.01f;
+
 		public static ParticleSystem sparkles;
 		public static ParticleSystem meteor;
 		public static int Timer;
@@ -27,11 +31,6 @@ namespace StarlightRiver.Content.Menus
 			sparkles = new ParticleSystem(AssetDirectory.Dust + "MoonstoneShimmer", updateSparkles);
 			meteor = new ParticleSystem(AssetDirectory.MiscTextures + "MoonstoneMeteor", updateMeteor);
 		}
-
-
-		const int LifeTime = 120;
-		const float SinTime = LifeTime / (float)Math.PI;
-		const float ScaleMultiplier = 0.01f;
 
 		private void updateSparkles(Particle particle)
 		{
@@ -121,6 +120,12 @@ namespace StarlightRiver.Content.Menus
 			}
 
 			return true;
+		}
+
+		public override void Unload()
+		{
+			sparkles = null;
+			meteor = null;
 		}
 	}
 }

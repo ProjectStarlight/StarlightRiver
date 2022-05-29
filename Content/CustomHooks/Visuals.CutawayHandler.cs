@@ -34,6 +34,12 @@ namespace StarlightRiver.Content.CustomHooks
 			});
 		}
 
+		public override void Unload()
+		{
+			cutaways = null;
+			cutawayTarget = null;
+		}
+
 		private void RefreshCutawayTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
 			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))

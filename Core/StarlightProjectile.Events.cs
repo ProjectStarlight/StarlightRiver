@@ -18,5 +18,11 @@ namespace StarlightRiver.Core
         {
             KillEvent?.Invoke(Projectile, timeLeft);
         }
-    }
+
+		public override void Unload()
+		{
+			KillEvent = null;
+            ModifyHitNPCEvent = null;
+		}
+	}
 }

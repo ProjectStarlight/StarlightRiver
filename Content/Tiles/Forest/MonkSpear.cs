@@ -122,8 +122,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void Kill(int timeLeft)
         {
-            VerletChain.toDraw.Remove(ChainShort);
-            VerletChain.toDraw.Remove(ChainLong);
+            VerletChainSystem.toDraw.Remove(ChainShort);
+            VerletChainSystem.toDraw.Remove(ChainLong);
         }
     }
 }

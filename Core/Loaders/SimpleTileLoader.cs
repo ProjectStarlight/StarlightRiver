@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,13 +15,13 @@ namespace StarlightRiver.Core.Loaders
 
         public void LoadTile(string internalName, string displayName, TileLoadData data)
         {
-            Mod.AddContent(new QuickTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
             Mod.AddContent(new LoaderTile(internalName, data, data.dropType == -1 ? Mod.Find<ModItem>(internalName + "Item").Type : data.dropType, AssetRoot + internalName));
         }
 
         public void LoadFurniture(string internalName, string displayName, FurnitureLoadData data)
         {
-            Mod.AddContent(new QuickTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
+            Mod.AddContent(new LoaderTileItem(internalName + "Item", displayName, "", internalName, 0, AssetRoot + internalName + "Item", true));
             Mod.AddContent(new LoaderFurniture(internalName, data, Mod.Find<ModItem>(internalName + "Item").Type, AssetRoot + internalName));
         }
 
@@ -96,6 +97,16 @@ namespace StarlightRiver.Core.Loaders
         public void PostLoadUnload() { }
     }
 
+    [Autoload(false)]
+    public class LoaderTileItem : QuickTileItem
+	{
+        public LoaderTileItem() { }
+
+        public LoaderTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0) : 
+            base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue) { }
+	}
+
+    [Autoload(false)]
     public class LoaderTile : ModTile
     {
         public string InternalName;
@@ -121,7 +132,7 @@ namespace StarlightRiver.Core.Loaders
                 (
                 Data.minPick,
                 Data.dustType,
-                Data.soundType,
+                Data.hitSound,
                 Data.mapColor,
                 DropID,
                 Data.dirtMerge,
@@ -136,6 +147,7 @@ namespace StarlightRiver.Core.Loaders
 		}
 	}
 
+    [Autoload(false)]
     public class LoaderFurniture : ModTile
     {
         public string InternalName;
@@ -162,7 +174,7 @@ namespace StarlightRiver.Core.Loaders
                     Data.width,
                     Data.height,
                     Data.dustType,
-                    Data.soundType,
+                    Data.hitSound,
                     Data.tallBottom,
                     Data.mapColor,
                     Data.solidTop,
@@ -189,18 +201,18 @@ namespace StarlightRiver.Core.Loaders
     {
         public int minPick;
         public int dustType;
-        public int soundType;
+        public SoundStyle hitSound;
         public Color mapColor;
         public bool dirtMerge;
         public bool stone;
         public string mapName;
         public int dropType;
 
-        public TileLoadData(int minPick, int dustType, int soundType, Color mapColor, bool dirtMerge = false, bool stone = false, string mapName = "", int dropType = -1)
+        public TileLoadData(int minPick, int dustType, SoundStyle hitSound, Color mapColor, bool dirtMerge = false, bool stone = false, string mapName = "", int dropType = -1)
         {
             this.minPick = minPick;
             this.dustType = dustType;
-            this.soundType = soundType;
+            this.hitSound = hitSound;
             this.mapColor = mapColor;
             this.dirtMerge = dirtMerge;
             this.stone = stone;
@@ -214,7 +226,7 @@ namespace StarlightRiver.Core.Loaders
         public int width;
         public int height;
         public int dustType;
-        public int soundType;
+        public SoundStyle hitSound;
         public bool tallBottom;
         public Color mapColor;
         public bool solidTop;
@@ -224,12 +236,12 @@ namespace StarlightRiver.Core.Loaders
         public AnchorData topAnchor;
         public int[] anchorTiles;
 
-        public FurnitureLoadData(int width, int height, int dustType, int soundType, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
+        public FurnitureLoadData(int width, int height, int dustType, SoundStyle hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null)
         {
             this.width = width;
             this.height = height;
             this.dustType = dustType;
-            this.soundType = soundType;
+            this.hitSound = hitSound;
             this.tallBottom = tallBottom;
             this.mapColor = mapColor;
             this.solidTop = solidTop;

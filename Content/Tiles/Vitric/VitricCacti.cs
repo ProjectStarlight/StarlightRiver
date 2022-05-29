@@ -48,9 +48,4 @@ namespace StarlightRiver.Content.Tiles.Vitric
             (this).QuickSetFurniture(1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Dig, false, new Color(80, 131, 142));
         }
     }
-
-    public class VitricCactus : ModCactus
-    {
-        public override Texture2D GetTexture() => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "VitricCactus").Value;
-    }
 }

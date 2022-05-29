@@ -5,6 +5,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
@@ -245,7 +246,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
 			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/FireHit"), Projectile.Center);
+			Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)

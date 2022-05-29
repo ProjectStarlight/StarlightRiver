@@ -57,21 +57,7 @@ namespace StarlightRiver.Content.CustomHooks
 			StarlightPlayer.PostUpdateEvent += UpdateActiveAddon;
 
 			IL.Terraria.Main.DoDraw += AddWaterShader;
-			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//PORTTODO: Figure out where this logic moved in vanilla
-
-			//On.Terraria.Main.DoDraw += DebugTest;
-		}
-
-		private void DebugTest(On.Terraria.Main.orig_DoDraw orig, Main self, GameTime gameTime)
-		{
-			orig(self, gameTime);
-
-			if(!Main.gameMenu && Main.LocalPlayer.controlHook)
-			{
-				Main.spriteBatch.Begin();
-				NewDraw();
-				Main.spriteBatch.End();
-			}
+			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//TODO: Figure out where this logic moved in vanilla
 		}
 
 		private void UpdateActiveAddon(Player Player)
@@ -81,7 +67,8 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			addons.Clear();
+			addons = null;
+			activeAddon = null;
 		}
 
 		private void SwapBlockTexture(ILContext il)

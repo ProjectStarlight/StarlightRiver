@@ -119,5 +119,24 @@ namespace StarlightRiver.Core
             }
             return true;
         }
-    }
+
+		public override void Unload()
+		{
+            ModifyHitByNPCEvent = null;
+            ModifyHitByProjectileEvent = null;
+            ModifyHitNPCEvent = null;
+            ModifyHitNPCWithProjEvent = null;
+            NaturalLifeRegenEvent = null;
+            OnHitNPCEvent = null;
+            OnHitNPCWithProjEvent = null;
+            PostDrawEvent = null;
+            PostUpdateEquipsEvent = null;
+            PostUpdateEvent = null;
+            PreDrawEvent = null;
+            PreHurtEvent = null;
+            ResetEffectsEvent = null;
+
+            spawners = null;
+		}
+	}
 }

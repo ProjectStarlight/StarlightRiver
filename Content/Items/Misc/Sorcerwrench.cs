@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void Load()
         {
-            //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //PORTTODO: Find where vanilla draws resource bars now
+            //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //TODO: Find where vanilla draws resource bars now
             
         }
 
@@ -368,7 +368,7 @@ namespace StarlightRiver.Content.Items.Misc
             return false;
         }
 
-        /* PORTTODO: rework this draw rotten mana
+        /* TODO: rework this draw rotten mana
         private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig)
         {
             orig();

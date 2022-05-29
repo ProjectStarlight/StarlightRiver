@@ -6,6 +6,7 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.SteampunkSet;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
@@ -287,7 +288,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
 				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(3,3), Mod.Find<ModGore>("BizarrePotionGore" + i).Type, 1f);
 			}
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 107);
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107, Projectile.position);
 			switch (liquidType)
 			{
 				case LiquidType.Fire:
@@ -328,7 +329,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(Mod, "Sounds/Magic/FireHit"), Projectile.Center);
+			Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 4; i++)
@@ -675,7 +676,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.aiStyle = -1;
 			if (Projectile.timeLeft > fadeTime)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 27);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
 				for (int i = 0; i < 6; i++)
 					Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 				Projectile.timeLeft = fadeTime;
@@ -686,7 +687,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (timeLeft == 0)
 				return;
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item, (int)Projectile.position.X, (int)Projectile.position.Y, 27);
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
 			for (int i = 0; i < 6; i++)
 				Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 		}

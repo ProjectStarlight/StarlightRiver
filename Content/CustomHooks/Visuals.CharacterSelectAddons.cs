@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class CharacterSelectAddons : HookGroup
     {
-        public static ParticleSystem sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles);
+        public static ParticleSystem sparkles;
 
         //TODO: Create a reflection cache for this, or implement a global reflection caching utility
         private readonly FieldInfo _PlayerPanel = typeof(UICharacterListItem).GetField("_playerPanel", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -35,9 +35,16 @@ namespace StarlightRiver.Content.CustomHooks
 
             On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += DrawSpecialCharacter;
             On.Terraria.GameContent.UI.Elements.UICharacterListItem.ctor += ShiftTextOver;
+
+            sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles);
         }
 
-        private static void updateSparkles(Particle particle)
+		public override void Unload()
+		{
+            sparkles = null;
+		}
+
+		private static void updateSparkles(Particle particle)
         {
             particle.Timer--;
 

@@ -18,6 +18,7 @@ using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
 using Terraria.GameContent.Bestiary;
 using StarlightRiver.Content.Biomes;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             NPC.dontTakeDamageFromHostiles = true;
             NPC.behindTiles = true;
 
-            NPC.HitSound = SoundLoader.GetLegacySoundSlot("Sounds/VitricBoss/ceramicimpact");
+            NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact");
 
             Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBoss1");
 
@@ -332,8 +333,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
             npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
             { 
-                ItemType<BossSpear>(),
-                ItemType<VitricBossBow>(),
+                ItemType<FacetAndLattice>(),
+                ItemType<Coalescence>(),
                 ItemType<Needler>(),
                 ItemType<RefractiveBlade>()
             }
@@ -580,7 +581,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                             shieldShaderTimer = 120;
 
                             NPC.life = NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount - 1; //set health at phase gate
-                            Terraria.Audio.SoundEngine.PlaySound(SoundID.ForceRoar, NPC.Center, 0);
                         }
 
                         NPC.dontTakeDamage = true; //boss is immune at phase gate

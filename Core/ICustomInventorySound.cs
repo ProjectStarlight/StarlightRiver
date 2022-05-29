@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Audio;
+using ReLogic.Utilities;
 
 namespace StarlightRiver.Core
 {
 	interface ICustomInventorySound
 	{
-		SoundEffectInstance InventorySound(float pitch);
+		SlotId InventorySound(float pitch);
 	}
 }

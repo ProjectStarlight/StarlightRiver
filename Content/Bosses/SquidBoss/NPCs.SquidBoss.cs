@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             else
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, (int)NPC.Center.X, (int)NPC.Center.Y, 1, 1, -0.8f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.8f }, NPC.Center);
 
                 /*for (int k = 0; k < 10; k++)
                     Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.Find<ModGore>("SquidGore").Type);*/
@@ -414,12 +414,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 var actor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ModNPC as ArenaActor;
 
                 if (GlobalTimer == 1)
-                    savedPoint = actor.fakeBoss.Center;
+                    savedPoint = actor.FakeBoss.Center;
 
                 if (GlobalTimer > 1 && GlobalTimer < 100)
                 {
                     float progress = Helper.BezierEase(GlobalTimer / 100f);
-                    actor.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+                    actor.FakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
                 }
 
                 if(GlobalTimer == 300)
@@ -553,7 +553,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     savedPoint = NPC.Center;
 
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = (int)GlobalTimer;
+                    Arena.WaterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 325) //water rising up
                 {
@@ -567,7 +567,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if(GlobalTimer > 275 && GlobalTimer <= 325)
-                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 275);
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
                     foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1)) tentacle.ai[0] = 0;
@@ -609,7 +609,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Phase == (int)AIStates.SecondPhase) //second phase
             {
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = (int)GlobalTimer;
+                    Arena.WaterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 300) //water rising
                 {
@@ -623,7 +623,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (GlobalTimer > 250 && GlobalTimer <= 300)
-                    Arena.waterfallWidth = 50 - ((int)GlobalTimer - 250);
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 250);
 
                 if (GlobalTimer == 300) //reset
                 {
@@ -685,11 +685,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     NPC.dontTakeDamage = false;
                     foreach (Player Player in Main.player.Where(n => n.active)) Player.GetModPlayer<StarlightPlayer>().Shake += 40;
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center, 0);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
                 }
 
                 if (GlobalTimer > 240 && GlobalTimer <= 290)
-                    Arena.waterfallWidth = (int)GlobalTimer - 240;
+                    Arena.WaterfallWidth = (int)GlobalTimer - 240;
 
                 if (GlobalTimer > 240) //following unless using ink attack
                 {
@@ -727,7 +727,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (Phase == (int)AIStates.DeathAnimation)
             {
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
                 if (GlobalTimer == 1)
                 {
@@ -740,7 +740,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         tentacles[k].Kill();
                 }
 
-                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCKilled, NPC.Center);
+                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100)
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
 
                 if (GlobalTimer >= 200)
                 {
@@ -765,7 +766,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if(Phase == (int)AIStates.Fleeing)
 			{
                 if (GlobalTimer < 50)
-                    Arena.waterfallWidth = 50 - (int)GlobalTimer;
+                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
                 if (GlobalTimer > 50)
                     NPC.active = false;

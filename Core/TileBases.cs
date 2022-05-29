@@ -5,6 +5,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -51,8 +52,8 @@ namespace StarlightRiver.Core
 
             DustType = FountainDustType;
             AnimationFrameHeight = Height * 18;
-            
-            ItemType = Mod.Find<ModItem>(ItemName).Type;
+
+            //ItemType = Mod.Find<ModItem>(ItemName).Type; TODO: Why is this in here?
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
             AdjTiles = new int[] { TileID.WaterFountain };
@@ -91,7 +92,7 @@ namespace StarlightRiver.Core
 
         public override bool RightClick(int i, int j)
         {
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Mech, i * 16, j * 16, 0);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Mech, new Vector2(i * 16, j * 16));
             HitWire(i, j);
             return true;
         }
@@ -181,7 +182,7 @@ namespace StarlightRiver.Core
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Banner");
             AddMapEntry(MapColor ?? new Color(13, 88, 130));
-            //ItemType = Mod.Find<ModItem>(ItemName).Type; //PORTTODO: Figure out why this is causing load errors
+            //ItemType = Mod.Find<ModItem>(ItemName).Type; //TODO: Figure out why this is causing load errors
             DustType = -1;
 
             SafeSetDefaults();
@@ -194,7 +195,7 @@ namespace StarlightRiver.Core
             if (closer)
             {
                 Player player = Main.LocalPlayer;
-                //PORTTODO: Restore banner functionality
+                //TODO: Restore banner functionality
             }
         }
 
@@ -218,10 +219,10 @@ namespace StarlightRiver.Core
         protected readonly Color? MapColor;
         protected readonly string ItemName;
         protected readonly int DustAmount;
-        protected readonly int Sound;
+        protected readonly SoundStyle? Sound;
         protected readonly string TexturePath;
 
-        public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, string drop = null, int dustAmount = 1, int soundType = SoundID.Grass, string path = null)
+        public ModVine(string[] anchorableTiles, int dustType, Color? mapColor = null, int growthChance = 10, int maxVineLength = 9, string drop = null, int dustAmount = 1, SoundStyle? soundType = null, string path = null)
         {
             AnchorableTiles = anchorableTiles;
             VineDustType = dustType;
@@ -230,7 +231,7 @@ namespace StarlightRiver.Core
             MaxVineLength = maxVineLength;
             ItemName = drop;
             DustAmount = dustAmount;
-            Sound = soundType;
+            Sound = soundType ?? SoundID.Grass;
             TexturePath = path;
         }
 
@@ -261,7 +262,7 @@ namespace StarlightRiver.Core
             if(ItemName != null)
                 ItemDrop = Mod.Find<ModItem>(ItemName).Type;
             DustType = VineDustType;
-            SoundType = Sound;
+            HitSound = Sound;
 
             SafeSetDefaults();
         }

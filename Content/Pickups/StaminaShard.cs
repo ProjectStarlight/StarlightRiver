@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Pickups
             if (Main.gameMenu) return "StarlightRiver/Assets/Abilities/Stamina1";
 
             AbilityHandler ah = Main.LocalPlayer.GetHandler();
-            return "StarlightRiver/Assets/Abilities/Stamina" + (ah.ShardCount + 1);
+            return "StarlightRiver/Assets/Abilities/Stamina" + ((ah.ShardCount + 1) % 3);
         }
     }
 

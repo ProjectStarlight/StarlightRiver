@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using Terraria.ObjectData;
 using Terraria.DataStructures;
+using Terraria.Enums;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -24,7 +25,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.DrawYOffset = -2;
-			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100));
+			AnchorData anchor = new AnchorData(AnchorType.SolidTile, 5, 0);
+			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), bottomAnchor: anchor);
 			AnimationFrameHeight = 18 * 5;
 		}
 
@@ -62,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			Lighting.AddLight(Projectile.Center, new Vector3(150, 220, 230) * 0.002f);
 
-			if (Main.rand.Next(10) == 0)
+			if (Main.rand.NextBool(10))
 			{
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 			}
@@ -81,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					var tile1 = Framing.GetTileSafely(checkX1, checkY1);
 					var tile2 = Framing.GetTileSafely(checkX1, checkY1 - 1);
 
-					if (!(tile1.HasTile && Main.tileSolid[tile1.TileType]) && tile1.LiquidType == LiquidID.Water && tile1.LiquidAmount > 0) //PORTTODO: change to proper new colission type check
+					if (!(tile1.HasTile && Main.tileSolid[tile1.TileType]) && tile1.LiquidType == LiquidID.Water && tile1.LiquidAmount > 0)
 					{
 						if (tile2.LiquidAmount == 0)
 						{

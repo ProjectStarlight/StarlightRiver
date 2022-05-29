@@ -14,13 +14,13 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
-	class CeirosExpert : SmartAccessory
+	class ShatteredAegis : SmartAccessory
     {
         public int cooldown = 0;
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public CeirosExpert() : base("Shattered Aegis", "Releases a burning ring when damaged\n'Meet your foes head-on, and give them a scorching embrace'") { }
+        public ShatteredAegis() : base("Shattered Aegis", "Releases a burning ring when damaged\n'Meet your foes head-on, and give them a scorching embrace'") { }
 
         public override void Load()
         {
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            var instance = (GetEquippedInstance(player) as CeirosExpert);
+            var instance = (GetEquippedInstance(player) as ShatteredAegis);
 
             if (Equipped(player) && instance.cooldown <= 0)
             {

@@ -35,7 +35,8 @@ namespace StarlightRiver.Content.Items.Utility
         public void Unload() { }
 	}
 
-	class LaserPointer : ModItem
+    [Autoload(false)]
+    class LaserPointer : ModItem
 	{
         private Color color;
         private int extraMaterial;
@@ -44,6 +45,8 @@ namespace StarlightRiver.Content.Items.Utility
         public override string Name => InternalName;
 
         public override string Texture => "StarlightRiver/Assets/Items/Utility/LaserPointer";
+
+        public LaserPointer() { }
 
         public LaserPointer(string internalName, Color color, int extraMaterial)
 		{

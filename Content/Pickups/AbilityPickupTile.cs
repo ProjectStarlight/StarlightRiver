@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Pickups
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Pickups
 
         public override void PostSetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 1, 1, 0, 0, false, Color.White);
+            QuickBlock.QuickSetFurniture(this, 1, 1, 0, SoundID.Dig, false, Color.White);
             //minPick = int.MaxValue;
         }
 

@@ -44,10 +44,10 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
-            TargetHost.Maps?.OrderedShaderPass();
+            TargetHost.Maps?.OrderedShaderPass(); //TODO: Why is this here?
             TargetHost.Maps?.OrderedRenderPassBatched(Main.spriteBatch, Main.graphics.GraphicsDevice);
 
-            if (FirstContactFade > 0) //PORTTODO: Move this to a ModSceneEffect
+            if (FirstContactFade > 0) //TODO: Move this to a ModSceneEffect
             {
                 tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), FirstContactFade);
                 backgroundColor = Color.Lerp(Color.White, new Color(17, 15, 30), FirstContactFade);

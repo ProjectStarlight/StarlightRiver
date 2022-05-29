@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using ReLogic.Utilities;
 using StarlightRiver.Codex;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -71,16 +73,6 @@ namespace StarlightRiver.Helpers
             return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / (maxRadius - minRadius)));
 		}
 
-        public static Color MoltenVitricGlow(float time)
-        {
-            Color MoltenGlowc = Color.White;
-            if (time > 30 && time < 60)
-                MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f, 1f));
-            else if (time >= 60)
-                MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
-            return MoltenGlowc;
-        }
-
         /// <summary>
         /// determines if an NPC is "fleshy" based on it's hit sound
         /// </summary>
@@ -95,7 +87,7 @@ namespace StarlightRiver.Helpers
                     NPC.HitSound == SoundID.NPCHit4 ||
                     NPC.HitSound == SoundID.NPCHit41 ||
                     NPC.HitSound == SoundID.NPCHit42 ||
-                    NPC.HitSound == SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/VitricBoss/ceramicimpact")
+                    NPC.HitSound == new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact")
                 );
 		}
 
@@ -145,7 +137,7 @@ namespace StarlightRiver.Helpers
                 if (mp.CodexState != 0)
                 {
                     UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-                    Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/CodexUnlock"));
+                    Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/CodexUnlock"));
                 }
             }
         }
@@ -387,10 +379,11 @@ namespace StarlightRiver.Helpers
         }
 
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
-        public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
+        
+        public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)
         {
             if (Main.netMode == NetmodeID.Server)
-                return null;
+                return SlotId.Invalid;
 
             /*for (int i = 0; i < instances.Count; i++)
             {
@@ -407,9 +400,14 @@ namespace StarlightRiver.Helpers
                     i--;
                 }
             }*/
-            
-            Terraria.Audio.LegacySoundStyle type = SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/" + path);
-            return PlayPitched(type, volume, pitch, position);
+
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}")
+            {
+                Volume = volume,
+                Pitch = pitch,
+            };
+
+             return SoundEngine.PlaySound(style, position);
 
             /*float distFactor = 1;
 
@@ -423,26 +421,15 @@ namespace StarlightRiver.Helpers
             soundEffect.Play();*/
         }
 
-        public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
+        public static SlotId PlayPitched(SoundStyle style, float volume, float pitch, Vector2? position = null)
         {
             if (Main.netMode == NetmodeID.Server)
-                return null;
+                return SlotId.Invalid;
 
-            if (position == default)
-                position = Vector2.One * -1;
+            style.Volume *= volume;
+            style.Pitch += pitch;
 
-            return Terraria.Audio.SoundEngine.PlaySound(style.WithVolume(volume).WithPitchVariance(pitch), position);
-        }
-
-        public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
-        {
-            if (Main.netMode == NetmodeID.Server)
-                return null;
-
-            if (position == default)
-                position = Vector2.One * -1;
-
-            return Terraria.Audio.SoundEngine.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
+            return SoundEngine.PlaySound(style, position);
         }
 
         public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30, int w = 1, int h = 1)

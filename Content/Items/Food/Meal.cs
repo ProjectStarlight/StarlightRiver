@@ -15,7 +15,6 @@ namespace StarlightRiver.Content.Items.Food
     {
         public List<Item> Ingredients { get; set; } = new List<Item>();
         public int Fullness { get; set; }
-        //public override bool CloneNewInstances => true; //PORTODO: Figure out whether deleting this messes anything up
 
         public override string Texture => AssetDirectory.FoodItem + Name;
 

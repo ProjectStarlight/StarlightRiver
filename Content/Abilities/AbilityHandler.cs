@@ -77,14 +77,15 @@ namespace StarlightRiver.Content.Abilities
 
         //for some reason without specifically setting these values to zero with cloneNewInstances => false and contructor,
         ////on a server if someone unlocks or modifies these it will impact newly created characters from then on for that instance
-        public override bool CloneNewInstances => false;
+        protected override bool CloneNewInstances => false;
+
         public AbilityHandler()
         {
             infusions = new InfusionItem[Infusion.InfusionSlots];
             unlockedAbilities = new Dictionary<Type, Ability>();
         }
 
-        public override void Load()
+		public override void Load()
 		{
             StarlightPlayer.PostDrawEvent += PostDrawAbility;
 		}
@@ -203,11 +204,6 @@ namespace StarlightRiver.Content.Abilities
         public InfusionItem GetInfusion(int slot) => slot < 0 || slot >= infusions.Length ? null : infusions[slot];
 
         public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
-
-		public override void SendClientChanges(ModPlayer clientPlayer) //TODO: Implement ablity packet
-		{
-			base.SendClientChanges(clientPlayer);
-		}
 
         public override void SaveData(TagCompound tag)
         {

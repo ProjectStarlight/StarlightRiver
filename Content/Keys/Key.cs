@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -53,26 +54,26 @@ namespace StarlightRiver.Keys
 
             if (Main.player.Any(p => p.Hitbox.Intersects(Hitbox)))
             {
-                StarlightWorld.Keys.Remove(this);
-                StarlightWorld.KeyInventory.Add(this);
+                KeySystem.Keys.Remove(this);
+                KeySystem.KeyInventory.Add(this);
                 if (Main.player.FirstOrDefault(p => p.Hitbox.Intersects(Hitbox)) == Main.LocalPlayer) KeyInventory.keys.Add(new KeyIcon(this, true));
                 else KeyInventory.keys.Add(new KeyIcon(this, false));
                 OnPickup();
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyGet"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyGet"));
             }
         }
 
         public static bool Use<T>()
         {
-            if (StarlightWorld.KeyInventory.Any(n => n is T))
+            if (KeySystem.KeyInventory.Any(n => n is T))
             {
-                Key key = StarlightWorld.KeyInventory.FirstOrDefault(n => n is T);
-                StarlightWorld.KeyInventory.Remove(key);
+                Key key = KeySystem.KeyInventory.FirstOrDefault(n => n is T);
+                KeySystem.KeyInventory.Remove(key);
                 KeyIcon icon = KeyInventory.keys.FirstOrDefault(n => n.parent == key);
                 KeyInventory.keys.Remove(icon);
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundLoader.GetLegacySoundSlot(StarlightRiver.Instance, "Sounds/KeyUse"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyUse"));
                 return true;
             }
             else
@@ -85,7 +86,7 @@ namespace StarlightRiver.Keys
         {
             Key key = (Key)Activator.CreateInstance(typeof(T));
             key.Position = position;
-            StarlightWorld.Keys.Add(key);
+            KeySystem.Keys.Add(key);
         }
     }
 }

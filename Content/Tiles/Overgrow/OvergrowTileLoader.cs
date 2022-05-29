@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 new TileLoadData(
                     minPick: 210,
                     dustType: DustType<Dusts.Leaf>(),
-                    soundType: SoundID.Grass,
+                    hitSound: SoundID.Grass,
                     mapColor: new Color(215, 180, 67),
                     dirtMerge: true,
                     stone: true
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 new TileLoadData(
                     minPick: 210,
                     dustType: DustID.Stone,
-                    soundType: SoundID.Tink,
+                    hitSound: SoundID.Tink,
                     mapColor: new Color(79, 76, 71)
                     )
                 );
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 new TileLoadData(
                     minPick: 210,
                     dustType: DustID.Stone,
-                    soundType: SoundID.Tink,
+                    hitSound: SoundID.Tink,
                     mapColor: new Color(71, 68, 64)
                     )
                 );

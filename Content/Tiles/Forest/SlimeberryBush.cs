@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Tiles.Forest
                     NPC.velocity += new Vector2(NPC.direction * Main.rand.NextFloat(2, 4), -6);
                     NPC.netUpdate = true;
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1.SoundId, (int)NPC.Center.X, (int)NPC.Center.Y, SoundID.NPCDeath1.Style, 0.5f, Main.rand.NextFloat(0.5f, 1));
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { Volume = 0.5f, PitchRange = (0.5f, 1.0f) }, NPC.Center);
                 }
             }
             else
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             return false;
 		}
 
-		public override void OnCatchNPC(Player Player, Item Item)
+		public override void OnCaughtBy(Player player, Item item, bool failed)
 		{
             for (int k = 0; k < 20; k++)
                 Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);

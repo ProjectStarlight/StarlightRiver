@@ -28,8 +28,6 @@ namespace StarlightRiver.Content.Items.Dungeon
         private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
 
-        //public override bool CloneNewInstances => true; //PORTTODO: Figure out whether removing this fucks the item up
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Cloudstrike");

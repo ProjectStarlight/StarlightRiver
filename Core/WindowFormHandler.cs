@@ -17,7 +17,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Load()
         {
-            return; //PORTODO: Figure out what to replace this with since winforms is dead as a doornail
+            return; //TODO: Figure out what to replace this with since winforms is dead as a doornail
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {

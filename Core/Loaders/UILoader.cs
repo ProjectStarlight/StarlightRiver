@@ -40,6 +40,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
+            UIStates.ForEach(n => n.Unload());
             UserInterfaces = null;
             UIStates = null;
         }
