@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
-			Owner.GetModPlayer<StarlightPlayer>().Shake += 3;
+			Core.Systems.CameraSystem.Shake += 3;
 
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}

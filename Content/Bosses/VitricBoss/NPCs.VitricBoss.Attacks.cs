@@ -760,7 +760,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 1500))
                 {
-                    Player.GetModPlayer<StarlightPlayer>().Shake += 20;
+                    Core.Systems.CameraSystem.Shake += 20;
                 }
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath43, NPC.Center);

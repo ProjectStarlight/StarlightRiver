@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == 90)
             {
-                Main.LocalPlayer.GetModPlayer<Core.StarlightPlayer>().Shake += 20;
+                Core.Systems.CameraSystem.Shake += 20;
                 NPC.noGravity = false;
                 NPC.noTileCollide = false;
             }

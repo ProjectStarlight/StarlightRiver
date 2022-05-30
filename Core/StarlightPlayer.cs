@@ -17,6 +17,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Core.Loaders;
 using Terraria.Graphics.CameraModifiers;
+using StarlightRiver.Core.Systems;
 
 namespace StarlightRiver.Core
 {
@@ -29,15 +30,6 @@ namespace StarlightRiver.Core
         public bool trueInvisible = false;
 
         public bool DarkSlow = false;
-
-        public int Shake = 0;
-
-        public int ScreenMoveTime = 0;
-        public Vector2 ScreenMoveTarget = new Vector2(0, 0);
-        public Vector2 ScreenMovePan = new Vector2(0, 0);
-        public bool ScreenMoveHold = false;
-        private int ScreenMoveTimer = 0;
-        private int panDown = 0;
 
         public int platformTimer = 0;
 
@@ -110,13 +102,7 @@ namespace StarlightRiver.Core
             ItemSpeed = 1;
 
             trueInvisible = false;
-
-            //Player.fullRotation = MathHelper.Lerp(Player.fullRotation, 0, 0.1f);
-
             shouldSendHitPacket = false;
-
-            if (Shake > 120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult)
-                Shake = (int)(120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult);
         }
 
         public override void PostUpdate()
@@ -125,27 +111,6 @@ namespace StarlightRiver.Core
 
             if (Main.netMode == NetmodeID.MultiplayerClient && Player == Main.LocalPlayer) StarlightWorld.rottime += (float)Math.PI / 60;
             Timer++;
-
-            if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
-            {
-                //cutscene timers
-                if (ScreenMoveTimer >= ScreenMoveTime)
-                {
-                    ScreenMoveTime = 0;
-                    ScreenMoveTimer = 0;
-                    ScreenMoveTarget = Vector2.Zero;
-                    ScreenMovePan = Vector2.Zero;
-                }
-
-                if (ScreenMoveTimer < ScreenMoveTime - 30 || !ScreenMoveHold)
-                    ScreenMoveTimer++;
-            }
-
-            bool validTile = WorldGen.InWorld((int)Main.LocalPlayer.position.X / 16, (int)Main.LocalPlayer.position.Y / 16) && Framing.GetTileSafely(Main.LocalPlayer.Center).WallType == ModContent.WallType<AuroraBrickWall>();
-
-            if (validTile && Main.npc.Any(n => n.active && n.ModNPC is SquidBoss && n.ai[0] == (int)SquidBoss.AIStates.SecondPhase && n.ai[1] > 300) && panDown < 150) // TODO: fix the worlds most ungodly check ever
-                panDown++;
-            else if (panDown > 0) panDown--;
         }
 
         public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
@@ -160,61 +125,6 @@ namespace StarlightRiver.Core
         {
             PostUpdateEquipsEvent?.Invoke(this);
             JustHit = false;
-        }
-
-        private int AddExpansion()
-        {
-            return (int)Math.Floor(((Main.screenPosition.X + (Main.screenWidth * (1f / ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.X + Main.screenWidth) / 16f) + 2));
-        }
-
-        private int AddExpansionY()
-        {
-            return (int)Math.Floor(((Main.screenPosition.Y + (Main.screenHeight * (1f / ZoomHandler.ClampedExtraZoomTarget))) / 16f) + 2 - (((Main.screenPosition.Y + Main.screenHeight) / 16f) + 2));
-        }
-
-        public override void ModifyScreenPosition()
-        {
-            if (Main.myPlayer != Player.whoAmI)
-                return;
-
-            //old screenshake code
-            //var adj = new Vector2(AddExpansion(), AddExpansionY()) * 8;
-            //Main.screenPosition -= adj;
-
-            //if (ScreenMoveTime > 0 && ScreenMoveTarget != Vector2.Zero)
-            //{
-            //    Vector2 off = (new Vector2(Main.screenWidth, Main.screenHeight) / -2) * 1 / ZoomHandler.ClampedExtraZoomTarget;
-
-            //    if (ScreenMoveTimer <= 30) //go out
-            //        Main.screenPosition = Vector2.SmoothStep(Main.LocalPlayer.Center + off, ScreenMoveTarget + off, ScreenMoveTimer / 30f);
-            //    else if (ScreenMoveTimer >= ScreenMoveTime - 30) //go in
-            //        Main.screenPosition = Vector2.SmoothStep((ScreenMovePan == Vector2.Zero ? ScreenMoveTarget : ScreenMovePan) + off, Main.LocalPlayer.Center + off, (ScreenMoveTimer - (ScreenMoveTime - 30)) / 30f);
-            //    else
-            //    {
-            //        if (ScreenMovePan == Vector2.Zero)
-            //            Main.screenPosition = ScreenMoveTarget + off; //stay on target
-
-            //        else if (ScreenMoveTimer <= ScreenMoveTime - 150)
-            //            Main.screenPosition = Vector2.Lerp(ScreenMoveTarget + off, ScreenMovePan + off, ScreenMoveTimer / (float)(ScreenMoveTime - 150));
-
-            //        else
-            //            Main.screenPosition = ScreenMovePan + off;
-            //    }
-            //}
-
-
-            //Main.screenPosition.Y += Main.rand.Next(-Shake, Shake) * mult + panDown;
-            //Main.screenPosition.X += Main.rand.Next(-Shake, Shake) * mult;
-
-            float mult = ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult;
-            mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
-            Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), Shake * mult, 15f, 30, 2000, "Starlight Shake"));
-
-            if (Shake > 0)
-                Shake--;
-
-            //Main.screenPosition.X = (int)Main.screenPosition.X;
-            //Main.screenPosition.Y = (int)Main.screenPosition.Y;
         }
 
         /// <summary>
@@ -248,13 +158,6 @@ namespace StarlightRiver.Core
         {
             ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
 
-            Shake = 0;
-            panDown = 0;
-
-            ScreenMoveTime = 0;
-            ScreenMoveTarget = Vector2.Zero;
-            ScreenMovePan = Vector2.Zero;
-
             rotation = 0;
 
             BossBarOverlay.tracked = null;
@@ -271,11 +174,8 @@ namespace StarlightRiver.Core
 
         public override void OnRespawn(Player Player)
         {
-            panDown = 0;
-
-            ScreenMoveTime = 0;
-            ScreenMoveTarget = Vector2.Zero;
-            ScreenMovePan = Vector2.Zero;
+            if (Player == Main.LocalPlayer)
+                CameraSystem.Reset();
 
             rotation = 0;
             inTutorial = false;
@@ -289,7 +189,7 @@ namespace StarlightRiver.Core
 
         public override float UseTimeMultiplier(Item Item) => ItemSpeed;
 
-        public void DoubleTapEffects(int keyDir)
+        public void DoubleTapEffects(int keyDir) //TODO: Move this to breacher armor classes
         {
             if (keyDir == (Main.ReversedUpDownArmorSetBonuses ? 1 : 0)) //double tap down
             {

@@ -295,7 +295,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 											modproj.moveDirection = new Vector2(-Player.direction, -1);
 										}
 									}
-								Player.GetModPlayer<StarlightPlayer>().Shake += 12;
+								Core.Systems.CameraSystem.Shake += 12;
 								angularVelocity = 0;
 								attackDuration = 30;
 								Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
@@ -349,7 +349,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			target.immune[Projectile.owner] = 30;
 			if (charge < MAXCHARGE)
 				charge++;
-			Player.GetModPlayer<StarlightPlayer>().Shake += 8;
+			Core.Systems.CameraSystem.Shake += 8;
 
 			if (currentAttack != CurrentAttack.Slam)
 				pauseTime = 7;

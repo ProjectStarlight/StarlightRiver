@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             }
 
             //Screenshake
-            if (Projectile.ai[0] < 359 && Projectile.ai[0] > 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(359 - Projectile.ai[0]) / 175;
+            Core.Systems.CameraSystem.Shake += (int)(359 - Projectile.ai[0]) / 175;
 
             //Lighting
             for (float k = 0; k <= 6.28f; k += 0.2f)

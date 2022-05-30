@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.timeLeft == 80)
             {
                 Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.7f, 1.33f, Projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
+                Core.Systems.CameraSystem.Shake += 15;
                 for (int i = 0; i < 30; i++)
                     Dust.NewDust(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.GlassGravity>(), 0, -4);
             }
@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.ai[0] == 70)
             {
                 Projectile.hostile = true; //when this Projectile goes off
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 5;
+                Core.Systems.CameraSystem.Shake += 5;
                 for (int k = 0; k < 15; k++)
                 {
                     Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(12, 3), DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-4, -2));

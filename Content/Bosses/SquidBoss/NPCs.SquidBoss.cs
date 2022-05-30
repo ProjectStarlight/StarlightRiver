@@ -631,7 +631,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (GlobalTimer == 240) //roar and activate
                 {
                     NPC.dontTakeDamage = false;
-                    foreach (Player Player in Main.player.Where(n => n.active)) Player.GetModPlayer<StarlightPlayer>().Shake += 40;
+                    Core.Systems.CameraSystem.Shake += 40;
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
                 }
 
@@ -680,8 +680,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     NPC.velocity *= 0;
                     NPC.rotation = 0;
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = NPC.Center;
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 240;
+                    Core.Systems.CameraSystem.DoPanAnimation(240, NPC.Center);
 
                     for (int k = 0; k < tentacles.Count; k++)
                         tentacles[k].Kill();

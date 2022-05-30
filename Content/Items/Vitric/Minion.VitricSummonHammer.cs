@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Items.Vitric //TODO: Rewrite this entire file i
 
                         //not sure if correct source
                         Projectile.NewProjectile(Projectile.GetSource_FromThis(), tilepos16, Vector2.Zero, ModContent.ProjectileType<ShockwaveSummon>(), (int)(Projectile.damage * 0.25), 0, Main.myPlayer, ai0, ai1);
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+                        Core.Systems.CameraSystem.Shake += 10;
 
                         for (float num315 = 2f; num315 < 15; num315 += 0.50f)
                         {

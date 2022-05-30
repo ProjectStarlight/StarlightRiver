@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Items.Astroflora
             }
             else
             {
-                Player.GetModPlayer<StarlightPlayer>().Shake = 5;
+                Core.Systems.CameraSystem.Shake = 5;
 
                 SoundEngine.PlaySound(new SoundStyle($"{SoundPath}Failure"), Player.Center);
 

@@ -268,7 +268,7 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void Kill(int timeLeft)
         {
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
-            Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 4;
+            Core.Systems.CameraSystem.Shake += 4;
             Vector2 direction = Vector2.Normalize(Main.MouseWorld - Main.player[Projectile.owner].Center);
             for (int i = 0; i < 4; i++)
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.6f, 1f) * 15, ModContent.ProjectileType<TopazShard>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner);

@@ -165,8 +165,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 NPC.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.NPC.ai[3]);
                 if (NPC.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
                     NPC.position.Y -= MaxHeight;
-
-                //NPC.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
             }
 
             if (storedCenter == Vector2.Zero && NPC.velocity.Y == 0)
