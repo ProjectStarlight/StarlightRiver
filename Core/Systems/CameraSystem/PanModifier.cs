@@ -38,7 +38,7 @@ namespace StarlightRiver.Core.Systems
                     SecondaryTarget = Vector2.Zero;
                 }
 
-                if (Timer < TotalDuration - 30)
+                if (Timer < TotalDuration)
                     Timer++;
             }
         }
@@ -52,18 +52,20 @@ namespace StarlightRiver.Core.Systems
 
             if (maxTime > 0 && target != Vector2.Zero)
             {
+                Vector2 offset = new Vector2(-Main.screenWidth / 2f, -Main.screenHeight / 2f);
+
                 if (timer <= 30) //go out
-                    cameraPosition.CameraPosition = EaseInFunction(cameraPosition.OriginalCameraPosition, target, timer / 30f);
+                    cameraPosition.CameraPosition = EaseInFunction(cameraPosition.OriginalCameraCenter + offset, target + offset, timer / 30f);
                 else if (timer >= maxTime - 30) //go in
-                    cameraPosition.CameraPosition = EaseOutFunction((panTarget == Vector2.Zero ? target : panTarget), cameraPosition.OriginalCameraPosition, (timer - (maxTime - 30)) / 30f);
+                    cameraPosition.CameraPosition = EaseOutFunction((panTarget == Vector2.Zero ? target : panTarget) + offset, cameraPosition.OriginalCameraCenter + offset, (timer - (maxTime - 30)) / 30f);
                 else
                 {
                     if (panTarget == Vector2.Zero)
-                        cameraPosition.CameraPosition = target; //stay on target
+                        cameraPosition.CameraPosition = offset + target; //stay on target
                     else if (timer <= maxTime - 150)
-                        cameraPosition.CameraPosition = PanFunction(target, panTarget, timer / (float)(maxTime - 150));
+                        cameraPosition.CameraPosition = offset + PanFunction(target, panTarget, timer / (float)(maxTime - 150));
                     else
-                        cameraPosition.CameraPosition = panTarget;
+                        cameraPosition.CameraPosition = offset + panTarget;
                 }
             }
         }

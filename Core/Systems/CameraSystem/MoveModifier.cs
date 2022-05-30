@@ -36,10 +36,12 @@ namespace StarlightRiver.Core.Systems
         {
             if (MovementDuration > 0 && Target != Vector2.Zero)
             {
-                if(Returning)
-                    cameraPosition.CameraPosition = EaseFunction(Target, cameraPosition.OriginalCameraPosition, Timer / (float)MovementDuration);
+                Vector2 offset = new Vector2(-Main.screenWidth / 2f, -Main.screenHeight / 2f);
+
+                if (Returning)
+                    cameraPosition.CameraPosition = EaseFunction(Target + offset, cameraPosition.OriginalCameraCenter + offset, Timer / (float)MovementDuration);
                 else
-                    cameraPosition.CameraPosition = EaseFunction(cameraPosition.OriginalCameraPosition, Target, Timer / (float)MovementDuration);
+                    cameraPosition.CameraPosition = EaseFunction(cameraPosition.OriginalCameraCenter + offset, Target + offset, Timer / (float)MovementDuration);
             }
         }
 
