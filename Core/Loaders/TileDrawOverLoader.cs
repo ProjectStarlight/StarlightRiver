@@ -129,7 +129,7 @@ namespace StarlightRiver.Core.Loaders
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
             spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
-            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
+            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition - translation , Color.White);
             spriteBatch.End();
 
             gD.SetRenderTargets(bindings);
@@ -148,10 +148,10 @@ namespace StarlightRiver.Core.Loaders
                 return;
 
             effect.Parameters["TileTarget"].SetValue(tileTarget);
-            effect.CurrentTechnique.Passes[0].Apply();
 
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
+            effect.CurrentTechnique.Passes[0].Apply();
             Main.spriteBatch.Draw(projTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
             Main.spriteBatch.End();
