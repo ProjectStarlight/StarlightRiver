@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == 90)
             {
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                Core.Systems.CameraSystem.Shake += 20;
                 NPC.noGravity = false;
                 NPC.noTileCollide = false;
             }
@@ -320,7 +320,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             }
 
             if (AttackTimer > 1 && AttackTimer < 25)
-                NPC.velocity.Y = -(Utils.GetLerpValue(25, 10, AttackTimer, true)) * 7f;
+                NPC.velocity.Y = -(Utils.GetLerpValue(25, 10, AttackTimer, true)) * 5f;
 
             moveTarget.X = MathHelper.Lerp(moveTarget.X, Target.Center.X, 0.002f);
 
@@ -483,7 +483,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Main.projectile[bubbleIndex].Center = staffPos + (Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true));
                 NPC.velocity *= 0.87f;
                 NPC.velocity.Y -= 0.01f;
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(AttackTimer / 180f);
+                Core.Systems.CameraSystem.Shake += (int)(AttackTimer / 180f);
             }
 
             if (AttackTimer == 300)
@@ -537,7 +537,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
                 {
                     Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+                    Core.Systems.CameraSystem.Shake += 10;
                     bubble.velocity = direction * speed;
                     bubble.ai[1] = 1;
                     for (int i = 0; i < 30; i++)

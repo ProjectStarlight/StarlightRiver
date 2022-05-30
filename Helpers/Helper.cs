@@ -382,10 +382,10 @@ namespace StarlightRiver.Helpers
         
         public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)
         {
-            if (Main.netMode == NetmodeID.Server)
+            /*if (Main.netMode == NetmodeID.Server)
                 return SlotId.Invalid;
 
-            /*for (int i = 0; i < instances.Count; i++)
+            for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -401,13 +401,8 @@ namespace StarlightRiver.Helpers
                 }
             }*/
 
-            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}")
-            {
-                Volume = volume,
-                Pitch = pitch,
-            };
-
-             return SoundEngine.PlaySound(style, position);
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}");
+            return PlayPitched(style, volume, pitch, position);
 
             /*float distFactor = 1;
 

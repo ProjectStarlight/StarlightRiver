@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Projectile.localAI[0] == 0)
             {
                 Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
+                Core.Systems.CameraSystem.Shake += 15;
 
                 for (int i = 0; i < 30; i++)
                 {

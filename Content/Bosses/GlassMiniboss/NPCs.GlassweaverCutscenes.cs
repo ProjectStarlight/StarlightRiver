@@ -15,10 +15,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             AttackTimer++;
 
             if (AttackTimer == 40)
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake = 8;
+                Core.Systems.CameraSystem.Shake = 8;
 
             if (AttackTimer > 38 && AttackTimer < 160)
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2;
+                Core.Systems.CameraSystem.Shake += 2;
 
             if (AttackTimer > 410)
             {
