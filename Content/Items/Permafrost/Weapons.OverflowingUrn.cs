@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                         int shake = 2;
                         if (frozenShut)
                             shake = 12;
-                        owner.GetModPlayer<StarlightPlayer>().Shake =+ shake;
+                        Core.Systems.CameraSystem.Shake =+ shake;
                     }
                 }
                 attackCounter = 0;

@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (GlobalTimer == 300)
             {
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 25;
+                Core.Systems.CameraSystem.Shake += 25;
                 Helper.PlayPitched("ArenaHit", 1f, 0.5f, NPC.Center);
             }
 
@@ -46,8 +46,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "The Venerated";
                 UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 440);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = NPC.Center + new Vector2(0, -600);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 440;
+                Core.Systems.CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
             }
 
             for (int k = 0; k < 4; k++) //each tenticle
@@ -79,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (GlobalTimer == 100 + k * 30)
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 5;
+                    Core.Systems.CameraSystem.Shake += 5;
                     Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
                 }
 
