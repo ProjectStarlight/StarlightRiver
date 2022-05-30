@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Rectangle frame = glob.Frame(1, 3, 0, Projectile.frame);
                 Vector2 origin = new Vector2(frame.Height * 0.5f);
 
-                Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Glassweaver + "DotTell");
+                Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
                 Color bloomFade = Color.OrangeRed;
                 bloomFade.A = 0;
 
@@ -219,10 +219,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
                 {
                     float fade = 1f - ((float)i / ProjectileID.Sets.TrailCacheLength[Type]);
-                    float trailScale = Projectile.scale * MathHelper.Lerp(0.3f, 2f, fade) * scale;
-                    Main.EntitySpriteDraw(bloom.Value, Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition, null, bloomFade * fade * 0.18f, Projectile.oldRot[i], bloom.Size() * 0.5f, trailScale * new Vector2(1f, 0.8f), 0, 0);
+                    float trailScale = Projectile.scale * MathHelper.Lerp(0.3f, 2f, fade) * 0.5f * scale;
+                    Main.EntitySpriteDraw(bloom.Value, Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition, null, bloomFade * fade * 0.2f, Projectile.oldRot[i], bloom.Size() * 0.5f, trailScale * new Vector2(1f, 0.8f), 0, 0);
                 }
-                Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.8f, 0.7f), 0, 0);
+                Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade * 0.8f, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.66f, 0.5f), 0, 0);
             }
 
             return false;

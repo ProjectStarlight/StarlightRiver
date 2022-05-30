@@ -89,9 +89,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Projectile.rotation += Projectile.velocity.X * 0.05f;
             Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
 
-            Color lightColor = Color.Lerp(Glassweaver.GlassColor, Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
+            Color lightColor = Color.Lerp(Glassweaver.GlassColor, Glassweaver.GlowDustOrange, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
 
-            if (Main.rand.NextBool(5) && Timer > 120)
+            if (Main.rand.NextBool(5) && Timer > 150)
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40, 40), DustType<Dusts.Cinder>(), Vector2.Zero, 0, lightColor, 0.7f);
 
             Lighting.AddLight(Projectile.Center, lightColor.ToVector3() * Utils.GetLerpValue(120, 210, Timer, true));
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < shardCount; i++)
                 {
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
-                    Projectile.NewProjectile(Entity.InheritSource(Projectile), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
                 }
             }
             if (Timer <= crackTime + 105)
@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (Timer > crackTime - 11)
                 DrawBubbleCracks();
 
-            DrawVignette();
+            //DrawVignette();
 
             DrawBloom();
         }
@@ -224,7 +224,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             crack.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
             crack.Parameters["sampleTexture3"].SetValue(Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
             crack.Parameters["uTime"].SetValue(crackProgress);
-            crack.Parameters["drawColor"].SetValue((Color.PaleGoldenrod * crackProgress * 1.5f).ToVector4());
+            crack.Parameters["drawColor"].SetValue((Color.LightGoldenrodYellow * crackProgress * 1.5f).ToVector4());
             crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
             crack.Parameters["texSize"].SetValue(Request<Texture2D>(Texture).Value.Size());
 
@@ -239,25 +239,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void DrawBloom()
         {
-            //shine
-            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-            Color shine = Color.Lerp(Glassweaver.GlassColor, Color.OrangeRed, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
+            Asset<Texture2D> bloomTex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
+            Asset<Texture2D> shineTex = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
+
+            float colLerp = Utils.GetLerpValue(150, 190, Timer, true) * Utils.GetLerpValue(crackTime + 120, crackTime, Timer, true);
+            Color shine = Color.Lerp(Color.PaleGoldenrod, Glassweaver.GlassColor * 0.3f, colLerp);
             shine.A = 0;
-            float appear = Utils.GetLerpValue(120, 210, Timer, true);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * appear * 0.7f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * 1.3f, SpriteEffects.None, 0);
+            Color bloom = Color.Lerp(Color.OrangeRed, Glassweaver.GlassColor * 0.14f, colLerp);
+            bloom.A = 0;
+            float disappear = Utils.GetLerpValue(crackTime + 80, crackTime - 10, Timer, true);
+            float appear = 0.2f + Utils.GetLerpValue(40, 110, Timer, true) * 0.78f;
+            Main.EntitySpriteDraw(bloomTex.Value, Projectile.Center - Main.screenPosition, null, bloom * (0.6f + disappear), Projectile.rotation, bloomTex.Size() * 0.5f, Projectile.scale * 1.8f * appear, SpriteEffects.None, 0);
+            Main.EntitySpriteDraw(shineTex.Value, Projectile.Center - Main.screenPosition, null, shine * disappear, Projectile.rotation, shineTex.Size() * 0.5f, Projectile.scale * 0.9f * appear, SpriteEffects.None, 0);
 
-            float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2);
-            Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, shine * warble * 0.2f, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale + (2f * warble), SpriteEffects.None, 0);
-        }
-
-        private void DrawExplosionTell()
-        {
-            Asset<Texture2D> explodeTell = Request<Texture2D>(AssetDirectory.Glassweaver + "GlassTellAlpha");
-            Color radFade = Color.Lerp(new Color(60, 190, 170, 0), Color.OrangeRed, Utils.GetLerpValue(crackTime + 30, crackTime + 60, Timer, true)) 
-                * Utils.GetLerpValue(crackTime - 70, crackTime, Timer, true) * Utils.GetLerpValue(crackTime + 110, crackTime + 90, Timer, true) * 0.5f;
-            radFade.A = 0;
-            Vector2 size = new Vector2(explosionRadius * 2f / explodeTell.Width(), explosionRadius * 2f / explodeTell.Height()) * Helpers.Helper.BezierEase(Utils.GetLerpValue(crackTime - 70, crackTime + 40, Timer, true));
-            Main.EntitySpriteDraw(explodeTell.Value, Projectile.Center - Main.screenPosition, null, radFade, Projectile.rotation, explodeTell.Size() * 0.5f, size, SpriteEffects.None, 0);
+            float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2) * 0.5f;
+            Main.EntitySpriteDraw(bloomTex.Value, Projectile.Center - Main.screenPosition, null, bloom * disappear, Projectile.rotation, bloomTex.Size() * 0.5f, Projectile.scale * 1.2f * appear + warble, SpriteEffects.None, 0);
         }
 
         private void DrawVignette()

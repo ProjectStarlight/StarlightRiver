@@ -359,7 +359,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void DrawGroundTell()
         {
-            Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.Glassweaver + "SpikeTell");
+            Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.MiscTextures + "SpikeTell");
             Rectangle frame = tellTex.Frame(2, 1, 1);
             Rectangle frameGlow = tellTex.Frame(2, 1, 1);
             Vector2 tellOrigin = frame.Size() * new Vector2(0.5f, 0.928f);

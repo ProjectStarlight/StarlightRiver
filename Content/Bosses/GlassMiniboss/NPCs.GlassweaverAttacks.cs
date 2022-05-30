@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.FaceTarget();
                 for (int s = 0; s < 3; s++)
                 {
-                    int slash = Projectile.NewProjectile(Entity.InheritSource(NPC), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Main.myPlayer, AttackTimer - 2, NPC.whoAmI);
+                    int slash = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Main.myPlayer, AttackTimer - 2, NPC.whoAmI);
                     Main.projectile[slash].localAI[0] = s;
                 }
             }
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 moveTarget = Vector2.Lerp(PickSpot(), PickCloseSpot(), 0.77f) - new Vector2(0, 100);
                 NPC.velocity.Y -= 9f;
                 
-                spearIndex = Projectile.NewProjectile(Entity.InheritSource(NPC), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Main.myPlayer, 0, NPC.whoAmI);
+                spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Main.myPlayer, 0, NPC.whoAmI);
                 Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
             }
 
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < lobCount; i++)
                 {
                     float lobVel = MathHelper.ToRadians(MathHelper.Lerp(17, 76, (float)i / lobCount)) * NPC.direction;
-                    Projectile.NewProjectile(Entity.InheritSource(NPC), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Main.myPlayer, -44 - i, lobVel);
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Main.myPlayer, -44 - i, lobVel);
                 }
                 for (int j = 0; j < 50; j++)
                     Dust.NewDustPerfect(lobPos + Main.rand.NextVector2Circular(20, 1), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1f, 6f));
@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Vector2 spearTarget = Target.Center;//arenaPos + new Vector2(whatSpear * 130 * NPC.direction, 40);
                 Vector2 spearVel = new Vector2(Main.rand.NextFloat(9, 12) * NPC.direction, 3f).RotatedBy(whatSpear * 4f);
                 float angle = (staffPos).AngleTo(spearTarget - (spearVel * 2f));
-                Projectile.NewProjectile(Entity.InheritSource(NPC), staffPos, spearVel, ProjectileType<GlassJavelin>(), 12, 1, Main.myPlayer, angle);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), staffPos, spearVel, ProjectileType<GlassJavelin>(), 12, 1, Main.myPlayer, angle);
             }
 
             if (AttackTimer > javelinTime)

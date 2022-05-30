@@ -63,7 +63,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override string Texture => AssetDirectory.Glassweaver + Name;
 
-        public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_Head";
+        public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
+
+        public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects) => spriteEffects = GetSpriteEffects();
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
 
@@ -177,23 +179,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     switch (AttackPhase)
                     {
-                        //case 0: TripleSlash(); break;
+                        case 0: TripleSlash(); break;
 
-                        //case 1: Whirlwind(); break;
+                        case 1: Whirlwind(); break;
 
-                        //case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
+                        case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
 
-                        //case 3: BigBrightBubble(); break;
+                        case 3: BigBrightBubble(); break;
 
-                        //case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+                        case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
 
-                        //case 5: JavelinRain(); break;
+                        case 5: JavelinRain(); break;
 
-                        //case 6: TripleSlash(); break;
+                        case 6: TripleSlash(); break;
 
-                        //case 7: MagmaSpear(); break;
+                        case 7: MagmaSpear(); break;
 
-                        //case 8: BigBrightBubble(); break;
+                        case 8: BigBrightBubble(); break;
 
                         default: TripleSlash(); break;
                     }
@@ -230,8 +232,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + "Glassweaver");
-            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "GlassweaverGlow");
+            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + Name);
+            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + Name + "Glow");
 
             Rectangle frame = weaver.Frame(1, 6, 0, 0);
             frame.X = 0;
