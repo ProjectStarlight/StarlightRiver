@@ -30,18 +30,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         }
 
         //according to the targets position,
-        private const int distX = 520;
-        private const int distY = 30;
-        private const int distShortX = 130;
-        private const int distShortY = -10;
+        private const int spotDistX = 520;
+        private const int spotDistY = 30;
+        private const int spotDistShortX = 130;
+        private const int spotDistShortY = -10;
 
-        private Vector2 PickSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distX * x, distY) : arenaPos + new Vector2(distX * x, distY); //picks the outer side.
+        private Vector2 PickSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-spotDistX * x, spotDistY) : arenaPos + new Vector2(spotDistX * x, spotDistY); //picks the outer side.
 
-        private Vector2 PickCloseSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-distShortX * x, -distShortY) : arenaPos + new Vector2(distShortX * x, -distShortY); //picks the inner side.
+        private Vector2 PickCloseSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-spotDistShortX * x, -spotDistShortY) : arenaPos + new Vector2(spotDistShortX * x, -spotDistShortY); //picks the inner side.
 
-        private Vector2 PickSpotSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distX * x, distY) : arenaPos + new Vector2(-distX * x, distY); //picks the outer side.
+        private Vector2 PickSpotSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(spotDistX * x, spotDistY) : arenaPos + new Vector2(-spotDistX * x, spotDistY); //picks the outer side.
 
-        private Vector2 PickCloseSpotSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(distShortX * x, -distShortY) : arenaPos + new Vector2(-distShortX * x, -distShortY); //picks the inner side.
+        private Vector2 PickCloseSpotSelf(int x = 1) => NPC.Center.X > arenaPos.X ? arenaPos + new Vector2(spotDistShortX * x, -spotDistShortY) : arenaPos + new Vector2(-spotDistShortX * x, -spotDistShortY); //picks the inner side.
 
         private Vector2 PickNearestSpot(Vector2 target)
         {

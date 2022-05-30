@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
+
         //internal ref float Wave => ref NPC.ai[2];
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             SpawnEffects,
             DespawnEffects,
             JumpToBackground,
-            GauntletPhase,
+            GlassTrial,
             ReturnToForeground,
             DirectPhase,
             DeathEffects
@@ -59,6 +60,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             NPCID.Sets.TrailCacheLength[Type] = 10;
             NPCID.Sets.TrailingMode[Type] = 1;
             NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
+            NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+            {
+                
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
 
         public override string Texture => AssetDirectory.Glassweaver + Name;
@@ -100,11 +108,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             return false;
         }
 
-        private void SetPhase(PhaseEnum phase)
-        {
-            Phase = (float)phase;
-        }
-
         public override void AI()
         {
             AttackTimer++;
@@ -116,7 +119,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 case (int)PhaseEnum.SpawnEffects:
 
                     arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
-                    SetPhase(PhaseEnum.JumpToBackground);
+                    Phase = (int)PhaseEnum.JumpToBackground;
                     ResetAttack();
 
                     break;
@@ -128,20 +131,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     //else
                     //{
-                    SetPhase(PhaseEnum.GauntletPhase);
+                    Phase = (int)PhaseEnum.GlassTrial;
                     ResetAttack();
                     //    NPC.noGravity = false;
                     //}
 
                     break;
 
-                case (int)PhaseEnum.GauntletPhase:
+                case (int)PhaseEnum.GlassTrial:
 
-                    //check if wave npcs are alive
-                    //if not, increment wave
-                    
-                    SetPhase(PhaseEnum.ReturnToForeground);
-                    ResetAttack();
+                    switch (AttackPhase)
+                    {
+                        case 0: AttackPhase++; break;
+                        case 1: GlassTrial_Wave1(); break;
+                    }
 
                     break;                
                 

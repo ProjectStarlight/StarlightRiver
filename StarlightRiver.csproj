@@ -27,6 +27,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Healthbars\" />
-    <Folder Include="Content\NPCs\Vitric\GlassGauntlet\" />
+    <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
   </ItemGroup>
 </Project>
