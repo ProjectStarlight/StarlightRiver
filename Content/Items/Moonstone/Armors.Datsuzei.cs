@@ -442,8 +442,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(50, 50, 255), 0.8f);
             }
 
-            if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 10)
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+            if(Core.Systems.CameraSystem.Shake <= 10)
+                Core.Systems.CameraSystem.Shake += 10;
         }
 
         public override bool PreDraw(ref Color lightColor)

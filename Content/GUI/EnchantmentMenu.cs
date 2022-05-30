@@ -80,7 +80,6 @@ namespace StarlightRiver.Content.GUI
             if (Main.LocalPlayer.controlHook) //Temporary closing logic
             {
                 active = false;
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = false;
             }
         }
 

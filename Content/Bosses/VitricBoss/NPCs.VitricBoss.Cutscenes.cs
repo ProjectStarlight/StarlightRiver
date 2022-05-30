@@ -49,8 +49,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena()) 
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.ScreenMoveTarget = NPC.Center + new Vector2(0, -600);
-                    mp.ScreenMoveTime = 650;
+                    Core.Systems.CameraSystem.DoPanAnimation(650, NPC.Center + new Vector2(0, -600));
                 }
 
                 Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/VitricBossAmbient");
@@ -73,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 10;
+                    Core.Systems.CameraSystem.Shake += 10;
 
                     ZoomHandler.SetZoomAnimation(1.1f, 60);
                 }
@@ -94,7 +93,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if(IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 20;
+                    Core.Systems.CameraSystem.Shake += 20;
 
                     ZoomHandler.SetZoomAnimation(1.2f, 60);
                 }
@@ -115,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 25;
+                    Core.Systems.CameraSystem.Shake += 25;
 
                     ZoomHandler.SetZoomAnimation(1.3f, 60);
                 }
@@ -141,7 +140,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 30;
+                    Core.Systems.CameraSystem.Shake += 30;
                 }
 
                 ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
@@ -208,7 +207,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 60;
+                    Core.Systems.CameraSystem.Shake += 60;
                 }
 
                 if (Main.netMode != NetmodeID.Server)
@@ -273,9 +272,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (IsInsideArena())
                 {
-                    StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp2.ScreenMoveTarget = arena.Center();
-                    mp2.ScreenMoveTime = 480;
+                    Core.Systems.CameraSystem.DoPanAnimation(480, arena.Center());
                 }
             }
 
@@ -343,7 +340,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp2.Shake += 40;
+                    Core.Systems.CameraSystem.Shake += 40;
                 }
 
                 for (int k = 0; k < 40; k++)
@@ -415,7 +412,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 if (IsInsideArena())
                 {
                     StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-                    mp.Shake += 60;
+                    Core.Systems.CameraSystem.Shake += 60;
                 }
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);

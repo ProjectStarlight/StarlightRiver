@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     if (Abilities.AbilityHelper.CheckDash(Player, NPC.Hitbox))
                     {
                         if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
-                            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20;
+                            Core.Systems.CameraSystem.Shake += 20;
 
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, NPC.Center);
                         Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -0.5f }, NPC.Center);
@@ -367,7 +367,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42); //boom
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -1f }, NPC.Center); //boom
 
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 17;
+            Core.Systems.CameraSystem.Shake += 17;
 
             if ((state == 3 && Main.masterMode) && Main.netMode != NetmodeID.MultiplayerClient)
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 150);

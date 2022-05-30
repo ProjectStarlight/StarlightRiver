@@ -175,11 +175,7 @@ namespace StarlightRiver.Core
         public override void OnRespawn(Player Player)
         {
             if (Player == Main.LocalPlayer)
-            {
-                CameraSystem.ScreenPanDuration = 0;
-                CameraSystem.ScreenPanPrimaryTarget = Vector2.Zero;
-                CameraSystem.ScreenPanSecondaryTarget = Vector2.Zero;
-            }
+                CameraSystem.Reset();
 
             rotation = 0;
             inTutorial = false;

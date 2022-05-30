@@ -56,9 +56,6 @@ namespace StarlightRiver.Content.NPCs.Town
         {
             EnchantmentMenu.SetActive(NPC.Center + new Vector2(0, -300), this);
             //ZoomHandler.SetZoomAnimation(2.5f, 60);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = NPC.Center + new Vector2(0, -300);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 120;
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = true;
             Main.LocalPlayer.SetTalkNPC(-1);
             enchanting = true;
 

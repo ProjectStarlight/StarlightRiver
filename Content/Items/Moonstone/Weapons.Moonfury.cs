@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
             {
-                player.GetModPlayer<StarlightPlayer>().Shake += 10;
+                Core.Systems.CameraSystem.Shake += 10;
                 int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
                 target.DelBuff(index);
                 Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                         new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
                     }
                 }
-                Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 10;
+                Core.Systems.CameraSystem.Shake += 10;
                 Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
                 stuck = true;

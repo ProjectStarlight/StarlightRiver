@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             {
                 if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 1;
+                    Core.Systems.CameraSystem.Shake += 1;
                     Dust.NewDust(Projectile.Center + new Vector2(-632, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
                     Dust.NewDust(Projectile.Center + new Vector2(72, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
 
@@ -264,11 +264,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 {
                     StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 
-                    if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
+                    if (Main.LocalPlayer.InModBiome(GetInstance<VitricDesertBiome>()))
                     {
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = Projectile.Center + new Vector2(0, -400);
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = Projectile.Center;
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = VitricBackdropLeft.Risetime + 120;
+                        Core.Systems.CameraSystem.DoPanAnimation(VitricBackdropLeft.Risetime + 120, Projectile.Center, Projectile.Center + new Vector2(0, -400));
                     }
                 }
             }
@@ -286,11 +284,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
                 {
                     if (BarrierProgress % 3 == 0)
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 2; //screenshake
+                        Core.Systems.CameraSystem.Shake += 2; //screenshake
 
                     if (BarrierProgress == 119) //hitting the top
                     {
-                        Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 15;
+                        Core.Systems.CameraSystem.Shake += 15;
                         Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Projectile.Center);
                     }
                 }

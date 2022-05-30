@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems
         /// <param name="easeIn"> Changes the easing function for the motion from the player to the primary target. Default is Vector2.Smoothstep </param>
         /// <param name="easeOut"> Changes the easing function for the motion from the primary/secondary target back to the player. Default is Vector2.Smoothstep </param>
         /// <param name="easePan"> Changes the easing function for the motion from primary to secondary target if applicable. Default is Vector2.Lerp </param>
-        public void DoPanAnimation(int duration, Vector2 target, Vector2 secondaryTarget = default, Func<Vector2, Vector2, float, Vector2> easeIn = null, Func<Vector2, Vector2, float, Vector2> easeOut = null, Func<Vector2, Vector2, float, Vector2> easePan = null)
+        public static void DoPanAnimation(int duration, Vector2 target, Vector2 secondaryTarget = default, Func<Vector2, Vector2, float, Vector2> easeIn = null, Func<Vector2, Vector2, float, Vector2> easeOut = null, Func<Vector2, Vector2, float, Vector2> easePan = null)
 		{
             PanModifier.TotalDuration = duration;
             PanModifier.PrimaryTarget = target;
@@ -43,7 +43,7 @@ namespace StarlightRiver.Core.Systems
         /// <param name="duration"> How long it takes the camera to get to it's destination </param>
         /// <param name="target"> Where the camera should end up </param>
         /// <param name="ease"> The easing function the camera should follow on it's journey. Default is Vector2.Smoothstep </param>
-        public void MoveCameraOut(int duration, Vector2 target, Func<Vector2, Vector2, float, Vector2> ease = null)
+        public static void MoveCameraOut(int duration, Vector2 target, Func<Vector2, Vector2, float, Vector2> ease = null)
 		{
             MoveModifier.Timer = 0;
             MoveModifier.MovementDuration = duration;
@@ -57,7 +57,7 @@ namespace StarlightRiver.Core.Systems
         /// </summary>
         /// <param name="duration"> How long it takes for the camera to get back to the player </param>
         /// <param name="ease"> The easing function the camera should follow on it's journey. Default is Vector2.Smoothstep </param>
-        public void ReturnCamera(int duration, Func<Vector2, Vector2, float, Vector2> ease = null)
+        public static void ReturnCamera(int duration, Func<Vector2, Vector2, float, Vector2> ease = null)
         {
             MoveModifier.Timer = 0;
             MoveModifier.MovementDuration = duration;
@@ -71,6 +71,7 @@ namespace StarlightRiver.Core.Systems
                 Shake = (int)(120 * ModContent.GetInstance<Configs.GraphicsConfig>().ScreenshakeMult);
 
             PanModifier.PassiveUpdate();
+            MoveModifier.PassiveUpdate();
         }
 
 		public override void ModifyScreenPosition()
@@ -86,11 +87,17 @@ namespace StarlightRiver.Core.Systems
                 Shake--;
         }
 
-		public override void OnWorldLoad()
+        public static void Reset()
 		{
             Shake = 0;
 
             PanModifier.Reset();
+            MoveModifier.Reset();
+        }
+
+		public override void OnWorldLoad()
+		{
+            Reset();
         }
 
 		public override void Unload()

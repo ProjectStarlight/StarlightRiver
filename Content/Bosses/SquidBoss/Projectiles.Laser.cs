@@ -90,8 +90,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     Dust.NewDustPerfect(endPos, ModContent.DustType<Dusts.ColoredSpark>(), vel, 0, color, Main.rand.NextFloat(1.2f, 2.6f));
                 }
 
-                if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake < 20)
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)Math.Max(0, 3 - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.005f);
+                if (Core.Systems.CameraSystem.Shake < 20)
+                    Core.Systems.CameraSystem.Shake += (int)Math.Max(0, 3 - Math.Abs(Main.LocalPlayer.Center.X - endPos.X) * 0.005f);
             }
 
             foreach (Player Player in Main.player.Where(n => n.active && n.Hitbox.Intersects(rect)))

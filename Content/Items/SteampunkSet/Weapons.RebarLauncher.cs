@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			Helper.PlayPitched("Guns/RebarLauncher", 0.6f, 0);
-			player.GetModPlayer<StarlightPlayer>().Shake += 6;
+			Core.Systems.CameraSystem.Shake += 6;
 			direction = velocity;
 			position += velocity * 0.9f;
 		}

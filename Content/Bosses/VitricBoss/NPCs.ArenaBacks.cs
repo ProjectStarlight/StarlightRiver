@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (Timer == Risetime - 1) //hitting the top
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 18;
+                    Core.Systems.CameraSystem.Shake += 18;
                     Helper.PlayPitched("ArenaHit", 0.2f, 0, NPC.Center);
                 }
 
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     State = 2;
 
                 if (Timer % 10 == 0)
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += Timer < 100 ? 3 : 2;
+                    Core.Systems.CameraSystem.Shake += Timer < 100 ? 3 : 2;
 
                 for (int k = 0; k < 18; k++)
                     Dust.NewDust(NPC.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
