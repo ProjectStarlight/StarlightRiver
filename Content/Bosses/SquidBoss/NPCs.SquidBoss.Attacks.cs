@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             Dust.NewDustPerfect(tentacle.NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 1, new Color(255, Main.rand.Next(0, 155), 0), 0.5f);
                     }
 
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 20; //TODO: Find the right player instances
+                    Core.Systems.CameraSystem.Shake += 20; //TODO: Find the right player instances
 
                     Helpers.Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
                 }

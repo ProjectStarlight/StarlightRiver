@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Explode()
 		{
-			owner.GetModPlayer<StarlightPlayer>().Shake += 8;
+			Core.Systems.CameraSystem.Shake += 8;
 
 			Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));

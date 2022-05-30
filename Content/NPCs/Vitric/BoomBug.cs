@@ -171,8 +171,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 var mp = Player.GetModPlayer<StarlightPlayer>();
 
-                if (mp.Shake < 60)
-                    mp.Shake += (int)Math.Max(0, 20 - Vector2.Distance(NPC.Center, Player.Center) / 8f);
+                if (Core.Systems.CameraSystem.Shake < 60)
+                    Core.Systems.CameraSystem.Shake += (int)Math.Max(0, 20 - Vector2.Distance(NPC.Center, Player.Center) / 8f);
             }
         }
 

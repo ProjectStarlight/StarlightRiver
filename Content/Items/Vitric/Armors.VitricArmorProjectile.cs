@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-            Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 5;
+            Core.Systems.CameraSystem.Shake += 5;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

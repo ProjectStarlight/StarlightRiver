@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
 					landed = true;
 					Projectile.timeLeft = 700;
-					owner.GetModPlayer<StarlightPlayer>().Shake += 12;
+					Core.Systems.CameraSystem.Shake += 12;
 				}
 				Projectile.extraUpdates = 0;
 				Projectile.velocity = Vector2.Zero;

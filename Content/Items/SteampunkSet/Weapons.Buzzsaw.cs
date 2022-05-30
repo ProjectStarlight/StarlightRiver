@@ -465,7 +465,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     proj.spriteDirection = -spriteDirection;
                 }
 
-                Player.GetModPlayer<StarlightPlayer>().Shake += 6;
+                Core.Systems.CameraSystem.Shake += 6;
             }
 
 
