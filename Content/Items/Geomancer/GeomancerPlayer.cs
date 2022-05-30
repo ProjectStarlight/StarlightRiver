@@ -53,8 +53,8 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         static Item rainbowDye;
         static bool rainbowDyeInitialized = false;
-        static int shaderValue = 0;
-        static int shaderValue2 = 0;
+        public static int shaderValue = 0;
+        public static int shaderValue2 = 0;
 
 
         public override void Load()
@@ -172,101 +172,6 @@ namespace StarlightRiver.Content.Items.Geomancer
                 allTimer = 150;
             }*/
         }
-
-
-        //TODO: port this over to the IArmorLayerDrawable system
-        //public override void ModifyDrawLayers(List<PlayerLayer> layers) //TODO: Port this over to new system
-        //{
-        //    if (SetBonusActive && storedGem != StoredGem.None)
-        //    {
-        //        if (Player.armor[10].type == 0)
-        //        {
-        //            layers.Insert(layers.FindIndex(x => x.Name == "Head" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemHead",
-        //               delegate (PlayerDrawSet info)
-        //               {
-        //                   DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
-        //               }));
-        //        }
-
-        //        if (Player.armor[11].type == 0)
-        //        {
-        //            layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemBody",
-        //               delegate (PlayerDrawSet info)
-        //               {
-        //                   DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
-        //               }));
-
-        //            layers.Insert(layers.FindIndex(x => x.Name == "Body" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemBody2",
-        //               delegate (PlayerDrawSet info)
-        //               {
-        //                   DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
-        //               }));
-        //        }
-
-        //        if (Player.armor[12].type == 0)
-        //        {
-        //            layers.Insert(layers.FindIndex(x => x.Name == "Legs" && x.Mod == "Terraria") + 1, new PlayerLayer(Mod.Name, "GemLegs",
-        //                delegate (PlayerDrawSet info)
-        //                {
-        //                    DrawGemArmor(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.legRotation);
-        //                }));
-        //        }
-        //    }
-        //}
-
-        //public void DrawGemArmor(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation) //TODO: Port this over to new system
-        //{
-        //    Player armorOwner = info.drawPlayer;
-
-        //    Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - Player.gfxOffY);
-        //    float timerVar = (float)((Main.timeForVisualEffects * 0.05f) % 2.4f / 2.4f) * 6.28f;
-        //    float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
-
-        //    Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-
-        //    Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
-        //    Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
-
-        //    DrawData value = new DrawData(
-        //                texture,
-        //                new Vector2((int)drawPos.X, (int)drawPos.Y),
-        //                frame,
-        //                GetArmorColor(armorOwner),
-        //                rotation,
-        //                new Vector2(frame.Width / 2, frame.Height / 2),
-        //                1,
-        //                armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-        //                0
-        //            )
-        //    {
-        //        shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue : 0
-        //        shader = shaderValue
-        //    };
-
-        //    Main.playerDrawData.Add(value);
-
-        //    /*for (float i = 0; i < 6.28f; i += 1.57f)
-        //    {
-        //        Vector2 offset = (i.ToRotationVector2() * 2 * timer);
-        //        DrawData value2 = new DrawData(
-        //                texture,
-        //                new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
-        //                frame,
-        //                GetArmorColor(armorOwner) * 0.25f,
-        //                rotation,
-        //                new Vector2(frame.Width / 2, frame.Height / 2),
-        //                1,
-        //                armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
-        //                0
-        //            )
-        //        {
-        //            shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? shaderValue2: 0
-        //            shader = shaderValue2
-        //        };
-
-        //        Main.playerDrawData.Add(value2);
-        //    }*/
-        //}
 
 
         public override void PreUpdate()
