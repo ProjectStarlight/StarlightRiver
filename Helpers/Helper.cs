@@ -486,6 +486,10 @@ namespace StarlightRiver.Helpers
             return MoltenGlowc;
         }
 
+        public static float RotationDifference(float rotTo, float rotFrom)
+        {
+            return ((((rotTo - rotFrom) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+        }
     }
 }
 
