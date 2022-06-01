@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.GUI
 		private void DrawOverhead(Player player, SpriteBatch spriteBatch)
         {
             if (player != Main.LocalPlayer)
-                return;
+                return;//a
 
             AbilityHandler mp = player.GetHandler();
             Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48 + Vector2.UnitX * 4;
