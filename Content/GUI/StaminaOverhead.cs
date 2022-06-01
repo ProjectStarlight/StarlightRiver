@@ -33,6 +33,9 @@ namespace StarlightRiver.Content.GUI
 
             AbilityHandler mp = player.GetHandler();
             Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48;
+            if (mp.StaminaMax < 3)
+                basepos.X += 4;
+            basepos.Y += player.gfxOffY;
 
             var flagTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFlag").Value;
             var emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmallEmpty").Value;
