@@ -3,11 +3,16 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Graphics.Effects;
+using System.Collections.Generic;
+
+using Terraria.Audio;
 
 using System;
 using static Terraria.ModLoader.ModContent;
@@ -27,12 +32,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int bowFrame = 0;
         private int bowFrameCounter = 0;
 
-        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 0);
-        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 0);
+        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 2);
+        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 2);
 
-        private Vector2 headPos => NPC.Center + new Vector2(2 * NPC.spriteDirection, -5);
+        private Vector2 headPos => NPC.Center + new Vector2(4 * NPC.spriteDirection, -2);
 
-        private Vector2 bowPos => bowArmPos + ((17 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2());
+        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2());
         private Vector2 bowHalfPos => bowArmPos + (5 * bowArmRotation.ToRotationVector2());
 
         float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
@@ -54,11 +59,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.damage = 10;
             NPC.defense = 5;
             NPC.lifeMax = 250;
-            NPC.HitSound = SoundID.NPCHit42;
-            NPC.DeathSound = SoundID.NPCDeath1;
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
             NPC.aiStyle = 3;
+            NPC.HitSound = SoundID.Item27 with
+            {
+                Pitch = -0.3f
+            };
+            NPC.DeathSound = SoundID.Shatter;
         }
 
         public override bool PreAI()
@@ -69,7 +77,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
 
-            NPC.spriteDirection = Math.Sign(direction.X);
+            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
 
             bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
 
@@ -90,6 +98,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 {
                     if (bowFrameCounter > 25)
                     {
+                        SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
                         Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
                         bowFrameCounter = 0;
                         bowFrame++;
@@ -113,7 +122,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
-            
+            if (aiCounter % 300 < 10 && NPC.velocity.Y < 0)
+                NPC.velocity.Y = 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -165,6 +175,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + Name;
 
+        private List<Vector2> cache;
+        private Trail trail;
+
         public override void SetDefaults()
         {
             Projectile.width = 12;
@@ -183,6 +196,93 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Glass Arrow");
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Main.spriteBatch.End();
+            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
+            effect.Parameters["repeats"].SetValue(1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+
+            trail?.Render(effect);
+
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+
+            trail?.Render(effect);
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+            return false;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            /*for (int j = 0; j < 8; j++)
+            {
+                float lerper = j / 8f;
+
+                Vector2 dir = Main.rand.NextVector2Circular(5, 5);
+                Dust.NewDustPerfect(Projectile.Center + dir - (((Projectile.rotation + 1.57f).ToRotationVector2() * 15) * lerper), DustType<Dusts.GlassGravity>(), dir * 0.3f);
+            }*/
+            SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(4);
+                int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+                Main.dust[dustID].noGravity = false;
+            }
+        }
+
+        public override void AI()
+        {
+            if (!Main.dedServ)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
+            Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
+        }
+
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                for (int i = 0; i < 13; i++)
+                {
+                    cache.Add(Projectile.Center);
+                }
+            }
+
+            cache.Add(Projectile.Center);
+
+            while (cache.Count > 13)
+            {
+                cache.RemoveAt(0);
+            }
+
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor =>
+            {
+                return new Color(255, 100, 65) * 0.5f * factor.X;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
     }
 }
