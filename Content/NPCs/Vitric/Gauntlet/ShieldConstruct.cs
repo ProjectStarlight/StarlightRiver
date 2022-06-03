@@ -16,13 +16,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class ShieldConstruct : ModNPC
+    internal class ShieldConstruct : ModNPC, IGauntletNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
         private Player target => Main.player[NPC.target];
 
-        private bool guarding => aiCounter > 260;
+        public bool guarding => aiCounter > 260;
 
         private int aiCounter = 0;
 
@@ -43,10 +43,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
             NPC.aiStyle = 3;
-            NPC.HitSound = SoundID.Item27 with
-            {
-                Pitch = -0.3f
-            };
             NPC.DeathSound = SoundID.Shatter;
             NPC.behindTiles = true;
         }
@@ -55,7 +51,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.TargetClosest(false);
 
-            aiCounter++;
+            if (aiCounter < 300 || aiCounter >= 400)
+                aiCounter++;
+
             aiCounter %= 500;
             if (aiCounter > 200)
             {
@@ -76,6 +74,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     }
                     if (aiCounter == 260)
                     {
+                        Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
                         Core.Systems.CameraSystem.Shake += 4;
                         for (int i = 0; i < 10; i++)
                         {
@@ -101,6 +100,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         lerper = EaseFunction.EaseQuinticInOut.Ease((aiCounter - 470) / 30f);
                         shieldOffset = up * (1 - lerper);
                     }
+                    if (aiCounter == 421)
+                    {
+                        Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
+                    }
                     if (aiCounter == 464)
                     {
                         Core.Systems.CameraSystem.Shake += 2;
@@ -113,7 +116,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
 
 
-                if (guarding && Math.Sign(NPC.Center.DirectionTo(target.Center).X) != NPC.spriteDirection && aiCounter < 400)
+                if (guarding && (Math.Sign(NPC.Center.DirectionTo(target.Center).X) != NPC.spriteDirection || NPC.Distance(target.Center) > 350) && aiCounter < 400)
                     aiCounter = 400;
 
                 NPC.velocity.X *= 0.9f;
@@ -135,6 +138,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             SpriteEffects effects = SpriteEffects.None;
 
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             Texture2D shieldTex = ModContent.Request<Texture2D>(Texture + "_Shield").Value;
             if (NPC.spriteDirection != 1)
             {
@@ -142,26 +146,49 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 //bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
             }
             Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, Color.White, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
             return false;
         }
 
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
-            if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection && guarding)
-            {
+            if (guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
                 knockback = 0f;
-                damage = 1;
+            if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
+            {
+                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
+                if (guarding)
+                {
+                    damage = 1;
+                }
+                else
+                {
+                    damage = (int)(damage * 0.4f);
+                }
             }
+            else
+                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
         }
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (Math.Sign(NPC.Center.DirectionTo(projectile.Center).X) == NPC.spriteDirection && guarding)
-            {
+            if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
                 knockback = 0f;
-                damage = 1;
+            if (Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
+            {
+                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
+                if (guarding)
+                {
+                    damage = 1;
+                }
+                else
+                {
+                    damage = (int)(damage * 0.4f);
+                }
             }
+            else
+                SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
         }
     }
 }

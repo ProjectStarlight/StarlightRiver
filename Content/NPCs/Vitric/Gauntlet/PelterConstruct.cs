@@ -15,11 +15,12 @@ using System.Collections.Generic;
 using Terraria.Audio;
 
 using System;
+using System.Linq;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class PelterConstruct : ModNPC
+    internal class PelterConstruct : ModNPC, IGauntletNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "PelterConstruct";
 
@@ -29,16 +30,25 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int aiCounter = 0;
 
+        private float enemyRotation = 0f;
+
         private int bowFrame = 0;
         private int bowFrameCounter = 0;
 
-        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 2);
-        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 2);
+        private int bodyFrame;
+        private int bodyFrameCounter = 0;
 
-        private Vector2 headPos => NPC.Center + new Vector2(4 * NPC.spriteDirection, -2);
+        private bool doingCombo = false;
+        private bool comboJumped = false;
+        private bool comboFiring = false;
+        private NPC partner = default;
 
-        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2());
-        private Vector2 bowHalfPos => bowArmPos + (5 * bowArmRotation.ToRotationVector2());
+        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
+        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
+
+        private Vector2 headPos => NPC.Center + new Vector2(4 * NPC.spriteDirection, -2).RotatedBy(NPC.rotation);
+
+        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
 
         float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
 
@@ -50,6 +60,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pelter Construct");
+            Main.npcFrameCount[NPC.type] = 9;
         }
 
         public override void SetDefaults()
@@ -71,6 +82,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreAI()
         {
+            enemyRotation *= 0.9f;
+            if (Math.Abs(enemyRotation) < 0.4f)
+                enemyRotation = 0;
+            NPC.rotation = enemyRotation;
             NPC.TargetClosest(true);
             Vector2 direction = bowArmPos.DirectionTo(target.Center);
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
@@ -90,8 +105,79 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
             }
 
-            aiCounter++;
-            if (aiCounter % 300 > 200)
+            var tempPartner = Main.npc.Where(x =>
+            x.active &&
+            x.type == ModContent.NPCType<ShieldConstruct>() &&
+            (x.ModNPC as ShieldConstruct).guarding &&
+            x.spriteDirection == NPC.spriteDirection &&
+            NPC.Distance(x.Center) > 50 &&
+            NPC.Distance(x.Center) < 600 &&
+            Math.Sign(x.Center.X - NPC.Center.X) == NPC.spriteDirection).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
+
+            if (tempPartner != default && !doingCombo)
+            {
+                doingCombo = true;
+                partner = tempPartner;
+            }
+
+            if (doingCombo)
+            {
+                if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
+                {
+                    if (NPC.velocity.Y == 0)
+                    {
+                        bodyFrameCounter++;
+                        if (bodyFrameCounter % 4 == 0)
+                            bodyFrame++;
+                        bodyFrame %= 8;
+                    }
+                    else
+                        bodyFrame = 8;
+
+                    if (Math.Abs(NPC.Center.X - partner.Center.X) < 100 && !comboJumped)
+                    {
+                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top, 0.1f, 100, 300);
+                        comboJumped = true;
+                    }
+                    if (comboJumped)
+                    {
+                        NPC.velocity.X *= 1.05f;
+                        if (NPC.collideY)
+                        {
+                            comboJumped = false;
+                            comboFiring = false;
+                            doingCombo = false;
+                        }
+                        else
+                        {
+                            if (NPC.velocity.Y > 0 && NPC.Center.Y > partner.Top.Y && !comboFiring)
+                            {
+                                aiCounter = 299;
+                                NPC.velocity.X *= -1;
+                                NPC.velocity.Y = -9;
+                                enemyRotation = 6.28f * NPC.spriteDirection;
+                                comboFiring = true;
+                            }
+                        }
+                    }
+                    if (comboFiring)
+                    {
+                        NPC.velocity.X *= 1.04f;
+                        bowFrameCounter++;
+                    }
+                    else
+                    {
+                        NPC.velocity.X += NPC.spriteDirection * 0.1f;
+                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
+                    }
+                }
+                else
+                    doingCombo = false;
+            }
+            else
+                aiCounter++;
+
+            if (aiCounter % 300 > 200 && (!doingCombo || comboFiring))
             {
                 bowFrameCounter++;
                 if (bowFrame == 0)
@@ -113,8 +199,24 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bowFrame %= BOWFRAMES;
 
                 NPC.velocity.X *= 0.9f;
+                bodyFrame = 8;
                 return false;
             }
+
+            if (!doingCombo)
+            {
+                if (NPC.velocity.Y == 0)
+                {
+                    bodyFrameCounter++;
+                    if (bodyFrameCounter % 4 == 0)
+                        bodyFrame++;
+                    bodyFrame %= 8;
+                }
+                else
+                    bodyFrame = 8;
+            }
+            else
+                return false;
             bowFrame = 0;
             bowFrameCounter = 0;
             return true;
@@ -132,8 +234,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             SpriteEffects bowEffects = SpriteEffects.None;
 
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
             Texture2D armTex = ModContent.Request<Texture2D>(Texture + "_Arms").Value;
+            Texture2D armGlowTex = ModContent.Request<Texture2D>(Texture + "_Arms_Glow").Value;
 
             Texture2D headTex = ModContent.Request<Texture2D>(Texture + "_Head").Value;
 
@@ -145,6 +249,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int bowFrameHeight = bowTex.Height / BOWFRAMES;
             Rectangle bowFrameBox = new Rectangle(0, bowFrame * bowFrameHeight, bowTex.Width, bowFrameHeight);
+
+            int mainFrameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
+            Rectangle mainFrameBox = new Rectangle(0, bodyFrame * mainFrameHeight, mainTex.Width, mainFrameHeight);
 
             Vector2 backArmOrigin = new Vector2(3, 7);
             Vector2 bowArmOrigin = new Vector2(1, 5);
@@ -160,13 +267,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bowArmOrigin = new Vector2(bowArmOrigin.X, armFrameSize - bowArmOrigin.Y);
                 //bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
             }
-            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, null, drawColor, 0f, mainTex.Size() / 2, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(headTex, headPos - screenPos, null, drawColor, headRotation, headOrigin, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(armTex, bowArmPos - screenPos, backFrame, drawColor, bowArmRotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(bowTex, bowPos - screenPos, bowFrameBox, drawColor, bowRotation, bowOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(headTex, headPos - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(armTex, backArmPos - screenPos, frontFrame, drawColor, backArmRotation, backArmOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(armTex, bowArmPos - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(armGlowTex, bowArmPos - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+
+            Main.spriteBatch.Draw(bowTex, bowPos - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
+
+            Main.spriteBatch.Draw(armTex, backArmPos - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(armGlowTex, backArmPos - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
             return false;
         }
     }
