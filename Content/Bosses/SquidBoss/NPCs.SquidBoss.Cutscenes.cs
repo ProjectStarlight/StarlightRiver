@@ -40,11 +40,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 float progress = Helper.SwoopEase((GlobalTimer - 300) / 100f);
                 NPC.Center = Vector2.Lerp(spawnPoint, spawnPoint + new Vector2(0, -600), progress); //rise up from the ground
+
+                if (GlobalTimer == 306)
+                    for(int k = 0; k < 40; k++)
+					{
+                        var rand = Main.rand.NextFloat(6.28f);
+                        float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.01f * 0.2f + rand);
+                        float cos = (float)Math.Cos(Main.GameUpdateCount * 0.01f + rand);
+                        var color = new Color(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.14f);
+
+                        Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-30, 30), 0), DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.57f) * Main.rand.NextFloat(5, 8), 0, color, Main.rand.NextFloat(1, 2));
+					}
             }
 
             if (GlobalTimer == 100)
             {
-                string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "The Venerated";
+                string title = Main.rand.NextBool(10000)? "Jammed Mod" : "The Venerated";
                 UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 440);
                 Core.Systems.CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
             }
