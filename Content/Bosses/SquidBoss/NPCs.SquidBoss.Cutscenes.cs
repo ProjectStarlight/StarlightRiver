@@ -26,6 +26,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (GlobalTimer > 1 && GlobalTimer < 100)
             {
+                NPC.Center = spawnPoint + new Vector2(0, 20);
+
                 float progress = Helper.BezierEase(GlobalTimer / 100f);
                 Arena.FakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
             }
@@ -39,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (GlobalTimer > 300 && GlobalTimer < 400)
             {
                 float progress = Helper.SwoopEase((GlobalTimer - 300) / 100f);
-                NPC.Center = Vector2.Lerp(spawnPoint, spawnPoint + new Vector2(0, -600), progress); //rise up from the ground
+                NPC.Center = Vector2.Lerp(spawnPoint + new Vector2(0, 20), spawnPoint + new Vector2(0, -600), progress); //rise up from the ground
 
                 if (GlobalTimer == 306)
                     for(int k = 0; k < 40; k++)
