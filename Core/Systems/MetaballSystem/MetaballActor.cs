@@ -87,8 +87,11 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void DrawToTarget(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
 		{
-			if (!Active)
+			if (Main.gameMenu || !Active)
 				return;
+
+			if (Target is null || Target2 is null)
+				ResizeTarget(Main.screenWidth, Main.screenHeight);
 
 			graphicsDevice.SetRenderTarget(Target);
 			graphicsDevice.Clear(Color.Transparent);
@@ -99,9 +102,17 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 			spriteBatch.End();
 
-			graphicsDevice.SetRenderTarget(null);
-
 			graphicsDevice.SetRenderTarget(Target2);
+			graphicsDevice.Clear(Color.Transparent);
+
+			spriteBatch.Begin();
+
+			if(PreDraw(spriteBatch, Target))
+				spriteBatch.Draw(Target, position: Vector2.Zero, color: Color.White);
+
+			spriteBatch.End();
+
+			graphicsDevice.SetRenderTarget(Target);
 			graphicsDevice.Clear(Color.Transparent);
 
 			Effect metaballEdgeDetection = Filters.Scene["MetaballEdgeDetection"].GetShader().Shader;
@@ -113,8 +124,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 			spriteBatch.Begin(default, default, default, default, default, metaballEdgeDetection);
 
-			if (PreDraw(spriteBatch, Target))
-				spriteBatch.Draw(Target, position: Vector2.Zero, color: Color.White);
+			spriteBatch.Draw(Target2, position: Vector2.Zero, color: Color.White);
 
 			spriteBatch.End();
 
@@ -123,14 +133,17 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void DrawTarget(SpriteBatch spriteBatch)
 		{
-			if (!Active)
+			if (Main.gameMenu || !Active)
 				return;
+
+			if (Target is null || Target2 is null)
+				ResizeTarget(Main.screenWidth, Main.screenHeight);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			if(PostDraw(spriteBatch, Target2))
-				spriteBatch.Draw(Target2, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+			if(PostDraw(spriteBatch, Target))
+				spriteBatch.Draw(Target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

@@ -49,7 +49,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     if (color.a == 0)
         return float4(color.rgb, 0);
     
-    return float4(color.rgb, 0);
+    return color;
 }
 
 technique SpriteDrawing

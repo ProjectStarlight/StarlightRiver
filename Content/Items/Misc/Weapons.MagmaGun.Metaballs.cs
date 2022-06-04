@@ -69,11 +69,6 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Begin();
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Texture2D target)
-		{
-			return true;
-		}
-
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
 			Effect magmaNoise = Filters.Scene["MagmaNoise"].GetShader().Shader;

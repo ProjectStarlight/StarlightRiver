@@ -240,6 +240,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Helpers.Helper.PlayPitched("Magic/WaterWoosh", 1, 0, NPC.Center);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X, Arena.WaterLevelWorld -41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
+
+                for (int k = 0; k < 10; k++)
+                {
+                    var rand = Main.rand.NextFloat(6.28f);
+                    float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.01f * 0.2f + rand);
+                    float cos = (float)Math.Cos(Main.GameUpdateCount * 0.01f + rand);
+                    var color = new Color(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.14f);
+
+                    Dust.NewDustPerfect(new Vector2(NPC.Center.X + Main.rand.Next(-30, 30), Arena.WaterLevelWorld), DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.57f) * Main.rand.NextFloat(2, 4), 0, color, Main.rand.NextFloat(0.65f, 0.95f));
+                }
             }
 
             Timer++;

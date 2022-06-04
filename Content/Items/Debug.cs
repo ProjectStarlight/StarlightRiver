@@ -45,6 +45,8 @@ namespace StarlightRiver.Content.Items
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
             player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
+
+            Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
         }
 
 		public override bool? UseItem(Player player)

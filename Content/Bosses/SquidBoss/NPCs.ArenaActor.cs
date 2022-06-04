@@ -89,11 +89,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 Vector2 posDust = NPC.Center + new Vector2(-500 + Main.rand.NextFloat(-25, 25), -2280 + heightDust);
                 Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255));
-                Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraFast>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(15), 0, new Color(150, 200, 255));
+                Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(4), 0, new Color(150, 200, 255));
 
                 posDust = NPC.Center + new Vector2(500 + Main.rand.NextFloat(-25, 25), -2280 + heightDust);
                 Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255));
-                Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraFast>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(15), 0, new Color(150, 200, 255));
+                Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(4), 0, new Color(150, 200, 255));
             }
 
             if (NPC.ai[0] < 150) 
@@ -213,18 +213,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawWater(SpriteBatch spriteBatch)
         {
-            if (Main.gameMenu) //bootleg solution to bootleg problems
-                return;
-
             Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "CathedralWater").Value;
             Vector2 pos = NPC.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
             var source = new Rectangle(0, tex.Height - (int)NPC.ai[0] + 5 * 16, tex.Width, (int)NPC.ai[0] - 5 * 16);
 
-            Vector2 pos2 = NPC.Center + new Vector2(-840, 35 * 16) + new Vector2(0, -NPC.ai[0]) - Main.screenPosition;
-            var source2 = new Rectangle(0, tex.Height - (int)NPC.ai[0] + 5 * 16, tex.Width, 2);
-
-            LightingBufferRenderer.DrawWithLighting(pos + source.TopLeft(), tex, source, new Color(200, 230, 255) * 0.4f);
-            LightingBufferRenderer.DrawWithLighting(pos2, tex, source2, Color.White * 0.8f);
+            spriteBatch.Draw(tex, (pos + source.TopLeft()) * 0.5f, source, new Color(0.4f, 1, 1), 0, default, 0.5f, 0, 0);
         }
 
         private void DrawShine(Rectangle target)
