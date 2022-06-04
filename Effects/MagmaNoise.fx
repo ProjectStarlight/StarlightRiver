@@ -30,7 +30,7 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     
     if (color.g == codedColor.g)
     {
-        float4 retColor = lerp(color,newColor,lerper);
+        float4 retColor = lerp(float4(1.0, 0.75, 0.12, 1.0), newColor, lerper);
         return retColor;
     }
     
