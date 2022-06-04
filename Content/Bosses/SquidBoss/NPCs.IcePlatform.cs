@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     NPC.rotation = (float)System.Math.Sin((Main.GameUpdateCount + NPC.Center.X) * 0.04f) * 0.05f;
 
-                    NPC.position.Y += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 10;
+                    NPC.position.Y += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 4;
                     NPC.rotation += (float)System.Math.Sin(bobTime / 30f * 6.28f * 2) * ((30 - bobTime) / 30f) * 0.05f;
                 }
             }
