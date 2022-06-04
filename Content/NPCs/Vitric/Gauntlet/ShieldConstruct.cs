@@ -22,6 +22,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
+
+        public int bounceCooldown = 0;
         public bool guarding => aiCounter > 260;
 
         private int aiCounter = 0;
@@ -50,7 +52,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override bool PreAI()
         {
             NPC.TargetClosest(false);
-
+            if (bounceCooldown > 0)
+                bounceCooldown--;
             if (aiCounter < 300 || aiCounter >= 400)
                 aiCounter++;
 

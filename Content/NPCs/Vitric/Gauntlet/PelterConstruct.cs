@@ -12,6 +12,9 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using System.Collections.Generic;
 
+using Terraria.DataStructures;
+using Terraria.GameContent;
+
 using Terraria.Audio;
 
 using System;
@@ -57,6 +60,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         float headRotation = 0f;
 
+        private int cooldownLength = 500;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pelter Construct");
@@ -80,6 +85,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.DeathSound = SoundID.Shatter;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            cooldownLength = Main.rand.Next(450,550);
+        }
+
         public override bool PreAI()
         {
             enemyRotation *= 0.9f;
@@ -87,7 +97,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 enemyRotation = 0;
             NPC.rotation = enemyRotation;
             NPC.TargetClosest(true);
-            Vector2 direction = bowArmPos.DirectionTo(target.Center);
+            Vector2 direction = bowArmPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
             bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
@@ -109,6 +119,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             x.active &&
             x.type == ModContent.NPCType<ShieldConstruct>() &&
             (x.ModNPC as ShieldConstruct).guarding &&
+            (x.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
             x.spriteDirection == NPC.spriteDirection &&
             NPC.Distance(x.Center) > 50 &&
             NPC.Distance(x.Center) < 600 &&
@@ -118,6 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 doingCombo = true;
                 partner = tempPartner;
+                (partner.ModNPC as ShieldConstruct).bounceCooldown = cooldownLength;
             }
 
             if (doingCombo)
@@ -127,8 +139,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     if (NPC.velocity.Y == 0)
                     {
                         bodyFrameCounter++;
-                        if (bodyFrameCounter % 4 == 0)
+                        if (bodyFrameCounter > 5 - (int)((Math.Abs(NPC.velocity.X)) / 2))
+                        {
+                            bodyFrameCounter = 0;
                             bodyFrame++;
+                        }
                         bodyFrame %= 8;
                     }
                     else
@@ -136,13 +151,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     if (Math.Abs(NPC.Center.X - partner.Center.X) < 100 && !comboJumped)
                     {
-                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top, 0.1f, 100, 300);
+                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 100, 300);
                         comboJumped = true;
                     }
                     if (comboJumped)
                     {
                         NPC.velocity.X *= 1.05f;
-                        if (NPC.collideY)
+                        if (NPC.collideY && NPC.velocity.Y == 0)
                         {
                             comboJumped = false;
                             comboFiring = false;
@@ -150,8 +165,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         }
                         else
                         {
-                            if (NPC.velocity.Y > 0 && NPC.Center.Y > partner.Top.Y && !comboFiring)
+                            if (NPC.velocity.Y > 0 && NPC.Center.Y > (partner.Top.Y + 5) && !comboFiring)
                             {
+                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+                                ring.extraUpdates = 0;
                                 aiCounter = 299;
                                 NPC.velocity.X *= -1;
                                 NPC.velocity.Y = -9;
@@ -185,7 +202,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     if (bowFrameCounter > 25)
                     {
                         SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                        if (comboFiring)
+                        {
+                            for (int i = -1; i < 1.1f; i++)
+                                Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy(((target.Center.X - NPC.Center.X) * -0.0003f) + (i * 0.3f)) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                        }
+                        else
+                            Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
                         bowFrameCounter = 0;
                         bowFrame++;
                     }
@@ -208,8 +231,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 if (NPC.velocity.Y == 0)
                 {
                     bodyFrameCounter++;
-                    if (bodyFrameCounter % 4 == 0)
+                    if (bodyFrameCounter > 5 - (int)((Math.Abs(NPC.velocity.X)) / 2))
+                    {
+                        bodyFrameCounter = 0;
                         bodyFrame++;
+                    }
                     bodyFrame %= 8;
                 }
                 else
@@ -350,9 +376,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
             for (int i = 0; i < 3; i++)
             {
-                Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(4);
-                int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
-                Main.dust[dustID].noGravity = false;
+                Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
+                /*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+                Main.dust[dustID].noGravity = false;*/
+
+                Gore.NewGoreDirect(new EntitySource_Misc("Spawned from magma gun"), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
             }
         }
 
