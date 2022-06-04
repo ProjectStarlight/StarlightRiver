@@ -101,7 +101,7 @@ namespace StarlightRiver.Core.Loaders
     public class LoaderTileItem : QuickTileItem
 	{
         public LoaderTileItem() { }
-
+        protected override bool CloneNewInstances => true;
         public LoaderTileItem(string internalName, string name, string tooltip, string placetype, int rare = ItemRarityID.White, string texturePath = null, bool pathHasName = false, int ItemValue = 0) : 
             base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue) { }
 	}
