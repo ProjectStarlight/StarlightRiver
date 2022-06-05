@@ -65,12 +65,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             if (Parent != null)
             {
-                Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
-                Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
-                Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
-                Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
-                Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
-
                 Color glowColor;
                 Color auroraColor;
 
@@ -103,113 +97,130 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (NPCLayer == 0)
-                {
-                    var extraLength = (int)(Math.Abs(OffsetFromParentBody) * 0.15f);
-                    var maxSegments = DownwardDrawDistance + extraLength;
-
-                    if (DrawPortal) 
-                        maxSegments = Math.Min(maxSegments, 40 + extraLength);
-
-                    for (int k = 0; k <= maxSegments; k++)
-                    {
-                        var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + k * 10) - Main.screenPosition;
-                        pos.X += OffsetFromParentBody * k * 0.03f;
-
-                        var posStill = pos;
-                        pos.X += (float)Math.Sin(Timer / 20f + k * 0.1f) * k * 0.5f;                    
-
-                        var scale = 1 + Math.Max(0, (k - maxSegments + 10) / 20f);
-                        var lightColor = Lighting.GetColor((int)(pos.X + Main.screenPosition.X) / 16, (int)(pos.Y + Main.screenPosition.Y) / 16) * 1.1f * Parent.Opacity;
-                        lightColor.A = 255;
-
-                        spriteBatch.Draw(body, pos, null, lightColor, 0, body.Size() / 2, scale, 0, 0);
-
-                        if (k == maxSegments)
-                        {
-                            if (DrawPortal && maxSegments >= 40 + extraLength)
-                            {
-                                var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-                                var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-                                var target = new Rectangle((int)posStill.X, (int)posStill.Y, (int)(0.8f * Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width))), (int)(portal.Height * 0.6f));
-                                var target2 = new Rectangle((int)posStill.X, (int)posStill.Y + 6, (int)(Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)) * 0.8f), (int)(portalGlow.Height * 0.6f));
-                                spriteBatch.Draw(portal, target, null, auroraColor * 0.6f, 0, portal.Size() / 2, 0, 0);
-
-                                var portalGlowColor = auroraColor;
-                                portalGlowColor.A = 0;
-
-                                spriteBatch.Draw(portalGlow, target2, null, portalGlowColor * 0.8f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
-                            }
-                            else
-                            {
-                                var topOriginBody = new Vector2(top.Width / 2, top.Height);
-                                var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
-
-                                spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
-                                spriteBatch.Draw(glow, pos, glow.Frame(), glowColor * 0.325f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
-
-                                var glow2Color = glowColor;
-                                glow2Color.A = 0;
-                                spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
-                            }
-                        }
-                    }
-                }
+                    DrawLowerLayer(spriteBatch, auroraColor, glowColor);
 
                 if (NPCLayer == 1 && Timer > 60)
+                    DrawUpperLayer(spriteBatch, auroraColor, glowColor);
+            }
+        }
+
+        private void DrawLowerLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
+		{
+            Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
+            Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
+            Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
+            Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+
+            var extraLength = (int)(Math.Abs(OffsetFromParentBody) * 0.15f);
+            var maxSegments = DownwardDrawDistance + extraLength;
+
+            if (DrawPortal)
+                maxSegments = Math.Min(maxSegments, 40 + extraLength);
+
+            for (int k = 0; k <= maxSegments; k++)
+            {
+                var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + k * 10) - Main.screenPosition;
+                pos.X += OffsetFromParentBody * k * 0.03f;
+
+                var posStill = pos;
+                pos.X += (float)Math.Sin(Timer / 20f + k * 0.1f) * k * 0.5f;
+
+                var scale = 1 + Math.Max(0, (k - maxSegments + 10) / 20f);
+                var lightColor = Lighting.GetColor((int)(pos.X + Main.screenPosition.X) / 16, (int)(pos.Y + Main.screenPosition.Y) / 16) * 1.1f * Parent.Opacity;
+                lightColor.A = 255;
+
+                spriteBatch.Draw(body, pos, null, lightColor, 0, body.Size() / 2, scale, 0, 0);
+
+                if (k == maxSegments)
                 {
-                    if (DrawPortal)
+                    if (DrawPortal && maxSegments >= 40 + extraLength)
                     {
                         var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
                         var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width)), portal.Height);
-                        var target2 = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
-
-                        var rotation = (MovementTarget - BasePoint).ToRotation() + 1.57f;
-
-                        spriteBatch.Draw(portal, target, null, auroraColor, rotation, portal.Size() / 2, 0, 0);
+                        var target = new Rectangle((int)posStill.X, (int)posStill.Y, (int)(0.8f * Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width))), (int)(portal.Height * 0.6f));
+                        var target2 = new Rectangle((int)posStill.X, (int)posStill.Y + 6, (int)(Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)) * 0.8f), (int)(portalGlow.Height * 0.6f));
+                        spriteBatch.Draw(portal, target, null, auroraColor * 0.6f, 0, portal.Size() / 2, 0, 0);
 
                         var portalGlowColor = auroraColor;
                         portalGlowColor.A = 0;
 
-                        spriteBatch.Draw(portalGlow, target2, null, portalGlowColor, rotation, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
+                        spriteBatch.Draw(portalGlow, target2, null, portalGlowColor * 0.8f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
                     }
-
-                    if (Vector2.Distance(NPC.Center, BasePoint) > 8)
+                    else
                     {
-                        float rot = (BasePoint - NPC.Center).ToRotation() - 1.57f;
-                        float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
+                        var topOriginBody = new Vector2(top.Width / 2, top.Height);
+                        var bodyRotation = 3.14f + ((float)Math.Sin(Timer * 0.1f) * 0.25f) + Parent.NPC.rotation;
 
-                        rot += tentacleSin * 0.5f;
-
-                        var topOrigin = new Vector2(top.Width / 2, top.Height + 10);
-                        var litColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 2.6f;
-                        var topPos = NPC.Center + new Vector2(tentacleSin * 30, 0).RotatedBy(rot) + Vector2.UnitY * 36;
-                        var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
-
-                        spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
-                        spriteBatch.Draw(glow, topTarget, glow.Frame(), glowColor * 0.65f, rot, topOrigin, 0, 0);
+                        spriteBatch.Draw(top, pos, top.Frame(), lightColor, bodyRotation, topOriginBody, 1, 0, 0);
+                        spriteBatch.Draw(glow, pos, glow.Frame(), glowColor * 0.325f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
 
                         var glow2Color = glowColor;
                         glow2Color.A = 0;
-                        spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
-
-                        Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
-
-                        for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)
-                        {
-                            float segmentSin = (float)Math.Sin(Timer / 20f + k * 0.02f);
-                            float magnitude = Math.Max(0, 30 - k * 0.05f) * StalkWaviness;
-                            float size = Math.Max(1, 2 - k * 0.005f);
-                            Vector2 pos = new Vector2(segmentSin * magnitude, 0).RotatedBy(rot) + Vector2.Lerp(NPC.Center + new Vector2(0, 36), BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
-
-                            if (k == 0 && State != 2)
-                                spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), glowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
-                            else
-                                spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 2.6f, rot + segmentSin * 0.25f, body.Size() / 2, size, 0, 0);
-
-                            k += 10 * size;
-                        }
+                        spriteBatch.Draw(glow2, pos, glow.Frame(), glow2Color * 0.3f * Parent.Opacity, bodyRotation, topOriginBody, 1, 0, 0);
                     }
+                }
+            }
+        }
+
+        private void DrawUpperLayer(SpriteBatch spriteBatch, Color auroraColor, Color glowColor)
+		{
+            Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
+            Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
+            Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
+            Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
+            Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
+
+            if (DrawPortal)
+            {
+                var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
+                var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+                var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width)), portal.Height);
+                var target2 = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
+
+                var rotation = (MovementTarget - BasePoint).ToRotation() + 1.57f;
+
+                spriteBatch.Draw(portal, target, null, auroraColor, rotation, portal.Size() / 2, 0, 0);
+
+                var portalGlowColor = auroraColor;
+                portalGlowColor.A = 0;
+
+                spriteBatch.Draw(portalGlow, target2, null, portalGlowColor, rotation, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
+            }
+
+            if (Vector2.Distance(NPC.Center, BasePoint) > 8)
+            {
+                float rot = (BasePoint - NPC.Center).ToRotation() - 1.57f;
+                float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
+
+                rot += tentacleSin * 0.5f;
+
+                var topOrigin = new Vector2(top.Width / 2, top.Height + 10);
+                var litColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16) * 2.6f;
+                var topPos = NPC.Center + new Vector2(tentacleSin * 30, 0).RotatedBy(rot) + Vector2.UnitY * 36;
+                var topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * Math.Abs(Math.Sin(ZSpin + 1.57f))), top.Height);
+
+                spriteBatch.Draw(top, topTarget, top.Frame(), litColor, rot, topOrigin, 0, 0);
+                spriteBatch.Draw(glow, topTarget, glow.Frame(), glowColor * 0.65f, rot, topOrigin, 0, 0);
+
+                var glow2Color = glowColor;
+                glow2Color.A = 0;
+                spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
+
+                Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
+
+                for (float k = 0; k < Vector2.Distance(NPC.Center, BasePoint);)
+                {
+                    float segmentSin = (float)Math.Sin(Timer / 20f + k * 0.02f);
+                    float magnitude = Math.Max(0, 30 - k * 0.05f) * StalkWaviness;
+                    float size = Math.Max(1, 2 - k * 0.005f);
+                    Vector2 pos = new Vector2(segmentSin * magnitude, 0).RotatedBy(rot) + Vector2.Lerp(NPC.Center + new Vector2(0, 36), BasePoint, k / Vector2.Distance(NPC.Center, BasePoint));
+
+                    if (k == 0 && State != 2)
+                        spriteBatch.Draw(ring, pos - Main.screenPosition, ring.Frame(), glowColor, rot + segmentSin * 0.25f, ring.Size() / 2, 1, 0, 0);
+                    else
+                        spriteBatch.Draw(body, pos - Main.screenPosition, body.Frame(), Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16) * 2.6f, rot + segmentSin * 0.25f, body.Size() / 2, size, 0, 0);
+
+                    k += 10 * size;
                 }
             }
         }

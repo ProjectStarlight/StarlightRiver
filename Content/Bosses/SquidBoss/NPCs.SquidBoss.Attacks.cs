@@ -463,50 +463,64 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -1300), AttackTimer / 120f);
 			}
 
+            if (AttackTimer < 30)
+                Opacity = 1 - (AttackTimer / 30f * 0.5f);
+
             for (int k = 0; k < 4; k++)
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
-                if (AttackTimer == 1)
-                    tentacle.DrawPortal = true;
-
-                if (AttackTimer == 150 + k * 20)
+                if (k != 2)
                 {
-                    tentacle.DrawPortal = true;
-                    tentacle.NPC.Center = platforms[k].Center + new Vector2(0, -100);
-                    tentacle.BasePoint = tentacle.NPC.Center;
-                    tentacle.MovementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
-                    tentacle.StalkWaviness = 0.5f;
-                }
+                    if (AttackTimer == 1)
+                        tentacle.DrawPortal = true;
 
-                if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
-                    tentacle.DownwardDrawDistance++;
+                    if (AttackTimer == 150 + k * 20)
+                    {
+                        tentacle.DrawPortal = true;
+                        tentacle.NPC.Center = platforms[k].Center + new Vector2(0, -150);
+                        tentacle.BasePoint = tentacle.NPC.Center;
+                        tentacle.MovementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
+                        tentacle.StalkWaviness = 0.5f;
+                    }
 
-                if (k <= 2)
-                {
+                    if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
+                        tentacle.DownwardDrawDistance++;
+
+
                     if (AttackTimer > 200 + k * 20 && AttackTimer < 260 + k * 20)
                         tentacle.NPC.Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - (200 + k * 20)) / 60f);
 
                     if (AttackTimer > 360 + k * 20 && AttackTimer < 390 + k * 20)
                         tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - (360 + k * 20)) / 30f);
+
+                    if (AttackTimer > 400 + k * 10 && AttackTimer < 430 + k * 10)
+                        tentacle.DownwardDrawDistance--;
+
+                    if (AttackTimer == 430 + k * 10)
+                        tentacle.DrawPortal = false;
                 }
+
                 else
-				{
-                    if (AttackTimer > 300 + k * 20 && AttackTimer < 420 + k * 20)
+                {
+                    if (AttackTimer < 100)
+                        tentacle.DownwardDrawDistance++;
+
+                    if (AttackTimer > 100 + k * 20 && AttackTimer < 280 + k * 20)
                     {
-                        tentacle.BasePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (300 + k * 20)) / 120f)) * 1200;
-                        tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (300 + k * 20)) / 120f) * 3.14f) * -900;
+                        tentacle.BasePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
+                        tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f) * 3.14f) * -890;
                     }
-				}
 
-                if (AttackTimer > 600 + k * 10 && AttackTimer < 630 + k * 10)
-                    tentacle.DownwardDrawDistance--;
-
-                if (AttackTimer == 630 + k * 10)
-                    tentacle.DrawPortal = false;
+                    if (AttackTimer > 320 + k * 20 && tentacle.DownwardDrawDistance > 28)
+                        tentacle.DownwardDrawDistance--;
+                }
             }
 
-            if (AttackTimer >= 660) 
+            if (AttackTimer >= 470)
+                Opacity = 0.5f + ((AttackTimer - 470) / 30f * 0.5f);
+
+            if (AttackTimer >= 500) 
                 ResetAttack();
         }
         #endregion
