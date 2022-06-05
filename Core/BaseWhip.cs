@@ -14,12 +14,12 @@ namespace StarlightRiver.Core
 {
 	public abstract class BaseWhip : ModProjectile
 	{
-		private string _name;
-		private int _segments;
-		private float _rangeMultiplier;
-		private float _flyTime;
-		private Color _stringColor;
-		private int _handleOffset;
+		protected string _name;
+		protected int _segments;
+		protected float _rangeMultiplier;
+		protected float _flyTime;
+		protected Color _stringColor;
+		protected int _handleOffset;
 
 		public BaseWhip(string name, int segments = 20, float rangeMultiplier = 1f, Color? stringColor = null, int handleOffset = 2)
 		{
