@@ -130,14 +130,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             {
                                 var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
                                 var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-                                var target = new Rectangle((int)posStill.X, (int)posStill.Y, Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 12f * portal.Width)), portal.Height / 2);
-                                var target2 = new Rectangle((int)posStill.X, (int)posStill.Y, Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 12f * portalGlow.Width)), portalGlow.Height);
-                                spriteBatch.Draw(portal, target, null, auroraColor, 0, portal.Size() / 2, 0, 0);
+                                var target = new Rectangle((int)posStill.X, (int)posStill.Y, (int)(0.8f * Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width))), (int)(portal.Height * 0.6f));
+                                var target2 = new Rectangle((int)posStill.X, (int)posStill.Y + 6, (int)(Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)) * 0.8f), (int)(portalGlow.Height * 0.6f));
+                                spriteBatch.Draw(portal, target, null, auroraColor * 0.6f, 0, portal.Size() / 2, 0, 0);
 
                                 var portalGlowColor = auroraColor;
                                 portalGlowColor.A = 0;
 
-                                spriteBatch.Draw(portalGlow, target2, null, portalGlowColor, 0, portalGlow.Size() / 2, 0, 0);
+                                spriteBatch.Draw(portalGlow, target2, null, portalGlowColor * 0.8f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
+
+                                Dust.NewDustPerfect(posStill + Main.screenPosition + new Vector2(Main.rand.NextFloat(-30, 30), 0), DustType<Dusts.Glow>(), new Vector2(Main.rand.NextFloat(1, 2), -1.5f), 0, auroraColor, 0.25f);
                             }
                             else
                             {
@@ -160,10 +162,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (DrawPortal)
                     {
                         var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
-                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 12f * portal.Width)), portal.Height / 2);
-                        var rotation = (MovementTarget - BasePoint).ToRotation() - 1.57f;
+                        var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 12f * portal.Width)), portal.Height);
+                        var target2 = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
+
+                        var rotation = (MovementTarget - BasePoint).ToRotation() + 1.57f;
 
                         spriteBatch.Draw(portal, target, null, auroraColor, rotation, portal.Size() / 2, 0, 0);
+
+                        var portalGlowColor = auroraColor;
+                        portalGlowColor.A = 0;
+
+                        spriteBatch.Draw(portalGlow, target2, null, portalGlowColor, rotation, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
                     }
 
                     if (Vector2.Distance(NPC.Center, BasePoint) > 8)

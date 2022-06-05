@@ -476,6 +476,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                             AttackPhase = 1;
                     }
 
+                AttackPhase = 5; //TODO: Remove temporary debug behavior
+
                 switch (AttackPhase)
                 {
                     case 1: TentacleSpike(); break;
