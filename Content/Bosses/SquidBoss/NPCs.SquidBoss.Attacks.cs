@@ -47,9 +47,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             AttackTimer = 0;
 
-            foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
+            foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 0))
             {
-                tentacle.ai[0] = 0;
+                tentacle.ai[0] = 1;
             }
         }
 
