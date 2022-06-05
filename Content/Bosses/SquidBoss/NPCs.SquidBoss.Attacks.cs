@@ -930,7 +930,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (AttackTimer > 90)
             {
                 Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacles[0].position.Y += 15;
+                tentacles[0].position.Y += 8;
             }
 
             if (AttackTimer == 180) ResetAttack();
