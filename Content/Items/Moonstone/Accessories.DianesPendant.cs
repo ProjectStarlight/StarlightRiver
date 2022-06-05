@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 modPlayer.Barrier = modPlayer.MaxBarrier;
 
             alreadyHit.Add(target);
-            Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 7;
+            Core.Systems.CameraSystem.Shake += 7;
             var nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
             if (nextTarget != default)
             {

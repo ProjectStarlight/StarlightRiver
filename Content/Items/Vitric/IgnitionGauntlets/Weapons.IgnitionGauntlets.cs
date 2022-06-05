@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					player.velocity *= -0.75f;
 					player.itemTime = player.itemAnimation = 20;
 					player.direction *= Math.Sign(player.Center.Y - Main.MouseWorld.Y);
-					player.GetModPlayer<StarlightPlayer>().Shake += (int)(12 * damagelerper);
+					Core.Systems.CameraSystem.Shake += (int)(12 * damagelerper);
 					return false;
 				}
 			}
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				if (!flipping)
 				{
-					Player.GetModPlayer<StarlightPlayer>().Shake = (int)(2 * lerper);
+					Core.Systems.CameraSystem.Shake = (int)(2 * lerper);
 					Lighting.AddLight(Player.Center, Color.OrangeRed.ToVector3());
 					for (int i = 0; i < 4; i++)
 					{

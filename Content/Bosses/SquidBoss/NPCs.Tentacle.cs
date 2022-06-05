@@ -138,8 +138,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                                 portalGlowColor.A = 0;
 
                                 spriteBatch.Draw(portalGlow, target2, null, portalGlowColor * 0.8f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
-
-                                Dust.NewDustPerfect(posStill + Main.screenPosition + new Vector2(Main.rand.NextFloat(-30, 30), 0), DustType<Dusts.Glow>(), new Vector2(Main.rand.NextFloat(1, 2), -1.5f), 0, auroraColor, 0.25f);
                             }
                             else
                             {
@@ -163,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         var portal = Request<Texture2D>(AssetDirectory.SquidBoss + "Portal").Value;
                         var portalGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 12f * portal.Width)), portal.Height);
+                        var target = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y), Math.Min(portal.Width, (int)((DownwardDrawDistance - 28) / 24f * portal.Width)), portal.Height);
                         var target2 = new Rectangle((int)(BasePoint.X - Main.screenPosition.X), (int)(BasePoint.Y - Main.screenPosition.Y) - 12, Math.Min(portalGlow.Width, (int)((DownwardDrawDistance - 28) / 24f * portalGlow.Width)), portalGlow.Height);
 
                         var rotation = (MovementTarget - BasePoint).ToRotation() + 1.57f;
@@ -259,6 +257,31 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     var color = new Color(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.14f);
 
                     Dust.NewDustPerfect(new Vector2(NPC.Center.X + Main.rand.Next(-30, 30), Arena.WaterLevelWorld), DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.57f) * Main.rand.NextFloat(2, 4), 0, color, Main.rand.NextFloat(0.65f, 0.95f));
+                }
+            }
+
+            if (DrawPortal)
+            {
+                float sin1 = 1 + (float)Math.Sin(Timer / 10f);
+                float cos1 = 1 + (float)Math.Cos(Timer / 10f);
+                Color auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+
+                var extraLength = (int)(Math.Abs(OffsetFromParentBody) * 0.15f);
+                var pos = Parent.NPC.Center + new Vector2(OffsetFromParentBody, 100 + (40 + extraLength) * 10) - Main.screenPosition;
+                pos.X += OffsetFromParentBody * (40 + extraLength) * 0.03f;
+
+                var x = Main.rand.NextFloat(-30, 30);
+
+                if (DownwardDrawDistance > 36)
+                    Dust.NewDustPerfect(pos + Main.screenPosition + new Vector2(x, (float)Math.Sin((x + 30) / 60f * 3.14f) * 6), DustType<Dusts.Glow>(), new Vector2((float)Math.Sin((x + 30) / 60f * 6.28f), -1.5f), 0, auroraColor, 0.45f);
+
+                if (DownwardDrawDistance > 40)
+                {
+                    x = Main.rand.NextFloat(-40, 40);
+
+                    pos = BasePoint;
+                    pos += new Vector2(x, (float)Math.Sin((x + 30) / 60f * 3.14f) * 6).RotatedBy(NPC.rotation);
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), new Vector2((float)Math.Sin((x + 30) / 60f * 6.28f), -1.5f).RotatedBy(NPC.rotation + 3.14f), 0, auroraColor, 0.45f);
                 }
             }
 

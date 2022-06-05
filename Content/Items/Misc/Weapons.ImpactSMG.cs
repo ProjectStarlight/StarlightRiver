@@ -211,7 +211,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-			owner.GetModPlayer<StarlightPlayer>().Shake += 3;
+			Core.Systems.CameraSystem.Shake += 3;
 
 			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
 			proj.extraUpdates = 0;

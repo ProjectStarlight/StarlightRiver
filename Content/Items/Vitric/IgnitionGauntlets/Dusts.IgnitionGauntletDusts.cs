@@ -94,6 +94,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	public class IgnitionGauntletSmoke2 : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
@@ -165,6 +166,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	public class IgnitionGauntletSmoke3 : IgnitionGauntletSmoke
 	{
 		public override bool Update(Dust dust)
@@ -216,6 +218,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	class IgnitionGauntletSpark : BuzzSpark
 	{
 		public override bool Update(Dust dust)
@@ -256,6 +259,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	class IgnitionGauntletWind : BuzzSpark
 	{
 		public override bool Update(Dust dust)
@@ -293,6 +297,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	public class IgnitionGauntletStar : ModDust
 	{
 		public override string Texture => AssetDirectory.VitricItem + "IgnitionGauntletStar";
@@ -325,6 +330,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	class IgnitionGlowDust : ModDust
 	{
 		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
@@ -373,31 +379,36 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 	}
+
 	class IgnitionChargeDust : IgnitionGlowDust
 	{
 		public override bool Update(Dust dust)
 		{
 			if (dust.fadeIn < 15)
 				dust.fadeIn++;
+
 			Player owner = Main.player[(int)dust.customData];
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
 			Vector2 dir = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - (dust.position + (new Vector2(32, 32) * dust.scale));
 			dust.velocity = Vector2.Normalize(dir) * dir.Length() * 0.05f;
 			dust.velocity += owner.velocity;
+
 			if (dir.Length() < 4)
 				dust.fadeIn = 16;
 			dust.shader.UseColor(dust.color);
+
 			if (modPlayer.launching)
 				dust.active = false;
+
 			if (dust.fadeIn == 16)
-			{
 				dust.position = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - (new Vector2(32, 32) * dust.scale);
-			}
+
 			else
 				dust.position += dust.velocity;
 			return false;
 		}
 	}
+
 	class IgnitionChargeDustPassive : IgnitionGlowDust
 	{
 		public override bool Update(Dust dust)
@@ -409,18 +420,23 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.scale = MathHelper.Lerp(0.25f, 0.45f, (dust.alpha - 100) / 100f) * (float)Math.Sin((dust.fadeIn / 18f) * 3.14f);
 			else
 				dust.scale = MathHelper.Lerp(0.25f, 0.55f, (dust.alpha - 100) / 100f) * (float)Math.Sin((dust.fadeIn / 22f) * 3.14f);
+
 			Player owner = Main.player[(int)dust.customData];
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
+
 			if (modPlayer.launching)
 				dust.active = false;
+
 			dust.shader.UseColor(Color.Lerp(Color.Orange, Color.OrangeRed, dust.alpha / 300f));
 			dust.position = owner.Center + new Vector2(0, 15 + ((dust.alpha % 100) * 0.1f) - (float)Math.Pow(dust.fadeIn / 3, 1.75f)) + new Vector2((15 + (3 * (dust.alpha / 100))) * (float)Math.Sin((dust.fadeIn + dust.alpha) * 0.1f), 0) - (dust.scale * new Vector2(32, 32));
+			
 			if (dust.fadeIn >= 15 && dust.alpha < 100)
 				dust.active = false;
 			else if (dust.fadeIn >= 18 && dust.alpha < 200)
 				dust.active = false;
 			else if (dust.fadeIn >= 22)
 				dust.active = false;
+
 			return false;
 		}
 	}

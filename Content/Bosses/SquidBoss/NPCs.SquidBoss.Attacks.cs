@@ -48,6 +48,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         private void ShufflePlatforms()
         {
             int n = platforms.Count(); //fisher yates
+
             while (n > 1)
             {
                 n--;
@@ -458,6 +459,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
+                if (AttackTimer == 1)
+                    tentacle.DrawPortal = true;
+
                 if (AttackTimer == 150 + k * 20)
                 {
                     tentacle.DrawPortal = true;
@@ -473,14 +477,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (k <= 2)
                 {
                     if (AttackTimer > 200 + k * 20 && AttackTimer < 260 + k * 20)
-                    {
                         tentacle.NPC.Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - (200 + k * 20)) / 60f);
-                    }
 
                     if (AttackTimer > 360 + k * 20 && AttackTimer < 390 + k * 20)
-                    {
                         tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - (360 + k * 20)) / 30f);
-                    }
                 }
                 else
 				{
@@ -808,11 +808,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
 
+                if(AttackTimer == 1)
+                    tentacle.DrawPortal = true;
+
                 if (AttackTimer == k * 80 || (k == 0 && AttackTimer == 1)) //teleport where needed
                 {
                     RandomizeTarget();
 
-                    tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).Center.X + (k % 2 == 0 ? -600 : 600), NPC.Center.Y + Main.rand.Next(-200, 200));
+                    tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).Center.X + (k % 2 == 0 ? -500 : 500), NPC.Center.Y + Main.rand.Next(-200, 200));
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = Main.player[NPC.target].Center;
                     tentacle.NPC.netUpdate = true;
@@ -833,16 +836,27 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     int time = (int)AttackTimer - (k * 80 + 30);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, time / 50f);
                     tentacles[k].ai[1] += 5f; //make it squirm faster
+
+                    tentacle.DownwardDrawDistance++;
                 }
 
                 if (AttackTimer > k * 80 + 90 && AttackTimer < k * 80 + 150) //retracting
                 {
                     int time = (int)AttackTimer - (k * 80 + 90);
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 60f);
+
+                    tentacle.DownwardDrawDistance--;
+                }
+
+                if (AttackTimer == k * 80 + 150)
+                {
+                    tentacle.DrawPortal = false;
+                    tentacle.DownwardDrawDistance = 28;
                 }
             }
 
-            if (AttackTimer == 400 && !Main.expertMode) ResetAttack(); //stop on normal mode only
+            if (AttackTimer == 400 && !Main.expertMode) 
+                ResetAttack(); //stop on normal mode only
 
             for (int k = 0; k < 4; k++)
             {
@@ -880,7 +894,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
             }
 
-            if (AttackTimer > 550) ResetAttack();
+            if (AttackTimer > 550) 
+                ResetAttack();
         }
 
         private void StealPlatform()
