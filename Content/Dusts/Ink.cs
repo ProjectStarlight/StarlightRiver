@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Dusts
         public override bool Update(Dust dust)
         {
             dust.position += dust.velocity;
-            dust.scale *= 0.982f;
+            dust.scale *= 0.988f;
             dust.velocity.Y += 0.22f;
 
             if (dust.scale <= 0.2)
