@@ -443,9 +443,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
             {
-                Phase = (int)AIStates.DeathAnimation; //TODO: Remove debug funtionality
-                GlobalTimer = 0;
-
                 AttackTimer++;
 
                 //passive movement
