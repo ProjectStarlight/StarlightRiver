@@ -19,7 +19,7 @@ using Microsoft.Xna.Framework;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Content.CustomHooks;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	internal class AuroraWaterMetaballs : MetaballActor
 	{
@@ -56,6 +56,14 @@ namespace StarlightRiver.Content.Items.Misc
 					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + dust.rotation);
 					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, new Color(0.4f, 1, 1), 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
 				}
+			}
+
+			foreach (Projectile proj in Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<AuroraWaterSplash>()))
+			{
+				var tex2 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "AuroraWaterSplash").Value;
+				var frame = new Rectangle(0, (int)(6 - proj.timeLeft / 40f * 6) * 106, 72, 106);
+
+				spriteBatch.Draw(tex2, (proj.Center - Main.screenPosition) / 2f, frame, new Color(0.4f, 1, 1), 0, new Vector2(36, 53), 0.5f, 0, 0);
 			}
 
 			spriteBatch.End();
