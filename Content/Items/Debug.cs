@@ -51,7 +51,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.Faewhip.Whip>();
             return true;
 
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);

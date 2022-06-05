@@ -458,7 +458,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.life = baseLife + tentacleLife;
 
                 if (AttackTimer == 1)
-                    if (tentacles.Count(n => n.ai[0] == 2) <= 2) //phasing logic
+                {
+                    var tentacleCount = tentacles.Count(n => n.ai[0] == 2);
+
+                    if (tentacleCount <= 2 && tentacleCount > 1) //phasing logic
                     {
                         Phase = (int)AIStates.FirstPhaseTwo;
                         GlobalTimer = 0;
@@ -468,9 +471,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         AttackPhase++;
                         variantAttack = Main.rand.NextBool();
-                        if (AttackPhase > (Main.expertMode ? 5 : 4)) 
+                        if (AttackPhase > (Main.expertMode ? 5 : 4))
                             AttackPhase = 1;
                     }
+                }
 
                 switch (AttackPhase)
                 {
