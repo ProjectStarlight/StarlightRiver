@@ -458,7 +458,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.life = baseLife + tentacleLife;
 
                 if (AttackTimer == 1)
-                    if (tentacles.Count(n => n.ai[0] == 2) == 2) //phasing logic
+                    if (tentacles.Count(n => n.ai[0] == 2) <= 2) //phasing logic
                     {
                         Phase = (int)AIStates.FirstPhaseTwo;
                         GlobalTimer = 0;
