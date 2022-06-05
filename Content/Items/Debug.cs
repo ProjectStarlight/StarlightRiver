@@ -51,18 +51,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            player.statLifeMax = 100;
-            UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
-
-            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
-            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
-            return true;
-
-            player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
-            return true;
-
             player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
-            InfusionMaker.visible = !InfusionMaker.visible;
             return true;
 
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);

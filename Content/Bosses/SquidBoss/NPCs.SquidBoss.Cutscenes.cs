@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.Center = Vector2.Lerp(spawnPoint + new Vector2(0, 20), spawnPoint + new Vector2(0, -600), progress); //rise up from the ground
 
                 if (GlobalTimer == 306)
-                    for(int k = 0; k < 40; k++)
+                    for(int k = 0; k < 30; k++)
 					{
                         var rand = Main.rand.NextFloat(6.28f);
                         float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.01f * 0.2f + rand);
@@ -52,7 +52,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         var color = new Color(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.14f);
 
                         Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-30, 30), 0), DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.57f) * Main.rand.NextFloat(5, 8), 0, color, Main.rand.NextFloat(1, 2));
-					}
+                        Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-30, 30), 0), DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(7, 15), 0, color, Main.rand.NextFloat(1, 2));
+                    }
             }
 
             if (GlobalTimer == 100)
@@ -131,6 +132,97 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 Phase = (int)AIStates.FirstPhase;
+            }
+        }
+
+        public void DeathAnimation()
+		{
+            if (GlobalTimer < 50)
+                Arena.WaterfallWidth = 50 - (int)GlobalTimer;
+
+            if (GlobalTimer < 60)
+            {
+                NPC.velocity *= 0.9f;
+                NPC.rotation *= 0.9f;
+                Core.Systems.CameraSystem.DoPanAnimation(240, NPC.Center);
+
+                for (int k = 0; k < tentacles.Count; k++)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (tentacle.DownwardDrawDistance > 28)
+                            tentacle.DownwardDrawDistance--;
+                    }
+                }
+            }
+
+            if (GlobalTimer % 20 == 0 && GlobalTimer <= 100)
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
+
+            for (int k = 0; k < 5; k++)
+            {
+                var off = Vector2.Zero;
+
+                switch (k)
+                {
+                    case 0: off = new Vector2(42, 12); break;
+                    case 1: off = new Vector2(-43, 12); break;
+                    case 2: off = new Vector2(-41, -20); break;
+                    case 3: off = new Vector2(40, -20); break;
+                    case 4: off = new Vector2(-1, -58); break;
+                }
+
+                var time = (GlobalTimer - ((k + 1) * 20));
+
+                if (time > 0 && time < 20) //dust explosion
+                {
+                    if(time == 1)
+					{
+                        for (int n = 0; n < 40; n++)
+                        {
+                            var vel = Vector2.Normalize(NPC.Center + off - (NPC.Center + Vector2.UnitY * 100)).RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 10);
+                            Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.AuroraWater>(), vel, 0, Color.Lerp(Color.Orange, Color.White, 0.5f), Main.rand.NextFloat(0.5f, 1f));
+                        }
+                    }
+
+                    for (int n = 0; n < 2; n++)
+                    {
+                        var vel = Vector2.Normalize(NPC.Center + off - (NPC.Center + Vector2.UnitY * 100)).RotatedByRandom(0.4f) * Main.rand.NextFloat(5, 20);
+                        var d = Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.AuroraFast>(), vel, 0, Color.Lerp(Color.Red, Color.Yellow, Main.rand.NextFloat(0.3f, 0.8f)));
+                        d.customData = Main.rand.NextFloat(1, 2);
+                    }
+                }
+            }
+
+            if (GlobalTimer >= 200)
+            {
+                NPC.Kill();
+
+                for (int n = 0; n < 100; n++)
+                {
+                    var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+                    Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6) + Vector2.UnitY * -8, 0, Color.White, 2);
+                }
+
+                for (int n = 0; n < 100; n++)
+                {
+                    var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
+                    var vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
+                    var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
+                    Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 2.4f));
+                }
+
+                for(int k = 0; k <= 5; k++)
+				{
+                    Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGore" + k).Type);
+				}
+
+                for(int k = 0; k < 10; k++)
+				{
+                    Gore.NewGore(NPC.GetSource_Death(), NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(60), Vector2.One.RotatedByRandom(6.28f) * 6, StarlightRiver.Instance.Find<ModGore>("SquidGoreTentacle").Type);
+                }
             }
         }
     }

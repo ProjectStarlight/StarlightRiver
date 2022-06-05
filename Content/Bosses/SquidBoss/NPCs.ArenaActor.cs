@@ -218,6 +218,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var source = new Rectangle(0, tex.Height - (int)NPC.ai[0] + 5 * 16, tex.Width, (int)NPC.ai[0] - 5 * 16);
 
             spriteBatch.Draw(tex, (pos + source.TopLeft()) * 0.5f, source, new Color(0.4f, 1, 1), 0, default, 0.5f, 0, 0);
+            DrawWaterfalls(spriteBatch);
         }
 
         private void DrawShine(Rectangle target)
@@ -290,7 +291,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             var width = WaterfallWidth + 2 * (float)Math.Sin(Main.GameUpdateCount * 0.1f);
             var height = 2850 - (int)NPC.ai[0];
 
-            var tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/LaserGlow").Value;
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
             var tex2 = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
 
             spriteBatch.End();
@@ -298,22 +299,26 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             for (int k = 0; k < height; k += tex2.Height * 2)
             {
-                var target = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X) - (int)(width / 2) - 500, (int)(NPC.Center.Y - Main.screenPosition.Y) - 2300 + k, (int)width, tex2.Height * 2);
-                var target2 = new Rectangle((int)(NPC.Center.X - Main.screenPosition.X) - (int)(width / 2) + 500, (int)(NPC.Center.Y - Main.screenPosition.Y) - 2300 + k, (int)width, tex2.Height * 2);
+                var target = new Rectangle(((int)(NPC.Center.X - Main.screenPosition.X) - (int)(width / 2) - 500) / 2, ((int)(NPC.Center.Y - Main.screenPosition.Y) - 2300 + k) / 2, (int)width / 2, tex2.Height * 2 / 2);
+                var target2 = new Rectangle(((int)(NPC.Center.X - Main.screenPosition.X) - (int)(width / 2) + 500) / 2, ((int)(NPC.Center.Y - Main.screenPosition.Y) - 2300 + k) / 2, (int)width / 2, tex2.Height * 2 / 2);
                 var source = new Rectangle(0, (int)(-Main.GameUpdateCount * 1.5f) % tex2.Height, tex2.Width, tex2.Height);
-                var color = new Color(200, 230, 255) * 0.2f;
 
+                spriteBatch.Draw(tex, target, source, new Color(0.4f, 1, 1));
+                spriteBatch.Draw(tex, target2, source, new Color(0.4f, 1, 1));
+
+                /*
                 LightingBufferRenderer.DrawWithLighting(target, tex, source, color * 6);
                 LightingBufferRenderer.DrawWithLighting(target2, tex, source, color * 6);
 
                 LightingBufferRenderer.DrawWithLighting(target, tex2, source, color);
                 LightingBufferRenderer.DrawWithLighting(target2, tex2, source, color);
+                */
 
                 float sin = (float)Math.Sin(-NPC.ai[1] * 4 + k * 0.01f);
                 float sin2 = (float)Math.Sin(-NPC.ai[2] * 4 + k * 0.002f);
                 float cos = (float)Math.Cos(-NPC.ai[2] * 4 + k * 0.01f);
-                Lighting.AddLight(target.Center() + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
-                Lighting.AddLight(target2.Center() + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
+                Lighting.AddLight(target.Center() * 2 + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
+                Lighting.AddLight(target2.Center() * 2 + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
             }
 
             spriteBatch.End();
@@ -403,8 +408,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-            DrawWaterfalls(spriteBatch);
         }
 
         /// <summary>

@@ -245,10 +245,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float scale = 1 + sin * 0.04f;
                 float scale2 = 1 + sin2 * 0.06f;
 
-                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * Opacity;
+                var color = Color.White;
 
-                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red jelly in last phases
-                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f * Opacity;
+                Color auroraColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * Opacity;
+                Color redColor = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f * Opacity;
+
+                color = auroraColor;
+
+                if (Phase == (int)AIStates.ThirdPhase) //Red jelly in last phases
+                    color = Color.Lerp(auroraColor, redColor, GlobalTimer / 60f);
+
+                if (Phase == (int)AIStates.DeathAnimation)
+                    color = redColor;
 
                 if (OpaqueJelly)
                     color.A = 255;
@@ -257,18 +265,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 {
                     sin = 1 + (float)Math.Sin(GlobalTimer / 5f - k * 0.5f); //faster pulsing
                     scale = 1 + sin * 0.08f; //bigger pulsing
-
-                    if (GlobalTimer == (k + 1) * 20) //dust explosion
-                    {
-                        for (int n = 0; n < 60; n++)
-                            Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
-
-                        for (int n = 0; n < 40; n++)
-                        {
-                            var vel = Vector2.Normalize(NPC.Center + off - (NPC.Center + Vector2.UnitY * 100)).RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 10);
-                            Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, Color.Lerp(color, Color.White, 0.5f), Main.rand.NextFloat(1, 1.5f));
-                        }
-                    }
 
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
@@ -673,40 +669,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.DeathAnimation)
             {
-                if (GlobalTimer < 50)
-                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
-
-                if (GlobalTimer == 1)
-                {
-                    NPC.velocity *= 0;
-                    NPC.rotation = 0;
-                    Core.Systems.CameraSystem.DoPanAnimation(240, NPC.Center);
-
-                    for (int k = 0; k < tentacles.Count; k++)
-                        tentacles[k].Kill();
-                }
-
-                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100)
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
-
-                if (GlobalTimer >= 200)
-                {
-                    NPC.Kill();
-
-                    for (int n = 0; n < 100; n++)
-                    {
-                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-                        Dust.NewDustPerfect(NPC.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
-                    }
-
-                    for (int n = 0; n < 100; n++)
-                    {
-                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-                        var vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
-                        var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
-                        Dust.NewDustPerfect(NPC.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 1.4f));
-                    }
-                }
+                DeathAnimation();
             }
 
             if(Phase == (int)AIStates.Fleeing)
