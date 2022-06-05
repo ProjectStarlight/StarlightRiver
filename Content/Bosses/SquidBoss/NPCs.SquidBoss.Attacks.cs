@@ -819,6 +819,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = Main.player[NPC.target].Center;
                     tentacle.NPC.netUpdate = true;
+                    tentacle.StalkWaviness = 0.5f;
 
                     SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 

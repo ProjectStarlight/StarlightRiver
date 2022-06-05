@@ -88,11 +88,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 var heightDust = 2850 - (int)NPC.ai[0];
 
                 Vector2 posDust = NPC.Center + new Vector2(-500 + Main.rand.NextFloat(-25, 25), -2280 + heightDust);
-                Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255));
+                Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255) * 0.5f);
                 Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(4), 0, new Color(150, 200, 255));
 
                 posDust = NPC.Center + new Vector2(500 + Main.rand.NextFloat(-25, 25), -2280 + heightDust);
-                Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255));
+                Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255) * 0.5f);
                 Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(4), 0, new Color(150, 200, 255));
             }
 
