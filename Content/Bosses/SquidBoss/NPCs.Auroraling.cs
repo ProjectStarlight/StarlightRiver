@@ -3,7 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Linq;
+using Terraria.Audio;
 using Terraria;
+using Terraria.ID;
 using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -23,6 +25,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             NPC.noGravity = true;
             NPC.aiStyle = -1;
             NPC.knockBackResist = 3f;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -56,7 +60,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             target.noKnockback = true;
         }
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (NPC.life <= 0)
+            {
+                for (int i = 0; i < 8; i++)
+                    Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5,5), 0, new Color(150, 200, 255) * 0.5f);
+            }
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
             if (NPC.IsABestiaryIconDummy)
 			{

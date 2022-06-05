@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     int adj = (int)Main.player[NPC.target].velocity.X * 60; if (adj > 200) adj = 200;
                     tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, spawnPoint.Y - 50);
                     tentacle.BasePoint = tentacles[k].Center;
-                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -950);
+                    tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -980);
                     tentacle.NPC.netUpdate = true;
 
                     if(tentacle.State != 2)
@@ -924,12 +924,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
                 tentacle.MovementTarget = tentacles[0].Center;
                 platforms[0].ai[3] = 450; //sets it into fall mode
+                //(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
             }
 
             if (AttackTimer > 90)
             {
                 Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacles[0].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 90) / 90f);
+                tentacles[0].position.Y += 15;
             }
 
             if (AttackTimer == 180) ResetAttack();

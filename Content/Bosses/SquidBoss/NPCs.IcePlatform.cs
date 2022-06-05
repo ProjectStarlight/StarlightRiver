@@ -28,10 +28,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (NPC.ai[3] != 0)
             {
                 if (NPC.ai[3] > 360)
-                    NPC.position.Y += 8;
+                    NPC.position.Y += 15;
 
                 if (NPC.ai[3] <= 90 && NPC.ai[3] > 0)
-                    NPC.position.Y -= 9;
+                    NPC.position.Y -= 16;
 
                 NPC.ai[3]--;
 

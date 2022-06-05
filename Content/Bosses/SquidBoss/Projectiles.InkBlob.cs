@@ -5,16 +5,21 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	class InkBlob : ModProjectile, IDrawPrimitive
+	class InkBlob : ModProjectile, IDrawPrimitive, IDrawAdditive
     {
         private List<Vector2> cache;
         private Trail trail;
+
+        private Vector2 initialPosition;
+
+        private bool initialized = false;
 
         public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
 
@@ -33,8 +38,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.damage = 25;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+
+        }
+
         public override void AI()
         {
+            if (!initialized)
+            {
+                initialized = true;
+                initialPosition = Projectile.Center;
+            }
             Projectile.scale -= 1 / 400f;
 
             Projectile.ai[1] += 0.1f;
@@ -146,6 +161,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = Projectile.Center + Projectile.velocity;
+        }
+
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+            Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+            for (int i = 0; i < 3; i++)
+                spriteBatch.Draw(tex, initialPosition - Main.screenPosition, null, color, 0f, tex.Size() / 2, 1.2f, SpriteEffects.None, 0f);
         }
 
         public void DrawPrimitives()
