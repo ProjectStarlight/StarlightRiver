@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     (Main.npc[i].ModNPC as Tentacle).Parent = this;
                     (Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
                     (Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;
-                    (Main.npc[i].ModNPC as Tentacle).BasePoint = Main.npc[i].Center;
+                    (Main.npc[i].ModNPC as Tentacle).BasePoint = Main.npc[i].Center + Vector2.UnitY * 10;
                     (Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;
                     (Main.npc[i].ModNPC as Tentacle).StalkWaviness = 0;
                     tentacles.Add(Main.npc[i]);

@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 NPC.Center = Vector2.SmoothStep(BasePoint, MovementTarget, (Timer - 60) / 60f); //Spawn animation
 
             //Colission for the stalks since tmod... dosent have a hook for this?
-            if (Vector2.Distance(NPC.Center, BasePoint) > 32)
+            if (Vector2.Distance(NPC.Center, BasePoint) > 32 && Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation)
             {
                 foreach (Player player in Main.player.Where(n => n.active))
                 {
@@ -304,7 +304,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         else
                             player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
                         
-
                         player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
                     }
                 }

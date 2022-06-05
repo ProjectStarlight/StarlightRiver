@@ -43,7 +43,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 (proj.ModProjectile as TentacleTell).endPoint = end;
         }
 
-        private void ResetAttack() => AttackTimer = 0;
+        private void ResetAttack()
+        {
+            AttackTimer = 0;
+
+            foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
+            {
+                tentacle.ai[0] = 0;
+            }
+        }
 
         private void ShufflePlatforms()
         {

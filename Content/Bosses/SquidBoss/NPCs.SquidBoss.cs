@@ -465,6 +465,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         Phase = (int)AIStates.FirstPhaseTwo;
                         GlobalTimer = 0;
+                        ResetAttack();
                         return;
                     }
                     else //else advance the attack pattern
@@ -532,6 +533,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         {
                             Phase = (int)AIStates.SecondPhase;
                             GlobalTimer = 0;
+                            ResetAttack();
                             return;
                         }
                         else //else advance the attack pattern
