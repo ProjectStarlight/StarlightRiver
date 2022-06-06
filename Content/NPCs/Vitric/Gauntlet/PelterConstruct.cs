@@ -192,7 +192,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             enemyRotation2 *= 0.9f;
                         }
                         else
-                            enemyRotation2 = MathHelper.Lerp(enemyRotation2, NPC.spriteDirection * NPC.velocity.Y * 0.15f, 0.1f);
+                            enemyRotation2 = MathHelper.Lerp(enemyRotation2, NPC.spriteDirection * Math.Abs(NPC.velocity.Y) * -0.15f, 0.1f);
                         NPC.velocity.X *= 1.05f;
                         if (NPC.collideY && NPC.velocity.Y == 0)
                         {
@@ -211,7 +211,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                                 enemyRotation = 6.28f * NPC.spriteDirection * 0.95f;
                                 comboFiring = true;
 
-                                pauseTimer = 7;
+                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+                                ring.extraUpdates = 0;
+
+                                //pauseTimer = 7;
                                 oldVel = NPC.velocity;
                                 return false;
                             }

@@ -23,6 +23,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
+        private int directionCounter = 0;
+
+        private int direction = 0;
+
+        private int directionThreshhold = 15;
+
         private NPC healingTarget = default;
 
         private int laserTimer = 0;
@@ -54,12 +60,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             NPC.noGravity = false;
             laserTimer++;
             healCounter++;
             healingTarget = Main.npc.Where(n => n.active && !n.friendly && n.Distance(NPC.Center) < 800 && n.type != NPC.type && n.ModNPC is IGauntletNPC).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
             if (healingTarget != default)
             {
+                directionCounter++;
                 float laserRotation = NPC.DirectionTo(healingTarget.Center).ToRotation();
                 int width = (int)(NPC.Center - healingTarget.Center).Length();
                 Color color = Color.OrangeRed;
@@ -82,10 +90,27 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         healingTarget.life = healingTarget.lifeMax;
                     }
                 }
-                if ((NPC.Center - healingTarget.Center).Length() > 100)
-                    NPC.velocity.X += Math.Sign(healingTarget.Center.X - NPC.Center.X) * 5f;
+
+                Vector2 posToBe = healingTarget.Center;
+                if (healingTarget.type == ModContent.NPCType<ShieldConstruct>())
+                    posToBe.X -= 150 * healingTarget.spriteDirection;
+                if ((NPC.Center - posToBe).Length() > 100)
+                    NPC.velocity.X += Math.Sign(posToBe.X - NPC.Center.X) * 5f;
                 else
-                    NPC.velocity.X *= 1.08f;
+                {
+                    if (directionCounter > directionThreshhold)
+                    {
+                        directionCounter = 0;
+                        direction = Main.rand.Next(-1, 2);
+                        if (direction == 0)
+                            directionThreshhold = 30;
+                        else
+                            directionThreshhold = Main.rand.Next(12, 18);
+                    }
+                    NPC.velocity.X += direction * 0.5f;
+                    if (direction == 0)
+                        NPC.velocity.X *= 0.9f;
+                }
                 NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
             }
         }
