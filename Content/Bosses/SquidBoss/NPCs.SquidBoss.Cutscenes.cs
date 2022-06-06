@@ -137,7 +137,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DeathAnimation()
 		{
-            if (GlobalTimer < 50)
+            if (GlobalTimer == 0)
+            {
+                for (int k = 0; k < tentacles.Count; k++)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacle.MovementTarget = tentacle.NPC.Center;
+                }
+            }
+
+                if (GlobalTimer < 50)
                 Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
             if (GlobalTimer < 60)
@@ -154,6 +163,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     {
                         if (tentacle.DownwardDrawDistance > 28)
                             tentacle.DownwardDrawDistance--;
+
+                        tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, GlobalTimer / 60f);
                     }
                 }
             }

@@ -46,6 +46,11 @@ namespace StarlightRiver.Content.Items
 		{
             player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
 
+            Main.NewText(WorldGen.worldSurface);
+            Main.NewText(WorldGen.worldSurfaceLow);
+            Main.NewText(WorldGen.worldSurfaceHigh);
+            Main.NewText(player.Center.Y / 16);
+
             Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
         }
 

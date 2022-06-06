@@ -58,11 +58,10 @@ namespace StarlightRiver.Core
                 }
 
             int center = iceLeft + (iceRight - iceLeft) / 2;
-            int width = iceRight - iceLeft;
+            int centerY = (int)WorldGen.worldSurfaceHigh + (iceBottom - (int)WorldGen.worldSurfaceHigh) / 2;
 
-
-            SquidBossArena = new Rectangle(center - 40, iceBottom - 150, 109, 180);
-            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, iceBottom - 150), Mod);
+            SquidBossArena = new Rectangle(center - 40, centerY - 150, 109, 180);
+            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY - 150), Mod);
         }
     }
 }

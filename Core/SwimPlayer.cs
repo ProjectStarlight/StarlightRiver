@@ -51,6 +51,17 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         {
             CheckAuroraSwimming();
 
+            if(emergeTime == 19) //reset jumps
+			{
+                Player.canJumpAgain_Fart = true;
+                Player.canJumpAgain_Sail = true;
+                Player.canJumpAgain_Cloud = true;
+                Player.canJumpAgain_Blizzard = true;
+                Player.canJumpAgain_Sandstorm = true;
+                Player.rocketTime = Player.rocketTimeMax;
+                Player.wingTime = Player.wingTimeMax;
+			}
+
             if (!ShouldSwim) //reset stuff when the Player isnt swimming
             {
                 if (boostCD > 0)

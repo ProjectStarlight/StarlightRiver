@@ -487,7 +487,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
                         tentacle.DownwardDrawDistance++;
 
-
                     if (AttackTimer > 200 + k * 20 && AttackTimer < 260 + k * 20)
                         tentacle.NPC.Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - (200 + k * 20)) / 60f);
 
@@ -893,11 +892,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacles[k].Center = Player.Center + new Vector2(k % 2 == 0 ? -800 : 800, k > 1 ? 0 : -400);
                     tentacle.BasePoint = tentacles[k].Center;
                     tentacle.MovementTarget = Main.player[NPC.target].Center;
+                    tentacle.DrawPortal = true;
 
                     SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
                 }
+
+                if (AttackTimer > 400 && AttackTimer <= 420)
+                    tentacle.DownwardDrawDistance++;
 
                 if (AttackTimer > 420 && AttackTimer < 460) //shooting out
                 {
@@ -914,6 +917,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (AttackTimer > 460 && AttackTimer < 520) //retracting
                 {
                     tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 460) / 60f);
+                }
+
+                if(AttackTimer > 520 && AttackTimer <= 540)
+                    tentacle.DownwardDrawDistance--;
+
+                if (AttackTimer == 540)
+                {
+                    tentacle.DownwardDrawDistance = 28;
+                    tentacle.DrawPortal = false;
                 }
             }
 

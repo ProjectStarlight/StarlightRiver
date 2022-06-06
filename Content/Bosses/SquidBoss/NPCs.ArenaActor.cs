@@ -99,9 +99,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if (NPC.ai[0] < 150) 
                 NPC.ai[0] = 150; //water clamping and return logic
 
-            if (Main.LocalPlayer.controlQuickHeal)
-                NPC.ai[0] += 4;
-
             if (!Main.npc.Any(n => n.active && n.ModNPC is SquidBoss) && NPC.ai[0] > 150) 
                 NPC.ai[0]--;
 

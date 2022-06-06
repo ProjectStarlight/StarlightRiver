@@ -539,7 +539,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         else //else advance the attack pattern
                         {
                             AttackPhase++;
-                            if (AttackPhase > (Main.expertMode ? 5 : 6)) 
+                            if (AttackPhase > (Main.expertMode ? 6 : 5)) 
                                 AttackPhase = 1;
                         }
 
