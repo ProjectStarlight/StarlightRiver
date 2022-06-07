@@ -30,11 +30,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Player target => Main.player[NPC.target];
 
         private int XFRAMES = 3;
-
         private int xFrame = 0;
-
         private int yFrame = 0;
-
         private int frameCounter = 0;
 
         private int xPosToBe = 0;
@@ -48,10 +45,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private bool comboJumped = false;
         private bool comboJumpedTwice = false;
         private NPC partner = default;
-
         private int comboDirection = 0;
 
         private float enemyRotation;
+
+        private int cooldownDuration = 80;
+        private float maxSpeed = 5;
+        private float acceleration = 0.3f;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Grunt Construct");
@@ -72,6 +72,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 Pitch = -0.3f
             };
             NPC.DeathSound = SoundID.Shatter;
+            cooldownDuration = Main.rand.Next(65, 90);
+            maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
+            acceleration = Main.rand.NextFloat(0.22f, 0.35f);
         }
 
         public override void AI()
@@ -182,7 +185,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     else
                     {
                         NPC.velocity.X += NPC.spriteDirection * 0.5f;
-                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
+                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
                     }
                 }
                 else
@@ -245,8 +248,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     yFrame %= 8;
                 }
 
-                NPC.velocity.X += 0.3f * xSign;
-                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
+                NPC.velocity.X += acceleration * xSign;
+                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
                 NPC.spriteDirection = xSign;
 
             }
@@ -335,7 +338,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     yFrame++;
                 else
                 {
-                    attackCooldown = 80;
+                    attackCooldown = cooldownDuration;
                     attacking = false;
                     yFrame = 0;
                     xFrame = 1;
