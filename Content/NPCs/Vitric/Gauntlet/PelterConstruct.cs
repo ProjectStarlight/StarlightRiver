@@ -73,6 +73,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Vector2 ringVel = Vector2.Zero;
 
+        private float maxSpeed = 2;
+        private float acceleration = 0.2f;
+        private int backupDistance = 75;
+
+        private bool stopped = false;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Pelter Construct");
@@ -88,12 +94,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.lifeMax = 250;
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
-            NPC.aiStyle = 3;
             NPC.HitSound = SoundID.Item27 with
             {
                 Pitch = -0.3f
             };
             NPC.DeathSound = SoundID.Shatter;
+            maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
+            acceleration = Main.rand.NextFloat(0.22f, 0.35f);
+            backupDistance = Main.rand.Next(50, 100);
         }
 
         public override void OnSpawn(IEntitySource source)
@@ -103,6 +111,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreAI()
         {
+            Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             pauseTimer--;
             if (pauseTimer == 0)
             {
@@ -128,10 +137,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
             bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
+            bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
 
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-
-            bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
 
             if (NPC.spriteDirection == 1)
             {
@@ -162,6 +170,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (doingCombo)
             {
+                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
                 if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
                 {
                     Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
@@ -206,6 +215,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             {
                                 ringVel = NPC.Bottom.DirectionTo(partner.Center);
                                 aiCounter = 299;
+
+                                partner.velocity.X = Math.Sign(NPC.velocity.X);
                                 NPC.velocity.X *= -1;
                                 NPC.velocity.Y = -9;
                                 enemyRotation = 6.28f * NPC.spriteDirection * 0.95f;
@@ -273,11 +284,58 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     bodyFrame = 1;
                 else
                     bodyFrame = 0;
+                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
                 return false;
             }
 
-            if (!doingCombo)
+            if (doingCombo)
+                return false;
+            bowFrame = 0;
+            bowFrameCounter = 0;
+            return true;
+        }
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return false;
+        }
+
+        public override void AI()
+        {
+            if (aiCounter % 300 < 10 && NPC.velocity.Y < 0)
+                NPC.velocity.Y = 0;
+
+
+            var nearestShielder = Main.npc.Where(x =>
+            x.active &&
+            x.type == ModContent.NPCType<ShieldConstruct>() &&
+            NPC.Distance(x.Center) < 600).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
+            int xPosToBe;
+            if (nearestShielder == default)
+                xPosToBe = (int)target.Center.X;
+            else
+                xPosToBe = (int)nearestShielder.Center.X - (nearestShielder.spriteDirection * backupDistance);
+
+            int velDir = Math.Sign(xPosToBe - NPC.Center.X);
+            if (Math.Abs(NPC.Center.X - xPosToBe) < 25 || stopped)
             {
+                stopped = true;
+                if (Math.Abs(NPC.Center.X - xPosToBe) > 105)
+                {
+                    stopped = false;
+                }
+
+                XFrame = 1;
+                if (NPC.collideY)
+                    bodyFrame = 1;
+                else
+                    bodyFrame = 0;
+                NPC.velocity *= 0.9f;
+            }
+            else
+            { 
+                NPC.velocity.X += acceleration * velDir;
+                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
                 if (NPC.velocity.Y == 0)
                 {
                     XFrame = 2;
@@ -295,17 +353,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     bodyFrame = 0;
                 }
             }
-            else
-                return false;
-            bowFrame = 0;
-            bowFrameCounter = 0;
-            return true;
-        }
-
-        public override void AI()
-        {
-            if (aiCounter % 300 < 10 && NPC.velocity.Y < 0)
-                NPC.velocity.Y = 0;
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

@@ -35,9 +35,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int healCounter = 0;
 
+        private int frameCounter = 0;
+
+        private int yFrame = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Supporter Construct");
+            Main.npcFrameCount[NPC.type] = 4;
         }
 
         public override void SetDefaults()
@@ -64,6 +69,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.noGravity = false;
             laserTimer++;
             healCounter++;
+            if (Math.Abs(NPC.velocity.X) > 0.3f && NPC.collideY)
+            {
+                frameCounter++;
+                if (frameCounter > 3)
+                {
+                    frameCounter = 0;
+                    yFrame++;
+                }
+                yFrame %= Main.npcFrameCount[NPC.type];
+            }
+            else
+            {
+                frameCounter = 0;
+                yFrame = 3;
+            }
             healingTarget = Main.npc.Where(n => n.active && !n.friendly && n.Distance(NPC.Center) < 800 && n.type != NPC.type && n.ModNPC is IGauntletNPC).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
             if (healingTarget != default)
             {
@@ -120,6 +140,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             SpriteEffects spriteEffects = SpriteEffects.None;
+
+            int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
+
+            Rectangle frameBox = new Rectangle(0, frameHeight * yFrame, mainTex.Width, frameHeight);
             if (NPC.spriteDirection != 1)
             {
                 spriteEffects = SpriteEffects.FlipHorizontally;
@@ -164,8 +188,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
 
-            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, null, drawColor, 0f, mainTex.Size() / 2, NPC.scale, spriteEffects, 0f);
-            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, Color.White, 0f, mainTex.Size() / 2, NPC.scale, spriteEffects, 0f);
+            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, frameBox, drawColor, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
+            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, frameBox, Color.White, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
 
             return false;
         }

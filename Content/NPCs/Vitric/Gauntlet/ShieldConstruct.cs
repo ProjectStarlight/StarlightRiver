@@ -154,6 +154,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            if (guarding)
+                return base.CanHitPlayer(target, ref cooldownSlot);
+            return false;
+        }
+
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
             if (guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
@@ -173,6 +180,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             else
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
         }
+
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {

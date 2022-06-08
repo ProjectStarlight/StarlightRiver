@@ -79,6 +79,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (xFrame == 2 && yFrame == 6 && frameCounter == 1)
+            {
+                for (int i = 0; i < 15; i++)
+                {
+                    Vector2 dustPos = NPC.Center + new Vector2(NPC.spriteDirection * 40, 0) + Main.rand.NextVector2Circular(20, 20);
+                    Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), Vector2.Normalize(NPC.velocity).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f,1f) * 12f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f,1.25f)).noGravity = false;
+                }
+            }
             NPC.TargetClosest(false);
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             attackCooldown--;
@@ -168,8 +176,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             if (NPC.velocity.Y > 0 && NPC.Center.Y > (partner.Top.Y + 5) && !comboJumpedTwice)
                             {
                                 comboDirection = NPC.spriteDirection;
+                                partner.velocity.X = -1 * comboDirection;
                                 NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
-                                NPC.velocity.X *= 2.5f;
+                                NPC.velocity.X *= 2f;
                                 enemyRotation = -6.28f * NPC.spriteDirection * 0.95f;
                                 comboJumpedTwice = true;
 
@@ -347,7 +356,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 if (yFrame == 6)
                 {
                     NPC.velocity.X = NPC.spriteDirection * 17;
-                    NPC.velocity.Y = -5;
+                    NPC.velocity.Y = -3;
                 }
             }
         }
