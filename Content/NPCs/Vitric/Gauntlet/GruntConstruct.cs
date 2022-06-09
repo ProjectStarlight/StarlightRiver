@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 if (closestPelter != default && !attacking)
                 {
 
-                    xPosToBe = (int)MathHelper.Lerp(closestPelter.Center.X, target.Center.X, 0.5f);
+                    xPosToBe = (int)MathHelper.Lerp(closestPelter.Center.X, target.Center.X, 0.8f);
                     if (Math.Abs(xPosToBe - NPC.Center.X) < 25 || idling)
                     {
                         idling = true;
