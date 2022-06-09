@@ -28,8 +28,6 @@ namespace StarlightRiver.Content.Items.Dungeon
         private int counter = 0;
         public override string Texture => AssetDirectory.DungeonItem + Name;
 
-        //public override bool CloneNewInstances => true; //PORTTODO: Figure out whether removing this fucks the item up
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Cloudstrike");
@@ -105,7 +103,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             Vector2 pos = position + (dir * 75) + (dir.RotatedBy(-player.direction * 1.57f) * 5);
             Projectile.NewProjectile(source, pos, velocity.RotatedBy(Main.rand.NextFloat(-0.2f,0.2f)), type, damage, knockback, player.whoAmI, charge);
 
-            player.GetModPlayer<StarlightPlayer>().Shake += (int)(Math.Sqrt(charge) * 2);
+            Core.Systems.CameraSystem.Shake += (int)(Math.Sqrt(charge) * 2);
 
             //Dust.NewDustPerfect(pos, DustID.Electric, dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5));
             if (charge > 60)

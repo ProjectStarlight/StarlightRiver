@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
 
-		public override void Load() //PORTODO: Make cursed accessories not hide Load();
+		public override void Load()
 		{
 			On.Terraria.Player.HealEffect += GrantRage;
 		}

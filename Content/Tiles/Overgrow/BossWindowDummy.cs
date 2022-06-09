@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class BossWindowDummy : Dummy, IMoonlordLayerDrawable
     {
-        private readonly ParticleSystem particles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", update);
+        private ParticleSystem particles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", update);
 
         public BossWindowDummy() : base(TileType<BossWindow>(), 16, 16) { }
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             }
 
             //Screenshake
-            if (Projectile.ai[0] < 359 && Projectile.ai[0] > 0) Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += (int)(359 - Projectile.ai[0]) / 175;
+            Core.Systems.CameraSystem.Shake += (int)(359 - Projectile.ai[0]) / 175;
 
             //Lighting
             for (float k = 0; k <= 6.28f; k += 0.2f)
@@ -190,5 +190,10 @@ namespace StarlightRiver.Content.Tiles.Overgrow
                 spriteBatch.Draw(walltex2, dpos + new Vector2(0, -282 - Projectile.ai[0] / 360), sourceRect2, new Color(255, 255, 200), 0, walltex2.Frame().Size() / 2, 1, 0, 0); //frame
             }
         }
-    }
+
+		public override void Unload()
+		{
+            particles = null;
+		}
+	}
 }

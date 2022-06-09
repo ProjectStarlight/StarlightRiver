@@ -17,11 +17,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ReLogic.Graphics;
 using Terraria.ModLoader.IO;
+using StarlightRiver.Items.Armor;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
     [AutoloadEquip(EquipType.Head)]
-    public class GeomancerHood : ModItem
+    public class GeomancerHood : ModItem, IArmorLayerDrawable
     {
         public override string Texture => AssetDirectory.GeomancerItem + Name;
 
@@ -86,10 +87,19 @@ namespace StarlightRiver.Content.Items.Geomancer
             return Player.armor[0].type == ModContent.ItemType<GeomancerHood>() && Player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && Player.armor[2].type == ModContent.ItemType<GeomancerPants>();
         }
 
+        public void DrawArmorLayer(PlayerDrawSet info)
+        {
+            GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
+            if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == 0)
+            {
+                GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
+            }
+        }
+
     }
 
     [AutoloadEquip(EquipType.Body)]
-    public class GeomancerRobe : ModItem
+    public class GeomancerRobe : ModItem, IArmorLayerDrawable
     {
         public override string Texture => AssetDirectory.GeomancerItem + Name;
 
@@ -124,10 +134,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             Player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
         }
+        public void DrawArmorLayer(PlayerDrawSet info)
+        {
+            GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
+            if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[11].type == 0)
+            {
+                GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+                GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
+            }
+        }
     }
 
     [AutoloadEquip(EquipType.Legs)]
-    public class GeomancerPants : ModItem
+    public class GeomancerPants : ModItem, IArmorLayerDrawable
     {
         public override string Texture => AssetDirectory.GeomancerItem + Name;
 
@@ -150,6 +169,14 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, Player.velocity.Length() / 16f * 0.2f);
         }*/
+        public void DrawArmorLayer(PlayerDrawSet info)
+        {
+            GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
+            if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[12].type == 0)
+            {
+                GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
+            }
+        }
     }
     public class GeomancerItemDummy : ModItem
     {
@@ -170,6 +197,74 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             Item.width = 30;
             Item.height = 20;
+        }
+    }
+
+    public static class GeomancerDrawer
+    {
+        public static void Draw(Texture2D texture, PlayerDrawSet info, Rectangle frame, float rotation) //TODO: Port this over to new system
+        {
+            Player armorOwner = info.drawPlayer;
+
+            Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - armorOwner.gfxOffY);
+            float timerVar = (float)((Main.timeForVisualEffects * 0.05f) % 2.4f / 2.4f) * 6.28f;
+            float timer = ((float)(Math.Sin(timerVar) / 2f) + 0.5f);
+
+            Filters.Scene["RainbowArmor"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+
+            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.005f);
+            Filters.Scene["RainbowArmor2"].GetShader().Shader.Parameters["uOpacity"].SetValue(1.25f - timer);
+
+            try
+            {
+                DrawData value = new DrawData(
+                            texture,
+                            new Vector2((int)drawPos.X, (int)drawPos.Y),
+                            frame,
+                            GeomancerPlayer.GetArmorColor(armorOwner),
+                            rotation,
+                            new Vector2(frame.Width / 2, frame.Height / 2),
+                            1,
+                           armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                            0
+                        )
+                {
+                    shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue : 0
+                };
+            info.DrawDataCache.Add(value);
+            }
+            catch
+            {
+                Main.NewText("First wave of geomancer armor drawing not working");
+            }
+
+            try
+            {
+                for (float i = 0; i < 6.28f; i += 1.57f)
+                {
+                    Vector2 offset = (i.ToRotationVector2() * 2 * timer);
+                    DrawData value2 = new DrawData(
+                            texture,
+                            new Vector2((int)drawPos.X, (int)drawPos.Y) + offset,
+                            frame,
+                            GeomancerPlayer.GetArmorColor(armorOwner) * 0.25f,
+                            rotation,
+                            new Vector2(frame.Width / 2, frame.Height / 2),
+                            1,
+                            armorOwner.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                            0
+                        )
+                    {
+                        shader = armorOwner.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All ? GeomancerPlayer.shaderValue2 : 0
+                    };
+
+                    info.DrawDataCache.Add(value2);
+                }
+            }
+            catch
+            {
+                Main.NewText("Second wave of geomancer armor drawing not working");
+            }
         }
     }
 }

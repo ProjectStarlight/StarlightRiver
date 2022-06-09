@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
         }
 
-        new public void Unload()
+        public override void Unload()
         {
             StarlightPlayer.PostUpdateEvent -= PlayerFrame;
             On.Terraria.Main.DrawInterface_30_Hotbar -= OverrideHotbar;
@@ -442,8 +442,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(8), 0, new Color(50, 50, 255), 0.8f);
             }
 
-            if(Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake <= 10)
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 10;
+            if(Core.Systems.CameraSystem.Shake <= 10)
+                Core.Systems.CameraSystem.Shake += 10;
         }
 
         public override bool PreDraw(ref Color lightColor)

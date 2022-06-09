@@ -40,18 +40,22 @@ namespace StarlightRiver.Content.Projectiles
         {
             SafeAI();
 
-            Player Player = Main.player[Projectile.owner];
+            Player player = Main.player[Projectile.owner];
+            var speed = 1f / player.GetTotalAttackSpeed(DamageClass.Melee);
 
-            Player.heldProj = Projectile.whoAmI;
-            Player.itemTime = Player.itemAnimation;
+            player.heldProj = Projectile.whoAmI;
+            player.itemTime = player.itemAnimation;
 
-            int realDuration = (int)(Duration * Player.GetTotalAttackSpeed(DamageClass.Melee));
-            if (Projectile.timeLeft == Duration) Projectile.timeLeft = realDuration;
+            int realDuration = (int)(Duration * speed);
+
+            if (Projectile.timeLeft == Duration) 
+                Projectile.timeLeft = realDuration;
+
             Projectile.velocity = Vector2.Normalize(Projectile.velocity);
 
             Projectile.rotation = MathHelper.Pi * (3 / 4f) + Projectile.velocity.ToRotation();
             float progress = Projectile.timeLeft > realDuration / 2f ? (realDuration - Projectile.timeLeft) / (realDuration / 2f) : Projectile.timeLeft / (realDuration / 2f);
-            Projectile.Center = Player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * Min, Projectile.velocity * Max, progress);
+            Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * Min, Projectile.velocity * Max, progress);
         }
 
         public override bool PreDraw(ref Color lightColor)

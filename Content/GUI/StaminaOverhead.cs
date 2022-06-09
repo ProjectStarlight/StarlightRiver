@@ -29,10 +29,11 @@ namespace StarlightRiver.Content.GUI
 		private void DrawOverhead(Player player, SpriteBatch spriteBatch)
         {
             if (player != Main.LocalPlayer)
-                return;
+                return;//a
 
             AbilityHandler mp = player.GetHandler();
-            Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48;
+            Vector2 basepos = player.Center - Main.screenPosition - Vector2.UnitY * 48 + Vector2.UnitX * 4;
+            basepos.Y += player.gfxOffY;
 
             var flagTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFlag").Value;
             var emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaSmallEmpty").Value;

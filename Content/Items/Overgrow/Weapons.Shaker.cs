@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Items.Overgrow
                     Projectile.timeLeft = 120;
                     State = 2;
 
-                    player.GetModPlayer<StarlightPlayer>().Shake += (int)(Timer * 0.2f);
+                    Core.Systems.CameraSystem.Shake += (int)(Timer * 0.2f);
                     for (int k = 0; k <= 100; k++)
                     {
                         Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Timer / 10f);

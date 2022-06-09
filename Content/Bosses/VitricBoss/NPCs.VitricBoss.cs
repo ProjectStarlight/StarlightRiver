@@ -184,8 +184,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 foreach (Player Player in Main.player.Where(n => n.Hitbox.Intersects(arena)))
                 {
-                    Player.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = homePos;
-                    Player.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 720;
+                    Core.Systems.CameraSystem.DoPanAnimation(720, homePos);
                     Player.immuneTime = 720;
                     Player.immune = true;
                 }
@@ -333,8 +332,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
             npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
             { 
-                ItemType<BossSpear>(),
-                ItemType<VitricBossBow>(),
+                ItemType<FacetAndLattice>(),
+                ItemType<Coalescence>(),
                 ItemType<Needler>(),
                 ItemType<RefractiveBlade>()
             }

@@ -157,7 +157,8 @@ namespace StarlightRiver.Content.GUI
 
                 if (!Item.IsAir)
                 {
-                    Texture2D tex2 = Item.type > ItemID.Count ? Request<Texture2D>(Item.ModItem.Texture).Value : Request<Texture2D>("Terraria/Item_" + Item.type).Value;
+                    Main.instance.LoadItem(Item.type);
+                    Texture2D tex2 = Item.type > ItemID.Count ? Request<Texture2D>(Item.ModItem.Texture).Value : Terraria.GameContent.TextureAssets.Item[Item.type].Value;
                     float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                     spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, 1, 0, 0);

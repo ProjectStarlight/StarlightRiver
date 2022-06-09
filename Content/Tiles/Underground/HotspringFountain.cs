@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Buffs;
 using Terraria.ObjectData;
 using Terraria.DataStructures;
+using Terraria.Enums;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -24,7 +25,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.DrawYOffset = -2;
-			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100));
+			AnchorData anchor = new AnchorData(AnchorType.SolidTile, 5, 0);
+			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), bottomAnchor: anchor);
 			AnimationFrameHeight = 18 * 5;
 		}
 

@@ -80,7 +80,6 @@ namespace StarlightRiver.Content.GUI
             if (Main.LocalPlayer.controlHook) //Temporary closing logic
             {
                 active = false;
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = false;
             }
         }
 
@@ -146,7 +145,13 @@ namespace StarlightRiver.Content.GUI
             ArmorEnchantment.ArmorEnchantment.EnchantArmor(slots[0].Item, slots[1].Item, slots[2].Item, enchant);
             return true;
         }
-    }
+
+		public override void Unload()
+		{
+            slots = null;
+            buttons = null;
+		}
+	}
 
     class ArmorSlot : UIElement
     {

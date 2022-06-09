@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, Projectile.Center) < 1500))
             {
-                Player.GetModPlayer<StarlightPlayer>().Shake += 15;
+                Core.Systems.CameraSystem.Shake += 15;
             }
 
             foreach (Player Player in Main.player.Where(n => Vector2.Distance(n.Center, Projectile.Center) < 400))

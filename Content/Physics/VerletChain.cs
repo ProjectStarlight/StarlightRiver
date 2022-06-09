@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,27 @@ using Terraria;
 
 namespace StarlightRiver.Physics
 {
-	public class VerletChain
-    {
-        //static
+	public class VerletChainSystem : IOrderedLoadable
+	{
         public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public static List<VerletChain> toDraw = new List<VerletChain>();
 
+        public float Priority => 1;
+
+		public void Load()
+		{
+		}
+
+		public void Unload()
+		{
+            target = null;
+            toDraw = null;
+		}
+	}
+
+	public class VerletChain 
+    {
+        //static
         private static readonly BasicEffect basicEffectColor = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice) { VertexColorEnabled = true };
 
         #region verlet chain example
@@ -73,14 +89,14 @@ namespace StarlightRiver.Physics
         public int simStartOffset = 0;
         public int simEndOffset = 0;//if zero this gets set to the segment count on start
 
-        public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
             startPoint = StartPoint;
 
             if (!specialDraw)
-                toDraw.Add(this);
+                VerletChainSystem.toDraw.Add(this);
         }
 
         public VerletChain(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
@@ -95,7 +111,7 @@ namespace StarlightRiver.Physics
             endPoint = EndPoint ?? Vector2.Zero;
 
             if (!specialDraw)
-                toDraw.Add(this);
+                VerletChainSystem.toDraw.Add(this);
 
             //Start(EndPoint != null);
         }
@@ -119,8 +135,8 @@ namespace StarlightRiver.Physics
             if (customDistances = CustomDists)
                 segmentDistances = SegDists ?? Enumerable.Repeat(segmentDistance, segmentCount).ToList();
 
-            if (!specialDraw) 
-                toDraw.Add(this);
+            if (!specialDraw)
+                VerletChainSystem.toDraw.Add(this);
 
             //Start(EndPoint != null);
         }
@@ -343,7 +359,7 @@ namespace StarlightRiver.Physics
         {
             if (Main.dedServ) return;
 
-            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+            spriteBatch.Draw(VerletChainSystem.target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

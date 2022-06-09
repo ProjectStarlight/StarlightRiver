@@ -516,7 +516,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 Dust.NewDustPerfect(target.Center + Vector2.One.RotatedBy(dustRot) * 24 + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(1), 0, new Color(100, 200, 255), 0.5f);
             }
 
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += power / 4;
+            Core.Systems.CameraSystem.Shake += power / 4;
             Projectile.damage = 0;
         }
 
@@ -628,7 +628,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
                 Helper.PlayPitched("Magic/LightningCast", 0.5f, 0.9f, Projectile.Center);
                 Helper.PlayPitched("Magic/LightningExplode", 0.5f, 0.9f, Projectile.Center);
                 if (Projectile.owner == Main.myPlayer)
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 40;
+                    Core.Systems.CameraSystem.Shake += 40;
             }
 
             if (Projectile.timeLeft == 20)

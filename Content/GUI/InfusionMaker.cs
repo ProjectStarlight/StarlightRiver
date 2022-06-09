@@ -233,7 +233,14 @@ namespace StarlightRiver.Content.GUI
                 element.Height.Set(size.Y, 0);
             }
         }
-    }
+
+		public override void Unload()
+		{
+            previewGif = null;
+            particles = null;
+            infusionOptions = null;
+		}
+	}
 
     class InfusionRecipieEntry : UIElement 
     {

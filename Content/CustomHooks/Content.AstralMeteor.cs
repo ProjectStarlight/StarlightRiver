@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private bool AluminumMeteor(On.Terraria.WorldGen.orig_meteor orig, int i, int j, bool ignorePlayers)
 		{
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 80;
+            Core.Systems.CameraSystem.Shake += 80;
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
             if (Main.rand.Next(3) > (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors) ? 0 : 1))

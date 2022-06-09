@@ -37,7 +37,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                         if (WorldGen.InWorld(realX, realY))
                         {
                             Tile tile = Framing.GetTileSafely(realX, realY);
-                            if (tile.Get<AuroraWaterData>().HasAuroraWater) //PORTTODO: Integrate with properly ported aurora water system
+                            if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
                             {
                                 ShouldSwim = true;
                                 SwimSpeed *= 0.7f;

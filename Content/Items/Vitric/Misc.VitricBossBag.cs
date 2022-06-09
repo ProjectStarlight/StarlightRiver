@@ -33,8 +33,8 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 switch (weapon % 4)
                 {
-                    case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<BossSpear>()); break;
-                    case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<VitricBossBow>()); break;
+                    case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<FacetAndLattice>()); break;
+                    case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Coalescence>()); break;
                     case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Needler>()); break;
                     case 3: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<RefractiveBlade>()); break;
                 }
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<VitricOre>(), Main.rand.Next(45, 85));
             Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<MagmaCore>(), Main.rand.Next(2, 3));
             Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Misc.StaminaUp>());
-            Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<CeirosExpert>());
+            Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<ShatteredAegis>());
 
             if (Main.rand.Next(8) == 0)
                 Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<BarrierDye.VitricBossBarrierDye>());

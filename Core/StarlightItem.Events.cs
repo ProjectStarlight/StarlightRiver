@@ -64,5 +64,15 @@ namespace StarlightRiver.Core
             }
             return true;
         }
+
+		public override void Unload()
+		{
+            GetHealLifeEvent = null;
+            ModifyWeaponDamageEvent = null;
+            GetWeaponCritEvent = null;
+            PickAmmoEvent = null;
+            OnPickupEvent = null;
+            CanUseItemEvent = null;
+		}
 	}
 }
