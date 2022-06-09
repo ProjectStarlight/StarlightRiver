@@ -31,7 +31,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private const int BOWFRAMES = 4;
 
-        private int aiCounter = 0;
 
         private float enemyRotation = 0f;
         private float enemyRotation2 = 0f;
@@ -60,9 +59,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int XFrame = 0;
 
-        private bool doingCombo = false;
+        private Vector2 posToBe = Vector2.Zero;
 
-        private Vector2 distanceFromPlayer = Vector2.Zero;
+        private Vector2 oldPos = Vector2.Zero;
+
+        private bool attacking = false;
+
+        public bool doingCombo = false;
+
+        private int arrowsShot = 0;
+
+        private float bobCounter = 0f;
 
         public override void SetStaticDefaults()
         {
@@ -89,11 +96,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void OnSpawn(IEntitySource source)
         {
-            distanceFromPlayer = new Vector2(Main.rand.Next(-500, -100), Main.rand.Next(-200, -70));
+            posToBe = NPC.Center;
+            oldPos = NPC.Center;
         }
 
         public override void AI()
         {
+            bobCounter += 0.02f;
             NPC.TargetClosest(true);
             Vector2 direction = bowArmPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
@@ -112,69 +121,78 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
             }
 
+            float distance = posToBe.X - oldPos.X;
+            float progress = (NPC.Center.X - oldPos.X) / distance;
+
+            Vector2 dir = NPC.DirectionTo(posToBe);
+
+
+            if (NPC.Distance(posToBe) < 30 || attacking || NPC.collideX || NPC.collideY)
+            {
+                NPC.velocity.Y = (float)Math.Cos(bobCounter) * 0.15f;
+                attacking = true;
+            }
+            else
+            {
+                NPC.velocity = dir * ((float)Math.Sin(progress * 3.14f) + 0.1f) * 3;
+                NPC.velocity.Y += (float)Math.Cos(bobCounter) * 0.15f;
+                attacking = false;
+            }
+
+
             if (doingCombo)
             {
 
             }
             else
-            {
-                Vector2 posToBe = target.Center + new Vector2(distanceFromPlayer.X * NPC.spriteDirection, distanceFromPlayer.Y);
-
-                if (NPC.Distance(posToBe) < 20)
-                    distanceFromPlayer = new Vector2(Main.rand.Next(-500, -100), Main.rand.Next(-200, -70));
-               if (posToBe.X > NPC.Center.X)
-                    NPC.velocity.X += 0.11f;
-                else
-                    NPC.velocity.X -= 0.11f;
-
-                if (posToBe.Y > NPC.Center.Y)
-                    NPC.velocity.Y += 0.11f;
-                else
-                    NPC.velocity.Y -= 0.11f;
-
-                NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -3, 3);
-                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -7, 7);
-
-
-
-               // NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(posToBe) * 5, 0.1f);
-
-                //NPC.velocity = Vector2.Zero;
-                aiCounter++;
-            }
-
-            if (aiCounter % 300 > 200)
-            {
-                bowFrameCounter++;
-                if (bowFrame == 0)
+            { 
+                if (attacking)
                 {
-                    if (bowFrameCounter > 25)
+                    bowFrameCounter++;
+                    if (bowFrame == 0)
                     {
-                        SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                        /*if (comboFiring)
+                        if (bowFrameCounter > 75)
                         {
-                            for (int i = -1; i < 1.1f; i++)
-                                Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy(((target.Center.X - NPC.Center.X) * -0.0003f) + (i * 0.3f)) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            arrowsShot++;
+                            if (arrowsShot > 3)
+                            {
+                                arrowsShot = 0;
+                                attacking = false;
+                                posToBe = target.Center + new Vector2(Main.rand.Next(-500, -100), Main.rand.Next(-200, -70));
+                                oldPos = NPC.Center;
+                            }
+                            else
+                            {
+                                SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
+                                /*if (comboFiring)
+                                {
+                                    for (int i = -1; i < 1.1f; i++)
+                                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy(((target.Center.X - NPC.Center.X) * -0.0003f) + (i * 0.3f)) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                                }
+                                else*/
+                                Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                                bowFrameCounter = 0;
+                                bowFrame++;
+                            }
                         }
-                        else*/
-                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                    }
+                    else if (bowFrameCounter > 4)
+                    {
                         bowFrameCounter = 0;
                         bowFrame++;
                     }
-                }
-                else if (bowFrameCounter > 4)
-                {
-                    bowFrameCounter = 0;
-                    bowFrame++;
-                }
 
-                bowFrame %= BOWFRAMES;
-                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-            }
-            else
-            {
-                bowFrame = 0;
-                bowFrameCounter = 0;
+                    bowFrame %= BOWFRAMES;
+                    NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+
+                   
+                }
+                else
+                {
+                    attacking = false;
+                    bowFrame = 0;
+                    bowFrameCounter = 0;
+                }
             }
         }
 
