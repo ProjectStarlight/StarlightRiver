@@ -69,6 +69,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.noGravity = false;
             laserTimer++;
             healCounter++;
+
+            NPC.spriteDirection = Math.Sign(NPC.velocity.X);
             if (Math.Abs(NPC.velocity.X) > 0.3f && NPC.collideY)
             {
                 frameCounter++;
@@ -197,6 +199,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            {
+                for (int i = 0; i < 4; i++)
+                    Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+
+                for (int k = 1; k <= 5; k++)
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+            }
         }
     }
 }

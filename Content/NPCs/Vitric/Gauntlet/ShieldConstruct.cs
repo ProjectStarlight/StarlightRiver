@@ -201,5 +201,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             else
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
         }
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            {
+                for (int i = 0; i < 12; i++)
+                    Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+
+                for (int k = 1; k <= 17; k++)
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+            }
+        }
     }
 }
