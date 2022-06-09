@@ -21,9 +21,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void SetStaticDefaults()
 		{
-			Main.tileFrameImportant[Type] = true;
-			Main.tileSolid[Type] = false;
+			ModTranslation name = CreateMapEntryName();
+			name.SetDefault("Large Tree");
+			
 			Main.tileAxe[Type] = true;
+			AddMapEntry(new Color(169, 125, 93), name);
+
 			ItemDrop = ItemID.Wood;
 		}
 
@@ -32,14 +35,24 @@ namespace StarlightRiver.Content.Tiles.Forest
 			return (float)Math.Sin(Main.GameUpdateCount * speed + offset) * magnitude;
 		}
 
-		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+		{
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+
+			if ((right && !up && down) || (!up && !down))
+				Main.instance.TilesRenderer.AddSpecialLegacyPoint(new Point(i, j));
+		}
+
+		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
 			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
 			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
 			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
-			if(right && !up && down)
+			if (right && !up && down)
 			{
 				var tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
 				var pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
@@ -86,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			}
 
-			if(!up && !down)
+			if (!up && !down)
 			{
 				var sideTex = Terraria.GameContent.TextureAssets.TreeTop[0].Value;
 				var sidePos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
@@ -96,7 +109,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(20, 0) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 				}
 
-				if(right)
+				if (right)
 				{
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(0, 20) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 				}
@@ -198,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
 
-			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(217, 193, 154));
+			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
 		}
 	}
 

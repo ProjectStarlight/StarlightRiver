@@ -39,8 +39,11 @@ namespace StarlightRiver.Helpers
 
             int xVariants = 0;
             int yVariants = 0;
-            if (data.StyleHorizontal) xVariants = Main.rand.Next(data.RandomStyleRange);
-            else yVariants = Main.rand.Next(data.RandomStyleRange);
+
+            if (data.StyleHorizontal) 
+                xVariants = Main.rand.Next(data.RandomStyleRange);
+            else 
+                yVariants = Main.rand.Next(data.RandomStyleRange);
 
             for (int x = 0; x < data.Width; x++) //generate each column
             {

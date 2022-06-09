@@ -15,6 +15,7 @@ namespace StarlightRiver.Core
             int HellIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Lakes"));
             int DesertIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Micro Biomes"));
             int TrapsIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Traps"));
+            int EndIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Tile Cleanup"));
 
             if (ShiniesIndex != -1)
             {
@@ -25,6 +26,7 @@ namespace StarlightRiver.Core
 
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Ivy", ForestHerbGen));
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Surface Items", SurfaceItemPass));
+                tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Big Trees", BigTreeGen));
             }
         }
 

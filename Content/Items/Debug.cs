@@ -4,8 +4,10 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -38,8 +40,6 @@ namespace StarlightRiver.Content.Items
             Item.UseSound = SoundID.Item18;
             Item.useTurn = true;
             Item.accessory = true;
-
-            Item.createTile = ModContent.TileType<Tiles.Forest.ThickTreeBase>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -54,10 +54,12 @@ namespace StarlightRiver.Content.Items
             int tx = (int)Main.MouseWorld.X / 16;
             int ty = (int)Main.MouseWorld.Y / 16;
 
-            for(int x = 0; x < 2; x++)
+            Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), ModContent.TileType<Tiles.Forest.ThickTreeBase>());
+
+            for (int x = 0; x < 2; x++)
                 for(int y = 0; y < 20; y++)
 				{
-                    WorldGen.PlaceTile(tx + x, ty - y, ModContent.TileType<Tiles.Forest.ThickTree>(), false, true);
+                    WorldGen.PlaceTile(tx + x, ty - (y + 4), ModContent.TileType<Tiles.Forest.ThickTree>(), false, true);
 				}
 
             return true;
