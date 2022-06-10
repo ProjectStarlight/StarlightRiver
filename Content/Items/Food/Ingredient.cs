@@ -13,7 +13,8 @@ namespace StarlightRiver.Content.Items.Food
     {
         Main = 0,
         Side = 1,
-        Seasoning = 2
+        Seasoning = 2,
+        Bonus = 3
     };
 
     public abstract class Ingredient : ModItem
@@ -113,6 +114,7 @@ namespace StarlightRiver.Content.Items.Food
                 case IngredientType.Main: return new Color(255, 220, 140);
                 case IngredientType.Side: return new Color(140, 255, 140);
                 case IngredientType.Seasoning: return new Color(140, 200, 255);
+                case IngredientType.Bonus: return new Color(255, 150, 150);
                 default: return Color.Black;
             }
         }

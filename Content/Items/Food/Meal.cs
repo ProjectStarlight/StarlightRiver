@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -53,6 +55,21 @@ namespace StarlightRiver.Content.Items.Food
             return true;
         }
 
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus))
+            {
+                int type = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus).type;
+                var tex = TextureAssets.Item[type].Value;
+
+                spriteBatch.Draw(tex, position, Color.White);
+
+                return false;
+            }
+
+            return true;
+        }
+
 		public override void OnConsumeItem(Player player)
 		{
             FoodBuffHandler mp = player.GetModPlayer<FoodBuffHandler>();
@@ -78,6 +95,9 @@ namespace StarlightRiver.Content.Items.Food
                 mainName = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Main).Name;
 
             string fullName = mainName + sidesName;
+
+            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus))
+                fullName = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus).Name;
 
             tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = fullName; 
 

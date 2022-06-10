@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Food;
+using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -167,6 +168,12 @@ namespace StarlightRiver.Content.GUI
                 CookIngredient(Item, SideSlot0);
                 CookIngredient(Item, SideSlot1);
                 CookIngredient(Item, SeasonSlot);
+
+                var special = FoodRecipieHandler.Recipes.FirstOrDefault(n => n.Matches((Item.ModItem as Meal).Ingredients));
+
+                if (special.result != 0) //Bad check. This entire addition is kind of a bandaid. That kinda sucks.
+                    (Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
+
                 Item.position = Main.LocalPlayer.Center;
                 Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
@@ -180,8 +187,11 @@ namespace StarlightRiver.Content.GUI
             {
                 (target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
                 (target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
-                if (source.Item.stack == 1) source.Item.TurnToAir();
-                else source.Item.stack--;
+
+                if (source.Item.stack == 1) 
+                    source.Item.TurnToAir();
+                else 
+                    source.Item.stack--;
             }
         }
 
