@@ -31,10 +31,10 @@ namespace StarlightRiver.Content.GUI
         private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
         private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
-        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep"));
-        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit"));
-        private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow").Value);
-        private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop").Value);
+        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+        private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
+        private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 
         private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
