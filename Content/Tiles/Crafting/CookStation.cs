@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Items.Herbology.Materials;
+using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -25,10 +27,22 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
         public override bool RightClick(int i, int j)
         {
+            Main.playerInventory = true;
+
             if (!CookingUI.visible)
             {
                 CookingUI.visible = true;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
+
+                var bag = Main.LocalPlayer.inventory.FirstOrDefault(n => n.type == ItemType<ChefBag>())?.ModItem as ChefBag;
+
+                if (bag != null)
+                {
+                    ChefBagUI.visible = true;
+                    ChefBagUI.openBag = bag;
+                    UILoader.GetUIState<ChefBagUI>().OnInitialize();
+                    ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));                 
+                }
             }
             else
             {

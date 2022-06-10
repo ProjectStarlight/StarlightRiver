@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 		public static ChefBag openBag = null;
 		public static bool visible;
 
-		public UIGrid grid = new UIGrid();
+		public static UIGrid grid = new UIGrid();
 
 		public override bool Visible => visible;
 
@@ -36,7 +37,6 @@ namespace StarlightRiver.Content.GUI
 			grid.ListPadding = 4;
 			grid.MaxWidth.Set(440, 0);
 			grid.MaxHeight.Set(440, 0);
-			grid.OnClick += AddItem;
 
 			Append(grid);
 
@@ -48,20 +48,23 @@ namespace StarlightRiver.Content.GUI
 				var item = new Item();
 				item.SetDefaults(ChefBag.ingredientTypes[k]);
 				grid.Add(new IngredientStorageSlot(item, k));
-			}
+			}		
+		}
+
+		public static void Move(Vector2 moveTarget)
+		{
+			grid.Left.Set(moveTarget.X, 0);
+			grid.Top.Set(moveTarget.Y, 0);
+
+			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public override void Update(GameTime gameTime)
 		{
-			if (!Main.playerInventory && !CookingUI.visible)
-				visible = false;
-		}
+			Recalculate();
 
-		private void AddItem(UIMouseEvent evt, UIElement listeningElement)
-		{
-			if (openBag != null && !Main.mouseItem.IsAir)
-				if (openBag.InsertItem(Main.mouseItem))
-					Main.mouseItem.TurnToAir();
+			if (!Main.playerInventory)
+				visible = false;
 		}
 	}
 
@@ -111,11 +114,53 @@ namespace StarlightRiver.Content.GUI
 			if(IsMouseHovering && count > 0)
 			{
 				Main.LocalPlayer.mouseInterface = true;
-
 				Main.HoverItem = Item.Clone();
-				Main.hoverItemName = Item.Name + " (" + Item.stack + ")";
+				Main.hoverItemName = "a";
 			}
 		}
-	}
 
+		public override void Click(UIMouseEvent evt)
+		{
+			if (Main.mouseItem.IsAir)
+			{
+				Main.mouseItem = ChefBagUI.openBag.RemoveItem(Item.type) ?? Main.mouseItem;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+			}
+			else if (ChefBagUI.openBag.InsertItem(Main.LocalPlayer.HeldItem))
+			{
+				Main.mouseItem.TurnToAir();
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+			}		
+		}
+
+		public override void RightClick(UIMouseEvent evt)
+		{
+			if (Main.mouseItem.IsAir)
+			{
+				Main.mouseItem = ChefBagUI.openBag.RemoveItem(Item.type, 1) ?? Main.mouseItem;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
+			}
+			else if (Main.mouseItem.type == Item.type && Main.mouseItem.stack < Main.mouseItem.maxStack)
+			{
+				var removal = ChefBagUI.openBag.RemoveItem(Item.type, 1);
+
+				if (removal != null)
+					Main.mouseItem.stack += removal.stack;
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
+			}		
+		}
+
+		public override int CompareTo(object obj)
+		{
+			var other = obj as IngredientStorageSlot;
+
+			int firstOrder = Item.type > other.Item.type ? 1 : 0;
+
+			int x = Item.rare * 6 + (int)(Item.ModItem as Ingredient).ThisType * 2 + firstOrder;
+			int y = other.Item.rare * 6 + (int)(other.Item.ModItem as Ingredient).ThisType * 2 + firstOrder;
+
+			return x >= y ? 1 : -1;
+		}
+	}
 }

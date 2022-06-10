@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.GUI
 {
 	public class CookingUI : SmartUIState
     {
-        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Radial Hotbars"));
 
         public override bool Visible => visible;
 
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.GUI
         private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
         private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 
-        private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
+        public static Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
         public override void OnInitialize()
         {
@@ -51,6 +51,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Update(GameTime gameTime)
         {
+            if (!Main.playerInventory)
+                visible = false;
+
             if (TopBar.IsMouseHovering && Main.mouseLeft)
             {
                 if (!Moving)
@@ -59,13 +62,16 @@ namespace StarlightRiver.Content.GUI
                 Moving = true;
             }
 
-            if (!Main.mouseLeft) Moving = false;
+            if (!Main.mouseLeft) 
+                Moving = false;
 
-            if (Moving) Basepos = Main.MouseScreen - MoveOffset;
-            if (Basepos.X < 20) Basepos.X = 20;
+            if (Moving) Basepos = Main.MouseScreen - MoveOffset;            
+            if (Basepos.X < 520) Basepos.X = 520;
             if (Basepos.Y < 20) Basepos.Y = 20;
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
             if (Basepos.Y > Main.screenHeight - 20 - 244) Basepos.Y = Main.screenHeight - 20 - 244;
+
+            ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));
 
             Main.isMouseLeftConsumedByUI = true;
             SetPosition(MainSlot, 44, 44);
@@ -88,7 +94,15 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
+            var backDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266);
+
+            if (ChefBagUI.visible)
+            {
+                backDims.X -= 520;
+                backDims.Width += 520;
+            }
+
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
 
             base.Draw(spriteBatch);
             Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
@@ -198,6 +212,7 @@ namespace StarlightRiver.Content.GUI
         private void Exit(UIMouseEvent evt, UIElement listeningElement)
         {
             visible = false;
+            Main.playerInventory = false;
             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
@@ -234,6 +249,13 @@ namespace StarlightRiver.Content.GUI
 
                 if (Item.stack > 1)
                     Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 32, Color.White, 0.75f);
+
+                if(IsMouseHovering)
+				{
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.HoverItem = Item.Clone();
+                    Main.hoverItemName = "a";
+                }
             }
         }
 

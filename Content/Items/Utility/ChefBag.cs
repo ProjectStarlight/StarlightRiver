@@ -77,31 +77,9 @@ namespace StarlightRiver.Content.Items.Utility
                 return;
 			}
 
-            UpdateBagSlots();
-
             ChefBagUI.visible = true;
             ChefBagUI.openBag = this;
             UILoader.GetUIState<ChefBagUI>().OnInitialize();
-        }
-
-        private void UpdateBagSlots()
-        {
-            ingredientTypes.Sort((n, t) => n >= t ? 1 : -1);
-            //ingredientTypes.Sort((n, t) => SortIngredientType(n, t));                   
-            ingredientTypes.Sort((n, t) => SortIngredient(n, t));
-        }
-
-        private int SortIngredientType(int n, int t)
-		{
-            Item temp = new Item();
-
-            temp.SetDefaults(n);
-            int x = (int)(temp.ModItem as Ingredient).ThisType;
-
-            temp.SetDefaults(t);
-            int y = (int)(temp.ModItem as Ingredient).ThisType;
-
-            return x >= y ? 1 : -1;
         }
 
         private int SortIngredient(int n, int t)
@@ -133,6 +111,33 @@ namespace StarlightRiver.Content.Items.Utility
             return false;
         }
 
+        public Item RemoveItem(int type, int amount = -1)
+		{
+            if(ingredientTypes.Contains(type) && Items.Any(n => n.type == type))
+			{
+                var storedItem = Items.FirstOrDefault(n => n.type == type);
+
+                if (amount == -1)
+                    amount = storedItem.maxStack;
+
+                if (storedItem.stack <= amount)
+				{
+                    Items.Remove(storedItem);
+                    return storedItem.Clone();
+				}
+                else
+				{
+                    storedItem.stack -= amount;
+                    var item = new Item();
+                    item.SetDefaults(type);
+                    item.stack = amount;
+                    return item;
+				}
+			}
+
+            return null;
+		}
+
         public override void SaveData(TagCompound tag)
         {
             tag["Items"] = Items;
@@ -141,7 +146,6 @@ namespace StarlightRiver.Content.Items.Utility
         public override void LoadData(TagCompound tag)
         {
             Items = (List<Item>)tag.GetList<Item>("Items");
-            UpdateBagSlots();
         }
     }
 }
