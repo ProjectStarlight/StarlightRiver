@@ -60,6 +60,7 @@ namespace StarlightRiver.Content.Items.Utility
                 {
                     CombatText.NewText(Player.Hitbox, Microsoft.Xna.Framework.Color.White, "Ingredient added to chefs bag");
                     Helpers.Helper.PlayPitched("Effects/PickupGeneric", 1, 0.5f, Player.Center);
+
                     return false;
                 }
             }
@@ -79,20 +80,7 @@ namespace StarlightRiver.Content.Items.Utility
 
             ChefBagUI.visible = true;
             ChefBagUI.openBag = this;
-            UILoader.GetUIState<ChefBagUI>().OnInitialize();
-        }
-
-        private int SortIngredient(int n, int t)
-        {
-            Item temp = new Item();
-
-            temp.SetDefaults(n);
-            int x = temp.rare * 3 + (int)(temp.ModItem as Ingredient).ThisType;
-
-            temp.SetDefaults(t);
-            int y = temp.rare * 3 + (int)(temp.ModItem as Ingredient).ThisType;
-
-            return x >= y ? 1 : -1;
+            UILoader.GetUIState<ChefBagUI>().Recalculate();
         }
 
         public bool InsertItem(Item item)
@@ -105,6 +93,10 @@ namespace StarlightRiver.Content.Items.Utility
                     Items.Add(item.Clone());
 
                 item.TurnToAir();
+
+                if (ChefBagUI.hideUnowned)
+                    ChefBagUI.RebuildGrid();
+
                 return true;
             }
 
@@ -123,6 +115,10 @@ namespace StarlightRiver.Content.Items.Utility
                 if (storedItem.stack <= amount)
 				{
                     Items.Remove(storedItem);
+
+                    if (ChefBagUI.hideUnowned)
+                        ChefBagUI.RebuildGrid();
+
                     return storedItem.Clone();
 				}
                 else
@@ -131,9 +127,13 @@ namespace StarlightRiver.Content.Items.Utility
                     var item = new Item();
                     item.SetDefaults(type);
                     item.stack = amount;
+
+                    if (ChefBagUI.hideUnowned)
+                        ChefBagUI.RebuildGrid();
+
                     return item;
 				}
-			}
+            }
 
             return null;
 		}

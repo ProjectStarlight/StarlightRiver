@@ -40,7 +40,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
                 {
                     ChefBagUI.visible = true;
                     ChefBagUI.openBag = bag;
-                    UILoader.GetUIState<ChefBagUI>().OnInitialize();
                     ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));                 
                 }
             }
