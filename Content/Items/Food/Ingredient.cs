@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -35,12 +36,27 @@ namespace StarlightRiver.Content.Items.Food
             ChefBag.ingredientTypes.Add(Item.type);
         }
 
-        ///<summary>Where the effects of this food Item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
+        protected bool Active(Player player) => player.GetModPlayer<FoodBuffHandler>().Consumed.Any(n => n.type == Type);
+
+        /// <summary>
+        /// Effects which are applied immediately on consumption
+        /// </summary>
+        /// <param name="player">The player eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
+        public virtual void OnUseEffects(Player player, float multiplier) { }
+
+        /// <summary>
+        /// The passive effects of a food item while the buff is active
+        /// </summary>
+        /// <param name="Player">The palyer eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
         public virtual void BuffEffects(Player Player, float multiplier) { }
 
         /// <summary>
-        /// Make sure to reset appropriate buff updates here
+        /// Allows you to reset buffs applied in BuffEffects
         /// </summary>
+        /// <param name="Player">The palyer eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
         public virtual void ResetBuffEffects(Player Player, float multiplier) { }
 
         public virtual void SafeSetDefaults() { }

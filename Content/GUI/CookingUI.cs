@@ -18,7 +18,11 @@ namespace StarlightRiver.Content.GUI
     {
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
-        private static bool Moving = false;
+        public override bool Visible => visible;
+
+        public static bool visible;
+
+		private static bool Moving = false;
         private static Vector2 MoveOffset = Vector2.Zero;
         private static int scrollStart = 0;
         private static int lineCount = 0;
@@ -111,7 +115,7 @@ namespace StarlightRiver.Content.GUI
 
                     for (int k = 0; k < strings.Count(); k++)
                     {
-                        string text = "~" + Helper.WrapString(strings[k], 100, Terraria.GameContent.FontAssets.ItemStack.Value, 0.65f);
+                        string text = "~" + Helper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
                         string[] substrings = text.Split('\n');
 
                         for (int n = 0; n < substrings.Length; n++)
@@ -129,7 +133,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     var line = lines[k];
                     Utils.DrawBorderString(spriteBatch, line.Item1, Basepos + new Vector2(186, 54 + drawY), line.Item2, 0.65f);
-                    drawY += (int)(Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
+                    drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
                 }
 
                 Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
@@ -183,7 +187,7 @@ namespace StarlightRiver.Content.GUI
 
         private void Exit(UIMouseEvent evt, UIElement listeningElement)
         {
-            Visible = false;
+            visible = false;
             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }

@@ -1,11 +1,15 @@
 ﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using System;
+using StarlightRiver.Content.Items.Food;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -18,6 +22,11 @@ namespace StarlightRiver.Content.Items.Utility
         public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
 
         public override bool CanRightClick() => true;
+
+		public override void Load()
+		{
+            StarlightItem.OnPickupEvent += SpecialIngredientPickup;
+		}
 
 		public override void SetStaticDefaults()
         {
@@ -33,51 +42,95 @@ namespace StarlightRiver.Content.Items.Utility
             Item.value = 500000;
         }
 
+		public override ModItem Clone(Item newEntity)
+		{
+            var clone = base.Clone(newEntity) as ChefBag;  
+            clone.Items = new List<Item>();
+
+            return clone;
+        }
+
+        private bool SpecialIngredientPickup(Item Item, Player Player)
+        {
+            var bag = Player.inventory.FirstOrDefault(n => n.type == ModContent.ItemType<ChefBag>());
+
+            if (bag != null)
+            {
+                if ((bag.ModItem as ChefBag).InsertItem(Item))
+                {
+                    CombatText.NewText(Player.Hitbox, Microsoft.Xna.Framework.Color.White, "Ingredient added to chefs bag");
+                    Helpers.Helper.PlayPitched("Effects/PickupGeneric", 1, 0.5f, Player.Center);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public override void RightClick(Player Player)
         {
+            Item.stack++;
+
+            if (!Main.mouseItem.IsAir)
+			{
+                InsertItem(Main.mouseItem);
+                return;
+			}
+
             UpdateBagSlots();
 
-            Item.stack++;
+            ChefBagUI.visible = true;
             ChefBagUI.openBag = this;
             UILoader.GetUIState<ChefBagUI>().OnInitialize();
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            for (int k = 0; k < Items.Count; k++)
-            {
-                var a = new TooltipLine(Mod, "test", Items[k].Name);
-                a.OverrideColor = ItemRarity.GetColor(Items[k].rare);
-                tooltips.Add(a);
-            }
-        }
-
         private void UpdateBagSlots()
         {
-            Items.Clear();
-
+            ingredientTypes.Sort((n, t) => n >= t ? 1 : -1);
+            //ingredientTypes.Sort((n, t) => SortIngredientType(n, t));                   
             ingredientTypes.Sort((n, t) => SortIngredient(n, t));
+        }
 
-            for (int k = 0; k < ingredientTypes.Count; k++)
-            {
-                if (Items.Count <= k || Items[k].type != ingredientTypes[k])
-                {
-                    Item Item = new Item();
-                    Item.SetDefaults(ingredientTypes[k]);
-                    Items.Insert(k, Item);
-                }
-            }
+        private int SortIngredientType(int n, int t)
+		{
+            Item temp = new Item();
+
+            temp.SetDefaults(n);
+            int x = (int)(temp.ModItem as Ingredient).ThisType;
+
+            temp.SetDefaults(t);
+            int y = (int)(temp.ModItem as Ingredient).ThisType;
+
+            return x >= y ? 1 : -1;
         }
 
         private int SortIngredient(int n, int t)
         {
             Item temp = new Item();
-            temp.SetDefaults(n);
-            int x = temp.rare;
-            temp.SetDefaults(t);
-            int y = temp.rare;
 
-            return x > y ? 1 : -1;
+            temp.SetDefaults(n);
+            int x = temp.rare * 3 + (int)(temp.ModItem as Ingredient).ThisType;
+
+            temp.SetDefaults(t);
+            int y = temp.rare * 3 + (int)(temp.ModItem as Ingredient).ThisType;
+
+            return x >= y ? 1 : -1;
+        }
+
+        public bool InsertItem(Item item)
+        {
+            if (ingredientTypes.Contains(item.type))
+            {
+                if (Items.Any(n => n.type == item.type))
+                    Items.FirstOrDefault(n => n.type == item.type).stack += item.stack;
+                else
+                    Items.Add(item.Clone());
+
+                item.TurnToAir();
+                return true;
+            }
+
+            return false;
         }
 
         public override void SaveData(TagCompound tag)

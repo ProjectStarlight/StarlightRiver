@@ -25,9 +25,17 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
         public override bool RightClick(int i, int j)
         {
-            var state = UILoader.GetUIState<CookingUI>();
-            if (!state.Visible) { state.Visible = true; Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen); }
-            else { state.Visible = false; Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose); }
+            if (!CookingUI.visible)
+            {
+                CookingUI.visible = true;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuOpen);
+            }
+            else
+            {
+                CookingUI.visible = false;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
+            }
+
             return true;
         }
     }
