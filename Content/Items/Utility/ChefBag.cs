@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Items.Utility
 	class ChefBag : ModItem
     {
         public static List<int> ingredientTypes = new List<int>();
+        public static List<int> specialTypes = new List<int>();
 
         public List<Item> Items = new List<Item>();
 
@@ -28,10 +29,16 @@ namespace StarlightRiver.Content.Items.Utility
             StarlightItem.OnPickupEvent += SpecialIngredientPickup;
 		}
 
+		public override void Unload()
+		{
+            ingredientTypes = null;
+            specialTypes = null;    
+        }
+
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Chef's Bag");
-            Tooltip.SetDefault("Stores lots of every ingredient\nRight click an ingredient to make it with others in the bag");
+            Tooltip.SetDefault("Stores lots of every ingredient");
         }
 
         public override void SetDefaults()

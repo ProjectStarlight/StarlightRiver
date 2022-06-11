@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.Utility;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -23,10 +24,10 @@ namespace StarlightRiver.Content.Items.Food.Special
 	public struct FoodRecipie
 	{
 		public int result;
-		int mainType;
-		int sideType;
-		int sideType2;
-		int seasoningType;
+		public int mainType;
+		public int sideType;
+		public int sideType2;
+		public int seasoningType;
 
 		public FoodRecipie(int result, int main, int side, int side2, int seasoning)
 		{
@@ -46,6 +47,17 @@ namespace StarlightRiver.Content.Items.Food.Special
 				items.Any(n => n.type == comparison.sideType2) &&
 				items.Any(n => n.type == comparison.seasoningType);
 		}
+
+		public List<int> AsList()
+		{
+			return new List<int>()
+			{
+				mainType,
+				sideType,
+				sideType2,
+				seasoningType
+			};
+		}
 	}
 
 	internal abstract class BonusIngredient : Ingredient
@@ -57,6 +69,7 @@ namespace StarlightRiver.Content.Items.Food.Special
 		public override void AddRecipes()
 		{
 			FoodRecipieHandler.Recipes.Add(Recipie());
+			ChefBag.specialTypes.Add(Item.type);
 		}
 	}
 }

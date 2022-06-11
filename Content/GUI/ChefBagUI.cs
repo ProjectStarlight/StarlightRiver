@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Food;
+using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
@@ -23,6 +24,9 @@ namespace StarlightRiver.Content.GUI
 		public static UIGrid grid = new UIGrid();
 		public static UIImageButton SortButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 		public static UIImageButton OwnedButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+
+		public static UIImageButton IngredientTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButtonCustom", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton RecipieTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButtonCustom", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
 		public static string sortMode = "Rarity";
 		public static bool hideUnowned = false;
@@ -63,8 +67,23 @@ namespace StarlightRiver.Content.GUI
 
 			Append(OwnedButton);
 
-			if (openBag is null)
-				return;	
+
+			IngredientTab.Left.Set(-220, 0.5f);
+			IngredientTab.Top.Set(-260, 0.5f);
+			IngredientTab.Width.Set(86, 0);
+			IngredientTab.Height.Set(28, 0);
+			IngredientTab.OnClick += (a, b) => RebuildGrid();
+
+			Append(IngredientTab);
+
+
+			RecipieTab.Left.Set(-130, 0.5f);
+			RecipieTab.Top.Set(-260, 0.5f);
+			RecipieTab.Width.Set(86, 0);
+			RecipieTab.Height.Set(28, 0);
+			RecipieTab.OnClick += (a, b) => RebuildRecipies();
+
+			Append(RecipieTab);
 		}
 
 		private void ChangeOwnedMode(UIMouseEvent evt, UIElement listeningElement)
@@ -100,6 +119,12 @@ namespace StarlightRiver.Content.GUI
 			OwnedButton.Left.Set(moveTarget.X - 40, 0);
 			OwnedButton.Top.Set(moveTarget.Y + 40, 0);
 
+			IngredientTab.Left.Set(moveTarget.X, 0);
+			IngredientTab.Top.Set(moveTarget.Y - 40, 0);
+
+			RecipieTab.Left.Set(moveTarget.X + 90, 0);
+			RecipieTab.Top.Set(moveTarget.Y - 40, 0);
+
 			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
@@ -127,6 +152,18 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
+		public static void RebuildRecipies()
+		{
+			grid.Clear();
+
+			for (int k = 0; k < ChefBag.specialTypes.Count; k++)
+			{
+				var item = new Item();
+				item.SetDefaults(ChefBag.specialTypes[k]);
+				grid.Add(new RecipieSlot(item, k));
+			}
+		}
+
 		public override void Update(GameTime gameTime)
 		{
 			if (grid._items.Count() == 0)
@@ -146,21 +183,19 @@ namespace StarlightRiver.Content.GUI
 	class IngredientStorageSlot : UIElement
 	{
 		public Item Item;
+		public float scale;
 
-		public IngredientStorageSlot(Item Item, int index)
+		public IngredientStorageSlot(Item Item, int index, float scale = 1)
 		{
 			this.Item = Item;
 
-			Width.Set(50, 0);
-			Height.Set(50, 0);
+			Width.Set(50 * scale, 0);
+			Height.Set(50 * scale, 0);
 
-			Left.Set(index % 8 * 54, 0);
-			Top.Set(index / 8 * 54, 0);
-		}
+			Left.Set(index % 8 * 54 * scale, 0);
+			Top.Set(index / 8 * 54 * scale, 0);
 
-		public override void Update(GameTime gameTime)
-		{
-			base.Update(gameTime);
+			this.scale = scale;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -181,10 +216,10 @@ namespace StarlightRiver.Content.GUI
 			var color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
-			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, count.ToString(), pos + Vector2.One * 14, color, 0.8f, 1, 0.5f);
+			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, scale, 0, 0);
+			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, scale, 0, 0);
+			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, scale, 0, 0);
+			Utils.DrawBorderString(spriteBatch, count.ToString(), pos + Vector2.One * 14, color, 0.8f * scale, 1, 0.5f);
 
 			if(IsMouseHovering && count > 0)
 			{
@@ -266,6 +301,67 @@ namespace StarlightRiver.Content.GUI
 		private int CompareAlphabetical(IngredientStorageSlot other)
 		{
 			return Item.Name.CompareTo(other.Item.Name);
+		}
+	}
+
+	class RecipieSlot : IngredientStorageSlot
+	{
+		public BonusIngredient Result => Item.ModItem as BonusIngredient;
+
+		public RecipieSlot(Item Item, int index) : base(Item, index)
+		{
+			this.Item = Item;
+
+			Width.Set(230, 0);
+			Height.Set(50, 0);
+
+			Left.Set(index % 2 * 240, 0);
+			Top.Set(index / 2 * 54, 0);
+
+			for(int k = 0; k < 4; k++)
+			{
+				var item = new Item();
+				item.SetDefaults(Result.Recipie().AsList()[k]);
+				IngredientStorageSlot slot = new IngredientStorageSlot(item, k + 1, 0.8f);
+				slot.Left.Set(58 + k * 44, 0);
+				slot.Top.Set(8, 0);
+				Append(slot);
+			}
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			Main.instance.LoadItem(Item.type);
+
+			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
+			var texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
+			var ItemTex = TextureAssets.Item[Item.type].Value;
+			var pos = GetDimensions().Center();
+			pos.X = GetDimensions().X + 25;
+
+			var items = ChefBagUI.openBag.Items;
+			var heldItem = items.FirstOrDefault(n => n.type == Item.type);
+
+			var color = Color.White;
+
+			var color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
+			color2.A = 0;
+
+			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, 1, 0, 0);
+
+			var hitbox = new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 50, 50);
+
+			if (IsMouseHovering && hitbox.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.HoverItem = Item.Clone();
+				Main.hoverItemName = "a";
+			}
+
+			foreach (var child in Children)
+				child.Draw(spriteBatch);
 		}
 	}
 }
