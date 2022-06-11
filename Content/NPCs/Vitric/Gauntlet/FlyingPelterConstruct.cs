@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             {
                                 arrowsShot = 0;
                                 attacking = false;
-                                posToBe = target.Center + new Vector2(Main.rand.Next(-500, -100), Main.rand.Next(-200, -70));
+                                posToBe = target.Center + new Vector2(Main.rand.Next(-500, -100) * Math.Sign(target.Center.X - NPC.Center.X), Main.rand.Next(-200, -70));
                                 oldPos = NPC.Center;
                             }
                             else
