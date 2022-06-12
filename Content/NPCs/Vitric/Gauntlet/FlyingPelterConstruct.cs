@@ -59,17 +59,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int XFrame = 0;
 
-        private Vector2 posToBe = Vector2.Zero;
+        public Vector2 posToBe = Vector2.Zero;
 
-        private Vector2 oldPos = Vector2.Zero;
+        public Vector2 oldPos = Vector2.Zero;
 
-        private bool attacking = false;
+        public bool attacking = false;
 
         public bool doingCombo = false;
+        public NPC comboPartner = default;
+        public bool empowered = false;
 
         private int arrowsShot = 0;
 
         private float bobCounter = 0f;
+
+        public bool stayInPlace = false;
 
         public override void SetStaticDefaults()
         {
@@ -92,6 +96,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             };
             NPC.DeathSound = SoundID.Shatter;
             NPC.noGravity = true;
+            NPC.behindTiles = true;
         }
 
         public override void OnSpawn(IEntitySource source)
@@ -102,6 +107,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (empowered && !comboPartner.active)
+            {
+                empowered = false;
+            }
+            if (doingCombo)
+            {
+                if (!comboPartner.active)
+                {
+                    doingCombo = false;
+                }
+                posToBe = new Vector2(MathHelper.Lerp(comboPartner.Center.X, target.Center.X, 0.5f), comboPartner.Center.Y - 100);
+                if (stayInPlace)
+                    posToBe = NPC.Center;
+            }
             bobCounter += 0.02f;
             NPC.TargetClosest(true);
             Vector2 direction = bowArmPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
