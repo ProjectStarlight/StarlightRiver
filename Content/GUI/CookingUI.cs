@@ -28,10 +28,10 @@ namespace StarlightRiver.Content.GUI
         private static int scrollStart = 0;
         private static int lineCount = 0;
 
-        private readonly CookingSlot MainSlot = new CookingSlot(IngredientType.Main);
-        private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
-        private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
-        private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
+        public readonly CookingSlot MainSlot = new CookingSlot(IngredientType.Main);
+        public readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
+        public readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
+        public readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
         private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep", ReLogic.Content.AssetRequestMode.ImmediateLoad));
         private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit", ReLogic.Content.AssetRequestMode.ImmediateLoad));
         private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);

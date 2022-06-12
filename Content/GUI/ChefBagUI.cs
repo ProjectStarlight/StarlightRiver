@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Food;
 using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
@@ -150,6 +151,9 @@ namespace StarlightRiver.Content.GUI
 					grid.Add(new IngredientStorageSlot(item, k));
 				}
 			}
+
+			grid.UpdateOrder();
+			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void RebuildRecipies()
@@ -362,6 +366,38 @@ namespace StarlightRiver.Content.GUI
 
 			foreach (var child in Children)
 				child.Draw(spriteBatch);
+		}
+
+		public override void Click(UIMouseEvent evt)
+		{
+			var hitbox = new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 50, 50);
+
+			if (hitbox.Contains(Main.MouseScreen.ToPoint()) && CookingUI.visible)
+			{
+				var cooking = UILoader.GetUIState<CookingUI>();
+
+				if (!cooking.MainSlot.Item.IsAir)
+					ChefBagUI.openBag.InsertItem(cooking.MainSlot.Item.Clone());
+
+				cooking.MainSlot.Item = ChefBagUI.openBag.RemoveItem(Result.Recipie().mainType, 1) ?? new Item();
+
+				if (!cooking.SideSlot0.Item.IsAir)
+					ChefBagUI.openBag.InsertItem(cooking.SideSlot0.Item.Clone());
+
+				cooking.SideSlot0.Item = ChefBagUI.openBag.RemoveItem(Result.Recipie().sideType, 1) ?? new Item();
+
+				if (!cooking.SideSlot1.Item.IsAir)
+					ChefBagUI.openBag.InsertItem(cooking.SideSlot1.Item.Clone());
+
+				cooking.SideSlot1.Item = ChefBagUI.openBag.RemoveItem(Result.Recipie().sideType2, 1) ?? new Item();
+
+				if (!cooking.SeasonSlot.Item.IsAir)
+					ChefBagUI.openBag.InsertItem(cooking.SeasonSlot.Item.Clone());
+
+				cooking.SeasonSlot.Item = ChefBagUI.openBag.RemoveItem(Result.Recipie().seasoningType, 1) ?? new Item();
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+			}
 		}
 	}
 }

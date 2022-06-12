@@ -62,7 +62,9 @@ namespace StarlightRiver.Content.Items.Food
                 int type = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus).type;
                 var tex = TextureAssets.Item[type].Value;
 
-                spriteBatch.Draw(tex, position, Color.White);
+                float thisScale = tex.Width > tex.Height ? 32f / tex.Width : 32f / tex.Height;
+
+                spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2, thisScale, 0, 0);
 
                 return false;
             }
