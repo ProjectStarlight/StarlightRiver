@@ -123,7 +123,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
                 comboTimer++;
                 if (comboTimer == 100)
+                {
                     NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
+                    return;
+                }
                 if (comboTimer > 100)
                 {
                     frameCounter = 0;
@@ -278,7 +281,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 spriteEffects = SpriteEffects.FlipHorizontally;
             }
 
-            if (healingTarget != default && healingTarget.Distance(NPC.Center) < 300)
+            if (healingTarget != default && healingTarget.Distance(NPC.Center) < 300 && !stuck)
             {
                 Color color = Color.OrangeRed;
                 Vector2 pos = NPC.Center - Main.screenPosition;
