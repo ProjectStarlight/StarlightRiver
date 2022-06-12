@@ -351,9 +351,11 @@ namespace StarlightRiver.Content.GUI
 			var color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
+			float scale = ItemTex.Width > ItemTex.Height ? 32f / ItemTex.Width : 32f / ItemTex.Height;
+
 			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, scale, 0, 0);
 
 			var hitbox = new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 50, 50);
 
