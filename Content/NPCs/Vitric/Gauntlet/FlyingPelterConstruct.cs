@@ -75,6 +75,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public bool stayInPlace = false;
 
+        public NPC pairedGrunt = default;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flying Pelter Construct");
@@ -107,6 +109,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (pairedGrunt != default)
+            {
+                if (!pairedGrunt.active)
+                {
+                    pairedGrunt = default;
+                }
+            }
+
             if (empowered && !comboPartner.active)
             {
                 empowered = false;
@@ -274,6 +284,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void HitEffect(int hitDirection, double damage)
         {
+            if (pairedGrunt != default)
+            {
+                (pairedGrunt.ModNPC as FlyingGruntConstruct).attacking = true;
+            }
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int i = 0; i < 9; i++)
