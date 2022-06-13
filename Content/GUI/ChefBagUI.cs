@@ -42,11 +42,11 @@ namespace StarlightRiver.Content.GUI
 
 			grid.Left.Set(-220, 0.5f);
 			grid.Top.Set(-220, 0.5f);
-			grid.Width.Set(440, 0);
-			grid.Height.Set(440, 0);
+			grid.Width.Set(480, 0);
+			grid.Height.Set(216, 0);
 			grid.ListPadding = 4;
-			grid.MaxWidth.Set(440, 0);
-			grid.MaxHeight.Set(440, 0);
+			grid.MaxWidth.Set(480, 0);
+			grid.MaxHeight.Set(216, 0);
 
 			Append(grid);
 
@@ -327,7 +327,7 @@ namespace StarlightRiver.Content.GUI
 				var item = new Item();
 				item.SetDefaults(Result.Recipie().AsList()[k]);
 				IngredientStorageSlot slot = new IngredientStorageSlot(item, k + 1, 0.8f);
-				slot.Left.Set(58 + k * 44, 0);
+				slot.Left.Set(50 + k * 42, 0);
 				slot.Top.Set(8, 0);
 				Append(slot);
 			}

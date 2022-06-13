@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Food
         {
             int interval = (int)(60 / (4 * multiplier));
 
-            if (Player.miscTimer % interval == 0)
+            if (Player.GetModPlayer<StarlightPlayer>().Timer % interval == 0)
                 Player.statMana++;
         }
     }
