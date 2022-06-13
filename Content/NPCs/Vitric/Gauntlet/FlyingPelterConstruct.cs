@@ -77,6 +77,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public NPC pairedGrunt = default;
 
+        private float glowCounter = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flying Pelter Construct");
@@ -117,9 +119,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
             }
 
-            if (empowered && !comboPartner.active)
+            if (empowered)
             {
-                empowered = false;
+                glowCounter += 0.1f;
+                if (!comboPartner.active)
+                    empowered = false;
             }
             if (doingCombo)
             {
@@ -227,18 +231,44 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (empowered)
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+                float sin = 0.5f + ((float)Math.Sin(glowCounter) * 0.5f);
+                float distance = (sin * 4) + 2;
+                for (int i = 0; i < 8; i++)
+                {
+                    float rad = i * 6.28f / 8;
+                    Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                    Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+                    DrawComponents(true, screenPos, color, offset);
+                }
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+            }
+            DrawComponents(false, screenPos, drawColor, Vector2.Zero);
+            return false;
+        }
+
+        private void DrawComponents(bool glow, Vector2 screenPos, Color drawColor, Vector2 offset)
+        {
             SpriteEffects effects = SpriteEffects.None;
             SpriteEffects bowEffects = SpriteEffects.None;
 
-            Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+            string glowTag = glow ? "_White" : "";
+
+            Texture2D mainTex = ModContent.Request<Texture2D>(Texture + glowTag).Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
-            Texture2D armTex = ModContent.Request<Texture2D>(Texture + "_Arms").Value;
+            Texture2D armTex = ModContent.Request<Texture2D>(Texture + "_Arms" + glowTag).Value;
             Texture2D armGlowTex = ModContent.Request<Texture2D>(Texture + "_Arms_Glow").Value;
 
-            Texture2D headTex = ModContent.Request<Texture2D>(Texture + "_Head").Value;
+            Texture2D headTex = ModContent.Request<Texture2D>(Texture + "_Head" + glowTag).Value;
 
-            Texture2D bowTex = ModContent.Request<Texture2D>(Texture + "_Bow").Value;
+            Texture2D bowTex = ModContent.Request<Texture2D>(Texture + "_Bow" + glowTag).Value;
 
             int armFrameSize = armTex.Height / 2;
             Rectangle frontFrame = new Rectangle(0, 0, armTex.Width, armFrameSize);
@@ -267,19 +297,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+            if (!glow)
+                Main.spriteBatch.Draw(glowTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(headTex, headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(headTex, offset + headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(armTex, bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
-            Main.spriteBatch.Draw(armGlowTex, bowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(armTex, offset + bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+            if (!glow)
+                Main.spriteBatch.Draw(armGlowTex, offset + bowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
 
-            Main.spriteBatch.Draw(bowTex, bowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
+            Main.spriteBatch.Draw(bowTex, offset + bowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
 
-            Main.spriteBatch.Draw(armTex, backArmPos + slopeOffset - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
-            Main.spriteBatch.Draw(armGlowTex, backArmPos + slopeOffset - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
-            return false;
+            Main.spriteBatch.Draw(armTex, offset + backArmPos + slopeOffset - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
+            if (!glow)
+                Main.spriteBatch.Draw(armGlowTex, offset + backArmPos + slopeOffset - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
         }
 
         public override void HitEffect(int hitDirection, double damage)
