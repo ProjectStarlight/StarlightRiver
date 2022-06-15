@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
-            knockbackVel *= 0.95f;
+            knockbackVel *= 0.87f;
             if (pairedGrunt != default)
             {
                 if (!pairedGrunt.active)
@@ -163,7 +163,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             float distance = posToBe.X - oldPos.X;
-            float progress = MathHelper.Clamp((NPC.Center.X - oldPos.X) / distance, 0, 1);
+            float progress = (NPC.Center.X - oldPos.X) / distanceci;
+            if (progress < 0)
+            {
+                progress = MathHelper.Clamp(progress, 0, 1);
+                oldPos = NPC.Center;
+            }
 
             Vector2 dir = NPC.DirectionTo(posToBe);
 
@@ -223,12 +228,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             proj.rotation = bowArmRotation + 1.57f;
                             proj.ai[0] = proj.Distance(target.Center) / 5;
 
-                            knockbackVel = bowArmRotation.ToRotationVector2() * -2;
+                            knockbackVel = bowArmRotation.ToRotationVector2() * -5;
 
                             for (int i = 0; i < 15; i++)
                             {
                                 Vector2 dustPos = bowPos + Main.rand.NextVector2Circular(10, 10);
-                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 3f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 7f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
                             }
                         }
                         bowFrameCounter = 0;
