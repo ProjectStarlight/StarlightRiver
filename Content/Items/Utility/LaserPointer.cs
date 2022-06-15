@@ -39,8 +39,9 @@ namespace StarlightRiver.Content.Items.Utility
     class LaserPointer : ModItem
 	{
         private Color color;
-        private int extraMaterial;
-        private string InternalName;
+        private readonly int extraMaterial;
+        private readonly string InternalName;
+        protected override bool CloneNewInstances => true;
 
         public override string Name => InternalName;
 

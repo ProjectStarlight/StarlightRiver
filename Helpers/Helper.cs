@@ -382,10 +382,10 @@ namespace StarlightRiver.Helpers
         
         public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)
         {
-            /*if (Main.netMode == NetmodeID.Server)
+            if (Main.netMode == NetmodeID.Server)
                 return SlotId.Invalid;
 
-            for (int i = 0; i < instances.Count; i++)
+            /*for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -401,8 +401,14 @@ namespace StarlightRiver.Helpers
                 }
             }*/
 
-            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}");
-            return PlayPitched(style, volume, pitch, position);
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}")
+            {
+                Volume = volume,
+                Pitch = pitch,
+                MaxInstances = 0
+            };
+
+             return SoundEngine.PlaySound(style, position);
 
             /*float distFactor = 1;
 
@@ -423,6 +429,7 @@ namespace StarlightRiver.Helpers
 
             style.Volume *= volume;
             style.Pitch += pitch;
+            style.MaxInstances = 0;
 
             return SoundEngine.PlaySound(style, position);
         }
@@ -474,21 +481,6 @@ namespace StarlightRiver.Helpers
             }
 
             return Point16.Zero;
-        }
-
-        public static Color MoltenVitricGlow(float time)
-        {
-            Color MoltenGlowc = Color.White;
-            if (time > 30 && time < 60)
-                MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f, 1f));
-            else if (time >= 60)
-                MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
-            return MoltenGlowc;
-        }
-
-        public static float RotationDifference(float rotTo, float rotFrom)
-        {
-            return ((((rotTo - rotFrom) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
         }
     }
 }
