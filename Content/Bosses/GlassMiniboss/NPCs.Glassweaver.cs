@@ -142,8 +142,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     switch (AttackPhase)
                     {
                         case 0: GlassGauntlet_Wave0(); break;
+
                         case 1: GlassGauntlet_Wave1(); break;
+
                         case 2: GlassGauntlet_Wave2(); break;
+
                         case 3: GlassGauntlet_End(); break;
                     }
 

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     }
                 }
             }
-            NPC.NewNPC(Entity.GetSource_Misc("GlassTrial"), (int)pos.X, (int)pos.Y, type);
+            Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), pos, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type);
         }
 
         private int waitTime;
@@ -78,8 +78,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == 5)
             {
-                SpawnEnemy(arenaPos + new Vector2(200, -20), Grunt);
-                SpawnEnemy(arenaPos + new Vector2(-200, -20), Grunt);
+                SpawnEnemy(arenaPos + new Vector2(140, -20), Grunt);
+                SpawnEnemy(arenaPos + new Vector2(-140, -20), Grunt);
             }
 
             if (AttackTimer == 40)
@@ -99,14 +99,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer == 5)
             {
-                SpawnEnemy(arenaPos + new Vector2(250, -80), FlyingGrunt, true);
-                SpawnEnemy(arenaPos + new Vector2(-250, -80), FlyingGrunt, true);
+                SpawnEnemy(arenaPos + new Vector2(250, -80), FlyingGrunt, false);
+                SpawnEnemy(arenaPos + new Vector2(-250, -80), FlyingGrunt, false);
             }
 
             if (AttackTimer == 20)
             {
-                SpawnEnemy(arenaPos + new Vector2(420, -120), Pelter, true);
-                SpawnEnemy(arenaPos + new Vector2(-420, -120), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(420, -120), Pelter);
+                SpawnEnemy(arenaPos + new Vector2(-420, -120), Pelter);
             }
 
             if (AttackTimer > 100)
