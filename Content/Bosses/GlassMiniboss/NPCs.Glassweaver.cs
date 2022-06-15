@@ -22,7 +22,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
 
-        //internal ref float Wave => ref NPC.ai[2];
         internal ref float AttackPhase => ref NPC.ai[2];
         internal ref float AttackTimer => ref NPC.ai[3];
         internal ref float AttackType => ref NPC.localAI[0];
@@ -35,7 +34,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             SpawnEffects,
             DespawnEffects,
             JumpToBackground,
-            GlassTrial,
+            GlassGauntlet,
             ReturnToForeground,
             DirectPhase,
             DeathEffects
@@ -131,19 +130,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     //else
                     //{
-                    Phase = (int)PhaseEnum.GlassTrial;
+                    Phase = (int)PhaseEnum.GlassGauntlet;
                     ResetAttack();
                     //    NPC.noGravity = false;
                     //}
 
                     break;
 
-                case (int)PhaseEnum.GlassTrial:
+                case (int)PhaseEnum.GlassGauntlet:
 
                     switch (AttackPhase)
                     {
-                        case 0: AttackPhase++; break;
-                        case 1: GlassTrial_Wave1(); break;
+                        case 0: GlassGauntlet_Wave0(); break;
+                        case 1: GlassGauntlet_Wave1(); break;
+                        case 2: GlassGauntlet_Wave2(); break;
+                        case 3: GlassGauntlet_End(); break;
                     }
 
                     break;                
@@ -238,14 +239,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + Name);
             Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + Name + "Glow");
 
+            if (NPC.IsABestiaryIconDummy)
+            {
+                Rectangle bestiaryFrame = weaver.Frame(1, 6, 0, 4);
+                spriteBatch.Draw(weaver.Value, NPC.Center - screenPos, bestiaryFrame, Color.White, 0, bestiaryFrame.Size() * 0.5f, 1f, 0, 0);
+                return false;
+            }
+
             Rectangle frame = weaver.Frame(1, 6, 0, 0);
             frame.X = 0;
             frame.Width = 144;
-
             const int frameHeight = 152;
 
             Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
             Vector2 drawPos = new Vector2(0, -35) - screenPos;
+
+            Color baseColor = drawColor;
+            Color glowColor = new Color(255, 255, 255, 128);
 
             //gravity frame
             if (NPC.velocity.Y > 0)
@@ -253,6 +263,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             switch (Phase)
             {
+                case (int)PhaseEnum.GlassGauntlet:
+
+                    return false;
+
                 case (int)PhaseEnum.ReturnToForeground:
 
                     if (AttackTimer > 30 & AttackTimer < 180)
@@ -361,9 +375,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     break;
             }
-
-            Color baseColor = drawColor;
-            Color glowColor = new Color(255, 255, 255, 128);
 
             spriteBatch.Draw(weaver.Value, NPC.Center + drawPos, frame, baseColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
             spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
