@@ -224,6 +224,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             proj.ai[0] = proj.Distance(target.Center) / 5;
 
                             knockbackVel = bowArmRotation.ToRotationVector2() * -2;
+
+                            for (int i = 0; i < 15; i++)
+                            {
+                                Vector2 dustPos = bowPos + Main.rand.NextVector2Circular(10, 10);
+                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 3f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+                            }
                         }
                         bowFrameCounter = 0;
                         bowFrame++;
@@ -394,7 +400,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         }
     }
 
-    internal class PelterConstructArrowLarge : ModProjectile
+    internal class PelterConstructArrowLarge : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.GauntletNpc + Name;
 
@@ -402,6 +408,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Trail trail;
 
         private float fade = 1;
+
+        private Vector2 firstPos = Vector2.Zero;
 
         public override void SetDefaults()
         {
@@ -450,6 +458,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (firstPos == Vector2.Zero)
+                firstPos = Projectile.Center;
             if (!Main.dedServ)
             {
                 if (Projectile.extraUpdates > 0)
@@ -477,7 +487,50 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     ManageCaches();
                 Projectile.velocity = Vector2.Zero;
 
-                SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+                Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+
+                for (int i = 0; i < 6; i++)
+                {
+                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+                    dust.velocity = Main.rand.NextVector2Circular(5, 5);
+                    dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+                    dust.alpha = 70 + Main.rand.Next(60);
+                    dust.rotation = Main.rand.NextFloat(6.28f);
+                }
+                for (int i = 0; i < 6; i++)
+                {
+                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+                    dust.velocity = Main.rand.NextVector2Circular(5, 5);
+                    dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+                    dust.alpha = Main.rand.Next(80) + 40;
+                    dust.rotation = Main.rand.NextFloat(6.28f);
+
+                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
+                }
+
+                for (int i = 0; i < 3; i++)
+                {
+                    var velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+                    proj.friendly = false;
+                    proj.hostile = true;
+                    proj.scale = Main.rand.NextFloat(0.85f, 1.15f); 
+                }
+
+                Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), Projectile.damage, 0);
+                proj2.friendly = false;
+                proj2.hostile = true;
+                for (int i = 0; i < 6; i++)
+                {
+                    Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
+                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<CoachGunDustFive>());
+                    dust.velocity = vel * Main.rand.Next(7);
+                    dust.scale = Main.rand.NextFloat(0.5f, 1f);
+                    dust.alpha = 70 + Main.rand.Next(60);
+                    dust.rotation = Main.rand.NextFloat(6.28f);
+                }
+
                 for (int i = 0; i < 3; i++)
                 {
                     Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
@@ -520,6 +573,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = Projectile.Center + Projectile.velocity;
+        }
+
+        public void DrawAdditive(SpriteBatch sb)
+        {
+
+            var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+
+            var color = Color.OrangeRed;
+            for (int i = 0; i < 6; i++)
+                sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
         }
     }
 }
