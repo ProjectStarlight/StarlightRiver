@@ -23,11 +23,11 @@ namespace StarlightRiver.Content.GUI
 		public static bool visible;
 
 		public static UIGrid grid = new UIGrid();
-		public static UIImageButton SortButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed", ReLogic.Content.AssetRequestMode.ImmediateLoad));
-		public static UIImageButton OwnedButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton SortButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/SortButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton OwnedButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButtonOff", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
-		public static UIImageButton IngredientTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButtonCustom", ReLogic.Content.AssetRequestMode.ImmediateLoad));
-		public static UIImageButton RecipieTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButtonCustom", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton IngredientTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/IngredientButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton RecipieTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/MealButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
 		public static string sortMode = "Rarity";
 		public static bool hideUnowned = false;
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.GUI
 
 			SortButton.Left.Set(-260, 0.5f);
 			SortButton.Top.Set(-220, 0.5f);
-			SortButton.Width.Set(26, 0);
+			SortButton.Width.Set(32, 0);
 			SortButton.Height.Set(32, 0);
 			SortButton.OnClick += ChangeSortMode;
 
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.GUI
 
 			OwnedButton.Left.Set(-260, 0.5f);
 			OwnedButton.Top.Set(-180, 0.5f);
-			OwnedButton.Width.Set(26, 0);
+			OwnedButton.Width.Set(32, 0);
 			OwnedButton.Height.Set(32, 0);
 			OwnedButton.OnClick += ChangeOwnedMode;
 
@@ -70,17 +70,17 @@ namespace StarlightRiver.Content.GUI
 
 
 			IngredientTab.Left.Set(-220, 0.5f);
-			IngredientTab.Top.Set(-260, 0.5f);
-			IngredientTab.Width.Set(86, 0);
+			IngredientTab.Top.Set(-256, 0.5f);
+			IngredientTab.Width.Set(50, 0);
 			IngredientTab.Height.Set(28, 0);
 			IngredientTab.OnClick += (a, b) => RebuildGrid();
 
 			Append(IngredientTab);
 
 
-			RecipieTab.Left.Set(-130, 0.5f);
-			RecipieTab.Top.Set(-260, 0.5f);
-			RecipieTab.Width.Set(86, 0);
+			RecipieTab.Left.Set(-160, 0.5f);
+			RecipieTab.Top.Set(-256, 0.5f);
+			RecipieTab.Width.Set(50, 0);
 			RecipieTab.Height.Set(28, 0);
 			RecipieTab.OnClick += (a, b) => RebuildRecipies();
 
@@ -90,6 +90,7 @@ namespace StarlightRiver.Content.GUI
 		private void ChangeOwnedMode(UIMouseEvent evt, UIElement listeningElement)
 		{
 			hideUnowned = !hideUnowned;
+			OwnedButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButton" + (hideUnowned ? "On" : "Off"), ReLogic.Content.AssetRequestMode.ImmediateLoad));
 			RebuildGrid();
 		}
 
@@ -121,10 +122,10 @@ namespace StarlightRiver.Content.GUI
 			OwnedButton.Top.Set(moveTarget.Y + 40, 0);
 
 			IngredientTab.Left.Set(moveTarget.X, 0);
-			IngredientTab.Top.Set(moveTarget.Y - 40, 0);
+			IngredientTab.Top.Set(moveTarget.Y - 36, 0);
 
-			RecipieTab.Left.Set(moveTarget.X + 90, 0);
-			RecipieTab.Top.Set(moveTarget.Y - 40, 0);
+			RecipieTab.Left.Set(moveTarget.X + 60, 0);
+			RecipieTab.Top.Set(moveTarget.Y - 36, 0);
 
 			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
@@ -178,6 +179,12 @@ namespace StarlightRiver.Content.GUI
 
 			if (OwnedButton.IsMouseHovering)
 				Main.hoverItemName = "Hide unowned:\n" + hideUnowned;
+
+			if(IngredientTab.IsMouseHovering)
+				Main.hoverItemName = "Ingredients";
+
+			if (RecipieTab.IsMouseHovering)
+				Main.hoverItemName = "Cookbook";
 
 			if (!Main.playerInventory)
 				visible = false;

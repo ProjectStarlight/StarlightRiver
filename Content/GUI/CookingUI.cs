@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.GUI
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
             if (Basepos.Y > Main.screenHeight - 20 - 244) Basepos.Y = Main.screenHeight - 20 - 244;
 
-            ChefBagUI.Move(CookingUI.Basepos + new Vector2(-500, 0));
+            ChefBagUI.Move(CookingUI.Basepos + new Vector2(-480, 0));
 
             Main.isMouseLeftConsumedByUI = true;
             SetPosition(MainSlot, 44, 44);
