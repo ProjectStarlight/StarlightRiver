@@ -41,11 +41,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.knockBack = 0;
-			Item.rare = ItemRarityID.Blue;
+			Item.rare = ItemRarityID.Green;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.shoot = ModContent.ProjectileType<SkullBusterProj>();
 			Item.shootSpeed = 12f;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.autoReuse = true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<CoachGun>(), 1);
+			recipe.AddIngredient(ItemID.Bone, 10);
+			recipe.AddTile(TileID.Anvils);
 		}
 
 		public override void HoldItem(Player Player)
@@ -113,6 +122,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				float spread = 0.4f;
 
 				Vector2 offset = new Vector2(1, -0.1f * player.direction).RotatedBy(rot);
+				Vector2 casingOffset = new Vector2(1, -1 * player.direction).RotatedBy(rot);
 
 				for (int k = 0; k < 15; k++)
 				{
@@ -129,7 +139,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), position + (offset * 43), Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
 
-				Gore.NewGore(source, player.Center + (offset * 10), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+				Gore.NewGore(source, player.Center + (casingOffset * 10), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
 			}
 			return false;
 		}
@@ -170,7 +180,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Projectile.Center = owner.Center;
 			owner.heldProj = Projectile.whoAmI;
 
-            if (Main.mouseRight && !released)
+            if (Main.mouseRight && !released || owner.itemTime > 3)
             {
 				Projectile.timeLeft = 30;
 				if (owner.itemTime < 3)
@@ -196,32 +206,56 @@ namespace StarlightRiver.Content.Items.Dungeon
 							owner.direction = -1;
 
 						Vector2 offset = new Vector2(1, -0.3f * owner.direction).RotatedBy(direction.ToRotation());
+
+						Vector2 casingOffset = new Vector2(1, -1 * owner.direction).RotatedBy(direction.ToRotation());
 						Vector2 position = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, direction.ToRotation() - 1.57f);
 
-
-						Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + (offset * 43), direction, ProjectileID.Bullet, 0, Projectile.knockBack, owner.whoAmI);
-						proj.GetGlobalProjectile<SkullBusterGProj>().target = targetBomb.whoAmI;
-						proj.extraUpdates = 4;
-						shotBombs.Add(targetBomb);
-
-						Vector2 gunTip = position + (offset * 46);
-
-						for (int k = 0; k < 15; k++)
+						int ammoType = -1;
+						for (int i = 0; i < owner.inventory.Length; ++i) //Consume ammo here so it's used when shot rather than when clicked
 						{
-							var direction = offset.RotatedByRandom(spread);
-
-							Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+							if (owner.inventory[i].ammo == AmmoID.Bullet)
+							{
+								if (owner.inventory[i].consumable && VanillaAmmoConsumption(owner, owner.inventory[i].ammo)) //Do not consume ammo if possible
+								{
+									owner.inventory[i].stack--;
+									if (owner.inventory[i].stack <= 0)
+										owner.inventory[i].TurnToAir();
+								}
+								ammoType = owner.inventory[i].shoot;
+								break;
+							}
 						}
 
-						Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-						Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-						Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+						if (ammoType != -1)
+						{
+							Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + (offset * 43), direction, ammoType, 0, Projectile.knockBack, owner.whoAmI);
+							proj.GetGlobalProjectile<SkullBusterGProj>().target = targetBomb.whoAmI;
+							proj.extraUpdates = 4;
+							shotBombs.Add(targetBomb);
+
+							Vector2 gunTip = position + (offset * 46);
+
+							for (int k = 0; k < 15; k++)
+							{
+								var direction = offset.RotatedByRandom(spread);
+
+								Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+							}
+
+							Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+							Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+							Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
 
-						Projectile.NewProjectile(Projectile.GetSource_FromThis(), gunTip, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, owner.whoAmI, direction.ToRotation());
+							Projectile.NewProjectile(Projectile.GetSource_FromThis(), gunTip, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, owner.whoAmI, direction.ToRotation());
 
-						Gore.NewGore(Projectile.GetSource_FromThis(), position + (offset * 10), new Vector2(owner.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+							Gore.NewGore(Projectile.GetSource_FromThis(), position + (casingOffset * 10), new Vector2(owner.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
+						}
 					}
+					else if (shootTimer == 0)
+                    {
+						Projectile.active = false;
+                    }
                 }
 
 				if (direction.X > 0)
@@ -252,7 +286,34 @@ namespace StarlightRiver.Content.Items.Dungeon
             }
 			return false;
         }
-    }
+		public static bool VanillaAmmoConsumption(Player p, int ammo)
+		{
+			float chance = 0;
+
+			float CombineChances(float p1, float p2) => p1 + p2 - (p1 * p2);
+
+			if (p.ammoBox) //1/5 chance to reduce
+				chance = 0.2f;
+
+			if (p.ammoCost75) //1/4 chance to reduce
+				chance = CombineChances(chance, 0.25f);
+
+			if (p.ammoCost80) //1/5 chance to reduce
+				chance = CombineChances(chance, 0.2f);
+
+			if (p.ammoPotion) //1/5 chance to reduce
+				chance = CombineChances(chance, 0.2f);
+
+			if (ammo == AmmoID.Arrow && p.magicQuiver) //1/5 chance to reduce for arrows only
+				chance = CombineChances(chance, 0.2f);
+
+			if (p.armor[0].type == ItemID.ChlorophyteHelmet) //1/5 chance to reduce -- seems unique??
+				chance = CombineChances(chance, 0.2f);
+
+			return Main.rand.NextFloat(1f) > chance;
+		}
+
+	}
 
 	public class SkullBomb : ModProjectile
 	{
@@ -261,6 +322,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private bool shot = false;
 
 		private Player owner => Main.player[Projectile.owner];
+
+		private float crosshairRotation = 0f;
+
+		private float crosshairSin = 0f;
 
 		public override void SetStaticDefaults()
 		{
@@ -279,11 +344,17 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 
 		public override void AI()
-		{
+		{ 
+
+			if (crosshairSin < 1f)
+				crosshairSin += 0.025f;
+
+			crosshairSin = MathHelper.Clamp(crosshairSin, 0, 1);
+			crosshairRotation += 0.05f * crosshairSin;
 			float progress = 1 - (Projectile.timeLeft / 150f);
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 2; i++)
 			{
-				Dust sparks = Dust.NewDustPerfect(Projectile.Center + (Projectile.rotation.ToRotationVector2()) * 17, ModContent.DustType<CoachGunSparks>(), (Projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f));
+				Dust sparks = Dust.NewDustPerfect(Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2()) * 12, ModContent.DustType<CoachGunSparks>(), (Projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f));
 				sparks.fadeIn = progress * 45;
 			}
 
@@ -302,13 +373,25 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void Kill(int timeLeft)
 		{
+			if (!Main.dedServ)
+            {
+				DustHelper.DrawDustImage(Projectile.Center, 33, 0.078f, ModContent.Request<Texture2D>(Texture + "_Skull" + Main.rand.Next(1, 4).ToString()).Value, 3, true, Main.rand.NextFloat(-0.2f, 0.2f));
+            }
 
+			for (int i = 0; i < 3; i++)
+            {
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(7, 7), ProjectileID.Bone, Projectile.damage, Projectile.knockBack, owner.whoAmI);
+				proj.friendly = true;
+				proj.hostile = false;
+				proj.scale = 0.75f;
+            }
 		}
 
         public override bool PreDraw(ref Color lightColor)
         {
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
+			Texture2D crosshairTex = ModContent.Request<Texture2D>(Texture + "_Crosshair").Value;
 			
 			float progress = 1 - (Projectile.timeLeft / 150f);
 			Color overlayColor = Color.White;
@@ -319,6 +402,16 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, null, overlayColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
+			for (int i = 0; i < 4; i++)
+			{
+				float rot = (i / 4f) * 6.28f;
+
+				float ease = EaseFunction.EaseQuinticIn.Ease(crosshairSin);
+				Vector2 origin = crosshairTex.Size() * (1.75f + (0.25f * (float)Math.Cos(ease * 3.14f)));
+				Main.spriteBatch.Draw(crosshairTex, Projectile.Center - Main.screenPosition, null, Color.Red * crosshairSin, crosshairRotation + rot, origin, 1, SpriteEffects.None, 0f);
+			}
+
 			return false;
         }
     }
@@ -326,8 +419,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 	public class SkullBusterGProj : GlobalProjectile
     {
 		public override bool InstancePerEntity => true;
-
-		public bool shotFromGun = false; //delete
 
 		public int target = -1;
     }
