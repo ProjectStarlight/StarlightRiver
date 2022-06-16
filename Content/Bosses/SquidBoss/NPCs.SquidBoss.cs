@@ -121,9 +121,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
             {
-                ItemType<OverflowingUrn>()
+                ItemType<OverflowingUrn>(),
+                ItemType<AuroraBell>()
             }
             ));
+
+            npcLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 4));
         }
 
         public override void BossLoot(ref string name, ref int potionType)
