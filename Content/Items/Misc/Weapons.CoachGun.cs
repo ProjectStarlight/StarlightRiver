@@ -56,7 +56,15 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.autoReuse = true;
 		}
 
-        public override void HoldItem(Player Player)
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Musket, 1);
+			recipe.AddIngredient(ItemID.Explosives, 1);
+			recipe.AddTile(TileID.Anvils);
+		}
+
+		public override void HoldItem(Player Player)
         {
 			cooldown--;
         }
