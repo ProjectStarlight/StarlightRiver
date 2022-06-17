@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
@@ -163,7 +164,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             float distance = posToBe.X - oldPos.X;
-            float progress = (NPC.Center.X - oldPos.X) / distanceci;
+            float progress = (NPC.Center.X - oldPos.X) / distance;
             if (progress < 0)
             {
                 progress = MathHelper.Clamp(progress, 0, 1);
@@ -233,7 +234,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             for (int i = 0; i < 15; i++)
                             {
                                 Vector2 dustPos = bowPos + Main.rand.NextVector2Circular(10, 10);
-                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 7f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
                             }
                         }
                         bowFrameCounter = 0;
@@ -456,6 +457,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             trail?.Render(effect);
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            Texture2D flash = ModContent.Request<Texture2D>(Texture + "_Flare").Value;
+            Color flashFade = Color.OrangeRed * fade * fade;
+            flashFade.A = 0;
+            Main.EntitySpriteDraw(flash, firstPos - Main.screenPosition, null, flashFade, 0, flash.Size() / 2, 2.5f * MathHelper.Lerp(0.5f, 1, fade * fade), SpriteEffects.None, 0);
+
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * fade, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             return false;
@@ -498,16 +504,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 for (int i = 0; i < 6; i++)
                 {
                     Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-                    dust.velocity = Main.rand.NextVector2Circular(5, 5);
-                    dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+                    dust.velocity = Main.rand.NextVector2Circular(3, 3);
+                    dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
                     dust.alpha = 70 + Main.rand.Next(60);
                     dust.rotation = Main.rand.NextFloat(6.28f);
                 }
                 for (int i = 0; i < 6; i++)
                 {
                     Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
-                    dust.velocity = Main.rand.NextVector2Circular(5, 5);
-                    dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
+                    dust.velocity = Main.rand.NextVector2Circular(3, 3);
+                    dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
                     dust.alpha = Main.rand.Next(80) + 40;
                     dust.rotation = Main.rand.NextFloat(6.28f);
 
@@ -523,15 +529,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     proj.scale = Main.rand.NextFloat(0.85f, 1.15f); 
                 }
 
-                Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), Projectile.damage, 0);
-                proj2.friendly = false;
-                proj2.hostile = true;
+                Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), Projectile.damage, 0);
+                (proj2.ModProjectile as ConstructRing).finalRadius = 60;
                 for (int i = 0; i < 6; i++)
                 {
                     Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
                     Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<CoachGunDustFive>());
-                    dust.velocity = vel * Main.rand.Next(7);
-                    dust.scale = Main.rand.NextFloat(0.5f, 1f);
+                    dust.velocity = vel * Main.rand.Next(4);
+                    dust.scale = Main.rand.NextFloat(0.25f, 0.5f);
                     dust.alpha = 70 + Main.rand.Next(60);
                     dust.rotation = Main.rand.NextFloat(6.28f);
                 }
@@ -589,5 +594,49 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             for (int i = 0; i < 6; i++)
                 sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
         }
+    }
+    internal class ConstructRing : ModProjectile
+    {
+        public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
+
+        //private List<Vector2> cache;
+
+        //private Trail trail;
+        //private Trail trail2;
+
+        private float Progress => 1 - (Projectile.timeLeft / 5f);
+
+        public int finalRadius = 60;
+        private float Radius => finalRadius * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 5;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Explosion");
+        }
+
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
+            line.Normalize();
+            line *= Radius;
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
+            {
+                return true;
+            }
+            return false;
+        }
+        public override bool PreDraw(ref Color lightColor) => false;
     }
 }
