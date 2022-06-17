@@ -275,7 +275,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			else
             {
 				released = true;
-				if (shootTimer % 7 == 0)
+				if (shootTimer % 4 == 0)
                 {
 					var targetBomb = Main.projectile.Where(x => x.active && x.owner == owner.whoAmI && x.type == ModContent.ProjectileType<SkullBomb>() && !shotBombs.Contains(x)).OrderBy(n => n.Distance(owner.Center)).FirstOrDefault();
 					if (targetBomb != default)
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 						Projectile.timeLeft = 30;
 
 
-						direction = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, direction.ToRotation() - 1.57f).DirectionTo(targetBomb.Center) * 24;
+						direction = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, direction.ToRotation() - 1.57f).DirectionTo(targetBomb.Center) * 20;
 						if (direction.X > 0)
 							owner.direction = 1;
 						else
@@ -313,9 +313,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 						if (ammoType != -1)
 						{
-							Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + (offset * 43), direction, ammoType, 0, Projectile.knockBack, owner.whoAmI);
-							proj.GetGlobalProjectile<SkullBusterGProj>().target = targetBomb.whoAmI;
-							proj.extraUpdates = 4;
+							Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + (offset * 43), direction, ModContent.ProjectileType<SkullBusterBullet>(), 0, Projectile.knockBack, owner.whoAmI);
+							(proj.ModProjectile as SkullBusterBullet).target = targetBomb.whoAmI;
 							shotBombs.Add(targetBomb);
 
 							Vector2 gunTip = position + (offset * 46);
@@ -451,11 +450,11 @@ namespace StarlightRiver.Content.Items.Dungeon
 			var list = Main.projectile.Where(x => x.Hitbox.Intersects(Hitbox));
 			foreach (var proj in list)
 			{
-				if (proj.GetGlobalProjectile<SkullBusterGProj>().target == Projectile.whoAmI && Projectile.timeLeft > 2 && proj.active)
+				if (proj.type == ModContent.ProjectileType<SkullBusterBullet>() && (proj.ModProjectile as SkullBusterBullet).target == Projectile.whoAmI && Projectile.timeLeft > 2 && proj.active && proj.velocity.Length() > 1)
 				{
 					shot = true;
 					Projectile.timeLeft = 2;
-					proj.active = false;
+					proj.velocity = Vector2.Zero;
 				}
 			}
 		}
@@ -627,10 +626,86 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 	}
 
-	public class SkullBusterGProj : GlobalProjectile
+	public class SkullBusterBullet : ModProjectile,IDrawPrimitive
     {
-		public override bool InstancePerEntity => true;
+		private List<Vector2> cache;
+		private Trail trail;
 
 		public int target = -1;
-    }
+
+		public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.friendly = false;
+			Projectile.penetrate = 1;
+			Projectile.timeLeft = 100;
+			Projectile.extraUpdates = 4;
+			Projectile.alpha = 255;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Bullet");
+			Main.projFrames[Projectile.type] = 2;
+		}
+
+		public override void AI()
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+				for (int i = 0; i < 15; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
+			}
+
+			cache.Add(Projectile.Center);
+
+			while (cache.Count > 15)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(40 * 4), factor => factor * 3, factor =>
+			{
+				return new Color(255, 170, 80) * factor.X * (Projectile.timeLeft / 100f);
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center;
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+
+			trail?.Render(effect);
+		}
+	}
 }
