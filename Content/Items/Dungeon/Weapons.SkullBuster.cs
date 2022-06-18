@@ -330,7 +330,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 							Helper.PlayPitched("Guns/PlinkLever", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), position);
 							Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-							Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
+							//Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + offset.RotatedByRandom(spread) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
 
 							Projectile.NewProjectile(Projectile.GetSource_FromThis(), gunTip, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, owner.whoAmI, direction.ToRotation());
@@ -353,7 +353,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 					Vector2 offset = new Vector2(1, -0.3f * owner.direction).RotatedBy(direction.ToRotation());
 					Vector2 position = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, direction.ToRotation() - 1.57f);
 					Vector2 gunTip = position + (offset * 46);
-					Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), 6 * offset, 0, new Color(60, 55, 50) * 0.5f * (Projectile.timeLeft / 30f), 0.3f);
+					Dust.NewDustPerfect(gunTip, ModContent.DustType<Dusts.Smoke>(), 4 * offset, 0, new Color(60, 55, 50) * 0.5f * (Projectile.timeLeft / 30f), 0.15f);
 				}
 				if (direction.X > 0)
 					owner.direction = 1;
