@@ -381,18 +381,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             }
         }
 
-        public override void PostAI()
-        {
-            if (!StarlightRiver.DebugMode)
-                return;
-
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
-            {
-                for (int k = 0; k < 12; k++)
-                    AI();
-            }
-        }
-
         public override void AI()
         {
             GlobalTimer++;
