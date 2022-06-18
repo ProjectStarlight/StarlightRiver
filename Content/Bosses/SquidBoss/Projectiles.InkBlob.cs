@@ -38,11 +38,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.damage = 25;
         }
 
-        public override void OnSpawn(IEntitySource source)
-        {
-
-        }
-
         public override void AI()
         {
             if (!initialized)
