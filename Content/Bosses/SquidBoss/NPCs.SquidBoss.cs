@@ -69,7 +69,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
-            DrawUnderWater(spriteBatch, 1);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
