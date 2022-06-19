@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 using System.IO;
 using StarlightRiver.Content.Biomes;
@@ -46,7 +47,16 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.DeathSound = SoundID.NPCDeath1;
         }
 
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
+        }
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return ActionState == 3 && base.CanHitPlayer(target, ref cooldownSlot);
 		}

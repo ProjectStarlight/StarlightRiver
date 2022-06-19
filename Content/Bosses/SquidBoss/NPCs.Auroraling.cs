@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
             {
+                Bestiary.SLRSpawnConditions.AuroraSquid,
                 new FlavorTextBestiaryInfoElement("Baby aurora squid are born with their light-sacs fully charged from the glow of their mother, and will rely on this energy untill they are old enough to venture to the surface to gather their own.")
             });
         }

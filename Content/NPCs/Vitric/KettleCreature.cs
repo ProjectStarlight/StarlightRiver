@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -46,6 +47,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.aiStyle = -1;
             //NPC.HitSound = SoundID.NPCHit1;
             //NPC.DeathSound = SoundID.NPCDeath4;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         public override void AI()
@@ -286,7 +296,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public void DrawPrimitives()
         {
-            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;

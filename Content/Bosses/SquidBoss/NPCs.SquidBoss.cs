@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -124,6 +125,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             NPC.lifeMax = Main.masterMode ? (int)(8000 * bossLifeScale) : (int)(6000 * bossLifeScale);
             baseLife = Main.masterMode ? (int)(4000 * bossLifeScale) : (int)(3000 * bossLifeScale);
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.AuroraSquid,
+                new FlavorTextBestiaryInfoElement("[PH] Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss ")
+            });
         }
 
         public override ModNPC Clone(NPC npc)
