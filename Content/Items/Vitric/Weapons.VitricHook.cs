@@ -54,6 +54,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.GrapplingHook);
             recipe.AddIngredient(ItemType<VitricOre>(), 30);
+            recipe.Register();
         }
     }
 

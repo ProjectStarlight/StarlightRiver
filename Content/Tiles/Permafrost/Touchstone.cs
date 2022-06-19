@@ -77,13 +77,23 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-		{
-            float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-            float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+        {
+            int index = ModContent.GetInstance<TouchstoneTileEntity>().Find(i, j);
 
-            float bright = 1f;
+            if (index == -1)
+                return;
 
-            (r, g, b) = ((0.5f + cos1 * 0.2f) * bright, (0.8f) * bright, (0.5f + sin1 * 0.2f) * bright);
+            TouchstoneTileEntity entity = (TouchstoneTileEntity)TileEntity.ByID[index];
+
+            if (entity.hasWisp)
+            {
+                float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+                float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+
+                float bright = 1f;
+
+                (r, g, b) = ((0.5f + cos1 * 0.2f) * bright, (0.8f) * bright, (0.5f + sin1 * 0.2f) * bright);
+            }
         }
 
         public override void NearbyEffects(int i, int j, bool closer)
@@ -116,8 +126,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             }
         }
 
-		public override bool RightClick(int i, int j)
-		{
+        public override bool RightClick(int i, int j)
+        {
+
             var tile = Framing.GetTileSafely(i, j);
             i -= tile.TileFrameX / 18;
             j -= tile.TileFrameY / 18;
@@ -129,14 +140,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             TouchstoneTileEntity entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
-            int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
-            (Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
-            (Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
+            if (entity.hasWisp)
+            {
+                int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
+                (Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
+                (Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
 
-            entity.hasWisp = false;
+                entity.hasWisp = false;
+            }
 
             return true;
-		}
+        }
 	}
 
     internal sealed class TouchstoneTileEntity : ModTileEntity
@@ -206,6 +220,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             NPC.friendly = true;
             NPC.lifeMax = 10;      
             NPC.noGravity = true;
+
+            owner = Main.LocalPlayer;
         }
 
         public override void AI()
@@ -215,8 +231,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             NPC.ai[1] += 0.1f;
             NPC.rotation += Main.rand.NextFloat(0.2f);
-            NPC.scale = 0.25f;
-
+            
             var bounding = new Rectangle((int)Main.screenPosition.X, (int)Main.screenPosition.Y, Main.screenWidth, Main.screenHeight);
             bounding.Inflate(-200, -200);
 
@@ -229,7 +244,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             else
                 NPC.velocity *= 0.91f;
 
-            NPC.velocity += NPC.velocity.RotatedBy(1.57f) * (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
+            NPC.velocity += NPC.velocity.RotatedBy(1.57f) * (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.05f;
 
             float sin = 1 + (float)Math.Sin(NPC.ai[1]);
             float cos = 1 + (float)Math.Cos(NPC.ai[1]);
@@ -243,17 +258,40 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                 d.customData = Main.rand.NextFloat(0.5f, 1);
             }
 
-            if (Vector2.Distance(NPC.Center, targetPos) < 120)
+            if (Vector2.Distance(NPC.Center, targetPos) < 64 || targetPos == Vector2.Zero)
             {
-                for (int k = 0; k < TileEntity.ByID.Count; k++)
-                {
-                    var entity = TileEntity.ByID[k];
+                NPC.velocity *= 0.91f;
+                NPC.scale *= 0.95f;
 
-                    if (entity.type == ModContent.TileEntityType<TouchstoneTileEntity>() && Vector2.Distance(NPC.Center, entity.Position.ToVector2() * 16) < 120)
+                if (NPC.scale < 0.05f)
+                {
+                    for (int k = 0; k < TileEntity.ByID.Count; k++)
                     {
-                        NPC.active = false;
-                        (entity as TouchstoneTileEntity).hasWisp = true;
+                        var entity = TileEntity.ByID[k];
+
+                        if (entity.type == ModContent.TileEntityType<TouchstoneTileEntity>() && Vector2.Distance(NPC.Center, entity.Position.ToVector2() * 16) < 120)
+                        {
+                            NPC.active = false;
+                            (entity as TouchstoneTileEntity).hasWisp = true;
+
+                            for (int n = 0; n < 50; n++)
+                            {
+                                var pos = NPC.Center;
+                                Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, color, 1f);
+                            }
+                        }
                     }
+                }
+            }
+
+            if(StarlightWorld.SquidBossArena.Contains((NPC.Center / 16).ToPoint()))
+			{
+                NPC.active = false;
+
+                for (int n = 0; n < 50; n++)
+                {
+                    var pos = NPC.Center;
+                    Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), 0, color, 1f);
                 }
             }
 
@@ -288,7 +326,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         protected void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 12, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 30, new TriangularTip(40 * 4), factor => factor * 12 * NPC.scale, factor =>
             {
                 float alpha = factor.X;
 
@@ -322,7 +360,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
             for (int i = 0; i < 3; i++)
             {
-                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, auroraColor * Opacity, 0f, tex.Size() / 2, 0.8f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, auroraColor * Opacity, 0f, tex.Size() / 2, 0.8f * NPC.scale, SpriteEffects.None, 0f);
             }
         }
 

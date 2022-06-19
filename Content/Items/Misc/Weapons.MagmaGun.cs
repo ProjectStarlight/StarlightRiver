@@ -161,6 +161,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
 			recipe.AddIngredient(ModContent.ItemType<MagmaCore>(), 1);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

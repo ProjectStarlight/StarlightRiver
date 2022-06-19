@@ -78,6 +78,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 4);
 			recipe.AddIngredient(ModContent.ItemType<AquaSapphire>(), 1);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Create();
 		}
 	}
 }

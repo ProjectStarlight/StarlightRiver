@@ -54,11 +54,13 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddIngredient(ItemID.ShadowScale, 5);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
             recipe.AddTile(TileID.Anvils);
+            recipe.Create();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.TissueSample, 5);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
             recipe.AddTile(TileID.Anvils);
+            recipe.Create();
         }
     }
 }

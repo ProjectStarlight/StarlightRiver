@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<MoonstoneOreItem>(), 3);
             recipe.AddTile(TileID.Furnaces);
+            recipe.Register();
 
             //adds back neccisary vanilla recipies
             Recipe recipe2 = Mod.CreateRecipe(ItemID.DrillContainmentUnit);
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe2.AddIngredient(ItemID.HellstoneBar, 40);
             recipe2.AddIngredient(ItemType<MoonstoneBarItem>(), 40);
             recipe2.AddTile(TileID.MythrilAnvil);
+            recipe.Register();
         }
     }
 }

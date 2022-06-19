@@ -68,6 +68,7 @@ namespace StarlightRiver.Content.Items.Potions
 			recipe.AddIngredient(ItemID.Glass, 5);
 			recipe.AddIngredient(ItemID.BottledWater);
 			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
 		}
 	}
 
@@ -82,6 +83,7 @@ namespace StarlightRiver.Content.Items.Potions
 			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 2);
 			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
 			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
 		}
 	}
 
@@ -96,6 +98,7 @@ namespace StarlightRiver.Content.Items.Potions
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
 			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
 
 			recipe = CreateRecipe(5);
 			recipe.AddIngredient(ItemID.BottledWater, 5);
@@ -103,6 +106,7 @@ namespace StarlightRiver.Content.Items.Potions
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
 			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
 		}
 	}
 

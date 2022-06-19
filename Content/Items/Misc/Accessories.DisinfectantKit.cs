@@ -64,6 +64,7 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddIngredient(ModContent.ItemType<SanitizerSpray>());
 
             recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.Create();
         }
     }
 }

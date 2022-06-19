@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -56,6 +58,36 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+            var radius = Main.rand.Next(2, 5);
+
+            int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
+            int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
+
+            for (int x = center.X; x < center.X + radius; x++)
+                for (int y = center.Y; y < center.Y + radius; y++)
+                {
+                    int xRel = x - center.X;
+                    int yRel = y - center.Y;
+
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    tile.HasTile = true;
+                    tile.TileType = (ushort)ModContent.TileType<AuroraIce>();
+                    tile.TileFrameX = (short)((frameStartX + xRel) * 18);
+                    tile.TileFrameY = (short)((frameStartY + yRel) * 18);
+
+                    int r = radius - 1;
+                    if (xRel == 0 && yRel == 0) tile.Slope = SlopeType.SlopeDownRight;
+                    if (xRel == 0 && yRel == r) tile.Slope = SlopeType.SlopeUpRight;
+                    if (xRel == r && yRel == 0) tile.Slope = SlopeType.SlopeDownLeft;
+                    if (xRel == r && yRel == r) tile.Slope = SlopeType.SlopeUpLeft;
+
+                    var dum = false;
+                    ModContent.GetInstance<AuroraIce>().TileFrame(x, y, ref dum, ref dum);
+                }
+
+            return true;
+
             player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
             player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.Faewhip.Whip>();
             return true;

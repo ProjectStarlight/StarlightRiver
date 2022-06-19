@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemID.FlamingArrow, 100);
             recipe.AddIngredient(ItemType<MagmaCore>(), 1);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 

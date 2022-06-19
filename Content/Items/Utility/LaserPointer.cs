@@ -96,7 +96,8 @@ namespace StarlightRiver.Content.Items.Utility
             Recipe recipe = CreateRecipe();
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 5);
             recipe.AddIngredient(extraMaterial);
-		}
+            recipe.Register();
+        }
 	}
 
 	class LaserPointerProjectile : ModProjectile, IDrawAdditive

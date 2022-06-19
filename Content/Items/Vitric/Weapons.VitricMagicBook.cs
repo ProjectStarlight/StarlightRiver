@@ -65,6 +65,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemType<Misc.Sandscript>());
             recipe.AddIngredient(ItemType<VitricOre>(), 10);
             recipe.AddTile(TileID.Bookcases);
+            recipe.Register();
         }
     }
 

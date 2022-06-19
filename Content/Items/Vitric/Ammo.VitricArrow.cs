@@ -39,6 +39,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Recipe recipe = CreateRecipe(50);
             recipe.AddIngredient(ItemType<VitricOre>(), 4);
             recipe.AddTile(TileID.WorkBenches);
+            recipe.Register();
         }
     }
 

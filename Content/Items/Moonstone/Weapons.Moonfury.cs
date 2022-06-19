@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 8);
             recipe.AddIngredient(ItemID.Starfury, 1);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
 
         public override void HoldItem(Player Player)

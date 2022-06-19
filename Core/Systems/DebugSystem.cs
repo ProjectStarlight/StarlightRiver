@@ -12,6 +12,8 @@ namespace StarlightRiver.Core.Systems
 {
 	internal class DebugSystem : ModSystem
 	{
+		int timer = 0;
+
 		public override void Load()
 		{
 			On.Terraria.Main.Update += DoUpdate;
@@ -34,6 +36,16 @@ namespace StarlightRiver.Core.Systems
 				{
 					orig(self, gameTime);
 				}
+			}
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.U)) //Boss Slow Down Key
+			{
+				if(timer % 2 == 0)
+					orig(self, gameTime);
+
+				timer++;
+
+				return;
 			}
 
 			orig(self, gameTime);

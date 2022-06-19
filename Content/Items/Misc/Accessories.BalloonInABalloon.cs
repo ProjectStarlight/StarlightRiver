@@ -39,11 +39,13 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.Create();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.Create();
         }
     }
 }

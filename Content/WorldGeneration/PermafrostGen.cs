@@ -18,7 +18,7 @@ namespace StarlightRiver.Core
     {
         public static int permafrostCenter;
 
-        private void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
+        public void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Permafrost generation";
 
@@ -60,8 +60,73 @@ namespace StarlightRiver.Core
             int center = iceLeft + (iceRight - iceLeft) / 2;
             int centerY = (int)WorldGen.worldSurfaceHigh + (iceBottom - (int)WorldGen.worldSurfaceHigh) / 2;
 
-            SquidBossArena = new Rectangle(center - 40, centerY - 150, 109, 180);
-            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY - 150), Mod);
+            TryToGenerateArena:
+
+            if(center < iceLeft || center > iceRight - 109)
+                center = iceLeft + (iceRight - iceLeft) / 2;
+
+            for (int x1 = 0; x1 < 109; x1++)
+                for(int y1 = 0; y1 < 180; y1++)
+				{
+                    Tile tile = Framing.GetTileSafely(center - 40 + x1, centerY + 100 + y1);
+                    if(tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+					{
+                        center += Main.rand.Next(-1, 2) * 109;
+                        goto TryToGenerateArena;
+                    }
+				}
+
+            SquidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
+            StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
+
+            Vector2 oldPos = new Vector2(SquidBossArena.Center.X, SquidBossArena.Y) * 16;
+
+            for(int k = 1; k <= 2; k++)
+			{
+                float fraction = k / 3f;
+                int yTarget = (int)Helper.LerpFloat(SquidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
+
+                for (int x = 0; x < Main.maxTilesX; x++) 
+                {
+                    if (Main.tile[x, yTarget].TileType == TileID.IceBlock)
+                    {
+                        iceLeft = x;
+                        break;
+                    }
+                }
+
+                for (int x = Main.maxTilesX - 1; x > 0; x--)
+                {
+                    if (Main.tile[x, yTarget].TileType == TileID.IceBlock)
+                    {
+                        iceRight = x;
+                        break;
+                    }
+                }
+
+                int iceCenter = iceLeft + (iceRight - iceLeft) / 2;
+                int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
+
+                StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(xTarget, yTarget), Mod);
+                (TileEntity.ByPosition[new Point16(xTarget + 9, yTarget + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
+                oldPos = new Vector2(xTarget + 11, yTarget + 9) * 16;
+            }
+
+            for (int y = 0; y < Main.maxTilesY - 200; y++)
+            {             
+                if (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock)
+                {
+                    StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(center, y - 12), Mod);
+                    (TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
+                    break;
+                }
+
+                if (Main.tile[center, y].HasTile && Main.tileSolid[Main.tile[center, y].TileType])
+                {                  
+                    center += center > (iceLeft + (iceRight - iceLeft) / 2) ? -10 : 10;
+                    continue;
+                }
+            }
         }
     }
 }
