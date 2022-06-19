@@ -59,7 +59,26 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override bool CheckActive() => false;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) => false;
+        public void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
+        {
+            Animate(12, 0, 8);
+            NPC.Center += Main.screenPosition - screenPos;
+            NPC.ai[1]++;
+
+            Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
+            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
+
+            DrawHeadBlobs(spriteBatch);
+            DrawUnderWater(spriteBatch, 1);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            if (NPC.IsABestiaryIconDummy)
+                DrawBestiary(spriteBatch, screenPos);
+
+            return false;
+        }
 
         public override bool CheckDead()
         {
@@ -175,15 +194,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 if (!OpaqueJelly)
                 {
-                    spriteBatch.End();
-                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                    color.A = 0;
+
+                    spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
+                    spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
                 }
-
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
-                spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
-
-                spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
             var lightColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
@@ -261,9 +276,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 if (Phase == (int)AIStates.DeathAnimation)
                     color = redColor;
 
-                if (OpaqueJelly)
-                    color.A = 255;
-
                 if (Phase == (int)AIStates.DeathAnimation) //Unique drawing for death animation
                 {
                     sin = 1 + (float)Math.Sin(GlobalTimer / 5f - k * 0.5f); //faster pulsing
@@ -272,23 +284,23 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
 
+                if (OpaqueJelly)
+                    color.A = 255;
+
                 spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                if (!OpaqueJelly)
+                if (!OpaqueJelly)                   
                 {
-                    spriteBatch.End();
-                    spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                    color.A = 0;
+
+                    spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
+                        new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
+
+                    spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
+                        new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
                 }
 
-                spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
-                    new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
-
-                spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
-                    new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
-
-                spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
         }
 
