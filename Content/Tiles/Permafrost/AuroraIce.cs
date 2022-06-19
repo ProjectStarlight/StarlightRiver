@@ -267,7 +267,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<AuroraIceItem>(), 3);
             recipe.AddTile(TileID.Furnaces);
-            recipe.Create();
+            recipe.Register();
         }
     }
 }
