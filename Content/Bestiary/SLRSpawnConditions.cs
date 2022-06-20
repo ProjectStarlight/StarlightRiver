@@ -17,6 +17,7 @@ namespace StarlightRiver.Content.Bestiary
 		public static void Unload()
 		{
 			VitricDesert = null;
+			AuroraSquid = null;
 		}
 	}
 }
