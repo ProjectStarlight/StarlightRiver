@@ -405,6 +405,7 @@ namespace StarlightRiver.Helpers
             {
                 Volume = volume,
                 Pitch = pitch,
+                MaxInstances = 0
             };
 
              return SoundEngine.PlaySound(style, position);
@@ -428,6 +429,7 @@ namespace StarlightRiver.Helpers
 
             style.Volume *= volume;
             style.Pitch += pitch;
+            style.MaxInstances = 0;
 
             return SoundEngine.PlaySound(style, position);
         }
