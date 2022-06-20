@@ -50,6 +50,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<GluttonyHandle>());
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(ItemID.Book, 1);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 12);
+			recipe.AddTile(TileID.Anvils);
+		}
 	}
 
 	public class GluttonyHandle : ModProjectile, IDrawAdditive, IDrawPrimitive

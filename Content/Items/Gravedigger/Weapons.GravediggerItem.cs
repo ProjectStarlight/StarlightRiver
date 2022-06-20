@@ -47,6 +47,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 
 		public override bool CanUseItem(Player Player) => Player.GetModPlayer<GravediggerPlayer>().SwingDelay == 0;
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 10);
+			recipe.AddTile(TileID.Anvils);
+		}
 	}
 
 	internal class GravediggerSwing : ModProjectile

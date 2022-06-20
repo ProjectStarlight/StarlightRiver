@@ -48,6 +48,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Item.noUseGraphic = true;
             //Item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
         }
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.DemoniteBar, 10);
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+            recipe.AddTile(TileID.Anvils);
+
+            Recipe recipe2 = CreateRecipe();
+            recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
+            recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+            recipe2.AddTile(TileID.Anvils);
+        }
     }
 
     //TODO this would probably be cleaner with less data required for netcode if this is changed to no longer use vanilla ai to not need the phantom saw

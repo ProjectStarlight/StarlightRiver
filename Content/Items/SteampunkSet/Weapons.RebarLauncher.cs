@@ -64,6 +64,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			return new Vector2(-20, 0);
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+			recipe.AddTile(TileID.Anvils);
+
+			Recipe recipe2 = CreateRecipe();
+			recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+			recipe2.AddTile(TileID.Anvils);
+		}
 	}
 
 	public class RebarProj : ModProjectile, IDrawPrimitive

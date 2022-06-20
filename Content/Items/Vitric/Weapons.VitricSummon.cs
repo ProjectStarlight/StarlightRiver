@@ -62,5 +62,13 @@ namespace StarlightRiver.Content.Items.Vitric
             DisplayName.SetDefault("Glassweaver's Punty");
             Tooltip.SetDefault("Summons the Glassweaver's arsenal");
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 10);
+            recipe.AddIngredient(ModContent.ItemType<MagmaCore>(), 1);
+            recipe.AddTile(TileID.Anvils);
+        }
     }
 }
