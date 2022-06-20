@@ -541,8 +541,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Helpers.Helper.PlayPitched("Magic/FrostCast", 1, 0.5f, NPC.Center);
 
             if (AttackTimer % 100 == 0)
-            {               
-                if (Main.expertMode) //spawn more + closer together on expert
+            {          
+                if (Main.masterMode)
+				{
+                    for (int k = 0; k < 14; k++)
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
+
+                    for (int k = 0; k < 14; k++)
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-107 + k * 14, 2), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
+                }
+                else if (Main.expertMode) //spawn more + closer together on expert
                 {
                     for (int k = 0; k < 14; k++)
                         Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-100 + k * 14, 0), ModContent.ProjectileType<SpewBlob>(), 10, 0.2f, Main.myPlayer);
@@ -584,6 +592,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     for (int k = 0; k < 6; k++)
                         Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 200), new Vector2(-10 + k * 4, -6), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k > 2 ? 3.14f : 0);
                 }
+
+                if(Main.masterMode)
+				{
+                    for (int k = -1; k <= 1; k+= 2)
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 200), new Vector2(k * 2, -12), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == -1 ? 0 : 3.14f);
+                }
             }
 
             if (AttackTimer == 300)
@@ -622,7 +636,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 (Main.projectile[i].ModProjectile as Laser).Parent = NPC;
             }
 
-            int laserTime = Main.expertMode ? 450 : 600; //faster in expert
+            int laserTime = Main.masterMode ? 300 : Main.expertMode ? 450 : 600; //faster in expert
 
             if(AttackTimer > 60 && AttackTimer < 90 + laserTime)
                 Animate(12, 1, 4);
@@ -725,6 +739,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
+            }
+
+            if (AttackTimer == 180) //spawn Projectiles
+            {
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
+
+                for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 3.14f, Main.rand.NextFloat(6.28f));
             }
 
             if (AttackTimer > 120 && AttackTimer < 150)
@@ -860,6 +882,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     tentacles[k].ai[1] += 5f; //make it squirm faster
 
                     tentacle.DownwardDrawDistance++;
+                }
+
+                if(Main.masterMode && AttackTimer == k * 80 + 130)
+				{
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), tentacle.BasePoint, Vector2.Normalize(tentacle.MovementTarget - tentacle.BasePoint) * 8, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == -1 ? 0 : 3.14f);
                 }
 
                 if (AttackTimer > k * 80 + 90 && AttackTimer < k * 80 + 150) //retracting

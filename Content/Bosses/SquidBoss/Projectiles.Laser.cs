@@ -28,13 +28,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Projectile.height = 1;
             Projectile.damage = 50;
             Projectile.hostile = true;
-            Projectile.timeLeft = Main.expertMode ? 510 : 660;
+            Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
             Projectile.aiStyle = -1;
         }
 
         public override void AI()
         {
-            if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509)
+            if (Projectile.timeLeft == 659 || Main.expertMode && Projectile.timeLeft == 509 || Main.masterMode && Projectile.timeLeft == 359)
             {
                 int y = (int)Projectile.Center.Y / 16 - 28;
 
@@ -74,6 +74,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
 
+            if (Main.masterMode)
+                color = new Color(1, 0.65f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
             for (int k = 0; k < rect.Height; k += 500)
             {
                 int i = Dust.NewDust(rect.TopLeft() + Vector2.UnitY * k, rect.Width, rect.Height - k, ModContent.DustType<Dusts.Glow>(), 0, -6, 0, color, Main.rand.NextFloat(0.4f, 0.6f));
@@ -106,7 +109,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             float cos = 1 + (float)Math.Cos(Projectile.ai[1] / 10f);
             Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 1.05f;
 
-            float alpha = Projectile.timeLeft > (Main.expertMode ? 480 : 630) ? 1 - (Projectile.timeLeft - (Main.expertMode ? 480 : 630)) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
+            if (Main.masterMode)
+                color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
+
+            var denom = (Main.masterMode ? 330 : Main.expertMode ? 480 : 630);
+
+            float alpha = Projectile.timeLeft > denom ? 1 - (Projectile.timeLeft - denom) / 30f : Projectile.timeLeft < 30 ? Projectile.timeLeft / 30f : 1;
             color = color * alpha;
 
             var texBeam = ModContent.Request<Texture2D>("StarlightRiver/Assets/ShadowTrail").Value;
