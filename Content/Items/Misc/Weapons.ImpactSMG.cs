@@ -161,6 +161,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 			return false;
 		}
+
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
+			recipe.AddIngredient(ItemID.IllegalGunParts);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 	public class ImpactSMGProj : ModProjectile
 	{

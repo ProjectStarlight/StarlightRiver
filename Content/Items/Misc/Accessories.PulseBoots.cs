@@ -72,5 +72,14 @@ namespace StarlightRiver.Content.Items.Misc
                 doubleJumped = false;
             }
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+            recipe.AddIngredient(ItemID.RocketBoots);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
     }
 }

@@ -9,7 +9,6 @@ using Terraria.Graphics.Effects;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +66,21 @@ namespace StarlightRiver.Content.Items.Misc
 				StoredDamage -= 25;
 				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
