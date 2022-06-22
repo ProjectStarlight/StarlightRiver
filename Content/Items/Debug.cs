@@ -59,6 +59,17 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
         {
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+
+            var tile = Framing.GetTileSafely(center.X, center.Y);
+            ref var tileData = ref tile.Get<AuroraWaterData>();
+
+            if (tileData.HasAuroraWater)
+                Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY); ;
+
+            return true;
+
+            /*
+            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
             var radius = Main.rand.Next(2, 5);
 
             int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;

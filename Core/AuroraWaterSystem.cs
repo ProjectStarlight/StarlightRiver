@@ -9,9 +9,25 @@ namespace StarlightRiver.Core
 {
 	struct AuroraWaterData : ITileData
 	{
-		public bool HasAuroraWater => false;
-		public byte AuroraWaterFrameX => 0;
-		public byte AuroraWaterFrameY => 0;	
+		public byte PackedData;
+
+		public bool HasAuroraWater
+		{
+			get => (PackedData & 0b00000001) == 1;
+			set => PackedData = (byte)(~PackedData & (value ? 1 : 0));
+		}
+
+		public int AuroraWaterFrameX
+		{
+			get => (PackedData & 0b00001110) >> 1;
+			set => PackedData = (byte)(PackedData & 0b11110001 | (value << 1));
+		}
+
+		public int AuroraWaterFrameY
+		{
+			get => (PackedData & 0b01110000) >> 4;
+			set => PackedData = (byte)(PackedData & 0b10001111 | (value << 4));
+		}
 	}
 
 	class AuroraWaterSystem : ModSystem, IOrderedLoadable
@@ -76,7 +92,7 @@ namespace StarlightRiver.Core
 						{
 							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
 							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
-							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX, tileData.AuroraWaterFrameY, 16, 16), Color.White * 0.5f);
+							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White * 0.5f);
 						}
 					}
 				}
@@ -141,7 +157,7 @@ namespace StarlightRiver.Core
 			var tile = Framing.GetTileSafely(i, j);
 			ref var tileData = ref tile.Get<AuroraWaterData>();
 
-			//tileData.HasAuroraWater = true;
+			tileData.HasAuroraWater = true;
 			FrameAuroraTile(i, j);
 
 			FrameAuroraTile(i - 1, j);
@@ -155,9 +171,9 @@ namespace StarlightRiver.Core
 			var tile = Framing.GetTileSafely(i, j);
 			ref var tileData = ref tile.Get<AuroraWaterData>();
 
-			//tileData.HasAuroraWater = false;
-			//tileData.AuroraWaterFrameX = 0;
-			//tileData.AuroraWaterFrameY = 0;
+			tileData.HasAuroraWater = false;
+			tileData.AuroraWaterFrameX = 0;
+			tileData.AuroraWaterFrameY = 0;
 
 			FrameAuroraTile(i - 1, j);
 			FrameAuroraTile(i, j - 1);
@@ -178,48 +194,48 @@ namespace StarlightRiver.Core
 			var r = Framing.GetTileSafely(i + 1, j).Get<AuroraWaterData>().HasAuroraWater;
 
 			if (u && l && d && r)
-				SetFrameData(ref data, 18 * 3, 18 * 2);
+				SetFrameData(ref data, 3, 2);
 
 			else if (l && r && d)
-				SetFrameData(ref data, 18, 0);
+				SetFrameData(ref data, 1, 0);
 			else if (u && d && r)
-				SetFrameData(ref data, 18, 18);
+				SetFrameData(ref data, 1, 1);
 			else if (l && r && u)
-				SetFrameData(ref data, 18, 18 * 2);
+				SetFrameData(ref data, 1, 2);
 			else if (u && d && l)
-				SetFrameData(ref data, 18, 18 * 3);
+				SetFrameData(ref data, 1, 3);
 
 			else if (r && d)
 				SetFrameData(ref data, 0, 0);
 			else if (u && r)
-				SetFrameData(ref data, 0, 18);
+				SetFrameData(ref data, 0, 1);
 			else if (l && u)
-				SetFrameData(ref data, 0, 18 * 2);
+				SetFrameData(ref data, 0, 2);
 			else if (d && l)
-				SetFrameData(ref data, 0, 18 * 3);
+				SetFrameData(ref data, 0, 3);
 
 			else if (u && d)
-				SetFrameData(ref data, 18 * 3, 0);
+				SetFrameData(ref data, 3, 0);
 			else if (l && r)
-				SetFrameData(ref data, 18 * 3, 18);
+				SetFrameData(ref data, 3, 1);
 
 
 			else if (u)
-				SetFrameData(ref data, 18 * 2, 0);
+				SetFrameData(ref data, 2, 0);
 			else if (l)
-				SetFrameData(ref data, 18 * 2, 18);
+				SetFrameData(ref data, 2, 1);
 			else if (d)
-				SetFrameData(ref data, 18 * 2, 18 * 2);
+				SetFrameData(ref data, 2, 2);
 			else if (r)
-				SetFrameData(ref data, 18 * 2, 18 * 3);
+				SetFrameData(ref data, 2, 3);
 			else
-				SetFrameData(ref data, 18 * 3, 18 * 3);
+				SetFrameData(ref data, 3, 3);
 		}
 
 		private static void SetFrameData(ref AuroraWaterData data, int x, int y)
 		{
-			//data.AuroraWaterFrameX = (byte)x;
-			//data.AuroraWaterFrameY = (byte)y;
+			data.AuroraWaterFrameX = x;
+			data.AuroraWaterFrameY = y;
 		}
 	}
 }
