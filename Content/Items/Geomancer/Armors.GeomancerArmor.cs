@@ -86,6 +86,18 @@ namespace StarlightRiver.Content.Items.Geomancer
             return Player.armor[0].type == ModContent.ItemType<GeomancerHood>() && Player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && Player.armor[2].type == ModContent.ItemType<GeomancerPants>();
         }
 
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
+            recipe.AddTile(TileID.Anvils);
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
+            recipe.AddTile(TileID.Loom);
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -124,6 +136,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             Player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 20);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
+            recipe.AddTile(TileID.Anvils);
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 20);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
+            recipe.AddTile(TileID.Loom);
+        }
     }
 
     [AutoloadEquip(EquipType.Legs)]
@@ -150,7 +175,21 @@ namespace StarlightRiver.Content.Items.Geomancer
         {
             Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, Player.velocity.Length() / 16f * 0.2f);
         }*/
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
+            recipe.AddTile(TileID.Anvils);
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
+            recipe.AddTile(TileID.Loom);
+        }
     }
+
     public class GeomancerItemDummy : ModItem
     {
         public override string Texture => AssetDirectory.GeomancerItem + "GeoDiamond";

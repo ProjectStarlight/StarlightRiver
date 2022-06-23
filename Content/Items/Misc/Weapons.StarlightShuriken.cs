@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Shuriken, 50);
 			recipe.AddIngredient(ItemID.FallenStar, 5);
-			recipe.AddIngredient(ModContent.ItemType<Moonstone.MoonstoneBarItem>(), 20);
+			recipe.AddIngredient(ModContent.ItemType<Moonstone.MoonstoneBarItem>(), 16);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
