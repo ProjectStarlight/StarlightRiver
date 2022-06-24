@@ -92,11 +92,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             recipe.AddIngredient(ItemID.Silk, 16);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Silk, 16);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
             recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 
@@ -143,11 +145,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             recipe.AddIngredient(ItemID.Silk, 20);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Silk, 20);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
             recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 
@@ -182,11 +186,13 @@ namespace StarlightRiver.Content.Items.Geomancer
             recipe.AddIngredient(ItemID.Silk, 14);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Silk, 14);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 

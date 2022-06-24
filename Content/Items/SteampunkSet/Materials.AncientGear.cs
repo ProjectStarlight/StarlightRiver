@@ -2,10 +2,8 @@
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
-	public class AncientGear : QuickMaterial
+    public class AncientGear : QuickMaterial
     {
-        public override string Texture => AssetDirectory.Debug;
-
-        public AncientGear() : base("Ancient Gear", "", 999, 200, 2) { }
+        public AncientGear() : base("Ancient Gear", "", 999, 200, 2, AssetDirectory.SteampunkItem) { }
     }
 }

@@ -13,7 +13,7 @@ using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class GravediggerItem : ModItem
+    public class GravediggerItem : ModItem
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerItem";
 

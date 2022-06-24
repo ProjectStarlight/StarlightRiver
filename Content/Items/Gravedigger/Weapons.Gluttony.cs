@@ -16,7 +16,7 @@ using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class Gluttony : ModItem
+    public class Gluttony : ModItem
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
@@ -54,9 +54,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddRecipeGroup(ItemID.Book, 1);
+			recipe.AddIngredient(ItemID.Book, 1);
 			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 12);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

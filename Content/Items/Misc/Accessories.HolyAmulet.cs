@@ -47,12 +47,14 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddIngredient(ItemID.LifeCrystal);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.PlatinumBar, 10);
             recipe.AddIngredient(ItemID.LifeCrystal);
             recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 

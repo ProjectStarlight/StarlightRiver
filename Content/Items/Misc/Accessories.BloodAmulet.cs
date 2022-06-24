@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using StarlightRiver.Content.Items.Gravedigger;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -71,13 +72,13 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 5);
 			recipe.AddIngredient(ItemID.DemoniteBar, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 5);
 			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();

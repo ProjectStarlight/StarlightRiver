@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.SteampunkSet;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -43,13 +44,13 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
             recipe.AddIngredient(ItemID.DemoniteBar, 10);
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
 
             recipe = CreateRecipe();
-            recipe.AddIngredient(ModContent.ItemType<DebugStick>(), 5);
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
             recipe.AddIngredient(ItemID.CrimtaneBar, 10);
             recipe.AddTile(TileID.Anvils);
             recipe.Register();

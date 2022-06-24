@@ -140,6 +140,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
             return true;
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -167,6 +182,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
             Player.GetDamage(DamageClass.Magic) += 0.05f;
             Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
+        }
     }
 
     [AutoloadEquip(EquipType.Legs)]
@@ -192,6 +222,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void UpdateEquip(Player Player)
         {
             Player.statManaMax2 += 40;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 12);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 12);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 }
