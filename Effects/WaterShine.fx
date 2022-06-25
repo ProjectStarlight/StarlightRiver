@@ -41,8 +41,8 @@ float4 main(VertexShaderOutput input) : COLOR
 
 	float2 move = float2(fmod(time / 10.0, 1.0), 0.0);
 
-	float2 dist = float2(cos(time + st.x * 5.0) * 0.01, sin(time * 3.0 + st.x * 23.0) * 0.02);
-	dist += tex2D(distortS, st + float2(cos(time) * 5., sin(time)) * 0.02).xy * 0.02;
+	float2 dist = float2(sin(1.57 + time + st.x * 5.0) * 0.01, sin(time * 3.0 + st.x * 23.0) * 0.02);
+	dist += tex2D(distortS, st + float2(sin(1.57 + time) * 5., sin(time)) * 0.02).xy * 0.02;
 
 	float off = tex2D(drawS, st + dist).x;
 	float off2 = tex2D(distortS, st + dist).x;

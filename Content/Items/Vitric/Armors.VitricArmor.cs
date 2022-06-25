@@ -144,6 +144,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemType<VitricOre>(), 15);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
@@ -179,6 +180,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemType<VitricOre>(), 25);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
@@ -214,6 +216,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemType<VitricOre>(), 20);
             recipe.AddIngredient(ItemType<MagmaCore>());
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 }

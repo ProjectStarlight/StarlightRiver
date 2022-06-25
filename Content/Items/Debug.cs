@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -40,35 +40,67 @@ namespace StarlightRiver.Content.Items
             Item.UseSound = SoundID.Item18;
             Item.useTurn = true;
             Item.accessory = true;
+
+            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
             player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
+
+            Main.NewText(WorldGen.worldSurface);
+            Main.NewText(WorldGen.worldSurfaceLow);
+            Main.NewText(WorldGen.worldSurfaceHigh);
+            Main.NewText(player.Center.Y / 16);
+
+            Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
         }
 
 		public override bool? UseItem(Player player)
         {
-            //return true;
+            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
-            int tx = (int)Main.MouseWorld.X / 16;
-            int ty = (int)Main.MouseWorld.Y / 16;
+            var tile = Framing.GetTileSafely(center.X, center.Y);
+            ref var tileData = ref tile.Get<AuroraWaterData>();
 
-            Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), ModContent.TileType<Tiles.Forest.ThickTreeBase>());
-
-            for (int x = 0; x < 2; x++)
-                for(int y = 0; y < 20; y++)
-				{
-                    WorldGen.PlaceTile(tx + x, ty - (y + 4), ModContent.TileType<Tiles.Forest.ThickTree>(), false, true);
-				}
+            if (tileData.HasAuroraWater)
+                Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY); ;
 
             return true;
 
-            player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
+            /*
+            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+            var radius = Main.rand.Next(2, 5);
+
+            int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
+            int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
+
+            for (int x = center.X; x < center.X + radius; x++)
+                for (int y = center.Y; y < center.Y + radius; y++)
+                {
+                    int xRel = x - center.X;
+                    int yRel = y - center.Y;
+
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    tile.HasTile = true;
+                    tile.TileType = (ushort)ModContent.TileType<AuroraIce>();
+                    tile.TileFrameX = (short)((frameStartX + xRel) * 18);
+                    tile.TileFrameY = (short)((frameStartY + yRel) * 18);
+
+                    int r = radius - 1;
+                    if (xRel == 0 && yRel == 0) tile.Slope = SlopeType.SlopeDownRight;
+                    if (xRel == 0 && yRel == r) tile.Slope = SlopeType.SlopeUpRight;
+                    if (xRel == r && yRel == 0) tile.Slope = SlopeType.SlopeDownLeft;
+                    if (xRel == r && yRel == r) tile.Slope = SlopeType.SlopeUpLeft;
+
+                    var dum = false;
+                    ModContent.GetInstance<AuroraIce>().TileFrame(x, y, ref dum, ref dum);
+                }
+
             return true;
 
-            player.GetModPlayer<Abilities.AbilityHandler>().InfusionLimit = 3;
-            InfusionMaker.visible = !InfusionMaker.visible;
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.Faewhip.Whip>();
             return true;
 
             StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);

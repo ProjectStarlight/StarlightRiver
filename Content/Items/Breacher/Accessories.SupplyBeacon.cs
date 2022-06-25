@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
 			recipe.AddIngredient(ItemID.Wire, 15);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

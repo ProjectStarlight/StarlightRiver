@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.UI;
@@ -17,6 +18,7 @@ namespace StarlightRiver.Content.GUI
         private Ability Thisability;
         private string Title;
         private string Message;
+        private string SubMessage;
         private int Timer = 0;
         private bool used = false;
         private float textScale = 1;
@@ -30,7 +32,7 @@ namespace StarlightRiver.Content.GUI
 
         public void SetTexture(string path) => texturePath = path;
 
-        public void Display(string title, string message, Ability ability = null, int time = 0, float scale = 1, bool titleFirst = false)
+        public void Display(string title, string message, Ability ability = null, int time = 0, float scale = 1, bool titleFirst = false, string subMessage = "")
         {
             Thisability = ability;
             Title = title;
@@ -42,6 +44,7 @@ namespace StarlightRiver.Content.GUI
             Timer = 1;
             textScale = scale;
             reverse = titleFirst;
+            SubMessage = subMessage;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -51,31 +54,45 @@ namespace StarlightRiver.Content.GUI
             int Longest = MessageLength > TitleLength ? MessageLength : TitleLength;
             int startY = (int)(Main.screenHeight * Main.UIScale) / 5;
             int startX = (int)(Main.screenWidth * Main.UIScale) / 2;
-            Color color = Color.White * (Timer / 120f);
+            float slide = 0.2f + Helpers.Helper.BezierEase(Math.Clamp(Timer / 60f, 0f, 1f)) * 0.8f;
+            float slide2 = 0.4f + Helpers.Helper.BezierEase(Math.Clamp(Timer / 60f, 0f, 1f)) * 0.6f;
+            Color textColor = Color.White * ((Timer - 60) / 60f);
+            Color barColor = Color.White * (Math.Clamp(Timer / 45f, 0f, 1f));
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
-            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value, new Rectangle(startX - Longest * 2, startY - (int)(25 * textScale), Longest * 4, (int)(150 * textScale)), Color.Black * 0.6f * (Timer / 120f));
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(25 * textScale), (int)(Longest * 4 * slide2), (int)(150 * textScale)), Color.Black * 0.6f * (Math.Clamp(Timer / 60f, 0f, 1f)));
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
             if (reverse)
             {
-                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + (int)(30 * textScale)), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
-                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + 10), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + (int)(30 * textScale)), textColor, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + 10), textColor, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
             }
             else
             {
-                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + 10), color, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
-                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), color, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Title, new Vector2(startX - TitleLength, startY + 10), textColor, 0f, Vector2.Zero, 0.65f * textScale, 0, 0);
+                spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, Message, new Vector2(startX - MessageLength, startY + (int)(50 * textScale)), textColor, 0f, Vector2.Zero, 0.4f * textScale, 0, 0);
             }
 
-            spriteBatch.Draw(Texture, new Rectangle(startX - (int)(Longest * 1.2f), startY + (int)(75 * textScale), (int)(Longest * 2.4f), 6), new Rectangle(94, 0, 8, 6), color);
+            spriteBatch.Draw(Texture, new Rectangle(startX - (int)(Longest * 1.2f * slide), startY + (int)(75 * textScale), (int)(Longest * 2.4f * slide), 6), new Rectangle(94, 0, 8, 6), barColor);
 
-            spriteBatch.Draw(Texture, new Vector2(startX - (int)(Longest * 1.2f) - 46, startY + (int)(75 * textScale) - 34), new Rectangle(0, 0, 46, 46), color);
-            spriteBatch.Draw(Texture, new Rectangle(startX + (int)(Longest * 1.2f), startY + (int)(75 * textScale) - 34, 46, 46), new Rectangle(46, 0, 46, 46), color);
+            spriteBatch.Draw(Texture, new Vector2(startX - (int)(Longest * 1.2f * slide) - 46, startY + (int)(75 * textScale) - 34), new Rectangle(0, 0, 46, 46), barColor);
+            spriteBatch.Draw(Texture, new Rectangle(startX + (int)(Longest * 1.2f * slide), startY + (int)(75 * textScale) - 34, 46, 46), new Rectangle(46, 0, 46, 46), barColor);
+
+            if(SubMessage != "")
+			{
+                var lines = SubMessage.Split('\n');
+                for (int k = 0; k < lines.Length; k++)
+                {
+                    string message = lines[k];
+                    Utils.DrawBorderStringBig(spriteBatch, message, new Vector2(startX, startY + (int)(95 * textScale + k * 20 * textScale)), textColor, textScale * 0.4f, 0.5f, 0);
+                }
+                //spriteBatch.DrawString(Terraria.GameContent.FontAssets.DeathText.Value, SubMessage, , textColor, 0f, new Vector2(0.5f, 0), 0.4f * textScale, 0, 0);
+            }
 
             if (Thisability != null)
             {

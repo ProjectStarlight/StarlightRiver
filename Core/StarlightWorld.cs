@@ -43,6 +43,13 @@ namespace StarlightRiver.Core
 
         public static Rectangle VitricBossArena => new Rectangle(VitricBiome.X + VitricBiome.Width / 2 - 59, VitricBiome.Y - 1, 108, 74); //ceiros arena
 
+        public static StarlightWorld Instance;
+
+        public StarlightWorld()
+		{
+            Instance = this;
+		}
+
         public static bool HasFlag(WorldFlags flag) => (flags & flag) != 0;
 
         public static void Flag(WorldFlags flag)

@@ -8,6 +8,7 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -37,6 +38,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.knockBackResist = 0.6f;
             NPC.aiStyle = 1;
             NPC.immortal = true;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         public override Color? GetAlpha(Color drawColor)

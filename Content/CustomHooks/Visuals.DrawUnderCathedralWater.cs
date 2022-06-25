@@ -66,8 +66,7 @@ namespace StarlightRiver.Content.CustomHooks
                         if (NPC2.type == ModContent.NPCType<SquidBoss>())
                             boss = k;
                         else
-                            drawCache.Add(NPC2);
-                            
+                            drawCache.Add(NPC2);                          
                     }
                 }
 
@@ -80,25 +79,6 @@ namespace StarlightRiver.Content.CustomHooks
                    (Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0); //draw boss ontop if extant
 
                 drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 1)); //draw layer for NPCs over bosses, used for the front part of tentacles
-
-                var effect = Filters.Scene["Waves"].GetShader().Shader;
-
-                if (effect is null)
-                    return;
-
-                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
-                effect.Parameters["power"].SetValue(0.01f);
-                effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth, 0));
-                effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget);
-                effect.Parameters["speed"].SetValue(50f);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
-
-                Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero, Color.White);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
         }
     }

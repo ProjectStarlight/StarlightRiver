@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -41,6 +42,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
             NPC.lavaImmune = true;
 
             ActionState = -1;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         public override Color? GetAlpha(Color drawColor)

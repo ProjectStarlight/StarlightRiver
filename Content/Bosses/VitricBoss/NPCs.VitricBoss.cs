@@ -217,15 +217,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             offset = new Vector2(60, 140);
 
-            spriteBatch.Draw(Request<Texture2D>(Texture + "Body").Value, NPC.Center - screenPos + offset, new Rectangle(228, 0, 114, 232), new Color(150, 140, 140), -0.1f, new Vector2(114, 232) / 2, 1, 0, 0);
-            spriteBatch.Draw(Request<Texture2D>(Texture + "BodyGlow").Value, NPC.Center - screenPos + offset, new Rectangle(228, 0, 114, 232), Color.White, -0.1f, new Vector2(114, 232) / 2, 1, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Body").Value, NPC.Center - screenPos + offset, new Rectangle(228, 0, 114, 232), Color.White, -0.1f, new Vector2(114, 232) / 2, 1, 0, 0);
 
             offset = new Vector2(20, 0);
 
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + offset, NPC.frame, new Color(150, 140, 140), -0.2f, NPC.frame.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, NPC.Center - screenPos + offset, NPC.frame, Color.White, -0.2f, NPC.frame.Size() / 2, 1, 0, 0);
-
-
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos + offset, NPC.frame, Color.White, -0.2f, NPC.frame.Size() / 2, 1, 0, 0);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -479,12 +475,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (!StarlightRiver.DebugMode)
                 return;
-
-            if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
-            {
-                for (int k = 0; k < 12; k++)
-                    AI();
-            }
         }
 
         public override void AI()

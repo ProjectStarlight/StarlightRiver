@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
             {
+                Bestiary.SLRSpawnConditions.AuroraSquid,
                 new FlavorTextBestiaryInfoElement("Aurora squid can gather ambient light from the aurora to 'fill' the glands on their head, storing it for later use as energy or for self defense.")
             });
         }

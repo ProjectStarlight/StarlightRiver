@@ -56,6 +56,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 12);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

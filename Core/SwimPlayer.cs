@@ -51,6 +51,17 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         {
             CheckAuroraSwimming();
 
+            if(emergeTime == 19) //reset jumps
+			{
+                Player.canJumpAgain_Fart = true;
+                Player.canJumpAgain_Sail = true;
+                Player.canJumpAgain_Cloud = true;
+                Player.canJumpAgain_Blizzard = true;
+                Player.canJumpAgain_Sandstorm = true;
+                Player.rocketTime = Player.rocketTimeMax;
+                Player.wingTime = Player.wingTimeMax;
+			}
+
             if (!ShouldSwim) //reset stuff when the Player isnt swimming
             {
                 if (boostCD > 0)
@@ -84,7 +95,15 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 Player.itemRotation -= realRotation + 1.57f;
 
             if (!ShouldSwim) //return later so rotation logic still runs
+            {
+                if (boostCD > 0)
+                    boostCD--;
+
+                if (emergeTime > 0)
+                    emergeTime--;
+
                 return;
+            }
 
             Player.wingTime = -1;
             emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
@@ -123,13 +142,19 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 Player.bodyFrame = new Rectangle(0, 0, 40, 56);
                 Player.legFrame = new Rectangle(0, 0, 40, 56);
 
+                if (Player.velocity == Vector2.Zero)
+                    Player.velocity = new Vector2(0, -0.01f);
+
                 Player.velocity += Vector2.Normalize(Player.velocity) * 0.38f * SwimSpeed;
                 Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
             }
             else Player.UpdateRotation(0);
 
-            if (boostCD > 0) boostCD--;
-            if (emergeTime > 0) emergeTime--;
+            if (boostCD > 0) 
+                boostCD--;
+
+            if (emergeTime > 0) 
+                emergeTime--;
         }
 
         public override void ResetEffects()

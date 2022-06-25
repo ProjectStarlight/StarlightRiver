@@ -59,7 +59,8 @@ namespace StarlightRiver.Content.Items.Palestone
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.UlyssesButterfly, 25);
             recipe.AddTile(TileID.UlyssesButterflyJar);
-        }
+			recipe.Register();
+		}
     }
 
     public class PaleKnight : ModProjectile

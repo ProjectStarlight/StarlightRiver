@@ -311,7 +311,6 @@ namespace StarlightRiver.Helpers
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
 
-
         public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
             DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);
 

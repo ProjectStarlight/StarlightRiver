@@ -52,12 +52,14 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddIngredient(ItemID.Chain, 10);
             recipe.AddIngredient(ItemID.DemoniteBar, 20);
             recipe.AddTile(TileID.IceMachine);
+            recipe.Register();
 
             recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Wood, 50);
             recipe.AddIngredient(ItemID.Chain, 10);
             recipe.AddIngredient(ItemID.CrimtaneBar, 20);
             recipe.AddTile(TileID.IceMachine);
+            recipe.Register();
         }
     }
 }

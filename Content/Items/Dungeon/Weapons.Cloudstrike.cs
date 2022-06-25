@@ -176,6 +176,7 @@ namespace StarlightRiver.Content.Items.Dungeon
             recipe.AddIngredient(ModContent.ItemType<InertStaff>(), 1);
             recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 10);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
 
     }

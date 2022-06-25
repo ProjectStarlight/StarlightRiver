@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (scaleCounter < 15)
                 scaleCounter++;
 
-            Projectile.scale = scaleCounter / 15f;
+            Projectile.scale = EaseFunction.EaseCircularOut.Ease(scaleCounter / 15f);
 
 			Projectile.rotation = (float)(Math.Sin((Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection) + startRotation)) * (float)Math.Pow(1 - chargeRatio, 2f);
             Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
@@ -249,7 +249,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding) 
 				{
-                    Core.Systems.CameraSystem.Shake +=7;
+                    Helper.PlayPitched("Magic/AuroraBell", chargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + ((1 - chargeRatio) * 0.8f), Projectile.Center);
+                    Core.Systems.CameraSystem.Shake += 7;
+
                     Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
 					newProj.originalDamage = (int)(proj.damage * chargeRatio);
 

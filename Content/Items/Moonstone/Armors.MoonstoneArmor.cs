@@ -251,6 +251,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 5);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
@@ -305,6 +306,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 15);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
@@ -360,6 +362,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 10);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 

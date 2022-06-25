@@ -23,16 +23,19 @@ namespace StarlightRiver.Content.Dusts
             dust.fadeIn = 0;
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 8, 128);
+            dust.customData = dust.scale;
+            dust.scale = 0;
 
             dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)
         {
-            if (dust.customData is null)
+            if ((float)dust.customData != 0f)
             {
                 dust.position -= new Vector2(4, 64) * dust.scale;
-                dust.customData = 1;
+                dust.scale = (float)dust.customData;
+                dust.customData = 0f;
             }
 
             dust.rotation = dust.velocity.ToRotation() + 1.57f;

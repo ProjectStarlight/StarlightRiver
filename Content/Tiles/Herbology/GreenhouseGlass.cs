@@ -61,6 +61,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             Recipe recipe = CreateRecipe(4);//1 tile to 4 wall
             recipe.AddIngredient(ModContent.ItemType<GreenhouseGlassItem>(), 1);
             recipe.AddTile(TileID.WorkBenches);
+            recipe.Register();
         }
     }
 }

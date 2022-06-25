@@ -59,6 +59,7 @@ namespace StarlightRiver.Content.Items.Vitric
             recipe.AddIngredient(ItemType<SandstoneChunk>(), 10);
             recipe.AddIngredient(ItemType<VitricOre>(), 20);
             recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 }

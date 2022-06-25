@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrick";
 
-        public override void SetStaticDefaults() => QuickBlock.QuickSet(this, 0, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
+        public override void SetStaticDefaults() => QuickBlock.QuickSet(this, int.MaxValue, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {

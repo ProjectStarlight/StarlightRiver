@@ -7,6 +7,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent.Bestiary;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
@@ -61,6 +62,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
             NPC.direction = Main.rand.Next(2) == 0 ? 1 : -1;
             NPC.spriteDirection = NPC.direction;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         const int maxIgnoreDamage = 1;

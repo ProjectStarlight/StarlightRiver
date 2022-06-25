@@ -5,16 +5,21 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	class InkBlob : ModProjectile, IDrawPrimitive
+	class InkBlob : ModProjectile, IDrawPrimitive, IDrawAdditive
     {
         private List<Vector2> cache;
         private Trail trail;
+
+        private Vector2 initialPosition;
+
+        private bool initialized = false;
 
         public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
 
@@ -35,6 +40,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void AI()
         {
+            if (!initialized)
+            {
+                initialized = true;
+                initialPosition = Projectile.Center;
+            }
             Projectile.scale -= 1 / 400f;
 
             Projectile.ai[1] += 0.1f;
@@ -52,7 +62,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
 
-            if (Main.rand.Next(4) == 0)
+            if (Main.rand.NextBool(4))
             {
                 var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
                 d.customData = Main.rand.NextFloat(0.5f, 1);
@@ -148,6 +158,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
+        public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+            var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+            Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+            for (int i = 0; i < 3; i++)
+                spriteBatch.Draw(tex, initialPosition - Main.screenPosition, null, color, 0f, tex.Size() / 2, 1.2f, SpriteEffects.None, 0f);
+        }
+
         public void DrawPrimitives()
         {
             Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
@@ -164,137 +182,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
             trail?.Render(effect);
-        }
-    }
-
-    class InkBlobGravity : InkBlob
-	{
-        public override void SetDefaults()
-        {
-            Projectile.width = 40;
-            Projectile.height = 40;
-            Projectile.aiStyle = -1;
-            Projectile.timeLeft = 200;
-            Projectile.hostile = true;
-            Projectile.damage = 25;
-        }
-
-        public override void AI()
-		{
-            Projectile.scale -= 1 / 400f;
-
-            Projectile.ai[1] += 0.1f;
-            Projectile.rotation += Main.rand.NextFloat(0.2f);
-            Projectile.scale = 0.5f;
-
-            Projectile.velocity.Y += 0.2f;
-
-            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
-            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
-            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
-
-            if (Main.masterMode)
-                color = new Color(1, 0.25f + sin * 0.25f, 0f) * (Projectile.timeLeft < 30 ? (Projectile.timeLeft / 30f) : 1);
-
-            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
-
-            if (Main.rand.Next(4) == 0)
-            {
-                var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(16), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f);
-                d.customData = Main.rand.NextFloat(1, 2);
-            }
-
-            ManageCaches();
-            ManageTrail();
-        }
-	}
-
-    class SpewBlob : ModProjectile, IDrawAdditive
-    {
-        public override string Texture => AssetDirectory.SquidBoss + Name;
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Aurora Shard");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 50;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-        }
-
-        public override void SetDefaults()
-        {
-            Projectile.width = 32;
-            Projectile.height = 32;
-            Projectile.aiStyle = -1;
-            Projectile.timeLeft = 300;
-            Projectile.hostile = true;
-            Projectile.damage = 20;
-            Projectile.extraUpdates = 1;
-        }
-
-        public override void AI()
-        {
-            Projectile.velocity.Y -= 0.025f;
-            Projectile.velocity.X *= 0.9f;
-
-            Projectile.ai[1] += 0.05f;
-            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
-
-            float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
-            float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
-            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-
-            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.1f);
-
-            if (Main.rand.Next(10) == 0)
-            {
-                Dust d = Dust.NewDustPerfect(Projectile.Center, 264, -Projectile.velocity.RotatedByRandom(0.25f) * 0.75f, 0, color, 1);
-                d.noGravity = true;
-                d.rotation = Main.rand.NextFloat(6.28f);
-            }
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-            return false;
-        }
-
-        public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D star = ModContent.Request<Texture2D>(AssetDirectory.BreacherItem + "OrbitalStrike").Value;
-
-            for (int k = 0; k < Projectile.oldPos.Length; k++)
-            {
-                float sin = 1 + (float)Math.Sin(Projectile.ai[1] + k * 0.1f);
-                float cos = 1 + (float)Math.Cos(Projectile.ai[1] + k * 0.1f);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * (1 - k / (float)Projectile.oldPos.Length);
-
-                if (Main.masterMode)
-                    color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
-
-                Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 0.85f - (k / (float)Projectile.oldPos.Length * 0.85f), default, default);
-
-                if (k == 0)
-                {
-                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], star.Size() / 2, 0.65f, default, default);
-                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1] * -0.2f, star.Size() / 2, 0.85f, default, default);
-                    Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, 1.15f, default, default);
-                }
-            }
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            for (int n = 0; n < 20; n++)
-            {
-                float sin = 1 + (float)Math.Sin(Projectile.ai[1] + n * 0.1f);
-                float cos = 1 + (float)Math.Cos(Projectile.ai[1] + n * 0.1f);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-
-                Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color, 2.2f);
-                d.noGravity = true;
-                d.rotation = Main.rand.NextFloat(6.28f);
-            }
         }
     }
 }
