@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private int javelinTime;
         private int hammerTime;
-        private int[] slashTime = new int[] { 70, 105, 120 };
+        private int[] slashTime = new int[] { 70, 125, 160 };
 
         public int hammerIndex;
         public int bubbleIndex;
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.TargetClosest();
                     NPC.FaceTarget();
                 }
-                NPC.velocity.X += NPC.direction * MathHelper.Lerp(7f, 60f, (float)Math.Pow((AttackTimer - slashTime[0] - 1) / 80f, 2f));
+                NPC.velocity.X += NPC.direction * MathHelper.Lerp(7f, 50f, (float)Math.Pow((AttackTimer - slashTime[0] - 1) / 150f, 2f));
             }
 
             if (AttackTimer > slashTime[2] + 50)
@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 NPC.TargetClosest();
                 moveStart = NPC.Center;
-                moveTarget = Vector2.Lerp(PickSpot(), PickCloseSpot(), 0.77f) - new Vector2(0, 100);
+                moveTarget = Vector2.Lerp(PickSpot(), PickCloseSpot(), 0.77f) - new Vector2(0, 70);
                 NPC.velocity.Y -= 9f;
                 
                 spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Main.myPlayer, 0, NPC.whoAmI);
@@ -228,8 +228,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else if (AttackTimer < 85 && !(NPC.collideY || NPC.velocity.Y < 0))
             {
                 moveTarget = arenaPos;
-                NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * 20, 0.4f);
-                NPC.velocity.Y *= 1.5f;
+                NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * 20, 0.4f).X;
+                NPC.velocity.Y += 1.5f;
             }
             else
                 NPC.velocity.X *= 0.5f;
