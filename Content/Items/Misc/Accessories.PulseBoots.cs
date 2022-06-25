@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.SteampunkSet;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -71,6 +72,15 @@ namespace StarlightRiver.Content.Items.Misc
                 releaseJump = false;
                 doubleJumped = false;
             }
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+            recipe.AddIngredient(ItemID.RocketBoots);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 }

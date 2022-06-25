@@ -97,6 +97,19 @@ namespace StarlightRiver.Content.Items.Misc
                 position -= velocity;
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.SilverBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.TungstenBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
     }
 
     public class DualCrossHeld : ModProjectile

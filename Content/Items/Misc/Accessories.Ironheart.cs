@@ -1,8 +1,10 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.SteampunkSet;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -37,6 +39,21 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if(Equipped(Player))
                 Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+            recipe.AddIngredient(ItemID.DemoniteBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+            recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 

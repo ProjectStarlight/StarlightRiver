@@ -87,6 +87,7 @@ namespace StarlightRiver.Content.Items.Geomancer
             return Player.armor[0].type == ModContent.ItemType<GeomancerHood>() && Player.armor[1].type == ModContent.ItemType<GeomancerRobe>() && Player.armor[2].type == ModContent.ItemType<GeomancerPants>();
         }
 
+
         public void DrawArmorLayer(PlayerDrawSet info)
         {
             GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
@@ -96,6 +97,20 @@ namespace StarlightRiver.Content.Items.Geomancer
             }
         }
 
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -134,6 +149,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
             Player.GetModPlayer<GeomancerPlayer>().SetBonusActive = true;
         }
+
         public void DrawArmorLayer(PlayerDrawSet info)
         {
             GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
@@ -142,6 +158,20 @@ namespace StarlightRiver.Content.Items.Geomancer
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
             }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 20);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 20);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 
@@ -165,10 +195,6 @@ namespace StarlightRiver.Content.Items.Geomancer
             Item.rare = 3;
         }
 
-        /*public override void UpdateEquip(Player Player)
-        {
-            Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, Player.velocity.Length() / 16f * 0.2f);
-        }*/
         public void DrawArmorLayer(PlayerDrawSet info)
         {
             GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
@@ -176,8 +202,23 @@ namespace StarlightRiver.Content.Items.Geomancer
             {
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
             }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
+
     public class GeomancerItemDummy : ModItem
     {
         public override string Texture => AssetDirectory.GeomancerItem + "GeoDiamond";

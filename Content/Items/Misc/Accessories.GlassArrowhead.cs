@@ -34,5 +34,13 @@ namespace StarlightRiver.Content.Items.Misc
                 }
             }
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Vitric.VitricOre>(), 5);
+            recipe.AddTile(TileID.Furnaces);
+            recipe.Register();
+        }
     }
 }

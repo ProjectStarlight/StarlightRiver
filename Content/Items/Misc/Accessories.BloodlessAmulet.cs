@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -70,6 +71,15 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.statLife = 0;
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<BloodAmulet>());
+			recipe.AddIngredient(ModContent.ItemType<Dungeon.AquaSapphire>());
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.Register();
 		}
 	}
 }

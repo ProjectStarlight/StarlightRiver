@@ -43,16 +43,16 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Ruby, 5);
-            recipe.AddIngredient(ItemID.LifeCrystal);
             recipe.AddIngredient(ItemID.GoldBar, 10);
+            recipe.AddIngredient(ItemID.LifeCrystal);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
 
             recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Ruby, 5);
-            recipe.AddIngredient(ItemID.LifeCrystal);
             recipe.AddIngredient(ItemID.PlatinumBar, 10);
+            recipe.AddIngredient(ItemID.LifeCrystal);
+            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
         }

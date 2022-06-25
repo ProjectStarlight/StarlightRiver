@@ -153,6 +153,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HellstoneBar, 10);
+			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 8);
+			recipe.AddIngredient(ModContent.ItemType<MagmaCore>(), 2);
+			recipe.AddTile(TileID.Anvils);
+		}
 	}
 	public class IgnitionPlayer : ModPlayer
 	{

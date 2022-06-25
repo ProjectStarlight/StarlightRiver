@@ -47,8 +47,9 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            Recipe recipe = CreateRecipe(50);
-            recipe.AddIngredient(ItemType<Moonstone.MoonstoneBarItem>(), 1); //TODO: real recipie
+            Recipe recipe = CreateRecipe(10);
+            recipe.AddIngredient(ItemID.WoodenArrow, 10);
+            recipe.AddIngredient(ItemID.Wire);
             recipe.AddTile(TileID.WorkBenches);
             recipe.Register();
         }

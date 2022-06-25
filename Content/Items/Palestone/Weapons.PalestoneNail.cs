@@ -57,8 +57,16 @@ namespace StarlightRiver.Content.Items.Palestone
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.UlyssesButterfly, 25);
-            recipe.AddTile(TileID.UlyssesButterflyJar);
+			
+            recipe.AddIngredient(ItemID.SilverBar, 12);
+			recipe.AddRecipeGroup("StarlightRiver:BugShells");
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.TungstenBar, 12);
+			recipe.AddRecipeGroup("StarlightRiver:BugShells");
+			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
     }
