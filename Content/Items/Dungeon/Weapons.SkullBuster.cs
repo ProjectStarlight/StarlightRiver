@@ -476,7 +476,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void Kill(int timeLeft)
 		{
-			owner.GetModPlayer<StarlightPlayer>().Shake += 3;
+			Core.Systems.CameraSystem.Shake += 3;
 
 			for (int i = 0; i < 3; i++)
             {

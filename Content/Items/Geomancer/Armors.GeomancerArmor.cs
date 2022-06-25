@@ -158,6 +158,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
             }
+        }
 
         public override void AddRecipes()
         {
@@ -198,10 +199,10 @@ namespace StarlightRiver.Content.Items.Geomancer
         public void DrawArmorLayer(PlayerDrawSet info)
         {
             GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
+
             if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[12].type == 0)
-            {
                 GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
-            }
+        }
 
         public override void AddRecipes()
         {
