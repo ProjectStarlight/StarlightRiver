@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             Vector2 slashScale = new Vector2(1.2f, 1.5f) + new Vector2(Utils.GetLerpValue(slashTime[(int)Variant] - 7, slashTime[(int)Variant] + 10, Timer, true));
             
             Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashFill, slashColor * 0.9f, (MathHelper.Pi / 3f * Parent.direction) + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale, 0, 0);
-            Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor, (MathHelper.Pi / 3f * Parent.direction) + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
+            Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor * 1.25f, (MathHelper.Pi / 3f * Parent.direction) + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
 
             return false;
         }

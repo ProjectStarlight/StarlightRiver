@@ -76,8 +76,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
                 for (int k = 0; k < 3; k++)
                 {
-                    var rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, new Color(255, Main.rand.Next(200, 255), 100), (1 - (Timer / 60f)));
+                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
+                    Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
+                    Dust swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: new Color(255, Main.rand.Next(200, 255), 100), Scale: Main.rand.NextFloat(1f, 2f));
+                    swirl.customData = Projectile.Center;
                 }
 
                 Projectile.scale = Math.Min(1, (Timer / 60f));
@@ -96,8 +98,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     Projectile.netUpdate = true;
                     LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation();
 
-                    var rot = Main.rand.NextFloat(6.28f);
-                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (LaserTimer - 30) / 45f);
+                    Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
+                    Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
+                    Dust swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: new Color(255, Main.rand.Next(200, 255), 100), Scale: Main.rand.NextFloat(1f, 2f));
+                    swirl.customData = Projectile.Center;
                 }
 
                 if (LaserTimer == 135)
