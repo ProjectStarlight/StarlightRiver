@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DeathAnimation()
 		{
-            if (GlobalTimer == 0)
+            if (GlobalTimer == 1)
             {
                 for (int k = 0; k < tentacles.Count; k++)
                 {
