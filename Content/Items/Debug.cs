@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            Item.createTile = ModContent.TileType<Tiles.Underground.EvasionShrine>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)

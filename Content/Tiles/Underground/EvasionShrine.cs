@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -36,8 +36,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 				if (dummy is null)
 					return;
 
-				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
-					tile.TileFrameX -= 3 * 18;
+				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)
+				{
+					tile.TileFrameX -= 5 * 18;
+					dummy.ai[0] = 0;
+				}			
 			}
 		}
 
@@ -45,22 +48,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 
-			int x = i - tile.TileFrameX / 16;
-			int y = j - tile.TileFrameY / 16;
+			int x = i - tile.TileFrameX / 18;
+			int y = j - tile.TileFrameY / 18;
 
 			var dummy = Dummy(x, y);
 
 			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
-				for (int x1 = 0; x1 < 3; x1++)
+				for (int x1 = 0; x1 < 5; x1++)
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.TileFrameX / 18;
-						int realY = y1 + j - tile.TileFrameY / 18;
+						int realX = x1 + x;
+						int realY = y1 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX += 5 * 18;
 					}
 
+				(dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
 				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
 				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
 				return true;
@@ -81,7 +85,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 3 * 16, 6 * 16) { }
+		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
@@ -98,15 +102,17 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == 0 && Parent.TileFrameX > 3 * 18)
+			if (State == 0 && Parent.TileFrameX > 5 * 18)
 			{
-				for (int x = 0; x < 3; x++)
+				for (int x = 0; x < 5; x++)
 					for (int y = 0; y < 6; y++)
 					{
-						int realX = ParentX - 1 + x;
+						int realX = ParentX - 2 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX -= 5 * 18;
+
+						Main.NewText(Framing.GetTileSafely(realX, realY).ToString());
 					}
 
 				Timer = 0;
