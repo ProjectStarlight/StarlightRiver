@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -7,7 +8,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class PowerupDust : ModDust
     {
-        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+        public override string Texture => AssetDirectory.Keys + "GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

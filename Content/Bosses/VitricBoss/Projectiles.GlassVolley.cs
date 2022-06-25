@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             Projectile.rotation = Projectile.velocity.ToRotation() + 1.58f;
 
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((640 - Projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((640 - Projectile.timeLeft), 120));
 
             Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity * 0.5f, 0, color, 1.5f);
             d.noGravity = true;
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override bool PreDraw(ref Color lightColor)
         {
             var spriteBatch = Main.spriteBatch;
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((600 - Projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((600 - Projectile.timeLeft), 120));
 
             spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
             spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);

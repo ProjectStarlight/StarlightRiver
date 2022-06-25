@@ -25,4 +25,8 @@
       <HintPath>..\..\..\..\..\..\HardDrive Program Files (x86)\Steam\steamapps\common\tModLoader\tModLoader.dll</HintPath>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\Healthbars\" />
+    <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
+  </ItemGroup>
 </Project>

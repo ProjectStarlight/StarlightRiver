@@ -206,20 +206,22 @@ namespace StarlightRiver.Content.Items.Vitric
 			Color color;
 
 			if (stuck)
-				color = VitricSummonOrb.MoltenGlow(100 - (needleLerp * 10));
+				color = Helper.MoltenVitricGlow(100 - (needleLerp * 10));
 			else
-				color = VitricSummonOrb.MoltenGlow(100);
+				color = Helper.MoltenVitricGlow(100);
 
-			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-			spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), false), lightColor, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
-			spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), VitricSummonOrb.WhiteFrame(tex.Size().ToRectangle(), true), color * (needleLerp / 10f), Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
+            ReLogic.Content.Asset<Texture2D> tex = TextureAssets.Projectile[Projectile.type];
+			Rectangle glassFrame = tex.Frame(2, 1, 0);
+			Rectangle hotFrame = tex.Frame(2, 1, 1);
+			spriteBatch.Draw(tex.Value, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), glassFrame, lightColor, Projectile.rotation, tex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(tex.Value, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), hotFrame, color * (needleLerp / 10f), Projectile.rotation, tex.Size() * 0.5f, Projectile.scale, SpriteEffects.None, 0);
 			
 			if (stuck)
 			{
-				tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom").Value;
+				tex = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "NeedlerBloom");
 				color = Color.Lerp(Color.Orange, Color.Red, needleLerp / 20f);
 				color.A = 0;
-				spriteBatch.Draw(tex, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), null, color * 0.66f, Projectile.rotation, new Vector2(tex.Width, tex.Height) / 2, ((Projectile.scale * (needleLerp / 10f)) + 0.25f) * new Vector2(1f, 1.25f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(tex.Value, (Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY)), null, color * 0.66f, Projectile.rotation, tex.Size() * 0.5f, ((Projectile.scale * (needleLerp / 10f)) + 0.25f) * new Vector2(1f, 1.25f), SpriteEffects.None, 0f);
 			}
 
 			return false;

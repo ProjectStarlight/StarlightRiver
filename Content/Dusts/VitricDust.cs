@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
 using Terraria;
@@ -53,7 +54,7 @@ namespace StarlightRiver.Content.Dusts
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			return VitricSummonOrb.MoltenGlow(dust.fadeIn * 3);
+			return Helpers.Helper.MoltenVitricGlow(dust.fadeIn * 3);
         }
 	}
 

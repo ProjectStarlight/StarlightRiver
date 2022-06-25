@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 Random rand = new Random(Projectile.GetHashCode());
 
-                Color color = VitricSummonOrb.MoltenGlow(Timer * 4 - 360);
+                Color color = Helper.MoltenVitricGlow(Timer * 4 - 360);
 
                 for (float k = 0; k < 6.28f; k += 6.28f / 12)
                 {

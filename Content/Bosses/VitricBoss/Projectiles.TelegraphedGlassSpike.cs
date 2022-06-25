@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (Projectile.timeLeft > 150)
                 Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (Projectile.timeLeft - 150)) / 30f);
 
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
             for (int k = 0; k <= 1; k++)
             {
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void Kill(int timeLeft)
         {
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
             for (int k = 0; k <= 10; k++)
             {
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (Projectile.timeLeft > 180)
                 return false;
 
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
             spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
             spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
             float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - Projectile.timeLeft), 120)) * alpha;
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120)) * alpha;
 
             spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
                 color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);

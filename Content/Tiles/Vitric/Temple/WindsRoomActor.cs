@@ -37,6 +37,24 @@ namespace StarlightRiver.Content.Tiles.Vitric
             behindNPCsAndTiles.Add(index);
 		}
 
+		public override bool PreDraw(ref Color lightColor)
+		{
+            Texture2D backdrop = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackground").Value;
+            var spriteBatch = Main.spriteBatch;
+            Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
+
+            var bgTarget = backdrop.Size().ToRectangle();
+            bgTarget.Offset(pos.ToPoint());
+            bgTarget.Width -= 300;
+            bgTarget.X += 150;
+            bgTarget.Height -= 100;
+            bgTarget.Y += 100;
+            TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
+            
+
+            return true;
+        }
+
 		public override void PostDraw(Color lightColor)
 		{
             var spriteBatch = Main.spriteBatch;
@@ -45,8 +63,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackgroundGlow").Value;
 			Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdrop);
-			spriteBatch.Draw(backdropGlow, pos, Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin(); //this reset is neccisary for some reason?
+
+            LightingBufferRenderer.DrawWithLighting(pos, backdrop);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            spriteBatch.Draw(backdropGlow, pos, Color.White);
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -400), new Vector3(1, 0.8f, 0.5f));
 			Lighting.AddLight(Projectile.Center + new Vector2(-200, -200), new Vector3(1, 0.8f, 0.5f));

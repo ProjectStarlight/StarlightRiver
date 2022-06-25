@@ -10,6 +10,8 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.DataStructures;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -17,87 +19,107 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
     {
         Vector2 origin;
 
-        public NPC Parent => Main.npc[(int)Projectile.ai[0]];
-
-        public override string Texture => AssetDirectory.GlassMiniboss + "GlassHammer";
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
 
         public override void SetDefaults()
         {
-            Projectile.width = 36;
-            Projectile.height = 32;
+            Projectile.width = 64;
+            Projectile.height = 64;
             Projectile.hostile = true;
-            Projectile.timeLeft = 150;
             Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
             Projectile.hide = true;
         }
 
+        public NPC Parent => Main.npc[(int)Projectile.ai[0]];
+
+        public ref float TotalTime => ref Projectile.ai[1];
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.localAI[0] = (int)TotalTime;
+            Projectile.timeLeft = (int)TotalTime + 50;
+            Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+        }
+
         public override void AI()
         {
-            if (Projectile.timeLeft == 120)
-            {
-                //TODO: figure out the shockwave
-                //Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * 9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]); //Shockwave spawners
-                //Projectile.NewProjectile(Projectile.InheritSource(Projectile), Parent.Center, Vector2.UnitX * -9, ProjectileType<Shockwave>(), 22, 0, Main.myPlayer, Projectile.ai[0]);
-            }
+            if (!Parent.active || Parent.type != NPCType<Glassweaver>())
+                Projectile.Kill();
 
-            float swingAccel = Utils.GetLerpValue(92f, 80f, Projectile.timeLeft, true);
+            Projectile.localAI[0]--;
+
+            float dropLerp = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.55f, Projectile.localAI[0], true), 3f);
+            float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, Projectile.localAI[0], true));
+            float swingAccel = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.16f, 0, Projectile.localAI[0], true), 1.7f);
+            //20 degree spawn
+            //10 degree drop
+            //40 degree lift
+            //180 degree swing
+            //17 degree finish
+
+            float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), MathHelper.ToRadians(10), dropLerp)
+                - MathHelper.Lerp(MathHelper.ToRadians(40), 0, liftLerp)
+                + MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(17), swingAccel);
 
             Vector2 handleOffset;
-            int handFrame = (int)((swingAccel) * 3f);
-            switch (handFrame)
+            int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
+            switch (handleFrame)
             {
                 default:
-                    handleOffset = new Vector2(-10, 0);
+                    handleOffset = new Vector2(-55, 2);
                     break;
                 case 1:
-                    handleOffset = new Vector2(25, -12);
+                    handleOffset = new Vector2(25, -5);
                     break;
                 case 2:
-                    handleOffset = new Vector2(30, 0);
+                    handleOffset = new Vector2(32, -7);
                     break;
                 case 3:
-                    handleOffset = new Vector2(40, 5);
+                    handleOffset = new Vector2(35, 2);
                     break;
             }
             handleOffset.X *= Parent.direction;
 
-            float chargeRot = MathHelper.Lerp(MathHelper.ToRadians(170), MathHelper.ToRadians(30), swingAccel)
-                + MathHelper.SmoothStep(0, MathHelper.ToRadians(20), Utils.GetLerpValue(140, 115, Projectile.timeLeft, true))
-                - MathHelper.Lerp(0, MathHelper.ToRadians(70), Helpers.Helper.BezierEase(Utils.GetLerpValue(115, 70, Projectile.timeLeft, true)));
-
             Projectile.rotation = (chargeRot * -Parent.direction) + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
             origin = Parent.Center + handleOffset;
-            Projectile.Center = origin + new Vector2(83, -90).RotatedBy(Projectile.rotation - (Parent.direction < 0 ? MathHelper.PiOver2 : 0));
+            Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, Projectile.localAI[0], true));
 
-            if (Projectile.timeLeft == 80)
+            if (Projectile.localAI[0] == 0)
             {
-                Helpers.Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.7f, 1.33f, Projectile.Center);
+                Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
                 Core.Systems.CameraSystem.Shake += 15;
+
                 for (int i = 0; i < 30; i++)
-                    Dust.NewDust(Projectile.Center - new Vector2(4, -4), 8, 4, DustType<Dusts.GlassGravity>(), 0, -4);
+                {
+                    Dust.NewDust(Projectile.Center - new Vector2(8, -4), 16, 4, DustType<Dusts.GlassGravity>(), Main.rand.Next(-1, 1), -3);
+                    if (Main.rand.NextBool(2))
+                    {
+                        Dust glow = Dust.NewDustDirect(Projectile.Bottom - new Vector2(8, 4), 16, 4, DustType<Dusts.Cinder>(), Main.rand.Next(-1, 1), -4, newColor: Glassweaver.GlowDustOrange);
+                        glow.noGravity = false;
+                    }
+                }
             }
 
-            if (Projectile.timeLeft > 120)
+            if (Projectile.localAI[0] > TotalTime * 0.5f)
             {
-                Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center, Main.rand.NextFloat());
-                Dust.NewDustPerfect(alongHammer, DustType<Dusts.GlowFastDecelerate>(), newColor: Color.DarkOrange, Scale: 0.3f); 
+                Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
+                Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), origin.DirectionTo(alongHammer).RotatedByRandom(0.5f) * 2f, 0, Glassweaver.GlowDustOrange, 0.8f);
             }
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            if (Projectile.timeLeft <= 90 && Projectile.timeLeft >= 75)
+            if (Projectile.localAI[0] < TotalTime * 0.12f)
                 target.AddBuff(BuffType<Buffs.Squash>(), 180);
         }
 
-
         public override void Kill(int timeLeft)
         {
-            SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+            Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, Main.rand.NextFloat(0.1f), Projectile.Center);
 
             for (int k = 0; k < 10; k++)
                 Dust.NewDustPerfect(Vector2.Lerp(origin, Projectile.Center, Main.rand.NextFloat()), DustType<Dusts.GlassGravity>());
@@ -113,119 +135,243 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             SpriteEffects effects = Parent.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 1f : 0f, 1f);
+            Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.2f : 0.8f, 0.2f);
 
-            Color fadeIn = lightColor * Utils.GetLerpValue(140, 134, Projectile.timeLeft, true);
-            Main.EntitySpriteDraw(hammer.Value, origin - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, 1, effects, 0);
+            float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, Projectile.localAI[0], true));
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(150, 140, Projectile.timeLeft, true) * Utils.GetLerpValue(90, 120, Projectile.timeLeft, true);
-            Main.EntitySpriteDraw(hammer.Value, origin - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, 1, effects, 0);
+            Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
+            Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, scaleIn, effects, 0);
+
+            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.95f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.35f, TotalTime * 0.45f, Projectile.localAI[0], true);
+            Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, scaleIn, effects, 0);
+            
+            Asset<Texture2D> hammerSmall = Request<Texture2D>(Texture + "Small");
+            float scaleOut = Projectile.scale * Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.8f, Projectile.localAI[0], true);
+            Main.EntitySpriteDraw(hammerSmall.Value, Projectile.Center - Main.screenPosition, null, hotFade, Projectile.rotation, hammerSmall.Size() * 0.5f, scaleOut, effects, 0);
 
             return false;
         }
     }
 
-    class Shockwave : ModProjectile
+    class GlassRaiseSpike : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass Structure");
 
         public override void SetDefaults()
         {
-            Projectile.width = 16;
-            Projectile.height = 16;
-            Projectile.timeLeft = 150;
+            Projectile.width = 45;
+            Projectile.height = 240;
+            Projectile.hostile = true;
+            Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
             Projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+            Projectile.tileCollide = true;
+            Projectile.hide = true;
+            Projectile.manualDirectionChange = true;
         }
 
-        public NPC Parent => Main.npc[(int)Projectile.ai[0]];
+        private int maxSpikes;
+
+        private Vector2[] points;
+
+        private float[] offsets;
+
+        public const int raise = 40;
+
+        public ref float Timer => ref Projectile.ai[0];
+
+        public ref float WhoAmI => ref Projectile.ai[1];
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.rotation += Main.rand.NextFloat(-0.01f, 0.01f);
+            maxSpikes = 3 + Main.rand.Next(16, 18);
+            points = new Vector2[maxSpikes];
+            offsets = new float[maxSpikes];
+            for (int i = 0; i < maxSpikes; i++)
+                offsets[i] = ((float)Math.Sin(i * MathHelper.Pi / Main.rand.NextFloat(1f, 2f)) + Main.rand.NextFloatDirection()) / 2f;
+        }
 
         public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
         public override void AI()
         {
-            //Tile tile = Framing.GetTileSafely((int)Projectile.Center.X / 16 + (Projectile.velocity.X > 0 ? 1 : -1), (int)Projectile.Center.Y / 16);
-            //Main.NewText(tile.type);//debug
+            Timer++;
+            if (Projectile.localAI[0] > 0)
+                Projectile.localAI[0]--;
 
-            Projectile.direction = Projectile.velocity.X < 0 ? -1 : 1;
-
-            if (Projectile.timeLeft < 150 && Projectile.velocity.Y == 0 && Projectile.timeLeft % 15 == 0)
-                Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + Vector2.UnitY * 9f, Vector2.Zero, ProjectileType<ShockwaveSpike>(), Projectile.damage, 0, Projectile.owner, ai1: Projectile.direction);
-
-            if (Projectile.velocity.X == 0)
-                Projectile.Kill();
-
-            Projectile.velocity.Y = 5;
-        }
-    }
-
-    class ShockwaveSpike : ModProjectile
-    {
-        public override string Texture => AssetDirectory.GlassMiniboss + "GlassSpike";
-
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Formation");
-
-        public override void SetDefaults()
-        {
-            Projectile.width = 16;
-            Projectile.height = 2;
-            Projectile.hostile = true;
-            Projectile.hide = true;
-            Projectile.timeLeft = 180;
-            Projectile.tileCollide = false;
-            Projectile.aiStyle = -1;
-            Projectile.penetrate = -1;
-        }
-
-        private float offGround;
-
-        public override void AI()
-        {
-            Projectile.ai[0]++; //ticks up the timer
-
-            if (Projectile.ai[0] == 70)
+            if (Timer == raise - 59)
             {
-                Projectile.hostile = true; //when this Projectile goes off
-                Core.Systems.CameraSystem.Shake += 5;
-                for (int k = 0; k < 15; k++)
-                {
-                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(12, 3), DustType<Dusts.Stone>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-4, -2));
-                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 3), DustType<Dusts.Glow>(), Vector2.UnitY.RotatedByRandom(1) * Main.rand.NextFloat(-2, 0), 0, new Color(255, 160, 80), 0.4f);
-                }
+                Projectile.height = (int)(MathHelper.Lerp(240, 150, WhoAmI));
 
-                SoundEngine.PlaySound(SoundID.Item70, Projectile.Center);
+                Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
+
+                int x = (int)(Projectile.Center.X / 16f);
+                int y = (int)(Projectile.Center.Y / 16f);
+                for (int i = y; i < y + 20; i++)
+                {
+                    if (WorldGen.ActiveAndWalkableTile(x, i))
+                    {
+                        Projectile.Bottom = new Vector2(Projectile.Center.X, i * 16f);
+                        break;
+                    }
+                }
             }
 
-            offGround = 1f - (Helpers.Helper.BezierEase(Utils.GetLerpValue(60, 70, Projectile.ai[0], true)) * Helpers.Helper.BezierEase(Utils.GetLerpValue(200, 110, Projectile.ai[0], true)));
+            //Projectile.velocity.Y = 80;
+
+            if (Timer == raise)
+            {
+                Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundGlassRaise", 0.5f, 0.3f, Projectile.Center);
+                //shotgun projectiles up?
+
+                for (int i = 0; i < 70; i++)
+                {
+                    Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(40, 2) - Vector2.UnitY * 2;
+                    Vector2 dustVel = new Vector2(0, -Main.rand.Next(15)).RotatedBy(dustPos.AngleFrom(Projectile.Bottom) + MathHelper.PiOver2).RotatedBy(Projectile.rotation);
+                    dustVel.X *= (float)Projectile.width / Projectile.height;
+                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel, 0, Glassweaver.GlowDustOrange, 1.2f);
+                }
+            }
+
+            //if (Time < raise + 10 && Time > 0 && Main.rand.Next(raise) > Time)
+            //{
+            //    for (int i = 0; i < 4; i++)
+            //    {
+            //        Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(30, 8);
+            //        Vector2 dustVel = new Vector2(0, Main.rand.Next(-2, -1)).RotatedBy(Projectile.rotation);
+            //        Dust glow = Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), dustVel, 0, GlassMiniboss.GlowDustOrange, 0.5f);
+            //        glow.noGravity = false;
+            //    }
+            //}
+
+            if (Timer > raise + 135 && Timer < raise + 190)
+            {
+                float up = Utils.GetLerpValue(raise + 195, raise + 130, Timer, true);
+                int dustPos = (int)((1f - up) * maxSpikes);
+                Dust.NewDustPerfect(points[dustPos] + Main.rand.NextVector2Circular(50 * up, 40 * up), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.5f) * 5f);
+            }
+
+            if (Timer > raise + 60 && Timer < raise + 170)
+            {
+                for (int i = 3; i < maxSpikes; i++)
+                {
+                    if (Main.rand.NextBool(80 + (maxSpikes - i) * 3))
+                    {
+                        float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                        Vector2 shinePos = Projectile.Bottom + Vector2.Lerp(new Vector2(Main.rand.Next(-50, 50), 5), new Vector2(Main.rand.Next(-4, 4), -Projectile.height + Main.rand.Next(-15, 5)).RotatedBy(Projectile.rotation), lerp);
+                        Dust.NewDustPerfect(shinePos, DustType<Dusts.Cinder>(), -Vector2.UnitY * 0.2f, 0, Glassweaver.GlassColor, 0.7f);
+                    }
+                }
+            }
+
+            if (Timer > raise + 190)
+                Projectile.Kill();
+        }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            if (Timer >= raise)
+            {
+                target.Center -= new Vector2(0, 8).RotatedBy(Projectile.rotation);
+                target.velocity.Y -= 0.5f;
+                target.velocity.X *= 0.6f;
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            bool properTime = Timer > raise + 8 && Timer < raise + 100;
+            bool inSpike = projHitbox.Intersects(targetHitbox);
+
+            return properTime && inSpike;
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Asset<Texture2D> spike = Request<Texture2D>(Texture);
-            Rectangle frame = spike.Frame(2, 1);
+            int baseWidth = 20;
+            int totalHeight = Projectile.height + 10;
 
-            Rectangle groundFrame = new Rectangle(0, 0, frame.Width, (int)(frame.Height * (1 - offGround)));
-            Rectangle hotGroundFrame = new Rectangle(frame.Width, 0, frame.Width, (int)(frame.Height * (1 - offGround)));
-            Vector2 off = new Vector2(0, frame.Height * offGround);
+            if (Timer < raise + 10)
+                DrawGroundTell();
 
-            Main.spriteBatch.Draw(spike.Value, Projectile.Center + off - Main.screenPosition, groundFrame, lightColor, 0, frame.Size() * new Vector2(0.5f, 1f), 1f, 0, 0);
+            Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
 
-            Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(120, 90, Projectile.ai[0], true);
-            Main.spriteBatch.Draw(spike.Value, Projectile.Center + off - Main.screenPosition, hotGroundFrame, hotFade, 0, frame.Size() * new Vector2(0.5f, 1f), 1f, 0, 0);
+            if (Timer > raise - 10)
+            {
+                for (int i = 0; i < maxSpikes; i++)
+                {
+                    float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                    float height = -totalHeight * lerp * (float)Math.Sqrt(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 30 + (7f * lerp), Timer, true));
+                    float width = baseWidth * (1.1f - lerp);
 
-            Asset<Texture2D> tell = TextureAssets.Extra[98];
-            Rectangle tellFrame = tell.Frame(1, 2);
+                    points[i] = Projectile.Bottom + new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 200, raise + 150, Timer, true))) * 80f);
+                    int j = maxSpikes - i - 1;
+                    float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
+                    if (Timer > raise + 140 - i * 3)
+                        points[j] += Main.rand.NextVector2Circular(2, 5);
 
-            Color tellFade = Color.OrangeRed * Utils.GetLerpValue(0, 10, Projectile.ai[0], true) * Utils.GetLerpValue(40, 10, Projectile.ai[0], true);
-            tellFade.A = 0;
-            Vector2 tellScale = new Vector2(Utils.GetLerpValue(40, 0, Projectile.ai[0], true) * 12f, 2f + (Utils.GetLerpValue(0, 40, Projectile.ai[0], true) * 10f));
-            Main.spriteBatch.Draw(tell.Value, Projectile.Center - Main.screenPosition, tellFrame, tellFade, 0, tellFrame.Size() * new Vector2(0.5f, 1f), tellScale, 0, 0);
+                    int growthSize = (int)((float)Math.Sqrt(lerp) * 5f);
+                    float growthProg = Utils.GetLerpValue(raise + 20 - (float)Math.Pow(lerp, 2) * 15, raise + 190 - lerp * 20, Timer, true);
+                    DrawSpikeGrowth(points[j], rotation, growthSize, growthProg);
+                }
+
+                for (int i = 0; i < maxSpikes; i++)
+                {
+                    float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
+                    int j = maxSpikes - i - 1;
+                    float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.5f);
+
+                    int bloomSize = (int)((float)Math.Sqrt(lerp) * 5f);
+                    float bloomProg = Utils.GetLerpValue(raise + 20 - (float)Math.Pow(lerp, 2) * 15, raise + 190 - lerp * 30, Timer, true);
+                    Vector2 bloomScale = new Vector2(1f, 1.5f) * Utils.GetLerpValue(-5, 5, bloomSize, true);
+                    Color bloomFade = Color.OrangeRed * Utils.GetLerpValue(0.41f, 0.2f, bloomProg, true) * ((bloomSize + 1) / 5f) * Utils.GetLerpValue(0, 0.1f, bloomProg, true);
+                    bloomFade.A = 0;
+                    Main.EntitySpriteDraw(bloom.Value, points[j] - Main.screenPosition, null, bloomFade, rotation, bloom.Size() * 0.5f, bloomScale, 0, 0);
+                }
+            }
 
             return false;
+        }
+
+        private void DrawSpikeGrowth(Vector2 position, float rotation, int size, float progress)
+        {
+            Asset<Texture2D> growth = Request<Texture2D>(Texture);
+            Rectangle frame = growth.Frame(5, 2, size, 0);
+            Rectangle hotFrame = growth.Frame(5, 2, size, 1);
+            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.77f);
+
+            Color lightColor = Color.Lerp(Lighting.GetColor((int)position.X / 16, (int)position.Y / 16), Color.White, (1f - progress) * 0.8f);
+            float scaleW = Utils.GetLerpValue(-0.05f, 0.05f, progress, true) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.9f, progress, true));
+            float scaleH = Helpers.Helper.SwoopEase(Utils.GetLerpValue(0, 0.1f, progress, true)) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.92f, progress, true));
+            Vector2 scale = Projectile.scale * new Vector2(scaleW, scaleH);
+
+            Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, frame, lightColor, rotation, origin, scale, 0, 0);
+
+            Color hotFade = new Color(255, 255, 255, 128) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0.45f, 0.2f, progress, true));
+            Main.EntitySpriteDraw(growth.Value, position - Main.screenPosition, hotFrame, hotFade, rotation, origin, scale, 0, 0);
+        }
+
+        private void DrawGroundTell()
+        {
+            Asset<Texture2D> tellTex = Request<Texture2D>(AssetDirectory.MiscTextures + "SpikeTell");
+            Rectangle frame = tellTex.Frame(2, 1, 1);
+            Rectangle frameGlow = tellTex.Frame(2, 1, 1);
+            Vector2 tellOrigin = frame.Size() * new Vector2(0.5f, 0.928f);
+
+            Color fade = Color.OrangeRed * 0.5f * Utils.GetLerpValue(raise * 0.9f, raise * 0.4f, Timer, true);
+            fade.A = 0;            
+            Color fadeInner = Color.OrangeRed * Utils.GetLerpValue(raise * 0.66f, raise * 0.35f, Timer, true);
+            fadeInner.A = 0;
+            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.8f, Timer, true)) * 4f;
+            float width = 0.6f + (float)Math.Pow(Utils.GetLerpValue(raise * 0.17f, raise, Timer, true), 2) * 6f;
+            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frameGlow, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
+            Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frame, fadeInner, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1f, height * 0.6f), 0, 0);
         }
     }
 }

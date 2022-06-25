@@ -73,6 +73,20 @@ namespace StarlightRiver.Helpers
             return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / (maxRadius - minRadius)));
 		}
 
+        public static Color MoltenVitricGlow(float time)
+        {
+            Color MoltenGlowc = Color.White;
+            if (time > 30 && time < 60)
+                MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f, 1f));
+            else if (time >= 60)
+                MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
+            return MoltenGlowc;
+        }
+        public static float RotationDifference(float rotTo, float rotFrom)
+        {
+            return ((((rotTo - rotFrom) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+        }
+
         /// <summary>
         /// determines if an NPC is "fleshy" based on it's hit sound
         /// </summary>
