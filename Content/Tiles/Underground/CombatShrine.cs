@@ -57,8 +57,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 				for (int x1 = 0; x1 < 3; x1++)
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.TileFrameX / 18;
-						int realY = y1 + j - tile.TileFrameY / 18;
+						int realX = x1 + x;
+						int realY = y1 + y;
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
