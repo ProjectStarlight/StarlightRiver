@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     NPC.TargetClosest();
                     NPC.FaceTarget();
                 }
-                NPC.velocity.X += NPC.direction * MathHelper.Lerp(7f, 60f, (float)Math.Pow((AttackTimer - slashTime[0] - 1) / 80f, 2f));
+                NPC.velocity.X += NPC.direction * MathHelper.Lerp(7f, 30f, (float)Math.Pow((AttackTimer - slashTime[0] - 1) / 80f, 2f));
             }
 
             if (AttackTimer > slashTime[2] + 50)
