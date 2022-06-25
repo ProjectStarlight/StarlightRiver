@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using System.Linq;
+using System;
 
 namespace StarlightRiver.Core
 {
@@ -241,6 +242,36 @@ namespace StarlightRiver.Core
 		{
 			data.AuroraWaterFrameX = x;
 			data.AuroraWaterFrameY = y;
+		}
+
+		public override unsafe void SaveWorldData(TagCompound tag)
+		{
+			var myData = Main.tile.GetData<AuroraWaterData>();
+			byte[] data = new byte[myData.Length];			
+
+			fixed (AuroraWaterData* ptr = myData)
+			{
+				byte* bytePtr = (byte*)ptr;
+				Span<byte> span = new Span<byte>(bytePtr, myData.Length);
+				Span<byte> target = new Span<byte>(data);
+				span.CopyTo(target);
+			}
+
+			tag.Add("tileData", data);
+		}
+
+		public override unsafe void LoadWorldData(TagCompound tag)
+		{
+			var targetData = Main.tile.GetData<AuroraWaterData>();
+			byte[] data = tag.GetByteArray("tileData");
+
+			fixed (AuroraWaterData* ptr = targetData)
+			{
+				byte* bytePtr = (byte*)ptr;
+				Span<byte> span = new Span<byte>(bytePtr, targetData.Length);
+				Span<byte> target = new Span<byte>(data);
+				target.CopyTo(span);
+			}
 		}
 	}
 }
