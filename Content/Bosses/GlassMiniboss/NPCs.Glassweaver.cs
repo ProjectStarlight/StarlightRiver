@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 case (int)PhaseEnum.SpawnEffects:
 
-                    arenaPos = NPC.Center;
+                    arenaPos = NPC.Center + Vector2.UnitY * 64;
                     Phase = (int)PhaseEnum.JumpToBackground;
                     ResetAttack();
 
