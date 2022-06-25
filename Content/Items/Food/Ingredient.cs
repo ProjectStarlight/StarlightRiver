@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Items.Utility;
 using StarlightRiver.Core;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +13,8 @@ namespace StarlightRiver.Content.Items.Food
     {
         Main = 0,
         Side = 1,
-        Seasoning = 2
+        Seasoning = 2,
+        Bonus = 3
     };
 
     public abstract class Ingredient : ModItem
@@ -35,12 +37,27 @@ namespace StarlightRiver.Content.Items.Food
             ChefBag.ingredientTypes.Add(Item.type);
         }
 
-        ///<summary>Where the effects of this food Item's buff will go. use the multiplier param for any effect that should be multiplier-sensitive</summary>
+        protected bool Active(Player player) => player.GetModPlayer<FoodBuffHandler>().Consumed.Any(n => n.type == Type);
+
+        /// <summary>
+        /// Effects which are applied immediately on consumption
+        /// </summary>
+        /// <param name="player">The player eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
+        public virtual void OnUseEffects(Player player, float multiplier) { }
+
+        /// <summary>
+        /// The passive effects of a food item while the buff is active
+        /// </summary>
+        /// <param name="Player">The palyer eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
         public virtual void BuffEffects(Player Player, float multiplier) { }
 
         /// <summary>
-        /// Make sure to reset appropriate buff updates here
+        /// Allows you to reset buffs applied in BuffEffects
         /// </summary>
+        /// <param name="Player">The palyer eating the food</param>
+        /// <param name="multiplier">The power which should be applied to numeric effects</param>
         public virtual void ResetBuffEffects(Player Player, float multiplier) { }
 
         public virtual void SafeSetDefaults() { }
@@ -73,6 +90,7 @@ namespace StarlightRiver.Content.Items.Food
                 case IngredientType.Main: description = "Main Course"; nameColor = new Color(255, 220, 140); descriptionColor = new Color(255, 220, 80); break;
                 case IngredientType.Side: description = "Side Dish"; nameColor = new Color(140, 255, 140); descriptionColor = new Color(80, 255, 80); break;
                 case IngredientType.Seasoning: description = "Seasonings"; nameColor = new Color(140, 200, 255); descriptionColor = new Color(80, 140, 255); break;
+                case IngredientType.Bonus: description = "Bonus Effects"; nameColor = new Color(255, 200, 200); descriptionColor = new Color(255, 140, 140); break;
                 default: description = "ERROR"; nameColor = Color.Black; descriptionColor = Color.Black; break;
             }
 
@@ -82,12 +100,15 @@ namespace StarlightRiver.Content.Items.Food
                 if (line.Mod == "Terraria" && line.Name == "Tooltip1") { line.Text = ItemTooltip; line.OverrideColor = descriptionColor; }
             }
 
-            TooltipLine fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
+            if (ThisType != IngredientType.Bonus)
             {
-                OverrideColor = new Color(110, 235, 255)
-            };
+                TooltipLine fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
+                {
+                    OverrideColor = new Color(110, 235, 255)
+                };
 
-            tooltips.Add(fullLine);
+                tooltips.Add(fullLine);
+            }
         }
 
         public Color GetColor()
@@ -97,6 +118,7 @@ namespace StarlightRiver.Content.Items.Food
                 case IngredientType.Main: return new Color(255, 220, 140);
                 case IngredientType.Side: return new Color(140, 255, 140);
                 case IngredientType.Seasoning: return new Color(140, 200, 255);
+                case IngredientType.Bonus: return new Color(255, 150, 150);
                 default: return Color.Black;
             }
         }

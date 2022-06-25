@@ -21,14 +21,15 @@ namespace StarlightRiver.Core
             {
                 if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2) //inner part of the world
                 {
-                    if (WorldGen.genRand.Next(16) == 0) //Berry Bushes
+                    if (WorldGen.genRand.NextBool(16)) //Berry Bushes
                     {
                         for (int y = 10; y < Main.worldSurface; y++)
                         {
                             if (Main.tile[k, y].TileType == TileID.Grass && Main.tile[k + 1, y].TileType == TileID.Grass && Helper.CheckAirRectangle(new Point16(k, y - 2), new Point16(2, 2)))
                             {
                                 var type = TileType<ForestBerryBush>();
-                                if (WorldGen.genRand.Next(4) == 0)
+
+                                if (WorldGen.genRand.NextBool(4))
                                     type = TileType<SlimeberryBush>();
 
                                 Helper.PlaceMultitile(new Point16(k, y - 2), type); //25% chance for slimeberries instead
@@ -37,7 +38,7 @@ namespace StarlightRiver.Core
                         }
                     }
 
-                    else if (WorldGen.genRand.Next(50) == 0) //Palestone
+                    else if (WorldGen.genRand.NextBool(50)) //Palestone
                     {
                         for (int y = 10; y < Main.worldSurface; y++)
                         {
@@ -62,7 +63,7 @@ namespace StarlightRiver.Core
                     }
                 }
 
-                if (WorldGen.genRand.Next(30) == 0 && AnyGrass(k))
+                if (WorldGen.genRand.NextBool(30)&& AnyGrass(k))
                 {
                     int size = WorldGen.genRand.Next(10, 15);
                     int oldSurface = 0;

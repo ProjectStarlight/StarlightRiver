@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -44,15 +46,39 @@ namespace StarlightRiver.Content.Items.Food
             {
                 foreach (Item Item in Ingredients) mp.Consumed.Add(Item.Clone()); 
                 player.AddBuff(BuffType<FoodBuff>(), Fullness);
-                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f));
+                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f));               
             }
-            else Main.NewText("Bad food! Please report me to the Mod devs.", Color.Red);
+            else 
+                Main.NewText("Bad food! Please report me to the Mod devs.", Color.Red);
 
             Item.stack--;
             return true;
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus))
+            {
+                int type = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus).type;
+                var tex = TextureAssets.Item[type].Value;
+
+                float thisScale = tex.Width > tex.Height ? 32f / tex.Width : 32f / tex.Height;
+
+                spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2, thisScale, 0, 0);
+
+                return false;
+            }
+
+            return true;
+        }
+
+		public override void OnConsumeItem(Player player)
+		{
+            FoodBuffHandler mp = player.GetModPlayer<FoodBuffHandler>();
+            mp.Consumed.ForEach(n => (n.ModItem as Ingredient).OnUseEffects(player, mp.Multiplier));
+        }
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             string sidesName = "";
 
@@ -60,14 +86,20 @@ namespace StarlightRiver.Content.Items.Food
             {
                 List<Item> sides = Ingredients.FindAll(n => (n.ModItem as Ingredient).ThisType == IngredientType.Side);
                 sidesName += " with " + sides[0].Name;
-                if (sides.Count == 2) sidesName += " and " + sides[1].Name;
+
+                if (sides.Count == 2) 
+                    sidesName += " and " + sides[1].Name;
             }
 
             string mainName = "";
 
-            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Main)) mainName = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Main).Name;
+            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Main)) 
+                mainName = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Main).Name;
 
             string fullName = mainName + sidesName;
+
+            if (Ingredients.Any(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus))
+                fullName = Ingredients.FirstOrDefault(n => (n.ModItem as Ingredient).ThisType == IngredientType.Bonus).Name;
 
             tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = fullName; 
 
@@ -77,6 +109,7 @@ namespace StarlightRiver.Content.Items.Food
                 {
                     OverrideColor = (Item.ModItem as Ingredient).GetColor()
                 };
+
                 tooltips.Add(line);
             }
 

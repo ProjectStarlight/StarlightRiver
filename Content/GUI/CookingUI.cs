@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Food;
+using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -16,23 +17,27 @@ namespace StarlightRiver.Content.GUI
 {
 	public class CookingUI : SmartUIState
     {
-        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+        public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Radial Hotbars"));
 
-        private static bool Moving = false;
+        public override bool Visible => visible;
+
+        public static bool visible;
+
+		private static bool Moving = false;
         private static Vector2 MoveOffset = Vector2.Zero;
         private static int scrollStart = 0;
         private static int lineCount = 0;
 
-        private readonly CookingSlot MainSlot = new CookingSlot(IngredientType.Main);
-        private readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
-        private readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
-        private readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
-        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep"));
-        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit"));
-        private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow").Value);
-        private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop").Value);
+        public readonly CookingSlot MainSlot = new CookingSlot(IngredientType.Main);
+        public readonly CookingSlot SideSlot0 = new CookingSlot(IngredientType.Side);
+        public readonly CookingSlot SideSlot1 = new CookingSlot(IngredientType.Side);
+        public readonly CookingSlot SeasonSlot = new CookingSlot(IngredientType.Seasoning);
+        private readonly UIImageButton CookButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookPrep", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+        private readonly UIImageButton ExitButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/CookExit", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+        private readonly UIImage StatBack = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookStatWindow", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
+        private readonly UIImage TopBar = new UIImage(Request<Texture2D>("StarlightRiver/Assets/GUI/CookTop", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 
-        private Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
+        public static Vector2 Basepos = new Vector2(Main.screenWidth / 2 - 173, Main.screenHeight / 2 - 122);
 
         public override void OnInitialize()
         {
@@ -46,6 +51,9 @@ namespace StarlightRiver.Content.GUI
 
         public override void Update(GameTime gameTime)
         {
+            if (!Main.playerInventory)
+                visible = false;
+
             if (TopBar.IsMouseHovering && Main.mouseLeft)
             {
                 if (!Moving)
@@ -54,13 +62,16 @@ namespace StarlightRiver.Content.GUI
                 Moving = true;
             }
 
-            if (!Main.mouseLeft) Moving = false;
+            if (!Main.mouseLeft) 
+                Moving = false;
 
-            if (Moving) Basepos = Main.MouseScreen - MoveOffset;
-            if (Basepos.X < 20) Basepos.X = 20;
+            if (Moving) Basepos = Main.MouseScreen - MoveOffset;            
+            if (Basepos.X < 520) Basepos.X = 520;
             if (Basepos.Y < 20) Basepos.Y = 20;
             if (Basepos.X > Main.screenWidth - 20 - 346) Basepos.X = Main.screenWidth - 20 - 346;
             if (Basepos.Y > Main.screenHeight - 20 - 244) Basepos.Y = Main.screenHeight - 20 - 244;
+
+            ChefBagUI.Move(CookingUI.Basepos + new Vector2(-480, 0));
 
             Main.isMouseLeftConsumedByUI = true;
             SetPosition(MainSlot, 44, 44);
@@ -83,7 +94,15 @@ namespace StarlightRiver.Content.GUI
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266), new Color(25, 25, 25) * 0.5f);
+            var backDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266);
+
+            if (ChefBagUI.visible)
+            {
+                backDims.X -= 520;
+                backDims.Width += 520;
+            }
+
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
 
             base.Draw(spriteBatch);
             Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
@@ -111,7 +130,7 @@ namespace StarlightRiver.Content.GUI
 
                     for (int k = 0; k < strings.Count(); k++)
                     {
-                        string text = "~" + Helper.WrapString(strings[k], 100, Terraria.GameContent.FontAssets.ItemStack.Value, 0.65f);
+                        string text = "~" + Helper.WrapString(strings[k], 100, FontAssets.ItemStack.Value, 0.65f);
                         string[] substrings = text.Split('\n');
 
                         for (int n = 0; n < substrings.Length; n++)
@@ -129,7 +148,7 @@ namespace StarlightRiver.Content.GUI
                 {
                     var line = lines[k];
                     Utils.DrawBorderString(spriteBatch, line.Item1, Basepos + new Vector2(186, 54 + drawY), line.Item2, 0.65f);
-                    drawY += (int)(Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
+                    drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
                 }
 
                 Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
@@ -163,6 +182,12 @@ namespace StarlightRiver.Content.GUI
                 CookIngredient(Item, SideSlot0);
                 CookIngredient(Item, SideSlot1);
                 CookIngredient(Item, SeasonSlot);
+
+                var special = FoodRecipieHandler.Recipes.FirstOrDefault(n => n.Matches((Item.ModItem as Meal).Ingredients));
+
+                if (special.result != 0) //Bad check. This entire addition is kind of a bandaid. That kinda sucks.
+                    (Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
+
                 Item.position = Main.LocalPlayer.Center;
                 Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
@@ -176,14 +201,18 @@ namespace StarlightRiver.Content.GUI
             {
                 (target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
                 (target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
-                if (source.Item.stack == 1) source.Item.TurnToAir();
-                else source.Item.stack--;
+
+                if (source.Item.stack == 1) 
+                    source.Item.TurnToAir();
+                else 
+                    source.Item.stack--;
             }
         }
 
         private void Exit(UIMouseEvent evt, UIElement listeningElement)
         {
-            Visible = false;
+            visible = false;
+            Main.playerInventory = false;
             Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
         }
     }
@@ -220,6 +249,13 @@ namespace StarlightRiver.Content.GUI
 
                 if (Item.stack > 1)
                     Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 32, Color.White, 0.75f);
+
+                if(IsMouseHovering)
+				{
+                    Main.LocalPlayer.mouseInterface = true;
+                    Main.HoverItem = Item.Clone();
+                    Main.hoverItemName = "a";
+                }
             }
         }
 

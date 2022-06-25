@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Buffs
             FoodBuffHandler mp = Player.GetModPlayer<FoodBuffHandler>();
             foreach (Item Item in mp.Consumed.Where(n => n.ModItem is Ingredient))
             {
-                (Item.ModItem as Ingredient).BuffEffects(Player, mp.Multiplier);
+                (Item.ModItem as Ingredient).BuffEffects(Player, mp.oldMult);
             }
         }
     }

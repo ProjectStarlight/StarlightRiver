@@ -2,6 +2,7 @@
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent.ItemDropRules;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void Load()
         {
-            StarlightNPC.OnKillEvent += LootRabbit;
+            StarlightNPC.ModifyNPCLootEvent += LootRabbit;
         }
 
         public override void BuffEffects(Player Player, float multiplier)
@@ -21,10 +22,10 @@ namespace StarlightRiver.Content.Items.Food
             Player.GetDamage(DamageClass.Melee) += 0.05f * multiplier;
         }
 
-        private void LootRabbit(NPC NPC)
+        private void LootRabbit(NPC NPC, NPCLoot npcloot)
         {
-            if (NPC.type == NPCID.Bunny && Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.GetSource_Loot(), NPC.Center, Item.type);
+            if (NPC.type == NPCID.Bunny)
+                npcloot.Add(ItemDropRule.Common(ModContent.ItemType<Rabbit>(), 4));
         }
     }
 }

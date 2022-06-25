@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void Load()
         {
-            StarlightNPC.OnKillEvent += LootMonsterSteak;
+            StarlightNPC.ModifyNPCLootEvent += LootFaceSteak;
         }
 
         public override void BuffEffects(Player Player, float multiplier)
@@ -23,10 +24,10 @@ namespace StarlightRiver.Content.Items.Food
             Player.GetCritChance(DamageClass.Magic) += 3;
         }
 
-        private void LootMonsterSteak(NPC NPC)
+        private void LootFaceSteak(NPC NPC, NPCLoot npcloot)
         {
-            if (NPC.type == NPCID.FaceMonster && Main.rand.Next(4) == 0)
-                Item.NewItem(NPC.GetSource_Loot(), NPC.Center, Item.type);
+            if (NPC.type == NPCID.EaterofSouls)
+                npcloot.Add(ItemDropRule.Common(ModContent.ItemType<FaceSteak>(), 8));
         }
     }
 }

@@ -48,6 +48,13 @@ namespace StarlightRiver.Core
             ResetEffectsEvent?.Invoke(NPC);
         }
 
+        public delegate void ModifyNPCLootDelegate(NPC npc, NPCLoot npcloot);
+        public static event ModifyNPCLootDelegate ModifyNPCLootEvent;   
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+            ModifyNPCLootEvent?.Invoke(npc, npcLoot);
+		}
+
 		public override void Unload()
 		{
             PostAIEvent = null;
@@ -56,6 +63,7 @@ namespace StarlightRiver.Core
             ModifyHitByProjectileEvent = null;
             ModifyHitPlayerEvent = null;
             ResetEffectsEvent = null;
+            ModifyNPCLootEvent = null;
 		}
 	}
 }

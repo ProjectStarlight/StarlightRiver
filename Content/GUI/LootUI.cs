@@ -162,7 +162,9 @@ namespace StarlightRiver.Content.GUI
                     float scale = tex2.Frame().Size().Length() < 47 ? 1 : 47f / tex2.Frame().Size().Length();
 
                     spriteBatch.Draw(tex2, GetDimensions().Center(), tex2.Frame(), Color.White, 0, tex2.Frame().Size() / 2, 1, 0, 0);
-                    if (Item.stack > 1) Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White, 0.75f);
+
+                    if (Item.stack > 1) 
+                        Utils.DrawBorderString(spriteBatch, Item.stack.ToString(), GetDimensions().Position() + Vector2.One * 28, Color.White, 0.75f);
                 }
 
                 if (IsMouseHovering)
@@ -178,9 +180,13 @@ namespace StarlightRiver.Content.GUI
             if (Parent is LootUI)
             {
                 LootUI parent = Parent as LootUI;
-                if (parent.Selections[0] == null) parent.Selections[0] = Item;
-                else if (parent.Selections[0] == Item) parent.Selections[0] = null;
-                else parent.Selections[1] = Item;
+
+                if (parent.Selections[0] == null) 
+                    parent.Selections[0] = Item;
+                else if (parent.Selections[0] == Item) 
+                    parent.Selections[0] = null;
+                else
+                    parent.Selections[1] = Item;
             }
         }
     }

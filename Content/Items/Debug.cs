@@ -4,8 +4,10 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
+using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -38,8 +40,6 @@ namespace StarlightRiver.Content.Items
             Item.UseSound = SoundID.Item18;
             Item.useTurn = true;
             Item.accessory = true;
-
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -49,11 +49,19 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            player.statLifeMax = 100;
-            UILoader.GetUIState<MessageBox>().Display("Doin your mom", "doin doin your mom");
+            //return true;
 
-            StarlightWorld.FlipFlag(WorldFlags.SquidBossOpen);
-            Main.NewText(Main.cJump + " Is the key to jump. Or is it? It is. Or is it?");
+            int tx = (int)Main.MouseWorld.X / 16;
+            int ty = (int)Main.MouseWorld.Y / 16;
+
+            Helper.PlaceMultitile(new Point16(tx - 1, ty - 3), ModContent.TileType<Tiles.Forest.ThickTreeBase>());
+
+            for (int x = 0; x < 2; x++)
+                for(int y = 0; y < 20; y++)
+				{
+                    WorldGen.PlaceTile(tx + x, ty - (y + 4), ModContent.TileType<Tiles.Forest.ThickTree>(), false, true);
+				}
+
             return true;
 
             player.GetModPlayer<Abilities.AbilityHandler>().StaminaMaxBonus = 20;
