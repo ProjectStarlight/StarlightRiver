@@ -20,13 +20,13 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         private void CheckAuroraSwimming() //checks for if hte Player should be swimming
         {
             bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
+
             if (canSwim)
             {
+                bool swimming = false;
+
                 if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
-                {
-                    ShouldSwim = true;
-                    SwimSpeed *= 0.7f;
-                }
+                    swimming = true;
 
                 for (int x = 0; x < 2; x++)
                     for (int y = 0; y < 3; y++)
@@ -37,13 +37,17 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                         if (WorldGen.InWorld(realX, realY))
                         {
                             Tile tile = Framing.GetTileSafely(realX, realY);
+
                             if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
-                            {
-                                ShouldSwim = true;
-                                SwimSpeed *= 0.7f;
-                            }
+                                swimming = true;
                         }
                     }
+
+                if (swimming)
+				{
+                    ShouldSwim = true;
+                    SwimSpeed *= 0.7f;
+                }
             }
 		}
 

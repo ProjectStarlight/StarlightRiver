@@ -4,6 +4,8 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
+using System.Linq;
 
 namespace StarlightRiver.Core
 {
@@ -30,17 +32,18 @@ namespace StarlightRiver.Core
 		}
 	}
 
-	class AuroraWaterSystem : ModSystem, IOrderedLoadable
+	class AuroraWaterSystem : ModSystem
 	{
 		public static RenderTarget2D auroraTarget;
 		public static RenderTarget2D auroraBackTarget;
 
 		public float Priority => 1;
 
-		new public void Load()
+		public override void Load()
 		{
 			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
 			On.Terraria.Main.CheckMonoliths += DrawAuroraTarget;
+			On.Terraria.Main.DrawInfernoRings += DrawAuroraWater;
 
 			if (!Main.dedServ)
 			{
@@ -51,8 +54,6 @@ namespace StarlightRiver.Core
 				});
 			}
 		}
-
-		new public void Unload() { }
 
 		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
@@ -133,8 +134,10 @@ namespace StarlightRiver.Core
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
 		}
 
-		public override void PostDrawTiles()
+		private void DrawAuroraWater(On.Terraria.Main.orig_DrawInfernoRings orig, Main self)
 		{
+			orig(self);
+
 			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
 
 			if (shader is null)
@@ -145,11 +148,13 @@ namespace StarlightRiver.Core
 			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
 			shader.Parameters["sampleTexture2"].SetValue(auroraBackTarget);
 
+			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
 
 			Main.spriteBatch.Draw(auroraTarget, Vector2.Zero, Color.White);
 
 			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 		}
 
 		public static void PlaceAuroraWater(int i, int j)
