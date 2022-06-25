@@ -523,7 +523,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     Arena.NPC.ai[0] += dif;
                     
                     NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
-                    if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
+
+                    if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
+                        Helpers.Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 0.5f, 0f, NPC.Center);
+
+                    if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
+                        Helpers.Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
                 }
 
                 if(GlobalTimer > 275 && GlobalTimer <= 325)
@@ -579,7 +584,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     var dif = fun - (float)(-833.33f * Math.Pow(GlobalTimer / 325f, 3) + 1250f * Math.Pow(GlobalTimer / 325f, 2) - 116.66 * GlobalTimer / 325f);
                     Arena.NPC.ai[0] += dif;
 
-                    if (GlobalTimer % 10 == 0) Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash, NPC.Center);
+                    if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
+                        Helpers.Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 1, 0f, NPC.Center);
+
+                    if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
+                        Helpers.Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
+
                     arenaBlocker.position.Y -= 1f;
                 }
 

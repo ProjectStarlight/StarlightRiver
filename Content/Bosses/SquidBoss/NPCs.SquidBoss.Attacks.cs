@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     SpawnTell(tentacle.MovementTarget + new Vector2(0, -64), tentacle.BasePoint);
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
+                    Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
                 }
 
                 if(AttackTimer > k * 100 && AttackTimer < k * 100 + 50)
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 }
 
                 if (AttackTimer % delay == 0)
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                    Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.25f, 0.25f, NPC.Center);
             }
 
             if (AttackTimer == 240) 
@@ -234,7 +234,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.5f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(0, -15).RotatedBy(0.25f), ModContent.ProjectileType<InkBlobGravity>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
                 savedPoint = NPC.Center;
             }
@@ -265,10 +265,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     }
                 }
 
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
                 savedPoint = spawnPoint + new Vector2(0, -250);
-                Main.NewText("Sploosh");
 			}
 
             if(AttackTimer > 160)
@@ -735,15 +734,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (AttackTimer == 150) //spawn Projectiles
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
+                Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
                 for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
             }
 
-            if (AttackTimer == 180) //spawn Projectiles
+            if (AttackTimer == 180 && Main.masterMode) //spawn Projectiles
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath24, NPC.Center);
+                Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
 
                 for (float k = -3.14f / 4; k <= 3.14f; k += 3.14f / 4f)
                     Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(-10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 3.14f, Main.rand.NextFloat(6.28f));
@@ -866,7 +865,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
+                    Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
                 }
 
                 if (AttackTimer > k * 80 + 30 && AttackTimer < k * 80 + 90) //shooting up, first 30 frames are for tell
@@ -923,7 +922,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                     SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
 
-                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
+                    Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
                 }
 
                 if (AttackTimer > 400 && AttackTimer <= 420)
@@ -1014,7 +1013,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     for (float k = 0; k <= 3.14f; k += 2.14f / 3f)
                     {
                         Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, 100), new Vector2(10, 0).RotatedBy(k), ModContent.ProjectileType<InkBlob>(), 10, 0.2f, 255, 0, Main.rand.NextFloat(6.28f));
-                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Item95, NPC.Center);
+                        Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1.5f, 0f, NPC.Center);
                     }
                 }
             }

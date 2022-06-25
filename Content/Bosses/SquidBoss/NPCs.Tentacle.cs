@@ -258,7 +258,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             if ((NPC.oldPos[0].Y > Arena.WaterLevelWorld && NPC.position.Y <= Arena.WaterLevelWorld) || (NPC.oldPos[0].Y + NPC.height <= Arena.WaterLevelWorld && NPC.position.Y + NPC.height > Arena.WaterLevelWorld))
             {
                 float tentacleSin = (float)Math.Sin(Timer / 20f) * StalkWaviness;
-                Helpers.Helper.PlayPitched("Magic/WaterWoosh", 1, 0, NPC.Center);
+
+                Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.5f, 0, NPC.Center);
+                Helpers.Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, NPC.Center);
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), new Vector2(NPC.Center.X + (tentacleSin * 30), Arena.WaterLevelWorld -41), Vector2.Zero, ProjectileType<AuroraWaterSplash>(), 0, 0, Main.myPlayer);
 
                 for (int k = 0; k < 10; k++)

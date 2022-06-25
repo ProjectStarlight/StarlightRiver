@@ -32,7 +32,7 @@ namespace StarlightRiver.Core.Systems
 				
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
 			{
-				for (int k = 0; k < 1; k++)
+				for (int k = 0; k < 4; k++)
 				{
 					orig(self, gameTime);
 				}
