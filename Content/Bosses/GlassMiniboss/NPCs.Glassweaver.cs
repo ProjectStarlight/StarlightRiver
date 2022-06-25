@@ -370,7 +370,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             if (AttackTimer > 50)
                             {
-                                if (AttackTimer < 330)
+                                if (AttackTimer < 270)
                                     frame.Y = frameHeight * 4;
                                 else if (AttackTimer < bubbleRecoil - 60)
                                     frame.Y = frameHeight;

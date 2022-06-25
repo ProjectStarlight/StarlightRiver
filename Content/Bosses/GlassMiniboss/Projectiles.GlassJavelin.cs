@@ -54,9 +54,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             else
                 Projectile.velocity *= 0.2f;
 
-            if (Projectile.timeLeft > 60)
+            if (Projectile.timeLeft > 60 && Main.rand.NextBool(4))
                 Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Glassweaver.GlowDustOrange, 0.6f);
-
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < 32;

@@ -13,6 +13,26 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         Vector2 moveTarget;
         Player Target => Main.player[NPC.target];
 
+        private int javelinTime;
+        private int hammerTime;
+        private int[] slashTime = new int[] { 70, 105, 120 };
+
+        public int hammerIndex;
+        public int bubbleIndex;
+        public int whirlIndex;
+        public int spearIndex;
+
+        private int jumpStart;
+        private int jumpEnd;
+
+        private const int javelinSpawn = 30;
+        private const int hammerSpawn = 90;
+        private const int bubbleRecoil = 300;
+        private const int spotDistX = 520;
+        private const int spotDistY = 30;
+        private const int spotDistShortX = 130;
+        private const int spotDistShortY = -10;
+
         private void ResetAttack()
         {
             AttackTimer = 0;
@@ -30,11 +50,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         }
 
         //according to the targets position,
-        private const int spotDistX = 520;
-        private const int spotDistY = 30;
-        private const int spotDistShortX = 130;
-        private const int spotDistShortY = -10;
-
         private Vector2 PickSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-spotDistX * x, spotDistY) : arenaPos + new Vector2(spotDistX * x, spotDistY); //picks the outer side.
 
         private Vector2 PickCloseSpot(int x = 1) => Target.Center.X > arenaPos.X ? arenaPos + new Vector2(-spotDistShortX * x, -spotDistShortY) : arenaPos + new Vector2(spotDistShortX * x, -spotDistShortY); //picks the inner side.
@@ -82,9 +97,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             }
         }
 
-        private int jumpStart;
-        private int jumpEnd;
-
         private void JumpToTarget(int timeStart, int timeEnd, float yStrength = 1f, bool spin = false)
         {
             jumpStart = timeStart;
@@ -128,18 +140,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             float progress = Helpers.Helper.BezierEase(Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true));
             NPC.rotation = MathHelper.WrapAngle(progress * MathHelper.TwoPi * totalRotations) * NPC.direction * direction;
         }
-
-        private int javelinTime;
-        private int hammerTime;
-        private int[] slashTime = new int[] { 70, 105, 120 };
-        private const int javelinSpawn = 30;
-        private const int hammerSpawn = 90;
-        private const int bubbleRecoil = 450;
-
-        public int hammerIndex;
-        public int bubbleIndex;
-        public int whirlIndex;
-        public int spearIndex;
 
         private void TripleSlash()
         {
@@ -200,6 +200,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             AttackType = (int)AttackEnum.MagmaSpear;
             int lobCount = 5;
+
             if (Main.masterMode)
                 lobCount = 15;
             else if (Main.expertMode)
@@ -299,12 +300,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             AttackType = (int)AttackEnum.JavelinRain;
 
-            int spearCount = 15;
+            int spearCount = 10;
             int betweenSpearTime = 5;
 
             if (Main.masterMode)
             {
-                spearCount = 18;
+                spearCount = 14;
                 betweenSpearTime = 4;
             }
 
@@ -478,7 +479,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 NPC.velocity.Y -= 1.5f;
             }
 
-            if (AttackTimer <= 300 && AttackTimer > 80)
+            if (AttackTimer <= 240 && AttackTimer > 80)
             {
                 Main.projectile[bubbleIndex].Center = staffPos + (Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true));
                 NPC.velocity *= 0.87f;
@@ -486,10 +487,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Core.Systems.CameraSystem.Shake += (int)(AttackTimer / 180f);
             }
 
-            if (AttackTimer == 300)
+            if (AttackTimer == 240)
                 moveTarget = Main.projectile[bubbleIndex].Center;
 
-            if (AttackTimer > 300 && AttackTimer < bubbleRecoil - 1)
+            if (AttackTimer > 240 && AttackTimer < bubbleRecoil - 1)
             {
                 Vector2 target = Vector2.Lerp(Target.Center, PickSpotSelf(-1) - new Vector2(0, 150), 0.8f);
                 if (AttackTimer < bubbleRecoil - 20)

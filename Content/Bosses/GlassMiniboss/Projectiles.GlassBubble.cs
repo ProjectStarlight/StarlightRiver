@@ -103,17 +103,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 //Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1f, 0.1f, Projectile.Center);
 
-                int shardCount = Main.rand.Next(5, 10);
-                if (Main.masterMode)
-                    shardCount += 15;
-                else if (Main.expertMode)
-                    shardCount += 5;
+                int shardCount = Main.masterMode ? 18 : Main.expertMode ? 12 : 8;
+
                 for (int i = 0; i < shardCount; i++)
                 {
                     Vector2 velocity = new Vector2(Main.rand.NextFloat(0.9f, 1.1f) * 3, 0).RotatedBy(MathHelper.TwoPi / shardCount * i);
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity.RotatedByRandom(0.1f), ProjectileType<GlassBubbleFragment>(), Projectile.damage / 2, 2f, Main.myPlayer);
                 }
             }
+
             if (Timer <= crackTime + 105)
             {
                 Core.Systems.CameraSystem.Shake += 6;
@@ -123,6 +121,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
                     Vector2 vel = Main.rand.NextVector2Circular(15, 15);
                     Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, 0, Glassweaver.GlowDustOrange, 1.3f);
+
                     if (Main.rand.NextBool(5))
                         Dust.NewDustPerfect(pos, DustType<Dusts.GlassGravity>(), Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
                 }
@@ -254,6 +253,26 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             float warble = appear * (float)Math.Pow(Math.Sin(Math.Pow(Timer / 100f, 2.1f)), 2) * 0.5f;
             Main.EntitySpriteDraw(bloomTex.Value, Projectile.Center - Main.screenPosition, null, bloom * disappear, Projectile.rotation, bloomTex.Size() * 0.5f, Projectile.scale * 1.2f * appear + warble, SpriteEffects.None, 0);
+
+            if (Timer > crackTime)
+            {
+                int shardCount = Main.masterMode ? 18 : Main.expertMode ? 12 : 8;
+
+                for (int i = 0; i < shardCount; i++)
+                {                
+                    float rotation = MathHelper.TwoPi / shardCount * i;
+                    Asset<Texture2D> tell = TextureAssets.Extra[98];
+                    float tellLength = Helpers.Helper.BezierEase((Timer - crackTime) / 130f) * 12f;
+                    Color tellFade = Color.OrangeRed * ((Timer - crackTime) / 130f) * 0.5f;
+                    tellFade.A = 0;
+                    Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.4f, tellLength), SpriteEffects.None, 0);
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+
+                }
+            }
         }
 
         private void DrawVignette()
