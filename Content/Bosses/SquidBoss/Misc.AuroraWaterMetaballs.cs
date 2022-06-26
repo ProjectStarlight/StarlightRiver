@@ -34,8 +34,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
 				NPC NPC = Main.npc[k];
-				if (NPC.active && NPC.ModNPC is Bosses.SquidBoss.ArenaActor)
-					(NPC.ModNPC as Bosses.SquidBoss.ArenaActor).DrawWater(Main.spriteBatch);
+
+				if (NPC.active && NPC.ModNPC is ArenaActor)
+					(NPC.ModNPC as ArenaActor).DrawWater(Main.spriteBatch);
 			}
 
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
@@ -51,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			foreach (Dust dust in Main.dust)
 			{
-				if (dust.active && dust.type == ModContent.DustType<AuroraWater>())
+				if (dust.active && (dust.type == ModContent.DustType<AuroraWater>() || dust.type == ModContent.DustType<AuroraWaterFast>()))
 				{
 					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + dust.rotation);
 					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, new Color(0.4f, 1, 1), 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);

@@ -260,7 +260,7 @@ namespace StarlightRiver.Core
 
 	class AuroraWaterTileMetaballs : MetaballActor
 	{
-		public override bool Active => true;
+		public override bool Active => !Main.LocalPlayer.InModBiome(ModContent.GetInstance<Content.Biomes.PermafrostTempleBiome>());
 
 		public override Color outlineColor => new Color(255, 0, 255);
 
