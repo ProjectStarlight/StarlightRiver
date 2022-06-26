@@ -9,6 +9,7 @@ using System.Linq;
 using System;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.NPCs.Permafrost;
 
 namespace StarlightRiver.Core
 {
@@ -272,6 +273,12 @@ namespace StarlightRiver.Core
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+
+			foreach (NPC npc in Main.npc)
+            {
+				if (npc.active && npc.ModNPC is WaterCube)
+					(npc.ModNPC as WaterCube).DrawToTarget(spriteBatch);
+            }
 
 			foreach (Dust dust in Main.dust)
 			{
