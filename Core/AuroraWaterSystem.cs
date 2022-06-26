@@ -285,6 +285,9 @@ namespace StarlightRiver.Core
 
 		public static void DrawSpecial()
 		{
+			if (!MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
+				return;
+
 			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
 
 			if (shader is null)
