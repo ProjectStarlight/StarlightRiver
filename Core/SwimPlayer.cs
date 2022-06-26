@@ -14,7 +14,9 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         float targetRotation = 0;
         float realRotation = 0;
         int emergeTime = 0;
+
         public bool ShouldSwim { get; set; }
+        public bool WasSwimming;
         public float SwimSpeed { get; set; }
 
         private void CheckAuroraSwimming() //checks for if hte Player should be swimming
@@ -45,6 +47,18 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
                 if (swimming)
 				{
+                    if(!WasSwimming)
+					{
+                        Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+
+                        for (int k = 0; k < 20; k++)
+                        {
+                            Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+                        }
+
+                        WasSwimming = true;
+                    }
+
                     ShouldSwim = true;
                     SwimSpeed *= 0.7f;
                 }
@@ -55,7 +69,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         {
             CheckAuroraSwimming();
 
-            if(emergeTime == 19) //reset jumps
+            if(emergeTime == 18) //reset jumps
 			{
                 Player.canJumpAgain_Fart = true;
                 Player.canJumpAgain_Sail = true;
@@ -64,7 +78,16 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 Player.canJumpAgain_Sandstorm = true;
                 Player.rocketTime = Player.rocketTimeMax;
                 Player.wingTime = Player.wingTimeMax;
-			}
+
+                Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+
+                for (int k = 0; k < 20; k++)
+                {
+                    Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+                }
+
+                WasSwimming = false;
+            }
 
             if (!ShouldSwim) //reset stuff when the Player isnt swimming
             {
@@ -109,7 +132,14 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 return;
             }
 
+            Player.canJumpAgain_Fart = false;
+            Player.canJumpAgain_Sail = false;
+            Player.canJumpAgain_Cloud = false;
+            Player.canJumpAgain_Blizzard = false;
+            Player.canJumpAgain_Sandstorm = false;
+            Player.rocketTime = -1;
             Player.wingTime = -1;
+
             emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
 
             if (Player.itemAnimation == 0)
@@ -129,19 +159,30 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
             Player.velocity *= 0.95f;
 
             if (Player.controlJump && boostCD <= 0)
+            {
+                Helper.PlayPitched("SquidBoss/MagicSplash", 1f, -0.5f, Player.Center);
+                Helper.PlayPitched("SquidBoss/MagicSplash", 1f, 0f, Player.Center);
+
                 boostCD = 60;
+            }
 
             if (boostCD > 40)
             {
-                var timer = ((60 - boostCD) - 40) / 20f;
+                var timer = (boostCD - 40) / 20f;
                 var angle = timer * 6.28f;
-                var off = new Vector2((float)Math.Cos(angle) * 18, (float)Math.Sin(angle) * 4);
-                var vel = -Player.velocity * 0.5f;
+                var vel = -Player.velocity * 0f;
                 Player.UpdateRotation(angle);
-                Dust l = Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
-                Dust r =Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
-                l.noGravity = true;
-                r.noGravity = true;
+
+                for (int k = 0; k < 2; k++)
+                {
+                    float prog = k / 2f;
+                    var off = new Vector2((float)Math.Cos(angle + (1 / 20f) * 6.28f * prog) * 18, (float)Math.Sin(angle + (1 / 20f) * 6.28f * prog) * 4);
+
+                    Dust l = Dust.NewDustPerfect(Player.Center + Player.velocity * prog + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
+                    Dust r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
+                    l.noGravity = true;
+                    r.noGravity = true;
+                }
 
                 Player.bodyFrame = new Rectangle(0, 0, 40, 56);
                 Player.legFrame = new Rectangle(0, 0, 40, 56);
@@ -149,7 +190,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 if (Player.velocity == Vector2.Zero)
                     Player.velocity = new Vector2(0, -0.01f);
 
-                Player.velocity += Vector2.Normalize(Player.velocity) * 0.38f * SwimSpeed;
+                Player.velocity += Vector2.Normalize(Player.velocity) * 0.8f * SwimSpeed;
                 Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
             }
             else Player.UpdateRotation(0);

@@ -7,6 +7,8 @@ using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using System.Linq;
 using System;
+using StarlightRiver.Core.Systems.MetaballSystem;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Core
 {
@@ -70,18 +72,8 @@ namespace StarlightRiver.Core
 			orig(width, height, fullscreen);
 		}
 
-		private void DrawAuroraTarget(On.Terraria.Main.orig_CheckMonoliths orig)
+		public static void DrawToMetaballTarget()
 		{
-			orig();
-
-			if (Main.dedServ || Main.gameMenu)
-				return;
-
-			Main.spriteBatch.Begin();
-
-			Main.graphics.GraphicsDevice.SetRenderTarget(auroraTarget);
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
-
 			for (int i = -2 + (int)(Main.screenPosition.X) / 16; i <= 2 + (int)(Main.screenPosition.X + Main.screenWidth) / 16; i++)
 				for (int j = -2 + (int)(Main.screenPosition.Y) / 16; j <= 2 + (int)(Main.screenPosition.Y + Main.screenHeight) / 16; j++)
 				{
@@ -92,14 +84,21 @@ namespace StarlightRiver.Core
 
 						if (tileData.HasAuroraWater)
 						{
-							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
+							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X) / 2, (int)(j * 16 - Main.screenPosition.Y) / 2, 8, 8);
 							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
-							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White * 0.5f);
+							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White);
 						}
 					}
 				}
+		}
 
-			Main.spriteBatch.End();
+		private void DrawAuroraTarget(On.Terraria.Main.orig_CheckMonoliths orig)
+		{
+			orig();
+
+			if (Main.dedServ || Main.gameMenu)
+				return;
+
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -139,23 +138,7 @@ namespace StarlightRiver.Core
 		{
 			orig(self);
 
-			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
-
-			if (shader is null)
-				return;
-
-			shader.Parameters["time"].SetValue(StarlightWorld.rottime);
-			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-			shader.Parameters["sampleTexture2"].SetValue(auroraBackTarget);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
-
-			Main.spriteBatch.Draw(auroraTarget, Vector2.Zero, Color.White);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			AuroraWaterTileMetaballs.DrawSpecial();
 		}
 
 		public static void PlaceAuroraWater(int i, int j)
@@ -273,5 +256,59 @@ namespace StarlightRiver.Core
 				target.CopyTo(span);
 			}
 		}
+	}
+
+	class AuroraWaterTileMetaballs : MetaballActor
+	{
+		public override bool Active => true;
+
+		public override Color outlineColor => new Color(255, 0, 255);
+
+		public override void DrawShapes(SpriteBatch spriteBatch)
+		{
+			AuroraWaterSystem.DrawToMetaballTarget();
+
+			var tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
+
+			foreach (Dust dust in Main.dust)
+			{
+				if (dust.active && dust.type == ModContent.DustType<AuroraWaterFast>())
+					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.Red, 0f, Vector2.One * 256f, dust.scale * 0.05f, SpriteEffects.None, 0);
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin();
+		}
+
+		public static void DrawSpecial()
+		{
+			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
+
+			if (shader is null)
+				return;
+
+			shader.Parameters["time"].SetValue(StarlightWorld.rottime);
+			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
+			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
+
+			var target = MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target;
+			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+		}
+
+		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
+		{
+			return false;
+		}
+
 	}
 }
