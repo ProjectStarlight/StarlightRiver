@@ -202,7 +202,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         {
             if (emergeTime > 0)
             {
-                armRotation += 0.02f + Player.velocity.Length() * 0.05f;
+                armRotation += 0.04f + Player.velocity.Length() * 0.1f * (float)Math.Sin((armRotation + 1.57f) % 3.14f);
 
                 Player.SetCompositeArmFront(true, 0, armRotation * Player.direction);
                 Player.SetCompositeArmBack(true, 0, armRotation * Player.direction + 3.14f);
