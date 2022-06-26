@@ -13,6 +13,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         int boostCD = 0;
         float targetRotation = 0;
         float realRotation = 0;
+        float armRotation;
         int emergeTime = 0;
 
         public bool ShouldSwim { get; set; }
@@ -53,7 +54,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
                         for (int k = 0; k < 20; k++)
                         {
-                            Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+                            Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
                         }
 
                         WasSwimming = true;
@@ -83,7 +84,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 
                 for (int k = 0; k < 20; k++)
                 {
-                    Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(4, 4), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+                    Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
                 }
 
                 WasSwimming = false;
@@ -153,8 +154,6 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
             if (Player.controlDown) Player.velocity.Y += speed;
             if (Player.controlUp) Player.velocity.Y -= speed;
 
-            //Player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
-            //so does this!
             Player.gravity = 0;
             Player.velocity *= 0.95f;
 
@@ -182,10 +181,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                     Dust r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
                     l.noGravity = true;
                     r.noGravity = true;
-                }
-
-                Player.bodyFrame = new Rectangle(0, 0, 40, 56);
-                Player.legFrame = new Rectangle(0, 0, 40, 56);
+                }              
 
                 if (Player.velocity == Vector2.Zero)
                     Player.velocity = new Vector2(0, -0.01f);
@@ -202,7 +198,20 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
                 emergeTime--;
         }
 
-        public override void ResetEffects()
+        public override void PostUpdate()
+        {
+            if (emergeTime > 0)
+            {
+                armRotation += 0.02f + Player.velocity.Length() * 0.05f;
+
+                Player.SetCompositeArmFront(true, 0, armRotation * Player.direction);
+                Player.SetCompositeArmBack(true, 0, armRotation * Player.direction + 3.14f);
+
+                Player.legFrame = new Rectangle(0, 56 * (6 + (int)(Main.GameUpdateCount * 0.35f) % 14), 40, 56);
+            }
+        }
+
+		public override void ResetEffects()
         {
             ShouldSwim = false;
             SwimSpeed = 1f;
