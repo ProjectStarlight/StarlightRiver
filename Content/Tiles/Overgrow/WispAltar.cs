@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     class WispAltarR : ModTile
     {
-        public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";
+        public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";//a
 
         public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
     }
