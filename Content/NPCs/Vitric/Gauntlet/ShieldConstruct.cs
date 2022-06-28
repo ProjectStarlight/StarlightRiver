@@ -165,9 +165,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
-            Rectangle frameBox = new Rectangle(xFrame * frameWidth, yFrame * frameHeight, frameWidth, frameHeight);
+            Rectangle frameBox = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight) + 1, frameWidth, frameHeight);
 
-            Vector2 bodyOffset = new Vector2((-6 * NPC.spriteDirection) + 4, 8);
+            Vector2 bodyOffset = new Vector2((-6 * NPC.spriteDirection) + 4, 9);
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
