@@ -167,6 +167,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
             Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
             Texture2D glow2 = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow2").Value;
+            Texture2D glowBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlowBlur").Value;
             Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
             Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleRing").Value;
 
@@ -205,6 +206,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 var glow2Color = glowColor;
                 glow2Color.A = 0;
                 spriteBatch.Draw(glow2, topTarget, glow.Frame(), glow2Color * 0.6f, rot, topOrigin, 0, 0);
+
+                topOrigin = new Vector2(glowBlur.Width / 2, glowBlur.Height + 46);
+                topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * 1.2f * Math.Abs(Math.Sin(ZSpin + 1.57f))), (int)(top.Height * 1.2f));
+                spriteBatch.Draw(glowBlur, topTarget, null, glow2Color * 0.75f, rot, topOrigin, 0, 0);
+
+                topOrigin = new Vector2(glowBlur.Width / 2, glowBlur.Height + 50);
+                topTarget = new Rectangle((int)(topPos.X - Main.screenPosition.X), (int)(topPos.Y - Main.screenPosition.Y), (int)(top.Width * 1.35f * Math.Abs(Math.Sin(ZSpin + 1.57f))), (int)(top.Height * 1.35f));
+                spriteBatch.Draw(glowBlur, topTarget, null, glow2Color * 0.25f, rot, topOrigin, 0, 0);
 
                 Lighting.AddLight(NPC.Center, glowColor.ToVector3() * 0.2f);
 

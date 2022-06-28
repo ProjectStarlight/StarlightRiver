@@ -175,6 +175,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRing").Value;
             Texture2D ringGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingGlow").Value;
             Texture2D ringSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingSpecular").Value;
+            Texture2D ringBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingBlur").Value;
 
             Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
             Texture2D bodyGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyGlow").Value;
@@ -201,10 +202,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.8f, NPC.rotation, ring.Size() / 2, 0, 0);
 
+                var opacity = Math.Min(Opacity, 1);
+
+                color.A = 0;
+                var rect3 = rect;
+                rect3.Inflate(10, 6);
+                rect3.Offset(new Point(10, 6));
+                spriteBatch.Draw(ringBlur, rect3, null, color * (0.2f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, ringBlur.Size() / 2, 0, 0);
+                rect3.Inflate(10, 6);
+                rect3.Offset(new Point(10, 6));
+                spriteBatch.Draw(ringBlur, rect3, null, color * (0.075f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, ringBlur.Size() / 2, 0, 0);
+
                 if (!OpaqueJelly)
                 {
-                    color.A = 0;
-
                     spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
                     spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
                 }
@@ -230,6 +240,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             Texture2D headBlob = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOver").Value;
             Texture2D headBlobGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverGlow").Value;
             Texture2D headBlobSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverSpecular").Value;
+            Texture2D headBlobBlur = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyBlur").Value;
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {
@@ -298,6 +309,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
+
+                if(k == 4)
+				{
+                    var opacity = Math.Min(Opacity, 1);
+
+                    color.A = 0;
+                    spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.2f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.26f, 0, 0);
+                    spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.075f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.28f, 0, 0);
+                }
 
                 if (!OpaqueJelly)                   
                 {
