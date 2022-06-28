@@ -30,9 +30,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Vector2 shieldOffset;
 
+        private int XFRAMES = 2;
+        private int xFrame = 0;
+        private int yFrame = 0;
+        private int frameCounter = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shield Construct");
+            Main.npcFrameCount[NPC.type] = 8;
         }
 
         public override void SetDefaults()
@@ -58,8 +64,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 aiCounter++;
 
             aiCounter %= 500;
+
+
             if (aiCounter > 200)
             {
+                xFrame = 1;
+                yFrame = 0;
                 float lerper;
                 Vector2 up = new Vector2(0, -12);
                 Vector2 down = new Vector2(0, 14);
@@ -125,6 +135,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 NPC.velocity.X *= 0.9f;
                 return false;
             }
+
+
+            xFrame = 0;
+            frameCounter++;
+            if (frameCounter % 3 == 0)
+            {
+                yFrame++;
+            }
+            yFrame %= Main.npcFrameCount[NPC.type] = 8;
             shieldOffset = Vector2.Zero;
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
             return true;
@@ -143,14 +162,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             Texture2D shieldTex = ModContent.Request<Texture2D>(Texture + "_Shield").Value;
+
+            int frameWidth = mainTex.Width / XFRAMES;
+            int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
+            Rectangle frameBox = new Rectangle(xFrame * frameWidth, yFrame * frameHeight, frameWidth, frameHeight);
+
+            Vector2 bodyOffset = new Vector2((-6 * NPC.spriteDirection) + 4, 8);
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
                 //bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
             }
-            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, Color.White, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, bodyOffset + NPC.Center - screenPos, frameBox, drawColor, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, bodyOffset + NPC.Center - screenPos, frameBox, Color.White, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
             return false;
         }
 
