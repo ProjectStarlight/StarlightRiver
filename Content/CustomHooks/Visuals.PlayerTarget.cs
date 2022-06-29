@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Physics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 using Terraria;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.CustomHooks
         //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
         public override SafetyLevel Safety => SafetyLevel.Safe;
 
-        private MethodInfo playerDrawMethod;
+        private MethodInfo PlayerDrawMethod;
 
         public static RenderTarget2D Target;
 
@@ -30,18 +31,18 @@ namespace StarlightRiver.Content.CustomHooks
         public static int sheetSquareY;
 
         /// <summary>
-        /// we use a dictionary for the player indexes because they are not guarenteed to be 0, 1, 2 etc. the player at index 1 leaving could result in 2 players being numbered 0, 2
-        /// but we don't want a gigantic RT with all 255 possible players getting template space so we resize and keep track of their effective index
+        /// we use a dictionary for the Player indexes because they are not guarenteed to be 0, 1, 2 etc. the Player at index 1 leaving could result in 2 Players being numbered 0, 2
+        /// but we don't want a gigantic RT with all 255 possible Players getting template space so we resize and keep track of their effective index
         /// </summary>
-        private static Dictionary<int, int> playerIndexLookup;
+        private static Dictionary<int, int> PlayerIndexLookup;
 
         /// <summary>
-        /// to keep track of player counts as they change
+        /// to keep track of Player counts as they change
         /// </summary>
         private static int prevNumPlayers;
 
 
-        //stored vars so we can determine original lighting for the player / potentially other uses
+        //stored vars so we can determine original lighting for the Player / potentially other uses
         Vector2 oldPos;
         Vector2 oldCenter;
         Vector2 oldMountedCenter;
@@ -57,19 +58,47 @@ namespace StarlightRiver.Content.CustomHooks
             sheetSquareX = 200;
             sheetSquareY = 300;
 
-            playerIndexLookup = new Dictionary<int, int>();
+            PlayerIndexLookup = new Dictionary<int, int>();
             prevNumPlayers = -1;
 
-            Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-            ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-
-            playerDrawMethod = typeof(Main).GetMethod("DrawPlayer", BindingFlags.Public | BindingFlags.Instance);
+            Main.QueueMainThreadAction(() =>
+            {
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+                ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            });
 
             On.Terraria.Main.SetDisplayMode += RefreshTargets;
             On.Terraria.Main.CheckMonoliths += DrawTargets;
             On.Terraria.Lighting.GetColor_int_int += getColorOverride;
+            On.Terraria.Lighting.GetColor_Point += getColorOverride;
             On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
+            On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
+            On.Terraria.Lighting.GetColorClamped += GetColorOverride;
         }
+
+        private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+        {
+            if (canUseTarget)
+                return orig.Invoke(x, y, oldColor);
+
+            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
+        }
+		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
+		{
+            if (canUseTarget)
+                return orig.Invoke(point, originalColor);
+
+            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
+        }
+
+		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_Point orig, Point point)
+        {
+            if (canUseTarget)
+                return orig.Invoke(point);
+
+            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
+        }
+
         public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int orig, int x, int y)
         {
             if (canUseTarget)
@@ -86,18 +115,16 @@ namespace StarlightRiver.Content.CustomHooks
             return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), c);
         }
 
-
         public static Rectangle getPlayerTargetSourceRectangle(int whoAmI)
         {
-            if (playerIndexLookup.ContainsKey(whoAmI))
-                return new Rectangle(playerIndexLookup[whoAmI] * sheetSquareX, 0, sheetSquareX, sheetSquareY);
+            if (PlayerIndexLookup.ContainsKey(whoAmI))
+                return new Rectangle(PlayerIndexLookup[whoAmI] * sheetSquareX, 0, sheetSquareX, sheetSquareY);
 
             return Rectangle.Empty;
         }
 
-
         /// <summary>
-        /// gets the whoAmI's player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the player's position in terms of screen coordinates
+        /// gets the whoAmI's Player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the Player's position in terms of screen coordinates
         /// </summary>
         /// <param name="whoAmI"></param>
         /// <returns></returns>
@@ -106,14 +133,10 @@ namespace StarlightRiver.Content.CustomHooks
             return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
         }
 
-
-
         private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
         {
             if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-            {
                 ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
-            }
 
             orig(width, height, fullscreen);
         }
@@ -127,7 +150,7 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.gameMenu)
                 return;
 
-            if (Main.ActivePlayersCount > 0)
+            if (Main.player.Any(n => n.active))
                 DrawPlayerTarget();
 
             if (Main.instance.tileTarget.IsDisposed)
@@ -153,24 +176,26 @@ namespace StarlightRiver.Content.CustomHooks
 
         public static Vector2 getPositionOffset(int whoAmI)
         {
-            if (playerIndexLookup.ContainsKey(whoAmI))
-                return new Vector2(playerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX / 2, sheetSquareY / 2);
+            if (PlayerIndexLookup.ContainsKey(whoAmI))
+                return new Vector2(PlayerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX / 2, sheetSquareY / 2);
 
             return Vector2.Zero;
         }
 
         private void DrawPlayerTarget()
         {
-            if (Main.ActivePlayersCount != prevNumPlayers)
+            var activePlayerCount = Main.player.Count(n => n.active);
+
+            if (activePlayerCount != prevNumPlayers)
             {
-                prevNumPlayers = Main.ActivePlayersCount;
-                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * Main.ActivePlayersCount, 300);
+                prevNumPlayers = activePlayerCount;
+                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
                 int activeCount = 0;
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
                     if (Main.player[i].active)
                     {
-                        playerIndexLookup[i] = activeCount;
+                        PlayerIndexLookup[i] = activeCount;
                         activeCount++;
                     }
 
@@ -186,35 +211,37 @@ namespace StarlightRiver.Content.CustomHooks
             //Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow = 0f;
             for (int i = 0; i < Main.maxPlayers; i++)
             {
-                if (Main.player[i].active && Main.player[i].dye.Length > 0)
+                var player = Main.player[i];
+
+                if (player.active && player.dye.Length > 0)
                 {
-                    oldPos = Main.player[i].position;
-                    oldCenter = Main.player[i].Center;
-                    oldMountedCenter = Main.player[i].MountedCenter;
+                    oldPos = player.position;
+                    oldCenter = player.Center;
+                    oldMountedCenter = player.MountedCenter;
                     oldScreen = Main.screenPosition;
-                    oldItemLocation = Main.player[i].itemLocation;
-                    int oldHeldProj = Main.player[i].heldProj;
+                    oldItemLocation = player.itemLocation;
+                    int oldHeldProj = player.heldProj;
 
-                    //temp change player's actual position to lock into their frame
+                    //temp change Player's actual position to lock into their frame
                     positionOffset = getPositionOffset(i);
-                    Main.player[i].position = positionOffset;
-                    Main.player[i].Center = oldCenter - oldPos + positionOffset;
-                    Main.player[i].itemLocation = oldItemLocation - oldPos + positionOffset;
-                    Main.player[i].MountedCenter = oldMountedCenter - oldPos + positionOffset;
-                    Main.player[i].heldProj = -1;
+                    player.position = positionOffset;
+                    player.Center = oldCenter - oldPos + positionOffset;
+                    player.itemLocation = oldItemLocation - oldPos + positionOffset;
+                    player.MountedCenter = oldMountedCenter - oldPos + positionOffset;
+                    player.heldProj = -1;
                     Main.screenPosition = Vector2.Zero;
-                    playerDrawMethod?.Invoke(Main.instance, new object[] { Main.player[i], Main.player[i].position, 0f, Vector2.Zero, 0f });
 
-                    Main.player[i].position = oldPos;
-                    Main.player[i].Center = oldCenter;
+                    Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin, 0f);
+
+                    player.position = oldPos;
+                    player.Center = oldCenter;
                     Main.screenPosition = oldScreen;
-                    Main.player[i].itemLocation = oldItemLocation;
-                    Main.player[i].MountedCenter = oldMountedCenter;
-                    Main.player[i].heldProj = oldHeldProj;
+                    player.itemLocation = oldItemLocation;
+                    player.MountedCenter = oldMountedCenter;
+                    player.heldProj = oldHeldProj;
                 }
 
             }
-
 
             Main.spriteBatch.End();
 

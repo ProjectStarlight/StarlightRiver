@@ -14,24 +14,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
     {
         public override string Texture => AssetDirectory.Invisible;
 
-        public ref float Timer => ref projectile.ai[0];
-        public ref float Rotation => ref projectile.ai[1];
+        public ref float Timer => ref Projectile.ai[0];
+        public ref float Rotation => ref Projectile.ai[1];
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.width = 1;
-            projectile.height = 1;
-            projectile.timeLeft = 2;
+            Projectile.hostile = false;
+            Projectile.width = 1;
+            Projectile.height = 1;
+            Projectile.timeLeft = 2;
         }
 
         public override void AI()
         {
-            projectile.timeLeft = 2;
-            projectile.rotation = Rotation;
+            Projectile.timeLeft = 2;
+            Projectile.rotation = Rotation;
             Timer++; //ticks up the timer
 
-            if (Timer >= 30) //when this projectile goes off
+            if (Timer >= 30) //when this Projectile goes off
             {
                 for (int k = 0; k < 8; k++)
                 {
@@ -40,24 +40,29 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                         float rot = (k - 4) / 10f; //rotational offset
 
                         if (Main.netMode != NetmodeID.MultiplayerClient)
-                            Projectile.NewProjectile(projectile.Center, new Vector2(-9.5f, 0).RotatedBy(projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of projectiles
+                        {
+                            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation + rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the flurry of Projectiles
 
-                        Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, projectile.Center);
+                            if(Main.masterMode)
+                                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(-9.5f, 0).RotatedBy(Projectile.rotation - rot), ProjectileType<GlassVolleyShard>(), 20, 0); //fire the second flury in master
+                        }
+
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, Projectile.Center);
                     }
                 }
             }
 
             if (Timer == 50)
-                projectile.Kill(); //kill it when it expires
+                Projectile.Kill(); //kill it when it expires
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
             if (Timer <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
             {
-                Texture2D tex = GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell");
+                Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell").Value;
                 float alpha = (float)Math.Sin((Timer / 30f) * 3.14f) * 0.8f;
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+                spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
             }
         }
     }
@@ -68,36 +73,37 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.timeLeft = 600;
-            projectile.scale = 0.5f;
-            projectile.extraUpdates = 3;
+            Projectile.hostile = true;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.timeLeft = 600;
+            Projectile.scale = 0.5f;
+            Projectile.extraUpdates = 3;
         }
 
         public override void AI()
         {
-            if (projectile.timeLeft > 570)
-                projectile.velocity *= 0.96f;
+            if (Projectile.timeLeft > 570)
+                Projectile.velocity *= 0.96f;
 
-            if (projectile.timeLeft < 500)
-                projectile.velocity *= 1.03f;
+            if (Projectile.timeLeft < 500)
+                Projectile.velocity *= 1.03f;
 
-            projectile.rotation = projectile.velocity.ToRotation() + 1.58f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.58f;
 
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((640 - projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((640 - Projectile.timeLeft), 120));
 
-            Dust d = Dust.NewDustPerfect(projectile.Center, 264, projectile.velocity * 0.5f, 0, color, 1.5f);
+            Dust d = Dust.NewDustPerfect(Projectile.Center, 264, Projectile.velocity * 0.5f, 0, color, 1.5f);
             d.noGravity = true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((600 - projectile.timeLeft), 120));
+            var spriteBatch = Main.spriteBatch;
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((600 - Projectile.timeLeft), 120));
 
-            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, projectile.rotation, new Vector2(16, 64), projectile.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, projectile.rotation, new Vector2(16, 64), projectile.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
 
             return false;
         }

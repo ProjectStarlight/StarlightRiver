@@ -1,4 +1,5 @@
 using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core;
 using System;
@@ -6,6 +7,9 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent.Bestiary;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -17,153 +21,155 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override string Texture => AssetDirectory.VitricNpc + Name;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             for (int k = 0; k <= 4; k++)
-                mod.AddGore(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);
-
-            return base.Autoload(ref name);
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k);   
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Sand Bat");
-            Main.npcFrameCount[npc.type] = 7;
+            Main.npcFrameCount[NPC.type] = 7;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.Write(npc.noGravity);
-            writer.Write(npc.target);
-            writer.WritePackedVector2(npc.velocity);
+            writer.Write(NPC.noGravity);
+            writer.Write(NPC.target);
+            writer.WritePackedVector2(NPC.velocity);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            npc.noGravity = reader.ReadBoolean();
-            npc.target = reader.ReadInt32();
-            npc.velocity = reader.ReadPackedVector2();
+            NPC.noGravity = reader.ReadBoolean();
+            NPC.target = reader.ReadInt32();
+            NPC.velocity = reader.ReadPackedVector2();
         }
 
         public override void SetDefaults()
         {
-            npc.width = 50;
-            npc.height = 42;
-            npc.knockBackResist = 0.8f;
-            npc.lifeMax = 80;
-            npc.noGravity = false;
-            npc.noTileCollide = false;
-            npc.damage = 10;
-            npc.aiStyle = -1;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath4;
-            npc.npcSlots = 1;
+            NPC.width = 50;
+            NPC.height = 42;
+            NPC.knockBackResist = 0.8f;
+            NPC.lifeMax = 80;
+            NPC.noGravity = false;
+            NPC.noTileCollide = false;
+            NPC.damage = 10;
+            NPC.aiStyle = -1;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath4;
 
-            npc.direction = Main.rand.Next(2) == 0 ? 1 : -1;
-            npc.spriteDirection = npc.direction;
+            NPC.direction = Main.rand.Next(2) == 0 ? 1 : -1;
+            NPC.spriteDirection = NPC.direction;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         const int maxIgnoreDamage = 1;
 
         private void ExitSleep()
         {
-            npc.ai[0] = 1;
-            npc.noGravity = true;
+            NPC.ai[0] = 1;
+            NPC.noGravity = true;
             if (Main.netMode != NetmodeID.MultiplayerClient)
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
         }
 
         public override void AI()
         {
-            npc.TargetClosest(true);
-            switch (npc.ai[0])
+            NPC.TargetClosest(true);
+            switch (NPC.ai[0])
             {
-                case 0://sleeping: in ground checking for player
-                    npc.velocity.X *= 0.9f;
-                    if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) <= 180)
+                case 0://sleeping: in ground checking for Player
+                    NPC.velocity.X *= 0.9f;
+                    if (Vector2.Distance(Main.player[NPC.target].Center, NPC.Center) <= 180)
                         ExitSleep();
                     break;
 
                 case 1://shoot out of ground and attack
-                    npc.ai[1]++;
+                    NPC.ai[1]++;
 
-                    if (npc.ai[1] == 1) npc.velocity.Y = -20;
+                    if (NPC.ai[1] == 1) NPC.velocity.Y = -20;
 
-                    npc.velocity.Y += 0.6f;
+                    NPC.velocity.Y += 0.6f;
 
                     for (int k = 0; k <= 3; k++)
-                        Dust.NewDust(npc.position, 32, 32, DustID.Sandstorm);
+                        Dust.NewDust(NPC.position, 32, 32, DustID.Sandstorm);
 
-                    if (npc.ai[1] >= 30)
+                    if (NPC.ai[1] >= 30)
                     {
-                        npc.velocity.Y = 0;
-                        npc.ai[1] = 0;
-                        npc.ai[0] = 2;
+                        NPC.velocity.Y = 0;
+                        NPC.ai[1] = 0;
+                        NPC.ai[0] = 2;
 
                         if (Main.netMode != NetmodeID.MultiplayerClient)
                         {
                             for (int k = -1; k <= 1; k++)
-                                Projectile.NewProjectile(npc.Center, Vector2.Normalize(Main.player[npc.target].Center - npc.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+                                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
                         }
 
-                        npc.velocity = Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * -5.5f;
+                        NPC.velocity = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center) * -5.5f;
 
                         if (Main.netMode == NetmodeID.Server)
-                            npc.netUpdate = true;
+                            NPC.netUpdate = true;
                     }
                     break;
 
                 case 2://seek and destroy
-                    npc.velocity += Vector2.Normalize(Main.player[npc.target].Center - npc.Center) * 0.08f;
+                    NPC.velocity += Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center) * 0.08f;
 
-                    if (npc.velocity.LengthSquared() > 25) npc.velocity = Vector2.Normalize(npc.velocity) * 5f;
+                    if (NPC.velocity.LengthSquared() > 25) NPC.velocity = Vector2.Normalize(NPC.velocity) * 5f;
 
-                    if (npc.collideX && Math.Abs(npc.velocity.X) > 1f) npc.velocity.X = Vector2.Normalize(-npc.velocity).X * 1.5f;
-                    if (npc.collideY && Math.Abs(npc.velocity.Y) > 1f) npc.velocity.Y = Vector2.Normalize(-npc.velocity).Y * 1.5f;
+                    if (NPC.collideX && Math.Abs(NPC.velocity.X) > 1f) NPC.velocity.X = Vector2.Normalize(-NPC.velocity).X * 1.5f;
+                    if (NPC.collideY && Math.Abs(NPC.velocity.Y) > 1f) NPC.velocity.Y = Vector2.Normalize(-NPC.velocity).Y * 1.5f;
 
-                    npc.spriteDirection = Main.player[npc.target].Center.X - npc.Center.X < 0 ? -1 : 1;
+                    NPC.spriteDirection = Main.player[NPC.target].Center.X - NPC.Center.X < 0 ? -1 : 1;
                     break;
             }
         }
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            if (npc.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k <= 4; k++)
-                    Gore.NewGoreDirect(npc.position, Vector2.Zero, ModGore.GetGoreSlot(AssetDirectory.VitricNpc + "Gore/CrystalPopperGore" + k));
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, Vector2.Zero, Mod.Find<ModGore>("CrystalPopperGore" + k).Type);
             }
 
-            if (npc.ai[0] == 0 && damage > maxIgnoreDamage)
+            if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)
                 ExitSleep();
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            Tile tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-            return tile.active() && spawnInfo.spawnTileType != TileType<VitricSpike>() && spawnInfo.player.GetModPlayer<BiomeHandler>().ZoneGlass ? 95f : 0f;
-        }
-
-        public override void NPCLoot()
-        {
-            Item.NewItem(npc.getRect(), mod.ItemType("VitricSandItem"), Main.rand.Next(10, 12));
+            Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
+            return tile.HasTile && spawnInfo.SpawnTileType != TileType<VitricSpike>() && spawnInfo.Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 95f : 0f;
         }
 
         public override void FindFrame(int frameHeight)
         {
-            switch (npc.ai[0])
+            switch (NPC.ai[0])
             {
-                case 0: npc.frame.Y = frameHeight * 6; break;
-                case 1: npc.frame.Y = frameHeight * 0; break;
+                case 0: NPC.frame.Y = frameHeight * 6; break;
+                case 1: NPC.frame.Y = frameHeight * 0; break;
                 case 2:
-                    npc.frameCounter++;//skele frame-code
-                    if ((int)(npc.frameCounter * AnimSpeedMult) >= animFramesLoop)
-                        npc.frameCounter = 0;
-                    npc.frame.Y = (int)(npc.frameCounter * AnimSpeedMult) * frameHeight; break;
+                    NPC.frameCounter++;//skele frame-code
+                    if ((int)(NPC.frameCounter * AnimSpeedMult) >= animFramesLoop)
+                        NPC.frameCounter = 0;
+                    NPC.frame.Y = (int)(NPC.frameCounter * AnimSpeedMult) * frameHeight; break;
             }
         }
     }
 
+    /*
     internal class VitricBatBanner : ModBanner
     {
         public VitricBatBanner() : base("VitricBatBannerItem", NPCType<CrystalPopper>(), AssetDirectory.VitricNpc) { }
@@ -172,5 +178,5 @@ namespace StarlightRiver.Content.NPCs.Vitric
     internal class VitricBatBannerItem : QuickBannerItem
     {
         public VitricBatBannerItem() : base("VitricBatBanner", "Sand Bat", AssetDirectory.VitricNpc) { }
-    }
+    }*/
 }

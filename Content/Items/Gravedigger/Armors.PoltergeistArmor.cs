@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -20,17 +21,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
     public class PoltergeistHead : ModItem
     {
         public List<Projectile> minions = new List<Projectile>();
-        public int manaRestrictFade = 0;
+        public int Timer;
         public int sleepTimer;
 
         public override string Texture => AssetDirectory.GravediggerItem + Name;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             On.Terraria.Player.KeyDoubleTap += HauntItem;
-            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
-            StarlightItem.CanUseItemEvent += ControlItemUse;
-            return base.Autoload(ref name);
+            StarlightItem.CanUseItemEvent += ControlItemUse;          
+        }
+
+		public override void Unload()
+		{
+            On.Terraria.Player.KeyDoubleTap -= HauntItem;
+            StarlightItem.CanUseItemEvent -= ControlItemUse;
         }
 
 		public override void SetStaticDefaults()
@@ -41,11 +46,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 5;
         }
 
         public override void UpdateEquip(Player player)
@@ -67,18 +72,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
             minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
 
+            Timer++;
 
-            for (int k = 0; k < 4; k++) //smooth animation for restricting/unrestricting mana
+            for (int k = 0; k < minions.Count; k++)
             {
-                if (GetManaRestrict() > manaRestrictFade)
-                    manaRestrictFade++;
-
-                if (GetManaRestrict() < manaRestrictFade)
-                    manaRestrictFade--;
+                var proj = minions[k].ModProjectile as PoltergeistMinion;
+                player.GetModPlayer<ResourceReservationPlayer>().ReserveMana((int)(proj.Item.mana * (60f / proj.Item.useTime) * 2));
             }
-
-            if (player.statMana > player.statManaMax2 - manaRestrictFade) //restrict mana
-                player.statMana = player.statManaMax2 - manaRestrictFade;
 
             if (player == Main.LocalPlayer && sleepTimer == 1 && minions.Count > 0) //warning message
                 Main.NewText("Your haunted weapons seem bored...", new Color(200, 120, 255));
@@ -93,27 +93,28 @@ namespace StarlightRiver.Content.Items.Gravedigger
             if (keyDir == 0 && player.armor[0].type == ItemType<PoltergeistHead>())
             {
                 var item = player.HeldItem;
-                var helm = player.armor[0].modItem as PoltergeistHead;
+                var helm = player.armor[0].ModItem as PoltergeistHead;
+                var mp = player.GetModPlayer<ResourceReservationPlayer>();
 
-                if(item.IsAir) //clear from empty hand
+                if (item.IsAir) //clear from empty hand
 				{
                     helm.minions.Clear();
                     orig(player, keyDir);
                     return;
                 }
 
-                if (helm.minions.Any(n => (n.modProjectile as PoltergeistMinion).item.type == item.type)) //removal
+                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion).Item.type == item.type)) //removal
                 {
-                    helm.minions.RemoveAll(n => (n.modProjectile as PoltergeistMinion).item.type == item.type);
+                    helm.minions.RemoveAll(n => (n.ModProjectile as PoltergeistMinion).Item.type == item.type);
                     orig(player, keyDir);
                     return;
                 }
 
-                if (item.magic && item.mana > 0 && !item.channel && item.shoot > 0 && helm.GetManaRestrict(item) <= player.statManaMax2) //addition
+                if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot > 0 && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
                 {                  
-                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI);
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI);
                     var proj = Main.projectile[i];
-                    (proj.modProjectile as PoltergeistMinion).item = item.Clone();
+                    (proj.ModProjectile as PoltergeistMinion).Item = item.Clone();
 
                     helm.minions.Add(proj);
                     helm.sleepTimer = 1200;
@@ -123,77 +124,35 @@ namespace StarlightRiver.Content.Items.Gravedigger
             orig(player, keyDir);
         }
 
-        private int GetManaRestrict(Item add = null)
-		{
-            int manaRestrict = 0;
-            for (int k = 0; k < minions.Count; k++)
-            {
-                
-                var proj = minions[k].modProjectile as PoltergeistMinion;
-                manaRestrict += (int)(proj.item.mana * (60f / proj.item.useTime) * 2);
-            }
-            return manaRestrict + (add is null ? 0 : ((int)(add.mana * (60f / add.useTime) * 2)));
-        }
-
         private bool ControlItemUse(Item item, Player player)
         {
             if (player.armor[0].type == ItemType<PoltergeistHead>())
             {
-                var helm = player.armor[0].modItem as PoltergeistHead;
+                var helm = player.armor[0].ModItem as PoltergeistHead;
 
-                if (helm.minions.Any(n => (n.modProjectile as PoltergeistMinion)?.item?.type == item.type))
+                if (helm.minions.Any(n => (n.ModProjectile as PoltergeistMinion)?.Item?.type == item.type))
                     return false;
 
-                if (item.magic)
+                if (item.DamageType.Type == DamageClass.Magic.Type)
                     helm.sleepTimer = 1200;
             }
 
             return true;
         }
 
-        private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig)
+        public override void AddRecipes()
         {
-            orig();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
 
-            Player player = Main.LocalPlayer;
-
-            if (player.armor[0].type != ItemType<PoltergeistHead>())
-                return;
-
-            var helm = player.armor[0].modItem as PoltergeistHead;
-
-            for (int i = 1; i < player.statManaMax2 / 20 + 1; i++) //iterate each mana star
-            {
-                int manaDrawn = i * 20; //the amount of mana drawn by this star and all before it
-
-                float starHeight = MathHelper.Clamp(((Main.player[Main.myPlayer].statMana - (i - 1) * 20) / 20f) / 4f + 0.75f, 0.75f, 1); //height of the current star based on current mana
-
-                if (player.statMana <= i * 20 && player.statMana >= (i - 1) * 20) //pulsing star for the "current" star
-                    starHeight += Main.cursorScale - 1;
-
-				var rottenManaAmount = player.statManaMax2 - helm.manaRestrictFade; //amount of mana to draw as rotten
-
-				if (rottenManaAmount < manaDrawn)
-				{
-                    if(manaDrawn - rottenManaAmount < 20)
-					{
-                        var tex1 = GetTexture(AssetDirectory.GravediggerItem + "RottenMana");
-                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
-
-                        int off = (int)(rottenManaAmount % 20 / 20f * tex1.Height);
-                        var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
-                        pos1.Y += off;
-
-                        Main.spriteBatch.Draw(tex1, pos1, source, Color.White, 0f, tex1.Size() / 2, starHeight, 0, 0);
-                        continue;
-                    }
-
-                    var tex = GetTexture(AssetDirectory.GravediggerItem + "RottenMana");
-                    var pos = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
-
-                    Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, starHeight, 0, 0);
-                }
-            }
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 14);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 7);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 
@@ -210,17 +169,32 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 6;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 6;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.magicDamage += 0.05f;
-            player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+            Player.GetDamage(DamageClass.Magic) += 0.05f;
+            Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 16);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 
@@ -237,16 +211,31 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 5;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 5;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.statManaMax2 += 40;
+            Player.statManaMax2 += 40;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 12);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.Silk, 12);
+            recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 6);
+            recipe.AddTile(TileID.Loom);
+            recipe.Register();
         }
     }
 }

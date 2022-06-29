@@ -10,12 +10,13 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Pickups
+namespace StarlightRiver.Content.Pickups
 {
 	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive
     {
@@ -37,27 +38,30 @@ namespace StarlightRiver.Pickups
 
         public override Color GlowColor => new Color(160, 230, 255);
 
-        public override bool CanPickup(Player player) => !player.GetHandler().Unlocked<Dash>();
+        public override bool CanPickup(Player Player) => !Player.GetHandler().Unlocked<Dash>();
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Forbidden Winds");
 
-        public override void Visuals()
-        {
-            Dust dus = Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Sin(StarlightWorld.rottime) * 30, npc.Center.Y - 20), DustType<Content.Dusts.Air>(), Vector2.Zero);
-            dus.fadeIn = Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+		public override void Visuals()
+		{
+			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.rottime) * 30, NPC.Center.Y - 20 + (float)Math.Cos(StarlightWorld.rottime) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
 
-            Dust dus2 = Dust.NewDustPerfect(new Vector2(npc.Center.X + (float)Math.Cos(StarlightWorld.rottime) * 15, npc.Center.Y), DustType<Content.Dusts.Air>(), Vector2.Zero);
-            dus2.fadeIn = Math.Abs((float)Math.Cos(StarlightWorld.rottime));
+			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.rottime));
+			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Cos(StarlightWorld.rottime) * 25, NPC.Center.Y + (float)Math.Sin(StarlightWorld.rottime) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
+
+            float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
+            Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.rottime + 2) * 15, NPC.Center.Y + 20 + (float)Math.Cos(StarlightWorld.rottime + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
         }
 
         public override void PickupVisuals(int timer)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
             if (timer == 1)
             {
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Pickups/get")); //start the SFX
-                Filters.Scene.Deactivate("Shockwave");
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
+                //Filters.Scene.Deactivate("Shockwave");
 
                 cache1.Clear();
                 cache2.Clear();
@@ -69,21 +73,17 @@ namespace StarlightRiver.Pickups
                 if (timer < 260)
                 {
                     float progress = Helper.BezierEase(timer / 260f);
-                    point1 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * (40 + progress * 80), 100 - timer);
-                    point2 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * (40 + progress * 80), 100 - timer);
-                    point3 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * (40 + progress * 80), 100 - timer);
+                    point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * (40 + progress * 80), 100 - timer);
+                    point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * (40 + progress * 80), 100 - timer);
+                    point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * (40 + progress * 80), 100 - timer);
                 }
 
                 if (timer >= 260 && timer <= 380)
                 {
                     float progress = 1 - Helper.BezierEase((timer - 260) / 120f);
-                    point1 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -160);
-                    point2 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -160);
-                    point3 = player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -160);
-
-                    //point1 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f) * 120, -160), player.Center, (timer - 300) / 60f);
-                    //point2 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f + 6.28f / 3) * 120, -160), player.Center, (timer - 300) / 60f);
-                    //point3 = Vector2.SmoothStep(player.Center + new Vector2((float)Math.Sin(6.28f + 6.28f / 3 * 2) * 120, -160), player.Center, (timer - 300) / 60f);
+                    point1 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f) * progress * 120, progress * -160);
+                    point2 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3) * progress * 120, progress * -160);
+                    point3 = Player.Center + new Vector2((float)Math.Sin(progress * 6.28f + 6.28f / 3 * 2) * progress * 120, progress * -160);
                 }
 
                 if (cache1 != null && timer > 60)
@@ -107,15 +107,15 @@ namespace StarlightRiver.Pickups
 
             if (timer == 500)
             {
-                Main.PlaySound(SoundID.Item104);
-                Main.PlaySound(SoundID.Item45);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45);
             }
 
             if (timer > 500)
             {
                 float timeRel = (timer - 500) / 150f;
-                Dust.NewDust(player.position, player.width, player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
-                Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
+                Dust.NewDust(Player.position, Player.width, Player.height, DustType<Content.Dusts.Air>(), 0, 0, 0, default, 0.3f);
+                Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(2f).UseIntensity(100).UseDirection(new Vector2(0.005f + timeRel * 0.5f, 1 * 0.02f - timeRel * 0.02f));
             }
 
             if (timer == 569) //popup + codex entry
@@ -126,10 +126,10 @@ namespace StarlightRiver.Pickups
 
                 Main.LocalPlayer.GetHandler().GetAbility<Dash>(out var dash);
                 UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
-                Helper.UnlockEntry<WindsEntry>(Main.LocalPlayer);
-                Helper.UnlockEntry<StaminaEntry>(Main.LocalPlayer);
+                Helper.UnlockCodexEntry<WindsEntry>(Main.LocalPlayer);
+                Helper.UnlockCodexEntry<StaminaEntry>(Main.LocalPlayer);
 
-                Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(0f).UseIntensity(0);
+                Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
                 Filters.Scene.Deactivate("Shockwave");
             }
 
@@ -154,7 +154,7 @@ namespace StarlightRiver.Pickups
 
                 for (int i = 0; i < 120; i++)
                 {
-                    cache.Add(npc.Center + new Vector2(0, 100));
+                    cache.Add(NPC.Center + new Vector2(0, 100));
                 }
             }
 
@@ -208,7 +208,7 @@ namespace StarlightRiver.Pickups
             }
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = npc.Center;
+            trail.NextPosition = NPC.Center;
         }
 
 		public void DrawPrimitives()
@@ -218,6 +218,9 @@ namespace StarlightRiver.Pickups
 
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
+            if (effect is null)
+                return;
+
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
@@ -225,13 +228,13 @@ namespace StarlightRiver.Pickups
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.01f);
 			effect.Parameters["repeats"].SetValue(4f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/FireTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
             trail1?.Render(effect);
 			trail2?.Render(effect);
 			trail3?.Render(effect);
 
-			effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/GlowTrail"));
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
             trail4?.Render(effect);
             trail5?.Render(effect);
@@ -242,8 +245,10 @@ namespace StarlightRiver.Pickups
     public class ForbiddenWindsPickupTile : AbilityPickupTile
     {
         public override int PickupType => NPCType<ForbiddenWindsPickup>();
+
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch) //get rid of this after demo
-        {   
+        {
+            return;
                 Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-80, -62);
                 Utils.DrawBorderString(spriteBatch, "Dash into", pos, Color.White, 0.7f);
                 Utils.DrawBorderString(spriteBatch, "bright blue", pos + new Vector2(60, 0), Color.Cyan, 0.7f);
@@ -253,8 +258,8 @@ namespace StarlightRiver.Pickups
 
     public class WindsTileItem : QuickTileItem
     {
-        public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", TileType<ForbiddenWindsPickupTile>(), -1) { }
+        public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }
 
-        public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWinds";
+        public override string Texture => "StarlightRiver/Assets/Abilities/ForbiddenWindsPreview";
     }
 }

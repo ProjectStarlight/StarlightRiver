@@ -15,17 +15,17 @@ namespace StarlightRiver.Prefixes.Accessory
             this.name = name;
         }
 
-        public override bool CanRoll(Item item) => item.accessory;
+        public override bool CanRoll(Item Item) => Item.accessory;
 
         public override PrefixCategory Category => PrefixCategory.Accessory;
 
-        public override void SetDefaults() => DisplayName.SetDefault(name);
+        public override void SetStaticDefaults() => DisplayName.SetDefault(name);
 
         public override void ModifyValue(ref float valueMult) => valueMult *= 1 + 0.05f * power;
 
-        public override void Update(Item item, Player player)
+        public override void Update(Item Item, Player Player)
         {
-            player.GetHandler().StaminaRegenRate += power;
+            Player.GetHandler().StaminaRegenRate += power;
         }
     }
 

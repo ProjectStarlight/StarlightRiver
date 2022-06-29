@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class BreacherDustFour : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "BreacherDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "BreacherDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noLight = false;

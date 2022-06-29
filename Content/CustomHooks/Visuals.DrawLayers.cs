@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.NPCs.Hell;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core;
 using StarlightRiver.Keys;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Graphics;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -21,39 +22,46 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            //Under water
-            On.Terraria.Main.drawWaters += DrawUnderwaterNPCs;
             //Keys
             On.Terraria.Main.DrawItems += DrawKeys;
-            //Tile draws infront of the player
-            On.Terraria.Main.DrawPlayer += PostDrawPlayer;
+
+            //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
+            //On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
+
+            On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_RenderAllLayers += PostDrawPlayerLayer;
         }
 
-        private void DrawUnderwaterNPCs(On.Terraria.Main.orig_drawWaters orig, Main self, bool bg, int styleOverride, bool allowUpdate) //TODO: Generalize this for later use
-        {
-            orig(self, bg, styleOverride, allowUpdate);
+		private void PostDrawPlayerLayer(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref Terraria.DataStructures.PlayerDrawSet drawinfo)
+		{
+            var drawPlayer = drawinfo.drawPlayer;
+            var shadow = drawinfo.shadow;
 
-            foreach (NPC npc in Main.npc.Where(npc => npc.type == NPCType<BoneMine>() && npc.active))
-            {
-                SpriteBatch spriteBatch = Main.spriteBatch;
-                Color drawColor = Lighting.GetColor((int)npc.position.X / 16, (int)npc.position.Y / 16) * 0.3f;
-
-                spriteBatch.Draw(GetTexture(npc.modNPC.Texture), npc.position - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2((float)Math.Sin(npc.ai[0]) * 4f, 0), drawColor);
-                for (int k = 0; k >= 0; k++)
-                {
-                    if (Main.tile[(int)npc.position.X / 16, (int)npc.position.Y / 16 + k + 2].active()) break;
-                    spriteBatch.Draw(GetTexture(AssetDirectory.OvergrowItem + "ShakerChain"),
-                        npc.Center - Main.screenPosition + Vector2.One * 16 * 12 + new Vector2(-4 + (float)Math.Sin(npc.ai[0] + k) * 4, 18 + k * 16), drawColor);
-                }
-            }
-        }
-
-        private void PostDrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow) //TODO: Generalize this for later use, and possibly optimize it also
-        {
-            if(!Main.gameMenu && shadow == 0)
+            if (!Main.gameMenu && shadow == 0) 
                 drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
 
-            orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
+            orig(ref drawinfo);
+
+            if (!Main.gameMenu && shadow == 0)
+                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+        }
+
+		private void PostDrawPlayer(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+		{
+            if (!Main.gameMenu && shadow == 0) 
+                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+
+            orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+
+            if (!Main.gameMenu && shadow == 0)
+                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+        }
+
+        private void PostDrawPlayerGate(On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.orig_DrawPlayer orig, object self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+        {
+            if (!Main.gameMenu && shadow == 0)
+                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+
+            orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
 
             if (!Main.gameMenu && shadow == 0)
                 drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
@@ -61,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 
         private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
         {
-            foreach (Key key in StarlightWorld.Keys)
+            foreach (Key key in KeySystem.Keys)
                 key.Draw(Main.spriteBatch);
 
             orig(self);

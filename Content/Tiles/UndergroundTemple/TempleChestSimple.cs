@@ -4,17 +4,14 @@ using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Temple
 {
 	class TempleChestSimple : LootChest
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
         internal override List<Loot> GoldLootPool
         {
@@ -40,13 +37,15 @@ namespace StarlightRiver.Tiles.Temple
             };
         }
 
-        public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+        public override void SafeSetDefaults() 
+        {
+            TileObjectData.newTile.DrawYOffset = 2;
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151)); 
+        }
     }
 
     class TempleChestPlacer : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
-
-        public TempleChestPlacer() : base("Temple Chest Placer", "", TileType<TempleChestSimple>(), 0, AssetDirectory.UndergroundTempleTile) { }
+        public TempleChestPlacer() : base("Temple Chest Placer", "", "TempleChestSimple", 0, AssetDirectory.UndergroundTempleTile) { }
     }
 }

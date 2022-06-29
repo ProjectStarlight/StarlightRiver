@@ -4,8 +4,6 @@ using StarlightRiver.Configs;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
-using StarlightRiver.Configs;
-using StarlightRiver.Physics;
 using static StarlightRiver.Helpers.DrawHelper;
 
 namespace StarlightRiver.Helpers
@@ -13,18 +11,16 @@ namespace StarlightRiver.Helpers
 	public class LightingBuffer
     {
         const int PADDING = 20;
-        static readonly float factor = Main.screenHeight / (float)Main.screenWidth;
+        static float factor => Main.screenHeight / (float)Main.screenWidth;
 
         public static bool GettingColors = false;
 
-        public static VertexBuffer lightingQuadBuffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+        public VertexBuffer lightingQuadBuffer;
 
-        public RenderTarget2D ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-        public RenderTarget2D TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+        public RenderTarget2D ScreenLightingTexture;
+        public RenderTarget2D TileLightingTexture;
         public RenderTarget2D TileLightingTempTexture;
         public Vector2 TileLightingCenter;
-
-        private readonly Effect upscaleEffect = Main.dedServ ? null : Filters.Scene["LightShader"].GetShader().Shader;
 
         private int refreshTimer;
 
@@ -33,8 +29,10 @@ namespace StarlightRiver.Helpers
 
         private GraphicsConfig config => ModContent.GetInstance<GraphicsConfig>();
 
-        public static void SetupLightingQuadBuffer()
+        private void SetupLightingQuadBuffer()
         {
+            lightingQuadBuffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+
             VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
 
             verticies[0] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
@@ -48,14 +46,22 @@ namespace StarlightRiver.Helpers
             lightingQuadBuffer.SetData(verticies);
         }
 
+        public LightingBuffer()
+        {
+            ResizeBuffers(Main.screenWidth, Main.screenHeight);
+        }
+
         public void ResizeBuffers(int width, int height)
         {
-            float factor = height / (float)width;
-            ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            Main.QueueMainThreadAction(() =>
+            {
+                float factor = height / (float)width;
+                ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-            if(TileLightingTempTexture != null)
-                TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                if (TileLightingTempTexture != null)
+                    TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+            });
         }
 
         private void PopulateTileTexture(Vector2 start)
@@ -64,12 +70,14 @@ namespace StarlightRiver.Helpers
             Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
 
             for (int x = 0; x < TileLightingTexture.Width; x++)
+            {
                 for (int y = 0; y < TileLightingTexture.Height; y++)
                 {
                     int index = y * TileLightingTexture.Width + x;
-                    if (tileLightingBuffer.Length > index) tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+                    if (tileLightingBuffer.Length > index) 
+                        tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
                 }
-
+            }
             TileLightingTexture.SetData(tileLightingBuffer);
             TileLightingCenter = start;
             GettingColors = false;
@@ -115,16 +123,24 @@ namespace StarlightRiver.Helpers
 
         private void RenderLightingQuad()
         {
-            if (upscaleEffect is null) 
+            if (Main.dedServ) 
+                return;
+
+            if (lightingQuadBuffer == null)
+                SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
+
+            Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
+
+            if (upscaleEffect is null)
                 return;
 
             GraphicsDevice graphics = Main.instance.GraphicsDevice;
-
+            
             graphics.SetVertexBuffer(lightingQuadBuffer);
             graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
             Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
-
+            
             upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
             upscaleEffect.Parameters["offset"].SetValue(offset);
@@ -294,7 +310,6 @@ namespace StarlightRiver.Helpers
 
             Main.instance.GraphicsDevice.SetVertexBuffer(null);
         }
-
 
         public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default) =>
             DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color);

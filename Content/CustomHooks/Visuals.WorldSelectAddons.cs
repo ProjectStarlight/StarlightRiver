@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.IO;
@@ -37,13 +38,14 @@ namespace StarlightRiver.Content.CustomHooks
 
             float chungosity = 0;
 
-            if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) chungosity = tag3.GetFloat("Chungus");
+            if (worldDataCache.TryGetValue(self, out var tag3) && tag3 != null) 
+                chungosity = tag3.GetFloat("Chungus");
 
-            Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeter");
-            Texture2D tex2 = ModContent.GetTexture("StarlightRiver/Assets/GUI/ChungusMeterFill");
+            Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ChungusMeter").Value;
+            Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/ChungusMeterFill").Value;
             spriteBatch.Draw(tex, pos + new Vector2(-122, 6), Color.White);
             spriteBatch.Draw(tex2, pos + new Vector2(-108, 10), new Rectangle(0, 0, (int)(tex2.Width * chungosity), tex2.Height), Color.White);
-            spriteBatch.Draw(Main.magicPixel, new Rectangle((int)pos.X - 108 + (int)(tex2.Width * chungosity), (int)pos.Y + 10, 2, 10), Color.White);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)pos.X - 108 + (int)(tex2.Width * chungosity), (int)pos.Y + 10, 2, 10), Color.White);
 
             Rectangle rect = new Rectangle((int)pos.X - 122, (int)pos.Y + 6, tex.Width, tex.Height);
 
@@ -53,11 +55,14 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
 
-        private void AddWorldData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex)
+        private void AddWorldData(On.Terraria.GameContent.UI.Elements.UIWorldListItem.orig_ctor orig, UIWorldListItem self, WorldFileData data, int snapPointIndex, bool canBePlayed)
         {
-            orig(self, data, snapPointIndex);
+            orig(self, data, snapPointIndex, canBePlayed);
 
             string path = data.Path.Replace(".wld", ".twld");
+
+            if (!File.Exists(path))
+                return;
 
             TagCompound tag;
 
@@ -71,7 +76,7 @@ namespace StarlightRiver.Content.CustomHooks
                 tag = null;
             }
 
-            TagCompound tag2 = tag?.GetList<TagCompound>("modData").FirstOrDefault(k => k.GetString("mod") == "StarlightRiver" && k.GetString("name") == "StarlightWorld");
+            TagCompound tag2 = tag?.GetList<TagCompound>("modData").FirstOrDefault(k => k.GetString("Mod") == "StarlightRiver" && k.GetString("name") == "StarlightWorld");
             TagCompound tag3 = tag2?.Get<TagCompound>("data");
 
             worldDataCache.Add(self, tag3);

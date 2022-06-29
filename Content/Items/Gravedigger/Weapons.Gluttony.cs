@@ -11,10 +11,12 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class Gluttony : ModItem
+    public class Gluttony : ModItem
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
@@ -26,27 +28,36 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			item.width = 24;
-			item.height = 28;
-			item.useTurn = true;
-			item.autoReuse = true;
-			item.value = Item.buyPrice(0, 6, 0, 0);
-			item.rare = ItemRarityID.Green;
-			item.damage = 20;
-			item.mana = 9;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.useTime = 10;
-			item.useAnimation = 10;
-			item.magic = true;
-			item.channel = true;
-			item.noMelee = true;
-			item.shoot = ModContent.ProjectileType<GluttonyHandle>();
-			item.shootSpeed = 0f;
+			Item.width = 24;
+			Item.height = 28;
+			Item.useTurn = true;
+			Item.autoReuse = true;
+			Item.value = Item.buyPrice(0, 6, 0, 0);
+			Item.rare = ItemRarityID.Green;
+			Item.damage = 20;
+			Item.mana = 9;
+			Item.useStyle = ItemUseStyleID.Shoot;
+			Item.useTime = 10;
+			Item.useAnimation = 10;
+			Item.DamageType = DamageClass.Magic;
+			Item.channel = true;
+			Item.noMelee = true;
+			Item.shoot = ModContent.ProjectileType<GluttonyHandle>();
+			Item.shootSpeed = 0f;
 		}
 
-		public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ModContent.ProjectileType<GluttonyHandle>());
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Book, 1);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -93,56 +104,56 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			projectile.width = 14;
-			projectile.height = 18;
-			projectile.friendly = false;
-			projectile.hostile = false;
-			projectile.penetrate = -1;
-			projectile.tileCollide = false;
-			projectile.magic = true;
-			projectile.ignoreWater = true;
+			Projectile.width = 14;
+			Projectile.height = 18;
+			Projectile.friendly = false;
+			Projectile.hostile = false;
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.ignoreWater = true;
 		}
 
         public override void AI()
         {
 			timer++;
 
-			Player player = Main.player[projectile.owner];
-			projectile.damage = (int)(player.HeldItem.damage * player.magicDamage);
+			Player Player = Main.player[Projectile.owner];
+			Projectile.damage = (int)(Player.HeldItem.damage * Player.GetDamage(DamageClass.Magic).Multiplicative);
 
-			direction = Main.MouseWorld - (player.Center);
+			direction = Main.MouseWorld - (Player.Center);
 			direction.Normalize();
 
-			projectile.Center = player.Center;
-			projectile.rotation = direction.ToRotation();
+			Projectile.Center = Player.Center;
+			Projectile.rotation = direction.ToRotation();
 
-			if (player.statMana < player.HeldItem.mana)
+			if (Player.statMana < Player.HeldItem.mana)
 				released = true;
 
-			if (player.channel && player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
+			if (Player.channel && Player.HeldItem.type == ModContent.ItemType<Gluttony>() && !released)
             {
-				player.ChangeDir(Main.MouseWorld.X > player.position.X ? 1 : -1);
+				Player.ChangeDir(Main.MouseWorld.X > Player.position.X ? 1 : -1);
 
-				//player.itemTime = player.itemAnimation = 2;
-				projectile.timeLeft = 2;
+				//Player.itemTime = Player.itemAnimation = 2;
+				Projectile.timeLeft = 2;
 
-				player.itemRotation = direction.ToRotation();
+				Player.itemRotation = direction.ToRotation();
 
-				if (player.direction != 1)
-					player.itemRotation -= 3.14f;
+				if (Player.direction != 1)
+					Player.itemRotation -= 3.14f;
 
 				if(timer > 10 && Main.rand.Next(4) == 0)
 				{
 					float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
-					float dustRot = projectile.rotation + 0.1f + Main.rand.NextFloat(-0.3f, 0.3f);
-					Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(dustRot) * 300 * prog + new Vector2(0, 48), ModContent.DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(-9.5f, -8f), 0, new Color(255, 40, 80) * 0.8f, 0.8f);
+					float dustRot = Projectile.rotation + 0.1f + Main.rand.NextFloat(-0.3f, 0.3f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(dustRot) * 300 * prog + new Vector2(0, 48), ModContent.DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(-9.5f, -8f), 0, new Color(255, 40, 80) * 0.8f, 0.8f);
 				}
 			}
 
 			else if (timer > 80)
 			{
 				timer = 79;
-				projectile.timeLeft = 2;
+				Projectile.timeLeft = 2;
 				released = true;
 			}
 			else
@@ -150,11 +161,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				timer -= 3;
 
 				if(timer > 0)
-					projectile.timeLeft = 2;
+					Projectile.timeLeft = 2;
 			}
 
-			UpdateTargets(player);
-			SuckEnemies(player);
+			UpdateTargets(Player);
+			SuckEnemies(Player);
 			ManageCaches();
 			ManageTrails();
 
@@ -183,7 +194,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				float radius = MathHelper.Lerp(STARTRAD, ENDRAD, lerper) * prog;
 
 				float rotation2 = (lerper * 6.28f * CIRCLES) + rotation;
-				Vector2 pole = projectile.Center + (lerper * direction * RANGE);
+				Vector2 pole = Projectile.Center + (lerper * direction * RANGE);
 
 				Vector2 pointX = direction * (float)Math.Sin(rotation2) * SQUISH;
 				Vector2 pointy = direction.RotatedBy(1.57f) * (float)Math.Cos(rotation2);
@@ -219,7 +230,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
 			});
 			localTrail.Positions = localCache.ToArray();
-			localTrail.NextPosition = projectile.Center + (direction * RANGE);
+			localTrail.NextPosition = Projectile.Center + (direction * RANGE);
 		}
 
 		public void DrawPrimitives()
@@ -233,8 +244,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(3f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 
 			effect.Parameters["row"].SetValue(0);
 			trail?.Render(effect);
@@ -248,52 +259,52 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			trail5?.Render(effect);
 		}
 
-		private void UpdateTargets(Player player)
+		private void UpdateTargets(Player Player)
         {
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
-				NPC npc = Main.npc[i];
-				Vector2 toNPC = npc.Center - player.Center;
+				NPC NPC = Main.npc[i];
+				Vector2 toNPC = NPC.Center - Player.Center;
 
-				if (toNPC.Length() < RANGE && npc.active && AnglesWithinCone(toNPC.ToRotation(), direction.ToRotation()) && (!npc.townNPC || !npc.friendly) && !npc.immortal)
+				if (toNPC.Length() < RANGE && NPC.active && AnglesWithinCone(toNPC.ToRotation(), direction.ToRotation()) && (!NPC.townNPC || !NPC.friendly) && !NPC.immortal)
 				{
 					bool targetted = false;
 
-					foreach (var npc2 in targets)
+					foreach (var NPC2 in targets)
 					{
-						if (npc2.active)
+						if (NPC2.active)
 						{
-							if (npc2 == npc)
+							if (NPC2 == NPC)
 								targetted = true;
 						}
 					}
 
 					if (!targetted)
-						targets.Add(npc);
+						targets.Add(NPC);
 				}
 				else
-					targets.Remove(npc);
+					targets.Remove(NPC);
 			}
 
-			foreach (var npc2 in targets.ToArray())
+			foreach (var NPC2 in targets.ToArray())
 			{
-				if (!npc2.active)
-					targets.Remove(npc2);
+				if (!NPC2.active)
+					targets.Remove(NPC2);
 			}
 		}
 
-		private void SuckEnemies(Player player)
+		private void SuckEnemies(Player Player)
         {
-			foreach(NPC npc in targets)
+			foreach(NPC NPC in targets)
 			{
-				npc.AddBuff(ModContent.BuffType<SoulSuck>(), 2);
+				NPC.AddBuff(ModContent.BuffType<SoulSuck>(), 2);
 				damageDone += DPS / 30f;
 			}
 
-			if (damageDone > 150 && player.ownedProjectileCounts[ModContent.ProjectileType<GluttonyGhoul>()] < 10)
+			if (damageDone > 150 && Player.ownedProjectileCounts[ModContent.ProjectileType<GluttonyGhoul>()] < 10)
             {
 				damageDone = 0;
-				Projectile.NewProjectile(player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), projectile.damage / 2, projectile.knockBack, player.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Player.Center + (direction * 15), direction.RotatedBy(Main.rand.NextFloat(-1.57f,1.57f) + 3.14f) * 5, ModContent.ProjectileType<GluttonyGhoul>(), Projectile.damage / 2, Projectile.knockBack, Player.whoAmI);
             }
 
         }
@@ -309,9 +320,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return false;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG");
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Gravedigger/GluttonyBG").Value;
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 80f));
 
 			var effect1 = Filters.Scene["Cyclone"].GetShader().Shader;
@@ -325,18 +336,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			effect1.Parameters["Resolution"].SetValue(tex.Size());
 			effect1.Parameters["mainColor"].SetValue(new Vector3(0.8f, 0.03f, 0.18f));
 
-			effect1.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort"));
+			effect1.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
-			//spriteBatch.Draw(Main.magicPixel, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			return false;
 		}
@@ -344,8 +355,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
-			var tex = ModContent.GetTexture(AssetDirectory.VitricBoss + "ConeTell");
-			//spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
+			var tex = ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "ConeTell").Value;
+			//spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(255, 60, 80) * prog * 0.4f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 		}
 	}
 
@@ -366,16 +377,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			projectile.width = 20;
-			projectile.height = 20;
-			projectile.friendly = true;
-			projectile.minion = true;
-			projectile.minionSlots = 0;
-			projectile.penetrate = -1;
-			projectile.timeLeft = 150;
-			projectile.tileCollide = false;
-			projectile.ignoreWater = true;
-			projectile.alpha = 255;
+			Projectile.width = 20;
+			Projectile.height = 20;
+			Projectile.friendly = true;
+			Projectile.minion = true;
+			Projectile.minionSlots = 0;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 150;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.alpha = 255;
 		}
 
 		public override void AI()
@@ -388,19 +399,19 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
 			if (target.life <= 0)
-				projectile.timeLeft = 150;
+				Projectile.timeLeft = 150;
         }
 
         private void Movement()
 		{
-			NPC target = Main.npc.Where(n => n.CanBeChasedBy(projectile, false) && Vector2.Distance(n.Center, projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, projectile.Center)).FirstOrDefault();
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
 
 			if (target != default)
 			{
-				Vector2 direction = target.Center - projectile.Center;
+				Vector2 direction = target.Center - Projectile.Center;
 				direction.Normalize();
 				direction *= 10;
-				projectile.velocity = Vector2.Lerp(projectile.velocity, direction, 0.03f);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.03f);
 			}
 		}
 
@@ -411,11 +422,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				cache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
 				{
-					cache.Add(projectile.Center);
+					cache.Add(Projectile.Center);
 				}
 			}
 
-			cache.Add(projectile.Center);
+			cache.Add(Projectile.Center);
 
 			while (cache.Count > TRAILLENGTH)
 			{
@@ -431,7 +442,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center + projectile.velocity;
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
 		public void DrawPrimitives()
@@ -443,7 +454,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Main.projectileTexture[projectile.type]);
+			effect.Parameters["sampleTexture"].SetValue(TextureAssets.Projectile[Projectile.type].Value);
 
 			trail?.Render(effect);
 		}
@@ -451,18 +462,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class SoulSuck : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public SoulSuck() : base("Soul Suck", "You getting sucked", false) { }
 
-		public override void Update(NPC npc, ref int buffIndex)
+		public override void Update(NPC NPC, ref int buffIndex)
 		{
-			if (!npc.friendly)
+			if (!NPC.friendly)
 			{
-				if (npc.lifeRegen > 0)
+				if (NPC.lifeRegen > 0)
 				{
-					npc.lifeRegen = 0;
+					NPC.lifeRegen = 0;
 				}
 
-				npc.lifeRegen -= GluttonyHandle.DPS;
+				NPC.lifeRegen -= GluttonyHandle.DPS;
 			}
 		}
 	}

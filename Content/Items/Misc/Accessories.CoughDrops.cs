@@ -13,14 +13,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public CoughDrops() : base("Cough Drops", "When debuffs wear off, gain a temporary speed and damage boost") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             On.Terraria.Player.DelBuff += DelBuff;
-
-            return true;
         }
 
-        private void DelBuff(On.Terraria.Player.orig_DelBuff orig, Player self, int buffId)
+		public override void Unload()
+		{
+            On.Terraria.Player.DelBuff -= DelBuff;
+        }
+
+		private void DelBuff(On.Terraria.Player.orig_DelBuff orig, Player self, int buffId)
         {
             if (Helper.IsValidDebuff(self, buffId) && Equipped(self))
             {

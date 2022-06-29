@@ -11,6 +11,7 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -28,32 +29,32 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.damage = 18;
-            item.magic = true;
-            item.mana = 10;
-            item.width = 18;
-            item.height = 34;
-            item.useTime = 24;
-            item.useAnimation = 24;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 0f;
-            item.shoot = ModContent.ProjectileType<StarShuriken>();
-            item.shootSpeed = 15f;
-            item.noMelee = true;
-			item.noUseGraphic = true;
-			item.autoReuse = true;
-			item.rare = ItemRarityID.Green;
+            Item.damage = 18;
+            Item.DamageType = DamageClass.Magic;
+            Item.mana = 10;
+            Item.width = 18;
+            Item.height = 34;
+            Item.useTime = 24;
+            Item.useAnimation = 24;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.knockBack = 0f;
+            Item.shoot = ModContent.ProjectileType<StarShuriken>();
+            Item.shootSpeed = 15f;
+            Item.noMelee = true;
+			Item.noUseGraphic = true;
+			Item.autoReuse = true;
+			Item.rare = ItemRarityID.Green;
 		}
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            var aim = Vector2.Normalize(new Vector2(speedX, speedY));
+            var aim = Vector2.Normalize(velocity);
 
 			Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, (3 - amountToThrow) / 3f * 0.6f, player.Center);
 
             if(amountToThrow == 1)
 			{
-				Projectile.NewProjectile(player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockBack, player.whoAmI);
+				Projectile.NewProjectile(source, player.Center + aim * 20 + new Vector2(0, -12), aim * 8f, ModContent.ProjectileType<StarGlaive>(), (int)(damage * 1.5f), knockback, player.whoAmI);
 
                 amountToThrow = 3;
                 return false;
@@ -62,8 +63,8 @@ namespace StarlightRiver.Content.Items.Misc
             for(int k = 0; k < amountToThrow; k++)
 			{
                 float maxAngle = amountToThrow == 3 ? 0.21f : 0.16f;
-                int i = Projectile.NewProjectile(player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockBack, player.whoAmI, 0, amountToThrow);
-                var proj = Main.projectile[i].modProjectile as StarShuriken;
+                int i = Projectile.NewProjectile(source, player.Center, aim.RotatedBy(-(maxAngle / 2f) + (k / (float)(amountToThrow - 1)) * maxAngle) * 6.5f, type, damage, knockback, player.whoAmI, 0, amountToThrow);
+                var proj = Main.projectile[i].ModProjectile as StarShuriken;
                 proj.creator = this;
 			}
 
@@ -74,7 +75,17 @@ namespace StarlightRiver.Content.Items.Misc
 
             return false;
         }
-    }
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Shuriken, 50);
+			recipe.AddIngredient(ItemID.FallenStar, 5);
+			recipe.AddIngredient(ModContent.ItemType<Moonstone.MoonstoneBarItem>(), 16);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
+	}
 
 	class StarShuriken : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
@@ -85,48 +96,48 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Color color = new Color(100, 210, 255);
 
-		public ref float State => ref projectile.ai[0];
+		public ref float State => ref Projectile.ai[0];
 
-		public ref float numThrown => ref projectile.ai[1];
+		public ref float numThrown => ref Projectile.ai[1];
 
-		public Player Owner => Main.player[projectile.owner];
+		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetDefaults()
 		{
-			projectile.width = 30;
-			projectile.height = 30;
-			projectile.timeLeft = 150;
-			projectile.extraUpdates = 6;
-			projectile.magic = true;
-			projectile.friendly = true;
-			projectile.penetrate = 1;
-			projectile.scale = 0.85f;
+			Projectile.width = 30;
+			Projectile.height = 30;
+			Projectile.timeLeft = 150;
+			Projectile.extraUpdates = 6;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.friendly = true;
+			Projectile.penetrate = 1;
+			Projectile.scale = 0.85f;
 		}
 
 		public override void AI()
 		{
-			if(creator is null && projectile.timeLeft == 149)
+			if(creator is null && Projectile.timeLeft == 149)
 			{
-				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, projectile.Center);
+				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, Projectile.Center);
 			}
 
 			color = numThrown == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
 
-			projectile.rotation += 0.05f;
-			projectile.velocity *= 0.998f;
+			Projectile.rotation += 0.05f;
+			Projectile.velocity *= 0.998f;
 
-			projectile.velocity.Y += 0.01f;
+			Projectile.velocity.Y += 0.01f;
 
 			if (Main.netMode != NetmodeID.Server)
 			{
 				if (Main.rand.Next(10) == 0)
-					Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), Projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
 
 				if (Main.rand.Next(30) == 0)
 				{
-					var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
+					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), Projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
 					d.customData = Main.rand.NextFloat(0.8f, 1.1f);
 				}
 
@@ -134,29 +145,29 @@ namespace StarlightRiver.Content.Items.Misc
 				ManageTrail();
 			}
 
-			if (projectile.owner != Main.myPlayer && State == 0)
+			if (Projectile.owner != Main.myPlayer && State == 0)
 				findIfHit();
 		}
 
 		private void findIfHit()
 		{
-			foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(npc, 0, 0, false);
+				OnHitNPC(NPC, 0, 0, false);
 			}
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			var tex = ModContent.GetTexture(Texture);
-			var texOutline = ModContent.GetTexture(Texture + "Outline");
+			var tex = ModContent.Request<Texture2D>(Texture).Value;
+			var texOutline = ModContent.Request<Texture2D>(Texture + "Outline").Value;
 			var drawColor = color;
 
-			if (projectile.timeLeft < 30)
-				drawColor = color * (projectile.timeLeft / 30f);
+			if (Projectile.timeLeft < 30)
+				drawColor = color * (Projectile.timeLeft / 30f);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, drawColor * 0.3f, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
-			spriteBatch.Draw(texOutline, projectile.Center - Main.screenPosition, null, drawColor * 1.5f, projectile.rotation, texOutline.Size() / 2, projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
 			return false;
 		}
@@ -165,11 +176,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (State == 0)
 			{
-				projectile.timeLeft = 30;
-				projectile.damage = 0;
-				projectile.velocity *= 0;
-				projectile.penetrate = -1;
-				projectile.tileCollide = false;
+				Projectile.timeLeft = 30;
+				Projectile.damage = 0;
+				Projectile.velocity *= 0;
+				Projectile.penetrate = -1;
+				Projectile.tileCollide = false;
 
 				State = 1;
 			}
@@ -177,7 +188,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreKill(int timeLeft)
 		{
-			if (projectile.penetrate == 1 && creator != null)
+			if (Projectile.penetrate == 1 && creator != null)
 				creator.amountToThrow = 3;
 
 			return false;
@@ -185,8 +196,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * 0.5f, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 		}
 
 		private void ManageCaches()
@@ -197,11 +208,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 100; i++)
 				{
-					cache.Add(projectile.Center);
+					cache.Add(Projectile.Center);
 				}
 			}
 
-			cache.Add(projectile.Center);
+			cache.Add(Projectile.Center);
 
 			while (cache.Count > 100)
 			{
@@ -216,11 +227,11 @@ namespace StarlightRiver.Content.Items.Misc
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
 
-				return new Color(color.R, color.G - 30, color.B) * 0.4f * (float)Math.Pow(factor.X, 2) * (float)Math.Sin(projectile.timeLeft / 150f * 3.14f);
+				return new Color(color.R, color.G - 30, color.B) * 0.4f * (float)Math.Pow(factor.X, 2) * (float)Math.Sin(Projectile.timeLeft / 150f * 3.14f);
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center + projectile.velocity;
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
 		public void DrawPrimitives()
@@ -234,8 +245,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
 
 			trail?.Render(effect);
 		}
@@ -248,42 +259,42 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Color color = new Color(240, 100, 255);
 
-		public ref float State => ref projectile.ai[0];
-		public ref float BounceSoundCooldown => ref projectile.ai[1];
+		public ref float State => ref Projectile.ai[0];
+		public ref float BounceSoundCooldown => ref Projectile.ai[1];
 
-		public Player Owner => Main.player[projectile.owner];
+		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetDefaults()
 		{
-			projectile.width = 62;
-			projectile.height = 62;
-			projectile.timeLeft = 600;
-			projectile.extraUpdates = 3;
-			projectile.magic = true;
-			projectile.friendly = true;
-			projectile.penetrate = 20;
-			projectile.scale = 0.85f;
+			Projectile.width = 62;
+			Projectile.height = 62;
+			Projectile.timeLeft = 600;
+			Projectile.extraUpdates = 3;
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.friendly = true;
+			Projectile.penetrate = 20;
+			Projectile.scale = 0.85f;
 		}
 
 		public override void AI()
 		{
-			projectile.rotation += 0.06f;
+			Projectile.rotation += 0.06f;
 
 			if(BounceSoundCooldown > 0)
 				BounceSoundCooldown--;
 
-			if (projectile.velocity.Length() < 8)
-				projectile.velocity = Vector2.Normalize(projectile.velocity) * 8;
+			if (Projectile.velocity.Length() < 8)
+				Projectile.velocity = Vector2.Normalize(Projectile.velocity) * 8;
 
 			if (Main.netMode != NetmodeID.Server)
 			{
 				if (Main.rand.Next(15) == 0)
 				{
-					Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.Glow>(), projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
+					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.Glow>(), Projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
 
-					var d = Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.AuroraFast>(), projectile.velocity * Main.rand.NextFloat(2, 3), 0, color * 0.4f, 0.5f);
+					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.AuroraFast>(), Projectile.velocity * Main.rand.NextFloat(2, 3), 0, color * 0.4f, 0.5f);
 					d.customData = Main.rand.NextFloat(0.8f, 1.1f);
 				}
 
@@ -294,42 +305,42 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			projectile.penetrate--;
+			Projectile.penetrate--;
 
-			if (projectile.penetrate > 0)
+			if (Projectile.penetrate > 0)
 			{
 				if (BounceSoundCooldown <= 0)
 				{
-					Helper.PlayPitched("Magic/ShurikenBounce", 0.35f, 0, projectile.Center);
+					Helper.PlayPitched("Magic/ShurikenBounce", 0.35f, 0, Projectile.Center);
 					BounceSoundCooldown = 15;
 				}
 
-				projectile.velocity *= -1;
+				Projectile.velocity *= -1;
 				return false;
 			}
 
 			return true;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			var tex = ModContent.GetTexture(Texture);
-			var texOutline = ModContent.GetTexture(Texture + "Outline");
+			var tex = ModContent.Request<Texture2D>(Texture).Value;
+			var texOutline = ModContent.Request<Texture2D>(Texture + "Outline").Value;
 			var drawColor = color;
 
-			if (projectile.timeLeft < 30)
-				drawColor = color * (projectile.timeLeft / 30f);
+			if (Projectile.timeLeft < 30)
+				drawColor = color * (Projectile.timeLeft / 30f);
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, drawColor * 0.3f, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
-			spriteBatch.Draw(texOutline, projectile.Center - Main.screenPosition, null, drawColor * 1.5f, projectile.rotation, texOutline.Size() / 2, projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, drawColor * 0.3f, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
+			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, drawColor * 1.5f, Projectile.rotation, texOutline.Size() / 2, Projectile.scale, 0, 0);
 
 			return false;
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, color * 0.5f, projectile.rotation, tex.Size() / 2, projectile.scale * 1.5f, 0, 0);
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, tex.Size() / 2, Projectile.scale * 1.5f, 0, 0);
 		}
 
 		private void ManageCaches()
@@ -340,11 +351,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 				for (int i = 0; i < 100; i++)
 				{
-					cache.Add(projectile.Center);
+					cache.Add(Projectile.Center);
 				}
 			}
 
-			cache.Add(projectile.Center);
+			cache.Add(Projectile.Center);
 
 			while (cache.Count > 100)
 			{
@@ -359,11 +370,11 @@ namespace StarlightRiver.Content.Items.Misc
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
 
-				return new Color(color.R, color.G - 30, color.B) * 0.3f * factor.X * (float)Math.Sin(projectile.timeLeft / 600f * 3.14f);
+				return new Color(color.R, color.G - 30, color.B) * 0.3f * factor.X * (float)Math.Sin(Projectile.timeLeft / 600f * 3.14f);
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = projectile.Center + projectile.velocity;
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 
 		public void DrawPrimitives()
@@ -377,8 +388,8 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
-			effect.Parameters["sampleTexture2"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2"));
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
 
 			trail?.Render(effect);
 		}

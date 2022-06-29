@@ -10,25 +10,21 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossBarrier : ModTile, ILoadable
+	internal class VitricBossBarrier : ModTile, IOrderedLoadable
     {
         public float Priority => 0f;
 
-        public void Load()
+        new public void Load()
         {
             On.Terraria.Main.Update += UpdateCollision; //TODO: Find a better/cleaner way to do this
         }
 
-        public void Unload()
+        new public void Unload()
         {
             On.Terraria.Main.Update -= UpdateCollision;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         private void UpdateCollision(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
         {
@@ -40,11 +36,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Main.tileSolid[TileType<VitricBossBarrier>()] = Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>());
         }
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileBlockLight[Type] = false;
-            minPick = 999;
+            MinPick = int.MaxValue;
         }
     }
 }

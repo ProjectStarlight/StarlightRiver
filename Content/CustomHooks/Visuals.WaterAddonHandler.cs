@@ -12,10 +12,11 @@ using Mono.Cecil.Cil;
 using Terraria.GameContent.UI;
 using static Terraria.ModLoader.ModContent;
 using StarlightRiver.Core;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	public abstract class WaterAddon : ILoadable
+	public abstract class WaterAddon : IOrderedLoadable
 	{
 		public float Priority => 1f;
 
@@ -56,17 +57,18 @@ namespace StarlightRiver.Content.CustomHooks
 			StarlightPlayer.PostUpdateEvent += UpdateActiveAddon;
 
 			IL.Terraria.Main.DoDraw += AddWaterShader;
-			IL.Terraria.Main.DrawTiles += SwapBlockTexture;
+			//IL.Terraria.Main.DrawTiles += SwapBlockTexture;//TODO: Figure out where this logic moved in vanilla
 		}
 
-		private void UpdateActiveAddon(Player player)
+		private void UpdateActiveAddon(Player Player)
 		{
 			activeAddon = addons.FirstOrDefault(n => n.Visible);
 		}
 
 		public override void Unload()
 		{
-			addons.Clear();
+			addons = null;
+			activeAddon = null;
 		}
 
 		private void SwapBlockTexture(ILContext il)
@@ -84,7 +86,7 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			var tile = Framing.GetTileSafely(x, y);
 
-			if (tile.liquidType() != 0)
+			if (tile.LiquidType != LiquidID.Water)
 				return arg;
 
 			if (activeAddon is null) //putting this in the same check as above dosent seem to short circuit properly? 
@@ -106,7 +108,8 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdfld<Main>("backWaterTarget"));
-			c.Index -= 2;
+			c.Index -= 1;
+			c.Emit(OpCodes.Pop);
 			c.EmitDelegate<Action>(NewDrawBack);
 			c.Emit(OpCodes.Br, label);
 
@@ -118,7 +121,7 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label2 = il.DefineLabel(c.Next);
 
 			c.TryGotoPrev(n => n.MatchLdsfld<Main>("waterTarget"));
-			c.Index--;
+			c.Emit(OpCodes.Pop);
 			c.EmitDelegate<Action>(NewDraw);
 			c.Emit(OpCodes.Br, label2);
 		}
@@ -138,7 +141,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 
@@ -157,7 +160,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
 	}

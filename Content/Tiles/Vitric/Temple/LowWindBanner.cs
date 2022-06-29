@@ -13,15 +13,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
     class LowWindBanner : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override int DummyType => ProjectileType<LowWindBannerDummy>();
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(180, 100, 100));
         }
@@ -29,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class LowWindBannerItem : QuickTileItem
     {
-        public LowWindBannerItem() : base("Rectangular Flowing Banner", "", TileType<LowWindBanner>(), 1, AssetDirectory.VitricTile, false) { }
+        public LowWindBannerItem() : base("Rectangular Flowing Banner", "", "LowWindBanner", 1, AssetDirectory.VitricTile, false) { }
     }
 
     internal class LowWindBannerDummy : Dummy
@@ -39,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         private RectangularBanner Chain;
         int blow;
 
-		public override int ParentY => (int)(projectile.position.Y / 16);
+		public override int ParentY => (int)(Projectile.position.Y / 16);
 
 		public override bool ValidTile(Tile tile)
 		{
@@ -48,7 +44,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeSetDefaults()
         {
-            Chain = new RectangularBanner(16, false, projectile.Center - Vector2.UnitY * 90, 8)
+            Chain = new RectangularBanner(16, false, Projectile.Center - Vector2.UnitY * 90, 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -59,10 +55,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Update()
         {
-            Chain.UpdateChain(projectile.Center - Vector2.UnitY * 90);
+            Chain.UpdateChain(Projectile.Center - Vector2.UnitY * 90);
             Chain.IterateRope(WindForce);
 
-            projectile.ai[0] += 0.005f;
+            Projectile.ai[0] += 0.005f;
 
             if (blow > 0)
                 blow--;
@@ -70,10 +66,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 blow++;
         }
 
-		public override void Collision(Player player)
+		public override void Collision(Player Player)
 		{
             if (blow == 0)
-                blow = (int)player.velocity.X;
+                blow = (int)Player.velocity.X;
 		}
 
 		private void WindForce(int index)//wind
@@ -82,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             if (index > 2)
             {
-                int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+                int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
                 float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset);
                 float sin2 = (float)System.Math.Sin(Main.GameUpdateCount * 0.016f + offset);
@@ -101,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Kill(int timeLeft)
         {
-            VerletChain.toDraw.Remove(Chain);
+            VerletChainSystem.toDraw.Remove(Chain);
         }
     }
 }

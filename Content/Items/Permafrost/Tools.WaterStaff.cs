@@ -18,39 +18,38 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            item.width = 38;
-            item.height = 38;
-            item.useTime = 12;
-            item.useAnimation = 12;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.value = 10000;
-            item.rare = ItemRarityID.Orange;
-            item.autoReuse = true;
-            item.useTurn = true;
+            Item.width = 38;
+            Item.height = 38;
+            Item.useTime = 12;
+            Item.useAnimation = 12;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.value = 10000;
+            Item.rare = ItemRarityID.Orange;
+            Item.autoReuse = true;
+            Item.useTurn = true;
         }
 
-        public override bool AltFunctionUse(Player player) => true;
+        public override bool AltFunctionUse(Player Player) => true;
 
-		public override bool UseItem(Player player)
+		public override bool? UseItem(Player Player)
         {
             if (WorldGen.InWorld(Player.tileTargetX, Player.tileTargetY))
             {
-                Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-
-                if (player.altFunctionUse != 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 0)
+                if (Player.altFunctionUse != 2)
                 {
-                    tile.bTileHeader3 |= 0b00100000;
+                    AuroraWaterSystem.PlaceAuroraWater(Player.tileTargetX, Player.tileTargetY);
 
-                    Main.PlaySound(SoundID.Splash);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
+
                     for (int k = 0; k < 5; k++)
                         Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
                 }
 
-                if(player.altFunctionUse == 2 && (tile.bTileHeader3 & 0b11100000) >> 5 == 1)
+                if(Player.altFunctionUse == 2)
 				{
-                    tile.bTileHeader3 &= 0b00011111;
+                    AuroraWaterSystem.RemoveAuroraWater(Player.tileTargetX, Player.tileTargetY);
 
-                    Main.PlaySound(SoundID.Splash);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
                     for (int k = 0; k < 10; k++)
                         Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
                 }

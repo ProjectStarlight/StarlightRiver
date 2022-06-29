@@ -28,7 +28,16 @@ namespace StarlightRiver.Content.CustomHooks
 
 			On.Terraria.Main.CheckMonoliths += DrawCutawayTarget;
 
-			cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			Main.QueueMainThreadAction(() =>
+			{
+				cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
+			});
+		}
+
+		public override void Unload()
+		{
+			cutaways = null;
+			cutawayTarget = null;
 		}
 
 		private void RefreshCutawayTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
@@ -62,6 +71,10 @@ namespace StarlightRiver.Content.CustomHooks
 				var activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
 
 				var effect = Filters.Scene["Negative"].GetShader().Shader;
+
+				if (effect is null)
+					return;
+
 				effect.Parameters["sampleTexture"].SetValue(cutawayTarget);
 				effect.Parameters["uColor"].SetValue((Color.Black).ToVector3());
 				effect.Parameters["opacity"].SetValue(1 - activeCutaway.fadeTime);

@@ -2,11 +2,36 @@ using Microsoft.Xna.Framework;
 using System;
 using Terraria;
 using Terraria.ID;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Helpers
 {
 	public static class DustHelper
     {
+        public static void DrawDustImage(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, bool noGravity = true, float rot = 0.34f)
+        {
+            if (Main.netMode != NetmodeID.Server)
+            {
+                float rotation = Main.rand.NextFloat(0 - rot, rot);
+                Color[] data = new Color[tex.Width * tex.Height];
+                tex.GetData(data);
+                for (int i = 0; i < tex.Width; i += 2)
+                {
+                    for (int j = 0; j < tex.Height; j += 2)
+                    {
+                        Color alpha = data[j * tex.Width + i];
+                        if (alpha == new Color(255, 255, 255))
+                        {
+                            double dustX = (i - (tex.Width / 2));
+                            double dustY = (j - (tex.Height / 2));
+                            dustX *= size;
+                            dustY *= size;
+                            Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation)).noGravity = noGravity;
+                        }
+                    }
+                }
+            }
+        }
         public static void DrawStar(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1)
         {
             float rot;
@@ -48,7 +73,7 @@ namespace StarlightRiver.Helpers
 
         public static int TileDust(Tile tile, ref int dusttype)
         {
-            switch (tile.type)
+            switch (tile.TileType)
             {
                 case TileID.Stone: dusttype = DustID.Stone; break;
                 case TileID.Sand: case TileID.Sandstone: dusttype = 32; break;
@@ -58,18 +83,15 @@ namespace StarlightRiver.Helpers
                 case TileID.MushroomGrass: case TileID.MushroomBlock: dusttype = 96; break;
 
                 default:
-                    if (TileID.Sets.Crimson[tile.type])
+                    if (TileID.Sets.Crimson[tile.TileType])
                         dusttype = DustID.Blood;
-                    if (TileID.Sets.Corrupt[tile.type])
+                    if (TileID.Sets.Corrupt[tile.TileType])
                         dusttype = 14;
-                    if (TileID.Sets.Ices[tile.type] || TileID.Sets.IcesSnow[tile.type])
+                    if (TileID.Sets.Ices[tile.TileType] || TileID.Sets.IcesSnow[tile.TileType])
                         dusttype = DustID.Ice;
-                    if (TileID.Sets.Snow[tile.type] || tile.type == TileID.Cloud || tile.type == TileID.RainCloud)
+                    if (TileID.Sets.Snow[tile.TileType] || tile.TileType == TileID.Cloud || tile.TileType == TileID.RainCloud)
                         dusttype = 51;
 
-                    Terraria.ModLoader.ModTile modtile = Terraria.ModLoader.TileLoader.GetTile(tile.type);
-                    if (modtile != null)
-                        dusttype = modtile.dustType;
                     break;
             }
 

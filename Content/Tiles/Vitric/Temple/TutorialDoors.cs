@@ -13,17 +13,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public override int DummyType => ProjectileType<TutorialDoor1Dummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(1, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -33,40 +29,36 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public TutorialDoor1Dummy() : base(TileType<TutorialDoor1>(), 16, 16 * 7) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (player.GetModPlayer<StarlightPlayer>().inTutorial && player.Hitbox.Intersects(projectile.Hitbox))
-                player.velocity.X = 1;
+            if (Player.GetModPlayer<StarlightPlayer>().inTutorial && Player.Hitbox.Intersects(Projectile.Hitbox))
+                Player.velocity.X = 1;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            Player player = Main.LocalPlayer;
-            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) return;
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor1"), projectile.position - Main.screenPosition, lightColor);
+            Player Player = Main.LocalPlayer;
+            if (!Player.GetModPlayer<StarlightPlayer>().inTutorial) return;
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor1").Value, Projectile.position - Main.screenPosition, lightColor);
         }
     }
 
     class TutorialDoor1Item : QuickTileItem
     {
-        public TutorialDoor1Item() : base("TutorialDoor1", "Debug item", TileType<TutorialDoor1>(), 1, AssetDirectory.Debug, true) { }
+        public TutorialDoor1Item() : base("TutorialDoor1", "Debug Item", "TutorialDoor1", 1, AssetDirectory.Debug, true) { }
     }
 
     class TutorialDoor2 : DummyTile
     {
         public override int DummyType => ProjectileType<TutorialDoor2Dummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) => false;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(2, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(100, 200, 255));
         }
@@ -76,32 +68,32 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
     {
         public TutorialDoor2Dummy() : base(TileType<TutorialDoor2>(), 16 * 2, 16 * 7) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (player.GetModPlayer<StarlightPlayer>().inTutorial && player.Hitbox.Intersects(projectile.Hitbox))
-                if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (Player.GetModPlayer<StarlightPlayer>().inTutorial && Player.Hitbox.Intersects(Projectile.Hitbox))
+                if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
                 {
-                    player.GetModPlayer<StarlightPlayer>().inTutorial = false;
-                    Main.PlaySound(SoundID.Shatter, player.Center);
+                    Player.GetModPlayer<StarlightPlayer>().inTutorial = false;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);
 
                     for (int k = 0; k < 50; k++)
-                        Dust.NewDustPerfect(player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.GlassGravity>());
+                        Dust.NewDustPerfect(Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), DustType<Dusts.GlassGravity>());
                 }
-                else player.velocity.X = -1;
+                else Player.velocity.X = -1;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            Player player = Main.LocalPlayer;
-            if (!player.GetModPlayer<StarlightPlayer>().inTutorial) 
+            Player Player = Main.LocalPlayer;
+            if (!Player.GetModPlayer<StarlightPlayer>().inTutorial) 
                 return;
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2"), projectile.position - Main.screenPosition, lightColor);
-            spriteBatch.Draw(GetTexture(AssetDirectory.VitricTile + "TutorialDoor2Glow"), projectile.position - Main.screenPosition, Helper.IndicatorColor);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2").Value, Projectile.position - Main.screenPosition, lightColor);
+            Main.spriteBatch.Draw(Request<Texture2D>(AssetDirectory.VitricTile + "TutorialDoor2Glow").Value, Projectile.position - Main.screenPosition, Helper.IndicatorColor);
         }
     }
 
     class TutorialDoor2Item : QuickTileItem
     {
-        public TutorialDoor2Item() : base("TutorialDoor2", "Debug item", TileType<TutorialDoor2>(), 1, AssetDirectory.Debug, true) { }
+        public TutorialDoor2Item() : base("TutorialDoor2", "Debug Item", "TutorialDoor2", 1, AssetDirectory.Debug, true) { }
     }
 }

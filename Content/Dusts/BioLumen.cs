@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	internal class BioLumen : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return dust.color;

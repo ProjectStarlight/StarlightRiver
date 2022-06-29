@@ -1,7 +1,9 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -11,18 +13,22 @@ namespace StarlightRiver.Content.Items.Forest
 
         public OldWhetstone() : base("Old Whetstone", "+1 to all damage\n'Why in tarnation are you sharpening your wand?!'") { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
-            StarlightItem.ModifyWeaponDamageEvent += AddDamage;
-            return base.Autoload(ref name);
+            StarlightItem.ModifyWeaponDamageEvent += AddDamage;            
         }
 
-		private void AddDamage(Item item, Player player, ref float add, ref float mult, ref float flat)
+		public override void Unload()
 		{
-            if (Equipped(player))
-                flat += 1;
-		}
+            StarlightItem.ModifyWeaponDamageEvent -= AddDamage;
+        }
+
+		private void AddDamage(Item Item, Player Player, ref StatModifier statModifier)
+		{
+            if (Equipped(Player))
+                statModifier.Flat += 1;
+        }
 	}
 }

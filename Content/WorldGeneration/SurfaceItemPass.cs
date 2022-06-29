@@ -3,15 +3,16 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.ModLoader;
-using Terraria.World.Generation;
+using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModWorld
+	public partial class StarlightWorld : ModSystem
     {
-        private void SurfaceItemPass(GenerationProgress progress)
+        private void SurfaceItemPass(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Placing treasures";
             //Seaglass ring
@@ -31,9 +32,9 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if ((tile.collisionType == 1 && tile.type != TileID.Grass) || tile.liquid > 0)
+                    if ((tile.BlockType == BlockType.Solid && tile.TileType != TileID.Grass) || tile .LiquidAmount > 0)
                         break;
-                    else if (tile.active() && tile.type == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    else if (tile.HasTile && tile.TileType == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         Point16 dims = new Point16();
 
@@ -42,16 +43,30 @@ namespace StarlightRiver.Core
                         while (selection == lastForestVariant)
                             selection = WorldGen.genRand.Next(7);
 
-                        StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", mod, selection, ref dims);
+                        StructureHelper.Generator.GetMultistructureDimensions("Structures/ForestStructures", Mod, selection, ref dims);
 
                         int off = 3;
 
                         if (selection == 6) off = 12;
                         if (selection == 5) off = 4;
 
-                        if (!Framing.GetTileSafely(x + dims.X, y - 2).active() && Framing.GetTileSafely(x + dims.X, y + 1).active())
+                        if (!Framing.GetTileSafely(x + dims.X, y - 2).HasTile && Framing.GetTileSafely(x + dims.X, y + 1).HasTile)
                         {
-                            StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), mod, selection);
+                            Point16 pos = new Point16(x, y - dims.Y + off);
+
+                            bool valid = true;
+                            for (int i = pos.X; i < pos.X + dims.X; i++) {
+                                for (int j = pos.Y; j < pos.Y + dims.Y; j++)
+                                {
+                                    if (Main.tile[i, j].HasTile && (Main.tile[i, j].TileType == TileID.SnowBlock || Main.tile[i, j].TileType == TileID.Sand))
+                                        valid = false;
+                                }
+                            }
+
+                            if (!valid)
+                                continue;
+
+                            StructureHelper.Generator.GenerateMultistructureSpecific("Structures/ForestStructures", new Point16(x, y - dims.Y + off), Mod, selection);
                             lastForestVariant = selection;
                         }
 
@@ -69,14 +84,14 @@ namespace StarlightRiver.Core
                 {
                     var tile = Framing.GetTileSafely(x, y);
 
-                    if (tile.active() && tile.type != TileID.Sand || tile.liquid > 0)
+                    if (tile.HasTile && tile.TileType != TileID.Sand || tile .LiquidAmount > 0)
                         break;
-                    else if (tile.active() && tile.slope() == 0 && !tile.halfBrick() && tile.type == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+                    else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
                     {
                         var newTile = Framing.GetTileSafely(x, y - 1);
                         newTile.ClearEverything();
-                        newTile.active(true);
-                        newTile.type = (ushort)TileType<SeaglassRingTile>();
+                        newTile.HasTile = false;
+                        newTile.TileType = (ushort)TileType<SeaglassRingTile>();
 
                         return true;
                     }

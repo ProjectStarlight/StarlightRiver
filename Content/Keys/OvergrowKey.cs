@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -9,18 +10,16 @@ namespace StarlightRiver.Keys
 {
 	internal class OvergrowKey : Key
     {
-        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey")
-        {
-        }
+        public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey") { }
 
-        public override bool ShowCondition => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow;
+        public override bool ShowCondition => Main.LocalPlayer.InModBiome(GetInstance<OvergrowBiome>());
 
         public override void PreDraw(SpriteBatch spriteBatch)
         {
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
             spriteBatch.Draw(tex, Position + Vector2.One * 16 - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * 0.3f, StarlightWorld.rottime, tex.Frame().Size() / 2, 1 + (float)Math.Cos(StarlightWorld.rottime) * 0.25f, 0, 0);
             spriteBatch.Draw(tex, Position + Vector2.One * 16 - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * 0.5f, StarlightWorld.rottime, tex.Frame().Size() / 2, 0.7f + (float)Math.Cos(StarlightWorld.rottime + 0.5f) * 0.15f, 0, 0);
             spriteBatch.Draw(tex, Position + Vector2.One * 16 - Main.screenPosition, tex.Frame(), new Color(255, 255, 200) * 0.7f, StarlightWorld.rottime, tex.Frame().Size() / 2, 0.5f + (float)Math.Cos(StarlightWorld.rottime + 1) * 0.1f, 0, 0);

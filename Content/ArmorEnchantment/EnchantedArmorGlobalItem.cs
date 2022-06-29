@@ -14,24 +14,25 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
-
-        public override bool NeedsSaving(Item item) => Enchantment != null;
-
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void PostDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            Enchantment?.DrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            Enchantment?.DrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
         }
 
-        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            if (Enchantment is null) return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-            return Enchantment.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+            if (Enchantment is null) return base.PreDrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
+            return Enchantment.PreDrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
         }
 
-        public override string IsArmorSet(Item head, Item body, Item legs)
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+            return item.TryGetGlobalItem<EnchantedArmorGlobalItem>(out var gi) ? gi : this;
+		}
+
+		public override string IsArmorSet(Item head, Item body, Item legs)
         {
-            if (GetEnchant(head) != null && //so unenchanted items are unaffected
+            if (GetEnchant(head) != null && //so unenchanted Items are unaffected
                 GetEnchant(body) != null &&
                 GetEnchant(legs) != null &&
                 GetEnchant(head).Equals(GetEnchant(body)) && 
@@ -42,27 +43,27 @@ namespace StarlightRiver.Content.ArmorEnchantment
             return "";
         }
 
-        public override void UpdateArmorSet(Player player, string set)
+        public override void UpdateArmorSet(Player Player, string set)
         {
-            var Enchantment = player.armor[0].GetGlobalItem<EnchantedArmorGlobalItem>().Enchantment;
+            var Enchantment = Player.armor[0].GetGlobalItem<EnchantedArmorGlobalItem>().Enchantment;
 
             if(set == "CurrentEnchant" && Enchantment != null)
             {
-                Enchantment.UpdateSet(player);
+                Enchantment.UpdateSet(Player);
             }
         }
 
-        public override TagCompound Save(Item item)
+        public override void SaveData(Item Item, TagCompound tag)
         {
-            return new TagCompound()
+            if (Enchantment != null)
             {
-                ["EnchantGuid"] = Enchantment.Guid.ToString(),
-                ["EnchantType"] = Enchantment.GetType().FullName,
-                ["Enchantment"] = Enchantment.Save()
-            };
+                tag["EnchantGuid"] = Enchantment.Guid.ToString();
+                tag["EnchantType"] = Enchantment.GetType().FullName;
+                tag["Enchantment"] = Enchantment.SaveData();
+            }
         }
 
-        public override void Load(Item item, TagCompound tag)
+        public override void LoadData(Item Item, TagCompound tag)
         {
             var guid = Guid.ParseExact(tag.GetString("EnchantGuid"), "D");
             var type = tag.GetString("EnchantType");
@@ -77,17 +78,17 @@ namespace StarlightRiver.Content.ArmorEnchantment
                         new object[] { guid }
                     );
 
-                Enchantment.Load(tag.GetCompound("Enchantment"));
+                Enchantment.LoadData(tag.GetCompound("Enchantment"));
             }
         }
 
-        public static ArmorEnchantment GetEnchant(Item item)
+        public static ArmorEnchantment GetEnchant(Item Item)
         {
-            if (item.IsAir) 
+            if (Item.IsAir) 
                 return null;
 
 
-            var globalItem = item.GetGlobalItem<EnchantedArmorGlobalItem>();
+            var globalItem = Item.GetGlobalItem<EnchantedArmorGlobalItem>();
             
             if (globalItem is null)
                 return null;

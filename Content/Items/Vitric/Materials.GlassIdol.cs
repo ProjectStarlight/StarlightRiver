@@ -15,9 +15,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.rare = ItemRarityID.Orange;
-            item.width = 32;
-            item.height = 32;
+            Item.rare = ItemRarityID.Orange;
+            Item.width = 32;
+            Item.height = 32;
         }
     }
 
@@ -32,9 +32,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.rare = ItemRarityID.Orange;
-            item.width = 32;
-            item.height = 32;
+            Item.rare = ItemRarityID.Orange;
+            Item.width = 32;
+            Item.height = 32;
         }
     }
 }

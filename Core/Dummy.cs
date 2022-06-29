@@ -17,8 +17,8 @@ namespace StarlightRiver.Core
 
         public Tile Parent => Main.tile[ParentX, ParentY];
 
-        public virtual int ParentX => (int)projectile.Center.X / 16;
-        public virtual int ParentY => (int)projectile.Center.Y / 16;
+        public virtual int ParentX => (int)Projectile.Center.X / 16;
+        public virtual int ParentY => (int)Projectile.Center.Y / 16;
 
         public Dummy(int validType, int width, int height)
         {
@@ -27,15 +27,15 @@ namespace StarlightRiver.Core
             Height = height;
         }
 
-        public virtual bool ValidTile(Tile tile) => tile is null || tile.type == ValidType; //the tile is null only where tiles are unloaded in multiplayer. We don't want to kill off dummies on unloaded tiles until tile is known because projectile is recieved MUCH farther than the tiles.
+        public virtual bool ValidTile(Tile tile) => (tile.TileType == ValidType && tile.HasTile); //the tile is null only where tiles are unloaded in multiPlayer. We don't want to kill off dummies on unloaded tiles until tile is known because Projectile is recieved MUCH farther than the tiles.
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
 
         public override string Texture => AssetDirectory.Invisible;
 
         public virtual void Update() { }
 
-        public virtual void Collision(Player player) { }
+        public virtual void Collision(Player Player) { }
 
         public virtual void SafeSetDefaults() { }
 
@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
             Height = reader.ReadInt32();
 
             Point16 key = new Point16(ParentX, ParentY);
-            DummyTile.dummies[key] = projectile.whoAmI;
+            DummyTile.dummies[key] = Projectile;
 
             SafeReceiveExtraAI(reader);
         }
@@ -73,27 +73,27 @@ namespace StarlightRiver.Core
         {
             SafeSetDefaults();
 
-            projectile.width = Width;
-            projectile.height = Height;
-            projectile.hostile = true;
-            projectile.damage = 1;
-            projectile.timeLeft = 2;
-            projectile.netImportant = true;
+            Projectile.width = Width;
+            Projectile.height = Height;
+            Projectile.hostile = true;
+            Projectile.damage = 1;
+            Projectile.timeLeft = 2;
+            Projectile.netImportant = true;
         }
 
         public sealed override void AI()
         {
             if (ValidTile(Parent))
-                projectile.timeLeft = 2;
+                Projectile.timeLeft = 2;
                 
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
-                //in single player we can use the CanHitPlayer, but in MP that is only run by the server so we need to check players manually for clients
+                //in single Player we can use the CanHitPlayer, but in MP that is only run by the server so we need to check Players manually for clients
                 for (int i = 0; i < Main.maxPlayers; i++)
                 {
-                    Player player = Main.player[i];
-                    if (player.Hitbox.Intersects(projectile.Hitbox))
-                        Collision(player);
+                    Player Player = Main.player[i];
+                    if (Player.Hitbox.Intersects(Projectile.Hitbox))
+                        Collision(Player);
                 }
             }
 

@@ -10,14 +10,14 @@ namespace StarlightRiver.Prefixes
 
         protected CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
 
-        public virtual void Update(Item item, Player player) { }
+        public virtual void Update(Item Item, Player Player) { }
 
-        public virtual void SafeApply(Item item) { }
+        public virtual void SafeApply(Item Item) { }
 
-        public override void Apply(Item item)
+        public override void Apply(Item Item)
         {
-            item.GetGlobalItem<StarlightItem>().prefixLine = _tooltip;
-            SafeApply(item);
+            Item.GetGlobalItem<StarlightItem>().prefixLine = _tooltip;
+            SafeApply(Item);
         }
     }
 }

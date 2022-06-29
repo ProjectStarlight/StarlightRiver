@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Corrupt : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -42,11 +38,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class Corrupt2 : Corrupt
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
             return Color.White * dust.scale;

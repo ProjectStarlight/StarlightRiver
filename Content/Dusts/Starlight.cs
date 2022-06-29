@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Starlight : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {
@@ -42,11 +38,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class StarlightSmoke : Starlight
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Starlight";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Starlight";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {

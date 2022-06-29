@@ -11,24 +11,28 @@ namespace StarlightRiver.Content.Items.Forest
 
         public DustyAmulet() : base("Dusty Amulet", "+20 maximum life\n+20 maximum mana\n0.8x critical strike chance\n'An old heirloom with an inscription lost to time'") { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
-            StarlightItem.GetWeaponCritEvent += ReduceCrit;
-            return base.Autoload(ref name);
+            StarlightItem.GetWeaponCritEvent += ReduceCrit;           
         }
 
-		private void ReduceCrit(Item item, Player player, ref int crit)
+		public override void Unload()
 		{
-            if(Equipped(player))
+            StarlightItem.GetWeaponCritEvent -= ReduceCrit;
+        }
+
+		private void ReduceCrit(Item Item, Player Player, ref float crit)
+		{
+            if(Equipped(Player))
                 crit = (int)(crit * 0.8f);
 		}
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.statLifeMax2 += 20;
-            player.statManaMax2 += 20;
+            Player.statLifeMax2 += 20;
+            Player.statManaMax2 += 20;
         }
     }
 }

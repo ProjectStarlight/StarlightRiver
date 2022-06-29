@@ -23,50 +23,49 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			StarlightPlayer.ResetEffectsEvent += ResetInventoryGlow;
-			return true;
 		}
 
-		private void ResetInventoryGlow(StarlightPlayer player)
+		private void ResetInventoryGlow(StarlightPlayer Player)
 		{
 			glowStrength = 0;
 		}
 
 		public override void SetDefaults()
 		{
-			npc.width = 1;
-			npc.height = 1;
-			npc.lifeMax = 100;
-			npc.immortal = true;
-			npc.dontTakeDamage = true;
-			npc.friendly = true;
-			npc.aiStyle = -1;
-			npc.noGravity = true;
+			NPC.width = 1;
+			NPC.height = 1;
+			NPC.lifeMax = 100;
+			NPC.immortal = true;
+			NPC.dontTakeDamage = true;
+			NPC.friendly = true;
+			NPC.aiStyle = -1;
+			NPC.noGravity = true;
 		}
 
 		const int dustRange = 250;
-		const int itemRange = 200;
+		const int ItemRange = 200;
 
 		public override void AI()
 		{
-			if (npc.wet)
-				npc.position.Y -= 1;
+			if (NPC.wet)
+				NPC.position.Y -= 1;
 
 			if (Main.dayTime)
-				npc.active = false;
+				NPC.active = false;
 
-			var dist = Vector2.Distance(Main.LocalPlayer.Center, npc.Center);
+			var dist = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center);
 
 			if (dist < 500)
 				glowStrength = 1 - dist / 500f;
 
-            Vector2 pos = npc.Center + Vector2.UnitX * Main.rand.NextFloat(-dustRange, dustRange) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
+            Vector2 pos = NPC.Center + Vector2.UnitX * Main.rand.NextFloat(-dustRange, dustRange) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
             Tile	tile = Framing.GetTileSafely(pos);
             Tile	tileDown = Framing.GetTileSafely(pos + Vector2.UnitY * 16);
 
-			if (((tile.liquid > 0 && tile.liquidType() == 0) || (tileDown.liquid > 0 && tileDown.liquidType() == 0)) && Main.rand.Next(10) > 3)//surface lights
+			if (((tile .LiquidAmount > 0 && tile.LiquidType == LiquidID.Water) || (tileDown .LiquidAmount > 0 && tileDown.LiquidType == LiquidID.Water)) && Main.rand.Next(10) > 3)//surface lights
 			{
 				var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(Main.rand.Next(30) == 0 ? 200 : 0, Main.rand.Next(150), 255));
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.6f, 0.8f));
@@ -81,10 +80,10 @@ namespace StarlightRiver.Content.NPCs.Actors
 				}
 			}
 
-            Vector2 pos2 = npc.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-dustRange, dustRange);
+            Vector2 pos2 = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-dustRange, dustRange);
             Tile	tile2 = Framing.GetTileSafely(pos2);
 
-			if (tile2.liquid > 0 && tile2.liquidType() == 0 && Main.rand.Next(2) == 0)//under water lights
+			if (tile2 .LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.Next(2) == 0)//under water lights
 			{
 				var d = Dust.NewDustPerfect(pos2, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));
@@ -94,15 +93,15 @@ namespace StarlightRiver.Content.NPCs.Actors
 			{
 				for (int k = 0; k < Main.maxItems; k++)
 				{
-					var item = Main.item[k];
+					var Item = Main.item[k];
 
-					if (Helpers.Helper.CheckCircularCollision(npc.Center, itemRange, item.Hitbox) && item.GetGlobalItem<TransformableItem>().transformType != 0 && item.wet)
-						targetItem = item;
+					if (Helpers.Helper.CheckCircularCollision(NPC.Center, ItemRange, Item.Hitbox) && Item.GetGlobalItem<TransformableItem>().transformType != 0 && Item.wet)
+						targetItem = Item;
 				}
 			}
 			else
 			{
-				if (targetItem.isBeingGrabbed)
+				if (targetItem.beingGrabbed)
 				{
 					targetItem.GetGlobalItem<TransformableItem>().transformTime = 0;
 					targetItem = null;
@@ -126,13 +125,13 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 					for(int k = 0; k < Main.maxPlayers; k++)
 					{
-						var player = Main.player[k];
+						var Player = Main.player[k];
 
-						if (player.active && Vector2.Distance(player.Center, targetItem.Center) < 500)
-							Helpers.Helper.UnlockEntry<Codex.Entries.StarlightWaterEntry>(player);
+						if (Player.active && Vector2.Distance(Player.Center, targetItem.Center) < 500)
+							Helpers.Helper.UnlockCodexEntry<Codex.Entries.StarlightWaterEntry>(Player);
 					}
 
-					npc.active = false;
+					NPC.active = false;
 				}
 			}
 		}
@@ -145,103 +144,107 @@ namespace StarlightRiver.Content.NPCs.Actors
 		public int windDown;
 
 		public override bool InstancePerEntity => true;
-		public override bool CloneNewInstances => true;
 
-		public override void SetDefaults(Item item) //TOOD: Probably move this later or make it modular? pee pee poo poo
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+			return item.TryGetGlobalItem<TransformableItem>(out var gi) ? gi : base.Clone(item, itemClone);
+		}
+
+		public override void SetDefaults(Item Item) //TOOD: Probably move this later or make it modular? pee pee poo poo
 		{ 
-			if (item.type == ItemID.WoodHelmet) transformType = ModContent.ItemType<StarwoodHat>();
-			if (item.type == ItemID.WoodBreastplate) transformType = ModContent.ItemType<StarwoodChest>();
-			if (item.type == ItemID.WoodGreaves) transformType = ModContent.ItemType<StarwoodBoots>();
+			if (Item.type == ItemID.WoodHelmet) transformType = ModContent.ItemType<StarwoodHat>();
+			if (Item.type == ItemID.WoodBreastplate) transformType = ModContent.ItemType<StarwoodChest>();
+			if (Item.type == ItemID.WoodGreaves) transformType = ModContent.ItemType<StarwoodBoots>();
 
-			if (item.type == ItemID.WoodenBoomerang) transformType = ModContent.ItemType<StarwoodBoomerang>();
-			if (item.type == ItemID.WandofSparking) transformType = ModContent.ItemType<StarwoodStaff>();
+			if (Item.type == ItemID.WoodenBoomerang) transformType = ModContent.ItemType<StarwoodBoomerang>();
+			if (Item.type == ItemID.WandofSparking) transformType = ModContent.ItemType<StarwoodStaff>();
 
-            if (item.vanity)
+            if (Item.vanity)
             {
-				if (item.headSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodHat>()) transformType = ModContent.ItemType<AncientStarwoodHat>();
-				else if (item.bodySlot != -1 && item.type != ModContent.ItemType<AncientStarwoodChest>()) transformType = ModContent.ItemType<AncientStarwoodChest>();
-				else if (item.legSlot != -1 && item.type != ModContent.ItemType<AncientStarwoodBoots>()) transformType = ModContent.ItemType<AncientStarwoodBoots>();
+				if (Item.headSlot != -1 && Item.type != ModContent.ItemType<AncientStarwoodHat>()) transformType = ModContent.ItemType<AncientStarwoodHat>();
+				else if (Item.bodySlot != -1 && Item.type != ModContent.ItemType<AncientStarwoodChest>()) transformType = ModContent.ItemType<AncientStarwoodChest>();
+				else if (Item.legSlot != -1 && Item.type != ModContent.ItemType<AncientStarwoodBoots>()) transformType = ModContent.ItemType<AncientStarwoodBoots>();
 			}
 		}
 
-		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if(transformType != 0)
 			{
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
-				var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 				spriteBatch.Draw(tex, position + frame.Size() / 2, null, new Color(130, 200, 255) * (StarlightWaterActor.glowStrength + (float)Math.Sin(StarlightWorld.rottime) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 			}
 
-			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+			return base.PreDrawInInventory(Item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
 
-		public override void PostUpdate(Item item)
+		public override void PostUpdate(Item Item)
 		{
 			if (transformTime > 0)
 			{
-				item.velocity *= 0.8f;
+				Item.velocity *= 0.8f;
 
-				if(item.wet)
-					item.velocity.Y -= 0.15f;
+				if(Item.wet)
+					Item.velocity.Y -= 0.15f;
 			}
 
 			if(windDown > 0)
 			{
-				var d = Dust.NewDustPerfect(item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * windDown / 240f, ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
+				var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedByRandom(6.28f) * 16 * windDown / 240f, ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-2, -4), 0, new Color(0, Main.rand.Next(255), 255), 1);
 				d.customData = Main.rand.NextFloat(0.2f, 0.3f) * windDown / 240f;
 
-				Lighting.AddLight(item.Center, new Vector3(10, 13, 25) * 0.08f * windDown / 240f);
+				Lighting.AddLight(Item.Center, new Vector3(10, 13, 25) * 0.08f * windDown / 240f);
 
-				if (item.velocity.Y > 0)
-					item.velocity.Y *= 0.7f;
+				if (Item.velocity.Y > 0)
+					Item.velocity.Y *= 0.7f;
 
 				windDown--;
 			}
 
 			//Might move this later? idk. Kind of 2 things in 1 class but eh
-			if(item.type == ItemID.FallenStar && item.wet)
+			if(Item.type == ItemID.FallenStar && Item.wet)
 			{
-				item.active = false;
-				NPC.NewNPC((int)item.Center.X, (int)item.Center.Y + 16, ModContent.NPCType<StarlightWaterActor>());
+				Item.active = false;
+				NPC.NewNPC(null, (int)Item.Center.X, (int)Item.Center.Y + 16, ModContent.NPCType<StarlightWaterActor>());
 
 				for(int k = 0; k < 40; k++)
 				{
 					var rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
+					Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(5));
 				}
 			}
 		}
 
-		public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		public override bool PreDrawInWorld(Item Item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 			if(transformTime > 0)
 			{
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-				var tex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall");
+				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 
 				var alphaMaster = (float)Math.Sin(transformTime / 300f * 3.14f);
 
 				var alpha = (1.0f + (float)Math.Sin(transformTime / 75f * 3.14f) * 0.5f) * alphaMaster;
-				spriteBatch.Draw(tex, item.Center + Vector2.UnitX * 20 - Main.screenPosition, null, new Color(100, 100 + (int)(50 * alpha), 255) * alpha, 0, new Vector2(tex.Width / 2, tex.Height - 15), 4.5f * alphaMaster, 0, 0);
+				spriteBatch.Draw(tex, Item.Center + Vector2.UnitX * 20 - Main.screenPosition, null, new Color(100, 100 + (int)(50 * alpha), 255) * alpha, 0, new Vector2(tex.Width / 2, tex.Height - 15), 4.5f * alphaMaster, 0, 0);
 
 				var alpha2 = (1.0f + (float)Math.Sin(transformTime / 150f * 3.14f) * 0.5f) * alphaMaster;
-				spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, new Color(100, 70 + (int)(50 * alpha2), 255) * alpha2, 0, new Vector2(tex.Width / 2, tex.Height - 15), 5 * alphaMaster, 0, 0);
+				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 70 + (int)(50 * alpha2), 255) * alpha2, 0, new Vector2(tex.Width / 2, tex.Height - 15), 5 * alphaMaster, 0, 0);
 
 				var alpha3 = (1.0f + (float)Math.Sin(transformTime / 37.5f * 3.14f) * 0.5f) * alphaMaster;
-				spriteBatch.Draw(tex, item.Center + Vector2.UnitX * -20 - Main.screenPosition, null, new Color(100, 30 + (int)(50 * alpha3), 255) * alpha3, 0, new Vector2(tex.Width / 2, tex.Height - 15), 3f * alphaMaster, 0, 0);
+				spriteBatch.Draw(tex, Item.Center + Vector2.UnitX * -20 - Main.screenPosition, null, new Color(100, 30 + (int)(50 * alpha3), 255) * alpha3, 0, new Vector2(tex.Width / 2, tex.Height - 15), 3f * alphaMaster, 0, 0);
 
 				var rot = Main.rand.NextFloat(6.28f);
-				Dust.NewDustPerfect(item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * -1.2f);
+				Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, ModContent.DustType<Dusts.BlueStamina>(), Vector2.One.RotatedBy(rot) * -1.2f);
 
-				var d = Dust.NewDustPerfect(item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
+				var d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * (16 + 8 * alphaMaster), ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-9, -6), 0, new Color(0, Main.rand.Next(255), 255), 1);
 				d.customData = Main.rand.NextFloat(0.2f, 0.5f) * alphaMaster;
 
 				spriteBatch.End();
@@ -253,14 +256,14 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.End();
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-				var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
-				spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (windDown / 240f), 0, tex.Size() / 2, (windDown / 240f) * 2, 0, 0);
+				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (windDown / 240f), 0, tex.Size() / 2, (windDown / 240f) * 2, 0, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 
-			return base.PreDrawInWorld(item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
+			return base.PreDrawInWorld(Item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
 		}
 	}
 }

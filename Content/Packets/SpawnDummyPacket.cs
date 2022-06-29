@@ -31,7 +31,7 @@ namespace StarlightRiver.Packets
             {
                 if (Core.DummyTile.DummyExists(x, y, type))
                 {
-                    DummyTile.GetDummy(x, y, type).netUpdate = true; //this case meant that a player went up to a tile dummy that did not exist for them, but did on server and we want to make sure they receive it
+                    DummyTile.GetDummy(x, y, type).netUpdate = true; //this case meant that a Player went up to a tile dummy that did not exist for them, but did on server and we want to make sure they receive it
                     return;
                 }
 
@@ -40,11 +40,11 @@ namespace StarlightRiver.Packets
 
                 var spawnPos = new Vector2(x, y) * 16 + p.Size / 2;
 
-                int n = Projectile.NewProjectile(spawnPos, Vector2.Zero, type, 0, 0);
+                int n = Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero, type, 0, 0);
                 NetMessage.SendData(Terraria.ID.MessageID.SyncProjectile, -1, -1, null, n);
 
                 Point16 key = new Point16(x, y);
-                DummyTile.dummies[key] = n;
+                DummyTile.dummies[key] = Main.projectile[n];
             }
         }
     }

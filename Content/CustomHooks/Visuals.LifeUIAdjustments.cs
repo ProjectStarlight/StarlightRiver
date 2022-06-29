@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.Main.DrawInterface_Resources_Life += ShiftText;
+			IL.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText; 
 		}
 
 		private void ShiftText(ILContext il)
@@ -31,13 +31,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private int stringConcatDelegate(int arg)
 		{
-			Player player = Main.LocalPlayer;
-			var sp = player.GetModPlayer<ShieldPlayer>();
+			Player Player = Main.LocalPlayer;
+			var sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if (sp.Shield <= 0 && sp.MaxShield <= 0)
+			if (sp.Barrier <= 0 && sp.MaxBarrier <= 0)
 				return arg;
 
-			return arg - (int)(Main.fontMouseText.MeasureString($"  {sp.Shield}/{sp.MaxShield}").X / 2) - 6;
+			return arg - (int)(Terraria.GameContent.FontAssets.MouseText.Value.MeasureString($"  {sp.Barrier}/{sp.MaxBarrier}").X / 2) - 6;
 		}
 	}
 }

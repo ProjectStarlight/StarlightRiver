@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void OnInitialize()
         {
-            AddElement(button, Main.screenWidth / 2 - Main.chatBackTexture.Width / 2 - 104, 100, 86, 28, this);
+            AddElement(button, Main.screenWidth / 2 - TextureAssets.ChatBack.Value.Width / 2 - 104, 100, 86, 28, this);
         }
 
         internal void AddElement(UIElement element, int x, int y, int width, int height, UIElement appendTo)
@@ -60,10 +61,11 @@ namespace StarlightRiver.Content.GUI
 
             bool locked = displayString == "Locked";
 
-            Texture2D tex = GetTexture("StarlightRiver/Assets/GUI/NPCButton");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButton").Value;
             spriteBatch.Draw(tex, GetDimensions().ToRectangle(), tex.Frame(), Color.White * (locked ? 0.4f : 0.8f));
 
-            float x = Main.fontItemStack.MeasureString(displayString).X;
+            float x = Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(displayString).X;
+            
             float scale = x < 70 ? 1 : 70 / x;
             Utils.DrawBorderString(spriteBatch, displayString, GetDimensions().ToRectangle().Center() + new Vector2(0, 3), Color.White * (locked ? 0.4f : 1), scale, 0.5f, 0.5f);
         }

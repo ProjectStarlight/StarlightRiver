@@ -13,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
-    public class VitricBackdropLeft : ModNPC, IMoonlordLayerDrawable
+    public class VitricBackdropLeft : ModNPC
     {
         public const int Scrolltime = 1000;
         public const int Risetime = 360;
@@ -21,10 +21,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         protected static int platformCount = 8;
 
-        protected ref float Timer => ref npc.ai[0];
-        protected ref float State => ref npc.ai[1];
-        protected ref float ScrollTimer => ref npc.ai[2];
-        protected ref float ScrollDelay => ref npc.ai[3];
+        protected ref float Timer => ref NPC.ai[0];
+        protected ref float State => ref NPC.ai[1];
+        protected ref float ScrollTimer => ref NPC.ai[2];
+        protected ref float ScrollDelay => ref NPC.ai[3];
 
         public int shake = 0;
 
@@ -34,25 +34,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override bool CheckActive() => false;
 
-        public override bool? CanBeHitByProjectile(Projectile projectile) => false;
+        public override bool? CanBeHitByProjectile(Projectile Projectile) => false;
 
-        public override bool? CanBeHitByItem(Player player, Item item) => false;
+        public override bool? CanBeHitByItem(Player Player, Item Item) => false;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("");
 
         public override void SetDefaults()
         {
-            npc.height = 1;
-            npc.width = 560;
-            npc.aiStyle = -1;
-            npc.lifeMax = 10;
-            npc.knockBackResist = 0f;
-            npc.lavaImmune = true;
-            npc.noGravity = true;
-            npc.noTileCollide = true;
-            npc.dontTakeDamage = true;
-            npc.dontCountMe = true;
-            npc.netAlways = true;
+            NPC.height = 1;
+            NPC.width = 560;
+            NPC.aiStyle = -1;
+            NPC.lifeMax = 10;
+            NPC.knockBackResist = 0f;
+            NPC.lavaImmune = true;
+            NPC.noGravity = true;
+            NPC.noTileCollide = true;
+            NPC.dontTakeDamage = true;
+            NPC.dontCountMe = true;
+            NPC.netAlways = true;
+            NPC.hide = true;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -104,28 +105,28 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 if (Timer == Risetime - 1) //hitting the top
                 {
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 18;
-                    Helper.PlayPitched("ArenaHit", 0.2f, 0, npc.Center);
+                    Core.Systems.CameraSystem.Shake += 18;
+                    Helper.PlayPitched("ArenaHit", 0.2f, 0, NPC.Center);
                 }
 
                 if (Timer > Risetime)
                     State = 2;
 
                 if (Timer % 10 == 0)
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += Timer < 100 ? 3 : 2;
+                    Core.Systems.CameraSystem.Shake += Timer < 100 ? 3 : 2;
 
                 for (int k = 0; k < 18; k++)
-                    Dust.NewDust(npc.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
+                    Dust.NewDust(NPC.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
             }
 
             if (State == 2)
             {
                 Timer = Risetime;
 
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
                 {
-                    npc.ai[0] = 0;
-                    npc.ai[1] = 0;
+                    NPC.ai[0] = 0;
+                    NPC.ai[1] = 0;
                 }
                 ResyncPlatforms();
             }
@@ -134,9 +135,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 Timer++;
 
-                foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
                 {
-                    npc.ai[0] = 1;
+                    NPC.ai[0] = 1;
                 }
 
                 if (Timer <= Risetime + 120) //when starting moving
@@ -146,8 +147,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 {
                     for (int k = 0; k < 200; k++)
                     {
-                        Dust.NewDust(npc.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
-                        Dust.NewDust(npc.position + new Vector2(0, -55 * 16), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
+                        Dust.NewDust(NPC.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
+                        Dust.NewDust(NPC.position + new Vector2(0, -55 * 16), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
                     }
                 }
 
@@ -173,9 +174,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                     ScrollTimer++; //stops once we're reset.
                 else
                 {
-                    foreach (NPC npc in Main.npc.Where(n => n.modNPC is VitricBossPlatformUp))
+                    foreach (NPC NPC in Main.npc.Where(n => n.ModNPC is VitricBossPlatformUp))
                     {
-                        npc.ai[0] = 0;
+                        NPC.ai[0] = 0;
                     }
                     ResyncPlatforms();
 
@@ -185,33 +186,38 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             }
 
-            if (prevState != State && Main.netMode == NetmodeID.Server)
+            if ((prevState != State || (State == 3 && Timer % 60 == 0)) && Main.netMode == NetmodeID.Server)
             {
-                npc.netUpdate = true;
+                NPC.netUpdate = true;
                 prevState = State;
             }
 
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
-
-        public void DrawMoonlordLayer(SpriteBatch spriteBatch)
-        {
-            if (!npc.active)
-                return;
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+            if (!NPC.active)
+                return false;
 
             if (State == 3 || State == 4)
                 ScrollDraw(spriteBatch);
             else  //animation for rising out of the sand
                 MainDraw(spriteBatch);
-        }
+
+            return false;
+		}
+
+		public override void DrawBehind(int index)
+		{
+            Main.instance.DrawCacheNPCsMoonMoon.Add(index);
+		}
 
         public virtual void MainDraw(SpriteBatch sb)
         {
             string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = GetTexture(path);
-            Texture2D tex2 = GetTexture(path + "Top");
-            Texture2D tex3 = GetTexture(path + "Side");
+            Texture2D tex = Request<Texture2D>(path).Value;
+            Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
+            Texture2D tex3 = Request<Texture2D>(path + "Side").Value;
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -219,8 +225,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             const int yOffset = 3; // Fit perfectly in the gap
 
-            int xPos = (int)(npc.position.X - Main.screenPosition.X);
-            int yPos = (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
+            int xPos = (int)(NPC.position.X - Main.screenPosition.X);
+            int yPos = (int)(NPC.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
 
             Rectangle target = new Rectangle(xPos, yPos, tex.Width, targetHeight);
             Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
@@ -236,21 +242,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public virtual void ScrollDraw(SpriteBatch sb) //im lazy
         {
             string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = GetTexture(path);
+            Texture2D tex = Request<Texture2D>(path).Value;
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             //Color color = new Color(180, 225, 255);
             Vector2 off = Vector2.One.RotatedByRandom(6.28f) * shake;
 
-            Rectangle target1 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - height1 - Main.screenPosition.Y + off.Y), tex.Width, height1);
-            Rectangle target2 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - height1 - height2 - Main.screenPosition.Y + off.Y), tex.Width, height2);
+            Rectangle target1 = new Rectangle((int)(NPC.position.X - Main.screenPosition.X + off.X), (int)(NPC.position.Y - height1 - Main.screenPosition.Y + off.Y), tex.Width, height1);
+            Rectangle target2 = new Rectangle((int)(NPC.position.X - Main.screenPosition.X + off.X), (int)(NPC.position.Y - height1 - height2 - Main.screenPosition.Y + off.Y), tex.Width, height2);
             Rectangle source1 = new Rectangle(0, 0, tex.Width, height1);
             Rectangle source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(path + "Glow");
+            Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
         }
@@ -291,17 +297,17 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             if (rising && Timer == Risetime - (int)(y / 880f * Risetime))
             {
-                var i = NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - 2, type, 0, 0, Risetime - Timer); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
+                var i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.position.X + x, (int)NPC.position.Y - 2, type, 0, 0, Risetime - Timer); //When rising out of the ground, check for the appropriate time to spawn the platform based on y coord
                 if (Main.npc[i].type == type)
-                    (Main.npc[i].modNPC as VitricBossPlatformUp).parent = this;
+                    (Main.npc[i].ModNPC as VitricBossPlatformUp).parent = this;
 
                 platforms.Add(Main.npc[i]);
             }
             else if (!rising)
             {
-                var i = NPC.NewNPC((int)npc.position.X + x, (int)npc.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
+                var i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.position.X + x, (int)NPC.position.Y - y, type, 0, 2, Risetime); //otherwise spawn it instantly AT the y coord
                 if (Main.npc[i].type == type)
-                    (Main.npc[i].modNPC as VitricBossPlatformUp).parent = this;
+                    (Main.npc[i].ModNPC as VitricBossPlatformUp).parent = this;
 
                 platforms.Add(Main.npc[i]);
             }
@@ -309,7 +315,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SyncPlatform(NPC platform, int y, bool rising)
         {
-            platform.position.Y = (int)npc.position.Y - y - platform.height;
+            platform.position.Y = (int)NPC.position.Y - y - platform.height;
         }
     }
 
@@ -318,8 +324,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         /*public override void MainDraw(SpriteBatch sb)
         {
             string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = GetTexture(path);
-            Texture2D tex2 = GetTexture(path + "Top");
+            Texture2D tex = Request<Texture2D>(path).Value;
+            Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -328,8 +334,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             const int yOffset = 3; // Fit perfectly in the gap
 
             Rectangle target = new Rectangle(
-                (int)(npc.position.X - Main.screenPosition.X),
-                (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
+                (int)(NPC.position.X - Main.screenPosition.X),
+                (int)(NPC.position.Y - targetHeight - Main.screenPosition.Y) - yOffset,
                 tex.Width,
                 targetHeight);
 
@@ -342,9 +348,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void MainDraw(SpriteBatch sb)
         {
             string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = GetTexture(path);
-            Texture2D tex2 = GetTexture(path + "Top");
-            Texture2D tex3 = GetTexture(path + "Side");
+            Texture2D tex = Request<Texture2D>(path).Value;
+            Texture2D tex2 = Request<Texture2D>(path + "Top").Value;
+            Texture2D tex3 = Request<Texture2D>(path + "Side").Value;
             int targetHeight = (int)(Timer / Risetime * tex.Height);
 
             if (State >= 3) //ignore timer after rising is done
@@ -352,8 +358,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             const int yOffset = 3; // Fit perfectly in the gap
 
-            int xPos = (int)(npc.position.X - Main.screenPosition.X);
-            int yPos = (int)(npc.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
+            int xPos = (int)(NPC.position.X - Main.screenPosition.X);
+            int yPos = (int)(NPC.position.Y - targetHeight - Main.screenPosition.Y) - yOffset;
 
             Rectangle target = new Rectangle(xPos, yPos, tex.Width, targetHeight);
             Rectangle source = new Rectangle(0, 0, tex.Width, targetHeight);
@@ -368,7 +374,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
             {
-                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Texture2D egg = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
                 Helpers.LightingBufferRenderer.DrawWithLighting(target, egg, source);
             }
         }
@@ -376,27 +382,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public override void ScrollDraw(SpriteBatch sb)
         {
             string path = AssetDirectory.VitricBoss + Name;
-            Texture2D tex = GetTexture(path);
+            Texture2D tex = Request<Texture2D>(path).Value;
             int height1 = (int)(ScrollTimer / Scrolltime * tex.Height);
             int height2 = tex.Height - height1;
             //Color color = new Color(180, 225, 255);
             Vector2 off = Vector2.One.RotatedByRandom(6.28f) * shake;
 
-            Rectangle target1 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - tex.Height * 2 + height1 + height2 - Main.screenPosition.Y + off.Y), tex.Width, height1);
-            Rectangle target2 = new Rectangle((int)(npc.position.X - Main.screenPosition.X + off.X), (int)(npc.position.Y - tex.Height + height1 - Main.screenPosition.Y + off.Y), tex.Width, height2);
+            Rectangle target1 = new Rectangle((int)(NPC.position.X - Main.screenPosition.X + off.X), (int)(NPC.position.Y - tex.Height * 2 + height1 + height2 - Main.screenPosition.Y + off.Y), tex.Width, height1);
+            Rectangle target2 = new Rectangle((int)(NPC.position.X - Main.screenPosition.X + off.X), (int)(NPC.position.Y - tex.Height + height1 - Main.screenPosition.Y + off.Y), tex.Width, height2);
             Rectangle source2 = new Rectangle(0, 0, tex.Width, height2);
             Rectangle source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
             Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
             Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
-            Texture2D tex2 = GetTexture(path + "Glow");
+            Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
             sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
             sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
 
             if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
             {
-                Texture2D egg = ModContent.GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg");
+                Texture2D egg = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
                 Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
                 Helpers.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
             }

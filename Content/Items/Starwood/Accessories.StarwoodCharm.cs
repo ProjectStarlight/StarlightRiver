@@ -7,6 +7,7 @@ using System;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
@@ -16,33 +17,34 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public StarwoodCharm() : base("Starwood Charm", "Critical strikes generate mana stars\n-3% critical strike chance\n+3% critical strike chance when empowered") { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.Blue;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
 
-        public override bool Autoload(ref string name)
+        public override void Load()
 		{
             StarlightPlayer.OnHitNPCEvent += SpawnManaOnCrit;
             StarlightProjectile.ModifyHitNPCEvent += SpawnManaOnProjCrit;
-			return base.Autoload(ref name);
+			
 		}
 
-		private void SpawnManaOnProjCrit(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void SpawnManaOnProjCrit(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-            var player = Main.player[projectile.owner];
+            var Player = Main.player[Projectile.owner];
 
-            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
+            if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
                 spawnStar(target.Center);
         }
 
-		private void SpawnManaOnCrit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
+		private void SpawnManaOnCrit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-            if (Equipped(player) && crit && Main.myPlayer == player.whoAmI)
+            if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
                 spawnStar(target.Center);
 
         }
 
         private void spawnStar(Vector2 position)
         {
-            int item = Item.NewItem(position, ItemID.Star, 1, true, 0, true);
+            var player = Main.player[Item.playerIndexTheItemIsReservedFor];
+            int item = Item.NewItem(player.GetSource_Loot(), position, ItemID.Star, 1, true, 0, true);
 
 
             if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
@@ -51,17 +53,14 @@ namespace StarlightRiver.Content.Items.Starwood
             }
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            var mp = player.GetModPlayer<StarlightPlayer>();
+            var mp = Player.GetModPlayer<StarlightPlayer>();
 
-            player.meleeCrit += mp.empowered ? 3 : -3;
-            player.rangedCrit += mp.empowered ? 3 : -3;
-            player.magicCrit += mp.empowered ? 3 : -3;
-            player.thrownCrit += mp.empowered ? 3 : -3;
+            Player.GetCritChance(DamageClass.Generic) += mp.empowered ? 3 : -3;
         }
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
             var mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
             frame.Height /= 2;
@@ -71,12 +70,12 @@ namespace StarlightRiver.Content.Items.Starwood
 
             if (!mp.empowered)
             {
-                spriteBatch.Draw(ModContent.GetTexture(Texture), position, frame, drawColor, 0, origin, scale, 0, 0);
+                spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, position, frame, drawColor, 0, origin, scale, 0, 0);
                 return false;
             }
 
             frame.Y += frame.Height;
-            spriteBatch.Draw(ModContent.GetTexture(Texture), position, frame, drawColor, 0, origin, scale, 0, 0);
+            spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, position, frame, drawColor, 0, origin, scale, 0, 0);
             return false;
 		}
 	}

@@ -3,6 +3,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -21,38 +22,37 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void SetDefaults()
         {
-            item.width = 36;
-            item.height = 16;
+            Item.width = 36;
+            Item.height = 16;
 
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.autoReuse = true;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.autoReuse = true;
 
-            item.useAnimation = item.useTime = 30; // 15 less than vanilla blowpipe (1.3), 5 more than vanilla blowpipe (1.4) TODO: maybe change idk
-            item.useAmmo = AmmoID.Dart;
-            item.UseSound = SoundID.Item63;
+            Item.useAnimation = Item.useTime = 30; // 15 less than vanilla blowpipe (1.3), 5 more than vanilla blowpipe (1.4) TODO: maybe change idk
+            Item.useAmmo = AmmoID.Dart;
+            Item.UseSound = SoundID.Item63;
 
-            item.shootSpeed = 12.5f; // 1.5 more than vanilla blowpipe
+            Item.shootSpeed = 12.5f; // 1.5 more than vanilla blowpipe
 #pragma warning disable ChangeMagicNumberToID
-            item.shoot = 10;
+            Item.shoot = 10;
 #pragma warning restore ChangeMagicNumberToID
 
-            item.noMelee = true;
-            item.ranged = true;
-            item.knockBack = 4f; // .5 more than vanilla blowpipe
-            item.damage = 16; // TODO: determine if this is good (same with other stats), I can't balance if my life depended on it
+            Item.noMelee = true;
+            Item.DamageType = DamageClass.Ranged;
+            Item.knockBack = 4f; // .5 more than vanilla blowpipe
+            Item.damage = 16; // TODO: determine if this is good (same with other stats), I can't balance if my life depended on it
             // (btw 7 more than vanilla blowpipe)
 
             // TODO: Value
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY,
-            ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            // Pos modifications for the projectile so it's shot near where the blowdart is actually drawn (see: ForestIvyBlowdartPlayer)
+            // Pos modifications for the Projectile so it's shot near where the blowdart is actually drawn (see: ForestIvyBlowdartPlayer)
             position.X -= 4f * player.direction;
             position.Y -= 2f * player.gravDir;
 
-            Projectile proj = Projectile.NewProjectileDirect(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI);
+            Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
             proj.GetGlobalProjectile<ForestIvyBlowdartGlobalProj>().forestIvyPoisonVine = true;
 
             return false;
@@ -60,11 +60,10 @@ namespace StarlightRiver.Content.Items.ForestIvy
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ModContent.ItemType<Ivy>(), 8);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 
@@ -73,17 +72,17 @@ namespace StarlightRiver.Content.Items.ForestIvy
     /// </summary>
     public class ForestIvyBlowdartPlayer : ModPlayer
     {
-        public override void ModifyDrawInfo(ref PlayerDrawInfo drawInfo)
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             // Don't know if this is the best hook to put it in, but eh
-            // This code makes the player hold the blowdart to their mouth instead of the normal useStyle code behavior
+            // This code makes the Player hold the blowdart to their mouth instead of the normal useStyle code behavior
             // TODO: Determine if it'd be better to entirely customize useStyle code, not sure because we'd likely have to copy over draw-code which is a pain
-            if (player.inventory[player.selectedItem].type != ModContent.ItemType<ForestIvyBlowdart>() ||
-                player.itemTime <= 0)
+            if (Player.inventory[Player.selectedItem].type != ModContent.ItemType<ForestIvyBlowdart>() ||
+                Player.itemTime <= 0)
                 return;
 
-            player.bodyFrame.Y = player.bodyFrame.Height * 2;
-            drawInfo.itemLocation -= new Vector2(0, 8); // account for added stuff on the blowdart that fricks with the origin
+            Player.bodyFrame.Y = Player.bodyFrame.Height * 2;
+            drawInfo.ItemLocation -= new Vector2(0, 8); // account for added stuff on the blowdart that fricks with the origin
         }
     }
 
@@ -91,11 +90,11 @@ namespace StarlightRiver.Content.Items.ForestIvy
     {
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
         public bool forestIvyPoisonVine;
 
-        public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+        public override void OnHitNPC(Projectile Projectile, NPC target, int damage, float knockback, bool crit)
         {
             if (Main.rand.NextBool(2) && target.life > 5 && !target.friendly && target.type != NPCID.TargetDummy)
                 target.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount++;
@@ -107,23 +106,23 @@ namespace StarlightRiver.Content.Items.ForestIvy
     {
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
         // TODO: probably needs syncing in mp
         public int forestIvyPoisonVineCount;
 
         public int forestIvyPoisonVineContact;
 
-        public override void AI(NPC npc)
+        public override void AI(NPC NPC)
         {
             if (forestIvyPoisonVineCount <= 0)
                 return;
 
             foreach (NPC otherNPC in Main.npc.Where(n => n.active && n.life > 5 && !n.friendly && n.type != NPCID.TargetDummy))
             {
-                if (npc.Hitbox.Intersects(otherNPC.Hitbox))
+                if (NPC.Hitbox.Intersects(otherNPC.Hitbox))
                 {
-                    if (npc.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount <=
+                    if (NPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount <=
                         otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineCount ||
                         ++otherNPC.GetGlobalNPC<ForestIvyBlowdartGlobalNPC>().forestIvyPoisonVineContact < 60)
                         continue;
@@ -134,15 +133,15 @@ namespace StarlightRiver.Content.Items.ForestIvy
             }
         }
 
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
             /*if (forestIvyPoisonVineCount <= 0) fix this later, its broken AF man >.<
                 return;
 
-            if (npc.lifeRegen > 0)
-                npc.lifeRegen = 0;
+            if (NPC.lifeRegen > 0)
+                NPC.lifeRegen = 0;
 
-            npc.lifeRegen -= forestIvyPoisonVineCount * 2 * 5;
+            NPC.lifeRegen -= forestIvyPoisonVineCount * 2 * 5;
             damage += forestIvyPoisonVineCount * 5;*/
         }
     }

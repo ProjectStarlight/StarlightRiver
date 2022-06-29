@@ -12,10 +12,11 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using System.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
-    public class Buzzsaw : ModItem
+    public class Buzzsaw : ModItem //PORTTODO: Graydee rework this to be... not this.
     {
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 
@@ -29,23 +30,35 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void SetDefaults()
         {
-            item.damage = 34;
-            item.width = 65;
-            item.height = 21;
-            item.useTime = 65;
-            item.useAnimation = 65;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.noMelee = true;
-            item.knockBack = 1.5f;
-            item.value = Item.sellPrice(0, 1, 0, 0);
-            item.rare = 3;
-            item.autoReuse = false;
-            item.shoot = ModContent.ProjectileType<BuzzsawProj>();
-            item.shootSpeed = 2f;
-            item.melee = true;
-            item.channel = true;
-            item.noUseGraphic = true;
-            //item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
+            Item.damage = 34;
+            Item.width = 65;
+            Item.height = 21;
+            Item.useTime = 65;
+            Item.useAnimation = 65;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.noMelee = true;
+            Item.knockBack = 1.5f;
+            Item.value = Item.sellPrice(0, 1, 0, 0);
+            Item.rare = ItemRarityID.Green;
+            Item.autoReuse = false;
+            Item.shoot = ModContent.ProjectileType<BuzzsawProj>();
+            Item.shootSpeed = 2f;
+            Item.DamageType = DamageClass.Melee;
+            Item.channel = true;
+            Item.noUseGraphic = true;
+            //Item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
+        }
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.DemoniteBar, 10);
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+            recipe.AddTile(TileID.Anvils);
+
+            Recipe recipe2 = CreateRecipe();
+            recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
+            recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+            recipe2.AddTile(TileID.Anvils);
         }
     }
 
@@ -55,8 +68,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         private const int OFFSET = 30;
         private const int MAXCHARGE = 20;
 
-        public ref float Charge => ref projectile.ai[0];
-        public ref float Angle => ref projectile.ai[1];
+        public ref float Charge => ref Projectile.ai[0];
+        public ref float Angle => ref Projectile.ai[1];
 
         float oldAngle = 0f;
 
@@ -67,7 +80,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         private bool released = false;
         private float flickerTime = 0;
 
-        //we keep track of when the saw hits so that we can show the gores in multiplayer
+        //we keep track of when the saw hits so that we can show the gores in multiPlayer
         private bool justHit = false;
 
         public override string Texture => AssetDirectory.SteampunkItem + Name;
@@ -76,96 +89,96 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.melee = true;
-            projectile.width = 32;
-            projectile.height = 32;
-            projectile.aiStyle = -1;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = 999999;
-            projectile.ignoreWater = true;
-            projectile.alpha = 255;
-            Main.projFrames[projectile.type] = 5;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.width = 32;
+            Projectile.height = 32;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 999999;
+            Projectile.ignoreWater = true;
+            Projectile.alpha = 255;
+            Main.projFrames[Projectile.type] = 5;
         }
 
         public override void AI()
         {
-            Player player = Main.player[projectile.owner];
+            Player Player = Main.player[Projectile.owner];
 
             if (Charge >= MAXCHARGE)
             {
                 if (flickerTime == 0)
-                    Main.PlaySound(SoundID.NPCDeath7, projectile.Center);
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
                 flickerTime++;
             }
 
-            projectile.velocity = Vector2.Zero;
-            projectile.timeLeft = 2;
-            player.itemTime = 5; // Set item time to 2 frames while we are used
-            player.itemAnimation = 5; // Set item animation time to 2 frames while we are used
+            Projectile.velocity = Vector2.Zero;
+            Projectile.timeLeft = 2;
+            Player.itemTime = 5; // Set Item time to 2 frames while we are used
+            Player.itemAnimation = 5; // Set Item animation time to 2 frames while we are used
 
             float shake = 0;
 
-            if (player.channel && !released)
+            if (Player.channel && !released)
             {
-                if (projectile.owner == Main.myPlayer)
+                if (Projectile.owner == Main.myPlayer)
                 {
-                    Angle = (Main.MouseWorld - (player.Center)).ToRotation();
+                    Angle = (Main.MouseWorld - (Player.Center)).ToRotation();
 
                     if (Math.Abs(oldAngle - Angle) > 0.1f) //only send a netupdate if the buzzsaw has rotated visibly
                     {
                         oldAngle = Angle;
-                        projectile.netUpdate = true;
+                        Projectile.netUpdate = true;
                     }
                 }
 
                 direction = Angle.ToRotationVector2();
 
                 bladeRotation += 1.2f;
-                player.ChangeDir(direction.X > 0 ? 1 : -1);
+                Player.ChangeDir(direction.X > 0 ? 1 : -1);
                 shake = MathHelper.Lerp(0.04f, 0.15f, Charge / (float)MAXCHARGE);
 
                 counter++;
-                projectile.frame = ((counter / 5) % 2) + 2;
+                Projectile.frame = ((counter / 5) % 2) + 2;
 
                 if (counter % 30 == 1)
-                    Main.PlaySound(2, projectile.Center, 22); //Chainsaw sound
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Item22, Projectile.Center); //Chainsaw sound
 
-                ReleaseSteam(player);
+                ReleaseSteam(Player);
             }
             else
             {
-                projectile.friendly = false;
-                projectile.frame = 5;
+                Projectile.friendly = false;
+                Projectile.frame = 5;
 
                 if (!released)
-                    LaunchSaw(player);
-                else if (player.ownedProjectileCounts[ModContent.ProjectileType<BuzzsawProj2>()] == 0)
-                    projectile.active = false;
+                    LaunchSaw(Player);
+                else if (Player.ownedProjectileCounts[ModContent.ProjectileType<BuzzsawProj2>()] == 0)
+                    Projectile.active = false;
             }
 
 
 
-            projectile.Center = player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
-            projectile.velocity = Vector2.Zero;
-            player.itemRotation = direction.ToRotation();
+            Projectile.Center = Player.Center + (direction * OFFSET * Main.rand.NextFloat(1 - shake, 1 + shake));
+            Projectile.velocity = Vector2.Zero;
+            Player.itemRotation = direction.ToRotation();
 
-            if (player.direction != 1)
-                player.itemRotation -= 3.14f;
+            if (Player.direction != 1)
+                Player.itemRotation -= 3.14f;
 
-            player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
+            Player.itemRotation = MathHelper.WrapAngle(Player.itemRotation);
 
-            player.heldProj = projectile.whoAmI;
+            Player.heldProj = Projectile.whoAmI;
 
-            if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != projectile.owner)
+            if (justHit && Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != Projectile.owner)
             {
                 for (int i = 0; i < Main.maxNPCs; i++)
                 {
-                    NPC npc = Main.npc[i];
-                    if (npc.active && npc.Hitbox.Intersects(projectile.Hitbox))
-                        hitGore(npc);
+                    NPC NPC = Main.npc[i];
+                    if (NPC.active && NPC.Hitbox.Intersects(Projectile.Hitbox))
+                        hitGore(NPC);
                 }
             }
 
@@ -176,7 +189,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             if (Charge < MAXCHARGE)
                 Charge++;
-            projectile.netUpdate = true;
+            Projectile.netUpdate = true;
             justHit = true;
             hitGore(target);
         }
@@ -189,17 +202,17 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 {
                     for (int k = 0; k < 10; k++)
                     {
-                        Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(3, 20), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+                        Dust.NewDustPerfect((Projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(3, 20), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
                     }
 
-                    Dust.NewDustPerfect((projectile.Center + (direction * 10)), ModContent.DustType<Dusts.Glow>(), direction.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f) - 1.57f) * Main.rand.Next(3, 10), 0, new Color(150, 80, 30), 0.2f);
+                    Dust.NewDustPerfect((Projectile.Center + (direction * 10)), ModContent.DustType<Dusts.Glow>(), direction.RotatedBy(Main.rand.NextFloat(-0.35f, 0.35f) - 1.57f) * Main.rand.Next(3, 10), 0, new Color(150, 80, 30), 0.2f);
                 }
                 else
                 {
                     for (int j = 0; j < 15; j++)
                     {
-                        Dust.NewDustPerfect(projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
-                        Dust.NewDustPerfect(projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);
                     }
                 }
             }
@@ -215,39 +228,39 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             justHit = reader.ReadBoolean();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
+        public override bool PreDraw(ref Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
         {
             Color heatColor = new Color(255, 96, 0);
             lightColor = Color.Lerp(lightColor, heatColor, (Charge / (float)MAXCHARGE) * 0.6f);
 
-            Player player = Main.player[projectile.owner];
-            Texture2D texture = Main.projectileTexture[projectile.type];
-            Texture2D texture2 = ModContent.GetTexture(Texture + "_Blade");
+            Player Player = Main.player[Projectile.owner];
+            Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
+            Texture2D texture2 = ModContent.Request<Texture2D>(Texture + "_Blade").Value;
             int height1 = texture.Height;
-            int height2 = texture2.Height / Main.projFrames[projectile.type];
-            int y2 = height2 * projectile.frame;
+            int height2 = texture2.Height / Main.projFrames[Projectile.type];
+            int y2 = height2 * Projectile.frame;
             Vector2 origin = new Vector2((float)texture.Width / 2f, (float)height1 / 2f);
-            Vector2 position = (projectile.position - (0.5f * (direction * OFFSET)) + new Vector2((float)projectile.width, (float)projectile.height) / 2f + Vector2.UnitY * projectile.gfxOffY - Main.screenPosition).Floor();
+            Vector2 position = (Projectile.position - (0.5f * (direction * OFFSET)) + new Vector2((float)Projectile.width, (float)Projectile.height) / 2f + Vector2.UnitY * Projectile.gfxOffY - Main.screenPosition).Floor();
 
             if (!released)
-                spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), lightColor, bladeRotation, new Vector2(15, 15), projectile.scale, SpriteEffects.None, 0.0f);
+                Main.spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), lightColor, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
 
-            if (player.direction == 1)
+            if (Player.direction == 1)
             {
                 SpriteEffects effects1 = SpriteEffects.None;
-                spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation(), origin, projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
 
             }
             else
             {
                 SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-                spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
+                Main.spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
             }
 
             if (Charge >= MAXCHARGE && !released && flickerTime < 16)
             {
-                texture = ModContent.GetTexture(Texture + "_White");
-                texture2 = ModContent.GetTexture(Texture + "_Blade_White");
+                texture = ModContent.Request<Texture2D>(Texture + "_White").Value;
+                texture2 = ModContent.Request<Texture2D>(Texture + "_Blade_White").Value;
                 Color color = Color.White;
                 float flickerTime2 = (float)(flickerTime / 20f);
                 float alpha = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
@@ -255,39 +268,39 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 if (alpha < 0)
                     alpha = 0;
 
-                spriteBatch.Draw(texture2, projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), color * alpha, bladeRotation, new Vector2(15, 15), projectile.scale, SpriteEffects.None, 0.0f);
+                Main.spriteBatch.Draw(texture2, Projectile.Center - Main.screenPosition, new Rectangle(0, y2, texture2.Width, height2), color * alpha, bladeRotation, new Vector2(15, 15), Projectile.scale, SpriteEffects.None, 0.0f);
 
-                if (player.direction == 1)
+                if (Player.direction == 1)
                 {
                     SpriteEffects effects1 = SpriteEffects.None;
-                    spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation(), origin, projectile.scale, effects1, 0.0f);
+                    Main.spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation(), origin, Projectile.scale, effects1, 0.0f);
 
                 }
                 else
                 {
                     SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-                    spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation() - 3.14f, origin, projectile.scale, effects1, 0.0f);
+                    Main.spriteBatch.Draw(texture, position, null, color * alpha, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
                 }
             }
 
             return false;
         }
 
-        private void LaunchSaw(Player player)
+        private void LaunchSaw(Player Player)
         {
             released = true;
-            if (Main.myPlayer == player.whoAmI)
+            if (Main.myPlayer == Player.whoAmI)
             {
                 float speed = MathHelper.Lerp(8f, 12f, Charge / (float)MAXCHARGE);
                 float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / (float)MAXCHARGE);
-                Projectile.NewProjectile(projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(projectile.damage * damageMult), projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
             }
         }
 
-        private void ReleaseSteam(Player player)
+        private void ReleaseSteam(Player Player)
         {
             float alphaMult = MathHelper.Lerp(0.75f, 3f, Charge / (float)MAXCHARGE);
-            Dust.NewDustPerfect(Vector2.Lerp(projectile.Center, player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+            Dust.NewDustPerfect(Vector2.Lerp(Projectile.Center, Player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
         }
     }
 
@@ -299,7 +312,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         private Vector2 oldVel;
 
-        private Player player => Main.player[projectile.owner];
+        private Player Player => Main.player[Projectile.owner];
 
         public bool justLaunched = true;
 
@@ -309,70 +322,71 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Buzzsaw");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 30;
-            projectile.height = 30;
-            projectile.aiStyle = 3;
-            projectile.friendly = false;
-            projectile.melee = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 700;
-            Main.projFrames[projectile.type] = 2;
-            projectile.extraUpdates = 1;
+            Projectile.width = 30;
+            Projectile.height = 30;
+            Projectile.aiStyle = 3;
+            Projectile.friendly = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 700;
+            Main.projFrames[Projectile.type] = 2;
+            Projectile.extraUpdates = 1;
         }
 
         public override bool PreAI()
         {
             if (--pauseTimer > 0)
             {
-                if (projectile.velocity != Vector2.Zero)
-                    oldVel = projectile.velocity;
+                if (Projectile.velocity != Vector2.Zero)
+                    oldVel = Projectile.velocity;
 
-                projectile.velocity = Vector2.Zero;
+                Projectile.velocity = Vector2.Zero;
                 return false;
             }
 
             if (pauseTimer == 0)
-                projectile.velocity = oldVel;
+                Projectile.velocity = oldVel;
 
             return true;
         }
 
         public override void AI()
         {
-            if (justLaunched)
+            if (justLaunched && Main.myPlayer == Projectile.owner)
             {
-                int proj = Projectile.NewProjectile(projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), projectile.damage, projectile.knockBack, projectile.owner);
-                ((PhantomBuzzsaw)Main.projectile[proj].modProjectile).parent = projectile;
+                int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<PhantomBuzzsaw>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+                ((PhantomBuzzsaw)Main.projectile[proj].ModProjectile).parent = Projectile;
+                justLaunched = false;
             }
-                
-            projectile.frameCounter += 1;
-            projectile.frame = (projectile.frameCounter / 5) % 2;
+
+            Projectile.frameCounter += 1;
+            Projectile.frame = (Projectile.frameCounter / 5) % 2;
             rotationCounter += 0.6f;
-            projectile.rotation = rotationCounter;
+            Projectile.rotation = rotationCounter;
 
         }
 
         public void hitGore(NPC target)
         {
-            Vector2 direction = target.Center - projectile.Center;
+            Vector2 direction = target.Center - Projectile.Center;
             direction.Normalize();
             for (int i = 0; i < 2; i++)
             {
 
                 if (!Helper.IsFleshy(target))
-                    Dust.NewDustPerfect((projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+                    Dust.NewDustPerfect((Projectile.Center + (direction * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f) + 1.57f) * Main.rand.Next(15, 20), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
                 else
                 {
                     Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
                     for (int j = 0; j < 2; j++)
-                        Dust.NewDustPerfect(projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
                 }
 
             }
@@ -385,34 +399,34 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
         public Projectile parent;
 
-        private Player player => Main.player[projectile.owner];
+        private Player Player => Main.player[Projectile.owner];
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Buzzsaw");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 30;
-            projectile.height = 30;
-            projectile.friendly = true;
-            projectile.melee = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 700;
-            projectile.tileCollide = false;
-            Main.projFrames[projectile.type] = 2;
-            projectile.extraUpdates = 1;
-            projectile.hide = true;
+            Projectile.width = 30;
+            Projectile.height = 30;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 700;
+            Projectile.tileCollide = false;
+            Main.projFrames[Projectile.type] = 2;
+            Projectile.extraUpdates = 1;
+            Projectile.hide = true;
         }
 
         private void findIfHit()
         {
-            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[projectile.owner] <= 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
             {
-                OnHitNPC(npc, 0, 0, false);
+                OnHitNPC(NPC, 0, 0, false);
             }
         }
 
@@ -420,11 +434,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         {
             if (parent is null)
             {
-                //have to find the parent in mp note that projectile arrays are NOT synced like npc and player arrays so we can't use the index in ai[0]
+                //have to find the parent in mp note that Projectile arrays are NOT synced like NPC and Player arrays so we can't use the index in ai[0]
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile proj = Main.projectile[i];
-                    if (proj.active && proj.owner == this.projectile.owner && proj.type == ModContent.ProjectileType<BuzzsawProj2>())
+                    if (proj.active && proj.owner == this.Projectile.owner && proj.type == ModContent.ProjectileType<BuzzsawProj2>())
                     {
                         parent = proj;
                         break;
@@ -434,16 +448,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             if (parent is null || !parent.active)
             {
-                projectile.active = false;
+                Projectile.active = false;
                 return;
             }
-                
 
-            if (Main.myPlayer != projectile.owner)
+
+            if (Main.myPlayer != Projectile.owner)
                 findIfHit();
 
-            projectile.Center = parent.Center;
-            projectile.velocity = parent.velocity;
+            Projectile.Center = parent.Center;
+            Projectile.velocity = parent.velocity;
 
 
         }
@@ -451,33 +465,32 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
 
-            ((BuzzsawProj2)parent.modProjectile).hitGore(target);
-
-            if (Main.myPlayer == projectile.owner)
+            if (Main.myPlayer == Projectile.owner)
             {
-                Vector2 direction = target.Center - projectile.Center;
+                Vector2 direction = target.Center - Projectile.Center;
                 if (Helper.IsFleshy(target))
                 {
                     int bloodID = ModContent.ProjectileType<BuzzsawBlood1>();
                     int spriteDirection = Math.Sign(direction.X);
 
-                    Projectile proj = Projectile.NewProjectileDirect(target.Center, Vector2.Zero, bloodID, 0, 0, projectile.owner);
+                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, bloodID, 0, 0, Projectile.owner);
                     proj.spriteDirection = -spriteDirection;
                 }
 
-                player.GetModPlayer<StarlightPlayer>().Shake += 6;
+                Core.Systems.CameraSystem.Shake += 6;
             }
 
 
-            target.immune[projectile.owner] = 20;
+            target.immune[Projectile.owner] = 20;
 
-            if (parent.modProjectile is BuzzsawProj2 modProj)
+            if (parent.ModProjectile is BuzzsawProj2 modProj)
             {
+                modProj.hitGore(target);
                 modProj.pauseTimer = 16;
                 modProj.justHit = true;
             }
 
-            
+
         }
     }
 
@@ -488,39 +501,39 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Buzzsaw");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 9;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 2;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 9;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
         {
-            projectile.width = 90;
-            projectile.height = 90;
-            projectile.friendly = false;
-            projectile.melee = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 700;
-            projectile.rotation = Main.rand.NextFloat(0.78f);
+            Projectile.width = 90;
+            Projectile.height = 90;
+            Projectile.friendly = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 700;
+            Projectile.rotation = Main.rand.NextFloat(0.78f);
             SetFrames();
         }
 
         public override void AI()
         {
-            if (projectile.ai[0]++ == 0)
-                projectile.position -= new Vector2(-projectile.spriteDirection * 20, 28).RotatedBy(projectile.rotation);
-            projectile.velocity = Vector2.Zero;
-            projectile.frameCounter++;
-            if (projectile.frameCounter > 4)
+            if (Projectile.ai[0]++ == 0)
+                Projectile.position -= new Vector2(-Projectile.spriteDirection * 20, 28).RotatedBy(Projectile.rotation);
+            Projectile.velocity = Vector2.Zero;
+            Projectile.frameCounter++;
+            if (Projectile.frameCounter > 4)
             {
-                projectile.frameCounter = 0;
-                projectile.frame++;
-                if (projectile.frame >= Main.projFrames[projectile.type])
-                    projectile.active = false;
+                Projectile.frameCounter = 0;
+                Projectile.frame++;
+                if (Projectile.frame >= Main.projFrames[Projectile.type])
+                    Projectile.active = false;
             }
         }
         protected virtual void SetFrames()
         {
-            Main.projFrames[projectile.type] = 3;
+            Main.projFrames[Projectile.type] = 3;
         }
     }
 }

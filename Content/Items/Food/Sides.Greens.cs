@@ -7,11 +7,11 @@ namespace StarlightRiver.Content.Items.Food
     {
         public Greens() : base("+1 defense", 300, IngredientType.Side) { }
 
-        public override void SafeSetDefaults() => item.rare = ItemRarityID.White;
+        public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.statDefense += (int)(1 * multiplier);
+            Player.statDefense += (int)(1 * multiplier);
         }
     }
 }

@@ -11,22 +11,22 @@ namespace StarlightRiver.Packets
     {
         private readonly short fromWho;
         private readonly int projIdentity;
-        private readonly byte npcId;
+        private readonly byte NPCId;
         private int damage;
         private float knockback;
         private bool crit;
 
 
-        public OnHitPacket(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+        public OnHitPacket(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            this.fromWho = (short)player.whoAmI;
+            this.fromWho = (short)Player.whoAmI;
 
             if (proj != null)
                 this.projIdentity = proj.identity;
             else
                 this.projIdentity = -1;
 
-            this.npcId = (byte)target.whoAmI;
+            this.NPCId = (byte)target.whoAmI;
             this.damage = damage;
             this.knockback = knockback;
             this.crit = crit;
@@ -34,16 +34,16 @@ namespace StarlightRiver.Packets
 
         protected override void Receive()
         {
-            Player player = Main.player[fromWho];
-            StarlightPlayer modPlayer = player.GetModPlayer<StarlightPlayer>();
+            Player Player = Main.player[fromWho];
+            StarlightPlayer modPlayer = Player.GetModPlayer<StarlightPlayer>();
             if (projIdentity == -1)
             {
-                modPlayer.ModifyHitNPC(player.HeldItem, Main.npc[npcId], ref damage, ref knockback, ref crit);
-                modPlayer.OnHitNPC(player.HeldItem, Main.npc[npcId], damage, knockback, crit);
+                modPlayer.ModifyHitNPC(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
+                modPlayer.OnHitNPC(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
 
             } else
             {
-                //projectile arrays aren't guarenteed to align so we need to use projectile identity to match
+                //Projectile arrays aren't guarenteed to align so we need to use Projectile identity to match
                 Projectile proj = null;
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
@@ -56,9 +56,9 @@ namespace StarlightRiver.Packets
                 }
                 if (proj != null)
                 {
-                    int hitDirection = 1; //we don't seem to use hitDirection at all for our modifyhitnpc custom code so its not being sent. potential TODO if we ever use hitDirection for some reason.
-                    modPlayer.ModifyHitNPCWithProj(proj, Main.npc[npcId], ref damage, ref knockback, ref crit, ref hitDirection);
-                    modPlayer.OnHitNPCWithProj(proj, Main.npc[npcId], damage, knockback, crit);
+                    int hitDirection = 1; //we don't seem to use hitDirection at all for our modifyhitNPC custom code so its not being sent. potential TODO if we ever use hitDirection for some reason.
+                    modPlayer.ModifyHitNPCWithProj(proj, Main.npc[NPCId], ref damage, ref knockback, ref crit, ref hitDirection);
+                    modPlayer.OnHitNPCWithProj(proj, Main.npc[NPCId], damage, knockback, crit);
                 }
             }
             

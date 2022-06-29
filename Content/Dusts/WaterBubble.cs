@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
     class WaterBubble : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "SpringBubble";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "SpringBubble";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

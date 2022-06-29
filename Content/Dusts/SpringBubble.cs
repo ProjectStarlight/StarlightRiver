@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	class SpringBubble : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -41,7 +37,7 @@ namespace StarlightRiver.Content.Dusts
                 dust.active = false;
 
             Tile tile = Framing.GetTileSafely((int)dust.position.X / 16, (int)dust.position.Y / 16);
-            if (tile.liquid == 0)
+            if (tile .LiquidAmount == 0)
                 dust.alpha = 0;
 
             return false;

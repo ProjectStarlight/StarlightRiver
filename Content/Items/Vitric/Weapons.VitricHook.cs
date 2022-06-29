@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -22,39 +23,38 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 30;
-            item.melee = true;
-            item.noMelee = true;
-            item.useTime = 20;
-            item.useAnimation = 20;
-            item.shoot = ProjectileType<VitricHookProjectile>();
-            item.shootSpeed = 20;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.noUseGraphic = true;
-            item.knockBack = 3;
+            Item.damage = 30;
+            Item.DamageType = DamageClass.Melee;
+            Item.noMelee = true;
+            Item.useTime = 20;
+            Item.useAnimation = 20;
+            Item.shoot = ProjectileType<VitricHookProjectile>();
+            Item.shootSpeed = 20;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.noUseGraphic = true;
+            Item.knockBack = 3;
         }
 
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
-            if (player.velocity.Y == 0 || Main.projectile.Any(n => n.active && n.type == ProjectileType<VitricHookProjectile>() && n.owner == player.whoAmI))
+            if (Player.velocity.Y == 0 || Main.projectile.Any(n => n.active && n.type == ProjectileType<VitricHookProjectile>() && n.owner == Player.whoAmI))
                 return false;
 
-            return base.CanUseItem(player);
+            return base.CanUseItem(Player);
         }
 
-        //public override void HoldItem(Player player)
+        //public override void HoldItem(Player Player)
         //{
-        //    if (Main.projectile.Any(n => n.type == ProjectileType<VitricHookProjectile>() && n.owner == player.whoAmI))
-        //        player.itemAnimation = 5;
+        //    if (Main.projectile.Any(n => n.type == ProjectileType<VitricHookProjectile>() && n.owner == Player.whoAmI))
+        //        Player.itemAnimation = 5;
         //}
 
         public override void AddRecipes()
         {
-            var r = new ModRecipe(mod);
-            r.AddIngredient(ItemID.GrapplingHook);
-            r.AddIngredient(ItemType<VitricOre>(), 30);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.GrapplingHook);
+            recipe.AddIngredient(ItemType<VitricOre>(), 30);
+            recipe.Register();
         }
     }
 
@@ -64,92 +64,92 @@ namespace StarlightRiver.Content.Items.Vitric
         Vector2 startPos;
         bool struck;
 
-        ref float Progress => ref projectile.ai[0];
-        ref float Distance => ref projectile.ai[1];
-        bool Retracting => projectile.timeLeft < 30;
+        ref float Progress => ref Projectile.ai[0];
+        ref float Distance => ref Projectile.ai[1];
+        bool Retracting => Projectile.timeLeft < 30;
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        Player player => Main.player[projectile.owner];
+        Player Player => Main.player[Projectile.owner];
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.friendly = true;
-            projectile.timeLeft = 60;
-            projectile.aiStyle = -1;
-            projectile.penetrate = 2;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.friendly = true;
+            Projectile.timeLeft = 60;
+            Projectile.aiStyle = -1;
+            Projectile.penetrate = 2;
         }
 
 
         private void findIfHit()
         {
-            foreach (NPC npc in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(projectile.Hitbox)))
+            foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
             {
-                hooked = npc;
-                projectile.velocity *= 0;
-                startPos = player.Center;
-                Distance = Vector2.Distance(startPos, npc.Center);
+                hooked = NPC;
+                Projectile.velocity *= 0;
+                startPos = Player.Center;
+                Distance = Vector2.Distance(startPos, NPC.Center);
             }
         }
 
         public override void AI()
         {
 
-            projectile.rotation = projectile.velocity.ToRotation();
-            if(projectile.timeLeft < 40)//slows down the projectile by 8%, for about 10 ticks before it retracts
-                projectile.velocity *= 0.92f;
+            Projectile.rotation = Projectile.velocity.ToRotation();
+            if(Projectile.timeLeft < 40)//slows down the Projectile by 8%, for about 10 ticks before it retracts
+                Projectile.velocity *= 0.92f;
             
 
-            if(projectile.timeLeft == 30)
+            if(Projectile.timeLeft == 30)
             {
-                startPos = projectile.Center;
-                projectile.velocity *= 0;
+                startPos = Projectile.Center;
+                Projectile.velocity *= 0;
             }
 
             if(Retracting)
-                projectile.Center = Vector2.Lerp(player.Center, startPos, projectile.timeLeft / 30f);
+                Projectile.Center = Vector2.Lerp(Player.Center, startPos, Projectile.timeLeft / 30f);
 
-            if (hooked is null && !Retracting && Main.myPlayer != projectile.owner)
+            if (hooked is null && !Retracting && Main.myPlayer != Projectile.owner)
             {
-                projectile.friendly = true; //otherwise it will stop just short of actually intersecting the hitbox
+                Projectile.friendly = true; //otherwise it will stop just short of actually intersecting the hitbox
                 findIfHit(); //since onhit hooks are client side only, all other clients will manually check for collisions
             }
 
 
             if (hooked != null && !struck)
             {
-                projectile.timeLeft = 32;
-                projectile.Center = hooked.Center;
-                player.velocity = Vector2.Zero;//resets wings / double jumps
+                Projectile.timeLeft = 32;
+                Projectile.Center = hooked.Center;
+                Player.velocity = Vector2.Zero;//resets wings / double jumps
 
                 Progress += 20f / Distance;
-                player.Center = Vector2.Lerp(startPos, hooked.Center, Progress);
+                Player.Center = Vector2.Lerp(startPos, hooked.Center, Progress);
 
-                if(player.Hitbox.Intersects(hooked.Hitbox))
+                if(Player.Hitbox.Intersects(hooked.Hitbox))
                 {
                     struck = true;
-                    projectile.timeLeft = 20;
+                    Projectile.timeLeft = 20;
 
-                    player.immune = true;
-                    player.immuneTime = 20;
-                    player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
-                    player.GetModPlayer<StarlightPlayer>().Shake += 15;
+                    Player.immune = true;
+                    Player.immuneTime = 20;
+                    Player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
+                    Core.Systems.CameraSystem.Shake += 15;
 
-                    hooked.StrikeNPC(projectile.damage, projectile.knockBack, player.Center.X < hooked.Center.X ? -1 : 1);
+                    hooked.StrikeNPC(Projectile.damage, Projectile.knockBack, Player.Center.X < hooked.Center.X ? -1 : 1);
 
                     for(int k = 0; k < 30; k++)
-                        Dust.NewDustPerfect(player.Center, DustType<Dusts.GlassNoGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(1f, 2f));
-                    Main.PlaySound(SoundID.Shatter);
+                        Dust.NewDustPerfect(Player.Center, DustType<Dusts.GlassNoGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(1f, 2f));
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
                 }
             }
 
             if(struck)
             {
-                player.fullRotation = (projectile.timeLeft / 20f) * 3.14f * player.direction;
-                player.fullRotationOrigin = player.Size / 2;
-                player.velocity *= 0.95f;
+                Player.fullRotation += (Projectile.timeLeft / 20f) * 3.14f * Player.direction;
+                Player.fullRotationOrigin = Player.Size / 2;
+                Player.velocity *= 0.95f;
             }
         }
 
@@ -160,10 +160,10 @@ namespace StarlightRiver.Content.Items.Vitric
             if (!Retracting && hooked is null)
             {
                 hooked = target;
-                projectile.velocity *= 0;
-                startPos = player.Center;
+                Projectile.velocity *= 0;
+                startPos = Player.Center;
                 Distance = Vector2.Distance(startPos, target.Center);
-                projectile.friendly = false;
+                Projectile.friendly = false;
             }
         }
 
@@ -175,31 +175,33 @@ namespace StarlightRiver.Content.Items.Vitric
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
-        {
+        public override bool PreDraw(ref Color lightColor)
+        {           
             if(struck) 
                 return false;
 
-            Texture2D chainTex1 = GetTexture(AssetDirectory.VitricItem + "VitricHookChain1");
-            Texture2D chainTex2 = GetTexture(AssetDirectory.VitricItem + "VitricHookChain2");
+            var spriteBatch = Main.spriteBatch;
 
-            float dist = Vector2.Distance(player.Center, projectile.Center);
-            float rot = (player.Center - projectile.Center).ToRotation() + (float)Math.PI / 2f;
+            Texture2D chainTex1 = Request<Texture2D>(AssetDirectory.VitricItem + "VitricHookChain1").Value;
+            Texture2D chainTex2 = Request<Texture2D>(AssetDirectory.VitricItem + "VitricHookChain2").Value;
+
+            float dist = Vector2.Distance(Player.Center, Projectile.Center);
+            float rot = (Player.Center - Projectile.Center).ToRotation() + (float)Math.PI / 2f;
 
 
             float length = 1f / dist * chainTex1.Height;
             for (int k = 0; k * length < 1; k++)
             {
-                var pos = Vector2.Lerp(projectile.Center, player.Center, k * length);
+                var pos = Vector2.Lerp(Projectile.Center, Player.Center, k * length);
                 if(k % 2 == 0)
                     spriteBatch.Draw(chainTex1, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
                 else
                     spriteBatch.Draw(chainTex2, pos - Main.screenPosition, null, lightColor, rot, chainTex1.Size() / 2, 1, 0, 0);
             }
 
-            Texture2D hook = Main.projectileTexture[projectile.type];
+            Texture2D hook = TextureAssets.Projectile[Projectile.type].Value;
 
-            spriteBatch.Draw(hook, projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(hook, Projectile.Center - Main.screenPosition, null, lightColor, rot + ((float)Math.PI * 0.75f), hook.Size() / 2, 1, 0, 0);
 
             return false;
         }

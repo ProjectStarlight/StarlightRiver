@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Piss : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "GasChaos";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "GasChaos";
 
         public override void OnSpawn(Dust dust)
         {

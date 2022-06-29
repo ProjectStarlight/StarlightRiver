@@ -120,7 +120,7 @@ namespace StarlightRiver.Core
             if (MapEffectName != "")
             {
                 //always here jic
-                MapEffect?.Shader?.Parameters["Noise"]?.SetValue(GetTexture(AssetDirectory.Assets + "Noise/ShaderNoise"));
+                MapEffect?.Shader?.Parameters["Noise"]?.SetValue(Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoise").Value);
                 MapEffect?.Shader?.Parameters["TileTarget"]?.SetValue(PlayerTarget.ScaledTileTarget);
                 MapEffect?.Shader?.Parameters["Map"]?.SetValue(MapTarget);
 

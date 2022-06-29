@@ -26,20 +26,20 @@ namespace StarlightRiver.Content.CustomHooks
                 if (!Main.npc[i].active || Main.npc[i].friendly || Main.npc[i].damage <= 0)
                     continue;
 
-                var npc = Main.npc[i];
-                int type = npc.type;
-                Rectangle npcRect = new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height);
+                var NPC = Main.npc[i];
+                int type = NPC.type;
+                Rectangle NPCRect = new Rectangle((int)NPC.position.X, (int)NPC.position.Y, NPC.width, NPC.height);
                 int specialHit = -1;
                 float damageMultipler = 1;
 
-                NPC.GetMeleeCollisionData(rectangle, i, ref specialHit, ref damageMultipler, ref npcRect);
+                NPC.GetMeleeCollisionData(rectangle, i, ref specialHit, ref damageMultipler, ref NPCRect);
 
-                if (rectangle.Intersects(npcRect) && type == NPCType<ArenaBlocker>() && NPCLoader.CanHitPlayer(npc, self, ref specialHit)) {
-                    NPCLoader.OnHitPlayer(npc, self, npc.damage, false);
+                if (rectangle.Intersects(NPCRect) && type == NPCType<ArenaBlocker>() && NPCLoader.CanHitPlayer(NPC, self, ref specialHit)) {
+                    NPCLoader.OnHitPlayer(NPC, self, NPC.damage, false);
 
-                    var dam = npc.damage;
+                    var dam = NPC.damage;
                     var crit = false;
-                    NPCLoader.ModifyHitPlayer(npc, self, ref dam, ref crit);
+                    NPCLoader.ModifyHitPlayer(NPC, self, ref dam, ref crit);
 
                     return;
                 }

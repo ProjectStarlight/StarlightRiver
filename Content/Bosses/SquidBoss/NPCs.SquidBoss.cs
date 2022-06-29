@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
@@ -9,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -20,15 +23,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
     {
         public List<NPC> tentacles = new List<NPC>(); //the tentacle NPCs which this boss controls
         public List<NPC> platforms = new List<NPC>(); //the big platforms the boss' arena has
+        public bool variantAttack;
+        public int baseLife;
+        public NPC arenaActor;
         private NPC arenaBlocker;
         Vector2 spawnPoint;
-        Vector2 savedPoint;
-        bool variantAttack;
+        Vector2 savedPoint;     
 
-        internal ref float Phase => ref npc.ai[0];
-        internal ref float GlobalTimer => ref npc.ai[1];
-        internal ref float AttackPhase => ref npc.ai[2];
-        internal ref float AttackTimer => ref npc.ai[3];
+        internal ref float Phase => ref NPC.ai[0];
+        internal ref float GlobalTimer => ref NPC.ai[1];
+        internal ref float AttackPhase => ref NPC.ai[2];
+        internal ref float AttackTimer => ref NPC.ai[3];
+
+        internal ArenaActor Arena => arenaActor.ModNPC as ArenaActor;
+
+        public float Opacity = 1;
+        public bool OpaqueJelly = false;
 
         public enum AIStates
         {
@@ -38,7 +48,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             FirstPhaseTwo = 3,
             SecondPhase = 4,
             ThirdPhase = 5,
-            DeathAnimation = 6
+            DeathAnimation = 6,
+            Fleeing = 7
         }
 
         public override string Texture => AssetDirectory.Invisible;
@@ -47,19 +58,35 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Auroracle");
 
-        public override void ScaleExpertStats(int numPlayers, float bossLifeScale) => npc.lifeMax = (int)(6000 * bossLifeScale);
-
         public override bool CheckActive() => false;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) => false;
+        public void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
+        {
+            Animate(12, 0, 8);
+            NPC.Center += Main.screenPosition - screenPos;
+            NPC.ai[1]++;
+
+            Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
+            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
+
+            DrawHeadBlobs(spriteBatch);
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            if (NPC.IsABestiaryIconDummy)
+                DrawBestiary(spriteBatch, screenPos);
+
+            return false;
+        }
 
         public override bool CheckDead()
         {
             if (Phase != (int)AIStates.DeathAnimation)
             {
                 Phase = (int)AIStates.DeathAnimation;
-                npc.life = 1;
-                npc.dontTakeDamage = true;
+                NPC.life = 1;
+                NPC.dontTakeDamage = true;
                 GlobalTimer = 0;
 
                 foreach (var tentacle in tentacles.Where(n => n.active)) tentacle.Kill();
@@ -69,55 +96,92 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             else
             {
-                Main.PlaySound(SoundID.NPCKilled, (int)npc.Center.X, (int)npc.Center.Y, 1, 1, -0.8f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.8f }, NPC.Center);
 
-                for (int k = 0; k < 10; k++)
-                    Gore.NewGore(npc.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), mod.GetGoreSlot("Content/Gores/SquidGore"));
+                /*for (int k = 0; k < 10; k++)
+                    Gore.NewGore(NPC.Center, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), Mod.Find<ModGore>("SquidGore").Type);*/
                 return true;
             }
         }
 
         public override void SetDefaults()
         {
-            npc.lifeMax = 3250;
-            npc.width = 80;
-            npc.height = 80;
-            npc.boss = true;
-            npc.damage = 1;
-            npc.noGravity = true;
-            npc.aiStyle = -1;
-            npc.npcSlots = 99f;
-            music = mod.GetSoundSlot(SoundType.Music, "Sounds/Music/SquidBoss");
-            npc.noTileCollide = true;
-            npc.knockBackResist = 0;
-            npc.dontTakeDamage = true;
+            NPC.lifeMax = 4000;
+            NPC.width = 80;
+            NPC.height = 80;
+            NPC.boss = true;
+            NPC.damage = 1;
+            NPC.noGravity = true;
+            NPC.aiStyle = -1;
+            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/SquidBoss");
+            NPC.noTileCollide = true;
+            NPC.knockBackResist = 0;
+            NPC.dontTakeDamage = true;
+
+            baseLife = 2000;
         }
 
-        public override void NPCLoot()
+        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+        {
+            NPC.lifeMax = Main.masterMode ? (int)(8000 * bossLifeScale) : (int)(6000 * bossLifeScale);
+            baseLife = Main.masterMode ? (int)(4000 * bossLifeScale) : (int)(3000 * bossLifeScale);
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.AuroraSquid,
+                new FlavorTextBestiaryInfoElement("[PH] Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss ")
+            });
+        }
+
+        public override ModNPC Clone(NPC npc)
+        {
+            var newNpc = base.Clone(npc) as SquidBoss;
+            newNpc.tentacles = new List<NPC>();
+            newNpc.platforms = new List<NPC>();
+            newNpc.arenaBlocker = null;
+            return newNpc;
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+            {
+                ItemType<OverflowingUrn>(),
+                ItemType<AuroraBell>()
+            }
+            ));
+
+            npcLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 4));
+        }
+
+        public override void BossLoot(ref string name, ref int potionType)
         {
             for (int k = 0; k < Main.maxPlayers; k++)
             {
-                Player player = Main.player[k];
+                Player Player = Main.player[k];
 
-                if (player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
-                    player.GetModPlayer<MedalPlayer>().ProbeMedal("Auroracle");
+                if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
+                    Player.GetModPlayer<MedalPlayer>().ProbeMedal("Auroracle");
             }
 
             StarlightWorld.Flag(WorldFlags.SquidBossDowned);
         }
 
-        public void DrawUnderWater(SpriteBatch spriteBatch)
+        public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
         {
-            Texture2D ring = GetTexture(AssetDirectory.SquidBoss + "BodyRing");
-            Texture2D ringGlow = GetTexture(AssetDirectory.SquidBoss + "BodyRingGlow");
-            Texture2D ringSpecular = GetTexture(AssetDirectory.SquidBoss + "BodyRingSpecular");
+            Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRing").Value;
+            Texture2D ringGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingGlow").Value;
+            Texture2D ringSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRingSpecular").Value;
 
-            Texture2D body = GetTexture(AssetDirectory.SquidBoss + "BodyUnder");
-            Texture2D bodyGlow = GetTexture(AssetDirectory.SquidBoss + "BodyGlow");
+            Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyUnder").Value;
+            Texture2D bodyGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyGlow").Value;
 
             for (int k = 3; k > 0; k--) //handles the drawing of the jelly rings under the boss.
             {
-                Vector2 pos = npc.Center + new Vector2(0, 70 + k * 35).RotatedBy(npc.rotation) - Main.screenPosition;
+                Vector2 pos = NPC.Center + new Vector2(0, 70 + k * 35).RotatedBy(NPC.rotation) - Main.screenPosition;
 
                 int squish = k * 10 + (int)(Math.Sin(GlobalTimer / 10f - k / 4f * 6.28f) * 20);
 				Rectangle rect = new Rectangle((int)pos.X, (int)pos.Y, ring.Width + (3 - k) * 20 - squish, ring.Height + (int)(squish * 0.4f) + (3 - k) * 5);
@@ -127,41 +191,45 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
                 float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k);
                 float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * Opacity;
 
                 if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation)
-                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f * Opacity;
 
-                spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.8f, npc.rotation, ring.Size() / 2, 0, 0);
+                if (OpaqueJelly)
+                    color.A = 255;
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                spriteBatch.Draw(ring, rect, ring.Frame(), color * 0.8f, NPC.rotation, ring.Size() / 2, 0, 0);
 
-                spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, npc.rotation, ring.Size() / 2, 0, 0);
-                spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White, npc.rotation, ring.Size() / 2, 0, 0);
+                if (!OpaqueJelly)
+                {
+                    color.A = 0;
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                    spriteBatch.Draw(ringGlow, rect, ring.Frame(), color * 0.6f, NPC.rotation, ring.Size() / 2, 0, 0);
+                    spriteBatch.Draw(ringSpecular, rect2, ring.Frame(), Color.White * Opacity, NPC.rotation, ring.Size() / 2, 0, 0);
+                }
             }
 
-            var lightColor = Lighting.GetColor((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
-            spriteBatch.Draw(body, npc.Center - Main.screenPosition, body.Frame(), lightColor * 1.2f, npc.rotation, body.Size() / 2, 1, 0, 0);
-            spriteBatch.Draw(bodyGlow, npc.Center - Main.screenPosition, bodyGlow.Frame(), Color.White, npc.rotation, bodyGlow.Size() / 2, 1, 0, 0);
+            var lightColor = Lighting.GetColor((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
+            var bodyColor = lightColor * 1.2f * Opacity;
+            bodyColor.A = 255;
+            spriteBatch.Draw(body, NPC.Center - Main.screenPosition, NPC.frame, bodyColor, NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
+            spriteBatch.Draw(bodyGlow, NPC.Center - Main.screenPosition, NPC.frame, Color.White * (0.5f + (Opacity * 0.5f)), NPC.rotation, NPC.frame.Size() / 2, 1, 0, 0);
 
             DrawHeadBlobs(spriteBatch);
 
             if (Phase >= (int)AIStates.SecondPhase)
             {
-                Texture2D sore = GetTexture(Texture);
-                spriteBatch.Draw(sore, npc.Center - Main.screenPosition, sore.Frame(), lightColor * 1.2f, npc.rotation, sore.Size() / 2, 1, 0, 0);
+                Texture2D sore = Request<Texture2D>(Texture).Value;
+                spriteBatch.Draw(sore, NPC.Center - Main.screenPosition, sore.Frame(), lightColor * 1.2f, NPC.rotation, sore.Size() / 2, 1, 0, 0);
             }
         }
 
         private void DrawHeadBlobs(SpriteBatch spriteBatch)
         {
-            Texture2D headBlob = GetTexture(AssetDirectory.SquidBoss + "BodyOver");
-            Texture2D headBlobGlow = GetTexture(AssetDirectory.SquidBoss + "BodyOverGlow");
-            Texture2D headBlobSpecular = GetTexture(AssetDirectory.SquidBoss + "BodyOverSpecular");
+            Texture2D headBlob = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOver").Value;
+            Texture2D headBlobGlow = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverGlow").Value;
+            Texture2D headBlobSpecular = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyOverSpecular").Value;
 
             for (int k = 0; k < 5; k++) //draws the head blobs
             {
@@ -196,7 +264,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                         break;
                 }
 
-                off = off.RotatedBy(npc.rotation);
+                off = off.RotatedBy(NPC.rotation);
 
                 float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f);
                 float sin2 = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f + 1.5f);
@@ -204,47 +272,133 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 float scale = 1 + sin * 0.04f;
                 float scale2 = 1 + sin2 * 0.06f;
 
-                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
+                var color = Color.White;
 
-                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red jelly in last phases
-                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+                Color auroraColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * Opacity;
+                Color redColor = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f * Opacity;
+
+                color = auroraColor;
+
+                if (Phase == (int)AIStates.ThirdPhase) //Red jelly in last phases
+                    color = Color.Lerp(auroraColor, redColor, GlobalTimer / 60f);
+
+                if (Phase == (int)AIStates.DeathAnimation)
+                    color = redColor;
 
                 if (Phase == (int)AIStates.DeathAnimation) //Unique drawing for death animation
                 {
                     sin = 1 + (float)Math.Sin(GlobalTimer / 5f - k * 0.5f); //faster pulsing
                     scale = 1 + sin * 0.08f; //bigger pulsing
 
-                    if (GlobalTimer == (k + 1) * 20) //dust explosion
-                    {
-                        for (int n = 0; n < 60; n++)
-                            Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
-
-                        for (int n = 0; n < 40; n++)
-                        {
-                            var vel = Vector2.Normalize(npc.Center + off - (npc.Center + Vector2.UnitY * 100)).RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 10);
-                            Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, Color.Lerp(color, Color.White, 0.5f), Main.rand.NextFloat(1, 1.5f));
-                        }
-                    }
-
                     if (GlobalTimer >= (k + 1) * 20) continue; //"destroy" the blobs
                 }
 
-                spriteBatch.Draw(headBlob, npc.Center + off - Main.screenPosition, frame, color * 0.8f, npc.rotation,
+                if (OpaqueJelly)
+                    color.A = 255;
+
+                spriteBatch.Draw(headBlob, NPC.Center + off - Main.screenPosition, frame, color * 0.8f, NPC.rotation,
                     new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                if (!OpaqueJelly)                   
+                {
+                    color.A = 0;
 
-                spriteBatch.Draw(headBlobGlow, npc.Center + off - Main.screenPosition, frame, color * 0.6f, npc.rotation,
-                    new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
+                    spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
+                        new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
 
-                spriteBatch.Draw(headBlobSpecular, npc.Center + off - Main.screenPosition, frame, Color.White, npc.rotation,
-                    new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
+                    spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
+                        new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
+                }
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+            }
+        }
 
-                Lighting.AddLight(npc.Center + off, color.ToVector3() * 0.5f);
+        private void DoLighting()
+		{
+            for (int k = 0; k < 5; k++) //lighting for the head blobs
+            {
+                Vector2 off = Vector2.Zero;
+
+                switch (k)
+                {
+                    case 0:
+                        off = new Vector2(42, 12);
+                        break;
+
+                    case 1:
+                        off = new Vector2(-43, 12);
+                        break;
+
+                    case 2:
+                        off = new Vector2(-41, -20);
+                        break;
+
+                    case 3:
+                        off = new Vector2(40, -20);
+                        break;
+
+                    case 4:
+                        off = new Vector2(-1, -58);
+                        break;
+                }
+
+                off = off.RotatedBy(NPC.rotation);
+
+                float sin = 1 + (float)Math.Sin(GlobalTimer / 10f - k * 0.5f);
+                float cos = 1 + (float)Math.Cos(GlobalTimer / 10f + k * 0.5f);
+
+                Color color = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
+
+                if (Phase == (int)AIStates.ThirdPhase || Phase == (int)AIStates.DeathAnimation) //Red in last phases
+                    color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.8f;
+
+                Lighting.AddLight(NPC.Center + off, color.ToVector3() * 0.5f);
+            }
+        }
+
+        internal void Animate(int fps, int animation, int frames)
+		{
+            NPC.frame.Width = 188;
+            NPC.frame.Height = 200;
+            NPC.Frame(NPC.frame.Width * animation, NPC.frame.Height * ((int)(Main.GameUpdateCount / 60f * fps) % frames));
+		}
+
+        internal void ManualAnimate(int frameX, int frameY)
+		{
+            NPC.frame.Width = 188;
+            NPC.frame.Height = 200;
+            NPC.Frame(NPC.frame.Width * frameX, NPC.frame.Height * frameY);
+        }
+
+        /// <summary>
+        /// Only intended for use by the fake boss in the arena actor!
+        /// </summary>
+        public void QuickSetup()
+        {
+            for (int k = 0; k < 4; k++) //each tenticle
+            {
+                int x;
+                int y;
+                int xb;
+
+                switch (k) //I handle these manually to get them to line up with the window correctly
+                {
+                    case 0: x = -370; y = 0; xb = -50; break;
+                    case 1: x = -420; y = -100; xb = -20; break;
+                    case 3: x = 370; y = 0; xb = 50; break;
+                    case 2: x = 420; y = -100; xb = 20; break;
+                    default: x = 0; y = 0; xb = 0; break;
+                }
+
+                var tent = new NPC();
+                tent.SetDefaults(NPCType<Tentacle>());
+                tent.Center = new Vector2(NPC.Center.X + x, NPC.Center.Y + 550);
+                tent.ai[0] = 1;
+
+                (tent.ModNPC as Tentacle).Parent = this;
+                (tent.ModNPC as Tentacle).OffsetFromParentBody = xb;
+                (tent.ModNPC as Tentacle).Timer = 60;
+                tentacles.Add(tent);
             }
         }
 
@@ -252,95 +406,51 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
         {
             GlobalTimer++;
 
+            DoLighting();
+
+            Animate(12, 0, 8);
+
+            if(arenaActor is null || !arenaActor.active)
+                arenaActor = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+
             //boss health bar glow effects
 
             float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f);
             float sin2 = (float)Math.Sin(Main.GameUpdateCount * 0.05f + 1.5f);
             float cos = (float)Math.Cos(Main.GameUpdateCount * 0.05f);
-            BootlegHealthbar.glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * 0.8f;
+            BossBarOverlay.glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f) * 0.8f;
 
             if (Phase == (int)AIStates.SpawnEffects)
             {
                 Phase = (int)AIStates.SpawnAnimation;
 
-                npc.damage = 0;
-                foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is IcePlatform))
+                NPC.damage = 0;
+                foreach (NPC NPC in Main.npc.Where(n => n.active && n.ModNPC is IcePlatform))
                 {
-                    platforms.Add(npc);
+                    platforms.Add(NPC);
                 }
 
-                spawnPoint = npc.Center;
+                platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.ModNPC is ArenaActor).Center.X) >= 550);
 
-                string title = Main.rand.Next(10000) == 0 ? "Jammed Mod" : "The Venerated";
-                UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 600);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMovePan = npc.Center + new Vector2(0, -600);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 600;
+                spawnPoint = NPC.Center;
 
-                int i = NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
+                int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 1050, NPCType<ArenaBlocker>(), 0, 800);
                 arenaBlocker = Main.npc[i];
 
                 for (int k = 0; k < Main.maxPlayers; k++)
                 {
-                    Player player = Main.player[k];
+                    Player Player = Main.player[k];
 
-                    if (player.active && StarlightWorld.SquidBossArena.Contains((player.Center / 16).ToPoint()))
-                        player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
+                    if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
+                        Player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
                 }
+
+                BossBarOverlay.SetTracked(NPC, ", The Venerated", Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame").Value);
             }
 
             if (Phase == (int)AIStates.SpawnAnimation)
             {
-                if (GlobalTimer < 200) npc.Center = Vector2.SmoothStep(spawnPoint, spawnPoint + new Vector2(0, -600), GlobalTimer / 200f); //rise up from the ground
-
-                for (int k = 0; k < 4; k++) //each tenticle
-                {
-                    if (GlobalTimer == 200 + k * 50)
-                    {
-                        int x;
-                        int y;
-                        int xb;
-
-                        switch (k) //I handle these manually to get them to line up with the window correctly
-                        {
-                            case 0: x = -370; y = 0; xb = -50; break;
-                            case 1: x = -420; y = -100; xb = -20; break;
-                            case 3: x = 370; y = 0; xb = 50; break;
-                            case 2: x = 420; y = -100; xb = 20; break;
-                            default: x = 0; y = 0; xb = 0; break;
-                        }
-
-                        int i = NPC.NewNPC((int)npc.Center.X + x, (int)npc.Center.Y + 550, NPCType<Tentacle>(), 0, k == 1 || k == 2 ? 1 : 0); //middle 2 tentacles should be vulnerable
-                        (Main.npc[i].modNPC as Tentacle).Parent = this;
-                        (Main.npc[i].modNPC as Tentacle).MovePoint = new Vector2((int)npc.Center.X + x, (int)npc.Center.Y - y);
-                        (Main.npc[i].modNPC as Tentacle).OffBody = xb;
-                        tentacles.Add(Main.npc[i]);
-                    }
-
-                    if (GlobalTimer == 275 + k * 50)
-                    {
-                        for (int i = 0; i < 50; i++)
-                        {
-                            Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), 33, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(12), 0, default, 2);
-                            Dust.NewDustPerfect(tentacles[k].Center + new Vector2(Main.rand.NextFloat(-20, 20), 0), DustType<Dusts.Starlight>(), -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(80), 0, default, Main.rand.NextFloat());
-                        }
-
-                        Main.PlaySound(SoundID.Splash, tentacles[k].Center, 0);
-                    }
-                }
-
-                if (GlobalTimer > 600) //tentacles returning back underwater
-                    foreach (NPC tentacle in tentacles)
-                    {
-                        Tentacle mt = tentacle.modNPC as Tentacle;
-                        tentacle.Center = Vector2.SmoothStep(mt.MovePoint, mt.SavedPoint, (GlobalTimer - 600) / 100f);
-                    }
-
-                if (GlobalTimer > 700)
-                {
-                    BootlegHealthbar.SetTracked(npc, ", The Venerated", GetTexture(AssetDirectory.GUI + "BossBarFrame"));
-                    Phase = (int)AIStates.FirstPhase;
-                }
+                SpawnAnimation();
             }
 
             if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
@@ -348,41 +458,81 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 AttackTimer++;
 
                 //passive movement
-                npc.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
-                npc.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
+                NPC.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
+                NPC.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
+
+                int tentacleLife = 0;
+                foreach(var tentacle in tentacles)
+				{
+                    tentacleLife += tentacle.life;
+				}
+
+                NPC.life = baseLife + tentacleLife;
 
                 if (AttackTimer == 1)
-                    if (tentacles.Count(n => n.ai[0] == 2) == 2) //phasing logic
+                {
+                    var tentacleCount = tentacles.Count(n => n.ai[0] == 2);
+
+                    if (tentacleCount <= 2 && tentacleCount > 1) //phasing logic
                     {
                         Phase = (int)AIStates.FirstPhaseTwo;
                         GlobalTimer = 0;
+                        ResetAttack();
                         return;
                     }
                     else //else advance the attack pattern
                     {
                         AttackPhase++;
-                        if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
+                        variantAttack = Main.rand.NextBool();
+                        if (AttackPhase > (Main.expertMode ? 5 : 4))
+                            AttackPhase = 1;
                     }
+                }
 
                 switch (AttackPhase)
                 {
                     case 1: TentacleSpike(); break;
-                    case 2: InkBurst(); break;
-                    case 3: PlatformSweep(); break;
-                    case 4: ArenaSweep(); break;
+                    case 2: if (variantAttack) InkBurstAlt(); else InkBurst(); break;
+                    case 3: if (variantAttack) TentacleSpike(); else PlatformSweep(); break;
+                    case 4: if (variantAttack) SpawnAdds(); else InkBurst(); break;
+                    case 5: ArenaSweep(); break;
                 }
             }
 
             if (Phase == (int)AIStates.FirstPhaseTwo) //first phase, part 2. Tentacle attacks and ink. Raise water first.
             {
-                if (GlobalTimer == 1) savedPoint = npc.Center;
+                int tentacleLife = 0;
+                foreach (var tentacle in tentacles)
+                {
+                    tentacleLife += tentacle.life;
+                }
+
+                NPC.life = baseLife + tentacleLife;
+
+                if (GlobalTimer == 1) 
+                    savedPoint = NPC.Center;
+
+                if (GlobalTimer < 50)
+                    Arena.WaterfallWidth = (int)GlobalTimer;
 
                 if (GlobalTimer < 325) //water rising up
                 {
-                    Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).ai[0]++;
-                    npc.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
-                    if (GlobalTimer % 10 == 0) Main.PlaySound(SoundID.Splash, npc.Center);
+                    var x = GlobalTimer + 1;
+                    var fun = (float)(-937.5f * Math.Pow(x / 325f, 3) + 1406.25f * Math.Pow(x / 325f, 2) - 143.75 * x / 325f);
+                    var dif = fun - (float)(-937.5f * Math.Pow(GlobalTimer / 325f, 3) + 1406.25f * Math.Pow(GlobalTimer / 325f, 2) - 143.75 * GlobalTimer / 325f);
+                    Arena.NPC.ai[0] += dif;
+                    
+                    NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -750), GlobalTimer / 325f);
+
+                    if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
+                        Helpers.Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 0.5f, 0f, NPC.Center);
+
+                    if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
+                        Helpers.Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
                 }
+
+                if(GlobalTimer > 275 && GlobalTimer <= 325)
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 275);
 
                 if (GlobalTimer == 325) //make the remaining tentacles vulnerable
                     foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1)) tentacle.ai[0] = 0;
@@ -392,92 +542,101 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                     AttackTimer++;
 
                     //passive movement
-                    npc.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
-                    npc.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
+                    NPC.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
+                    NPC.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
                     if (AttackTimer == 1)
                         if (tentacles.Count(n => n.ai[0] == 2) == 4) //phasing logic
                         {
                             Phase = (int)AIStates.SecondPhase;
                             GlobalTimer = 0;
+                            ResetAttack();
                             return;
                         }
                         else //else advance the attack pattern
                         {
                             AttackPhase++;
-                            if (AttackPhase > (Main.expertMode ? 4 : 3)) AttackPhase = 1;
+                            if (AttackPhase > (Main.expertMode ? 6 : 5)) 
+                                AttackPhase = 1;
                         }
 
                     switch (AttackPhase)
                     {
                         case 1: TentacleSpike(); break;
-                        case 2: InkBurst(); break;
+                        case 2: if (variantAttack) InkBurstAlt(); else InkBurst(); break;
                         case 3: PlatformSweep(); break;
-                        case 4: ArenaSweep(); break;
+                        case 4: if (variantAttack) TentacleSpike(); else InkBurstAlt(); break;
+                        case 5: InkBurst(); break;
+                        case 6: ArenaSweep(); break;
                     }
                 }
             }
 
             if (Phase == (int)AIStates.SecondPhase) //second phase
             {
+                if (GlobalTimer < 50)
+                    Arena.WaterfallWidth = (int)GlobalTimer;
+
                 if (GlobalTimer < 300) //water rising
                 {
-                    Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).ai[0]++;
-                    if (GlobalTimer % 10 == 0) Main.PlaySound(SoundID.Splash, npc.Center);
+                    var x = GlobalTimer + 1;
+                    var fun = (float)(-833.33f * Math.Pow(x / 325f, 3) + 1250f * Math.Pow(x / 325f, 2) - 116.66 * x / 325f);
+                    var dif = fun - (float)(-833.33f * Math.Pow(GlobalTimer / 325f, 3) + 1250f * Math.Pow(GlobalTimer / 325f, 2) - 116.66 * GlobalTimer / 325f);
+                    Arena.NPC.ai[0] += dif;
+
+                    if (GlobalTimer % 45 == 0 && GlobalTimer < 200)
+                        Helpers.Helper.PlayPitched("SquidBoss/UnderwaterSwoosh", 1, 0f, NPC.Center);
+
+                    if (GlobalTimer % 180 == 0 || GlobalTimer == 1)
+                        Helpers.Helper.PlayPitched("SquidBoss/WaterLoop", 2, 0.0f, NPC.Center);
+
                     arenaBlocker.position.Y -= 1f;
                 }
 
+                if (GlobalTimer > 250 && GlobalTimer <= 300)
+                    Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 250);
+
                 if (GlobalTimer == 300) //reset
                 {
-                    npc.dontTakeDamage = false;
+                    NPC.dontTakeDamage = false;
                     ResetAttack();
                     AttackPhase = 0;
                 }
 
                 if (GlobalTimer > 300)
                 {
-                    if (npc.life < npc.lifeMax / 4) npc.dontTakeDamage = true; //health gate
+                    if (NPC.life < NPC.lifeMax / 4) NPC.dontTakeDamage = true; //health gate
 
                     AttackTimer++;
 
-                    if (AttackPhase != 2 && AttackPhase != 4 && !(AttackPhase == 3 && variantAttack)) //when not lasering, passive movement
-                    {
-                        npc.velocity += Vector2.Normalize(npc.Center - (Main.player[npc.target].Center + new Vector2(0, 200))) * -0.2f;
-                        if (npc.velocity.LengthSquared() > 20.25f) npc.velocity = Vector2.Normalize(npc.velocity) * 4.5f;
-                        npc.rotation = npc.velocity.X * 0.05f;
-                    }
-
                     if (AttackTimer == 1)
                     {
-                        if (npc.life < npc.lifeMax / 4) //phasing logic
+                        if (NPC.life < NPC.lifeMax / 4) //phasing logic
                         {
                             Phase = (int)AIStates.ThirdPhase;
                             GlobalTimer = 0;
                             AttackPhase = 0;
                             ResetAttack();
-
-                            platforms.RemoveAll(n => Math.Abs(n.Center.X - Main.npc.FirstOrDefault(l => l.active && l.modNPC is ArenaActor).Center.X) >= 550);
                             arenaBlocker.ai[1] = 1;
                             return;
                         }
 
                         AttackPhase++;
 
-                        variantAttack = false;
-                        if (AttackPhase == 3) variantAttack = Main.rand.Next(3) >= 1;
-                        if (AttackPhase == 4 && Main.expertMode) variantAttack = Main.rand.NextBool();
+                        variantAttack = Main.rand.NextBool();
 
-                        if (AttackPhase > 4) AttackPhase = 1;
+                        if (AttackPhase > 4) 
+                            AttackPhase = 1;
 
-                        npc.netUpdate = true;
+                        NPC.netUpdate = true;
                     }
 
                     switch (AttackPhase)
                     {
-                        case 1: Spew(); break;
+                        case 1: if (variantAttack) SpewAlternate(); else Spew(); break;
                         case 2: Laser(); break;
-                        case 3: if (variantAttack) Eggs(); else Spew(); break;
-                        case 4: if (variantAttack) LeapHard(); else Leap(); break;
+                        case 3: if (variantAttack) SpewAlternate(); else Spew(); break;
+                        case 4: Leap(); break;
                     }
                 }
             }
@@ -486,32 +645,38 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             {
                 if (GlobalTimer == 1) //reset velocity + set movement points
                 {
-                    npc.velocity *= 0;
-                    npc.rotation = 0;
-                    savedPoint = npc.Center;
+                    NPC.velocity *= 0;
+                    NPC.rotation = 0;
+                    savedPoint = NPC.Center;
                 }
 
-                if (GlobalTimer < 240) npc.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -1400), GlobalTimer / 240f); //move to the top of the arena
+                if (GlobalTimer < 240) NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -1400), GlobalTimer / 240f); //move to the top of the arena
 
                 if (GlobalTimer == 240) //roar and activate
                 {
-                    npc.dontTakeDamage = false;
-                    foreach (Player player in Main.player.Where(n => n.active)) player.GetModPlayer<StarlightPlayer>().Shake += 40;
-                    Main.PlaySound(SoundID.Roar, npc.Center, 0);
+                    NPC.dontTakeDamage = false;
+                    Core.Systems.CameraSystem.Shake += 40;
+                    Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
                 }
+
+                if (GlobalTimer > 240 && GlobalTimer <= 290)
+                    Arena.WaterfallWidth = (int)GlobalTimer - 240;
 
                 if (GlobalTimer > 240) //following unless using ink attack
                 {
                     if (AttackPhase != 3)
                     {
-                        npc.velocity += Vector2.Normalize(npc.Center - (Main.player[npc.target].Center + new Vector2(0, -300))) * -0.3f;
-                        if (npc.velocity.LengthSquared() > 36) npc.velocity = Vector2.Normalize(npc.velocity) * 6;
-                        npc.rotation = npc.velocity.X * 0.05f;
+                        NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, -300))) * -0.3f;
+
+                        if (NPC.velocity.LengthSquared() > 36) 
+                            NPC.velocity = Vector2.Normalize(NPC.velocity) * 6;
+
+                        NPC.rotation = NPC.velocity.X * 0.05f;
                     }
 
                     GlobalTimer++;
 
-                    if (GlobalTimer % 6 == 0) Main.npc.FirstOrDefault(n => n.active && n.modNPC is ArenaActor).ai[0]++; //rising water
+                    if (GlobalTimer % 6 == 0) Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).ai[0]++; //rising water
 
                     AttackTimer++;
 
@@ -532,37 +697,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
             if (Phase == (int)AIStates.DeathAnimation)
             {
-                if (GlobalTimer == 1)
-                {
-                    npc.velocity *= 0;
-                    npc.rotation = 0;
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center;
-                    Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 240;
+                DeathAnimation();
+            }
 
-                    for (int k = 0; k < tentacles.Count; k++)
-                        tentacles[k].Kill();
-                }
+            if(Phase == (int)AIStates.Fleeing)
+			{
+                if (GlobalTimer < 50)
+                    Arena.WaterfallWidth = 50 - (int)GlobalTimer;
 
-                if (GlobalTimer % 20 == 0 && GlobalTimer <= 100) Main.PlaySound(SoundID.NPCKilled, npc.Center);
-
-                if (GlobalTimer >= 200)
-                {
-                    npc.Kill();
-
-                    for (int n = 0; n < 100; n++)
-                    {
-                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-                        Dust.NewDustPerfect(npc.Center + off, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, default, 1.2f);
-                    }
-
-                    for (int n = 0; n < 100; n++)
-                    {
-                        var off = new Vector2(Main.rand.Next(-50, 50), Main.rand.Next(80, 120));
-                        var vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6);
-                        var color = Color.Lerp(new Color(255, 100, 0) * 0.5f, Color.White, Main.rand.NextFloat(0.7f));
-                        Dust.NewDustPerfect(npc.Center + off + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(30), DustType<Dusts.Ink>(), vel, 0, color, Main.rand.NextFloat(1, 1.4f));
-                    }
-                }
+                if (GlobalTimer > 50)
+                    NPC.active = false;
             }
         }
 

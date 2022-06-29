@@ -1,4 +1,5 @@
 using StarlightRiver.Helpers;
+using StarlightRiver.Core;
 using Terraria;
 
 namespace StarlightRiver.Content.Buffs
@@ -7,10 +8,11 @@ namespace StarlightRiver.Content.Buffs
     {
         public CoughDropsBuff() : base("Cough Drops", "Your speed and damage are boosted", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override string Texture => AssetDirectory.Buffs + "CoughDropsBuff";
+
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.maxRunSpeed += 2;
-            player.BoostAllDamage(0.15f);
+            Player.maxRunSpeed += 2;
         }
     }
 }

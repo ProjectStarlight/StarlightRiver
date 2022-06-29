@@ -12,13 +12,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
     {
         public override int DummyType => ProjectileType<BossGateDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Invisible";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Invisible";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 21, 4, 0, SoundID.Tink, false, new Color(100, 120, 200));
         }
@@ -35,46 +31,46 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public override void SafeSetDefaults()
         {
-            projectile.hide = true;
+            Projectile.hide = true;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Tiles/Permafrost/BossGate");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/BossGate").Value;
 
-            Vector2 off = Vector2.UnitX * (projectile.ai[0] / 120 * projectile.width / 2);
+            Vector2 off = Vector2.UnitX * (Projectile.ai[0] / 120 * Projectile.width / 2);
 
-            if (projectile.ai[0] > 0 && projectile.ai[0] < 120)
+            if (Projectile.ai[0] > 0 && Projectile.ai[0] < 120)
                 off += Vector2.One.RotatedByRandom(6.28f) * 0.5f;
 
-            var color = Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16);
-            spriteBatch.Draw(tex, projectile.position - Main.screenPosition - off, color);
-            spriteBatch.Draw(tex, projectile.position - Main.screenPosition + Vector2.UnitX * projectile.width / 2 + off, null, color, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
+            var color = Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16);
+            Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition - off, color);
+            Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition + Vector2.UnitX * Projectile.width / 2 + off, null, color, 0, Vector2.Zero, 1, SpriteEffects.FlipHorizontally, 0);
         }
 
         public override void Update()
         {
-            if (StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && projectile.ai[0] < 120)
-                projectile.ai[0]++;
-            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && projectile.ai[0] > 0)
-                projectile.ai[0]--;
+            if (StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && Projectile.ai[0] < 120)
+                Projectile.ai[0]++;
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && Projectile.ai[0] > 0)
+                Projectile.ai[0]--;
 
-            if (projectile.ai[0] > 0 && projectile.ai[0] < 120)
+            if (Projectile.ai[0] > 0 && Projectile.ai[0] < 120)
             {
-                Dust.NewDustPerfect(projectile.position + Vector2.UnitY * Main.rand.NextFloat(projectile.height), DustType<Dusts.Stone>());
-                Dust.NewDustPerfect(projectile.position + new Vector2(projectile.width, Main.rand.NextFloat(projectile.height)), DustType<Dusts.Stone>());
+                Dust.NewDustPerfect(Projectile.position + Vector2.UnitY * Main.rand.NextFloat(Projectile.height), DustType<Dusts.Stone>());
+                Dust.NewDustPerfect(Projectile.position + new Vector2(Projectile.width, Main.rand.NextFloat(Projectile.height)), DustType<Dusts.Stone>());
             }
 
-            if (projectile.ai[0] == 119)
+            if (Projectile.ai[0] == 119)
             {
-                Main.PlaySound(SoundID.Tink, (int)projectile.Center.X, (int)projectile.Center.Y, 0, 1, -2);
-                Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 7;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink with { Pitch = -1f }, Projectile.Center);
+                Core.Systems.CameraSystem.Shake += 7;
             }
         }
 
-        public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-        {
-            drawCacheProjsBehindNPCsAndTiles.Add(index);
-        }
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+            behindNPCsAndTiles.Add(index);
+		}
     }
 }

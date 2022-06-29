@@ -8,28 +8,24 @@ namespace StarlightRiver.Content.Tiles.Palestone
 {
 	internal class PalestoneItem : QuickTileItem
     {
-        public PalestoneItem() : base("Palestone", "", TileType<Palestone>(), 0, AssetDirectory.PalestoneTile) { }
+        public PalestoneItem() : base("Palestone", "", "Palestone", 0, AssetDirectory.PalestoneTile) { }
     }
 
     internal class Palestone : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.PalestoneTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.PalestoneTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
             Main.tileLighted[Type] = true;
             Main.tileStone[Type] = true;
-            soundType = Terraria.ID.SoundID.Tink;
+            HitSound = Terraria.ID.SoundID.Tink;
 
-            dustType = Terraria.ID.DustID.Stone;
-            drop = ItemType<PalestoneItem>();
+            DustType = Terraria.ID.DustID.Stone;
+            ItemDrop = ItemType<PalestoneItem>();
 
             AddMapEntry(new Color(167, 180, 191));
         }

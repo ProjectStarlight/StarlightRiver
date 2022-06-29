@@ -1,7 +1,7 @@
 ---
 name: Demo report
 about: Report an issue present in the official SLR demo release
-title: ''
+title: "[Demo Bug]"
 labels: demo
 assignees: ''
 

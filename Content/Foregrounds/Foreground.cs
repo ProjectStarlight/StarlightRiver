@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.Foregrounds
 
         public virtual bool Visible => false;
 
+        public virtual bool OverUI => false;
+
         public Foreground() 
         {
             OnLoad();
@@ -33,6 +35,8 @@ namespace StarlightRiver.Content.Foregrounds
         public virtual void Reset() { }
 
         public virtual void OnLoad() { }
+
+        public virtual void Unload() { }
     }
 
 	public abstract class ParticleForeground : Foreground
@@ -49,5 +53,10 @@ namespace StarlightRiver.Content.Foregrounds
             ParticleSystem = system;
             OnLoad();
         }
-    }
+
+		public override void Unload()
+		{
+            ParticleSystem = null;
+		}
+	}
 }

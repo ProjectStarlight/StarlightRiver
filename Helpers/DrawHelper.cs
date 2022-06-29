@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.ID;
 
 namespace StarlightRiver.Helpers
 {
@@ -17,7 +18,8 @@ namespace StarlightRiver.Helpers
 
         public static Vector2 ConvertVec2(Vector2 input) => new Vector2(1, -1) * (input / (new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f) - Vector2.One);
 
-        public static void DrawHitbox(this SpriteBatch spriteBatch, NPC npc, Color color) => spriteBatch.Draw(Main.blackTileTexture, npc.getRect().WorldToScreenCoords(), color);
+        public static void DrawHitbox(this SpriteBatch spriteBatch, NPC NPC, Color color) => spriteBatch.Draw(Terraria.GameContent.TextureAssets.BlackTile.Value, NPC.getRect().WorldToScreenCoords(), color);
+
         public static Rectangle WorldToScreenCoords(this Rectangle rect) => new Rectangle(rect.X - (int)Main.screenPosition.X, rect.Y - (int)Main.screenPosition.Y, rect.Width, rect.Height);
 
         public static void DrawTriangle(Texture2D tex, Vector2[] target, Vector2[] source)
@@ -109,19 +111,19 @@ namespace StarlightRiver.Helpers
         public static void TileDebugDraw(int i, int j, SpriteBatch spriteBatch)
         {
             Tile tile = Main.tile[i, j];
-            int height = tile.frameY == 36 ? 18 : 16;
-            if (tile.slope() == 0 && !tile.halfBrick())
-                spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, height), Color.Magenta * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            else if (tile.halfBrick())
-                spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2(0, 10), new Rectangle(tile.frameX, tile.frameY + 10, 16, 6), Color.Red * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            int height = tile.TileFrameY == 36 ? 18 : 16;
+            if (tile.Slope == SlopeType.Solid && !tile.IsHalfBlock)
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.BlackTile.Value, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, height), Color.Magenta * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            else if (tile.IsHalfBlock)
+                spriteBatch.Draw(Terraria.GameContent.TextureAssets.BlackTile.Value, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2(0, 10), new Rectangle(tile.TileFrameX, tile.TileFrameY + 10, 16, 6), Color.Red * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             else
             {
-                byte b3 = tile.slope();
+                byte b3 = (byte)tile.Slope;
                 int num34;
                 for (int num226 = 0; num226 < 8; num226 = num34 + 1)
                 {
                     int num227 = num226 << 1;
-                    Rectangle value5 = new Rectangle(tile.frameX, tile.frameY + num226 * 2, num227, 2);
+                    Rectangle value5 = new Rectangle(tile.TileFrameX, tile.TileFrameY + num226 * 2, num227, 2);
                     int num228 = 0;
                     switch (b3)
                     {
@@ -138,7 +140,7 @@ namespace StarlightRiver.Helpers
                             num228 = num227 + 2;
                             break;
                     }
-                    spriteBatch.Draw(Main.blackTileTexture, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2((float)num228, (num226 * 2)), value5, Color.Blue * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                    spriteBatch.Draw(Terraria.GameContent.TextureAssets.BlackTile.Value, ((new Vector2(i, j) + Helper.TileAdj) * 16) - Main.screenPosition + new Vector2((float)num228, (num226 * 2)), value5, Color.Blue * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                     num34 = num226;
                 }
             }

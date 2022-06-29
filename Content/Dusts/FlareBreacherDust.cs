@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
     public class FlareBreacherDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

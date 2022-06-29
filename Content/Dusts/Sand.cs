@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Sand : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {

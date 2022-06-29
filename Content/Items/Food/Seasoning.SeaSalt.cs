@@ -10,14 +10,14 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SafeSetDefaults()
         {
-            item.createTile = TileType<Tiles.Cooking.SeaSalt>();
-            item.rare = ItemRarityID.Blue;
+            Item.createTile = TileType<Tiles.Cooking.SeaSalt>();
+            Item.rare = ItemRarityID.Blue;
         }
 
-        public override void BuffEffects(Player player, float multiplier)
+        public override void BuffEffects(Player Player, float multiplier)
         {
-            player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.1f;
-            player.gills = true;
+            Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.1f;
+            Player.gills = true;
         }
     }
 }

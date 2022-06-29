@@ -13,8 +13,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 	{
 		public override string Texture => AssetDirectory.Assets + "NPCs/Corruption/" + Name;
 
-		public ref float Timer => ref npc.ai[0];
-		public ref float State => ref npc.ai[1];
+		public ref float Timer => ref NPC.ai[0];
+		public ref float State => ref NPC.ai[1];
 
 		enum States
 		{
@@ -24,12 +24,12 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override void SetDefaults()
 		{
-			npc.noGravity = true;
-			npc.width = 36;
-			npc.height = 28;
-			npc.immortal = true;
-			npc.lifeMax = 10000;
-			npc.alpha = 255;
+			NPC.noGravity = true;
+			NPC.width = 36;
+			NPC.height = 28;
+			NPC.immortal = true;
+			NPC.lifeMax = 10000;
+			NPC.alpha = 255;
 		}
 
 		public override void AI()
@@ -37,15 +37,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			Timer++;
 
 			if(Timer % 240 <= 30)
-				npc.frame = new Rectangle(0, npc.height * (int)(Timer % 240 / 30f * 8), npc.width, npc.height);
+				NPC.frame = new Rectangle(0, NPC.height * (int)(Timer % 240 / 30f * 8), NPC.width, NPC.height);
 			else
-				npc.frame = new Rectangle(0, 0, npc.width, npc.height);
+				NPC.frame = new Rectangle(0, 0, NPC.width, NPC.height);
 
 			if (State == 0)
 			{
-				npc.TargetClosest();
-				if (Vector2.Distance(Main.player[npc.target].Center, npc.Center) < 360 ||
-					Main.projectile.Any(n => n.active && n.friendly && Vector2.Distance(n.Center, npc.Center) < 360) ||
+				NPC.TargetClosest();
+				if (Vector2.Distance(Main.player[NPC.target].Center, NPC.Center) < 360 ||
+					Main.projectile.Any(n => n.active && n.friendly && Vector2.Distance(n.Center, NPC.Center) < 360) ||
 					NearLight()
 					)
 
@@ -54,9 +54,9 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 			if (State == 1)
 			{
-				npc.alpha -= 25;
-				if (npc.alpha < 50)
-					npc.active = false;
+				NPC.alpha -= 25;
+				if (NPC.alpha < 50)
+					NPC.active = false;
 			}
 		}
 
@@ -65,8 +65,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			for(int x = -5; x < 5; x++)
 				for(int y =  -5; y < 5; y++)
 				{
-					int xPos = (int)(npc.Center.X / 16) + x;
-					int yPos = (int)(npc.Center.Y / 16) + y;
+					int xPos = (int)(NPC.Center.X / 16) + x;
+					int yPos = (int)(NPC.Center.Y / 16) + y;
 
 					if (Lighting.Brightness(xPos, yPos) > 0.15f)
 						return true;
@@ -77,20 +77,20 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			var tile = Framing.GetTileSafely(spawnInfo.spawnTileX, spawnInfo.spawnTileY);
-			var spawnPoint = new Vector2(spawnInfo.spawnTileX, spawnInfo.spawnTileY) * 16;
+			var tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
+			var spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
 
-			return spawnInfo.player.ZoneCorrupt && 
-				tile.wall == WallID.EbonstoneUnsafe && 
-				tile.liquid == 0 &&
-				Lighting.Brightness(spawnInfo.spawnTileX, spawnInfo.spawnTileY) <= 0.1f &&
+			return spawnInfo.Player.ZoneCorrupt && 
+				tile.WallType == WallID.EbonstoneUnsafe && 
+				tile .LiquidAmount == 0 &&
+				Lighting.Brightness(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) <= 0.1f &&
 				!Main.npc.Any(n => n.type == NPCType<Stalker>() && Vector2.Distance(n.Center, spawnPoint) < 320) ? 1 : 0;
 		}
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = GetTexture(Texture);
-			spriteBatch.Draw(tex, npc.Center - Main.screenPosition, npc.frame, Color.White * (npc.alpha / 255f), 0, npc.Size / 2, 1, 0, 0);
+			var tex = Request<Texture2D>(Texture).Value;
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
 
 			return false;
 		}

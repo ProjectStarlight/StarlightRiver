@@ -14,32 +14,29 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.Blue;
+            Item.rare = ItemRarityID.Blue;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.meleeCrit += 3;
-            player.rangedCrit += 3;
-            player.magicCrit += 3;
+            Player.GetCritChance(Terraria.ModLoader.DamageClass.Generic) += 3;
         }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHurtLens;
             StarlightProjectile.ModifyHitNPCEvent += ModifyProjectileLens;
-            return true;
         }
 
-        private void ModifyHurtLens(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
-            if (Equipped(player) && crit)
+            if (Equipped(Player) && crit)
                 target.AddBuff(BuffType<Buffs.Illuminant>(), 300);
         }
 
-        private void ModifyProjectileLens(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        private void ModifyProjectileLens(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (Equipped(Main.player[projectile.owner]) && crit)
+            if (Equipped(Main.player[Projectile.owner]) && crit)
                 target.AddBuff(BuffType<Buffs.Illuminant>(), 300);
         }
     }

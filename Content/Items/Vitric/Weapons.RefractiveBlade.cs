@@ -13,6 +13,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -22,7 +23,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
-        public override bool AltFunctionUse(Player player) => true;
+        public override bool AltFunctionUse(Player Player) => true;
 
 		public override void SetStaticDefaults()
         {
@@ -32,46 +33,46 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            item.damage = 34;
-            item.width = 60;
-            item.height = 60;
-            item.useTime = 22;
-            item.useAnimation = 22;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.melee = true;
-            item.noMelee = true;
-            item.knockBack = 7;
-            item.useTurn = false;
-            item.value = Item.sellPrice(0, 2, 20, 0);
-            item.rare = ItemRarityID.Orange;
-            item.shoot = ProjectileType<RefractiveBladeProj>();
-            item.shootSpeed = 0.1f;
-            item.noUseGraphic = true;
+            Item.damage = 34;
+            Item.width = 60;
+            Item.height = 60;
+            Item.useTime = 22;
+            Item.useAnimation = 22;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.DamageType = DamageClass.Melee;
+            Item.noMelee = true;
+            Item.knockBack = 7;
+            Item.useTurn = false;
+            Item.value = Item.sellPrice(0, 2, 20, 0);
+            Item.rare = ItemRarityID.Orange;
+            Item.shoot = ProjectileType<RefractiveBladeProj>();
+            Item.shootSpeed = 0.1f;
+            Item.noUseGraphic = true;
         }
 
-        public override void HoldItem(Player player)
+        public override void HoldItem(Player Player)
         {
-            if (Main.myPlayer == player.whoAmI)
-                player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
+            if (Main.myPlayer == Player.whoAmI)
+                Player.GetModPlayer<ControlsPlayer>().rightClickListener = true;
 
-            if (player.altFunctionUse == 2)
-                item.useStyle = ItemUseStyleID.HoldingOut;
+            if (Player.altFunctionUse == 2)
+                Item.useStyle = ItemUseStyleID.Shoot;
             else
-                item.useStyle = ItemUseStyleID.SwingThrow;
+                Item.useStyle = ItemUseStyleID.Swing;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-            if(player.altFunctionUse == 2)
-			{
-                if(!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-                    Projectile.NewProjectile(position, new Vector2(speedX, speedY), ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockBack, player.whoAmI, 0, 120);
+            if (player.altFunctionUse == 2)
+            {
+                if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
+                    Projectile.NewProjectile(source, position, velocity, ProjectileType<RefractiveBladeLaser>(), (int)(damage * 0.05f), knockback, player.whoAmI, 0, 120);
 
                 return false;
-			}
+            }
 
             if (!Main.projectile.Any(n => n.active && n.type == ProjectileType<RefractiveBladeLaser>() && n.owner == player.whoAmI))
-                Projectile.NewProjectile(position, new Vector2(speedX, speedY), type, damage, knockBack, player.whoAmI, 0, combo);
+                Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, 0, combo);
 
             combo++;
 
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 combo = 0;
 
             return false;
-		}
+        }
 	}
 
     public class RefractiveBladeProj : ModProjectile, IDrawPrimitive
@@ -93,33 +94,33 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
 
-        public ref float StoredAngle => ref projectile.ai[0];
-        public ref float Combo => ref projectile.ai[1];
+        public ref float StoredAngle => ref Projectile.ai[0];
+        public ref float Combo => ref Projectile.ai[1];
 
-        public float Timer => 300 - projectile.timeLeft;
-        public Player Owner => Main.player[projectile.owner];
+        public float Timer => 300 - Projectile.timeLeft;
+        public Player Owner => Main.player[Projectile.owner];
         public float SinProgress => (float)Math.Sin((1 - Timer / maxTime) * 3.14f);
 
         public sealed override void SetDefaults()
         {
-            projectile.hostile = false;
-            projectile.melee = true;
-            projectile.width = projectile.height = 2;
-            projectile.aiStyle = -1;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
-            projectile.alpha = 255;
+            Projectile.hostile = false;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.width = Projectile.height = 2;
+            Projectile.aiStyle = -1;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
+            Projectile.alpha = 255;
 
-            projectile.timeLeft = 300;
+            Projectile.timeLeft = 300;
         }
 
 		public override void AI()
 		{
             if (Timer == 0)
             {
-                StoredAngle = projectile.velocity.ToRotation();
-                projectile.velocity *= 0;
+                StoredAngle = Projectile.velocity.ToRotation();
+                Projectile.velocity *= 0;
 
                 Helper.PlayPitched("Effects/FancySwoosh", 1, Combo);
 
@@ -140,8 +141,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
             float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
 
-            projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
-            projectile.rotation = targetAngle + 1.57f * 0.5f;
+            Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
+            Projectile.rotation = targetAngle + 1.57f * 0.5f;
 
             if (Main.netMode != Terraria.ID.NetmodeID.Server)
             {
@@ -150,14 +151,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 var color = new Color(255, 140 + (int)(40 * SinProgress), 105);
 
-                Lighting.AddLight(projectile.Center, color.ToVector3() * SinProgress);
+                Lighting.AddLight(Projectile.Center, color.ToVector3() * SinProgress);
 
                 if (Main.rand.Next(2) == 0)
-                    Dust.NewDustPerfect(projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
+                    Dust.NewDustPerfect(Projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
             }
 
             if (Timer >= maxTime)
-                projectile.timeLeft = 0;
+                Projectile.timeLeft = 0;
 
             if (Main.myPlayer != Owner.whoAmI)
                 checkHits();
@@ -166,14 +167,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public void checkHits()
         {
-            // done manually for clients that aren't the projectile owner since onhit methods are clientside
-            foreach (NPC npc in Main.npc.Where(n => n.active &&
+            // done manually for clients that aren't the Projectile owner since onhit methods are clientside
+            foreach (NPC NPC in Main.npc.Where(n => n.active &&
                  !n.dontTakeDamage &&
                  !n.townNPC &&
                  n.immune[Owner.whoAmI] <= 0 &&
                  Colliding(new Rectangle(), n.Hitbox) == true))
             {
-                OnHitNPC(npc, 0, 0, false);
+                OnHitNPC(NPC, 0, 0, false);
             }
         }
 
@@ -181,13 +182,13 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
 
-            target.immune[projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiplayer compatibility
+            target.immune[Projectile.owner] = 10; //equivalent to normal pierce iframes but explicit for multiPlayer compatibility
 
-            Helper.CheckLinearCollision(Owner.Center, projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual npc ref, soo...
+            Helper.CheckLinearCollision(Owner.Center, Projectile.Center, target.Hitbox, out Vector2 hitPoint); //here to get the point of impact, ideally we dont have to do this twice but for some reasno colliding hook dosent have an actual NPC ref, soo...
 
             if (Helper.IsFleshy(target))
             {
-                Helper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, projectile.Center);
+                Helper.PlayPitched("Impacts/FireBladeStab", 0.3f, -0.2f, Projectile.Center);
 
                 for (int k = 0; k < 20; k++)
                 {
@@ -200,7 +201,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             else
             {
-                Helper.PlayPitched("Impacts/Clink", 0.5f, 0, projectile.Center);
+                Helper.PlayPitched("Impacts/Clink", 0.5f, 0, Projectile.Center);
 
                 for (int k = 0; k < 30; k++)
                 {
@@ -211,7 +212,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-            if (Helper.CheckLinearCollision(Owner.Center, projectile.Center, targetHitbox, out Vector2 hitPoint))
+            if (Helper.CheckLinearCollision(Owner.Center, Projectile.Center, targetHitbox, out Vector2 hitPoint))
                 return true;
 
             return false;
@@ -222,19 +223,19 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void CutTiles()
         {
             DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile; //copypasted from example solar eruption with slight changes :trollge:
-            Utils.PlotTileLine(Owner.Center, projectile.Center, (projectile.width + projectile.height) * 0.5f * projectile.scale, DelegateMethods.CutTiles);
+            Utils.PlotTileLine(Owner.Center, Projectile.Center, (Projectile.width + Projectile.height) * 0.5f * Projectile.scale, DelegateMethods.CutTiles);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
-            var tex = GetTexture(Texture);
-            var texGlow = GetTexture(Texture + "Glow");
+            var tex = Request<Texture2D>(Texture).Value;
+            var texGlow = Request<Texture2D>(Texture + "Glow").Value;
 
             float targetAngle = StoredAngle + (-(maxAngle / 2) + Helper.BezierEase(Timer / maxTime) * maxAngle) * Owner.direction * direction;
             var pos = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * ((float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 20) - Main.screenPosition;
 
-            spriteBatch.Draw(tex, pos, null, lightColor, projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
-            spriteBatch.Draw(texGlow, pos, null, Color.White, projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
+            Main.spriteBatch.Draw(tex, pos, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1.1f, 0, 0);
+            Main.spriteBatch.Draw(texGlow, pos, null, Color.White, Projectile.rotation, new Vector2(0, texGlow.Height), 1.1f, 0, 0);
 
             return false;
 		}
@@ -247,11 +248,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 for (int i = 0; i < 10; i++)
                 {
-                    cache.Add(Vector2.Lerp(projectile.Center, Owner.Center, 0.15f));
+                    cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
                 }
             }
 
-            cache.Add(Vector2.Lerp(projectile.Center, Owner.Center, 0.15f));
+            cache.Add(Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f));
 
             while (cache.Count > 10)
             {
@@ -270,7 +271,7 @@ namespace StarlightRiver.Content.Items.Vitric
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = Vector2.Lerp(projectile.Center, Owner.Center, 0.15f) + projectile.velocity;
+            trail.NextPosition = Vector2.Lerp(Projectile.Center, Owner.Center, 0.15f) + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -284,7 +285,7 @@ namespace StarlightRiver.Content.Items.Vitric
             effect.Parameters["time"].SetValue(Main.GameUpdateCount);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
         }
@@ -296,80 +297,80 @@ namespace StarlightRiver.Content.Items.Vitric
         public float LaserRotation;
         public bool firing;
 
-        public ref float Charge => ref projectile.ai[0];
-        public ref float MaxTime => ref projectile.ai[1];
+        public ref float Charge => ref Projectile.ai[0];
+        public ref float MaxTime => ref Projectile.ai[1];
 
-        public int LaserTimer => (int)MaxTime - projectile.timeLeft;
-        public Player Owner => Main.player[projectile.owner];
+        public int LaserTimer => (int)MaxTime - Projectile.timeLeft;
+        public Player Owner => Main.player[Projectile.owner];
 
         public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
 
         public override void SetDefaults()
 		{
-            projectile.timeLeft = 300;
-            projectile.width = 2;
-            projectile.height = 2;
-            projectile.friendly = true;
-            projectile.melee = true;
-            projectile.penetrate = -1;
+            Projectile.timeLeft = 300;
+            Projectile.width = 2;
+            Projectile.height = 2;
+            Projectile.friendly = true;
+            Projectile.DamageType = DamageClass.Melee;
+            Projectile.penetrate = -1;
 
-            projectile.usesLocalNPCImmunity = true;
-            projectile.localNPCHitCooldown = 8;
+            Projectile.usesLocalNPCImmunity = true;
+            Projectile.localNPCHitCooldown = 8;
         }
 
 		public override void AI()
 		{
-            projectile.Center = Owner.Center;
+            Projectile.Center = Owner.Center;
             Owner.itemAnimation = Owner.itemAnimationMax;
 
-            ControlsPlayer cplayer = Owner.GetModPlayer<ControlsPlayer>();
+            ControlsPlayer cPlayer = Owner.GetModPlayer<ControlsPlayer>();
 
             if (Main.myPlayer == Owner.whoAmI)
-                cplayer.mouseRotationListener = true;
+                cPlayer.mouseRotationListener = true;
 
-            float targetRot = (cplayer.mouseWorld - Owner.Center).ToRotation();
+            float targetRot = (cPlayer.mouseWorld - Owner.Center).ToRotation();
             float diff = Helper.CompareAngle(LaserRotation, targetRot);
             float maxRot = firing ? 0.02f : 0.08f;
             LaserRotation -= MathHelper.Clamp(diff, -maxRot, maxRot);
 
-            Lighting.AddLight(projectile.Center, new Vector3(0.7f, 0.4f, 0.2f));
+            Lighting.AddLight(Projectile.Center, new Vector3(0.7f, 0.4f, 0.2f));
 
             if (Charge == 0)
                 LaserRotation = targetRot;
 
             if (Charge == 1)
-                Helper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, projectile.Center);
+                Helper.PlayPitched("Magic/RefractiveCharge", 0.7f, 0, Projectile.Center);
 
             if (Charge >= 12 || firing)
-                projectile.rotation = LaserRotation + 1.57f / 2;
+                Projectile.rotation = LaserRotation + 1.57f / 2;
             else
             {
-                projectile.rotation = LaserRotation + 1.57f / 2 + Helper.BezierEase(Charge / 12f) * 6.28f;
-                projectile.scale = 0.5f + (Charge / 12f) * 0.5f;
+                Projectile.rotation = LaserRotation + 1.57f / 2 + Helper.BezierEase(Charge / 12f) * 6.28f;
+                Projectile.scale = 0.5f + (Charge / 12f) * 0.5f;
             }
 
-            if (cplayer.mouseRight && !firing)
+            if (cPlayer.mouseRight && !firing)
 			{
                 if (Charge < 35)
                     Charge++;
 
-                projectile.timeLeft = (int)MaxTime + 1;
+                Projectile.timeLeft = (int)MaxTime + 1;
                 return;
 			}
             else if (Charge < 30)
 			{
-                projectile.timeLeft = 0;
+                Projectile.timeLeft = 0;
                 return;
 			}
 
             if (Charge >= 30 && !firing)
-                Helper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, projectile.Center);
+                Helper.PlayPitched("Magic/RefractiveLaser", 0.6f, -0.2f, Projectile.Center);
 
             firing = true;
 
 			for(int k = 0; k < 80; k++)
 			{
-                Vector2 posCheck = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
+                Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * k * 8;
 
                 if (Helper.PointInTile(posCheck) || k == 79)
                 {
@@ -384,14 +385,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public void checkHits()
         {
-            // done manually for clients that aren't the projectile owner since onhit methods are clientside
+            // done manually for clients that aren't the Projectile owner since onhit methods are clientside
 
-            foreach (NPC npc in Main.npc.Where(n => n.active &&
+            foreach (NPC NPC in Main.npc.Where(n => n.active &&
                  !n.dontTakeDamage &&
                  !n.townNPC &&
                  Colliding(new Rectangle(), n.Hitbox) == true))
             {
-                OnHitNPC(npc, 0, 0, false);
+                OnHitNPC(NPC, 0, 0, false);
             }
 
         }
@@ -415,10 +416,12 @@ namespace StarlightRiver.Content.Items.Vitric
                 target.AddBuff(BuffType<RefractiveBladeBuff>(), 240);
 		}
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            spriteBatch.Draw(GetTexture(Texture), Owner.Center - Main.screenPosition, null, lightColor, projectile.rotation, new Vector2(0, GetTexture(Texture).Height), projectile.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(Texture + "Glow"), Owner.Center - Main.screenPosition, null, Color.White, projectile.rotation, new Vector2(0, GetTexture(Texture).Height), projectile.scale, 0, 0);
+            var spriteBatch = Main.spriteBatch;
+
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Owner.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture + "Glow").Value, Owner.Center - Main.screenPosition, null, Color.White, Projectile.rotation, new Vector2(0, Request<Texture2D>(Texture).Value.Height), Projectile.scale, 0, 0);
 
             float prog1 = Helper.SwoopEase((Charge - 12) / 23f);
             float prog2 = Helper.SwoopEase((Charge - 17) / 18f);
@@ -443,18 +446,19 @@ namespace StarlightRiver.Content.Items.Vitric
                 prog2 *= (120 - LaserTimer) / 40f;
             }
 
-            DrawRing(spriteBatch, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.01f, prog1, new Color(255, 240, 120));
-            DrawRing(spriteBatch, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.015f, prog2, new Color(255, 180, 120));
+            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog1 * 30, 1, 1, Main.GameUpdateCount * 0.05f, prog1, new Color(255, 240, 120));
+            DrawRing(spriteBatch, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * prog2 * 50, 0.5f, 0.5f, Main.GameUpdateCount * -0.075f, prog2, new Color(255, 180, 120));
 
             return false;
         }
 
         private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color)
         {
-            var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+            var texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
             var effect = Filters.Scene["BowRing"].GetShader().Shader;
 
-            effect.Parameters["uProgress"].SetValue(rotation);
+            effect.Parameters["uTime"].SetValue(rotation);
+            effect.Parameters["cosine"].SetValue((float)Math.Cos(rotation));
             effect.Parameters["uColor"].SetValue(color.ToVector3());
             effect.Parameters["uImageSize1"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
             effect.Parameters["uOpacity"].SetValue(prog);
@@ -463,7 +467,7 @@ namespace StarlightRiver.Content.Items.Vitric
             sb.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
             var target = toRect(pos, (int)(10 * (w + prog)), (int)(30 * (h + prog)));
-            sb.Draw(texRing, target, null, color * prog, projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
+            sb.Draw(texRing, target, null, color * prog, Projectile.rotation - 1.57f / 2, texRing.Size() / 2, 0, 0);
 
             sb.End();
             sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -482,14 +486,14 @@ namespace StarlightRiver.Content.Items.Vitric
             int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
             var color = new Color(255, 160 + sin, 40 + sin / 2);
 
-            var texBeam = GetTexture(AssetDirectory.MiscTextures + "BeamCore");
-            var texBeam2 = GetTexture(AssetDirectory.MiscTextures + "BeamTrail");
-            var texDark = GetTexture(AssetDirectory.MiscTextures + "GradientBlack");
+            var texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
+            var texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
+            var texDark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack").Value;
 
             Vector2 origin = new Vector2(0, texBeam.Height / 2);
             Vector2 origin2 = new Vector2(0, texBeam2.Height / 2);
 
-            var effect = StarlightRiver.Instance.GetEffect("Effects/GlowingDust");
+            var effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
             effect.Parameters["uColor"].SetValue(color.ToVector3());
 
@@ -497,7 +501,7 @@ namespace StarlightRiver.Content.Items.Vitric
             spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
             float height = texBeam.Height / 4f;
-            int width = (int)(projectile.Center - endPoint).Length() - 76;
+            int width = (int)(Projectile.Center - endPoint).Length() - 76;
 
             if (LaserTimer < 20)
                 height = texBeam.Height / 4f * LaserTimer / 20f;
@@ -506,7 +510,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 height = texBeam.Height / 4f * (1 - (LaserTimer - ((int)MaxTime - 40)) / 40f);
 
 
-            var pos = projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 76 - Main.screenPosition;
+            var pos = Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * 76 - Main.screenPosition;
 
             var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
             var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
@@ -522,7 +526,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
 
                 if (Main.rand.Next(20) == 0)
-                    Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
             }
 
             var opacity = height / (texBeam.Height / 2f) * 0.75f;
@@ -532,16 +536,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (Owner == Main.LocalPlayer)
             {
-                spriteBatch.Draw(texDark, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
-                spriteBatch.Draw(texDark, projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
+                spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation + 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
+                spriteBatch.Draw(texDark, Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation - 1.57f) * 80 - Main.screenPosition, null, Color.White * opacity, LaserRotation - 3.14f, new Vector2(texDark.Width / 2, 0), 10, 0, 0);
             }
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-            var impactTex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
-            var impactTex2 = GetTexture(AssetDirectory.GUI + "ItemGlow");
-            var glowTex = GetTexture(AssetDirectory.Assets + "GlowTrail");
+            var impactTex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+            var impactTex2 = Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+            var glowTex = Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
 
             spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
@@ -558,7 +562,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 color.G -= (byte)variation;
 
-                Dust.NewDustPerfect(projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - (variation * 0.02f));
+                Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * width + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(40), DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * 1, 0, color, 0.2f - (variation * 0.02f));
             }
         }
 	}
@@ -566,47 +570,46 @@ namespace StarlightRiver.Content.Items.Vitric
 	class RefractiveBladeBuff : SmartBuff
 	{
         public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
+        public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
+        public override void Load()
+        {
             StarlightNPC.ModifyHitByProjectileEvent += ExtraDamage;
             StarlightNPC.ModifyHitByItemEvent += ExtraMeleeDamage;
 
             StarlightPlayer.ModifyHitByNPCEvent += PlayerExtraMeleeDamage;
+        }
 
-            return base.Autoload(ref name, ref texture);
+        public override void Update(NPC NPC, ref int buffIndex)
+		{
+            Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
 		}
 
-		public override void Update(NPC npc, ref int buffIndex)
+		private void PlayerExtraMeleeDamage(Player Player, NPC NPC, ref int damage, ref bool crit)
 		{
-            Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
-		}
-
-		private void PlayerExtraMeleeDamage(Player player, NPC npc, ref int damage, ref bool crit)
-		{
-            if (Inflicted(player))
+            if (Inflicted(Player))
             {
                 damage = (int)(damage * 1.5f);
             }
         }
 
-		private void ExtraMeleeDamage(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void ExtraMeleeDamage(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-            if (Inflicted(npc))
+            if (Inflicted(NPC))
             {
-                if (item.melee)
+                if (Item.DamageType.Type == DamageClass.Melee.Type)
                     damage = (int)(damage * 1.25f);
             }
 		}
 
-		private void ExtraDamage(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ExtraDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-            if (Inflicted(npc))
+            if (Inflicted(NPC))
             {
-                if (projectile.melee)
+                if (Projectile.DamageType.Type == DamageClass.Melee.Type)
                     damage = (int)(damage * 1.25f);
 
-                if (projectile.type == ProjectileType<RefractiveBladeProj>())
+                if (Projectile.type == ProjectileType<RefractiveBladeProj>())
                     damage = (int)(damage * 1.5f);
             }
         }

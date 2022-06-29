@@ -19,12 +19,16 @@ float2 uImageOffset;
 float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
+float cosine;
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 {
-    float2x2 rotate = float2x2(cos(uProgress), -sin(uProgress), sin(uProgress), cos(uProgress));
+    float a = uTime;
+
+    float2x2 rotate = float2x2(cosine, -sin(a), sin(a), cosine);
 
     float3 color = uColor * tex2D(uImage0, mul((uv + float2(-0.5, -0.5)), rotate) + float2(0.5, 0.5)).xyz;
+
     return float4(color, 1.0 * uOpacity - uv.x * 0.65);
 }
 

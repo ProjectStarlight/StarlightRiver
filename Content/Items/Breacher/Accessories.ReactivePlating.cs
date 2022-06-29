@@ -30,20 +30,20 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 4, 0, 0);
-			item.defense = 4;
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 4, 0, 0);
+			Item.defense = 4;
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+			ArmorPlatingPlayer modPlayer = Player.GetModPlayer<ArmorPlatingPlayer>();
 			modPlayer.active = true;
 			if (modPlayer.Shield)
-				player.endurance += 0.3f;
+				Player.endurance += 0.3f;
 		}
 	}
 
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 
 	}
-	public class ReactivePlatingHelper : ILoadable
+	public class ReactivePlatingHelper : IOrderedLoadable
 	{
 
 		public float Priority => 1.05f; 
@@ -100,20 +100,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawPlayer += Main_DrawPlayer;
+			StarlightPlayer.PostDrawEvent += DrawOverlay;
+		}
+
+		private void DrawOverlay(Player player, SpriteBatch spriteBatch)
+		{
+			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+
+			if (modPlayer.Shield)
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, player);
 		}
 
 		public void Unload() { }
-
-		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
-		{
-			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
-
-			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-
-			if (modPlayer.Shield)
-				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, drawPlayer);
-		}
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {

@@ -1,8 +1,10 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.SteampunkSet;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -13,37 +15,53 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Ironheart() : base("Ironheart", "Melee damage generates decaying barrier and defense") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.OnHitNPCEvent += OnHit;
-            StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
-            return base.Autoload(ref name);
+            StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;          
         }
 
-		private void OnHitProjectile(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void Unload()
 		{
-            var player = Main.player[projectile.owner];
-
-            if (projectile.melee && Equipped(player))
-                player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+            StarlightPlayer.OnHitNPCEvent -= OnHit;
+            StarlightProjectile.ModifyHitNPCEvent -= OnHitProjectile;
         }
 
-        private void OnHit(Player player, Item item, NPC target, int damage, float knockback, bool crit)
+		private void OnHitProjectile(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+            var Player = Main.player[Projectile.owner];
+
+            if (Projectile.DamageType == DamageClass.Melee && Equipped(Player))
+                Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+        }
+
+        private void OnHit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
         {
-            if(Equipped(player))
-                player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+            if(Equipped(Player))
+                Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+            recipe.AddIngredient(ItemID.DemoniteBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+
+            recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+            recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
     public class IronheartBuff : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.MiscItem + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ironheart");
             Description.SetDefault("you have decaying extra barrier and defense");
@@ -51,9 +69,9 @@ namespace StarlightRiver.Content.Items.Misc
             Main.debuff[Type] = false;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            StarlightPlayer mp = player.GetModPlayer<StarlightPlayer>();
+            StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
 
             float level;
 
@@ -61,26 +79,26 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 mp.ironheartTimer += 0.01f;
                 level = mp.ironheartLevel;
-                player.GetModPlayer<ShieldPlayer>().DontDrainOvershield = true;
+                Player.GetModPlayer<BarrierPlayer>().DontDrainOvercharge = true;
             }
             else
             {
                 mp.ironheartTimer *= 1.02f;
                 level = (mp.ironheartLevel + 1) - mp.ironheartTimer;
-                player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate = (int)(2.2f * mp.ironheartTimer);
+                Player.GetModPlayer<BarrierPlayer>().OverchargeDrainRate = (int)(2.2f * mp.ironheartTimer);
             }
 
             //Main.NewText(level + " | " + mp.ironheartTimer);
             //Main.NewText(level);
             if (level < 0.001f)
             {
-                player.ClearBuff(Type);
+                Player.ClearBuff(Type);
                 mp.ResetIronHeart();
             }
 
-            player.statDefense += (int)level;
+            Player.statDefense += (int)level;
 
-            player.buffTime[buffIndex] = (int)level * 60;//visual time value
+            Player.buffTime[buffIndex] = (int)level * 60;//visual time value
         }
     }
 }
@@ -101,18 +119,18 @@ namespace StarlightRiver.Core
 
             int buffType = ModContent.BuffType<IronheartBuff>();
 
-            if (!player.HasBuff(buffType))
+            if (!Player.HasBuff(buffType))
                 ResetIronHeart();
 
             int level = Math.Min(damage, IronheartMaxDamage) / 12;
 
             if (level > 0 && ironheartLevel < IronheartMaxLevel)//if level was increased
             {
-                player.GetModPlayer<ShieldPlayer>().Shield += ((ironheartLevel += level) > IronheartMaxLevel ? 
+                Player.GetModPlayer<BarrierPlayer>().Barrier += ((ironheartLevel += level) > IronheartMaxLevel ? 
                     level - (ironheartLevel - IronheartMaxLevel) : level) * 2;
 
                 ironheartLevel = ironheartLevel > IronheartMaxLevel ? IronheartMaxLevel : ironheartLevel;//caps value
-                player.AddBuff(buffType, 1);
+                Player.AddBuff(buffType, 1);
             }
         }
 

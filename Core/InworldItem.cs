@@ -1,35 +1,37 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+
 namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem
 	{
 		public InworldItemNPC inWorldNPC;
-		public NPC npc => inWorldNPC?.npc;
+		public NPC NPC => inWorldNPC?.NPC;
 
 		public virtual bool VisibleInUI => true;
 		public virtual int NPCType => 0;
 
 		public static NPC CreateItem<T>(Vector2 pos) where T : InworldItem
 		{
-			Item item = new Item();
-			item.SetDefaults(ModContent.ItemType<T>());
-			var inworldItem = item.modItem as InworldItem;
+			Item Item = new Item();
+			Item.SetDefaults(ModContent.ItemType<T>());
+			var inworldItem = Item.ModItem as InworldItem;
 
-			int index = NPC.NewNPC((int)pos.X, (int)pos.Y, inworldItem.NPCType);
-			inworldItem.inWorldNPC = Main.npc[index].modNPC as InworldItemNPC;
+			int index = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)pos.X, (int)pos.Y, inworldItem.NPCType);
+			inworldItem.inWorldNPC = Main.npc[index].ModNPC as InworldItemNPC;
 			inworldItem.inWorldNPC.inWorldItem = inworldItem;
 
 			return Main.npc[index];
 		}
 
-		public override void UpdateInventory(Player player)
+		public override void UpdateInventory(Player Player)
 		{
-			if (npc is null)
-				item.TurnToAir();
+			if (NPC is null)
+				Item.TurnToAir();
 
-			if (player.HeldItem.type != item.type)
+			if (Player.HeldItem.type != Item.type)
 				inWorldNPC?.Release(true);
 		}	
 	}
@@ -40,15 +42,15 @@ namespace StarlightRiver.Core
 		public Player owner;
 		public bool held => owner != null;
 
-		public Item item => inWorldItem.item;
+		public Item Item => inWorldItem.Item;
 
-		protected virtual void Pickup(Player player) { }
+		protected virtual void Pickup(Player Player) { }
 
-		protected virtual void PutDown(Player player) { }
+		protected virtual void PutDown(Player Player) { }
 
-		protected virtual void PutDownNatural(Player player) { }
+		protected virtual void PutDownNatural(Player Player) { }
 
-		public virtual bool CanPickup(Player player) => false;
+		public virtual bool CanPickup(Player Player) => false;
 
 		public void Release(bool natural)
 		{
@@ -65,10 +67,10 @@ namespace StarlightRiver.Core
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			if (CanPickup(target) && !held && target.Hitbox.Intersects(npc.Hitbox))
+			if (CanPickup(target) && !held && target.Hitbox.Intersects(NPC.Hitbox))
 			{
-				target.inventory[58] = item;
-				Main.mouseItem = item;
+				target.inventory[58] = Item;
+				Main.mouseItem = Item;
 				target.selectedItem = 58;
 
 				owner = target;
@@ -81,9 +83,9 @@ namespace StarlightRiver.Core
 		public override void PostAI()
 		{
 			if (inWorldItem is null)
-				npc.active = false;
+				NPC.active = false;
 
-			if (held && owner.HeldItem.type != item.type)
+			if (held && owner.HeldItem.type != Item.type)
 				Release(true);
 		}
 	}

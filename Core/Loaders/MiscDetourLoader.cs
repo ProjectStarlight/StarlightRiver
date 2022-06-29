@@ -7,9 +7,8 @@ using Terraria.UI;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class MiscDetourLoader : ILoadable
+	class MiscDetourLoader : IOrderedLoadable
     {
-
         public float Priority { get => 1.1f; }
 
         public void Load()
