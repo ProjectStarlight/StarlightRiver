@@ -27,13 +27,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
         public override string Texture => AssetDirectory.CrimsonNPC + Name;
 
-        ref float Timer => ref npc.ai[0];
+        ref float Timer => ref NPC.ai[0];
 
-        ref float State => ref npc.ai[1];
+        ref float State => ref NPC.ai[1];
 
-        ref float HealTime => ref npc.ai[2];
+        ref float HealTime => ref NPC.ai[2];
 
-        ref float HealRate => ref npc.ai[3];
+        ref float HealRate => ref NPC.ai[3];
 
         enum States
         {
@@ -43,21 +43,21 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
         public override void SetStaticDefaults()
         {
-            NPCID.Sets.TrailCacheLength[npc.type] = 20;
-            NPCID.Sets.TrailingMode[npc.type] = 3;
+            NPCID.Sets.TrailCacheLength[NPC.type] = 20;
+            NPCID.Sets.TrailingMode[NPC.type] = 3;
         }
 
         public override void SetDefaults()
         {
-            npc.width = 28;
-            npc.height = 28;
-            npc.direction = Main.rand.NextBool().ToDirectionInt();
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.damage = -1;
-            npc.lifeMax = 100;
-            npc.lifeRegen = 2;
-            npc.knockBackResist = 2;
+            NPC.width = 28;
+            NPC.height = 28;
+            NPC.direction = Main.rand.NextBool().ToDirectionInt();
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.damage = -1;
+            NPC.lifeMax = 100;
+            NPC.lifeRegen = 2;
+            NPC.knockBackResist = 2;
         }
 
         //I am not entirely sure on the necessity of these methods so I will leave them commented out
@@ -82,9 +82,9 @@ namespace StarlightRiver.Content.NPCs.Crimson
             if (Timer > jumpCooldown)
                 Timer = 0;
 
-            NPCAimedTarget player = npc.GetTargetData();
-            Vector2 playerCenter = player.Invalid ? npc.Center : player.Center;
-            bool npcInRange = LatchableNPCInRange(1000f, out int id);
+            NPCAimedTarget player = NPC.GetTargetData();
+            Vector2 playerCenter = player.Invalid ? NPC.Center : player.Center;
+            bool NPCInRange = LatchableNPCInRange(1000f, out int id);
 
             switch (State)
             {
@@ -93,20 +93,20 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
                     if (Timer % jumpCooldown == 0)
                     {
-                        if (npc.Distance(playerCenter) < 800f)
-                            jumpDirection = npc.DirectionFrom(playerCenter).SafeNormalize(Vector2.Zero).X * 5;
+                        if (NPC.Distance(playerCenter) < 800f)
+                            jumpDirection = NPC.DirectionFrom(playerCenter).SafeNormalize(Vector2.Zero).X * 5;
                         else
                             jumpDirection = Main.rand.NextBool().ToDirectionInt() * 4;
                     }
 
-                    if (npcInRange)
+                    if (NPCInRange)
                         State = (int)States.Latched;
 
                     HealTime = 0;
 
                     break;
                 case (int)States.Latched:
-                    if (!npcInRange)
+                    if (!NPCInRange)
                         State = (int)States.Free;
 
                     NPC targetNPC = Main.npc[id];
@@ -131,37 +131,43 @@ namespace StarlightRiver.Content.NPCs.Crimson
 
                     if (Timer % jumpCooldown == 0)
                     {
-                        if (npc.Distance(targetNPC.Center) < 200f)
+                        if (NPC.Distance(targetNPC.Center) < 200f)
                             jumpDirection = Main.rand.NextBool().ToDirectionInt() * 6;
                         else
-                            jumpDirection = npc.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 6;
+                            jumpDirection = NPC.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 6;
                     }
 
-                    if (npc.Distance(targetNPC.Center) > 500)
-                        npc.velocity.X += npc.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 4;
+                    if (NPC.Distance(targetNPC.Center) > 500)
+                        NPC.velocity.X += NPC.DirectionTo(targetNPC.Center).SafeNormalize(Vector2.Zero).X * 4;
 
                     break;
             }
 
-            npc.velocity.X *= 1.02f;
+            NPC.velocity.X *= 1.02f;
 
-            if (Timer % jumpCooldown == 0 && npc.velocity.Y == 0)
-                npc.velocity.Y = -Main.rand.Next(6, 9);
+            if (Timer % jumpCooldown == 0 && NPC.velocity.Y == 0)
+                NPC.velocity.Y = -Main.rand.Next(6, 9);
 
-            if (Timer % jumpCooldown <= 40 && !npc.wet && !npc.collideY)
-                npc.velocity.X = jumpDirection;
-            else if (npc.wet)
-                npc.velocity.X = jumpDirection;
+            if (Timer % jumpCooldown <= 40 && !NPC.wet && !NPC.collideY)
+                NPC.velocity.X = jumpDirection;
+            else if (NPC.wet)
+                NPC.velocity.X = jumpDirection;
 
-            if (npc.wet)
-                npc.velocity.Y = -4;
+            if (NPC.wet)
+                NPC.velocity.Y = -4;
 
-            if (npc.velocity.Y == 0)
-                npc.velocity.X *= 0.9f;
+            if (NPC.velocity.Y == 0)
+                NPC.velocity.X *= 0.9f;
 
-            npc.direction = jumpDirection > 0 ? -1 : 1;
-            npc.spriteDirection = npc.direction;
-            npc.rotation = MathHelper.Clamp(npc.velocity.Y * 0.12f, -0.7f, 0.7f) * npc.direction;
+            NPC.direction = jumpDirection > 0 ? -1 : 1;
+            NPC.spriteDirection = NPC.direction;
+            NPC.rotation = MathHelper.Clamp(NPC.velocity.Y * 0.12f, -0.7f, 0.7f) * NPC.direction;
+
+            if (Main.rand.NextBool(2))
+            {
+                Dust blood = Dust.NewDustDirect(NPC.Center - new Vector2(20), 40, 40, DustID.Blood, NPC.velocity.X, NPC.velocity.Y, 0, new Color(Lighting.GetSubLight(NPC.Center)), 0.5f + Main.rand.NextFloat());
+                blood.noGravity = true;
+            }
         }
 
         public bool LatchableNPCInRange(float maxDistance, out int npcIndex)
@@ -173,13 +179,13 @@ namespace StarlightRiver.Content.NPCs.Crimson
             {
                 NPC targetNPC = Main.npc[i];
                 bool isViableNPC =
-                    (targetNPC.type != npc.type) &&
+                    (targetNPC.type != NPC.type) &&
                     (targetNPC.life < targetNPC.lifeMax) &&
-                    targetNPC.CanBeChasedBy(npc) &&
+                    targetNPC.CanBeChasedBy(NPC) &&
                     (targetNPC.lifeMax > 5) &&
                     !targetNPC.boss &&
                     targetNPC.active;
-                if (isViableNPC && npc.Distance(targetNPC.Center) < maxDistance)
+                if (isViableNPC && NPC.Distance(targetNPC.Center) < maxDistance)
                     index = i;
             }
 
@@ -190,21 +196,21 @@ namespace StarlightRiver.Content.NPCs.Crimson
             return true;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            npc.frameCounter++;
+            NPC.frameCounter++;
             
-            if (npc.velocity.Y == 0 && !npc.wet)
+            if (NPC.velocity.Y == 0 && !NPC.wet)
                 landingCounter++;
             
-            if (npc.velocity.Y != 0)
+            if (NPC.velocity.Y != 0)
                 landingCounter = 0;
 
-            Texture2D baseTexture = GetTexture(Texture);
-            //(int)(npc.frameCounter / 10 % 4)
+            Texture2D baseTexture = Request<Texture2D>(Texture).Value;
+            //(int)(NPC.frameCounter / 10 % 4)
             Rectangle baseFrame = baseTexture.Frame(4, 1, 0, 0);
             Vector2 squashScale = Vector2.One;
-            SpriteEffects direction = npc.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects direction = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             if (State == (int)States.Latched)
                 DrawLatch(spriteBatch, drawColor);
@@ -215,14 +221,8 @@ namespace StarlightRiver.Content.NPCs.Crimson
             if (landingCounter < 15)
                 squashScale = new Vector2(MathHelper.SmoothStep(1.8f, 1f, (landingCounter / 15)), MathHelper.SmoothStep(0.5f, 1f, (landingCounter / 15)));
 
-            Vector2 squishScale = Vector2.Lerp(squashScale, new Vector2(0.9f, 2f), MathHelper.Clamp(Math.Abs(npc.velocity.Y) * 0.15f, 0, 1));
-            spriteBatch.Draw(baseTexture, npc.Bottom - Main.screenPosition, baseFrame, drawColor, npc.rotation, baseFrame.Size() * new Vector2(0.5f, 0.8f), squishScale, direction, 0);
-
-            if (Main.rand.Next(2) == 0)
-            {
-                Dust blood = Dust.NewDustDirect(npc.Center - new Vector2(20), 40, 40, DustID.Blood, npc.velocity.X, npc.velocity.Y, 0, new Color(Lighting.GetSubLight(npc.Center)), 0.5f + Main.rand.NextFloat());
-                blood.noGravity = true;
-            }
+            Vector2 squishScale = Vector2.Lerp(squashScale, new Vector2(0.9f, 2f), MathHelper.Clamp(Math.Abs(NPC.velocity.Y) * 0.15f, 0, 1));
+            spriteBatch.Draw(baseTexture, NPC.Bottom - Main.screenPosition, baseFrame, drawColor, NPC.rotation, baseFrame.Size() * new Vector2(0.5f, 0.8f), squishScale, direction, 0);
 
             return false;
         }
@@ -230,34 +230,34 @@ namespace StarlightRiver.Content.NPCs.Crimson
         public void DrawLatch(SpriteBatch spriteBatch, Color drawColor)
         {
             const int segments = 15;
-            Texture2D leechTexture = GetTexture(AssetDirectory.CrimsonNPC + "GlooberLatch");
+            Texture2D leechTexture = Request<Texture2D>(AssetDirectory.CrimsonNPC + "GlooberLatch").Value;
             //frames
             Vector2 pointOffset = new Vector2((Timer % 90) / 90, (Timer + 90 % 90) / 90) * MathHelper.TwoPi;
-            Vector2 control2 = latchedPos.HasValue ? latchedPos.Value : npc.Center;
+            Vector2 control2 = latchedPos.HasValue ? latchedPos.Value : NPC.Center;
 
             if (latchedPos.HasValue)
             {
-                control2 = Vector2.Lerp(npc.Center, latchedPos.Value, lerpEndPos);
+                control2 = Vector2.Lerp(NPC.Center, latchedPos.Value, lerpEndPos);
                 if (lerpEndPos <= 1)
                     lerpEndPos += 0.05f;
             }
 
             else
             {
-                control2 = npc.Center;
+                control2 = NPC.Center;
                 lerpEndPos = 0;
             }
             
-            Vector2 control0 = Vector2.Lerp(npc.oldPosition + (npc.Size / 2) - new Vector2(100).RotatedBy(pointOffset.Y), control2 + npc.oldVelocity, 0.5f);          
-            Vector2 control1 = Vector2.Lerp(npc.oldPosition + (npc.Size / 2) + new Vector2(100).RotatedBy(pointOffset.X), control2, 0.7f);  
+            Vector2 control0 = Vector2.Lerp(NPC.oldPosition + (NPC.Size / 2) - new Vector2(100).RotatedBy(pointOffset.Y), control2 + NPC.oldVelocity, 0.5f);          
+            Vector2 control1 = Vector2.Lerp(NPC.oldPosition + (NPC.Size / 2) + new Vector2(100).RotatedBy(pointOffset.X), control2, 0.7f);  
 
             List<Vector2> leechPoints = new List<Vector2>();     
-            leechPoints.Add(npc.Center);
+            leechPoints.Add(NPC.Center);
 
             for (float i = 0; i < segments; i++)
             {
                 float interval = (float)(i / segments);
-                Vector2 a = Vector2.Lerp(npc.Center, control0, interval);
+                Vector2 a = Vector2.Lerp(NPC.Center, control0, interval);
                 Vector2 b = Vector2.Lerp(control1, control2, interval);
                 Vector2 thisPoint = Vector2.Lerp(a, b, interval);
                 leechPoints.Add(thisPoint);
@@ -273,7 +273,7 @@ namespace StarlightRiver.Content.NPCs.Crimson
                 Vector2 scale = new Vector2(pulse, (difference.Length() / 19.5f) + (pulse * 0.2f));
                 Color pulseColor = Color.Lerp(Color.White, new Color(255, 128, 128), pulseTime);
                 Color light = new Color(Lighting.GetSubLight(leechPoints[j]));
-                spriteBatch.Draw(leechTexture, leechPoints[j] - Main.screenPosition, null, light.MultiplyRGB(pulseColor), difference.ToRotation() - MathHelper.PiOver2, leechTexture.Size() * new Vector2(0.5f, 0), scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(leechTexture, leechPoints[j] - Main.screenPosition, null, light.MultiplyRGB(pulseColor), difference.ToRotation() - MathHelper.PiOver2, leechTexture.Size() * new Vector2(0.5f, 0), scale, 0, 0);
             }
         }
     }
