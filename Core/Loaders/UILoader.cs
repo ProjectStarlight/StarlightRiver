@@ -7,10 +7,10 @@ using Terraria.UI;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class UILoader : ILoadable
+	class UILoader : IOrderedLoadable
     {
-        public static List<UserInterface> UserInterfaces = new List<UserInterface>();
-        public static List<SmartUIState> UIStates = new List<SmartUIState>();
+        public static List<UserInterface> UserInterfaces;
+        public static List<SmartUIState> UIStates;
 
         public float Priority { get => 1.1f; }
 
@@ -19,9 +19,12 @@ namespace StarlightRiver.Core.Loaders
             if (Main.dedServ)
                 return;
 
-            Mod mod = StarlightRiver.Instance;
+            Mod Mod = StarlightRiver.Instance;
 
-            foreach (Type t in mod.Code.GetTypes())
+            UserInterfaces = new List<UserInterface>();
+            UIStates = new List<SmartUIState>();
+
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(SmartUIState)))
                 {
@@ -37,8 +40,9 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            UserInterfaces.Clear();
-            UIStates.Clear();
+            UIStates.ForEach(n => n.Unload());
+            UserInterfaces = null;
+            UIStates = null;
         }
 
         public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)
@@ -64,6 +68,18 @@ namespace StarlightRiver.Core.Loaders
             UIStates[index] = (T)Activator.CreateInstance(typeof(T), null);
             UserInterfaces[index] = new UserInterface();
             UserInterfaces[index].SetState(UIStates[index]);
+        }
+    }
+
+    class AutoUISystem : ModSystem
+	{
+        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+        {
+            for (int k = 0; k < UILoader.UIStates.Count; k++)
+            {
+                var state = UILoader.UIStates[k];
+                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
+            }
         }
     }
 }

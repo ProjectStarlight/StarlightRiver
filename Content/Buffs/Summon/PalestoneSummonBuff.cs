@@ -7,15 +7,15 @@ namespace StarlightRiver.Content.Buffs.Summon
     {
         public PalestoneSummonBuff() : base("Little lad", "His goal: to kill.", false, true) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<Items.Palestone.PaleKnight>()] > 0)
+            if (Player.ownedProjectileCounts[ModContent.ProjectileType<Items.Palestone.PaleKnight>()] > 0)
             {
-                player.buffTime[buffIndex] = 18000;
+                Player.buffTime[buffIndex] = 18000;
             }
             else
             {
-                player.DelBuff(buffIndex);
+                Player.DelBuff(buffIndex);
                 buffIndex--;
             }
         }

@@ -39,19 +39,22 @@ namespace StarlightRiver.Helpers
 
             int xVariants = 0;
             int yVariants = 0;
-            if (data.StyleHorizontal) xVariants = Main.rand.Next(data.RandomStyleRange);
-            else yVariants = Main.rand.Next(data.RandomStyleRange);
+
+            if (data.StyleHorizontal) 
+                xVariants = Main.rand.Next(data.RandomStyleRange);
+            else 
+                yVariants = Main.rand.Next(data.RandomStyleRange);
 
             for (int x = 0; x < data.Width; x++) //generate each column
             {
                 for (int y = 0; y < data.Height; y++) //generate each row
                 {
                     Tile tile = Framing.GetTileSafely(position.X + x, position.Y + y); //get the targeted tile
-                    tile.type = (ushort)type; //set the type of the tile to our multitile
+                    tile.TileType = (ushort)type; //set the type of the tile to our multitile
 
-                    tile.frameX = (short)((x + data.Width * xVariants) * (data.CoordinateWidth + data.CoordinatePadding)); //set the X frame appropriately
-                    tile.frameY = (short)((y + data.Height * yVariants) * (data.CoordinateHeights[y] + data.CoordinatePadding)); //set the Y frame appropriately
-                    tile.active(true); //activate the tile
+                    tile.TileFrameX = (short)((x + data.Width * xVariants) * (data.CoordinateWidth + data.CoordinatePadding)); //set the X frame appropriately
+                    tile.TileFrameY = (short)((y + data.Height * yVariants) * (data.CoordinateHeights[y] + data.CoordinatePadding)); //set the Y frame appropriately
+                    tile.HasTile = true; //activate the tile
                 }
             }
         }
@@ -71,7 +74,7 @@ namespace StarlightRiver.Helpers
             {
                 for (int y = position.Y; y < position.Y + size.Y; y++)
                 {
-                    if (Main.tile[x, y].active()) return false; //if any tiles there are active, return false!
+                    if (Main.tile[x, y].HasTile) return false; //if any tiles there are active, return false!
                 }
             }
             return true;
@@ -91,7 +94,7 @@ namespace StarlightRiver.Helpers
             {
                 for (int y = position.Y; y < position.Y + size.Y; y++)
                 {
-                    if (!Main.tile[x, y].active()) return true; //if any tiles there are inactive, return true!
+                    if (!Main.tile[x, y].HasTile) return true; //if any tiles there are inactive, return true!
                 }
             }
             return true;
@@ -105,7 +108,7 @@ namespace StarlightRiver.Helpers
 
             for (int k = 1; k <= MaxScan; k++)
             {
-                if (Main.tile[(int)start.X, (int)start.Y - k].active()) { clear = false; }
+                if (Main.tile[(int)start.X, (int)start.Y - k].HasTile) { clear = false; }
             }
             return clear;
         }

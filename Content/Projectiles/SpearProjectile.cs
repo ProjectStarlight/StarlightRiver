@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Projectiles
@@ -24,14 +25,14 @@ namespace StarlightRiver.Content.Projectiles
 
         public sealed override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.penetrate = -1;
-            projectile.aiStyle = 19;
-            projectile.friendly = true;
-            projectile.timeLeft = Duration;
-            projectile.tileCollide = false;
-            projectile.melee = true;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.penetrate = -1;
+            Projectile.aiStyle = 19;
+            Projectile.friendly = true;
+            Projectile.timeLeft = Duration;
+            Projectile.tileCollide = false;
+            Projectile.DamageType = DamageClass.Melee;
             SafeSetDefaults();
         }
 
@@ -39,23 +40,27 @@ namespace StarlightRiver.Content.Projectiles
         {
             SafeAI();
 
-            Player player = Main.player[projectile.owner];
+            Player player = Main.player[Projectile.owner];
+            var speed = 1f / player.GetTotalAttackSpeed(DamageClass.Melee);
 
-            player.heldProj = projectile.whoAmI;
+            player.heldProj = Projectile.whoAmI;
             player.itemTime = player.itemAnimation;
 
-            int realDuration = (int)(Duration * player.meleeSpeed);
-            if (projectile.timeLeft == Duration) projectile.timeLeft = realDuration;
-            projectile.velocity = Vector2.Normalize(projectile.velocity);
+            int realDuration = (int)(Duration * speed);
 
-            projectile.rotation = MathHelper.Pi * (3 / 4f) + projectile.velocity.ToRotation();
-            float progress = projectile.timeLeft > realDuration / 2f ? (realDuration - projectile.timeLeft) / (realDuration / 2f) : projectile.timeLeft / (realDuration / 2f);
-            projectile.Center = player.MountedCenter + Vector2.SmoothStep(projectile.velocity * Min, projectile.velocity * Max, progress);
+            if (Projectile.timeLeft == Duration) 
+                Projectile.timeLeft = realDuration;
+
+            Projectile.velocity = Vector2.Normalize(Projectile.velocity);
+
+            Projectile.rotation = MathHelper.Pi * (3 / 4f) + Projectile.velocity.ToRotation();
+            float progress = Projectile.timeLeft > realDuration / 2f ? (realDuration - Projectile.timeLeft) / (realDuration / 2f) : Projectile.timeLeft / (realDuration / 2f);
+            Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * Min, Projectile.velocity * Max, progress);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            spriteBatch.Draw(Main.projectileTexture[projectile.type], (projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[projectile.owner].gfxOffY), Main.projectileTexture[projectile.type].Frame(), Color.White, projectile.rotation, Vector2.Zero, projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, (Projectile.Center - Main.screenPosition) + new Vector2(0, Main.player[Projectile.owner].gfxOffY), TextureAssets.Projectile[Projectile.type].Value.Frame(), Color.White, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
             return false;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Vitric;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -11,29 +12,26 @@ namespace StarlightRiver.Core
         public int DoT;
         public bool dontDropItems;
 
-        //TODO: Make a better system for this, stacking DoTs
-        public int AuroraDiscDoT;
-
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
+        //public override bool CloneNewInstances => true;
 
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
-            npc.lifeRegen -= DoT * 2;
+            NPC.lifeRegen -= DoT * 2;
             DoT = 0;
         }
 
-		public override bool PreNPCLoot(NPC npc)
+		public override bool PreKill(NPC npc)
 		{
             return !dontDropItems;
-		}
+        }
 
-		public override bool PreAI(NPC npc)
+		public override bool PreAI(NPC NPC)
         {
             Age++;
 
-            return base.PreAI(npc);
+            return base.PreAI(NPC);
         }
 
     }

@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Electric : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Stamina";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Stamina";
 
         public override void OnSpawn(Dust dust)
         {
@@ -40,11 +36,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class Electric2 : Electric
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Stamina";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Stamina";
 
         public override bool Update(Dust dust)
         {
@@ -62,11 +54,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class ElectricColor : Electric
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "ElectricColor";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "ElectricColor";
 
         public override void OnSpawn(Dust dust)
         {

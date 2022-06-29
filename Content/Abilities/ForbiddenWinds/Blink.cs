@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Abilities.AbilityContent.Infusions;
 using System;
 using Terraria;
 using Terraria.ID;
@@ -10,18 +11,21 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
     {
         public override InfusionTier Tier => InfusionTier.Untiered;
         public override string Texture => "StarlightRiver/Assets/Abilities/Blink";
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Blink");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by short-range spontaneous travel");
+            Tooltip.SetDefault("Forbidden Winds Infusion\nInstantly teleport a short distance ahead, avoiding enemies and their attacks");
         }
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Green;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
+
+            color = new Color(200, 200, 220);
         }
 
         private const int maxTime = 4;
@@ -34,11 +38,11 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Ability.Boost = 0;
             Ability.StartCooldown();
 
-            // Do this to ensure the player has velocity when they dash (for compatibility with dash checks etc)
+            // Do this to ensure the Player has velocity when they dash (for compatibility with dash checks etc)
             if (Player.velocity.Y == 0)
                 Player.velocity.Y = -0.1f;
 
-            // Store player velocity for exiting dash
+            // Store Player velocity for exiting dash
             stored = Player.velocity;
         }
 
@@ -100,7 +104,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
                 d.fadeIn = 7;
             }
             if (start)
-                Main.PlaySound(SoundID.Item15, position);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15, position);
         }
 
         public override void OnExit()
@@ -112,6 +116,27 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
         public override void UpdateActiveEffects()
         {
             // No visuals from the original.
+        }
+    }
+
+    class BlinkImprint : InfusionImprint
+    {
+        public override InfusionTier Tier => InfusionTier.Bronze;
+        public override string Texture => "StarlightRiver/Assets/Abilities/BlinkImprint";
+        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
+        public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+
+        public override int TransformTo => ModContent.ItemType<Blink>();
+
+        public override void SafeSetStaticDefaults()
+        {
+            DisplayName.SetDefault("Blink");
+            Tooltip.SetDefault("Instantly teleport a short distance ahead, avoiding enemies and their attacks");
+        }
+
+        public override void SetDefaults()
+        {
+            objectives.Add(new InfusionObjective("Implement Objectives", 1, Color.Orange));
         }
     }
 }

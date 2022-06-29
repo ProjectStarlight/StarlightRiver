@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	class VerticalGlow : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.MoonstoneTile + "GlowShort";
-            return true;
-        }
+        public override string Texture => AssetDirectory.MoonstoneTile + "GlowShort";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

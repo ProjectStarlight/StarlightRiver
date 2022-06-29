@@ -21,26 +21,26 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             this.parent = parent;
 
             Vector2 end = new Vector2(parent.arena.Center.X, parent.arena.Bottom); //WIP, dunno how this works yet - will not change anything in-game
-            chain = new VerletChain(9, true, parent.npc.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
+            chain = new VerletChain(9, true, parent.NPC.Center, end, 5, Vector2.UnitY, false, null, true, new List<int>() { 100, 100, 48, 36, 36, 32, 32, 32, 32 });
             chain.drag = 1.1f;
         }
 
         public static void LoadGores()
         {
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadNose", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadJaw", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HeadRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/CheekRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornLeft", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/HornRight", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyTop", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/BodyBottom", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentLarge", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentMedium", new DebugGore());
-            StarlightRiver.Instance.AddGore(AssetDirectory.VitricBoss + "Gore/SegmentSmall", new DebugGore());
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadTop");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadNose");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadJaw");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HeadRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/CheekRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornLeft");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/HornRight");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyTop");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/BodyBottom");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentLarge");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentMedium");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.VitricBoss + "Gore/SegmentSmall");
         }
 
         public void DrawBody(SpriteBatch sb)
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             chain.DrawRope(sb, DrawSegment);
 
-            if (parent.Phase == (int)VitricBoss.AIStates.FirstPhase && parent.npc.dontTakeDamage) //draws the npc's shield when immune and in the first phase
+            if (parent.Phase == (int)VitricBoss.AIStates.FirstPhase && parent.NPC.dontTakeDamage) //draws the NPC's shield when immune and in the first phase
                 chain.DrawRope(sb, DrawShield);
         }
 
@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (stopDrawingBody && index > 0)
                 return;
 
-            var tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBody");
-            var glowTex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBodyGlow");
+            var tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBody").Value;
+            var glowTex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyGlow").Value;
 
             float rot = 0;
 
@@ -119,24 +119,24 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (index == 0 && parent.Phase != (int)VitricBoss.AIStates.Dying && 
                 parent.Phase != (int)VitricBoss.AIStates.SpawnAnimation) //change this so the head is drawn from here later maybe? and move all visuals into this class?
             {
-                parent.npc.spriteDirection = (int)flip;
+                parent.NPC.spriteDirection = (int)flip;
 
-                if (parent.npc.frame.Y == 0)
+                if (parent.NPC.frame.Y == 0)
                 {
                     if (Math.Abs(parent.lastTwistState) == Math.Abs(parent.twistTarget) && parent.lastTwistState != parent.twistTarget)
                     {
-                        parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)(Math.Sin(parent.twistTimer / (float)parent.maxTwistTimer * 3.14f) * 2));
+                        parent.NPC.frame.X = parent.NPC.frame.Width * (2 - (int)(Math.Sin(parent.twistTimer / (float)parent.maxTwistTimer * 3.14f) * 2));
                     }
 
                     else if (shouldBeTwistFrame) //this is dumb, mostly just to test
-                        parent.npc.frame.X = parent.npc.frame.Width * (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2);
+                        parent.NPC.frame.X = parent.NPC.frame.Width * (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2);
                     else
-                        parent.npc.frame.X = parent.npc.frame.Width * (2 - (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2));
+                        parent.NPC.frame.X = parent.NPC.frame.Width * (2 - (int)((parent.twistTimer / (float)parent.maxTwistTimer) * 2));
                 }
 
-                if (parent.npc.frame.Y == parent.npc.frame.Height * 2 || parent.npc.frame.Y == parent.npc.frame.Height * 3)
+                if (parent.NPC.frame.Y == parent.NPC.frame.Height * 2 || parent.NPC.frame.Y == parent.NPC.frame.Height * 3)
                 {
-                    parent.npc.frame.Y = parent.npc.frame.Height * (shouldBeTwistFrame ? 2 : 3);
+                    parent.NPC.frame.Y = parent.NPC.frame.Height * (shouldBeTwistFrame ? 2 : 3);
                 }
             }
 
@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             var tile = Framing.GetTileSafely((int)pos.X / 16, (int)pos.Y / 16);
 
-            if (!tile.active() && tile.wall == 0)
+            if (!tile.HasTile && tile.WallType == 0)
                 Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.2f) * brightness * 0.4f);
         }
 
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             if (index == 0)
                 return;
 
-            var tex = GetTexture(AssetDirectory.VitricBoss + "VitricBossBodyShield");
+            var tex = Request<Texture2D>(AssetDirectory.VitricBoss + "VitricBossBodyShield").Value;
 
             float rot = (chain.ropeSegments[index].posNow - chain.ropeSegments[index - 1].posNow).ToRotation() - (float)Math.PI / 2;
 
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 source.X += 114;
 
             var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
-            effect.Parameters["sampleTexture2"].SetValue(GetTexture("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap"));
+            effect.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
             effect.Parameters["uTime"].SetValue(2 - (parent.shieldShaderTimer / 120f) * 2);
             effect.Parameters["sourceFrame"].SetValue(new Vector4(source.X, source.Y, source.Width, source.Height));
             effect.Parameters["texSize"].SetValue(tex.Size());
@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void UpdateBody()
         {
-            chain.UpdateChain(parent.npc.Center + parent.PainOffset);
+            chain.UpdateChain(parent.NPC.Center + parent.PainOffset);
             chain.IterateRope(updateBodySegment);
         }
 
@@ -248,25 +248,31 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void SpawnGores2()
 		{
+            if (chain?.ropeSegments[0]?.posNow == null)
+                return;
+
             var pos = chain.ropeSegments[0].posNow;
 
-            GoreMe(pos, new Vector2(-60, -30), AssetDirectory.VitricBoss + "Gore/HeadLeft");
-            GoreMe(pos, new Vector2(60, -30), AssetDirectory.VitricBoss + "Gore/HeadRight");
+            GoreMe(pos, new Vector2(-60, -30), "HeadLeft");
+            GoreMe(pos, new Vector2(60, -30), "HeadRight");
 
-            GoreMe(pos, new Vector2(-60, 0), AssetDirectory.VitricBoss + "Gore/HornLeft");
-            GoreMe(pos, new Vector2(60, 0), AssetDirectory.VitricBoss + "Gore/HornRight");
+            GoreMe(pos, new Vector2(-60, 0), "HornLeft");
+            GoreMe(pos, new Vector2(60, 0), "HornRight");
 
-            GoreMe(pos, new Vector2(0, -15), AssetDirectory.VitricBoss + "Gore/HeadTop");
-            GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/HeadNose");
-            GoreMe(pos, new Vector2(0, 80), AssetDirectory.VitricBoss + "Gore/HeadJaw");
+            GoreMe(pos, new Vector2(0, -15), "HeadTop");
+            GoreMe(pos, new Vector2(0, 0), "HeadNose");
+            GoreMe(pos, new Vector2(0, 80), "HeadJaw");
 
-            GoreMe(pos, new Vector2(-45, 40), AssetDirectory.VitricBoss + "Gore/CheekLeft");
-            GoreMe(pos, new Vector2(45, 40), AssetDirectory.VitricBoss + "Gore/CheekRight");
+            GoreMe(pos, new Vector2(-45, 40), "CheekLeft");
+            GoreMe(pos, new Vector2(45, 40), "CheekRight");
         }
 
         public void SpawnGores()
 		{
             stopDrawingBody = true;
+
+            if (chain?.ropeSegments == null)
+                return;
 
             for (int k = 0; k < chain.ropeSegments.Count; k++)
 			{
@@ -275,21 +281,21 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 switch (k)
                 {
                     case 1:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/BodyTop");
-                        GoreMe(pos, new Vector2(0, 50), AssetDirectory.VitricBoss + "Gore/BodyBottom");
+                        GoreMe(pos, new Vector2(0, 0), "BodyTop");
+                        GoreMe(pos, new Vector2(0, 50), "BodyBottom");
                         break;
 
                     case 2:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentLarge");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentLarge");
                         break;
 
                     case 3:
                     case 4:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentMedium");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentMedium");
                         break;
 
                     default:
-                        GoreMe(pos, new Vector2(0, 0), AssetDirectory.VitricBoss + "Gore/SegmentSmall");
+                        GoreMe(pos, new Vector2(0, 0), "SegmentSmall");
                         break;
                 }
             }
@@ -297,16 +303,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         private void GoreMe(Vector2 pos, Vector2 offset, string tex)
 		{
-            var texture = GetTexture(tex);
-            Gore.NewGorePerfect(pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), ModGore.GetGoreSlot(tex));
+            var texture = Request<Texture2D>(AssetDirectory.VitricBoss + "Gore/" + tex).Value;
+            Gore.NewGorePerfect(parent.NPC.GetSource_FromThis(), pos + offset - texture.Size() / 2, offset == Vector2.Zero ? Vector2.One.RotatedByRandom(6.28f) : Vector2.Normalize(offset) * Main.rand.NextFloat(6, 8), StarlightRiver.Instance.Find<ModGore>(tex).Type);
         }
     }
-
-    class DebugGore : ModGore
-	{
-		public override void OnSpawn(Gore gore)
-		{
-            gore.timeLeft = 30;
-		}
-	}
 }

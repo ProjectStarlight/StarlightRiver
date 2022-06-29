@@ -14,52 +14,48 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 {
 	class CrashPod : LootChest
     {
-        public override bool Autoload(ref string name, ref string texture)
+        public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
+
+        public override void SetStaticDefaults()
         {
-            texture = "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
-            return base.Autoload(ref name, ref texture);
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
         }
 
-        public override void SetDefaults()
-        {
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Fire, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
-        }
-
-        public override bool CanOpen(Player player) => Helper.HasItem(player, ItemID.ShadowKey, 1);
+        public override bool CanOpen(Player Player) => Helper.HasItem(Player, ItemID.ShadowKey, 1);
 
         public override void MouseOver(int i, int j)
         {
-            Player player = Main.LocalPlayer;
-            player.showItemIcon2 = ItemID.ShadowKey;
-            player.noThrow = 2;
-            player.showItemIcon = true;
+            Player Player = Main.LocalPlayer;
+            Player.cursorItemIconID = ItemID.ShadowKey;
+            Player.noThrow = 2;
+            Player.cursorItemIconEnabled = true;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             var tile = Framing.GetTileSafely(i, j);
 
-            var tex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow");
+            var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
-            var frame = new Rectangle(tile.frameX, tile.frameY, 16, 16);
+            var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
             var color = Color.White * (0.4f + (float)Math.Sin(Main.GameUpdateCount / 40f) * 0.25f);
 
             spriteBatch.Draw(tex, pos, frame, color);
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 
-            if (CanOpen(Main.LocalPlayer) && tile.frameX < 32)
+            if (CanOpen(Main.LocalPlayer) && tile.TileFrameX < 32)
             {
                 for(int x = 0; x < 2; x++)
                     for(int y = 0; y < 4; y++)
                     {
-                        int realX = x + i - tile.frameX / 18;
-                        int realY = y + j - tile.frameY / 18;
+                        int realX = x + i - tile.TileFrameX / 18;
+                        int realY = y + j - tile.TileFrameY / 18;
 
-                        Framing.GetTileSafely(realX, realY).frameX += 36;
+                        Framing.GetTileSafely(realX, realY).TileFrameX += 36;
                     }
 
                 Loot[] smallLoot = new Loot[5];

@@ -1,4 +1,7 @@
-﻿using StarlightRiver.Core;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Core;
+using System;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
@@ -7,24 +10,37 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricBossBarrier : ModTile
+	internal class VitricBossBarrier : ModTile, IOrderedLoadable
     {
-        public override bool Autoload(ref string name, ref string texture)
+        public float Priority => 0f;
+
+        new public void Load()
         {
-            texture = AssetDirectory.Invisible;
-            return true;
+            On.Terraria.Main.Update += UpdateCollision; //TODO: Find a better/cleaner way to do this
         }
 
-        public override void SetDefaults()
+        new public void Unload()
+        {
+            On.Terraria.Main.Update -= UpdateCollision;
+        }
+
+        public override string Texture => AssetDirectory.Invisible;
+
+        private void UpdateCollision(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+        {
+            orig(self, gameTime);
+
+            if (Main.gameMenu && Main.netMode != NetmodeID.Server)
+                return;
+
+            Main.tileSolid[TileType<VitricBossBarrier>()] = Main.npc.Any(n => n.active && n.type == NPCType<VitricBoss>());
+        }
+
+		public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
             Main.tileBlockLight[Type] = false;
-            minPick = 999;
-        }
-
-        public override void NearbyEffects(int i, int j, bool closer)
-        {
-            Main.tileSolid[Type] = Main.npc.Any(n => n.active && n.type == NPCType<Bosses.VitricBoss.VitricBoss>());
+            MinPick = int.MaxValue;
         }
     }
 }

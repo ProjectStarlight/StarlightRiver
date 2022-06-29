@@ -16,24 +16,44 @@ using Terraria;
 using Terraria.Graphics;
 using Terraria.ModLoader;
 using Terraria.UI;
+using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bestiary;
 
 namespace StarlightRiver
 {
+    public class TemporaryFix : PreJITFilter
+	{
+        public override bool ShouldJIT(MemberInfo member) => false;
+	}
+
 	public partial class StarlightRiver : Mod
     {
         public AbilityHotkeys AbilityKeys { get; private set; }
 
-        private List<ILoadable> loadCache;
+        private List<IOrderedLoadable> loadCache;
+
+        private List<IRecipeGroup> recipeGroupCache;
 
         public static float Rotation;
 
+        public static bool DebugMode = false;
+
         public static LightingBuffer LightingBufferInstance = null;
 
-        public bool HasLoaded;
+        //debug hook to view RTs
+        //public override void PostDrawInterface(SpriteBatch spriteBatch)
+        //{
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringMapTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Purple * 0.5f);
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringShineTarget, new Rectangle(Main.screenWidth - (Main.screenWidth / 4), 0, Main.screenWidth / 4, Main.screenHeight / 4), Color.White * 0.5f);
+        //}
 
         public static StarlightRiver Instance { get; set; }
 
-        public StarlightRiver() => Instance = this;
+        public StarlightRiver()
+        {
+            Instance = this;
+            PreJITFilter = new TemporaryFix();
+        }
 
         public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
 
@@ -43,116 +63,46 @@ namespace StarlightRiver
 
         private Viewport _lastViewPort;
 
-        public override void UpdateMusic(ref int music, ref MusicPriority priority)
+        public static void SetLoadingText(string text)
         {
-            if (Main.myPlayer != -1 && !Main.gameMenu && Main.LocalPlayer.active)
-            {
-                Player player = Main.LocalPlayer;
+            var Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var UIProgress_set_SubProgressText = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.UIProgress")!.GetProperty("SubProgressText", BindingFlags.Public | BindingFlags.Instance)!.GetSetMethod()!;
 
-                if(useIntenseMusic)
-				{
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Miniboss");
-                    priority = MusicPriority.BossLow;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneHotspring)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/HotspringAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneGlass)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassPassive");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/GlassTemple");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if(StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && StarlightWorld.VitricBossArena.Contains((player.Center / 16).ToPoint()))
-				{
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/VitricBossAmbient");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneVoidPre)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/VoidPre");
-                    priority = MusicPriority.BossLow;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleCorrupt)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleCorrupt");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleBloody)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleBloody");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneJungleHoly)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/JungleHoly");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().zoneAluminum)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/AluminumPassive");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZonePermafrost)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/PermafrostPassive");
-                    priority = MusicPriority.BiomeMedium;
-                }
-
-                if (Main.tile[(int)player.Center.X / 16, (int)player.Center.Y / 16].wall == ModContent.WallType<AuroraBrickWall>() && !StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/SquidArena");
-                    priority = MusicPriority.BiomeHigh;
-                }
-
-                if (player.GetModPlayer<BiomeHandler>().ZoneOvergrow)
-                {
-                    music = GetSoundSlot(SoundType.Music, "Sounds/Music/Overgrow");
-                    priority = MusicPriority.BiomeHigh;
-                }
-            }
-
-            useIntenseMusic = false;
-
-            return;
+            UIProgress_set_SubProgressText.Invoke(Interface_loadMods.GetValue(null), new object[] { text });
         }
 
         public override void Load()
         {
-            //CopyFile();
-
-            loadCache = new List<ILoadable>();
+            loadCache = new List<IOrderedLoadable>();
 
             foreach (Type type in Code.GetTypes())
             {
-                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(ILoadable)))
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IOrderedLoadable)))
                 {
                     var instance = Activator.CreateInstance(type);
-                    loadCache.Add(instance as ILoadable);
+                    loadCache.Add(instance as IOrderedLoadable);
                 }
 
-                loadCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+                loadCache.Sort((n, t) => n.Priority.CompareTo(t.Priority));
             }
 
             for (int k = 0; k < loadCache.Count; k++)
             {
                 loadCache[k].Load();
+                SetLoadingText("Loading " + loadCache[k].GetType().Name);
+            }
+
+            recipeGroupCache = new List<IRecipeGroup>();
+
+            foreach (Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    recipeGroupCache.Add(instance as IRecipeGroup);
+                }
+
+                recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
             }
 
             if (!Main.dedServ)
@@ -169,150 +119,43 @@ namespace StarlightRiver
             }
         }
 
-		public override void PostUpdateEverything()
-		{
-            ZoomHandler.TickZoom();
-		}
-
-		//private readonly FieldInfo _transformMatrix = typeof(SpriteViewMatrix).GetField("_transformationMatrix", BindingFlags.NonPublic | BindingFlags.Instance);
-
-		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
-        {
-            if (false) //ignore this block
-            {
-                Matrix rotation = Matrix.CreateRotationZ(Rotation);
-                Matrix translation = Matrix.CreateTranslation(new Vector3(Main.screenWidth / 2, Main.screenHeight / 2, 0));
-                Matrix translation2 = Matrix.CreateTranslation(new Vector3(Main.screenWidth / -2, Main.screenHeight / -2, 0));
-
-                //_transformMatrix.SetValue(Transform, ((translation2 * rotation) * translation));
-                //base.ModifyTransformMatrix(ref Transform);
-                //Helper.UpdateTilt();
-            }
-
-            Transform.Zoom = ZoomHandler.ScaleVector;
-            ZoomHandler.UpdateZoom();
-        }
-
-        public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
-        {
-            for (int k = 0; k < UILoader.UIStates.Count; k++)
-            {
-                var state = UILoader.UIStates[k];
-                UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
-            }
-        }
-
         public override void Unload()
         {
             foreach (var loadable in loadCache)
             {
                 loadable.Unload();
             }
+
             loadCache = null;
 
             if (!Main.dedServ)
             {
                 Instance = null;
                 AbilityKeys.Unload();
-            }
+                LightingBufferInstance = null;
+                chestItems = null;
 
-            //SwapFile();
+                SLRSpawnConditions.Unload();
+            }
         }
 
-
-        //TODO: (important) remove before puplic release
-        //private const string tempName = "StarlightRiver.export.rename_to_tmod";
-        //private void CopyFile()
-        //{
-        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-        //    bool doNotCopy = false;
-        //    char[] modSig;
-        //    long writerStartPos = 0;
-        //    string id = Steamworks.SteamUser.GetSteamID().ToString();
-
-        //    using (FileStream stream = new FileStream(path + "StarlightRiver.tmod", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-        //    {
-        //        BinaryReader binaryReader = new BinaryReader(stream);
-
-        //        //advances the position forward to the mod signature
-        //        stream.Position += 4; //binaryReader.ReadBytes(4);  //discarded //tmod
-        //        binaryReader.ReadString();  //discarded //version
-        //        stream.Position += 20; //binaryReader.ReadBytes(20); //discarded //hash
-
-        //        writerStartPos = stream.Position;
-
-        //        //the next 256 bytes are free to use*
-        //        modSig = Encoding.ASCII.GetChars(binaryReader.ReadBytes(256));//*unless the mod is off the browser, but this bit of code should never be on a browser version
-
-        //        if (modSig.ToString().Contains(id))
-        //            doNotCopy = true;
-        //        else
-        //        {
-        //            int nextIndex = -1;//to store start of next string
-
-        //            for (int i = 0; i < modSig.Length; i++)//find next empty space
-        //                if (modSig[i] == '\0')
-        //                {
-        //                    nextIndex = i;
-        //                    break;
-        //                }
-
-        //            if (nextIndex == -1 || nextIndex > modSig.Length - (id.Length + 1))//if no empty space or not enough room
-        //            {
-        //                doNotCopy = true;
-        //                return;
-        //            }
-
-        //            modSig[nextIndex] = '|';
-        //            for (int i = 0; i < id.Length; i++)
-        //                modSig[nextIndex + i + 1] = id[i];
-        //        }
-        //    }
-
-        //    if (doNotCopy)//it does not copy if it cannot find a valid space, or the list is up to date (contains current id)
-        //    {
-        //        if (File.Exists(path + tempName))//makes sure a leftover copy does not exist if set to not copy
-        //            File.Delete(path + tempName);//a leftover copy would overwrite the current tmod on unload
-        //    }
-        //    else
-        //    {
-        //        File.Copy(path + "StarlightRiver.tmod", path + tempName, true);
-
-        //        using (FileStream stream = new FileStream(path + tempName, FileMode.Open))
-        //        {
-        //            BinaryWriter binaryWriter = new BinaryWriter(stream);
-
-        //            stream.Position = writerStartPos;
-
-        //            binaryWriter.Write(modSig);
-        //        }
-        //    }
-        //}
-
-        //private void SwapFile()
-        //{
-        //    string path = Main.SavePath + Path.DirectorySeparatorChar + "Mods" + Path.DirectorySeparatorChar;
-        //    if (File.Exists(path + tempName))
-        //    {
-        //        File.Copy(path + tempName, path + "StarlightRiver.tmod", true);
-        //        File.Delete(path + tempName);
-        //    }
-        //}
-
-        public override void PostAddRecipes()
+        public override void AddRecipeGroups()
         {
-            HasLoaded = true;
+            foreach (var group in recipeGroupCache)
+            {
+                group.AddRecipeGroups();
+            }
         }
 
         public void CheckScreenSize()
         {
-            if (!Main.dedServ)
+            if (!Main.dedServ && !Main.gameMenu)
             {
                 if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
                 {
                     if (TileDrawOverLoader.projTarget != null)
                         TileDrawOverLoader.ResizeTarget();
-                    if (BreacherArmorHelper.npcTarget != null)
+                    if (BreacherArmorHelper.NPCTarget != null)
                         BreacherArmorHelper.ResizeTarget();
                 }
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
@@ -321,15 +164,13 @@ namespace StarlightRiver
             }
         }
 
-        #region NetEasy
         public override void PostSetupContent()
         {
+            Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
 
             NetEasy.NetEasy.Register(this);
 
             AutoloadChestItems();
-
-            //CallBossChecklist();
 
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
             {
@@ -346,6 +187,5 @@ namespace StarlightRiver
         {
             NetEasy.NetEasy.HandleModule(reader, whoAmI);
         }
-        #endregion
     }
 }

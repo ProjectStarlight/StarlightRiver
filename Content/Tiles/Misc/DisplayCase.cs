@@ -14,13 +14,9 @@ namespace StarlightRiver.Content.Tiles.Misc
 {
 	class DisplayCase : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<DisplayCaseEntity>().Hook_AfterPlacement, -1, 0, false);
 
@@ -31,9 +27,9 @@ namespace StarlightRiver.Content.Tiles.Misc
         {
             Tile tile = Main.tile[i, j];
 
-            if (tile.frameX == 0 && tile.frameY == 0)
+            if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
-                var outlineTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow");
+                var outlineTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow").Value;
                 var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 3);
                 var outlineColor = Helpers.Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
 
@@ -52,11 +48,11 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
-                var tex2 = ModContent.GetTexture("StarlightRiver/Assets/Keys/GlowSoft");
+                var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
                 var pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition - Vector2.One * 16;
                 spriteBatch.Draw(tex2, pos, new Color(255, 255, 200) * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f)) );
 
-                var texShine = ModContent.GetTexture("StarlightRiver/Assets/Keys/Shine");
+                var texShine = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
                 pos += Vector2.One * 32;
 
                 spriteBatch.Draw(texShine, pos, null, new Color(255, 255, 200) * (1 -GetProgress(0)), Main.GameUpdateCount / 250f, new Vector2(texShine.Width / 2, texShine.Height), 0.08f * GetProgress(0), 0, 0);
@@ -68,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Misc
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
 
-                var tex = Main.itemTexture[entity.containedItem.type];
+                var tex = Terraria.GameContent.TextureAssets.Item[entity.containedItem.type].Value;
                 var target = new Rectangle((i + (int)Helpers.Helper.TileAdj.X) * 16 - (int)Main.screenPosition.X + 4, (j + (int)Helpers.Helper.TileAdj.Y) * 16 - (int)Main.screenPosition.Y + 6, 20, 20);
 
                 spriteBatch.Draw(tex, target, null, Color.White);
@@ -87,14 +83,14 @@ namespace StarlightRiver.Content.Tiles.Misc
     {
         public Item containedItem;
 
-        public override bool ValidTile(int i, int j)
+        public override bool IsTileValidForEntity(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            return (tile.type == ModContent.TileType<DisplayCase>() || tile.type == ModContent.TileType<DisplayCaseFriendly>())
-                && tile.active() && tile.frameX == 0 && tile.frameY == 0;
+            return (tile.TileType == ModContent.TileType<DisplayCase>() || tile.TileType == ModContent.TileType<DisplayCaseFriendly>())
+                && tile.HasTile && tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
-        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction)
+        public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
             {
@@ -107,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
         public override void Update()
         {
-            if (!ValidTile(Position.X, Position.Y))
+            if (!IsTileValidForEntity(Position.X, Position.Y))
                 Kill(Position.X, Position.Y);
 
             if (containedItem != null)
@@ -123,18 +119,18 @@ namespace StarlightRiver.Content.Tiles.Misc
 
             Tile tile = Framing.GetTileSafely(Position.X, Position.Y);
 
-            if (tile.type == ModContent.TileType<DisplayCase>())
+            if (tile.TileType == ModContent.TileType<DisplayCase>())
             {
                 for (int k = 0; k < Main.maxPlayers; k++)
                 {
-                    var player = Main.player[k];
-                    if (AbilityHelper.CheckDash(player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
+                    var Player = Main.player[k];
+                    if (AbilityHelper.CheckDash(Player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
                     {
                         WorldGen.KillTile(Position.X, Position.Y);
-                        Helpers.Helper.NewItemSpecific(player.Center, containedItem);
+                        Helpers.Helper.NewItemSpecific(Player.Center, containedItem);
                         Kill(Position.X, Position.Y);
 
-                        Main.PlaySound(SoundID.Shatter, player.Center);
+                        Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Player.Center);
 
                         for (int n = 0; n < 30; n++)
                         {
@@ -148,15 +144,13 @@ namespace StarlightRiver.Content.Tiles.Misc
             }
         }
 
-        public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                ["Item"] = containedItem
-            };
+            if(containedItem != null)
+                tag["Item"] = containedItem;
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             containedItem = tag.Get<Item>("Item");
         }

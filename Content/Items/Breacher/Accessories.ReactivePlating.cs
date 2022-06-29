@@ -13,6 +13,7 @@ using Terraria.Graphics.Effects;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -29,20 +30,20 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 4, 0, 0);
-			item.defense = 4;
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 4, 0, 0);
+			Item.defense = 4;
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+			ArmorPlatingPlayer modPlayer = Player.GetModPlayer<ArmorPlatingPlayer>();
 			modPlayer.active = true;
 			if (modPlayer.Shield)
-				player.endurance += 0.3f;
+				Player.endurance += 0.3f;
 		}
 	}
 
@@ -81,19 +82,15 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
-		{
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
 			if (active && !Shield)
 				damageCounter += 100;
-		}
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+        }
 
-		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
-		{
-			if (active && !Shield)
-				damageCounter += 100;
-		}
 	}
-	public class ReactivePlatingHelper : ILoadable
+	public class ReactivePlatingHelper : IOrderedLoadable
 	{
 
 		public float Priority => 1.05f; 
@@ -103,23 +100,24 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawPlayer += Main_DrawPlayer;
+			StarlightPlayer.PostDrawEvent += DrawOverlay;
+		}
+
+		private void DrawOverlay(Player player, SpriteBatch spriteBatch)
+		{
+			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+
+			if (modPlayer.Shield)
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, player);
 		}
 
 		public void Unload() { }
 
-		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
-		{
-			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
-
-			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-
-			if (modPlayer.Shield && drawPlayer == Main.LocalPlayer)
-				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer);
-		}
-
-		private static void DrawPlayerTarget(int flickerTime, int shieldTimer)
+		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {
+			if (!PlayerTarget.canUseTarget)
+				return;
+
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			RenderTarget2D target = PlayerTarget.Target;
@@ -128,7 +126,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				return;
 
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
-			effect.Parameters["uImageSize0"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
 			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 200f, 0.25f));
 
 			spriteBatch.End();
@@ -149,7 +147,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["red2"].SetValue(color.ToVector4());
 
 			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			spriteBatch.Draw(target, PlayerTarget.getPlayerTargetPosition(drawPlayer.whoAmI), PlayerTarget.getPlayerTargetSourceRectangle(drawPlayer.whoAmI), Color.White);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

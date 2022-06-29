@@ -15,8 +15,8 @@ float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
 {
     float2 st = screenSpace.xy;
 
-    float power = tex2D(samplerTex2, st).r;
-    float4 color = tex2D(samplerTex, st);
+    float power = tex2D(samplerTex2, st + offset).r;
+    float4 color = tex2D(samplerTex, st + offset);
 
     float factor = (0.6 + sin(power * 30.0 + time) * 0.4) * power;
     float bright = ((color.r + color.b + color.g) / 3.0);
@@ -27,8 +27,8 @@ float4 PixelShaderFunction(float4 screenSpace : TEXCOORD0) : COLOR0
     color2.g = lerp(color.g, 1.3 * bright, (power + factor) / 2.0);
     color2.b = lerp(color.b, 1.2 * bright, (power + factor) / 2.0);
 
-    float4 color3 = tex2D(samplerTex3, st - offset + float2(time * 0.002, 0)) * 0.5;
-    color3 += tex2D(samplerTex3, st - offset + float2(time * -0.0015, 0)) * 0.35;
+    float4 color3 = tex2D(samplerTex3, st + offset + float2(time * 0.002, time * 0.002)) * 0.5;
+    color3 += tex2D(samplerTex3, st + offset + float2(time * -0.0015, time * 0.0012)) * 0.35;
 
     bright = min(bright, 0.25);
 

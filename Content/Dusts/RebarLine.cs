@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
     class RebarLine : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricBoss + "RoarLine";
-            return true;
-        }
+        public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -30,7 +26,7 @@ namespace StarlightRiver.Content.Dusts
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 8, 128);
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)

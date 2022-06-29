@@ -1,5 +1,4 @@
-﻿
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Vitric
 {

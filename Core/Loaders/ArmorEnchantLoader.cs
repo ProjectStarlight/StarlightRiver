@@ -5,17 +5,19 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ArmorEnchantLoader : ILoadable
+	class ArmorEnchantLoader : IOrderedLoadable
     {
-        public static List<ArmorEnchantment> Enchantments = new List<ArmorEnchantment>();
+        public static List<ArmorEnchantment> Enchantments;
 
         public float Priority => 1.0f;
 
         public void Load()
         {
-            Mod mod = StarlightRiver.Instance;
+            Mod Mod = StarlightRiver.Instance;
 
-            foreach (Type t in mod.Code.GetTypes())
+            Enchantments = new List<ArmorEnchantment>();
+
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(ArmorEnchantment)))
                 {
@@ -26,7 +28,7 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            Enchantments.Clear();
+            Enchantments = null;
         }
     }
 }

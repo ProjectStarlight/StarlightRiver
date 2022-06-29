@@ -11,8 +11,8 @@ namespace StarlightRiver.Core
     {
         public bool IsDisposed { get; private set; }
 
-        private readonly DynamicVertexBuffer vertexBuffer;
-        private readonly DynamicIndexBuffer indexBuffer;
+        private DynamicVertexBuffer vertexBuffer;
+        private DynamicIndexBuffer indexBuffer;
 
         private readonly GraphicsDevice device;
 
@@ -22,13 +22,19 @@ namespace StarlightRiver.Core
 
             if (device != null)
             {
-                vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
-                indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+                Main.QueueMainThreadAction(() =>
+                {
+                    vertexBuffer = new DynamicVertexBuffer(device, typeof(VertexPositionColorTexture), maxVertices, BufferUsage.None);
+                    indexBuffer = new DynamicIndexBuffer(device, IndexElementSize.SixteenBits, maxIndices, BufferUsage.None);
+                });
             }
         }
 
         public void Render(Effect effect)
         {
+            if (vertexBuffer is null || indexBuffer is null)
+                return;
+
             device.SetVertexBuffer(vertexBuffer);
             device.Indices = indexBuffer;
 
@@ -41,12 +47,12 @@ namespace StarlightRiver.Core
 
         public void SetVertices(VertexPositionColorTexture[] vertices)
         {
-            vertexBuffer.SetData(0, vertices, 0, vertices.Length, VertexPositionColorTexture.VertexDeclaration.VertexStride, SetDataOptions.Discard);
+            vertexBuffer?.SetData(0, vertices, 0, vertices.Length, VertexPositionColorTexture.VertexDeclaration.VertexStride, SetDataOptions.Discard);
         }
 
         public void SetIndices(short[] indices)
         {
-            indexBuffer.SetData(0, indices, 0, indices.Length, SetDataOptions.Discard);
+            indexBuffer?.SetData(0, indices, 0, indices.Length, SetDataOptions.Discard);
         }
 
         public void Dispose()
@@ -84,7 +90,7 @@ namespace StarlightRiver.Core
         private readonly TrailColorFunction trailColorFunction;
 
         /// <summary>
-        /// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. projectile.Center) and Positions[0] is assumed to be the end.
+        /// Array of positions that define the trail. NOTE: Positions[Positions.Length - 1] is assumed to be the start (e.g. Projectile.Center) and Positions[0] is assumed to be the end.
         /// </summary>
         public Vector2[] Positions 
         {
@@ -305,13 +311,14 @@ namespace StarlightRiver.Core
 
             Vector2 normalPerp = trailTipNormal.RotatedBy(MathHelper.PiOver2);
 
-            Vector2 a = trailTipPosition + (normalPerp * (trailWidthFunction?.Invoke(1) ?? 1));
-            Vector2 b = trailTipPosition - (normalPerp * (trailWidthFunction?.Invoke(1) ?? 1));
+            float width = trailWidthFunction?.Invoke(1) ?? 1;
+            Vector2 a = trailTipPosition + (normalPerp * width);
+            Vector2 b = trailTipPosition - (normalPerp * width);
             Vector2 c = trailTipPosition + (trailTipNormal * length);
 
             Vector2 texCoordA = Vector2.UnitX;
             Vector2 texCoordB = Vector2.One;
-            Vector2 texCoordC = Vector2.One;
+            Vector2 texCoordC = new Vector2(1, 0.5f);//this fixes the texture being skewed off to the side
 
             Color colorA = trailColorFunction?.Invoke(texCoordA) ?? Color.White;
             Color colorB = trailColorFunction?.Invoke(texCoordB) ?? Color.White;
@@ -334,25 +341,24 @@ namespace StarlightRiver.Core
     }
 
 
-    // WARNING: This does not work for time being. No, I don't know why. I need to fix this at a later date, but right now nothing uses it, so it's OK.
+    // Note: Every vertex in this tip is drawn twice, but the performance impact from this would be very little
     public class RoundedTip : ITrailTip
     {
-        // One more is added due to the center of the fan.
-        public int ExtraVertices => accuracy + 1;
+        // The edge vextex count is count * 2 + 1, but one extra is added for the center, and there is one extra hidden vertex.
+        public int ExtraVertices => (triCount * 2) + 3;
 
-        // The number of triangles in a fan is just the number of points - 1, and then there are 3 indices per triangle.
-        public int ExtraIndices => 3 * (accuracy - 1);
+        public int ExtraIndices => ((triCount * 2) * 3) + 5;
 
-        // Accuracy is just the number of points we want to generate, higher means a better circle approximation.
-        private readonly int accuracy;
+        // TriCount is the amount of tris the curve should have, higher means a better circle approximation. (Keep in mind each tri is drawn twice)
+        private readonly int triCount;
 
-        public RoundedTip(int accuracy)
+        public RoundedTip(int triCount = 2)//amount of tris
         {
-            this.accuracy = accuracy;
+            this.triCount = triCount;
 
-            if (accuracy < 3)
+            if (triCount < 2)
             {
-                throw new ArgumentException($"Parameter {nameof(accuracy)} cannot be less than 3.");
+                throw new ArgumentException($"Parameter {nameof(triCount)} cannot be less than 2.");
             }
         }
 
@@ -360,41 +366,87 @@ namespace StarlightRiver.Core
         {
             /*   C---D
              *  / \ / \
-             * B---A---E
+             * B---A---E (first layer)
+             * 
+             *   H---G
+             *  / \ / \
+             * I---A---F (second layer)
              * 
              * This tip attempts to approximate a semicircle as shown.
              * Consists of a fan of triangles which share a common center (A).
-             * The higher the accuracy, the more points there are.
+             * The higher the tri count, the more points there are.
+             * Point E and F are ontop of eachother to prevent a visual seam.
              */
 
-            // We want an array of vertices the size of the accuracy amount plus the center.
-            vertices = new VertexPositionColorTexture[accuracy + 1];
+            /// We want an array of vertices the size of the accuracy amount plus the center.
+            vertices = new VertexPositionColorTexture[ExtraVertices];
 
             Vector2 fanCenterTexCoord = new Vector2(1, 0.5f);
 
-            vertices[0] = new VertexPositionColorTexture(trailTipPosition.Vec3(), trailColorFunction?.Invoke(fanCenterTexCoord) ?? Color.White, fanCenterTexCoord);
+            vertices[0] = new VertexPositionColorTexture(trailTipPosition.Vec3(), (trailColorFunction?.Invoke(fanCenterTexCoord) ?? Color.White) * 0.75f, fanCenterTexCoord);
 
             List<short> indicesTemp = new List<short>();
 
-            for (int k = 0; k < accuracy; k++)
+            for (int k = 0; k <= triCount; k++)
             {
                 // Referring to the illustration: 0 is point B, 1 is point E, any other value represent the rotation factor of points in between.
-                float rotationFactor = k / (float)(accuracy - 1);
+                float rotationFactor = k / (float)(triCount);
 
-                // Rotates by pi/2 - (factor * pi) so that when the factor is 0 we get A and when it is 1 we get E.
+                // Rotates by pi/2 - (factor * pi) so that when the factor is 0 we get B and when it is 1 we get E.
                 float angle = MathHelper.PiOver2 - (rotationFactor * MathHelper.Pi);
 
                 Vector2 circlePoint = trailTipPosition + (trailTipNormal.RotatedBy(angle) * (trailWidthFunction?.Invoke(1) ?? 1));
 
                 // Handily, the rotation factor can also be used as a texture coordinate because it is a measure of how far around the tip a point is.
-                Vector2 circleTexCoord = new Vector2(1, rotationFactor);
+                Vector2 circleTexCoord = new Vector2(rotationFactor, 1);
 
-                Color circlePointColor = trailColorFunction?.Invoke(circleTexCoord) ?? Color.White;
+                // The transparency must be changed a bit so it looks right when overlapped
+                Color circlePointColor = (trailColorFunction?.Invoke(new Vector2(1, 0)) ?? Color.White) * rotationFactor * 0.85f;
+
+                vertices[k + 1] = new VertexPositionColorTexture(circlePoint.Vec3(), circlePointColor, circleTexCoord);
+
+                //if (k == triCount)//leftover and not needed
+                //{
+                //    continue;
+                //}
+
+                short[] tri = new short[]
+                {
+                    /* Because this is a fan, we want all triangles to share a common point. This is represented by index 0 offset to the next available index.
+                     * The other indices are just pairs of points around the fan. The vertex k points along the circle is just index k + 1, followed by k + 2 at the next one along.
+                     * The reason these are offset by 1 is because index 0 is taken by the fan center.
+                     */
+
+                    //before the fix, I believe these being in the wrong order was what prevented it from drawing
+                    (short)startFromIndex, 
+                    (short)(startFromIndex + k + 2), 
+                    (short)(startFromIndex + k + 1)
+                };
+
+                indicesTemp.AddRange(tri);
+            }
+
+            // These 2 forloops overlap so that 2 points share the same location, this hidden point hides a tri that acts as a transition from one UV to another
+            for (int k = triCount + 1; k <= triCount * 2 + 1; k++)
+            {
+                // Referring to the illustration: triCount + 1 is point F, 1 is point I, any other value represent the rotation factor of points in between.
+                float rotationFactor = ((k - 1) / (float)(triCount)) - 1;
+
+                // Rotates by pi/2 - (factor * pi) so that when the factor is 0 we get B and when it is 1 we get E.
+                float angle = MathHelper.PiOver2 - (rotationFactor * MathHelper.Pi);
+
+                Vector2 circlePoint = trailTipPosition + (trailTipNormal.RotatedBy(-angle) * (trailWidthFunction?.Invoke(1) ?? 1));
+
+                // Handily, the rotation factor can also be used as a texture coordinate because it is a measure of how far around the tip a point is.
+                Vector2 circleTexCoord = new Vector2(rotationFactor, 0);
+
+                // The transparency must be changed a bit so it looks right when overlapped
+                Color circlePointColor = ((trailColorFunction?.Invoke(new Vector2(1, 0)) ?? Color.White) * rotationFactor * 0.75f);
 
                 vertices[k + 1] = new VertexPositionColorTexture(circlePoint.Vec3(), circlePointColor, circleTexCoord);
 
                 // Skip last point, since there is no point to pair with it.
-                if (k == accuracy - 1)
+                if (k == triCount * 2 + 1)
                 {
                     continue;
                 }
@@ -406,8 +458,9 @@ namespace StarlightRiver.Core
                      * The reason these are offset by 1 is because index 0 is taken by the fan center.
                      */
 
-                    (short)startFromIndex, 
-                    (short)(startFromIndex + k + 1), 
+                    //The order of the indices is reversed since the direction is backwards
+                    (short)startFromIndex,
+                    (short)(startFromIndex + k + 1),
                     (short)(startFromIndex + k + 2)
                 };
 

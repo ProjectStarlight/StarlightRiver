@@ -19,36 +19,38 @@ namespace StarlightRiver.Content.Items.Misc
 
         public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer partial debuff duration to nearby enemies") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.OnHitNPCEvent += OnHitNPCAccessory;
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
-
-            return true;
         }
-        private void OnHit(Player player, bool crit)
+
+        public override void Unload()
         {
-            if (Equipped(player) && crit && Main.rand.NextFloat() < 0.25f)
-            {
-                TransferRandomDebuffToNearbyEnemies(player);
-            }
+            StarlightPlayer.OnHitNPCEvent -= OnHitNPCAccessory;
+            StarlightPlayer.OnHitNPCWithProjEvent -= OnHitNPCWithProjAccessory;
         }
 
-        private void OnHitNPCAccessory(Player player, Item item, NPC target, int damage, float knockback, bool crit) 
-            => OnHit(player, crit);
-        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit) 
-            => OnHit(player, crit);
+        private void OnHit(Player Player, bool crit)
+        {
+            if (Equipped(Player) && crit && Main.rand.NextFloat() < 0.25f)
+                TransferRandomDebuffToNearbyEnemies(Player);
+        }
 
-        public static void TransferRandomDebuffToNearbyEnemies(Player player)
+        private void OnHitNPCAccessory(Player Player, Item Item, NPC target, int damage, float knockback, bool crit) 
+            => OnHit(Player, crit);
+
+        private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit) 
+            => OnHit(Player, crit);
+
+        public static void TransferRandomDebuffToNearbyEnemies(Player Player)
         {
             List<int> activeDebuffIds = new List<int>();
 
             for (int i = 0; i < Player.MaxBuffs; i++)
             {
-                if (Helper.IsValidDebuff(player, i))
-                {
-                    activeDebuffIds.Add(player.buffType[i]);
-                }
+                if (Helper.IsValidDebuff(Player, i))
+                    activeDebuffIds.Add(Player.buffType[i]);
             }
 
             int type = Main.rand.Next(activeDebuffIds);
@@ -57,10 +59,8 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 NPC npc = Main.npc[i];
 
-                if (npc.CanBeChasedBy() && Vector2.DistanceSquared(player.Center, npc.Center) < transferRadius * transferRadius)
-                {
+                if (npc.CanBeChasedBy() && Vector2.DistanceSquared(Player.Center, npc.Center) < transferRadius * transferRadius)
                     npc.AddBuff(type, transferredBuffDuration);
-                }
             }
         }
     }

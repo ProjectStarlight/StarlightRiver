@@ -4,6 +4,8 @@ namespace StarlightRiver.Core
     {
         public const string Assets =                "StarlightRiver/Assets/";
 
+        public const string Biomes =                Assets +"Biomes/";
+
         public const string Backgrounds =           Assets + "Backgrounds/";
         public const string MapBackgrounds =        Backgrounds + "MapBackgrounds/";
 
@@ -34,6 +36,8 @@ namespace StarlightRiver.Core
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
         public const string DungeonItem =           Assets + "Items/Dungeon/";
         public const string GravediggerItem =       Assets + "Items/Gravedigger/";
+        public const string DemonItem =             Assets + "Items/Demon/";
+        public const string GeomancerItem =         Assets + "Items/Geomancer/";
 
         public const string SpaceEventItem =        Assets + "Items/SpaceEvent/";
         public const string SpaceEventNPC =         Assets + "NPCs/SpaceEvent/";
@@ -46,8 +50,9 @@ namespace StarlightRiver.Core
         public const string VitricTile =            Assets + "Tiles/Vitric/";
         public const string VitricItem =            Assets + "Items/Vitric/";
         public const string VitricNpc =             Assets + "NPCs/Vitric/";
-        public const string GlassMiniboss =         Assets + "Bosses/GlassMiniboss/";
-        public const string VitricBoss =             Assets + "Bosses/VitricBoss/";
+        public const string GauntletNpc =           Assets + "NPCs/Vitric/Gauntlet/";
+        public const string Glassweaver =           Assets + "Bosses/GlassMiniboss/";
+        public const string VitricBoss =            Assets + "Bosses/VitricBoss/";
 
         public const string PermafrostTile =        Assets + "Tiles/Permafrost/";
         public const string PermafrostItem =        Assets + "Items/Permafrost/";
@@ -62,6 +67,7 @@ namespace StarlightRiver.Core
         public const string MiscItem =              Assets + "Items/Misc/";
         public const string MiscTile =              Assets + "Tiles/Misc/";
         public const string BreacherItem =          Assets + "Items/Breacher/";
+        public const string RatKingItem =           Assets + "Items/RatKing/";
         public const string PotionsItem =           Assets + "Items/Potions/";
         public const string ForestItem =            Assets + "Items/Forest/";
         public const string SteampunkItem =         Assets + "Items/SteampunkSet/";
@@ -73,6 +79,8 @@ namespace StarlightRiver.Core
         public const string VoidTile =              Assets + "Tiles/Void/";
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
+
+        public const string Alchemy =               Assets + "Alchemy/";
 
         public const string TrophyTile =            Assets + "Tiles/Trophies/";
 
@@ -91,6 +99,7 @@ namespace StarlightRiver.Core
         public const string ForestNPC =             Assets + "NPCs/Forest/";
 
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";
+        public const string HerbologyCropTile =     Assets + "Tiles/Herbology/Crops/";
 
         public const string PureTile =              Assets + "Tiles/Purified/";
 
@@ -120,5 +129,8 @@ namespace StarlightRiver.Core
         public const string VitricStructures =      StructureFolder + "Vitric/";
 
         public const string VitricCrystalStructs =  VitricStructures + "WalkableCrystals/";
+
+        //misc
+        public const string Keys =                  Assets + "Keys/";
     }
 }

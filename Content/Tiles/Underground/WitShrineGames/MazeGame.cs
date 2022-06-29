@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 				}
 		}
 
-		public override void UpdatePlayer(Vector2 player, Vector2 oldPlayer)
+		public override void UpdatePlayer(Vector2 Player, Vector2 oldPlayer)
 		{
 			for (int x = Clamp(oldPlayer.X - 1); x <= Clamp(oldPlayer.X + 1); x++)
 				for (int y = Clamp(oldPlayer.Y - 1); y <= Clamp(oldPlayer.Y + 1); y++)
@@ -31,8 +31,8 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 						gameBoard[x, y] = WitShrineDummy.runeState.HostileHidden;
 				}
 
-			for (int x = Clamp(player.X - 1); x <= Clamp(player.X + 1); x++)
-				for (int y = Clamp(player.Y - 1); y <= Clamp(player.Y + 1); y++)
+			for (int x = Clamp(Player.X - 1); x <= Clamp(Player.X + 1); x++)
+				for (int y = Clamp(Player.Y - 1); y <= Clamp(Player.Y + 1); y++)
 				{
 					if (gameBoard[x, y] == WitShrineDummy.runeState.HostileHidden)
 						gameBoard[x, y] = WitShrineDummy.runeState.Hostile;
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 			if (gameBoard[(int)oldPlayer.X, (int)oldPlayer.Y] == WitShrineDummy.runeState.None)
 				gameBoard[(int)oldPlayer.X, (int)oldPlayer.Y] = WitShrineDummy.runeState.Freindly;
 
-			if (gameBoard[(int)player.X, (int)player.Y] == WitShrineDummy.runeState.Hostile)
+			if (gameBoard[(int)Player.X, (int)Player.Y] == WitShrineDummy.runeState.Hostile)
 				parent.LoseGame();
 
 			for (int x = 0; x < 6; x++)

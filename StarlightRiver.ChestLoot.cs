@@ -27,9 +27,9 @@ namespace StarlightRiver
 
             for (int i = 0; i < ItemLoader.ItemCount; i++)
             {
-                ModItem modItem = ItemLoader.GetItem(i);
+                ModItem ModItem = ItemLoader.GetItem(i);
 
-                if (modItem is IChestItem chestItem)
+                if (ModItem is IChestItem chestItem)
                 {
                     chestItems.Add((i, chestItem));
                 }
@@ -62,10 +62,10 @@ namespace StarlightRiver
 
                 Chest chest = Main.chest[i];
 
-                // Within this block this chest is valid to put an item in.
-                if (chest != null && Framing.GetTileSafely(chest.x, chest.y) is Tile tile && tile.active())
+                // Within this block this chest is valid to put an Item in.
+                if (chest != null && Framing.GetTileSafely(chest.x, chest.y) is Tile tile && tile.HasTile)
                 {
-                    if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.frameX))
+                    if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.TileFrameX))
                     {
                         PlaceDisplayCaseOn(chest);
 
@@ -73,7 +73,7 @@ namespace StarlightRiver
                         continue;
                     }
 
-                    // Selects a random item to be placed in a chest.
+                    // Selects a random Item to be placed in a chest.
                     (int, IChestItem) typeAndChestItem = Main.rand.Next(chestItems);
 
                     IChestItem chestItem = typeAndChestItem.Item2;
@@ -81,13 +81,13 @@ namespace StarlightRiver
                     // Type check is to prevent dungeon wooden chests being treated as surface ones.
                     if (chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(chestItem.Regions, tile) && WorldGen.genRand.NextFloat() < chanceToReplaceMainChestLootWithModdedItem)
                     {
-                        // Replaces the "main" chest item. I'm assuming this is always in slot 0.
+                        // Replaces the "main" chest Item. I'm assuming this is always in slot 0.
                         chest.item[0] = SetupItem(typeAndChestItem.Item1, chestItem.Stack, false);
                     }
                 }
             }
 
-            chestItems.Clear();
+            //chestItems.Clear();//this causes causes a crash when generating subsequent worlds since the dict would then be empty
         }
 
         private void PlaceDisplayCaseOn(Chest chest)
@@ -96,10 +96,10 @@ namespace StarlightRiver
 
             for (int i = 0; i < chest.item.Length; i++)
             {
-                Item item = chest.item[i];
+                Item Item = chest.item[i];
 
-                // Checks if the "main" chest item is replaceable (weapon or accessory, and not stackable).
-                if (item.accessory || (item.damage > 0 && item.notAmmo && (item.melee || item.ranged || item.magic || item.summon) && item.maxStack == 1))
+                // Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
+                if (Item.accessory || (Item.damage > 0 && Item.notAmmo && Item.maxStack == 1))
                 {
                     type = chest.item[i].type;
 
@@ -109,11 +109,11 @@ namespace StarlightRiver
 
             if (type != ItemID.None)
             {
-                Item item = SetupItem(type, 1, true);
+                Item Item = SetupItem(type, 1, true);
 
                 Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
                 TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
-                (TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = item;
+                (TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
             }
         }
 
@@ -128,14 +128,14 @@ namespace StarlightRiver
 
         private Item SetupItem(int type, int stack, bool isRelic)
         {
-            Item item = new Item(); // TODO: Come 1.4 we can make this into the constructor that takes an ID.
+            Item Item = new Item(); // TODO: Come 1.4 we can make this into the constructor that takes an ID.
 
-            item.SetDefaults(type);
-            item.stack = stack;
-            item.GetGlobalItem<RelicItem>().isRelic = isRelic;
-            item.Prefix(ItemLoader.ChoosePrefix(item, Main.rand));
+            Item.SetDefaults(type);
+            Item.stack = stack;
+            Item.GetGlobalItem<RelicItem>().isRelic = isRelic;
+            Item.Prefix(ItemLoader.ChoosePrefix(Item, Main.rand));
 
-            return item;
+            return Item;
         }
 
         private bool TileMatchesRegionFlags(ChestRegionFlags flags, Tile tile)
@@ -160,7 +160,7 @@ namespace StarlightRiver
 
                     foreach (int frame in frames)
                     {
-                        if (tile.frameX == frame)
+                        if (tile.TileFrameX == frame)
                         {
                             return true;
                         }

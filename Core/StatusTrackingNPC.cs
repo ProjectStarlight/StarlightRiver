@@ -22,35 +22,35 @@ namespace StarlightRiver.Core
 
 		public override bool InstancePerEntity => true;
 
-		public StatusTrackingNPC Tracker(NPC npc) => npc.GetGlobalNPC<StatusTrackingNPC>();
+		public StatusTrackingNPC Tracker(NPC NPC) => NPC.GetGlobalNPC<StatusTrackingNPC>();
 
-		public override bool PreAI(NPC npc)
+		public override bool PreAI(NPC NPC)
 		{
-			return base.PreAI(npc);
+			return base.PreAI(NPC);
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-			Tracker(npc).attacker = player;
-			Tracker(npc).compareBuffs = true;
+			Tracker(NPC).attacker = Player;
+			Tracker(NPC).compareBuffs = true;
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			Tracker(npc).attacker = Main.player[projectile.owner];
-			Tracker(npc).compareBuffs = true;
+			Tracker(NPC).attacker = Main.player[Projectile.owner];
+			Tracker(NPC).compareBuffs = true;
 		}
 
-		public override void ResetEffects(NPC npc)
+		public override void ResetEffects(NPC NPC)
 		{
-			if (Tracker(npc).compareBuffs)
+			if (Tracker(NPC).compareBuffs)
 			{
-				buffCompareEffects?.Invoke(attacker, npc, Tracker(npc).storedBuffs, npc.buffType, Tracker(npc).storedTimes, npc.buffTime);
-				Tracker(npc).compareBuffs = false;
+				buffCompareEffects?.Invoke(attacker, NPC, Tracker(NPC).storedBuffs, NPC.buffType, Tracker(NPC).storedTimes, NPC.buffTime);
+				Tracker(NPC).compareBuffs = false;
 			}
 
-			npc.buffType.CopyTo(Tracker(npc).storedBuffs, 0);
-			npc.buffTime.CopyTo(Tracker(npc).storedTimes, 0);
+			NPC.buffType.CopyTo(Tracker(NPC).storedBuffs, 0);
+			NPC.buffTime.CopyTo(Tracker(NPC).storedTimes, 0);
 		}
 	}
 }

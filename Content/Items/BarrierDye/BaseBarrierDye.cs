@@ -9,6 +9,7 @@ using StarlightRiver.Core;
 using Microsoft.Xna.Framework;
 using Terraria.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {
@@ -16,60 +17,81 @@ namespace StarlightRiver.Content.Items.BarrierDye
 	{
 		public virtual float RechargeAnimationRate => 0.05f;
 
-		public virtual void HitBarrierEffects(Player player) { }
+		public virtual void HitBarrierEffects(Player Player) { }
 
-		public virtual void LoseBarrierEffects(Player player) { }
+		public virtual void LoseBarrierEffects(Player Player) { }
 
-		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) { }
+		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player Player) { }
 
-		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player player) { }
-	}
+		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
+
+		public override bool CanRightClick() => true;
+
+        public override void RightClick(Player Player)
+        {
+			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
+
+			Item prevBarrierItem = mp.barrierDyeItem;
+			Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
+			Item.TurnToAir();
+			mp.RechargeAnimationTimer = 0;
+
+
+			Main.EquipPageSelected = 2;
+
+			if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
+				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone(), GetItemSettings.ItemCreatedFromItemUsage);
+        }
+    }
 
 	class BaseBarrierDye : BarrierDye
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override void UpdateInventory(Player player)
+		public override void UpdateInventory(Player Player)
 		{
-			if (Main.mouseItem == item)
-				item.TurnToAir();
+			if (Main.mouseItem == Item)
+				Item.TurnToAir();
 		}
 
-		public override void LoseBarrierEffects(Player player)
+		public override void LoseBarrierEffects(Player Player)
 		{
-			Main.PlaySound(Terraria.ID.SoundID.NPCDeath57, player.Center);
+			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.NPCDeath57, Player.Center);
 
 			for (int k = 0; k < 50; k++)
-				Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, new Color(20, 100, 110), Main.rand.NextFloat(0.5f));
+				Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, new Color(20, 100, 110), Main.rand.NextFloat(0.5f));
 		}
 
-		public override void PreDrawEffects(SpriteBatch spriteBatch, Player player)
+		public override void PreDrawEffects(SpriteBatch spriteBatch, Player Player)
 		{
-			var barrier = player.GetModPlayer<ShieldPlayer>();
+			if (!CustomHooks.PlayerTarget.canUseTarget)
+				return;
+
+			var barrier = Player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			float opacity = barrier.rechargeAnimation;
+			float opacity = barrier.RechargeAnimationTimer;
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
 
 			for (int k = 0; k < 8; k++)
 			{
-				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 1.6f);
+				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
 				var color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
-				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, Vector2.Zero + dir, color);
+				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
 			}
 
 			spriteBatch.End();
 
 			SamplerState samplerState = Main.DefaultSamplerState;
 
-			if (player.mount.Active)
-				samplerState = Main.MountedSamplerState;
+			if (Player.mount.Active)
+				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

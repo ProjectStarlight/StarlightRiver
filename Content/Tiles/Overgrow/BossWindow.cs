@@ -7,10 +7,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override int DummyType => ProjectileType<BossWindowDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
     }
 }

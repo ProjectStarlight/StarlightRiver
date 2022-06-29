@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	class BasicVitricTileLoader : TileLoader
+	class BasicVitricTileLoader : SimpleTileLoader
     {
         public override string AssetRoot => AssetDirectory.VitricTile;
 
@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 200,
 					dustType: DustID.Copper,
-					soundType: SoundID.Tink,
+					hitSound: SoundID.Tink,
 					mapColor: new Color(160, 115, 75)
 					)
 				);
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 200,
 					dustType: DustID.Copper,
-					soundType: SoundID.Tink,
+					hitSound: SoundID.Tink,
 					mapColor: new Color(160, 115, 75)
 					)
 				);
@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustType<Dusts.GlassNoGravity>(),
-					soundType: SoundID.Shatter,
+					hitSound: SoundID.Shatter,
 					mapColor: new Color(190, 255, 245)
 				)
 			  );
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustType<Dusts.GlassNoGravity>(),
-					soundType: SoundID.Shatter,
+					hitSound: SoundID.Shatter,
 					mapColor: new Color(190, 255, 245)
 				)
 			  );
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustType<Dusts.GlassNoGravity>(),
-					soundType: SoundID.Shatter,
+					hitSound: SoundID.Shatter,
 					mapColor: new Color(190, 255, 245)
 				)
 			  );
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustType<Content.Dusts.AirGravity>(),
-					soundType: SoundID.Dig,
+					hitSound: SoundID.Dig,
 					mapColor: new Color(172, 150, 105)
 				)
 			  );
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				new TileLoadData(
 					minPick: 0,
 					dustType: DustType<Content.Dusts.AirGravity>(),
-					soundType: SoundID.Dig,
+					hitSound: SoundID.Dig,
 					mapColor: new Color(162, 131, 115)
 				)
 			  );
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
                 new TileLoadData(
                     minPick: 0,
                     dustType: 32,
-                    soundType: SoundID.Dig,
+                    hitSound: SoundID.Dig,
                     mapColor: new Color(192, 145, 110)
                 )
               );

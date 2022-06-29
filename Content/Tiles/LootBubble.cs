@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
@@ -16,19 +17,15 @@ namespace StarlightRiver.Content.Tiles
 
         public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
 
-        public virtual bool CanOpen(Player player) => true;
+        public virtual bool CanOpen(Player Player) => true;
 
         public override int DummyType => ProjectileType<LootBubbleDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
         public virtual void PickupEffects(Vector2 origin)
         {
-            //Main.PlaySound( , origin);
+            //Terraria.Audio.SoundEngine.PlaySound( , origin);
 
             for (int k = 0; k < 50; k++)
                 Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
@@ -38,10 +35,10 @@ namespace StarlightRiver.Content.Tiles
         {
             int n = (int)(time % GoldLootPool.Count);
             Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].Type);
-            Rectangle itemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
-            spriteBatch.Draw(tex2, itemTarget, Color.White);
+            Rectangle ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
+            spriteBatch.Draw(tex2, ItemTarget, Color.White);
 
-            Texture2D tex = GetTexture(BubbleTexture);
+            Texture2D tex = Request<Texture2D>(BubbleTexture).Value;
             int sin = (int)(Math.Sin(time) * 4);
             int sin2 = (int)(Math.Sin(time + 0.75f) * 4);
             Rectangle bubbleTarget = new Rectangle((int)pos.X - sin / 2, (int)pos.Y + sin2 / 2, 32 + sin, 32 - sin2);
@@ -55,36 +52,36 @@ namespace StarlightRiver.Content.Tiles
     {
         public LootBubbleDummy() : base(0, 32, 32) { }
 
-        public override bool ValidTile(Tile tile) => GetModTile(Parent.type) is LootBubble;
+        public override bool ValidTile(Tile tile) => GetModTile(Parent.TileType) is LootBubble;
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            LootBubble bubble = GetModTile(Parent.type) as LootBubble;
+            LootBubble bubble = GetModTile(Parent.TileType) as LootBubble;
 
-            if (bubble.CanOpen(player) && player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
+            if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
             {
                 Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-                Item.NewItem(projectile.Center, loot.Type, loot.GetCount());
-                bubble.PickupEffects(projectile.Center);
+                Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, loot.Type, loot.GetCount());
+                bubble.PickupEffects(Projectile.Center);
 
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 2, TileChangeType.None);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 2, TileChangeType.None);
             }
         }
 
-        public override void Update() => projectile.ai[0] += 0.1f;
+        public override void Update() => Projectile.ai[0] += 0.1f;
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
-            LootBubble bubble = GetModTile(Parent.type) as LootBubble;
-            bubble.DrawBubble(projectile.position - Main.screenPosition, spriteBatch, projectile.ai[0]);
+            LootBubble bubble = GetModTile(Parent.TileType) as LootBubble;
+            bubble.DrawBubble(Projectile.position - Main.screenPosition, Main.spriteBatch, Projectile.ai[0]);
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture("StarlightRiver/Assets/Keys/Glow");
+            Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
             float sin = 0.5f + (float)(Math.Sin(StarlightWorld.rottime) * 0.5f);
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
         }
     }
 }

@@ -5,68 +5,68 @@ namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
     {
-        public static void Kill(this NPC npc)
+        public static void Kill(this NPC NPC)
         {
-            bool modNPCDontDie = npc.modNPC?.CheckDead() == false;
-            if (modNPCDontDie)
+            bool ModNPCDontDie = NPC.ModNPC?.CheckDead() == false;
+            if (ModNPCDontDie)
                 return;
-            npc.life = 0;
-            npc.checkDead();
-            npc.HitEffect();
-            npc.active = false;
+            NPC.life = 0;
+            NPC.checkDead();
+            NPC.HitEffect();
+            NPC.active = false;
         }
 
-        public static void NpcVertical(NPC npc, bool jump, int slot = 1, int jumpheight = 2) //idea: could be seperated farther
+        public static void NpcVertical(NPC NPC, bool jump, int slot = 1, int jumpheight = 2) //idea: could be seperated farther
         {
-            npc.ai[slot] = 0;//reset jump counter
+            NPC.ai[slot] = 0;//reset jump counter
             for (int y = 0; y < jumpheight; y++)//idea: this should have diminishing results for output jump height
             {
-                Tile tileType = Framing.GetTileSafely((int)(npc.position.X / 16) + (npc.direction * 2) + 1, (int)((npc.position.Y + npc.height + 8) / 16) - y - 1);
-                if ((Main.tileSolid[tileType.type] || Main.tileSolidTop[tileType.type]) && tileType.active()) //how tall the wall is
+                Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - y - 1);
+                if ((Main.tileSolid[tileType.TileType] || Main.tileSolidTop[tileType.TileType]) && tileType.HasTile) //how tall the wall is
                 {
-                    npc.ai[slot] = (y + 1);
+                    NPC.ai[slot] = (y + 1);
                 }
 
-                if (y >= npc.ai[slot] + (npc.height / 16) || (!jump && y >= 2)) //stops counting if there is room for the npc to walk under //((int)((npc.position.Y - target.position.Y) / 16) + 1)
+                if (y >= NPC.ai[slot] + (NPC.height / 16) || (!jump && y >= 2)) //stops counting if there is room for the NPC to walk under //((int)((NPC.position.Y - target.position.Y) / 16) + 1)
                 {
-                    if (npc.HasValidTarget && jump)
+                    if (NPC.HasValidTarget && jump)
                     {
-                        Player target = Main.player[npc.target];
-                        if (npc.ai[slot] >= ((int)((npc.position.Y - target.position.Y) / 16) + 1) - (npc.height / 16 - 1)) break;
+                        Player target = Main.player[NPC.target];
+                        if (NPC.ai[slot] >= ((int)((NPC.position.Y - target.position.Y) / 16) + 1) - (NPC.height / 16 - 1)) break;
                     }
                     else break;
                 }
             }
-            if (npc.ai[slot] > 0)//jump and step up
+            if (NPC.ai[slot] > 0)//jump and step up
             {
-                Tile tileType = Framing.GetTileSafely((int)(npc.position.X / 16) + (npc.direction * 2) + 1, (int)((npc.position.Y + npc.height + 8) / 16) - 1);
-                if (npc.ai[slot] == 1 && npc.collideX)
+                Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - 1);
+                if (NPC.ai[slot] == 1 && NPC.collideX)
                 {
-                    if (tileType.halfBrick() || (Main.tileSolid[tileType.type] && (npc.position.Y % 16 + 8) == 0))
+                    if (tileType.IsHalfBlock || (Main.tileSolid[tileType.TileType] && (NPC.position.Y % 16 + 8) == 0))
                     {
-                        npc.position.Y -= 8;//note: these just zip the npc up the block and it looks bad, need to figure out how vanilla glides them up
-                        npc.velocity.X = npc.oldVelocity.X;
+                        NPC.position.Y -= 8;//note: these just zip the NPC up the block and it looks bad, need to figure out how vanilla glides them up
+                        NPC.velocity.X = NPC.oldVelocity.X;
                     }
-                    else if (Main.tileSolid[tileType.type])
+                    else if (Main.tileSolid[tileType.TileType])
                     {
-                        npc.position.Y -= 16;
-                        npc.velocity.X = npc.oldVelocity.X;
+                        NPC.position.Y -= 16;
+                        NPC.velocity.X = NPC.oldVelocity.X;
                     }
                 }
-                else if (npc.ai[slot] == 2 && (npc.position.Y % 16) == 0 && Framing.GetTileSafely((int)(npc.position.X / 16) + (npc.direction * 2) + 1, (int)((npc.position.Y + npc.height) / 16) - 1).halfBrick())
+                else if (NPC.ai[slot] == 2 && (NPC.position.Y % 16) == 0 && Framing.GetTileSafely((int)(NPC.position.X / 16) + (NPC.direction * 2) + 1, (int)((NPC.position.Y + NPC.height) / 16) - 1).IsHalfBlock)
                 {//note: I dislike this extra check, but couldn't find a way to avoid it
-                    if (npc.collideX)
+                    if (NPC.collideX)
                     {
-                        npc.position.Y -= 16;
-                        npc.velocity.X = npc.oldVelocity.X;
+                        NPC.position.Y -= 16;
+                        NPC.velocity.X = NPC.oldVelocity.X;
                     }
                 }
-                else if (npc.ai[slot] > 1 && jump == true)
+                else if (NPC.ai[slot] > 1 && jump == true)
                 {
-                    npc.velocity.Y = -(3 + npc.ai[slot]);
-                    if (!npc.HasValidTarget && npc.velocity.X == 0)
+                    NPC.velocity.Y = -(3 + NPC.ai[slot]);
+                    if (!NPC.HasValidTarget && NPC.velocity.X == 0)
                     {
-                        npc.ai[3]++;
+                        NPC.ai[3]++;
                     }
                 }
             }

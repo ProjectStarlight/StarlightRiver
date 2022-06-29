@@ -32,21 +32,21 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void SetDefaults()
 		{
-			item.width = 32;
-			item.height = 32;
-			item.consumable = true;
-			item.maxStack = 30;
-			item.UseSound = SoundID.Item3;
-			item.useStyle = ItemUseStyleID.EatingUsing;
-			item.useTime = 15;
-			item.useAnimation = 15;
+			Item.width = 32;
+			Item.height = 32;
+			Item.consumable = true;
+			Item.maxStack = 30;
+			Item.UseSound = SoundID.Item3;
+			Item.useStyle = ItemUseStyleID.EatFood;
+			Item.useTime = 15;
+			Item.useAnimation = 15;
 		}
 
-		public override bool CanUseItem(Player player) => !player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !player.HasBuff(BuffID.PotionSickness);
+		public override bool CanUseItem(Player Player) => !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
 
-		public override bool UseItem(Player player)
+		public override bool? UseItem(Player player)
 		{
-			player.GetModPlayer<ShieldPlayer>().Shield += amount;
+			player.GetModPlayer<BarrierPlayer>().Barrier += amount;
 			player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
 			player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
 			player.AddBuff(BuffID.PotionSickness, 1200);
@@ -63,13 +63,12 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 2);
 			recipe.AddIngredient(ItemID.Glass, 5);
 			recipe.AddIngredient(ItemID.BottledWater);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 	}
 
@@ -79,13 +78,12 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe(5);
 			recipe.AddIngredient(ModContent.ItemType<LesserBarrierPotion>(), 5);
 			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 2);
 			recipe.AddIngredient(ItemID.GlowingMushroom, 2);
 			recipe.AddTile(TileID.Bottles);
-			recipe.SetResult(this, 5);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 	}
 
@@ -95,22 +93,20 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void AddRecipes()
 		{
-			var recipe = new ModRecipe(mod);
+			Recipe recipe = CreateRecipe(5);
 			recipe.AddIngredient(ModContent.ItemType<RegularBarrierPotion>(), 5);
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
-			recipe.SetResult(this, 5);
 			recipe.AddTile(TileID.Bottles);
-			recipe.AddRecipe();
+			recipe.Register();
 
-			recipe = new ModRecipe(mod);
+			recipe = CreateRecipe(5);
 			recipe.AddIngredient(ItemID.BottledWater, 5);
 			recipe.AddIngredient(ModContent.ItemType<Slimeberry>(), 10);
 			recipe.AddIngredient(ItemID.SoulofLight);
 			recipe.AddIngredient(ItemID.SoulofNight);
-			recipe.SetResult(this, 5);
 			recipe.AddTile(TileID.Bottles);
-			recipe.AddRecipe();
+			recipe.Register();
 		}
 	}
 
@@ -118,26 +114,18 @@ namespace StarlightRiver.Content.Items.Potions
 	{
 		public NoShieldPot() : base("Barrier Sickness", "Cannot consume more barrier potions", true ) { }
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return true;
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 	}
 
 	public class ShieldDegenReduction : SmartBuff
 	{
 		public ShieldDegenReduction() : base("Barrier Affinity", "Barrier sticks to you better", false) { }
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return true;
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
-			player.GetModPlayer<ShieldPlayer>().OvershieldDrainRate -= 50;
+			Player.GetModPlayer<BarrierPlayer>().OverchargeDrainRate -= 50;
 		}
 	}
 }

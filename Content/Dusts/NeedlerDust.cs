@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class NeedlerDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -64,11 +60,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class NeedlerDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {
@@ -123,11 +115,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class NeedlerDustThree : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
 
         public override void OnSpawn(Dust dust)
         {
@@ -180,11 +168,7 @@ namespace StarlightRiver.Content.Dusts
 
     class NeedlerDustFour : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -207,7 +191,7 @@ namespace StarlightRiver.Content.Dusts
             dust.scale *= 0.3f;
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.velocity *= 2;
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)
@@ -232,11 +216,7 @@ namespace StarlightRiver.Content.Dusts
     }
     class NeedlerDustFive : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowVerySoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
@@ -259,7 +239,7 @@ namespace StarlightRiver.Content.Dusts
             dust.scale *= 0.3f;
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.velocity *= 2;
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override bool Update(Dust dust)

@@ -15,13 +15,9 @@ namespace StarlightRiver.Tiles.Mushroom
 {
 	class Vibeshroom : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Mushroom/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/" + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLighted[Type] = true;
             Main.tileCut[Type] = true;
@@ -30,7 +26,7 @@ namespace StarlightRiver.Tiles.Mushroom
             TileObjectData.newTile.RandomStyleRange = 5;
             TileObjectData.newTile.StyleHorizontal = true;
 
-            drop = ItemType<VibeshroomItem>();
+            ItemDrop = ItemType<VibeshroomItem>();
 
             QuickBlock.QuickSetFurniture(this, 1, 1, 61, SoundID.Grass, false, Color.Green);
             AddToArray(ref TileID.Sets.RoomNeeds.CountsAsTorch);
@@ -44,15 +40,15 @@ namespace StarlightRiver.Tiles.Mushroom
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
             var tile = Framing.GetTileSafely(i, j);
-            var tex = GetTexture("StarlightRiver/Assets/Tiles/Mushroom/VibeshroomGlow");
+            var tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Mushroom/VibeshroomGlow").Value;
             var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2((float)Math.Sin(StarlightWorld.rottime + i) * 1.5f, (float)Math.Cos(StarlightWorld.rottime * 2 + i));
 
-            spriteBatch.Draw(tex, pos, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.White);
+            spriteBatch.Draw(tex, pos, new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16), Color.White);
         }
     }
 
     class VibeshroomItem : QuickTileItem
     {
-        public VibeshroomItem() : base("Vibeshroom", "Vibin'", TileType<Vibeshroom>(), 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
+        public VibeshroomItem() : base("Vibeshroom", "Vibin'", "Vibeshroom", 1, "StarlightRiver/Assets/Tiles/Mushroom/") { }
     }
 }

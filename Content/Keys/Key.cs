@@ -5,6 +5,7 @@ using StarlightRiver.Core;
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
@@ -33,10 +34,10 @@ namespace StarlightRiver.Keys
         {
             PreDraw(spriteBatch);
 
-            Texture2D tex = GetTexture(Texture);
+            Texture2D tex = Request<Texture2D>(Texture).Value;
             spriteBatch.Draw(tex, Position + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5) - Main.screenPosition, tex.Frame(), Lighting.GetColor((int)Position.X / 16, (int)Position.Y / 16));
 
-            if (Hitbox.Contains(Main.MouseWorld.ToPoint())) Utils.DrawBorderString(spriteBatch, Name, Main.MouseScreen + new Vector2(12, 20), Main.mouseTextColorReal);
+            if (Hitbox.Contains(Main.MouseWorld.ToPoint())) Utils.DrawBorderString(spriteBatch, Name, Main.MouseScreen + new Vector2(12, 20), Main.MouseTextColorReal);
         }
 
         public virtual void OnPickup()
@@ -53,26 +54,26 @@ namespace StarlightRiver.Keys
 
             if (Main.player.Any(p => p.Hitbox.Intersects(Hitbox)))
             {
-                StarlightWorld.Keys.Remove(this);
-                StarlightWorld.KeyInventory.Add(this);
+                KeySystem.Keys.Remove(this);
+                KeySystem.KeyInventory.Add(this);
                 if (Main.player.FirstOrDefault(p => p.Hitbox.Intersects(Hitbox)) == Main.LocalPlayer) KeyInventory.keys.Add(new KeyIcon(this, true));
                 else KeyInventory.keys.Add(new KeyIcon(this, false));
                 OnPickup();
 
-                Main.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/KeyGet"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyGet"));
             }
         }
 
         public static bool Use<T>()
         {
-            if (StarlightWorld.KeyInventory.Any(n => n is T))
+            if (KeySystem.KeyInventory.Any(n => n is T))
             {
-                Key key = StarlightWorld.KeyInventory.FirstOrDefault(n => n is T);
-                StarlightWorld.KeyInventory.Remove(key);
+                Key key = KeySystem.KeyInventory.FirstOrDefault(n => n is T);
+                KeySystem.KeyInventory.Remove(key);
                 KeyIcon icon = KeyInventory.keys.FirstOrDefault(n => n.parent == key);
                 KeyInventory.keys.Remove(icon);
 
-                Main.PlaySound(ModLoader.GetMod("StarlightRiver").GetLegacySoundSlot(SoundType.Custom, "Sounds/KeyUse"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyUse"));
                 return true;
             }
             else
@@ -85,7 +86,7 @@ namespace StarlightRiver.Keys
         {
             Key key = (Key)Activator.CreateInstance(typeof(T));
             key.Position = position;
-            StarlightWorld.Keys.Add(key);
+            KeySystem.Keys.Add(key);
         }
     }
 }

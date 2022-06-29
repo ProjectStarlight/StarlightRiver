@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Graphics;
+using ReLogic.Utilities;
 using StarlightRiver.Codex;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -25,18 +27,29 @@ namespace StarlightRiver.Helpers
         private static float tiltMax;
 
         public static Rectangle ToRectangle(this Vector2 vector) => new Rectangle(0, 0, (int)vector.X, (int)vector.Y);
+
+        public static Vector2 Round(this Vector2 vector) => new Vector2((float)Math.Round(vector.X), (float)Math.Round(vector.Y));
+
+        /// <summary>
+        /// Runs math.min on both the X and Y seperately, returns the smaller value for each
+        /// </summary>
+        public static Vector2 TwoValueMin(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Min(vector.X, vector2.X), Math.Min(vector.Y, vector2.Y));
+        /// <summary>
+        /// Runs math.max on both the X and Y seperately, returns the largest value for each
+        /// </summary>
+        public static Vector2 TwoValueMax(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Max(vector.X, vector2.X), Math.Max(vector.Y, vector2.Y));
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
-        public static Vector2 TileAdj => Lighting.lightMode > 1 ? Vector2.Zero : Vector2.One * 12;
+        public static Vector2 TileAdj => (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
 
         public static Rectangle ScreenTiles => new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
 
         /// <summary>
-        /// Updates the value used for flipping rotation on the player. Should be reset to 0 when not in use.
+        /// Updates the value used for flipping rotation on the Player. Should be reset to 0 when not in use.
         /// </summary>
-        /// <param name="player"></param>
+        /// <param name="Player"></param>
         /// <param name="value"></param>
-        public static void UpdateRotation(this Player player, float value) => player.GetModPlayer<StarlightPlayer>().rotation = value;
+        public static void UpdateRotation(this Player Player, float value) => Player.GetModPlayer<StarlightPlayer>().rotation = value;
 
         public static bool OnScreen(Vector2 pos) => pos.X > -16 && pos.X < Main.screenWidth + 16 && pos.Y > -16 && pos.Y < Main.screenHeight + 16;
 
@@ -60,21 +73,35 @@ namespace StarlightRiver.Helpers
             return IndicatorColor * (1 - Math.Min(1, (distance - minRadius) / (maxRadius - minRadius)));
 		}
 
+        public static Color MoltenVitricGlow(float time)
+        {
+            Color MoltenGlowc = Color.White;
+            if (time > 30 && time < 60)
+                MoltenGlowc = Color.Lerp(Color.White, Color.Orange, Math.Min((time - 30f) / 20f, 1f));
+            else if (time >= 60)
+                MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
+            return MoltenGlowc;
+        }
+        public static float RotationDifference(float rotTo, float rotFrom)
+        {
+            return ((((rotTo - rotFrom) % 6.28f) + 9.42f) % 6.28f) - 3.14f;
+        }
+
         /// <summary>
-        /// determines if an npc is "fleshy" based on it's hit sound
+        /// determines if an NPC is "fleshy" based on it's hit sound
         /// </summary>
-        /// <param name="npc"></param>
+        /// <param name="NPC"></param>
         /// <returns></returns>
-        public static bool IsFleshy(NPC npc)
+        public static bool IsFleshy(NPC NPC)
 		{
             return !
                 (
-                    npc.HitSound == SoundID.NPCHit2 ||
-                    npc.HitSound == SoundID.NPCHit3 ||
-                    npc.HitSound == SoundID.NPCHit4 ||
-                    npc.HitSound == SoundID.NPCHit41 ||
-                    npc.HitSound == SoundID.NPCHit42 ||
-                    npc.HitSound == StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/VitricBoss/ceramicimpact")
+                    NPC.HitSound == SoundID.NPCHit2 ||
+                    NPC.HitSound == SoundID.NPCHit3 ||
+                    NPC.HitSound == SoundID.NPCHit4 ||
+                    NPC.HitSound == SoundID.NPCHit41 ||
+                    NPC.HitSound == SoundID.NPCHit42 ||
+                    NPC.HitSound == new SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact")
                 );
 		}
 
@@ -108,13 +135,13 @@ namespace StarlightRiver.Helpers
             return min + (difference * val);
         }
 
-        public static void UnlockEntry<type>(Player player)
+        public static void UnlockCodexEntry<type>(Player Player)
         {
-            CodexHandler mp = player.GetModPlayer<CodexHandler>();
+            CodexHandler mp = Player.GetModPlayer<CodexHandler>();
             CodexEntry entry = mp.Entries.FirstOrDefault(n => n is type);
 
             if (entry is null || (entry.RequiresUpgradedBook && mp.CodexState != 2) ) 
-                return; //dont give the player void entries if they dont have the void book
+                return; //dont give the Player void entries if they dont have the void book
 
             if (entry.Locked)
             {
@@ -124,15 +151,9 @@ namespace StarlightRiver.Helpers
                 if (mp.CodexState != 0)
                 {
                     UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-                    Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/CodexUnlock"));
+                    Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/CodexUnlock"));
                 }
             }
-        }
-
-        public static void SpawnGem(int ID, Vector2 position)
-        {
-            int item = Item.NewItem(position, ItemType<Content.Items.Misc.StarlightGem>());
-            (Main.item[item].modItem as Content.Items.Misc.StarlightGem).gemID = ID;
         }
 
         public static bool CheckLinearCollision(Vector2 point1, Vector2 point2, Rectangle hitbox, out Vector2 intersectPoint)
@@ -211,10 +232,11 @@ namespace StarlightRiver.Helpers
                     if (!WorldGen.InWorld(thisPoint.X, thisPoint.Y)) return false;
 
                         var tile = Framing.GetTileSafely(thisPoint);
-                    if(tile.collisionType == 1 && !tile.inActive())
+                    if(Main.tileSolid[tile.TileType] && tile.HasTile)
                     {
                         var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
-                        if (rect.Contains(point.ToPoint())) return true;
+                        if (rect.Contains(point.ToPoint())) 
+                            return true;
                     }
                 }
 
@@ -253,20 +275,10 @@ namespace StarlightRiver.Helpers
             for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
             {
                 Tile tile = Framing.GetTileSafely(startX, startY + k);
-                if (tile.active() && tile?.type == type)
+                if (tile.HasTile && tile.TileType == type)
                     return true;
             }
             return false;
-        }
-
-        public static int SamplePerlin2D(int x, int y, int min, int max)
-        {
-            Texture2D perlin = TextureManager.Load("Images/Misc/Perlin");
-
-            Color[] rawData = new Color[perlin.Width]; //array of colors
-            Rectangle row = new Rectangle(0, y, perlin.Width, 1); //one row of the image
-            perlin.GetData(0, row, rawData, 0, perlin.Width); //put the color data from the image into the array
-            return (int)(min + rawData[x % 512].R / 255f * max);
         }
 
         public static float CompareAngle(float baseAngle, float targetAngle)
@@ -338,12 +350,12 @@ namespace StarlightRiver.Helpers
 
         public static Player FindNearestPlayer(Vector2 position)
         {
-            Player player = null;
+            Player Player = null;
 
             for (int k = 0; k < Main.maxPlayers; k++)
-                if (Main.player[k] != null && Main.player[k].active && (player == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, player.Center)))
-                    player = Main.player[k];
-            return player;
+                if (Main.player[k] != null && Main.player[k].active && (Player == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, Player.Center)))
+                    Player = Main.player[k];
+            return Player;
         }
 
         public static float BezierEase(float time)
@@ -374,19 +386,20 @@ namespace StarlightRiver.Helpers
         public static bool IsEdgeTile(int x, int y)
         {
             return
-                !Framing.GetTileSafely(x - 1, y).active() ||
-                !Framing.GetTileSafely(x + 1, y).active() ||
-                !Framing.GetTileSafely(x, y - 1).active() ||
-                !Framing.GetTileSafely(x, y + 1).active();
+                !Framing.GetTileSafely(x - 1, y).HasTile ||
+                !Framing.GetTileSafely(x + 1, y).HasTile ||
+                !Framing.GetTileSafely(x, y - 1).HasTile ||
+                !Framing.GetTileSafely(x, y + 1).HasTile;
         }
 
         static List<SoundEffectInstance> instances = new List<SoundEffectInstance>();
-        public static SoundEffectInstance PlayPitched(string path, float volume, float pitch, Vector2 position = default)
+        
+        public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)
         {
             if (Main.netMode == NetmodeID.Server)
-                return null;
+                return SlotId.Invalid;
 
-            for (int i = 0; i < instances.Count; i++)
+            /*for (int i = 0; i < instances.Count; i++)
             {
                 var instance = instances[i];
                 if (instance == null)
@@ -400,11 +413,18 @@ namespace StarlightRiver.Helpers
                     instances.RemoveAt(i);
                     i--;
                 }
-            }
+            }*/
 
-            var soundEffect = ModContent.GetSound("StarlightRiver/Sounds/" + path).CreateInstance();
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/{path}")
+            {
+                Volume = volume,
+                Pitch = pitch,
+                MaxInstances = 0
+            };
 
-            float distFactor = 1;
+             return SoundEngine.PlaySound(style, position);
+
+            /*float distFactor = 1;
 
             if (position != default)
                 distFactor = 1 - MathHelper.Clamp(Vector2.Distance(Main.LocalPlayer.Center, position) / 2000f, 0, 1);
@@ -413,30 +433,19 @@ namespace StarlightRiver.Helpers
             soundEffect.Pitch = pitch;
 
             instances.Add(soundEffect);
-            soundEffect.Play();
-            return soundEffect;
+            soundEffect.Play();*/
         }
 
-        public static SoundEffectInstance PlayPitched(Terraria.Audio.LegacySoundStyle style, float volume, float pitch, Vector2 position = default)
+        public static SlotId PlayPitched(SoundStyle style, float volume, float pitch, Vector2? position = null)
         {
             if (Main.netMode == NetmodeID.Server)
-                return null;
+                return SlotId.Invalid;
 
-            if (position == default)
-                position = Vector2.One * -1;
+            style.Volume *= volume;
+            style.Pitch += pitch;
+            style.MaxInstances = 0;
 
-            return Main.PlaySound(style.SoundId, (int)position.X, (int)position.Y, style.Style, volume, pitch);
-        }
-
-        public static SoundEffectInstance PlayPitched(int style, float volume, float pitch, Vector2 position = default)
-        {
-            if (Main.netMode == NetmodeID.Server)
-                return null;
-
-            if (position == default)
-                position = Vector2.One * -1;
-
-            return Main.PlaySound(style, (int)position.X, (int)position.Y, 1, volume, pitch);
+            return SoundEngine.PlaySound(style, position);
         }
 
         public static Point16 FindTile(Point16 start, Func<Tile, bool> condition, int radius = 30, int w = 1, int h = 1)

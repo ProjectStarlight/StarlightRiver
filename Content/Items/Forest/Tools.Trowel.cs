@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -23,18 +24,18 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SetDefaults()
 		{
-			item.width = 16;
-			item.height = 16;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.useTime = 10;
-			item.useAnimation = 20;
-			item.autoReuse = true;
+			Item.width = 16;
+			Item.height = 16;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.useTime = 10;
+			Item.useAnimation = 20;
+			Item.autoReuse = true;
 		}
 
-		private Point16 FindNextTile(Player player)
+		private Point16 FindNextTile(Player Player)
 		{
-			if (Math.Abs(Player.tileTargetX - (player.Center.X / 16)) > Player.tileRangeX ||
-				Math.Abs(Player.tileTargetY - (player.Center.Y / 16)) > Player.tileRangeY)
+			if (Math.Abs(Player.tileTargetX - (Player.Center.X / 16)) > Player.tileRangeX ||
+				Math.Abs(Player.tileTargetY - (Player.Center.Y / 16)) > Player.tileRangeY)
 				return default;
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
@@ -45,7 +46,7 @@ namespace StarlightRiver.Content.Items.Forest
 				int nextX = Player.tileTargetX;
 				int nextY = Player.tileTargetY;
 
-				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - player.Center).ToRotation();
+				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - Player.Center).ToRotation();
 				angle = Helpers.Helper.ConvertAngle(angle);
 
 				if (angle < Math.PI / 4 || angle > (Math.PI / 4) * 7)
@@ -59,61 +60,61 @@ namespace StarlightRiver.Content.Items.Forest
 
 				Tile nextTile = Framing.GetTileSafely(nextX, nextY);
 
-				if (!nextTile.active())
+				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
 
-				else if (nextTile.type != tile.type)
+				else if (nextTile.TileType != tile.TileType)
 					return default;
 			}
 
 			return default;
 		}
 
-		public override bool UseItem(Player player)
+		public override bool? UseItem(Player Player)
 		{
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
-			Item item = null;
+			Item Item = null;
 
-			if (!tile.active() || Main.tileFrameImportant[tile.type])
+			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return true;
 
-			for (int k = 0; k < player.inventory.Length; k++)  //find the item to place the tile
+			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
 			{
-				var thisItem = player.inventory[k];
+				var thisItem = Player.inventory[k];
 
-				if (!thisItem.IsAir && thisItem.createTile == tile.type)
-					item = player.inventory[k];
+				if (!thisItem.IsAir && thisItem.createTile == tile.TileType)
+					Item = Player.inventory[k];
 			}
 
-			if (item is null) //dont bother calculating tile position if we cant place it
+			if (Item is null) //dont bother calculating tile position if we cant place it
 				return true;
 
-			Point16 next = FindNextTile(player);
+			Point16 next = FindNextTile(Player);
 
 			if (next != default)
 			{
-				WorldGen.PlaceTile(next.X, next.Y, tile.type);
-				item.stack--;
-				if (item.stack <= 0)
-					item.TurnToAir();
+				WorldGen.PlaceTile(next.X, next.Y, tile.TileType);
+				Item.stack--;
+				if (Item.stack <= 0)
+					Item.TurnToAir();
 			}
 
 			return true;
 		}
 
-		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			if (Main.LocalPlayer.HeldItem != item)
+			if (Main.LocalPlayer.HeldItem != Item)
 				return;
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
-			if (!tile.active() || Main.tileFrameImportant[tile.type])
+			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return;
 
 			var pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
 
-			spriteBatch.Draw(Main.tileTexture[tile.type], pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
+			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}
 	}
 
@@ -127,12 +128,12 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SetDefaults()
 		{
-			item.width = 16;
-			item.height = 16;
-			item.useStyle = ItemUseStyleID.SwingThrow;
-			item.useTime = 2;
-			item.useAnimation = 10;
-			item.autoReuse = true;
+			Item.width = 16;
+			Item.height = 16;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.useTime = 2;
+			Item.useAnimation = 10;
+			Item.autoReuse = true;
 			maxRange = 40;
 		}
 	}

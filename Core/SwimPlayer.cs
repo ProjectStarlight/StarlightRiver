@@ -13,114 +13,154 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
         int boostCD = 0;
         float targetRotation = 0;
         float realRotation = 0;
-        bool isSwimming = false;
         int emergeTime = 0;
+        public bool ShouldSwim { get; set; }
+        public float SwimSpeed { get; set; }
 
-        private bool ShouldSwim() //checks for if hte player should be swimming
+        private void CheckAuroraSwimming() //checks for if hte Player should be swimming
         {
-            if (player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
-                return true;
-
-            for(int x = 0; x < 2; x++)
-                for(int y = 0; y < 3; y++)
-				{
-                    int realX = (int)(player.position.X / 16) + x;
-                    int realY = (int)(player.position.Y / 16) + y;
-
-                    if (WorldGen.InWorld(realX, realY))
-                    {
-                        Tile tile = Framing.GetTileSafely(realX, realY);
-                        if ( (tile.bTileHeader3 & 0b11100000) >> 5 == 1)
-                            return true;
-                    }
+            bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
+            if (canSwim)
+            {
+                if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
+                {
+                    ShouldSwim = true;
+                    SwimSpeed *= 0.7f;
                 }
-            return false;
+
+                for (int x = 0; x < 2; x++)
+                    for (int y = 0; y < 3; y++)
+                    {
+                        int realX = (int)(Player.position.X / 16) + x;
+                        int realY = (int)(Player.position.Y / 16) + y;
+
+                        if (WorldGen.InWorld(realX, realY))
+                        {
+                            Tile tile = Framing.GetTileSafely(realX, realY);
+                            if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
+                            {
+                                ShouldSwim = true;
+                                SwimSpeed *= 0.7f;
+                            }
+                        }
+                    }
+            }
 		}
 
-        public override void PostUpdate()
+        public override void PreUpdate()
         {
-            isSwimming = ShouldSwim();
+            CheckAuroraSwimming();
 
-            if (!isSwimming) //reset stuff when the player isnt swimming
+            if(emergeTime == 19) //reset jumps
+			{
+                Player.canJumpAgain_Fart = true;
+                Player.canJumpAgain_Sail = true;
+                Player.canJumpAgain_Cloud = true;
+                Player.canJumpAgain_Blizzard = true;
+                Player.canJumpAgain_Sandstorm = true;
+                Player.rocketTime = Player.rocketTimeMax;
+                Player.wingTime = Player.wingTimeMax;
+			}
+
+            if (!ShouldSwim) //reset stuff when the Player isnt swimming
             {
                 if (boostCD > 0)
                 {
                     boostCD = 0;
-                    player.UpdateRotation(0);
+                    Player.UpdateRotation(0);
                 }
 
-                if (emergeTime <= 0) //20 frames for the player to rotate back
+                if (emergeTime <= 0) //20 frames for the Player to rotate back
                     return;
             }
 
-            player.maxFallSpeed = 0;
-            player.gravity = 0;
-            targetRotation = isSwimming ? player.velocity.ToRotation() : 1.57f + 3.14f;
+            targetRotation = ShouldSwim ? Player.velocity.ToRotation() : 1.57f + 3.14f;
 
-            realRotation %= 6.28f; //handles the rotation, ensures the player wont randomly snap to rotation when entering/leaving swimming
+            realRotation %= 6.28f; //handles the rotation, ensures the Player wont randomly snap to rotation when entering/leaving swimming
 
             if (Math.Abs(targetRotation - realRotation) % 6.28f > 0.21f)
             {
-                float mod(float a, float b) => a % b > 0 ? a % b : a % b + b;
-                if (mod(targetRotation, 6.28f) > mod(realRotation, 6.28f))
+                float Mod(float a, float b) => a % b > 0 ? a % b : a % b + b;
+                if (Mod(targetRotation, 6.28f) > Mod(realRotation, 6.28f))
                     realRotation += 0.2f;
                 else
                     realRotation -= 0.2f;
             }
             else realRotation = targetRotation;
 
-            player.fullRotation = realRotation + ((float)Math.PI / 2f);
-            player.fullRotation %= 6.28f;
+            Player.fullRotationOrigin = Player.Size / 2; //so the Player rotates around their center... why is this not the default?
+            Player.fullRotation = realRotation + MathHelper.PiOver2;
 
-            player.fullRotationOrigin = player.Size / 2; //so the player rotates around their center... why is this not the default?
+            if (Player.itemAnimation != 0 && Player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.Swing && Player.itemAnimation == Player.itemAnimationMax - 1) //corrects the rotation on used Items
+                Player.itemRotation -= realRotation + 1.57f;
 
-           if (player.itemAnimation != 0 && player.HeldItem.useStyle != Terraria.ID.ItemUseStyleID.SwingThrow && player.itemAnimation == player.itemAnimationMax - 1) //corrects the rotation on used items
-                player.itemRotation -= realRotation + 1.57f;
+            if (!ShouldSwim) //return later so rotation logic still runs
+            {
+                if (boostCD > 0)
+                    boostCD--;
 
-            if (!isSwimming) //return later so rotation logic still runs
+                if (emergeTime > 0)
+                    emergeTime--;
+
                 return;
-
-            emergeTime = 20; //20 frames for the player to rotate back, reset while swimming
-
-            if (player.itemAnimation == 0)
-                player.bodyFrame = new Rectangle(0, 56 * (int)(1 + Main.GameUpdateCount / 10 % 5), 40, 56);
-
-            player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);
-
-            if (player.controlRight) player.velocity.X += 0.2f; //there should probably be a better way of doing this?
-            if (player.controlLeft) player.velocity.X -= 0.2f;
-            if (player.controlDown) player.velocity.Y += 0.2f;
-            if (player.controlUp) player.velocity.Y -= 0.2f;
-
-            player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
-
-            player.velocity *= 0.97f;
-
-            if (player.controlJump && boostCD <= 0)
-            {
-                boostCD = 90;
             }
 
-            if (boostCD > 60)
+            Player.wingTime = -1;
+            emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
+
+            if (Player.itemAnimation == 0)
+                Player.bodyFrame = new Rectangle(0, 56 * (int)(1 + Main.GameUpdateCount / 10 % 5), 40, 56);
+
+            Player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);
+
+            float speed = 0.2f * SwimSpeed;
+            if (Player.controlRight) Player.velocity.X += speed; //there should probably be a better way of doing this?
+            if (Player.controlLeft) Player.velocity.X -= speed;
+            if (Player.controlDown) Player.velocity.Y += speed;
+            if (Player.controlUp) Player.velocity.Y -= speed;
+
+            //Player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
+            //so does this!
+            Player.gravity = 0;
+            Player.velocity *= 0.95f;
+
+            if (Player.controlJump && boostCD <= 0)
+                boostCD = 60;
+
+            if (boostCD > 40)
             {
-                var timer = ((90 - boostCD) - 60) / 30f;
+                var timer = ((60 - boostCD) - 40) / 20f;
                 var angle = timer * 6.28f;
-                var off = new Vector2((float)Math.Cos(angle) * 40, (float)Math.Sin(angle) * 20);
+                var off = new Vector2((float)Math.Cos(angle) * 18, (float)Math.Sin(angle) * 4);
+                var vel = -Player.velocity * 0.5f;
+                Player.UpdateRotation(angle);
+                Dust l = Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
+                Dust r =Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
+                l.noGravity = true;
+                r.noGravity = true;
 
-                player.UpdateRotation(angle);
-                Dust.NewDustPerfect(player.Center + off.RotatedBy(player.fullRotation), DustType<Content.Dusts.Starlight>());
-                Dust.NewDustPerfect(player.Center - off.RotatedBy(player.fullRotation), DustType<Content.Dusts.Starlight>());
+                Player.bodyFrame = new Rectangle(0, 0, 40, 56);
+                Player.legFrame = new Rectangle(0, 0, 40, 56);
 
-                player.bodyFrame = new Rectangle(0, 0, 40, 56);
-                player.legFrame = new Rectangle(0, 0, 40, 56);
+                if (Player.velocity == Vector2.Zero)
+                    Player.velocity = new Vector2(0, -0.01f);
 
-                player.velocity += Vector2.Normalize(player.velocity) * 0.35f;
-                player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
+                Player.velocity += Vector2.Normalize(Player.velocity) * 0.38f * SwimSpeed;
+                Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
             }
-            else player.UpdateRotation(0);
+            else Player.UpdateRotation(0);
 
-            if (boostCD > 0) boostCD--;
-            if (emergeTime > 0) emergeTime--;
+            if (boostCD > 0) 
+                boostCD--;
+
+            if (emergeTime > 0) 
+                emergeTime--;
+        }
+
+        public override void ResetEffects()
+        {
+            ShouldSwim = false;
+            SwimSpeed = 1f;
         }
     }
 }

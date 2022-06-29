@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Beach
 {
@@ -15,27 +16,23 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void SafeSetDefaults()
 		{
-			item.rare = ItemRarityID.Blue;
+			Item.rare = ItemRarityID.Blue;
 		}
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			var mp = player.GetModPlayer<ShieldPlayer>();
+			var mp = Player.GetModPlayer<BarrierPlayer>();
 
 			mp.RechargeDelay -= 30;
-			mp.MaxShield += 10;
+			mp.MaxBarrier += 10;
 		}
 	}
 
 	class SeaglassRingTile : ModTile
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.Assets + "Items/Beach/" + name;
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.Assets + "Items/Beach/" + Name;
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Iron, SoundID.Coins, true, new Color(150, 250, 250));
 		}
@@ -49,7 +46,7 @@ namespace StarlightRiver.Content.Items.Beach
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
 			if (!fail)
-				Item.NewItem(new Rectangle(i * 16, j * 16, 16, 16), ModContent.ItemType<SeaglassRing>());
+				Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 16, 16), ModContent.ItemType<SeaglassRing>());
 		}
 	}
 }

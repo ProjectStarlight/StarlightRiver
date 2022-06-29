@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             {
                 fireEffect = Filters.Scene["FireShader"].GetShader().Shader;
 
-                chain = new VerletChain(length, true, parent.npc.Center + position, 8)
+                chain = new VerletChain(length, true, parent.NPC.Center + position, 8)
                 {
                     constraintRepetitions = 2,
                     drag = 1.5f,
@@ -49,10 +49,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
             fireEffect.Parameters["time"].SetValue(-Main.GameUpdateCount / 45f);
             fireEffect.Parameters["upscale"].SetValue(matrix);
-            fireEffect.Parameters["sampleTexture"].SetValue(GetTexture(AssetDirectory.Assets + "FireTrail"));
+            fireEffect.Parameters["sampleTexture"].SetValue(Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
 
             chain.DrawStrip(PrepareStrip, fireEffect);
-            chain.UpdateChain(parent.npc.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.npc.rotation));
+            chain.UpdateChain(parent.NPC.Center + parent.PainOffset + Vector2.UnitX * -parent.twistTarget * 18 + position.RotatedBy(parent.NPC.rotation));
             chain.IterateRope(WindForce);
         }
 
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public void DrawAdditive(SpriteBatch sb)
         {
-            var tex = GetTexture(AssetDirectory.Assets + "Keys/GlowSoft");
+            var tex = Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
             for (int k = 0; k < chain.segmentCount; k++)
             {

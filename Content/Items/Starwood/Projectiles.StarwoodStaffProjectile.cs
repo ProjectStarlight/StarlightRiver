@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -12,10 +13,12 @@ namespace StarlightRiver.Content.Items.Starwood
     {
         public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-        public override void SetStaticDefaults() {
+        public override void SetStaticDefaults() 
+        {
             DisplayName.SetDefault("Starshot");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 1; }
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1; 
+        }
 
         //These stats get scaled when empowered
         private int counterScore = 1;
@@ -27,25 +30,26 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void SetDefaults()
         {
-            projectile.timeLeft = MaxTimeLeft;
-            projectile.width = 14;
-            projectile.height = 14;
-            projectile.friendly = true;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.aiStyle = -1;
-            projectile.rotation = Main.rand.NextFloat(4f);
-            projectile.magic = true;
+            Projectile.timeLeft = MaxTimeLeft;
+            Projectile.width = 14;
+            Projectile.height = 14;
+            Projectile.friendly = true;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.aiStyle = -1;
+            Projectile.rotation = Main.rand.NextFloat(4f);
+            Projectile.DamageType = DamageClass.Magic;
         }
 
         public override void AI()
         {
-            if (projectile.timeLeft == MaxTimeLeft) 
+            if (Projectile.timeLeft == MaxTimeLeft) 
             {
-                StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
+                StarlightPlayer mp = Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>();
+
                 if (mp.empowered) 
                 {
-                    projectile.frame = 1;
+                    Projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     counterScore = 2;
                     dustType = ModContent.DustType<Dusts.BlueStamina>();
@@ -53,49 +57,50 @@ namespace StarlightRiver.Content.Items.Starwood
                 } 
             }
 
-            if (projectile.timeLeft % 50 == projectile.ai[1])//delay between star sounds
-                Main.PlaySound(SoundID.Item9, projectile.Center);
+            if (Projectile.timeLeft % 50 == Projectile.ai[1])//delay between star sounds
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, Projectile.Center);
 
-            projectile.rotation += 0.3f;
-            Lighting.AddLight(projectile.Center, lightColor);
-            projectile.velocity = projectile.velocity.RotatedBy(Math.Sin(projectile.timeLeft * 0.2f) * projectile.ai[0]);
+            Projectile.rotation += 0.3f;
+            Lighting.AddLight(Projectile.Center, lightColor);
+            Projectile.velocity = Projectile.velocity.RotatedBy(Math.Sin(Projectile.timeLeft * 0.2f) * Projectile.ai[0]);
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) 
         {
-            target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, projectile.owner, damage); 
+            target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damage); 
         }
 
         public override void Kill(int timeLeft) 
         {
-            Main.PlaySound(SoundID.Item10, projectile.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
             for (int k = 0; k < 15; k++)
-                Dust.NewDustPerfect(projectile.Center, dustType, (projectile.velocity * 0.1f * Main.rand.NextFloat(0.8f, 0.12f)).RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)), 0, default, 1.5f); 
+                Dust.NewDustPerfect(Projectile.Center, dustType, (Projectile.velocity * 0.1f * Main.rand.NextFloat(0.8f, 0.12f)).RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)), 0, default, 1.5f); 
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            spriteBatch.Draw(Main.projectileTexture[projectile.type],
-                projectile.Center - Main.screenPosition,
-                new Rectangle(0, Main.projectileTexture[projectile.type].Height / 2 * projectile.frame, Main.projectileTexture[projectile.type].Width, Main.projectileTexture[projectile.type].Height / 2),
-                Color.White,
-                projectile.rotation,
-                new Vector2(Main.projectileTexture[projectile.type].Width / 2, Main.projectileTexture[projectile.type].Height / 4),
-                1f, default, default);
+            var tex = TextureAssets.Projectile[Projectile.type].Value;
+            var source = new Rectangle(0, TextureAssets.Projectile[Projectile.type].Value.Height / 2 * Projectile.frame, TextureAssets.Projectile[Projectile.type].Value.Width, TextureAssets.Projectile[Projectile.type].Value.Height / 2);
+            var origin = new Vector2(TextureAssets.Projectile[Projectile.type].Value.Width / 2, TextureAssets.Projectile[Projectile.type].Value.Height / 4);
+
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, Color.White, Projectile.rotation, origin, 1f, default, default);
 
             return false;
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            for (int k = 0; k < projectile.oldPos.Length; k++) 
+            for (int k = 0; k < Projectile.oldPos.Length; k++) 
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
-                if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f * 0.5f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/Glow");//TEXTURE PATH
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 
-                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.5f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default); 
+                if (k <= 4) 
+                    color *= 1.2f;
+
+                float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f * 0.5f;
+                Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;//TEXTURE PATH
+
+                spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.5f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default); 
             }
         }
     }
@@ -107,8 +112,8 @@ namespace StarlightRiver.Content.Items.Starwood
         public override void SetStaticDefaults() 
         {
             DisplayName.SetDefault("Falling Star");
-            ProjectileID.Sets.TrailCacheLength[projectile.type] = 20;
-            ProjectileID.Sets.TrailingMode[projectile.type] = 1; 
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 20;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 1; 
         }
 
         //These stats get scaled when empowered
@@ -121,24 +126,24 @@ namespace StarlightRiver.Content.Items.Starwood
 
         public override void SetDefaults()
         {
-            projectile.timeLeft = MaxTimeLeft;
-            projectile.width = 22;
-            projectile.height = 24;
-            projectile.friendly = true;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.aiStyle = -1;
-            projectile.rotation = Main.rand.NextFloat(4f);
+            Projectile.timeLeft = MaxTimeLeft;
+            Projectile.width = 22;
+            Projectile.height = 24;
+            Projectile.friendly = true;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.aiStyle = -1;
+            Projectile.rotation = Main.rand.NextFloat(4f);
         }
 
         public override void AI()
         {
-            if (projectile.timeLeft == MaxTimeLeft) 
+            if (Projectile.timeLeft == MaxTimeLeft) 
             {
-                StarlightPlayer mp = Main.player[projectile.owner].GetModPlayer<StarlightPlayer>();
+                StarlightPlayer mp = Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>();
                 if (mp.empowered) 
                 {
-                    projectile.frame = 1;
+                    Projectile.frame = 1;
                     lightColor = new Vector3(0.05f, 0.1f, 0.2f);
                     ScaleMult = 1.5f;
                     dustType = ModContent.DustType<Dusts.BlueStamina>();
@@ -146,50 +151,50 @@ namespace StarlightRiver.Content.Items.Starwood
                 } 
             }
 
-            float ToTarget = (Main.npc[(int)projectile.ai[0]].Center - projectile.Center).ToRotation();
-            float VelDirection = projectile.velocity.ToRotation();
+            float ToTarget = (Main.npc[(int)Projectile.ai[0]].Center - Projectile.Center).ToRotation();
+            float VelDirection = Projectile.velocity.ToRotation();
 
             if (ToTarget > 0.785f && ToTarget < 2.355f && VelDirection > 0.785f && VelDirection < 2.355f)
-                projectile.velocity = projectile.velocity.RotatedBy((ToTarget - VelDirection) * 0.3f);
+                Projectile.velocity = Projectile.velocity.RotatedBy((ToTarget - VelDirection) * 0.3f);
 
-            projectile.rotation += 0.3f;
-            Lighting.AddLight(projectile.Center, lightColor);
+            Projectile.rotation += 0.3f;
+            Lighting.AddLight(Projectile.Center, lightColor);
         }
 
         public override void Kill(int timeLeft) 
         {
-            Helpers.DustHelper.DrawStar(projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
-            Main.PlaySound(SoundID.Item10, projectile.Center);
+            Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
             for (int k = 0; k < 50; k++)
-                Dust.NewDustPerfect(projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.7f) * ScaleMult), 0, default, 1.5f); 
+                Dust.NewDustPerfect(Projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.7f) * ScaleMult), 0, default, 1.5f); 
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) 
+        public override bool PreDraw(ref Color lightColor) 
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, projectile.rotation, new Vector2(11, 12), projectile.scale, default, default);
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, new Rectangle(0, empowered ? 24 : 0, 22, 24), Color.White, Projectile.rotation, new Vector2(11, 12), Projectile.scale, default, default);
             return false; 
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            for (int k = 0; k < projectile.oldPos.Length; k++)
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/Glow");//TEXTURE PATH
+                float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+                Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;//TEXTURE PATH
 
-                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
-            for (int k = 0; k < projectile.oldPos.Length; k++)
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((projectile.oldPos.Length - k) / (float)projectile.oldPos.Length);
+                Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 if (k <= 4) color *= 1.2f;
-                float scale = projectile.scale * (projectile.oldPos.Length - k) / projectile.oldPos.Length * 0.8f;
-                Texture2D tex = ModContent.GetTexture("StarlightRiver/Assets/Items/Starwood/StarwoodStarfallGlowTrail");//TEXTURE PATH
+                float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
+                Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/StarwoodStarfallGlowTrail").Value;//TEXTURE PATH
 
-                spriteBatch.Draw(tex, (projectile.oldPos[k] + projectile.Size / 2 + projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
+                spriteBatch.Draw(tex, (Projectile.oldPos[k] + Projectile.Size / 2 + Projectile.Center) * 0.50f - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
             }
         }
     }
@@ -200,10 +205,10 @@ namespace StarlightRiver.Content.Items.Starwood
         private int resetCounter = 0;
         private int lasthitPlayer = 255;
         private int lasthitDamage = 0;
-        public void AddScore(int scoreAmount, int playerIndex, int damage) {
+        public void AddScore(int scoreAmount, int PlayerIndex, int damage) {
             score += scoreAmount;
             resetCounter = 0;
-            lasthitPlayer = playerIndex;
+            lasthitPlayer = PlayerIndex;
             lasthitDamage = damage; }
 
         public override bool InstancePerEntity => true;
@@ -222,7 +227,7 @@ namespace StarlightRiver.Content.Items.Starwood
                     Vector2 position = new Vector2(npc.Center.X, npc.Center.Y - 700).RotatedBy(rotationAmount, npc.Center);
                     Vector2 velocity = (Vector2.Normalize(npc.Center + new Vector2(0, -20) - position) * speed + npc.velocity / (speed / 1.5f) * 10f) * (Math.Abs(rotationAmount) + 1f);
 
-                    Projectile.NewProjectile(position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
+                    Projectile.NewProjectile(npc.GetSource_OnHurt(Main.player[lasthitPlayer]), position, velocity, ModContent.ProjectileType<StarwoodStaffFallingStar>(), lasthitDamage * 3, 1, lasthitPlayer, npc.whoAmI);
 
                     score = 0;
                     resetCounter = 0;

@@ -7,29 +7,27 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Gas : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "GasChaos";
 
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
             dust.noLight = true;
+            dust.rotation = Main.rand.NextFloat(6.28f);
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor) => dust.color;
 
         public override bool Update(Dust dust)
         {
-            dust.color = Lighting.GetColor((int)(dust.position.X / 16), (int)(dust.position.Y / 16)).MultiplyRGB(Color.White) * 0.07f;
-            dust.position += dust.velocity * 0.1f;
-            dust.scale *= 0.992f;
+            dust.fadeIn++;
+            dust.position += dust.velocity;
+            dust.scale *= 0.98f;
             dust.velocity *= 0.97f;
-            dust.rotation += 0.1f;
+            dust.rotation += 0.15f;
+            dust.color = Color.White * (float)System.Math.Sin(dust.fadeIn / 30f * 3.14f) * 0.05f;
 
-            if (dust.scale <= 0.2f) dust.active = false;
+            if (dust.fadeIn >= 30) dust.active = false;
             return false;
         }
     }

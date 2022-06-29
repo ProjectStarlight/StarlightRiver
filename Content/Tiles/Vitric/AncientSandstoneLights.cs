@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Overgrow;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -13,18 +14,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	public class AncientSandstoneTorchItem : QuickTileItem
     {
-        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", TileType<AncientSandstoneTorch>(), 0, AssetDirectory.VitricTile + "AncientSandstoneTorch", true) { }
+        public AncientSandstoneTorchItem() : base("Ancient Vitric Illuminator", "It has an entrancing glow", "AncientSandstoneTorch", 0, AssetDirectory.VitricTile + "AncientSandstoneTorch", true) { }
     }
 
     internal class AncientSandstoneTorch : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
         
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             Main.tileLavaDeath[Type] = false;
             Main.tileFrameImportant[Type] = true;
@@ -32,15 +29,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
             TileID.Sets.FramesOnKillWall[Type] = true;
 
-            minPick = 200;
-            drop = ItemType<AncientSandstoneTorchItem>();
-            dustType = mod.DustType("Air");
+            MinPick = 200;
+            ItemDrop = ItemType<AncientSandstoneTorchItem>();
+            DustType = DustType<Dusts.Air>();
             AddMapEntry(new Color(115, 182, 158));
         }
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple)
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
                 return;
             r = 125 * 0.003f;
             g = 162 * 0.003f;
@@ -49,10 +46,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneGlassTemple) 
+            if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>())) 
                 return;
-            Texture2D tex = GetTexture(AssetDirectory.RiftCrafting + "Glow0");
-            Texture2D tex2 = GetTexture(AssetDirectory.RiftCrafting + "Glow1");
+            Texture2D tex = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow0").Value;
+            Texture2D tex2 = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow1").Value;
 
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);

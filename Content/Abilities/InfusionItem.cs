@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -6,9 +7,16 @@ namespace StarlightRiver.Content.Abilities
 {
 	public abstract partial class InfusionItem : ModItem
     {
+        private Ability ability;
+        public Color color;
+
         public abstract InfusionTier Tier { get; }
         public virtual Type AbilityType { get; }
-        public Player Player => Main.player[item.owner];
+
+        public Player Player => Main.player[Item.playerIndexTheItemIsReservedFor];
+
+        public virtual bool Equippable => true;
+
         public Ability Ability
         {
             get
@@ -23,7 +31,7 @@ namespace StarlightRiver.Content.Abilities
                 return ability;
             }
         }
-        private Ability ability;
+
 
         public virtual void OnActivate() => Ability?.OnActivate();
         public virtual void UpdateActive() => Ability?.UpdateActive();

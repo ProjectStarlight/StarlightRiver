@@ -9,11 +9,8 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class Air : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
+
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -52,11 +49,7 @@ namespace StarlightRiver.Content.Dusts
     {
         private int timer = 0;
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {
@@ -70,24 +63,24 @@ namespace StarlightRiver.Content.Dusts
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
         {
-            if (dust.customData is Player player)
+            if (dust.customData is Player Player)
             {
-                return dust.color * (1 - Vector2.Distance(dust.position, player.Center) / 50f);
+                return dust.color * (1 - Vector2.Distance(dust.position, Player.Center) / 50f);
             }
             return dust.color;
         }
 
         public override bool Update(Dust dust)
         {
-            if (dust.customData is Player player)
+            if (dust.customData is Player Player)
             {
-                dust.rotation = Vector2.Distance(dust.position, player.Center) * 0.1f;
+                dust.rotation = Vector2.Distance(dust.position, Player.Center) * 0.1f;
                 dust.position += dust.velocity;
 
-                dust.velocity = Vector2.Normalize(dust.position - player.Center) * -4;
+                dust.velocity = Vector2.Normalize(dust.position - Player.Center) * -4;
                 dust.scale *= 0.95f;
                 timer--;
-                if (timer == 0 || Vector2.Distance(dust.position, player.Center) < 1)
+                if (timer == 0 || Vector2.Distance(dust.position, Player.Center) < 1)
                 {
                     dust.active = false;
                 }
@@ -102,11 +95,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {
@@ -140,12 +129,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirSetColorNoGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Air";
-            return base.Autoload(ref name, ref texture);
-        }
-
+        public override string Texture => AssetDirectory.Dust + "Air";
         public override void OnSpawn(Dust dust)
         {
             dust.velocity *= 0.3f;
@@ -179,11 +163,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class AirDash : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
 
         public override void OnSpawn(Dust dust)
         {
@@ -192,7 +172,7 @@ namespace StarlightRiver.Content.Dusts
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.position -= Vector2.One * 32;
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -224,11 +204,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class Void : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Void";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Air";
 
         public override void OnSpawn(Dust dust)
         {

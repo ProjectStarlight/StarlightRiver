@@ -7,6 +7,8 @@ using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.GameContent;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -22,10 +24,22 @@ namespace StarlightRiver.Content.Items.BaseTypes
         private int boomTimer = 0;
 
         private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
-        public static ParticleSystem CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+        public static ParticleSystem CursedSystem;
 
         private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
-        public static ParticleSystem ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+        public static ParticleSystem ShardsSystem;
+
+        public static void LoadSystem()
+        {
+            CursedSystem = new ParticleSystem("StarlightRiver/Assets/GUI/WhiteCircle", UpdateCursed);
+            ShardsSystem = new ParticleSystem("StarlightRiver/Assets/GUI/charm", UpdateShards);
+        }
+
+        public static void UnloadSystem()
+        {
+            CursedSystem = null;
+            ShardsSystem = null;
+        }
 
         protected CursedAccessory(Texture2D glow) : base("Unnamed Cursed Accessory", "You forgot to give this a display name dingus!")
         {
@@ -52,11 +66,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
             particle.Timer--;
         }
 
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
             if(GoingBoom)
 			{
-                var tex = ModContent.GetTexture(Texture);
+                var tex = ModContent.Request<Texture2D>(Texture).Value;
                 position += Vector2.One.RotatedByRandom(6.28f) * boomTimer / 60;
 
                 spriteBatch.Draw(tex, position, frame, Color.White, 0, origin, scale, 0, 0);
@@ -72,10 +86,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 return false;
 			}
 
-			return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+			return base.PreDrawInInventory(spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
 
-		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime);
             spriteBatch.Draw(Glow, position, new Rectangle(0, 0, 32, 32), color, 0, origin, scale, SpriteEffects.None, 0);
@@ -94,10 +108,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
             }
         }
 
-        public override bool CanEquipAccessory(Player player, int slot)
+        public override bool CanEquipAccessory(Player Player, int slot, bool modded)
         {
-            Main.PlaySound(SoundID.NPCHit55);
-            Main.PlaySound(SoundID.Item123);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
 
             for (int k = 0; k <= 50; k++)
                 CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
@@ -107,41 +121,41 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            TooltipLine line = new TooltipLine(mod, "StarlightRiverCursedWarning", "Cursed\nCannot be removed normally once equipped")
+            TooltipLine line = new TooltipLine(Mod, "StarlightRiverCursedWarning", "Cursed\nCannot be removed normally once equipped")
             {
-                overrideColor = new Color(200, 100, 255)
+                OverrideColor = new Color(200, 100, 255)
             };
             tooltips.Add(line);
         }
 
-		public override void UpdateInventory(Player player)
+		public override void UpdateInventory(Player Player)
 		{
-            if (!(Main.HoverItem.modItem is CursedAccessory))
+            if (!(Main.HoverItem.ModItem is CursedAccessory))
                 tooltipProgress = 0;
         }
 
-        public virtual void SafeUpdateAccessory(Player player, bool hideVisual) { }
+        public virtual void SafeUpdateAccessory(Player Player, bool hideVisual) { }
 
-		public sealed override void UpdateAccessory(Player player, bool hideVisual)
+		public sealed override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-            SafeUpdateAccessory(player, hideVisual);
+            SafeUpdateAccessory(Player, hideVisual);
 
-            if (!(Main.HoverItem.modItem is CursedAccessory))
+            if (!(Main.HoverItem.ModItem is CursedAccessory))
                 tooltipProgress = 0;
 
             if (GoingBoom)
                 boomTimer++;
 
             if (boomTimer == 1)
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/MysticCast"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
-                var tex = Main.itemTexture[item.type];
+                var tex = TextureAssets.Item[Item.type].Value;
 
-                item.TurnToAir();
+                Item.TurnToAir();
 ;
-                Main.PlaySound(mod.GetLegacySoundSlot(SoundType.Custom, "Sounds/Magic/Shadow2"));
+                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {
@@ -171,16 +185,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
-            if(line.mod == "Terraria" && line.Name == "ItemName")
+            if(line.Mod == "Terraria" && line.Name == "ItemName")
 			{
                 var effect = Filters.Scene["CursedTooltip"].GetShader().Shader;
-                var tex = ModContent.GetTexture("StarlightRiver/Assets/Keys/Glow");
+                var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+
+                if (effect is null)
+                    return true;
 
                 effect.Parameters["speed"].SetValue(1);
                 effect.Parameters["power"].SetValue(0.011f * tooltipProgress);
                 effect.Parameters["uTime"].SetValue(Main.GameUpdateCount / 10f);
 
-                int measure = (int)(line.font.MeasureString(line.text).X * 1.1f);
+                int measure = (int)(line.Font.MeasureString(line.Text).X * 1.1f);
                 int offset = (int)(Math.Sin(Main.GameUpdateCount / 25f) * 5);
                 Rectangle target = new Rectangle(line.X + measure / 2, line.Y + 10, (int)(measure * 1.5f) + offset, 34 + offset);
                 Main.spriteBatch.Draw(tex, target, new Rectangle(4, 4, tex.Width - 4, tex.Height - 4), Color.Black * (0.675f * tooltipProgress + (float)(Math.Sin(Main.GameUpdateCount / 25f)) * -0.1f), 0, (tex.Size() - Vector2.One * 8) / 2, 0, 0);
@@ -188,7 +205,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.UIScaleMatrix);
 
-                Utils.DrawBorderString(Main.spriteBatch, line.text, new Vector2(line.X, line.Y), Color.Lerp(Color.White, new Color(180, 100, 225), tooltipProgress), 1.1f);
+                Utils.DrawBorderString(Main.spriteBatch, line.Text, new Vector2(line.X, line.Y), Color.Lerp(Color.White, new Color(180, 100, 225), tooltipProgress), 1.1f);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
@@ -201,5 +218,5 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			return base.PreDrawTooltipLine(line, ref yOffset);
 		}
-	}
+    }
 }

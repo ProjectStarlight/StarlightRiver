@@ -10,7 +10,7 @@ using static Terraria.ModLoader.Core.TmodFile;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ShaderLoader : ILoadable
+	class ShaderLoader : IOrderedLoadable
     {
         public float Priority { get => 0.9f; }
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Core.Loaders
 
         public static void LoadShader(string name, string path)
         {
-            var screenRef = new Ref<Effect>(StarlightRiver.Instance.GetEffect(path));
+            var screenRef = new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
             Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, name + "Pass"), EffectPriority.High);
             Filters.Scene[name].Load();
         }

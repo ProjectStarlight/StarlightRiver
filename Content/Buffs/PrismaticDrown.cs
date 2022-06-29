@@ -6,35 +6,36 @@ namespace StarlightRiver.Content.Buffs
 {
 	class PrismaticDrown : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "PrismaticDrown";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Prismatic Drown");
             Description.SetDefault("You are drowning in prismatic waters!");
             Main.debuff[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
-            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
+            if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) || NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
             {
-                player.lifeRegen -= 60;
-                player.slow = true;
-                player.wet = true;
+                Player.lifeRegen -= Main.masterMode ? 100 : 60;
+                Player.slow = true;
+                Player.wet = true;
 
-                if (player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
+                if (Player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
                     Main.musicFade[Main.curMusic] = 0.05f;
             }
             else
             {
-                player.wet = true;
-                player.breath--;
+                Player.wet = true;
+                Player.breath--;
             }
         }
-    }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+            npc.lifeRegen -= 40;
+		}
+	}
 }

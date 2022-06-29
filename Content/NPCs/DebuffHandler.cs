@@ -21,9 +21,9 @@ namespace StarlightRiver.NPCs
             if (timeLeft < 1)
                 stack.RemoveAt(thisisme);
         }
-        public static void RefreshStacks(NPC npc, int time)
+        public static void RefreshStacks(NPC NPC, int time)
         {
-            DebuffHandler dbh = npc.GetGlobalNPC<DebuffHandler>();
+            DebuffHandler dbh = NPC.GetGlobalNPC<DebuffHandler>();
 
             for (int i = 0; i < dbh.BarbedBleeds.Count; i += 1)
             {
@@ -32,9 +32,9 @@ namespace StarlightRiver.NPCs
             }
         }
 
-        public static bool ApplyBleedStack(NPC npc, int time, bool refresh = true)
+        public static bool ApplyBleedStack(NPC NPC, int time, bool refresh = true)
         {
-            DebuffHandler dbh = npc.GetGlobalNPC<DebuffHandler>();
+            DebuffHandler dbh = NPC.GetGlobalNPC<DebuffHandler>();
 
             if (dbh.BarbedBleeds.Count < 5)
             {
@@ -43,7 +43,7 @@ namespace StarlightRiver.NPCs
             }
 
             if (refresh)
-                RefreshStacks(npc, time);
+                RefreshStacks(NPC, time);
 
             return false;
         }
@@ -55,7 +55,7 @@ namespace StarlightRiver.NPCs
         internal int impaled = 0;
         public List<BleedStack> BarbedBleeds = new List<BleedStack>();
 
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
+        public override void UpdateLifeRegen(NPC NPC, ref int damage)
         {
             for (int i = 0; i < BarbedBleeds.Count; i += 1)
             {
@@ -65,43 +65,43 @@ namespace StarlightRiver.NPCs
             if (frozenTime != 0)
             {
                 frozenTime -= 1;
-                npc.color.B += 180;
-                npc.color.G += 90;
-                if (npc.color.B >= 255)
+                NPC.color.B += 180;
+                NPC.color.G += 90;
+                if (NPC.color.B >= 255)
                 {
-                    npc.color.B = 255;
+                    NPC.color.B = 255;
                 }
-                if (npc.color.G >= 255)
+                if (NPC.color.G >= 255)
                 {
-                    npc.color.G = 255;
+                    NPC.color.G = 255;
                 }
-                npc.velocity *= 0.2f;
+                NPC.velocity *= 0.2f;
             }
 
             if (impaled > 0)
             {
-                if (npc.lifeRegen > 0) npc.lifeRegen = 0;
-                npc.lifeRegen -= impaled;
+                if (NPC.lifeRegen > 0) NPC.lifeRegen = 0;
+                NPC.lifeRegen -= impaled;
                 damage = Math.Max(impaled / 4, damage);
             }
-            //ResetEffects seems to be called after projectile AI it seems, but this works, for now
+            //ResetEffects seems to be called after Projectile AI it seems, but this works, for now
             impaled = 0;
         }
 
-        public override void ResetEffects(NPC npc)
+        public override void ResetEffects(NPC NPC)
         {
-            base.ResetEffects(npc);
+            base.ResetEffects(NPC);
         }
 
-        public override void DrawEffects(NPC npc, ref Color drawColor)
+        public override void DrawEffects(NPC NPC, ref Color drawColor)
         {
             if (BarbedBleeds.Count > 0)
             {
                 int count = BarbedBleeds.Count;
                 for (int i = 0; i < count; i += 1)
                 {
-                    Vector2 location = npc.position + new Vector2((npc.width / 2) + ((i * 16) - ((count - 1) * 8)), -8);
-                    Dust dust2 = Dust.NewDustPerfect(location, Terraria.ID.DustID.Blood, npc.velocity, 200, Color.Red, 1f);
+                    Vector2 location = NPC.position + new Vector2((NPC.width / 2) + ((i * 16) - ((count - 1) * 8)), -8);
+                    Dust dust2 = Dust.NewDustPerfect(location, Terraria.ID.DustID.Blood, NPC.velocity, 200, Color.Red, 1f);
                     dust2.noGravity = true;
                     if (Main.rand.Next(0, 10) == 0)
                     {
@@ -112,7 +112,7 @@ namespace StarlightRiver.NPCs
             }
             if (frozenTime != 0)
             {
-                Dust dust = Main.dust[Dust.NewDust(npc.position, npc.width, npc.height, 15, 0f, 0f, 255, default, 1f)];
+                Dust dust = Main.dust[Dust.NewDust(NPC.position, NPC.width, NPC.height, 15, 0f, 0f, 255, default, 1f)];
                 dust.noGravity = true;
                 dust.scale = 1.1f;
                 dust.noLight = true;

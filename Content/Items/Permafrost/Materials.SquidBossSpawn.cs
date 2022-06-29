@@ -16,8 +16,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            item.rare = ItemRarityID.Green;
-            item.maxStack = 20;
+            Item.rare = ItemRarityID.Green;
+            Item.maxStack = 20;
         }
     }
 }

@@ -16,16 +16,17 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
-
-        public override bool NeedsSaving(Item item) => isRelic;
-
-        public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 
-        public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+			return item.TryGetGlobalItem<RelicItem>(out var gi) ? gi : base.Clone(item, itemClone);
+		}
+
+		public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
                 if (pre == -3)
                     return false;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override int ChoosePrefix(Item item, UnifiedRandom rand)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
                 int result = base.ChoosePrefix(item, rand);
                 return result != 0 ? result : ChoosePrefix(item, rand);
@@ -48,101 +49,101 @@ namespace StarlightRiver.Content.Items.BaseTypes
             return base.ChoosePrefix(item, rand);
         }
 
-        public override void UpdateAccessory(Item item, Player player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
+        public override void UpdateAccessory(Item item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
         {
-			if (!isRelic)
+			if (!item.GetGlobalItem<RelicItem>().isRelic)
 			{ 
-				base.UpdateAccessory(item, player, hideVisual);
+				base.UpdateAccessory(item, Player, hideVisual);
 				return;
 				}
 
 			if (item.prefix == 62)
 			{
-				player.statDefense++;
+				Player.statDefense++;
 			}
 			if (item.prefix == 63)
 			{
-				player.statDefense += 2;
+				Player.statDefense += 2;
 			}
 			if (item.prefix == 64)
 			{
-				player.statDefense += 3;
+				Player.statDefense += 3;
 			}
 			if (item.prefix == 65)
 			{
-				player.statDefense += 4;
+				Player.statDefense += 4;
 			}
 			if (item.prefix == 66)
 			{
-				player.statManaMax2 += 20;
+				Player.statManaMax2 += 20;
 			}
 			if (item.prefix == 67)
 			{
-				player.meleeCrit += 2;
-				player.rangedCrit += 2;
-				player.magicCrit += 2;
-				player.thrownCrit += 2;
+				Player.GetCritChance(DamageClass.Melee) += 2;
+				Player.GetCritChance(DamageClass.Ranged) += 2;
+				Player.GetCritChance(DamageClass.Magic) += 2;
+				Player.GetCritChance(DamageClass.Throwing) += 2;
 			}
 			if (item.prefix == 68)
 			{
-				player.meleeCrit += 4;
-				player.rangedCrit += 4;
-				player.magicCrit += 4;
-				player.thrownCrit += 4;
+				Player.GetCritChance(DamageClass.Melee) += 4;
+				Player.GetCritChance(DamageClass.Ranged) += 4;
+				Player.GetCritChance(DamageClass.Magic) += 4;
+				Player.GetCritChance(DamageClass.Throwing) += 4;
 			}
 			if (item.prefix == 69)
 			{
-				player.allDamage += 0.01f;
+				Player.GetDamage(DamageClass.Generic) += 0.01f; 
 			}
 			if (item.prefix == 70)
 			{
-				player.allDamage += 0.02f;
+				Player.GetDamage(DamageClass.Generic) += 0.02f;
 			}
 			if (item.prefix == 71)
 			{
-				player.allDamage += 0.03f;
+				Player.GetDamage(DamageClass.Generic) += 0.03f;
 			}
 			if (item.prefix == 72)
 			{
-				player.allDamage += 0.04f;
+				Player.GetDamage(DamageClass.Generic) += 0.04f;
 			}
 			if (item.prefix == 73)
 			{
-				player.moveSpeed += 0.01f;
+				Player.moveSpeed += 0.01f;
 			}
 			if (item.prefix == 74)
 			{
-				player.moveSpeed += 0.02f;
+				Player.moveSpeed += 0.02f;
 			}
 			if (item.prefix == 75)
 			{
-				player.moveSpeed += 0.03f;
+				Player.moveSpeed += 0.03f;
 			}
 			if (item.prefix == 76)
 			{
-				player.moveSpeed += 0.04f;
+				Player.moveSpeed += 0.04f;
 			}
 			if (item.prefix == 77)
 			{
-				player.meleeSpeed += 0.01f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.01f;
 			}
 			if (item.prefix == 78)
 			{
-				player.meleeSpeed += 0.02f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.02f;
 			}
 			if (item.prefix == 79)
 			{
-				player.meleeSpeed += 0.03f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.03f;
 			}
 			if (item.prefix == 80)
 			{
-				player.meleeSpeed += 0.04f;
+				Player.GetAttackSpeed(DamageClass.Melee) += 0.04f;
 			}
 		}
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (isRelic)
+            if (item.GetGlobalItem<RelicItem>().isRelic)
             {
                 for(int k = 0; k < tooltips.Count; k++)
                 {
@@ -150,24 +151,24 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                     if (line.Name == "ItemName")
                     {
-                        line.text = line.text.Insert(0, "Twice ");
-                        line.overrideColor = RelicColor(k);
+                        line.Text = line.Text.Insert(0, "Twice ");
+                        line.OverrideColor = RelicColor(k);
                     }
 
-					if (line.isModifier)
+					if (line.IsModifier)
 					{
-						line.overrideColor = RelicColor(k);
+						line.OverrideColor = RelicColor(k);
 
 						if (item.accessory)
-							line.text = DoubleIntValues(line.text);
+							line.Text = DoubleIntValues(line.Text);
 					}
 
-                    if (line.isModifierBad)
-                        line.overrideColor = RelicColorBad(k);
+                    if (line.IsModifierBad)
+                        line.OverrideColor = RelicColorBad(k);
                 }
 
-                var newLine = new TooltipLine(mod, "relicLine", "Cannot be reforged");
-                newLine.overrideColor = new Color(255, 180, 100);
+                var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged");
+                newLine.OverrideColor = new Color(255, 180, 100);
                 tooltips.Add(newLine);
             }
         }
@@ -187,17 +188,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return input;
         }
 
-        public override TagCompound Save(Item item)
+        public override void SaveData(Item item, TagCompound tag)
         {
-            return new TagCompound()
-            {
-                ["isRelic"] = isRelic
-            };
-        }
+			if(item.GetGlobalItem<RelicItem>().isRelic)
+				tag["isRelic"] = true;
+		}
 
-        public override void Load(Item item, TagCompound tag)
+        public override void LoadData(Item item, TagCompound tag)
         {
-            isRelic = tag.GetBool("isRelic");
-        }
+			if (tag.ContainsKey("isRelic"))
+				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
+		}
     }
 }

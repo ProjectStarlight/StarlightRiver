@@ -8,30 +8,30 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassweaverWaiting : ModNPC
     {
-        public override string Texture => AssetDirectory.GlassMiniboss + Name;
+        public override string Texture => AssetDirectory.Glassweaver + Name;
 
-        public override string TownNPCName() => "";
+        //public override string TownNPCName() => "";
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
 
         public override void SetDefaults()
         {
-            npc.townNPC = true;
-            npc.friendly = true;
-            npc.width = 64;
-            npc.height = 64;
-            npc.aiStyle = -1;
-            npc.damage = 10;
-            npc.defense = 15;
-            npc.lifeMax = 250;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.knockBackResist = 0;
+            NPC.townNPC = true;
+            NPC.friendly = true;
+            NPC.width = 64;
+            NPC.height = 64;
+            NPC.aiStyle = -1;
+            NPC.damage = 10;
+            NPC.defense = 15;
+            NPC.lifeMax = 250;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.knockBackResist = 0;
         }
 
         public override string GetChat()
         {
-            // If pre-EOW, warn the player.
+            // If pre-EOW, warn the Player.
             if (!NPC.downedBoss2)
                 return Main.rand.Next(new[]
                 {
@@ -67,8 +67,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             if (firstButton)
             {
-                NPC.NewNPC((int)npc.Center.X, (int)npc.Center.Y, NPCType<GlassMiniboss>());
-                npc.active = false;
+                NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
+                NPC.active = false;
             }
         }
     }

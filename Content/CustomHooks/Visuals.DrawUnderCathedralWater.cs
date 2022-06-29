@@ -5,9 +5,11 @@ using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.Graphics.Effects;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -21,58 +23,62 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            IL.Terraria.Main.DoDraw += DrawWater;
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs += DrawWater;
         }
 
         public override void Unload()
         {
-            IL.Terraria.Main.DoDraw -= DrawWater;
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs -= DrawWater;
         }
 
         private void DrawWater(ILContext il)
         {
             ILCursor c = new ILCursor(il);
             c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsBehindNonSolidTiles"));
-            c.Index--;
+            //c.Index--;
 
             c.EmitDelegate<DrawWaterDelegate>(DrawWater);
         }
 
         private delegate void DrawWaterDelegate();
 
-        private void DrawWater()
+        public static void DrawWater()
         {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            foreach (NPC npc in Main.npc.Where(n => n.active && n.modNPC is ArenaActor))
+            NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+
+            if(NPC != null && NPC.active)
             {
-                (npc.modNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+                if(ReflectionTarget.canUseTarget)
+                    (NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
-                foreach (NPC npc2 in Main.npc.Where(n => n.active && n.modNPC is IUnderwater && !(n.modNPC is SquidBoss)))
-                    (npc2.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                int boss = -1;
+                List<NPC> drawCache = new List<NPC>();
 
-                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.modProjectile is IUnderwater))
-                    (proj.modProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
+                {
+                    var NPC2 = Main.npc[k];
 
-                foreach (NPC npc3 in Main.npc.Where(n => n.active && n.modNPC is SquidBoss))
-                    (npc3.modNPC as IUnderwater).DrawUnderWater(Main.spriteBatch);
+                    if (NPC2.active && NPC2.ModNPC is IUnderwater)
+                    {
+                        if (NPC2.type == ModContent.NPCType<SquidBoss>())
+                            boss = k;
+                        else
+                            drawCache.Add(NPC2);                          
+                    }
+                }
 
-                var effect = Filters.Scene["Waves"].GetShader().Shader;
+                drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0));
+               
+                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.ModProjectile is IUnderwater)) //draw all Projectiles
+                    (proj.ModProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch, 0);
 
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect);
+                if (boss != -1 && Main.npc[boss].ModNPC is IUnderwater)
+                   (Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0); //draw boss ontop if extant
 
-                effect.Parameters["uTime"].SetValue(StarlightWorld.rottime);
-                effect.Parameters["power"].SetValue(0.002f + 0.0005f * (float)Math.Sin(StarlightWorld.rottime));
-                effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-                effect.Parameters["sampleTexture"].SetValue(PermafrostGlobalTile.auroraBackTarget);
-                effect.Parameters["speed"].SetValue(50f);
-
-                Main.spriteBatch.Draw(CathedralTarget.CatherdalWaterTarget, Vector2.Zero, Color.White);
-
-                Main.spriteBatch.End();
-                Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+                drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 1)); //draw layer for NPCs over bosses, used for the front part of tentacles
             }
         }
     }

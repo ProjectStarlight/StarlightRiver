@@ -1,4 +1,4 @@
-﻿using Microsoft.Xna.Framework;
+﻿/*using Microsoft.Xna.Framework; Sorry, this gotta go for now
 using Terraria;
 using System.Windows.Forms;
 using System.Drawing;
@@ -10,11 +10,9 @@ using System.Reflection;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class WindowForm : ILoadable
+	class WindowForm
     {
         public static Form GameForm;
-
-        public float Priority => 1.3f;
 
         const string DefaultTitle = "Starlight River Test Build";
 
@@ -52,9 +50,9 @@ namespace StarlightRiver.Core.Loaders
                 InvokeOnForm(WindowFormChanges);//if active change icon
         }
 
-        private void WaitForWindowAvailible(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+		private void WaitForWindowAvailible(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
         {
-            orig(self, gameTime);
+            orig(self, ref gameTime);
             if (IsFormActive(GameForm))//if form becomes active change icon and un-detour Main.DoUpdate
             {
                 InvokeOnForm(WindowFormChanges);
@@ -64,7 +62,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void WindowFormChanges()//generates a icon from a png and changes the window text
         {
-            GameForm.Icon = Texture2Icon(ModContent.GetTexture(GetModIcon()));
+            GameForm.Icon = Texture2Icon(ModContent.Request<Texture2D>(GetModIcon()).Value);
             GameForm.Text = GetWindowTitle();
         }
 
@@ -159,4 +157,4 @@ namespace StarlightRiver.Core.Loaders
             On.Terraria.Main.DoUpdate -= WaitForWindowAvailible;
         }
     }
-}
+}*/

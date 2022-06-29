@@ -107,7 +107,7 @@ tells the user that there is no warranty for the work (except to the
 extent that warranties are provided), that licensees may convey the
 work under this License, and how to view a copy of this License.  If
 the interface presents a list of user commands or options, such as a
-menu, a prominent item in the list meets this criterion.
+menu, a prominent Item in the list meets this criterion.
 
   1. Source Code.
 

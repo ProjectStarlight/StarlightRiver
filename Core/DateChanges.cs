@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using System.Windows.Forms;
 using System.Drawing;
 using System;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,7 +9,7 @@ using System.Reflection;
 
 namespace StarlightRiver.Core
 {
-	class DateChanges : ILoadable
+	class DateChanges : IOrderedLoadable
     {
         public static bool AprilFirst = false;
         public static bool Anniversary = false;

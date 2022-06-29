@@ -8,13 +8,9 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
 	class TempleWall : ModWall
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
-        public override void SetDefaults() { this.QuickSetWall(DustID.Stone, SoundID.Dig, ItemType<TempleWallItem>(), true, new Color(20, 20, 20)); } 
+        public override void SetStaticDefaults() { this.QuickSetWall(DustID.Stone, SoundID.Dig, ItemType<TempleWallItem>(), true, new Color(20, 20, 20)); } 
     }
 
     class TempleWallItem : QuickWallItem
@@ -24,13 +20,9 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
     class TempleWallBig : ModWall 
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
-        public override void SetDefaults() { this.QuickSetWall(DustID.Stone, SoundID.Dig, ItemType<TempleWallBigItem>(), true, new Color(20, 20, 20)); }
+        public override void SetStaticDefaults() { this.QuickSetWall(DustID.Stone, SoundID.Dig, ItemType<TempleWallBigItem>(), true, new Color(20, 20, 20)); }
     }
 
     class TempleWallBigItem : QuickWallItem 

@@ -22,13 +22,13 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self);
             Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-            for (int k = 0; k < Main.maxProjectiles; k++) //projectiles
-                if (Main.projectile[k].active && Main.projectile[k].modProjectile is IDrawAdditive)
-                    (Main.projectile[k].modProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+            for (int k = 0; k < Main.maxProjectiles; k++) //Projectiles
+                if (Main.projectile[k].active && Main.projectile[k].ModProjectile is IDrawAdditive)
+                    (Main.projectile[k].ModProjectile as IDrawAdditive).DrawAdditive(Main.spriteBatch);
 
             for (int k = 0; k < Main.maxNPCs; k++) //NPCs
-                if (Main.npc[k].active && Main.npc[k].modNPC is IDrawAdditive)
-                    (Main.npc[k].modNPC as IDrawAdditive).DrawAdditive(Main.spriteBatch);
+                if (Main.npc[k].active && Main.npc[k].ModNPC is IDrawAdditive)
+                    (Main.npc[k].ModNPC as IDrawAdditive).DrawAdditive(Main.spriteBatch);
 
             Main.spriteBatch.End();
         }

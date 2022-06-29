@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ResetSB()
 		{
-            if (StarlightWorld.spaceEventFade > 0)
+            if (FirstContactSystem.FirstContactFade > 0)
             {
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
@@ -43,11 +44,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void RestartSB()
 		{
-            if (StarlightWorld.spaceEventFade > 0)
+            if (FirstContactSystem.FirstContactFade > 0)
             {
                 Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["uTime"].SetValue(Main.GameUpdateCount / 30f);
-                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["sampleTexture2"].SetValue(Terraria.ModLoader.ModContent.GetTexture("StarlightRiver/Assets/Misc/SkyMap"));
-                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["uOpacity"].SetValue(StarlightWorld.spaceEventFade);
+                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["sampleTexture2"].SetValue(Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/SkyMap").Value);
+                Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader.Parameters["uOpacity"].SetValue(FirstContactSystem.FirstContactFade);
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Terraria.Graphics.Effects.Filters.Scene["SpaceMap"].GetShader().Shader);

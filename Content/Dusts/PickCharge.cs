@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class PickCharge : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "FireDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "FireDust";
 
         public override void OnSpawn(Dust dust)
         {
@@ -29,9 +25,9 @@ namespace StarlightRiver.Content.Dusts
         {
             if (dust.customData is int && Main.player[(int)dust.customData].active)
             {
-                Player player = Main.player[(int)dust.customData];
-                dust.position = player.Center + new Vector2(0, player.gfxOffY) + dust.velocity;
-                if (!Main.mouseRight || !(player.HeldItem.modItem is TemplePick)) dust.active = false; //RIP multiplayer TODO: Make this not gay
+                Player Player = Main.player[(int)dust.customData];
+                dust.position = Player.Center + new Vector2(0, Player.gfxOffY) + dust.velocity;
+                if (!Main.mouseRight || !(Player.HeldItem.ModItem is TemplePick)) dust.active = false; //RIP multiPlayer TODO: Make this not gay
             }
             else dust.active = false;
 

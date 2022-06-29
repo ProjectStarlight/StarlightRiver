@@ -6,7 +6,7 @@ Section 0: Preface
 
 	0.1.1: Welcome
 		Welcome to the official Starlight River style guide written in beautiful plaintext. The goal of this document
-		is to provide an outline for structuring source code for the mod which will be consistent with the rest of the
+		is to provide an outline for structuring source code for the Mod which will be consistent with the rest of the
 		project, in order to ensure everything is consistent and readable at a glance.
 
 	0.1.2: Contact
@@ -48,7 +48,7 @@ Section 1: File and Class structure
 	1.1.3: texture assets
 		All texture assets should be of .png format, and within the Assets directory. Texture assets used only by
 		a single source file or used as the primary texture of a piece of content in a source file (for example,
-		the item texture for the vitric pickaxe) should be placed in a directory directly mirroring that of the
+		the Item texture for the vitric pickaxe) should be placed in a directory directly mirroring that of the
 		source file, changing the top level Content directory for the Assets directory. Texture assets which are
 		re-used should be placed in the lowest possible directory in which it is accessed. For example, if both
 		a file in the Content/Items/Vitric and Content/Items/Overgrow directory use a texture, it should be placed
@@ -76,7 +76,7 @@ Section 1: File and Class structure
 
 	1.2.1: When should multiple classes be placed in one source file
 		Multiple classes should only be placed in the same source file if:
-		A: The content they describe is tightly couples. IE, a weapon and it's specialized projectile
+		A: The content they describe is tightly couples. IE, a weapon and it's specialized Projectile
 		B: The length of the file does not exceed 500 lines
 		C: The secondary classes could reasonably be found under the primary classes name
 		This is to ensure it remains easy to find content for the sake of maintaining it while also keeping tightly
@@ -271,14 +271,14 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 	4.1.1: Accessories
 		Changes to these classes directly should be avoided in all cases for accessory functionality. You should instead
 		subscribe to the approriate event for the hook you want (names will mirror those of ModPlayer/GlobalNPC/etc.) from
-		a load method within your item class and define behavior there. All Accessories should descend from SmartAccessory,
-		which has helper methods for you to check within the methods you subscribe to these hooks with for if the item is
+		a load method within your Item class and define behavior there. All Accessories should descend from SmartAccessory,
+		which has helper methods for you to check within the methods you subscribe to these hooks with for if the Item is
 		equipped and getting the instance which is equipped. Variables required for the functionality should be stored in the
-		item class.
+		Item class.
 
 	4.2.2: Items
-		Similar to accessories, items which would require ModPlayer/GlobalNPC/etc. functionality should instead subscribe
-		to the event hooks and check against the player's held item, with neccisary variables being stored on the item instance.
+		Similar to accessories, Items which would require ModPlayer/GlobalNPC/etc. functionality should instead subscribe
+		to the event hooks and check against the Player's held Item, with neccisary variables being stored on the Item instance.
 
 	4.2.3: Buffs
 		Similar to accessories, a SmartBuff class exists which has helper methods for checking if it is inflicted or not.
@@ -290,7 +290,7 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 4.2: Save Data
 
 	4.2.1: Saving
-		Data which needs to be saved to the player should be placed in ModPlayer classes, same to world data and ModWorld.
+		Data which needs to be saved to the Player should be placed in ModPlayer classes, same to world data and ModSystem.
 		Ideally flags are saved using BitFlag enums to reduce the size of save files and save/load times. 
 
 	4.2.2: Loading
@@ -300,19 +300,19 @@ Section 4: Usage of StarlightPlayer, StarlightNPC, and similar classes
 4.3: Usage for Systems
 
 	4.3.1: When to Use
-		For fully seperate player/world/npc systems, having an independant ModPlayer/ModNPC/etc. class is reccomended.
+		For fully seperate Player/world/NPC systems, having an independant ModPlayer/ModNPC/etc. class is reccomended.
 		To identify if you should use this, ask yourself these questions:
 			Is this functionality tightly bound to a single piece or small subset of content?
 			Would this be applicable to many Players/NPCs/etc. at some time?
 			Would implementing this in another way simply result in a class that only hooks a bunch of ModPlayer methods?
 		if you're able to answer yes to most or all of these its likely a good idea to create a seperate class of the
-		appropriate type to manage that system. An example of a system which exists in the mod that fits this description would
+		appropriate type to manage that system. An example of a system which exists in the Mod that fits this description would
 		be the Barrier system.
 
 	4.3.2: How to Implement
 		When implementing a system like this, try to keep the interactions and functionality described in it as general as possible.
 		for example, it would not be ideal to add a variable to this class to track something for a single accessory which interacts
-		with the system. That would better be tracked in that accessorie's item class. 
+		with the system. That would better be tracked in that accessorie's Item class. 
 
 		Beyond this, implementation should follow standard TML implementations of these class types. Though do try to keep all
 		behavior defined in these classes focused on the default functionality of the system overall, and not when it is effected
@@ -348,7 +348,7 @@ Section 5: Drawing and Draw hooks
 		DrawThing3();
 
 	5.1.3: Shaders and Parameterization
-		Shader effects should always be stored as a local variable. All shaders are autoloaded by the mod, and can be accessed by their
+		Shader effects should always be stored as a local variable. All shaders are autoloaded by the Mod, and can be accessed by their
 		file name. For example, if you have a file named CoolDistortion.xnb, you can access it from Filters.Scene["CoolDistortion"].
 		Parameter set method calls should all be grouped.
 

@@ -1,9 +1,7 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Abilities.Faeflame;
+using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Abilities.GaiasFist;
-using StarlightRiver.Content.Abilities.Purify;
 using System;
 using Terraria;
 
@@ -24,21 +22,13 @@ namespace StarlightRiver.Packets
 			shards = handler.Shards.ToList().ToArray();
 
 			if (handler.Unlocked<Dash>()) unlocks |= 0b10000000;
-			if (handler.Unlocked<Wisp>()) unlocks |= 0b01000000;
-			if (handler.Unlocked<Pure>()) unlocks |= 0b00100000;
-			if (handler.Unlocked<Smash>()) unlocks |= 0b00010000;
+			if (handler.Unlocked<Whip>()) unlocks |= 0b01000000;
         }
 
         protected override void Receive()
         {
-            if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
-            {
-                Send(-1, fromWho, false);
-                return;
-            }
-
-            Player player = Main.player[fromWho];
-            AbilityHandler handler = player.GetHandler();
+            Player Player = Main.player[fromWho];
+            AbilityHandler handler = Player.GetHandler();
 
             for (int k = 0; k < shards.Length; k++)
                 if(!handler.Shards.Has(shards[k]))
@@ -46,9 +36,10 @@ namespace StarlightRiver.Packets
 
             //Part of me really wants to change this to some sort of string matching but that would make the packet like 11x larger
             if((unlocks & 0b10000000) == 0b10000000) handler.Unlock<Dash>();
-            if ((unlocks & 0b01000000) == 0b01000000) handler.Unlock<Wisp>();
-            if ((unlocks & 0b00100000) == 0b00100000) handler.Unlock<Pure>();
-            if ((unlocks & 0b00010000) == 0b00010000) handler.Unlock<Smash>();
+            if ((unlocks & 0b01000000) == 0b01000000) handler.Unlock<Whip>();
+
+            if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
+                Send(-1, fromWho, false);
         }
     }
 }

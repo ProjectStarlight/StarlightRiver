@@ -26,13 +26,13 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 					for(int x = -k; x <= k; x++)
 						for (int y = -k; y <= k; y++)
 						{
-							int realX = Clamp(parent.player.X + x);
-							int realY = Clamp(parent.player.Y + y);
+							int realX = Clamp(parent.Player.X + x);
+							int realY = Clamp(parent.Player.Y + y);
 
 							gameBoard[realX, realY] = WitShrineDummy.runeState.Hostile;
 						}
 
-					parent.playerTimer = 30;
+					parent.PlayerTimer = 30;
 				}
 			}
 

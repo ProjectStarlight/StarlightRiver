@@ -14,27 +14,27 @@ namespace StarlightRiver.Content.Items.BaseTypes
             ThisTooltip = tooltip;
         }
 
-        public bool Equipped(Player player)
+        public bool Equipped(Player Player)
         {
-            for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
-                if (player.armor[k].type == item.type)
+            for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
+                if (Player.armor[k].type == Item.type)
                     return true;
 
             return false;
         }
 
-        public SmartAccessory GetEquippedInstance(Player player)
+        public SmartAccessory GetEquippedInstance(Player Player)
 		{
-            for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
-                if (player.armor[k].type == item.type)
-                    return player.armor[k].modItem as SmartAccessory;
+            for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
+                if (Player.armor[k].type == Item.type)
+                    return Player.armor[k].ModItem as SmartAccessory;
 
             return null;
         }
 
         public virtual void SafeSetDefaults() { }
 
-        public virtual void SafeUpdateEquip(Player player) { }
+        public virtual void SafeUpdateEquip(Player Player) { }
 
         public override void SetStaticDefaults()
         {
@@ -45,14 +45,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public sealed override void SetDefaults()
         {
             SafeSetDefaults();
-            item.width = 32;
-            item.height = 32;
-            item.accessory = true;
+            Item.width = 32;
+            Item.height = 32;
+            Item.accessory = true;
         }
 
-        public sealed override void UpdateEquip(Player player)
+        public sealed override void UpdateEquip(Player Player)
         {
-            SafeUpdateEquip(player);
+            SafeUpdateEquip(Player);
         }
     }
 }

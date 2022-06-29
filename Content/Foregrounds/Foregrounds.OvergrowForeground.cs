@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Foregrounds
 {
@@ -12,7 +14,7 @@ namespace StarlightRiver.Content.Foregrounds
             ParticleSystem = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateOvergrowWells);
         }
 
-        public override bool Visible => Main.LocalPlayer.GetModPlayer<BiomeHandler>().ZoneOvergrow;
+        public override bool Visible => Main.LocalPlayer.InModBiome(ModContent.GetInstance<OvergrowBiome>());
 
         private void UpdateOvergrowWells(Particle particle)
         {

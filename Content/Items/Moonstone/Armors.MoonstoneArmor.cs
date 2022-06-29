@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using NetEasy;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
@@ -29,43 +31,54 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
             On.Terraria.Player.KeyDoubleTap += ActivateSpear;
-            On.Terraria.Main.MouseText_DrawItemTooltip += SpoofMouseItem;
+            On.Terraria.Main.DrawPendingMouseText += SpoofMouseItem;
             StarlightPlayer.PreDrawEvent += DrawMoonCharge;
-            StarlightNPC.ModifyHitByItemEvent += ChargeFromMelee;
-            StarlightNPC.ModifyHitByProjectileEvent += ChargeFromProjectile;
-
-            return true;
+            StarlightPlayer.OnHitNPCEvent += ChargeFromMelee;
+            StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
 		}
 
-		private void ChargeFromProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void Unload()
 		{
-			if(projectile.melee && projectile.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Main.player[projectile.owner]))
+            On.Terraria.Player.KeyDoubleTap -= ActivateSpear;
+            On.Terraria.Main.DrawPendingMouseText -= SpoofMouseItem;
+            StarlightPlayer.PreDrawEvent -= DrawMoonCharge;
+            StarlightPlayer.OnHitNPCEvent -= ChargeFromMelee;
+            StarlightPlayer.OnHitNPCWithProjEvent -= ChargeFromProjectile;
+
+            dummySpear.TurnToAir();
+            dummySpear = null;
+        }
+
+		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+		{
+			if(proj.DamageType.Type == DamageClass.Melee.Type && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Player))
 			{
-                var head = Main.player[projectile.owner].armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
-			}
+                addCharge(Player, damage);
+            }
 		}
 
-		private void ChargeFromMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void ChargeFromMelee(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-            if (item.melee && IsArmorSet(player))
+            if (Item.DamageType.Type == DamageClass.Melee.Type && IsArmorSet(Player))
             {
-                var head = player.armor[0].modItem as MoonstoneHead;
-
-                int oldCharge = head.moonCharge;
-                head.moonCharge += (int)(damage * 0.45f);
-
-                if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
-                    head.moonFlash = 30;
+                addCharge(Player, damage);
             }
+        }
+
+        private void addCharge(Player Player, int damage)
+        {
+            var head = Player.armor[0].ModItem as MoonstoneHead;
+
+            int oldCharge = head.moonCharge;
+            head.moonCharge += (int)(damage * 0.45f);
+
+            if ((head.moonCharge >= 180 && oldCharge < 180) || (head.moonCharge >= 720 && oldCharge < 720))
+                head.moonFlash = 30;
+
+            Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
         }
 
 		public override void SetStaticDefaults()
@@ -76,19 +89,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 6;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 6;
         }
 
-		public override void UpdateEquip(Player player)
+		public override void UpdateEquip(Player Player)
 		{
-            player.meleeCrit += 2;
-            player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+            Player.GetCritChance(DamageClass.Melee) += 2;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
 
-            if(!IsArmorSet(player))
+            if(!IsArmorSet(Player))
 			{
                 moonCharge = 0;
                 spearOn = false;
@@ -109,8 +122,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             if (spearOn)
             {
-                player.inventory[58] = dummySpear;
+                if (!(Main.mouseItem.type == dummySpear.type) && !Main.mouseItem.IsAir)
+                {
+                    Main.LocalPlayer.QuickSpawnClonedItem(null, Main.mouseItem, Main.mouseItem.stack);
+                }
                 Main.mouseItem = dummySpear;
+                player.inventory[58] = dummySpear;
                 player.selectedItem = 58;
 
                 moonCharge--;
@@ -121,17 +138,15 @@ namespace StarlightRiver.Content.Items.Moonstone
                     dummySpear.TurnToAir();
                 }
             }
-            else if (Main.mouseItem == dummySpear)
-            {
+            else if (Main.mouseItem.type == ItemType<Datsuzei>())
                 Main.mouseItem = new Item();
-            }
         }
 
         private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
         {
             if (keyDir == 0 && IsArmorSet(player))
             {
-                var helm = player.armor[0].modItem as MoonstoneHead;
+                var helm = player.armor[0].ModItem as MoonstoneHead;
 
                 if (helm.spearOn)
                 {
@@ -142,8 +157,10 @@ namespace StarlightRiver.Content.Items.Moonstone
                 {
                     dummySpear.SetDefaults(ItemType<Datsuzei>());                
                     helm.spearOn = true;
+                    MoonstoneArmorPacket packet = new MoonstoneArmorPacket(player.whoAmI, helm.moonCharge, helm.spearOn);
+                    packet.Send(-1, player.whoAmI, false);
 
-                    int i = Projectile.NewProjectile(player.Center, Vector2.Zero, ProjectileType<DatsuzeiProjectile>(), 1, 0, player.whoAmI, -1, 160);
+                    int i = Projectile.NewProjectile(null, player.Center, Vector2.Zero, ProjectileType<DatsuzeiProjectile>(), 1, 0, player.whoAmI, -1, 160);
                     Main.projectile[i].timeLeft = 160;
                 }
             }
@@ -151,11 +168,11 @@ namespace StarlightRiver.Content.Items.Moonstone
             orig(player, keyDir);
         }
 
-        private void SpoofMouseItem(On.Terraria.Main.orig_MouseText_DrawItemTooltip orig, Main self, int rare, byte diff, int X, int Y)
+        private void SpoofMouseItem(On.Terraria.Main.orig_DrawPendingMouseText orig)
         {
             var player = Main.LocalPlayer;
 
-            if(dummySpear.IsAir)
+            if(dummySpear.IsAir && !Main.gameMenu)
                 dummySpear.SetDefaults(ItemType<Datsuzei>());
 
             if (IsMoonstoneArmor(Main.HoverItem) && IsArmorSet(player) && player.controlUp)
@@ -164,14 +181,14 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Main.hoverItemName = dummySpear.Name;
             }
 
-            orig(self, rare, diff, X, Y);
+            orig();
         }
 
-        public bool IsMoonstoneArmor(Item item)
+        public bool IsMoonstoneArmor(Item Item)
 		{
-            return item.type == ItemType<MoonstoneHead>() ||
-                item.type == ItemType<MoonstoneChest>() ||
-                item.type == ItemType<MoonstoneLegs>();
+            return Item.type == ItemType<MoonstoneHead>() ||
+                Item.type == ItemType<MoonstoneChest>() ||
+                Item.type == ItemType<MoonstoneLegs>();
         }
 
 		public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -179,38 +196,38 @@ namespace StarlightRiver.Content.Items.Moonstone
             return head.type == ItemType<MoonstoneHead>() && body.type == ItemType<MoonstoneChest>() && legs.type == ItemType<MoonstoneLegs>();
         }
 
-        public bool IsArmorSet(Player player)
+        public bool IsArmorSet(Player Player)
         {
-            return player.armor[0].type == ItemType<MoonstoneHead>() && player.armor[1].type == ItemType<MoonstoneChest>() && player.armor[2].type == ItemType<MoonstoneLegs>();
+            return Player.armor[0].type == ItemType<MoonstoneHead>() && Player.armor[1].type == ItemType<MoonstoneChest>() && Player.armor[2].type == ItemType<MoonstoneLegs>();
         }
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
 
-            if (IsArmorSet(player))
+            if (IsArmorSet(Player))
             {
-                if (!player.controlUp)
+                if (!Player.controlUp)
                 {
-                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }
             }
 		}
 
-        private void DrawMoonCharge(Player player, SpriteBatch spriteBatch)
+        private void DrawMoonCharge(Player Player, SpriteBatch spriteBatch)
         {
-            if (IsArmorSet(player) && !player.dead)
+            if (IsArmorSet(Player) && !Player.dead && PlayerTarget.canUseTarget)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-                var head = player.armor[0].modItem as MoonstoneHead;
+                var head = Player.armor[0].ModItem as MoonstoneHead;
                 float charge = head.moonCharge / 720f;
 
-                var texRing = GetTexture(AssetDirectory.VitricItem + "BossBowRing");
+                var texRing = Request<Texture2D>(AssetDirectory.VitricItem + "BossBowRing").Value;
                 var color = new Color(130, 110, 225) * (0.5f + charge * 0.5f);
 
                 if (charge <= 180 / 720f)
@@ -221,26 +238,20 @@ namespace StarlightRiver.Content.Items.Moonstone
 
                 color = Color.Lerp(color, Color.White, head.moonFlash / 30f);
 
-                spriteBatch.Draw(texRing, player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * player.gfxOffY - Main.screenPosition, null, color, Main.GameUpdateCount * 0.01f, texRing.Size() / 2, 0.08f + charge * 0.05f, 0, 0);
+                spriteBatch.Draw(texRing, Player.MountedCenter + new Vector2(0, -16) + Vector2.UnitY * Player.gfxOffY - Main.screenPosition, null, color, Main.GameUpdateCount * 0.01f, texRing.Size() / 2, 0.08f + charge * 0.05f, 0, 0);
 
                 spriteBatch.End();
 
-                SamplerState samplerState = Main.DefaultSamplerState;
-
-                if (player.mount.Active)
-                    samplerState = Main.MountedSamplerState;
-
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.instance.Rasterizer, null, Main.Transform);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, default, null, Main.GameViewMatrix.TransformationMatrix);
             }
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<MoonstoneBar>(), 5);
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 5);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 
@@ -257,11 +268,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 7;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 7;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -271,32 +282,31 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
 
-            if (IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            if (IsArmorSet(Player.armor[0], Player.armor[1], Player.armor[2]))
             {
-                if (!player.controlUp)
+                if (!Player.controlUp)
                 {
-                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }
             }
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.GetModPlayer<ShieldPlayer>().MaxShield += 35;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 35;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<MoonstoneBar>(), 15);
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 15);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 
@@ -313,11 +323,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = 1;
-            item.rare = ItemRarityID.Green;
-            item.defense = 6;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = 1;
+            Item.rare = ItemRarityID.Green;
+            Item.defense = 6;
         }
 
         public override bool IsArmorSet(Item head, Item body, Item legs)
@@ -327,33 +337,65 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void ModifyTooltips(List<TooltipLine> tooltips)
         {
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
 
-            if (IsArmorSet(player.armor[0], player.armor[1], player.armor[2]))
+            if (IsArmorSet(Player.armor[0], Player.armor[1], Player.armor[2]))
             {
-                if (!player.controlUp)
+                if (!Player.controlUp)
                 {
-                    TooltipLine spearQuery = new TooltipLine(mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
-                    spearQuery.overrideColor = new Color(200, 200, 200);
+                    TooltipLine spearQuery = new TooltipLine(Mod, "StarlightRiver:ArmorSpearQuery", "hold UP for Datsuzei stats");
+                    spearQuery.OverrideColor = new Color(200, 200, 200);
 
                     tooltips.Add(spearQuery);
                 }
             }
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
-            player.runAcceleration *= 1.5f;
-            player.GetModPlayer<ShieldPlayer>().MaxShield += 25;
+            Player.runAcceleration *= 1.5f;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 25;
         }
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
-            recipe.AddIngredient(ItemType<MoonstoneBar>(), 10);
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 10);
             recipe.AddTile(TileID.Anvils);
-            recipe.SetResult(this);
-            recipe.AddRecipe();
+            recipe.Register();
+        }
+    }
+
+    [Serializable]
+    public class MoonstoneArmorPacket : Module
+    {
+        public readonly byte whoAmI;
+        public readonly int charge;
+        public readonly bool spearOn;
+
+        public MoonstoneArmorPacket(int whoAmI, int charge, bool spearOn)
+        {
+            this.whoAmI = (byte)whoAmI;
+            this.charge = charge;
+            this.spearOn = spearOn;
+
+        }
+
+        protected override void Receive()
+        {
+            if (Main.netMode == NetmodeID.Server)
+            {
+                Send(-1, whoAmI, false);
+                return;
+            }
+
+            Player Player = Main.player[whoAmI];
+            if (Player.armor[0] != null && Player.armor[0].type == ModContent.ItemType<MoonstoneHead>())
+            {
+                var head = Player.armor[0].ModItem as MoonstoneHead;
+                head.moonCharge = charge;
+                head.spearOn = spearOn;
+            }
         }
     }
 }
