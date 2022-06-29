@@ -35,7 +35,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
             };
         }
 
-        public override void SafeSetDefaults() {
+        public override void SafeSetDefaults() 
+	{
             TileObjectData.newTile.DrawYOffset = 2;
             (this).QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
         }
