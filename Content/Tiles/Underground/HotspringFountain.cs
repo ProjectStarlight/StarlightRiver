@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void SetStaticDefaults()
 		{
-			TileObjectData.newTile.DrawYOffset = -2;
+			TileObjectData.newTile.DrawYOffset = 2;
 			AnchorData anchor = new AnchorData(AnchorType.SolidTile, 5, 0);
 			QuickBlock.QuickSetFurniture(this, 5, 5, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), bottomAnchor: anchor);
 			AnimationFrameHeight = 18 * 5;

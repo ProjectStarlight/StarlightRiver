@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.Tiles.Underground
         public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
+            TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(255, 150, 80), false, false, "The Boi");
         }

@@ -48,12 +48,13 @@ namespace StarlightRiver.Core
             TileObjectData.newTile.Height = Height;
             TileObjectData.newTile.Origin = new Point16(Width / 2, Height / 2 + 1);
             TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, Height).ToArray();
+            //TileObjectData.newTile.DrawYOffset = 2; has no effect for some reason
             TileObjectData.addTile(Type);
 
             DustType = FountainDustType;
             AnimationFrameHeight = Height * 18;
 
-            //ItemType = Mod.Find<ModItem>(ItemName).Type; TODO: Why is this in here?
+            ItemType = Mod.Find<ModItem>(ItemName).Type;
             AddMapEntry(MapColor ?? new Color(75, 139, 166));
 
             AdjTiles = new int[] { TileID.WaterFountain };

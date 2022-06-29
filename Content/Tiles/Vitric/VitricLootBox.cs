@@ -2,6 +2,7 @@
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -34,7 +35,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
             };
         }
 
-        public override void SafeSetDefaults() => (this).QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+        public override void SafeSetDefaults() 
+	{
+            TileObjectData.newTile.DrawYOffset = 2;
+            (this).QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+        }
     }
     class VitricLootBoxItem : QuickTileItem
     {
