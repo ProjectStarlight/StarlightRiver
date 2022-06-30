@@ -63,6 +63,26 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			return true;
 		}
 
+		public override bool? CanAutoReuseItem(Item item, Player player)
+		{
+			var activeMount = player.GetModPlayer<CombatMountSystem>().activeMount;
+
+			if (activeMount != null)
+				return activeMount.autoReuse;
+
+			return null;
+		}
+
+		public override bool AltFunctionUse(Item item, Player player)
+		{
+			var activeMount = player.GetModPlayer<CombatMountSystem>().activeMount;
+
+			if (activeMount != null)
+				return true;
+
+			return false;
+		}
+
 		public override bool CanUseItem(Item item, Player player)
 		{
 			if (item == player.HeldItem)

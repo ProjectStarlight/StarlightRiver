@@ -28,6 +28,8 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		public int actionCooldownCoefficient;
 		public int secondaryCooldownCoefficient;
 
+		public bool autoReuse;
+
 		public int MaxActionTime => (int)(actionSpeedCoefficient * actionSpeedMultiplier);
 		public int MaxActionCD => MaxActionTime + actionCooldownCoefficient;
 		public int MaxSecondaryCD => (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier + secondarySpeedCoefficient);

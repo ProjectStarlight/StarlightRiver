@@ -23,6 +23,7 @@ namespace StarlightRiver.Content.Items
 			secondaryCooldownCoefficient = 240;
 			secondarySpeedCoefficient = 30;
 			damageCoefficient = 100;
+			autoReuse = true;
 		}
 
 		public override void OnStartPrimaryAction(Player player)
