@@ -136,7 +136,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 return false;
             }
 
-
             xFrame = 0;
             frameCounter++;
             if (frameCounter % 3 == 0)
