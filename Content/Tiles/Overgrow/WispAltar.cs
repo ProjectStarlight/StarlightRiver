@@ -2,6 +2,7 @@
 using StarlightRiver.Core;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
@@ -10,7 +11,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "WispAltarL";
 
-        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        public override void SetStaticDefaults() 
+        {
+            TileObjectData.newTile.DrawYOffset = 2;
+            QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        }
     }
 
     class WispAltarLItem : QuickTileItem
@@ -25,7 +30,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     {
         public override string Texture => AssetDirectory.OvergrowTile + "WispAltarR";//a
 
-        public override void SetStaticDefaults() => QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        public override void SetStaticDefaults()
+        {
+            TileObjectData.newTile.DrawYOffset = 2;
+            QuickBlock.QuickSetFurniture(this, 6, 11, DustType<Dusts.GoldNoMovement>(), SoundID.Tink, false, new Color(200, 200, 200));
+        }
     }
 
     class WispAltarRItem : QuickTileItem

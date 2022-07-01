@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					height: 2,
 					dustType: DustID.Stone,
 					hitSound: SoundID.Tink,
-					tallBottom: false,
+					tallBottom: true,
 					mapColor: new Color(100, 100, 100)
 					)
 				);
