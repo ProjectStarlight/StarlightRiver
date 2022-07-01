@@ -3,19 +3,19 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
-	internal class TableSalt : Ingredient
+	internal class Flour : Ingredient
     {
-        public TableSalt() : base("Food buffs are 5% more effective", 900, IngredientType.Seasoning) { }
+        public Flour() : base("Food buffs are 3% less effective", 600, IngredientType.Seasoning) { }
 
         public override void SafeSetDefaults()
         {
-            Item.value = 400;
+            Item.value = 100;
             Item.rare = ItemRarityID.White;
         }
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.05f;
+            Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.03f;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace StarlightRiver.Content.Items.Food
         public int Fill = 0;
         public IngredientType ThisType { get; set; }
 
+        /// <param name="tooltip">Extra tooltip lines</param>
+        /// <param name="filling">How much time this should add to the food, time in seconds is this divided by 60</param>
         protected Ingredient(string tooltip, int filling, IngredientType type)
         {
             Fill = filling;

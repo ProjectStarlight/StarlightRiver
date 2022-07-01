@@ -3,9 +3,9 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
-	internal class Greens : Ingredient
+	internal class BrusselSprouts : Ingredient
     {
-        public Greens() : base("+1 defense", 300, IngredientType.Side) { }
+        public BrusselSprouts() : base("+1 defense", 240, IngredientType.Side) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
