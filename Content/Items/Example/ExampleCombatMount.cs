@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Items
+namespace StarlightRiver.Content.Items.Example
 {
 	internal class ExampleCombatMount : CombatMount
 	{
@@ -24,6 +24,15 @@ namespace StarlightRiver.Content.Items
 			secondarySpeedCoefficient = 30;
 			damageCoefficient = 100;
 			autoReuse = true;
+		}
+
+		public override void UpdatePhysics(Player player)
+		{
+			if (Math.Abs(player.velocity.X) < 11 * moveSpeedMultiplier)
+				player.velocity.X *= moveSpeedMultiplier;
+
+			if (!player.controlLeft && !player.controlRight)
+				player.velocity *= (1 - moveSpeedMultiplier * 0.1f);
 		}
 
 		public override void OnStartPrimaryAction(Player player)

@@ -99,6 +99,15 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		}
 
+		/// <summary>
+		/// Updated player physics. Can be used for custom physics and applying movement speed stat properly
+		/// </summary>
+		/// <param name="player"></param>
+		public virtual void UpdatePhysics(Player player)
+		{
+
+		}
+
 		public void StartPrimaryAction(Player player)
 		{
 			primaryAttackTimer = MaxPrimaryTime;

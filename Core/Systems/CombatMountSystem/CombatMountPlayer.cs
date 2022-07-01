@@ -38,6 +38,8 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				activeMount.secondaryAbilityTimer--;
 				activeMount.SecondaryAction(activeMount.primaryAttackTimer, Player);
 			}
+
+			activeMount.UpdatePhysics(Player);
 		}
 
 		public void Dismount()
