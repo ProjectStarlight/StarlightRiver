@@ -10,7 +10,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
-	internal class CombatMountSystem : ModPlayer
+	internal class CombatMountPlayer : ModPlayer
 	{
 		public CombatMount activeMount;
 
@@ -24,19 +24,19 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			if (activeMount is null)
 				return;
 
-			if (activeMount.useCooldown > 0) activeMount.useCooldown --;
-			if (activeMount.secondaryCooldown > 0) activeMount.secondaryCooldown--;
+			if (activeMount.primaryCooldownTimer > 0) activeMount.primaryCooldownTimer --;
+			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer--;
 
-			if (activeMount.useTimer > 0)
+			if (activeMount.primaryAttackTimer > 0)
 			{
-				activeMount.useTimer--;
-				activeMount.PrimaryAction(activeMount.useTimer, Player);
+				activeMount.primaryAttackTimer--;
+				activeMount.PrimaryAction(activeMount.primaryAttackTimer, Player);
 			}
 
-			if (activeMount.secondaryTimer > 0)
+			if (activeMount.secondaryAbilityTimer > 0)
 			{
-				activeMount.secondaryTimer--;
-				activeMount.SecondaryAction(activeMount.useTimer, Player);
+				activeMount.secondaryAbilityTimer--;
+				activeMount.SecondaryAction(activeMount.primaryAttackTimer, Player);
 			}
 		}
 
@@ -47,13 +47,13 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		}
 	}
 
-	internal class CombatMountOpacityChanger : GlobalItem
+	internal class CombatMountGlobalItem : GlobalItem
 	{
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			var isValid = ((item.DamageType.Type == DamageClass.Summon.Type || item.DamageType.Type == DamageClass.SummonMeleeSpeed.Type) && !Main.LocalPlayer.controlSmart);
 
-			if (!Main.playerInventory && !isValid && Main.LocalPlayer.GetModPlayer<CombatMountSystem>().activeMount != null)
+			if (!Main.playerInventory && !isValid && Main.LocalPlayer.GetModPlayer<CombatMountPlayer>().activeMount != null)
 			{
 				var tex = Terraria.GameContent.TextureAssets.Item[item.type].Value;
 				spriteBatch.Draw(tex, position, frame, drawColor * 0.25f, 0, origin, scale, 0, 0);
@@ -65,7 +65,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool? CanAutoReuseItem(Item item, Player player)
 		{
-			var activeMount = player.GetModPlayer<CombatMountSystem>().activeMount;
+			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
 			if (activeMount != null)
 				return activeMount.autoReuse;
@@ -75,7 +75,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool AltFunctionUse(Item item, Player player)
 		{
-			var activeMount = player.GetModPlayer<CombatMountSystem>().activeMount;
+			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
 			if (activeMount != null)
 				return true;
@@ -87,14 +87,14 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		{
 			if (item == player.HeldItem)
 			{
-				var activeMount = player.GetModPlayer<CombatMountSystem>().activeMount;
+				var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
 				if (activeMount != null && ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart))
 				{
-					if (Main.mouseRight && activeMount.secondaryTimer == 0 && activeMount.secondaryCooldown <= 0)
+					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 						activeMount.StartSecondaryAction(player);
 
-					if (Main.mouseLeft && activeMount.useTimer == 0 && activeMount.useCooldown <= 0)
+					if (Main.mouseLeft && activeMount.primaryAttackTimer == 0 && activeMount.primaryCooldownTimer <= 0)
 						activeMount.StartPrimaryAction(player);
 
 					return false;
@@ -102,7 +102,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 				if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse(player)))
 				{
-					if (Main.mouseRight && activeMount.secondaryTimer == 0 && activeMount.secondaryCooldown <= 0)
+					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 					{
 						activeMount.StartSecondaryAction(player);
 						return false;

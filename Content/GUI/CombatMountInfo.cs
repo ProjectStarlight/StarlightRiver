@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.GUI
 {
     public class CombatMountInfo : SmartUIState
     {
-        CombatMountSystem ModPlayer => Main.LocalPlayer.GetModPlayer<CombatMountSystem>();
+        CombatMountPlayer ModPlayer => Main.LocalPlayer.GetModPlayer<CombatMountPlayer>();
 
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.Draw(tex, pos, Color.White);
             spriteBatch.Draw(icon1, pos + Vector2.One * 22, null, Color.White, 0, icon1.Size() / 2, 1, 0, 0);
 
-            var target = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, (int)(tex.Height * (ModPlayer.activeMount.useCooldown / (float)ModPlayer.activeMount.MaxActionCD)));
+            var target = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, (int)(tex.Height * (ModPlayer.activeMount.primaryCooldownTimer / (float)ModPlayer.activeMount.MaxPrimaryCooldown)));
             spriteBatch.Draw(tex, target, Color.Black * 0.5f);
 
             pos.X += 50;
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.GUI
             spriteBatch.Draw(tex, pos, Color.White);
             spriteBatch.Draw(icon2, pos + Vector2.One * 22, null, Color.White, 0, icon2.Size() / 2, 1, 0, 0);
 
-            target = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, (int)(tex.Height * (ModPlayer.activeMount.secondaryCooldown / (float)ModPlayer.activeMount.MaxSecondaryCD)));
+            target = new Rectangle((int)pos.X, (int)pos.Y, tex.Width, (int)(tex.Height * (ModPlayer.activeMount.secondaryCooldownTimer / (float)ModPlayer.activeMount.MaxSecondaryCooldown)));
             spriteBatch.Draw(tex, target, Color.Black * 0.5f);
         }
 

@@ -18,8 +18,8 @@ namespace StarlightRiver.Content.Items
 
 		public override void SetDefaults()
 		{
-			actionSpeedCoefficient = 20;
-			actionCooldownCoefficient = 40;
+			primarySpeedCoefficient = 20;
+			primaryCooldownCoefficient = 40;
 			secondaryCooldownCoefficient = 240;
 			secondarySpeedCoefficient = 30;
 			damageCoefficient = 100;
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items
 		{
 			for(int k = 0; k < 6; k++)
 			{
-				int check = (int)(k / 6f * MaxActionTime);
+				int check = (int)(k / 6f * MaxPrimaryTime);
 
 				if (timer == check)
 				{
@@ -113,27 +113,12 @@ namespace StarlightRiver.Content.Items
 		}
 	}
 
-	internal class ExampleCombatMountItem : ModItem
+	internal class ExampleCombatMountItem : CombatMountItem
 	{
+		public override int MountType => ModContent.MountType<ExampleCombatMountData>();
+
+		public override Type CombatMountType => typeof(ExampleCombatMount);
+
 		public override string Texture => AssetDirectory.Debug;
-
-		public override void SetDefaults()
-		{
-			Item.useTime = 20;
-			Item.useAnimation = 20;
-			Item.damage = 10;
-			Item.noMelee = true;
-			Item.DamageType = DamageClass.Summon;
-			Item.useStyle = Terraria.ID.ItemUseStyleID.Swing;
-			Item.mountType = ModContent.MountType<ExampleCombatMountData>();
-		}
-
-		public override bool? UseItem(Player player)
-		{
-			var mount = new ExampleCombatMount();
-			mount.MountUp(player);
-
-			return true;
-		}
 	}
 }
