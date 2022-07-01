@@ -10,8 +10,6 @@ namespace StarlightRiver.Prefixes.CombatMountPrefixes
 	{
 		public static List<int> combatMountPrefixTypes = new List<int>();
 
-		public CombatMountPrefix(string tooltip) : base(tooltip) { }
-
 		/// <summary>
 		/// Modify the mount's stats here. The other apply methods wont do anything to the mount itself.
 		/// </summary>

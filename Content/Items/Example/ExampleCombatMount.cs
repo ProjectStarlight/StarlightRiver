@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Example
 				player.velocity.X *= moveSpeedMultiplier;
 
 			if (!player.controlLeft && !player.controlRight)
-				player.velocity *= (1 - moveSpeedMultiplier * 0.1f);
+				player.velocity *= (1 - Math.Max(1, moveSpeedMultiplier) * 0.1f);
 		}
 
 		public override void OnStartPrimaryAction(Player player)

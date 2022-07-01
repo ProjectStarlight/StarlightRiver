@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core;
 using StarlightRiver.Prefixes;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -9,11 +10,13 @@ namespace StarlightRiver.Content.Prefixes.Accessory
     {
         private readonly float power;
         private readonly string name;
+        private readonly string tip;
 
-        internal DoTResistPrefix(float power, string name, string tip) : base(tip)
+        internal DoTResistPrefix(float power, string name, string tip)
         {
             this.power = power;
             this.name = name;
+            this.tip = tip;
         }
 
         public override bool CanRoll(Item Item) => Item.accessory;
@@ -27,6 +30,14 @@ namespace StarlightRiver.Content.Prefixes.Accessory
         public override void Update(Item Item, Player Player)
         {
             Player.GetModPlayer<DoTResistancePlayer>().DoTResist += power;
+        }
+
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+        {
+            TooltipLine newline = new TooltipLine(StarlightRiver.Instance, "DotResistTip", tip);
+            newline.IsModifier = true;
+
+            tooltips.Add(newline);
         }
     }
 
