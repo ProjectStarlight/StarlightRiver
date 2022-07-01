@@ -81,6 +81,19 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			player.GetModPlayer<CombatMountPlayer>().activeMount = this;
 		}
 
+		public void ResetStats()
+		{
+			primarySpeedMultiplier = 1;
+			secondaryCooldownSpeedMultiplier = 1;
+			moveSpeedMultiplier = 1;
+			damageCoefficient = 10;
+			primarySpeedCoefficient = 20;
+			secondarySpeedCoefficient = 20;
+			primaryCooldownCoefficient = 20;
+			secondaryCooldownCoefficient = 20;
+			autoReuse = false;
+		}
+
 		public virtual void SetDefaults()
 		{
 
@@ -186,6 +199,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool? UseItem(Player player) //Summon the mount on use
 		{
+			mount.ResetStats();
 			mount.SetDefaults();
 
 			var prefix = PrefixLoader.GetPrefix(Item.prefix);
