@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Items.Herbology.Materials;
 using System.Collections.Generic;
 using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Temple
@@ -36,7 +37,11 @@ namespace StarlightRiver.Tiles.Temple
             };
         }
 
-        public override void SafeSetDefaults() => QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+        public override void SafeSetDefaults() 
+        {
+            TileObjectData.newTile.DrawYOffset = 2;
+            QuickBlock.QuickSetFurniture(this, 2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151)); 
+        }
     }
 
     class TempleChestPlacer : QuickTileItem

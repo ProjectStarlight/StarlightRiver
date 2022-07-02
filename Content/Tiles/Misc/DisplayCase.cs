@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Misc
         public override void SetStaticDefaults()
         {
             TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<DisplayCaseEntity>().Hook_AfterPlacement, -1, 0, false);
-
+            TileObjectData.newTile.DrawYOffset = 2;
             QuickBlock.QuickSetFurniture(this, 2, 3, DustID.t_BorealWood, SoundID.Dig, false, new Color(255, 255, 150), false, false, "Relic Case");
         }
 
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.Misc
             if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
             {
                 var outlineTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Misc/DisplayCaseGlow").Value;
-                var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 3);
+                var outlinePos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(1, 5);
                 var outlineColor = Helpers.Helper.IndicatorColorProximity(150, 300, new Vector2(i, j) * 16 + Vector2.One * 16);
 
                 spriteBatch.Draw(outlineTex, outlinePos, null, outlineColor);
