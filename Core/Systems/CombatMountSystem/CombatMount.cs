@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// <summary>
 		/// Gets the total time a primary action should take after modifiers are applied.
 		/// </summary>
-		public int MaxPrimaryTime => (int)(primarySpeedCoefficient * primarySpeedMultiplier);
+		public int MaxPrimaryTime => (int)Math.Round(primarySpeedCoefficient * primarySpeedMultiplier);
 		/// <summary>
 		/// Gets the total time for a single primary action cycle. (time + cooldown)
 		/// </summary>
@@ -70,7 +70,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// <summary>
 		/// gets the total time between secondary action uses. (time + cooldown * multiplier)
 		/// </summary>
-		public int MaxSecondaryCooldown => (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier + secondarySpeedCoefficient);
+		public int MaxSecondaryCooldown => (int)Math.Round(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier + secondarySpeedCoefficient);
 
 		public virtual string PrimaryIconTexture => AssetDirectory.Debug;
 		public virtual string SecondaryIconTexture => AssetDirectory.Debug;
