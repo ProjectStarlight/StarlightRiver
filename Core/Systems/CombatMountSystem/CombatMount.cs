@@ -212,6 +212,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			mount.SetDefaults();
 
 			var prefix = PrefixLoader.GetPrefix(Item.prefix);
+
 			if (prefix is CombatMountPrefix)
 				(prefix as CombatMountPrefix).ApplyToMount(mount);
 

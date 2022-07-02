@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public int mountingTime;
 
-		public override void PreUpdateMovement()
+		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.
 		{
 			if (Player.mount is null || !Player.mount.Active)
 				Dismount();
