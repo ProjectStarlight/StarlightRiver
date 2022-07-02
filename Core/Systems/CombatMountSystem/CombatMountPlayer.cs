@@ -91,7 +91,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			{
 				var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
-				if (activeMount != null && ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart))
+				if (activeMount is null)
+					return true;
+
+				if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
 				{
 					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 						activeMount.StartSecondaryAction(player);
