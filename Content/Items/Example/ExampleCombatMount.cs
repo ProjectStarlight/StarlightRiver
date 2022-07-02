@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Example
 			secondaryCooldownCoefficient = 240;
 			secondarySpeedCoefficient = 30;
 			damageCoefficient = 100;
-			autoReuse = true;
+			autoReuse = false;
 		}
 
 		public override void PostUpdate(Player player)
