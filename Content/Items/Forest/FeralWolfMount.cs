@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Items.Forest
 {
 	internal class FeralWolfMount : CombatMount
 	{
+		List<Projectile> buffedMinions = new List<Projectile>();
+
 		public override string PrimaryIconTexture => "StarlightRiver/Assets/Items/Example/RocketAbility";
 		public override string SecondaryIconTexture => "StarlightRiver/Assets/Items/Example/RingAbility";
 
@@ -47,6 +49,7 @@ namespace StarlightRiver.Content.Items.Forest
 			foreach (Projectile proj in Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.minion))
 			{
 				proj.extraUpdates++;
+				buffedMinions.Add(proj);
 			}
 		}
 
@@ -54,10 +57,12 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			if (timer == 1)
 			{
-				foreach (Projectile proj in Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.minion))
+				foreach (Projectile proj in buffedMinions)
 				{
 					proj.extraUpdates--;
 				}
+
+				buffedMinions.Clear();
 			}
 		}
 	}
