@@ -36,7 +36,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			if (activeMount.secondaryAbilityTimer > 0)
 			{
 				activeMount.secondaryAbilityTimer--;
-				activeMount.SecondaryAction(activeMount.primaryAttackTimer, Player);
+				activeMount.SecondaryAction(activeMount.secondaryAbilityTimer, Player);
 			}
 
 			activeMount.UpdatePhysics(Player);
