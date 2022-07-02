@@ -25,7 +25,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				return;
 
 			if (activeMount.primaryCooldownTimer > 0) activeMount.primaryCooldownTimer --;
-			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer--;
+			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer --;
 
 			if (activeMount.primaryAttackTimer > 0)
 			{
@@ -39,7 +39,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				activeMount.SecondaryAction(activeMount.secondaryAbilityTimer, Player);
 			}
 
-			activeMount.UpdatePhysics(Player);
+			activeMount.PostUpdate(Player);
 		}
 
 		public void Dismount()

@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Example
 			autoReuse = true;
 		}
 
-		public override void UpdatePhysics(Player player)
+		public override void PostUpdate(Player player)
 		{
 			if (Math.Abs(player.velocity.X) < 11 * moveSpeedMultiplier)
 				player.velocity.X *= moveSpeedMultiplier;
@@ -53,6 +53,8 @@ namespace StarlightRiver.Content.Items.Example
 					Helpers.Helper.PlayPitched("Guns/FlareFire", 1, 1, player.Center);
 				}
 			}
+
+			player.statDefense += 200;
 		}
 
 		public override void OnStartSecondaryAction(Player player)

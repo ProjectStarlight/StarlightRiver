@@ -100,10 +100,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		}
 
 		/// <summary>
-		/// Updated player physics. Can be used for custom physics and applying movement speed stat properly
+		/// Update function called after both primary and secondary actions run. Can be used for custom physics and applying movement speed stat properly, along with passive effects and stat changes.
 		/// </summary>
 		/// <param name="player"></param>
-		public virtual void UpdatePhysics(Player player)
+		public virtual void PostUpdate(Player player)
 		{
 
 		}
