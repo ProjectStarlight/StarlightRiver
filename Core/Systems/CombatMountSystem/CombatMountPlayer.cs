@@ -18,22 +18,20 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override void Load()
 		{
-			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks2;
+			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks;
 		}
 
-		private void TriggerMountAttacks2(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
+		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
 		{
 			var activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
+			var sItem = self.HeldItem;
 
 			if (activeMount is null || self.CCed || !self.controlUseItem || !self.releaseUseItem || self.itemAnimation != 0)
 			{
 				orig(self, i);
 				return;
 			}
-
-			var sItem = self.HeldItem;
-			
-
+					
 			if ((sItem.DamageType.Type != DamageClass.Summon.Type && sItem.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || self.controlSmart)
 			{
 				self.releaseUseItem = activeMount.autoReuse;
@@ -61,7 +59,6 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			}
 
 			orig(self, i);
-			return;
 		}
 
 		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.
