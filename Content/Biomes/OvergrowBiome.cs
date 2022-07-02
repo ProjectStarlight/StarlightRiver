@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Biomes
 	{
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Overgrow");
 
-		public override string MapBackground => AssetDirectory.MapBackgrounds + "GlassMap";
+		public override string MapBackground => AssetDirectory.MapBackgrounds + "OvergrowMap";
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 
