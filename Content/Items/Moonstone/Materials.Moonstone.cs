@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe.Register();
 
             //adds back neccisary vanilla recipies
-            Recipe recipe2 = Mod.CreateRecipe(ItemID.DrillContainmentUnit);
+            Recipe recipe2 = Recipe.Create(ItemID.DrillContainmentUnit);
             recipe2.AddIngredient(ItemID.LunarBar, 40);
             recipe2.AddIngredient(ItemID.ChlorophyteBar, 40);
             recipe2.AddIngredient(ItemID.ShroomiteBar, 40);

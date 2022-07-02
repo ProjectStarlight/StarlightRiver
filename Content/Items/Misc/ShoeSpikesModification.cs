@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            Recipe recipe = Mod.CreateRecipe(ItemID.ShoeSpikes);
+            Recipe recipe = Recipe.Create(ItemID.ShoeSpikes);
 
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddRecipeGroup(RecipeGroupID.IronBar, 10);
