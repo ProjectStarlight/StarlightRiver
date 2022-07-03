@@ -5,13 +5,13 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class BrusselSprouts : Ingredient
     {
-        public BrusselSprouts() : base("+1 defense", 240, IngredientType.Side) { }
+        public BrusselSprouts() : base("+5% max health", 240, IngredientType.Side) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.statDefense += (int)(1 * multiplier);
+            Player.statLifeMax2 += (int)(Player.statLifeMax2 * (0.05f * multiplier));
         }
     }
 }
