@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria.Graphics.Effects;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
@@ -20,17 +21,17 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SetDefaults()
 		{
-			primarySpeedCoefficient = 20;
+			primarySpeedCoefficient = 14;
 			primaryCooldownCoefficient = 20;
 			secondaryCooldownCoefficient = 600;
-			secondarySpeedCoefficient = 30;
+			secondarySpeedCoefficient = 120;
 			damageCoefficient = 16;
 			autoReuse = false;
 		}
 
-		public override void UpdatePhysics(Player player)
+		public override void PostUpdate(Player player)
 		{
-
+			
 		}
 
 		public override void OnStartPrimaryAction(Player player)
@@ -55,6 +56,10 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SecondaryAction(int timer, Player player)
 		{
+			var animTime = (float)secondarySpeedCoefficient / 4f;
+			var time = Math.Max(0, (timer - animTime * 3) / (animTime));
+			Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
+
 			if (timer == 1)
 			{
 				foreach (Projectile proj in buffedMinions)
@@ -63,7 +68,7 @@ namespace StarlightRiver.Content.Items.Forest
 				}
 
 				buffedMinions.Clear();
-			}
+			}			
 		}
 	}
 
