@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// <summary>
 		/// Gets the total time a primary action should take after modifiers are applied.
 		/// </summary>
-		public int MaxPrimaryTime => (int)(primarySpeedCoefficient * primarySpeedMultiplier);
+		public int MaxPrimaryTime => (int)Math.Round(primarySpeedCoefficient * primarySpeedMultiplier);
 		/// <summary>
 		/// Gets the total time for a single primary action cycle. (time + cooldown)
 		/// </summary>
@@ -70,7 +70,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		/// <summary>
 		/// gets the total time between secondary action uses. (time + cooldown * multiplier)
 		/// </summary>
-		public int MaxSecondaryCooldown => (int)(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier + secondarySpeedCoefficient);
+		public int MaxSecondaryCooldown => (int)Math.Round(secondaryCooldownCoefficient * secondaryCooldownSpeedMultiplier + secondarySpeedCoefficient);
 
 		public virtual string PrimaryIconTexture => AssetDirectory.Debug;
 		public virtual string SecondaryIconTexture => AssetDirectory.Debug;
@@ -100,10 +100,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		}
 
 		/// <summary>
-		/// Updated player physics. Can be used for custom physics and applying movement speed stat properly
+		/// Update function called after both primary and secondary actions run. Can be used for custom physics and applying movement speed stat properly, along with passive effects and stat changes.
 		/// </summary>
 		/// <param name="player"></param>
-		public virtual void UpdatePhysics(Player player)
+		public virtual void PostUpdate(Player player)
 		{
 
 		}
@@ -212,6 +212,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			mount.SetDefaults();
 
 			var prefix = PrefixLoader.GetPrefix(Item.prefix);
+
 			if (prefix is CombatMountPrefix)
 				(prefix as CombatMountPrefix).ApplyToMount(mount);
 

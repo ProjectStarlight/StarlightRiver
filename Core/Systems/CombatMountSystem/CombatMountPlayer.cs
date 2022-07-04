@@ -16,7 +16,52 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public int mountingTime;
 
-		public override void PreUpdateMovement()
+		public override void Load()
+		{
+			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks;
+		}
+
+		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
+		{
+			var activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
+			var sItem = self.HeldItem;
+
+			if (activeMount is null || self.CCed || !self.controlUseItem || !self.releaseUseItem || self.itemAnimation != 0)
+			{
+				orig(self, i);
+				return;
+			}
+					
+			if ((sItem.DamageType.Type != DamageClass.Summon.Type && sItem.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || self.controlSmart)
+			{
+				self.releaseUseItem = activeMount.autoReuse;
+				self.controlUseItem = false;
+
+				if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
+					activeMount.StartSecondaryAction(self);
+
+				if (Main.mouseLeft && activeMount.primaryAttackTimer == 0 && activeMount.primaryCooldownTimer <= 0)
+					activeMount.StartPrimaryAction(self);
+
+				return;
+			}
+
+			if (sItem.ModItem is null || (sItem.ModItem != null && !sItem.ModItem.AltFunctionUse((Player)self)))
+			{
+				if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
+				{
+					self.releaseUseItem = activeMount.autoReuse;
+					self.controlUseItem = false;
+
+					activeMount.StartSecondaryAction((Player)self);
+					return;
+				}
+			}
+
+			orig(self, i);
+		}
+
+		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.
 		{
 			if (Player.mount is null || !Player.mount.Active)
 				Dismount();
@@ -25,7 +70,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				return;
 
 			if (activeMount.primaryCooldownTimer > 0) activeMount.primaryCooldownTimer --;
-			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer--;
+			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer --;
 
 			if (activeMount.primaryAttackTimer > 0)
 			{
@@ -39,7 +84,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				activeMount.SecondaryAction(activeMount.secondaryAbilityTimer, Player);
 			}
 
-			activeMount.UpdatePhysics(Player);
+			activeMount.PostUpdate(Player);
 		}
 
 		public void Dismount()
@@ -65,16 +110,6 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			return true;
 		}
 
-		public override bool? CanAutoReuseItem(Item item, Player player)
-		{
-			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
-
-			if (activeMount != null)
-				return activeMount.autoReuse;
-
-			return null;
-		}
-
 		public override bool AltFunctionUse(Item item, Player player)
 		{
 			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
@@ -87,29 +122,15 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool CanUseItem(Item item, Player player)
 		{
-			if (item == player.HeldItem)
+			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
+
+			if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
+				return false;
+
+			if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse((Player)player)))
 			{
-				var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
-
-				if (activeMount != null && ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart))
-				{
-					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
-						activeMount.StartSecondaryAction(player);
-
-					if (Main.mouseLeft && activeMount.primaryAttackTimer == 0 && activeMount.primaryCooldownTimer <= 0)
-						activeMount.StartPrimaryAction(player);
-
+				if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 					return false;
-				}
-
-				if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse(player)))
-				{
-					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
-					{
-						activeMount.StartSecondaryAction(player);
-						return false;
-					}
-				}
 			}
 
 			return true;
