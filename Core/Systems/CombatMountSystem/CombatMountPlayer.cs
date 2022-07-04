@@ -69,6 +69,9 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			if (activeMount is null)
 				return;
 
+			if (Player.HeldItem.IsAir && Main.mouseRight && !Player.releaseUseItem && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0) //special case for shooting while holding air
+				activeMount.StartSecondaryAction(Player);
+
 			if (activeMount.primaryCooldownTimer > 0) activeMount.primaryCooldownTimer --;
 			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer --;
 
@@ -124,13 +127,16 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 		{
 			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
-			if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
-				return false;
-
-			if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse((Player)player)))
+			if (activeMount != null)
 			{
-				if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
+				if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
 					return false;
+
+				if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse((Player)player)))
+				{
+					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
+						return false;
+				}
 			}
 
 			return true;
