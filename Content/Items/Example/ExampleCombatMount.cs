@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Example
 		{
 			primarySpeedCoefficient = 20;
 			primaryCooldownCoefficient = 40;
-			secondaryCooldownCoefficient = 240;
+			secondaryCooldownCoefficient = 30;
 			secondarySpeedCoefficient = 30;
 			damageCoefficient = 100;
 			autoReuse = false;
