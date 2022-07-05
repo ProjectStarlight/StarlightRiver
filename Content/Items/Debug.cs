@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Debug Stick");
-            Tooltip.SetDefault("Dont use this if you're not me.");
+            Tooltip.SetDefault("Dont use this if you're not me.\nGrants a bunch of maximum barrier when you are swag\nYou have no stamina without good drip\nYou probably play cornhole");
         }
 
         public override void SetDefaults()

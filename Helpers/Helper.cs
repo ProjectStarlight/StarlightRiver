@@ -317,7 +317,7 @@ namespace StarlightRiver.Helpers
                     line = str;
                 }
             }
-            return output;
+            return output.Substring(1);
         }
 
 		public static List<T> RandomizeList<T>(List<T> input)
