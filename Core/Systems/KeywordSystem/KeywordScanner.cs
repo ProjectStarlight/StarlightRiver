@@ -67,13 +67,13 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				else
 				{
 					var widest = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
-					width = ChatManager.GetStringSize(font, widest.keyword + "{}: " + widest.message, Vector2.One).X;
+					width = ChatManager.GetStringSize(font, widest.message, Vector2.One).X + 20;
 
 					pos = new Vector2(x, y) - new Vector2(width + 30, 0);
 				}
 
 				var widest2 = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
-				width = ChatManager.GetStringSize(font, widest2.keyword + "{}: " + widest2.message, Vector2.One).X;
+				width = ChatManager.GetStringSize(font, widest2.message, Vector2.One).X + 20;
 
 				foreach (Keyword keyword in thisKeywords)
 				{
