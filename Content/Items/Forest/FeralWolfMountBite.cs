@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
@@ -30,6 +31,9 @@ namespace StarlightRiver.Content.Items.Forest
 			Projectile.friendly = true;
 			Projectile.penetrate = -1;
 			Projectile.ArmorPenetration = 10;
+			Projectile.width = 90;
+			Projectile.height = 60;
+			Projectile.tileCollide = false;
 		}
 
 		public override void AI()
@@ -38,23 +42,23 @@ namespace StarlightRiver.Content.Items.Forest
 				Projectile.timeLeft = (int)Projectile.ai[0];
 
 			var owner = Main.player[Projectile.owner];
-			Projectile.Center = owner.MountedCenter + Vector2.UnitX.RotatedBy(Projectile.rotation) * 50;
+			Projectile.Center = owner.MountedCenter + Vector2.UnitX.RotatedBy(Projectile.rotation) * 30 + Vector2.UnitY * 10;
 
 			if (Projectile.timeLeft == (int)(Projectile.ai[0] / 2))
 			{
 				for (int k = 0; k < 50; k++)
 					Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Blood, Vector2.UnitX.RotatedBy(Projectile.rotation).RotatedByRandom(1f) * Main.rand.NextFloat(5));
-			}	
-		}
+			}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			return Helpers.Helper.CheckConicalCollision(Projectile.Center, 100, Projectile.rotation % 6.28f, 1.57f, targetHitbox);
+			Projectile.velocity = Vector2.UnitX.RotatedBy(Projectile.rotation) * 0.01f;
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			target.AddBuff(Terraria.ID.BuffID.Bleeding, 60);
+			target.AddBuff(ModContent.BuffType<WolfBleeding>(), 120);
+
+			for (int k = 0; k < 50; k++)
+				Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Blood, Vector2.UnitX.RotatedBy(Projectile.rotation).RotatedByRandom(1f) * Main.rand.NextFloat(15));
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -79,6 +83,30 @@ namespace StarlightRiver.Content.Items.Forest
 			Main.EntitySpriteDraw(botTex, Projectile.Center - Main.screenPosition + Vector2.UnitY * 16, null, glowColor, rotOff, new Vector2(topTex.Width * direction2, botTex.Height), 1, effects, 0);
 
 			return false;
+		}
+	}
+
+	internal class WolfBleeding : SmartBuff
+	{
+		public override string Texture => AssetDirectory.Debug;
+
+		public WolfBleeding() : base("Gored", "Gored by a wolf", true, false) { }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+			npc.lifeRegen -= 20;
+
+			for (int k = 0; k < 2; k++)
+				Dust.NewDust(npc.position, npc.width, npc.height, Terraria.ID.DustID.Blood);
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			player.lifeRegen -= 20;
+			player.lifeRegenTime = 0;
+
+			for (int k = 0; k < 2; k++)
+				Dust.NewDust(player.position, player.width, player.height, Terraria.ID.DustID.Blood);
 		}
 	}
 }

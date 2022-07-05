@@ -218,6 +218,9 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 			mount.MountUp(player);
 
+			player.GetModPlayer<CombatMountPlayer>().mountingTime = 30;
+			player.GetModPlayer<CombatMountPlayer>().startPoint = player.Center;
+
 			return true;
 		}
 	}

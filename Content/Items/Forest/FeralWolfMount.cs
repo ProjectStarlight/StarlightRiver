@@ -9,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -22,7 +24,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetDefaults()
 		{
 			primarySpeedCoefficient = 14;
-			primaryCooldownCoefficient = 20;
+			primaryCooldownCoefficient = 12;
 			secondaryCooldownCoefficient = 600;
 			secondarySpeedCoefficient = 120;
 			damageCoefficient = 16;
@@ -31,12 +33,22 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void PostUpdate(Player player)
 		{
-			
+			var mp = player.GetModPlayer<CombatMountPlayer>();
+			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+
+			if (progress < 1)
+			{
+				for (int k = 0; k < 2; k++)
+				{
+					var pos = player.Center + new Vector2(0, 52 - (int)(progress * 40));
+					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-40, 40), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, new Color(255, 255, 200), 0.5f);
+				}
+			}
 		}
 
 		public override void OnStartPrimaryAction(Player player)
 		{
-			int i = Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<FeralWolfMountBite>(), damageCoefficient, 0, player.whoAmI, MaxPrimaryTime);
+			int i = Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, Vector2.Zero, ModContent.ProjectileType<FeralWolfMountBite>(), damageCoefficient, 10, player.whoAmI, MaxPrimaryTime);
 			Main.projectile[i].rotation = player.direction == 1 ? 0 : 3.14f;
 		}
 
@@ -56,34 +68,69 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SecondaryAction(int timer, Player player)
 		{
-			var animTime = (float)secondarySpeedCoefficient / 4f;
+			var animTime = secondarySpeedCoefficient / 4f;
 			var time = Math.Max(0, (timer - animTime * 3) / (animTime));
-			Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
+
+			if (time > 0)
+				Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
+			else
+				Filters.Scene.Deactivate("Shockwave");
 
 			if (timer == 1)
 			{
 				foreach (Projectile proj in buffedMinions)
 				{
 					proj.extraUpdates--;
+
+					if (proj.extraUpdates < 0)
+						proj.extraUpdates = 0;
 				}
 
 				buffedMinions.Clear();
-			}			
+			}
 		}
 	}
 
 	internal class FeralWolfMountData : ModMount
 	{
-		public override string Texture => "StarlightRiver/Assets/Items/Example/ExampleCombatMount";
+		public override string Texture => AssetDirectory.ForestItem + "Wolf";
+
+		public override void SetMount(Player player, ref bool skipDust)
+		{
+			skipDust = true;
+		}
+
+		public override void Dismount(Player player, ref bool skipDust)
+		{
+			skipDust = true;
+		}
+
+		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
+		{
+			var tex = ModContent.Request<Texture2D>(Texture).Value;
+			var mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
+			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+
+			var pos = drawPlayer.Center - Main.screenPosition + new Vector2(0, 52 - (int)(progress * 40));
+			var source = new Rectangle(0, 44 - (int)(progress * 44), 62, (int)(progress * 44));
+			var source2 = new Rectangle(0, (int)(progress * 44), 62, 2);
+			
+			playerDrawData.Add(new DrawData(tex, pos, source, drawColor, drawPlayer.fullRotation, new Vector2(31, 22), 1, spriteEffects, 0));
+
+			if (progress < 1)
+				playerDrawData.Add(new DrawData(tex, pos, source2, Color.White, drawPlayer.fullRotation, new Vector2(31, 22), 1, spriteEffects, 0));
+
+			return false;
+		}
 
 		public override void SetStaticDefaults()
 		{
-			MountData.jumpHeight = 5;
-			MountData.acceleration = 0.14f;
-			MountData.jumpSpeed = 8f; 
+			MountData.jumpHeight = 6;
+			MountData.acceleration = 0.1f;
+			MountData.jumpSpeed = 10f; 
 			MountData.blockExtraJumps = false; 
-			MountData.heightBoost = 20; 
-			MountData.runSpeed = 8f; 
+			MountData.heightBoost = 14; 
+			MountData.runSpeed = 6f; 
 
 			// Frame data and player offsets
 			MountData.totalFrames = 1;
