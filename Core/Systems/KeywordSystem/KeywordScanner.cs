@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using Terraria.UI.Chat;
 using StarlightRiver.Configs;
+using System.IO;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
 {
@@ -38,10 +39,18 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 		{
 			var font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			keywords.Add(new Keyword("Barrier", Helpers.Helper.WrapString("Provides damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. your barrier recovers after a brief period of not taking damage.", 200, font, 1), new Color(100, 255, 255)));
-			keywords.Add(new Keyword("Stamina", Helpers.Helper.WrapString("Allows you to use abilities. Each ability has a set stamina cost which may be modified via infusions.", 200, font, 1), new Color(255, 200, 155)));
-			keywords.Add(new Keyword("Cursed", Helpers.Helper.WrapString("This item comes with a crippling downside, and cannot be removed normally once equipped. A scroll of undoing can destroy the item, removing its effects and freeing the slot but deleting it forever.", 200, font, 1), new Color(200, 100, 255)));
-			keywords.Add(new Keyword("Cornhole", Helpers.Helper.WrapString("The most powerful minigame in all of Terraria.", 200, font, 1), new Color(255, 255, 155)));
+			var stream = Mod.GetFileStream("Keywords.txt");
+
+			StreamReader reader = new StreamReader(stream);
+			var lines = reader.ReadToEnd().Split('\n');
+
+			stream.Close();
+
+			foreach(string line in lines)
+			{
+				var split = line.Split(" | ");
+				keywords.Add(new Keyword(split[0], Helpers.Helper.WrapString(split[1], 200, font, 1), new Color(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]))));
+			}
 		}
 
 		public override void Unload()
