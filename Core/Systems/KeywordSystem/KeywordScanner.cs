@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
 using Terraria.UI.Chat;
+using StarlightRiver.Configs;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
 {
@@ -48,6 +49,23 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			keywords = null;
 		}
 
+		private string BuildKeyword(Keyword word)
+		{
+			var config = ModContent.GetInstance<GUIConfig>();
+
+			string color;
+
+			if (config.KeywordStyle == KeywordStyle.Colors || config.KeywordStyle == KeywordStyle.Both)
+				color = word.colorHex;
+			else
+				color = "AAAAAA";
+
+			if(config.KeywordStyle == KeywordStyle.Brackets || config.KeywordStyle == KeywordStyle.Both)
+				return "[c/" + color + ":{" + word.keyword + "}]";
+			else
+				return "[c/" + color + ":" + word.keyword + "]";
+		}
+
 		public override bool PreDrawTooltip(Item item, ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
 		{
 			if (Main.LocalPlayer.controlUp && thisKeywords.Count > 0)
@@ -85,7 +103,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 				foreach (Keyword keyword in thisKeywords)
 				{
-					Utils.DrawBorderString(Main.spriteBatch, "[c/" + keyword.colorHex + ":{" + keyword.keyword + "}]" + ":\n[c/AAAAAA: " + keyword.message.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White);
+					Utils.DrawBorderString(Main.spriteBatch, BuildKeyword(keyword) + ":\n[c/AAAAAA: " + keyword.message.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White);
 					pos.Y += ChatManager.GetStringSize(font, "{Dummy}\n" + keyword.message, Vector2.One).Y + 16;
 				}
 			}
@@ -131,9 +149,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 					if(!thisKeywords.Contains(keyword))
 						thisKeywords.Add(keyword);
 
-					word = char.ToUpper(word[0]) + word.Substring(1);
-
-					strings[k] = "[c/" + keyword.colorHex + ":{" + word + "}]";
+					strings[k] = BuildKeyword(keyword);
 				}
 			}
 
