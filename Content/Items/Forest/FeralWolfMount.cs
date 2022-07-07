@@ -40,8 +40,8 @@ namespace StarlightRiver.Content.Items.Forest
 			{
 				for (int k = 0; k < 2; k++)
 				{
-					var pos = player.Center + new Vector2(0, 52 - (int)(progress * 40));
-					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-40, 40), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, new Color(255, 255, 200), 0.5f);
+					var pos = player.Center + new Vector2(0, 40 - (int)(progress * 40));
+					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-20, 20), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, new Color(255, 255, 200), 0.5f);
 				}
 			}
 		}
@@ -108,17 +108,21 @@ namespace StarlightRiver.Content.Items.Forest
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
 			var tex = ModContent.Request<Texture2D>(Texture).Value;
+			var tex2 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
 			var mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
 			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
 			var pos = drawPlayer.Center - Main.screenPosition + new Vector2(0, 52 - (int)(progress * 40));
-			var source = new Rectangle(0, 44 - (int)(progress * 44), 62, (int)(progress * 44));
-			var source2 = new Rectangle(0, (int)(progress * 44), 62, 2);
-			
+			var source = new Rectangle(0, 40 - (int)(progress * 40), 60, (int)(progress * 40));
+			var source2 = new Rectangle(0, 40 - (int)(progress * 40), 60, 2);
+
+			if (mp.mountingTime <= 0)
+				pos.Y += drawPlayer.gfxOffY;
+
 			playerDrawData.Add(new DrawData(tex, pos, source, drawColor, drawPlayer.fullRotation, new Vector2(31, 22), 1, spriteEffects, 0));
 
 			if (progress < 1)
-				playerDrawData.Add(new DrawData(tex, pos, source2, Color.White, drawPlayer.fullRotation, new Vector2(31, 22), 1, spriteEffects, 0));
+				playerDrawData.Add(new DrawData(tex2, pos, source2, Color.White, drawPlayer.fullRotation, new Vector2(31, 22), 1, spriteEffects, 0));
 
 			return false;
 		}
