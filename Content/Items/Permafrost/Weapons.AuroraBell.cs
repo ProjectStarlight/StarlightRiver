@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         public override void Load()
         {
-            if (Main.netMode != NetmodeID.Server)
+            if (!Main.dedServ)
             {
                 Ref<Effect> screenRef = new Ref<Effect>(Mod.Assets.Request<Effect>("Effects/AuroraBellPulse").Value); 
                 Filters.Scene["AuroraBellPulse"] = new Filter(new ScreenShaderData(screenRef, "MainPS"), EffectPriority.VeryHigh);
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void PostUpdateProjectiles()
         {
-            if (Main.gameMenu)
+            if (Main.gameMenu || Main.dedServ)
                 return;
 
             int projectilesFound = 0;
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["intensity"].SetValue(intensity);
             Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["numberOfBells"].SetValue(numberOfBells);
 
-            if (Main.netMode != NetmodeID.Server && !Filters.Scene["AuroraBellPulse"].IsActive())
+            if (!Filters.Scene["AuroraBellPulse"].IsActive())
             {
                 Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.White.ToVector3()).UseOpacity(0.0001f);
             }

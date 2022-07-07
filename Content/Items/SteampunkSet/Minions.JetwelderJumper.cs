@@ -213,6 +213,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         public override void AI()
         {
             Projectile.velocity.Y += 0.25f;
+
+            if (Main.dedServ)
+                return;
+
             Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
             Projectile.frameCounter++;
@@ -226,6 +230,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
             ManageCaches();
             ManageTrail();
+            
         }
 
         public override bool PreDraw(ref Color lightColor)

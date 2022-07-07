@@ -69,6 +69,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			if (activeMount is null)
 				return;
 
+			
 			if (Player.HeldItem.IsAir && Main.mouseRight && !Player.releaseUseItem && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0) //special case for shooting while holding air
 				activeMount.StartSecondaryAction(Player);
 
@@ -129,6 +130,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 			if (activeMount != null)
 			{
+				Main.NewText(player.whoAmI);
 				if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
 					return false;
 
