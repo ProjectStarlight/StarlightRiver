@@ -1,19 +1,18 @@
-﻿using StarlightRiver.Core;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Butter : Ingredient
+	internal class ChocolateGlaze : Ingredient
     {
-        public Butter() : base("Increased life regen speed", 300, IngredientType.Side) { }
+        public ChocolateGlaze() : base("Food buffs are 15% less effective", 5100, IngredientType.Seasoning) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.lifeRegen += 1;
+            Player.GetModPlayer<FoodBuffHandler>().Multiplier -= 0.15f;
         }
     }
 }

@@ -5,15 +5,15 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Butter : Ingredient
+    internal class DicedMushrooms : Ingredient
     {
-        public Butter() : base("Increased life regen speed", 300, IngredientType.Side) { }
+        public DicedMushrooms() : base("+20 maximum life", 420, IngredientType.Side) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.lifeRegen += 1;
+            Player.statLifeMax2 += 20;
         }
     }
 }

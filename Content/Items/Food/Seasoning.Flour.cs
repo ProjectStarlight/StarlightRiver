@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void BuffEffects(Player Player, float multiplier)
         {
-            int interval = (int)(60 / multiplier);//(amount-per-second * multiplier)
+            int interval = (int)(60 / (multiplier));//(amount-per-second * multiplier)
 
             if (Player.GetModPlayer<StarlightPlayer>().Timer % interval == 0)
                 Player.statLife++;
