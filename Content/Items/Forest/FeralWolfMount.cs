@@ -18,8 +18,8 @@ namespace StarlightRiver.Content.Items.Forest
 	{
 		List<Projectile> buffedMinions = new List<Projectile>();
 
-		public override string PrimaryIconTexture => "StarlightRiver/Assets/Items/Example/RocketAbility";
-		public override string SecondaryIconTexture => "StarlightRiver/Assets/Items/Example/RingAbility";
+		public override string PrimaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountPrimary";
+		public override string SecondaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountSecondary";
 
 		public override void SetDefaults()
 		{
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 	internal class FeralWolfMountData : ModMount
 	{
-		public override string Texture => AssetDirectory.ForestItem + "Wolf";
+		public override string Texture => AssetDirectory.ForestItem + "FeralWolfMount";
 
 		public override void SetMount(Player player, ref bool skipDust)
 		{
@@ -179,7 +179,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override Type CombatMountType => typeof(FeralWolfMount);
 
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.ForestItem + Name;
 
 		public override void SetStaticDefaults()
 		{
