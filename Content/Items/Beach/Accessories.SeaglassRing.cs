@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Beach
 			if (Main.rand.Next(20) == 0)
 				Dust.NewDust(new Vector2(i, j) * 16, 16, 16, 15, 0, 0, 0, default, 0.5f);
 
-			if (Main.rand.Next(150) == 0)
+			if (Main.rand.Next(40) == 0)
 			{
 				Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 				if (Main.rand.NextBool())
