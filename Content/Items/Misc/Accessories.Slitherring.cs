@@ -193,12 +193,9 @@ namespace StarlightRiver.Content.Items.Misc
         {
             Color minLight = lightColor;
             Color minColor = new Color(10, 25, 33);
-            if (minLight.R < minColor.R)
-                minLight.R = minColor.R;
-            if (minLight.G < minColor.G)
-                minLight.G = minColor.G;
-            if (minLight.B < minColor.B)
-                minLight.B = minColor.B;
+            if (minLight.R < minColor.R) minLight.R = minColor.R;
+            if (minLight.G < minColor.G) minLight.G = minColor.G;
+            if (minLight.B < minColor.B) minLight.B = minColor.B;
             return minLight;
         }
 
