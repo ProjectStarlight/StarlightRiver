@@ -1,0 +1,688 @@
+Mods :
+{
+	StarlightRiver : 
+	{
+		ItemTooltip : 
+		{
+			BasicInfusion : 
+				'''
+				La Tabula Rasa
+				Can be imprinted with challenges at an infusion station
+				Complete challenges to transform into an infusion
+				New infusions become available as you progress
+				'''
+			CauldronItem : Alchemic Cauldron
+			MixingStick : 
+				'''
+				Mixing Stick
+				Use this to finalize alchemy recipes to craft them.
+				'''
+			DebugStick : Death
+			AstrofloraBow : TBA
+			VitricBossBarrierDye : 
+				'''
+				Causes barrier effect to mimic the shield of the Shattered Sentinel
+				Equipable
+				Vanity Item
+				'''
+			SeaglassRing : TODO
+			ReactivePlating : 
+				'''
+				Gain brief damage resistance after taking several hits
+				'The shielding activates, but only after... repeated triggers.'
+				'''
+			ReactivePlatingHelper : TODO
+			SupplyBeacon : 
+				'''
+				Taking over 50 damage summons a supply drop 
+				Stand near the supply drop to buff either damage, regeneration, or defense 
+				10 second cooldown
+				'''
+			BreacherHead : up to 20% ranged critical strike damage based on speed
+			FlareBreacher : Fires explosive flares that embed in enemies, blasting shrapnel through and behind them
+			Scrapshot : 
+				'''
+				Right click to hook your enemies and pull closer
+				Fire while hooked to reduce spread and go flying
+				'''
+			Bottle : A bottle made of thick vitric glass
+			AquaSapphire : 
+				'''
+				Barrier negates 5% more damage 
+				+10 Barrier
+				'''
+			StarlightPendant : 
+				'''
+				Barrier boosts mana regen by 1% per point of currently active barrier 
+				Consuming mana boosts barrier regen by 1% per 4 points of mana consumed in the past 5 seconds 
+				-10 barrier
+				'''
+			InertStaff : ‘This broken artifact still holds some latent astral energy’
+			Cloudstrike : 
+				'''
+				Accumulate electrical charge while not firing
+				Damage and range of your next shot increases with charge
+				'Meet this storm of sound and fury, till thunder-clashes fade to silence'
+				'''
+			CloudstrikeCircleDust : TODO
+			SkullBuster : 
+				'''
+				Right click to throw 4 skullbombs 
+				Release right click to shoot them all in quick succession
+				'''
+			ReplicantCells : TODO
+			Dough : TODO
+			EaterSteak : TODO
+			FaceSteak : TODO
+			Gelatine : TODO
+			MahoganyRoot : TODO
+			Rabbit : TODO
+			Steak : TODO
+			Toast : TODO
+			Meal : Rich food that provides these buffs:
+			BlackPepper : TODO
+			Dressing : TODO
+			SeaSalt : TODO
+			Sugar : TODO
+			TableSalt : TODO
+			Vinegar : TODO
+			WhippedCream : TODO
+			Butter : TODO
+			Carrot : TODO
+			Cherry : TODO
+			GelBerry : TODO
+			Greens : TODO
+			HealthExtract : TODO
+			HoneySyrup : TODO
+			IvySalad : TODO
+			Lettuce : TODO
+			ManaExtract : TODO
+			Milk : TODO
+			StarlightWater : TODO
+			AcornSprout : TODO
+			DustyAmulet : TODO
+			OldWhetstone : TODO
+			Trowel : 
+				'''
+				Extends blocks in a straight line extremely quickly
+				Direction is based on your position
+				Hold SHIFT for reverse direction
+				40 block range
+				'The perfect tool for every esteemed bridgebuilder!'
+				'''
+			ForestIvyHead : Slightly increased movement speed
+			ForestIvyBlowdart : On hit, builds up poisonous vines on enemies, dealing contact damage and spreading to other enemies.
+			GeomancerHood : 
+				'''
+				Diamond: Critical strikes partially ignore armor, with increased chance for missing enemy HP 
+				Topaz: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier 
+				Emerald: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart 
+				Sapphire: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars 
+				Amethyst: All strikes inflict Toxic Amethyst, a stacking poison debuff 
+				Ruby: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage
+				'''
+			RainbowCycleDye : TODO
+			EmeraldHeart : You shouldn't see this
+			PoltergeistHead : +40 maximum mana
+			Gluttony : Suck the soul out of your enemies!
+			GravediggerItem : 
+				'''
+				Strikes enemies up into the air 
+				Hit enemies in the air for more damage
+				'''
+			GravediggerPlayer : TODO
+			MagmaSword : Launches blobs of burning magma
+			BalloonInABalloon : TODO
+			BloodAmulet : TODO
+			BuffChalice : TODO
+			CoughDrops : TODO
+			DisinfectantKit : TODO
+			DisinfectantWipes : TODO
+			GlassArrowhead : TODO
+			Guillotine : TODO
+			HolyAmulet : TODO
+			ImpulseThruster : TODO
+			Ironheart : you have decaying extra barrier and defense
+			LegBrace : TODO
+			PowerCell : TODO
+			PulseBoots : TODO
+			SanitizerSpray : TODO
+			ShockAbsorber : TODO
+			SoulOfFrog : TODO
+			StaminaRing : TODO
+			StaminaUp : TODO
+			SwordBook : TODO
+			DiceAmmo : Every shot randomizes
+			ElectroArrow : 
+				'''
+				Chains to nearby enemies
+				Inflicts overcharge, greatly lowering enemy defense
+				'''
+			GraveBuster : 
+				'''
+				Destroys nearby graves 
+				Favorite it to prevent yourself from dropping graves on death 
+				'You like the taste of brains, we don't like zombies'
+				'''
+			Sorcerwrench : 
+				'''
+				Select an area of blocks to be broken
+				Consumes 2 mana per block broken
+				'''
+			SorcerwrenchDust : TODO
+			SorcerwrenchSparkle : TODO
+			StaminaPickup : TODO
+			BizarrePotion : Throws a random potion with random damaging effects
+			CoachGun : 
+				'''
+				M2 to throw out a lit bundle of dynamite
+				Explodes in 2.5 seconds, dealing DoT and weakening enemies
+				Shoot it to detonate it early
+				'My business, my rules'
+				'''
+			CopperCoil : Strikes nearby enemies with static electricity
+			CutlassBus : egshels update this lol
+			DualCross : Shoots your highest two ammo slots at once
+			FiletKnife : 
+				'''
+				Critical strikes carve chunks of flesh from enemies
+				Devour chunks to heal and gain Blood Frenzy
+				Blood Frenzy grants increased attack speed and decreased critical strike chance
+				'''
+			FiletGiblet1 : You shouldn't see this
+			FiletGiblet3 : TODO
+			FryingPan : 
+				'''
+				Attacks in close-range melee before being thrown to ring some chrome domes
+				'Evil-looking runes are inscribed on the bottom'
+				'''
+			Gunchucks : TODO
+			ImpactSMG : 
+				'''
+				Throw the gun when out of ammo 
+				Hitting an enemy with the gun instantly reloads it
+				'''
+			MagmaGun : Blasts a torrential stream of lava that sticks to tiles and enemies
+			MonkSpade : TODO
+			Sandscript : 
+				'''
+				Manifests a blade of sand
+				`This lost tablet contains a fragment of the Epic of Yeremy
+				...The writing is sorta ameteurish for an ancient relic`
+				'''
+			StarlightShuriken : 
+				'''
+				Toss a volley of magical shurikens
+				Landing every shuriken decreases the amount thrown by 1
+				Throw a powerful glaive when you would throw only 1 shuriken
+				'''
+			TinCoil : Strikes nearby enemies with static electricity
+			TwistSword : 
+				'''
+				Hold to unleash a whirling slash
+				Hold jump while slashing to accelerate upward
+				'''
+			DianesPendant : 
+				'''
+				Something about a crescent idk 
+				+20 barrier
+				'''
+			DianePlayer : TODO
+			MoonstoneHead : 
+				'''
+				Improved acceleration
+				 +25 Barrier
+				'''
+			CrescentQuarterstaff : Update this egshels
+			Moonfury : 
+				'''
+				Call down a shard of moonstone, afflicting enemies with Dreamfire
+				Afflicted enemies take extra damage on hit from Moonfury
+				'''
+			Shaker : TODO
+			PalestoneNail : Summons the little man.
+			SquidFins : Allows you to swim like a jellysquid
+			SquidBossSpawn : Drop in prismatic waters to summon the one the Squiddites worship
+			SquidBossBag : TODO
+			WaterStaff : 
+				'''
+				Places and removes aurora water
+				Left click to place
+				Right click to remove
+				'''
+			AuroraBell : Summons a sentry bell /nHit the bell with a whip to ring it
+			OverflowingUrn : 
+				'''
+				Unleashes a torrent of chilling winds
+				Prolonged use will freeze you
+				You have greatly increased defense while frozen
+				'''
+			UrnWindLine : TODO
+			InoculationPotion : +30% to DoT Resistance
+			Astroscrap : ‘Alloy salvaged from the wreckage of your world’s invaders’
+			Thunderbuss : 
+				'''
+				Fires powerful lightning at enemies in a cone
+				Right click to fire a lightning orb
+				Shooting at the orb zaps all enemies near it
+				The orb explodes on impact, and only one may be active at once
+				'Crush the path of most resistance'
+				'''
+			StarwoodCharm : TODO
+			StarwoodBoomerang : Hold LMB to channel the boomerang, causing it to release an explosion
+			StarwoodSlingshot : 
+				'''
+				Weaves together fallen stars 
+				Consumes ammo every 50 shots
+				'''
+			StarwoodStaff : 
+				'''
+				Creates a burst of small stars
+				Striking an enemy with every star causes a larger star to drop on them
+				'''
+			Cogwheel : Summons a ridable Cogwheel mount
+			CogwheelMount : TODO
+			Jetwelder : 
+				'''
+				Collect scrap from damaging enemies 
+				Right click to use scrap to summon robots
+				'''
+			JetwelderScrap2 : TODO
+			JetwelderScrap3 : TODO
+			JetwelderScrap4 : TODO
+			RebarLauncher : 
+				'''
+				Impales enemies 
+				Shoot rebar to drive it deeper into enemies
+				'''
+			TempleLens : TODO
+			TempleLensUpgrade : TODO
+			TempleRune : TODO
+			TemplePick : Hold right click to charge up a spinning pickaxe dash
+			RuneStaff : 
+				'''
+				Hold to summon up to 3 explosive runes
+				Releasing will fire the runes towards your cursor
+				Continuing to hold will detonate them for increased damage around you
+				'''
+			TempleSpear : 
+				'''
+				Struck enemies glow
+				Slain enemies leave behind a bright light
+				'''
+			ArmorBag : 
+				'''
+				Stores armor for quick use
+				Contains:
+				'''
+			ChefBag : Stores lots of every ingredient
+			CurseRemover : 
+				'''
+				Place over an equipped cursed Item to destroy it
+				'There's no turning back, most of the time'
+				'''
+			LaserPointer : TODO
+			MechaHead : Placeholder
+			ShatteredAegis : TODO
+			MagmaArrow : Becomes more cooled as it travels
+			VitricArrow : Shatters on impact
+			VitricHead : Slightly improved stamina regeneration
+			GlassIdol : 
+				'''
+				Used to worship a powerful guardian. Many times.
+				Many many times.
+				'''
+			VitricBossBag : TODO
+			VitricHamaxe : 
+				'''
+				Right click to charge heat
+				Heat increases speed
+				Heat dissipates over time
+				'''
+			VitricPick : 
+				'''
+				Hellstone does not drop lava
+				Mining hellstone generates heat
+				 Heat increases speed
+				'''
+			Coalescence : 
+				'''
+				Charge for a volley of brilliant magic
+				Fully charged shots leech mana when they collide
+				'''
+			FacetAndLattice : 
+				'''
+				Right click to guard
+				Attacks are empowered after a guard
+				Empowerment is more effective with better guard timing
+				'''
+			MagmiteBottle : Why would you do this to him?!
+			Needler : 
+				'''
+				Stick spikes to enemies to build up heat 
+				Overheated enemies explode, dealing massive damage
+				'''
+			RefractiveBlade : 
+				'''
+				Hold RMB down to charge a laser
+				Enemies struck by the laser are more vulnerable to melee damage
+				'''
+			VitricBow : Could use a rework
+			VitricHook : 
+				'''
+				Fires a hook, allowing you to grapple to an enemy and bounce off of them
+				Can only be used while airborn
+				'''
+			VitricMagicBook : Summons stabbing spikes on nearby ground
+			VitricSummon : Summons the Glassweaver's arsenal
+			VitricSword : 
+				'''
+				Shatters into enchanted glass shards 
+				Unable to be used while shattered
+				'''
+			IgnitionGauntlets : 
+				'''
+				Rapidly barrages enemies with your fists while building Ignition Charge
+				Hold RMB to consume charge, propelling yourself forward at escape velocity
+				Attack while still flying to vent remaining charge in a large blast cone|n'Heroes always arrive from the skies'
+				'''
+			IgnitionPlayer : TODO
+		}
+		ItemName : 
+		{
+			BasicInfusion : Blank Slate
+			CauldronItem : TODO
+			MixingStick : TODO
+			DebugStick : Eraser
+			AstrofloraBow : TODO
+			VitricBossBarrierDye : Sentinel's Tincture
+			SeaglassRing : TODO
+			ReactivePlating : Reactive Plating
+			ReactivePlatingHelper : TODO
+			SupplyBeacon : Supply Beacon
+			BreacherHead : Orbital Strike
+			FlareBreacher : Explosive Shrapnel
+			Scrapshot : Explosive Shrapnel
+			Bottle : Vitric Bottle
+			AquaSapphire : Aqua sapphire
+			StarlightPendant : Starlight Pendant
+			InertStaff : Inert Crescent Staff
+			Cloudstrike : Electro Shock
+			CloudstrikeCircleDust : TODO
+			SkullBuster : Skullbuster
+			ReplicantCells : TODO
+			Dough : TODO
+			EaterSteak : TODO
+			FaceSteak : TODO
+			Gelatine : TODO
+			MahoganyRoot : TODO
+			Rabbit : TODO
+			Steak : TODO
+			Toast : TODO
+			Meal : Meal
+			BlackPepper : TODO
+			Dressing : TODO
+			SeaSalt : TODO
+			Sugar : TODO
+			TableSalt : TODO
+			Vinegar : TODO
+			WhippedCream : TODO
+			Butter : TODO
+			Carrot : TODO
+			Cherry : TODO
+			GelBerry : TODO
+			Greens : TODO
+			HealthExtract : TODO
+			HoneySyrup : TODO
+			IvySalad : TODO
+			Lettuce : TODO
+			ManaExtract : TODO
+			Milk : TODO
+			StarlightWater : TODO
+			AcornSprout : TODO
+			DustyAmulet : TODO
+			OldWhetstone : TODO
+			Trowel : Autotrowel 9000
+			ForestIvyHead : Forest Ivy Leggings
+			ForestIvyBlowdart : Forest Ivy Blowpipe
+			GeomancerHood : Effects of different gems:
+			RainbowCycleDye : TODO
+			EmeraldHeart : Ruby Dagger
+			PoltergeistHead : Haunting Robes
+			Gluttony : Ghoul
+			GravediggerItem : Grave digger
+			GravediggerPlayer : TODO
+			MagmaSword : [PH] Magma Sword
+			BalloonInABalloon : TODO
+			BloodAmulet : Ghoul
+			BuffChalice : TODO
+			CoughDrops : TODO
+			DisinfectantKit : TODO
+			DisinfectantWipes : TODO
+			GlassArrowhead : TODO
+			Guillotine : TODO
+			HolyAmulet : TODO
+			ImpulseThruster : Thruster
+			Ironheart : Ironheart
+			LegBrace : TODO
+			PowerCell : TODO
+			PulseBoots : TODO
+			SanitizerSpray : TODO
+			ShockAbsorber : TODO
+			SoulOfFrog : TODO
+			StaminaRing : TODO
+			StaminaUp : TODO
+			SwordBook : TODO
+			DiceAmmo : Dice
+			ElectroArrow : Electro Arrow
+			GraveBuster : Gravebuster
+			Sorcerwrench : Sorcerwrench
+			SorcerwrenchDust : TODO
+			SorcerwrenchSparkle : TODO
+			StaminaPickup : TODO
+			BizarrePotion : Bizarre Potion
+			CoachGun : Muzzle Flash
+			CopperCoil : Static Shock
+			CutlassBus : Cutlassbus
+			DualCross : Double Cross
+			FiletKnife : Filet Knife
+			FiletGiblet1 : Giblet
+			FiletGiblet3 : TODO
+			FryingPan : Frying Pan
+			Gunchucks : Sanguine Flayer
+			ImpactSMG : Impact SMG
+			MagmaGun : Magma Glob
+			MonkSpade : TODO
+			Sandscript : Sandscript
+			StarlightShuriken : Starlight Shuriken
+			TinCoil : Tin Coil
+			TwistSword : Twisted Greatsword
+			DianesPendant : Diane's Pendant
+			DianePlayer : Crescant
+			MoonstoneHead : Moonstone Greaves
+			CrescentQuarterstaff : Crescent Quarterstaff
+			Moonfury : Moonfury
+			Shaker : Shaker
+			PalestoneNail : Tiny Killer
+			SquidFins : Squid Fins
+			SquidBossSpawn : Suspicious Looking Offering
+			SquidBossBag : Treasure Bag (Auroracle)
+			WaterStaff : Staff of the Waves
+			AuroraBell : Aurora Bell
+			OverflowingUrn : Overflowing Urn
+			UrnWindLine : TODO
+			InoculationPotion : Inoculated
+			Astroscrap : Astroscrap
+			Thunderbuss : Electro Shock
+			StarwoodCharm : TODO
+			StarwoodBoomerang : Starwood Boomerang
+			StarwoodSlingshot : Star Fragment
+			StarwoodStaff : Starwood Staff
+			Cogwheel : Cogwheel
+			CogwheelMount : TODO
+			Jetwelder : Jetwelder
+			JetwelderScrap2 : TODO
+			JetwelderScrap3 : TODO
+			JetwelderScrap4 : TODO
+			RebarLauncher : Rebar
+			TempleLens : TODO
+			TempleLensUpgrade : TODO
+			TempleRune : TODO
+			TemplePick : Whirlwind Pickaxe
+			RuneStaff : Ancient Rune Staff
+			TempleSpear : Point of Light
+			ArmorBag : Armor Bag
+			ChefBag : Chef's Bag
+			CurseRemover : Scroll of Undoing
+			LaserPointer : TODO
+			MechaHead : Mecha Legs
+			ShatteredAegis : TODO
+			MagmaArrow : Magma Arrow
+			VitricArrow : Vitric Arrow
+			VitricHead : Vitric Greaves
+			GlassIdol : TODO
+			VitricBossBag : Treasure Bag (Ceiros)
+			VitricHamaxe : Vitric Hamaxe
+			VitricPick : Vitric Pickaxe
+			Coalescence : Coalescence
+			FacetAndLattice : Lattice
+			MagmiteBottle : Magmite in a Bottle
+			Needler : Needle
+			RefractiveBlade : Refractive Blade
+			VitricBow : Vitric Bow
+			VitricHook : Ripshatter
+			VitricMagicBook : Vitric Book 2
+			VitricSummon : Glassweaver's Punty
+			VitricSword : Enchanted Glass
+			IgnitionGauntlets : Ignition Gauntlets
+			IgnitionPlayer : TODO
+		}
+		ProjectileName : 
+		{
+			GlassBubble : Glass Shard
+			GlassHammer : Raised Glass Structure
+			GlassJavelin : TODO
+			GlassSpear : Hot Lob
+			GlassSword : Glass Sword
+			Whirlwind : Spinning Blades
+			AuroraWaterSplash : TODO
+			DoorBomb : TODO
+			InkBlob : Rainbow Ink
+			InkBlobGravity : TODO
+			SpewBlob : Aurora Shard
+			SqueezeTell : Tentacle Warning
+			SquidEgg : TODO
+			TentacleTell : Tentacle Warning
+			FinalLaser : Raging Fire
+			FireCone : TODO
+			FireRingHostile : TODO
+			GlassSpike : Glass Spike
+			GlassVolley : TODO
+			LavaDart : Magma Shot
+			SpikeMine : TODO
+			TelegraphedGlassSpike : Glass Spike
+			VitricBomb : TODO
+			LightningNode : TODO
+			AstrofloraGas : TODO
+			SupplyBeaconProj : Supply Beacon
+			SkullBusterReload : Skull Buster
+			SkullBusterProj : Bullet
+			GeoSapphireProj : TODO
+			GeoEmeraldProj : TODO
+			PoltergeistMinion : Haunted Weapon
+			DiceProj : Dice
+			DicePlayer : TODO
+			GraveBusterHeld : Grave Buster
+			GraveSlash : Slash
+			BizarrePotionProj : Bizarre Potion
+			BizarreLightning : Bizarre Potion
+			CoachGunBomb : Coach Bomb
+			CutlassBusHeldProj : Cutlassbus
+			CutlassBusFlash : Cutlassbus
+			CutlassBusProj : Cutlassbus
+			FiletSlash : Slash
+			FryingPanProj : Frying Pan
+			FryingPanBonk : Frying Pan
+			ImpactSMGProj : Impact SMG
+			DatsuzeiProjectile : TODO
+			QuarterOrb : Lunar Orb
+			MoonfuryProj : Moonfury Spike
+			MoonfuryRing : Orbital Strike
+			StarwoodBoomerangProjectile : Starwood Boomerang
+			StarwoodStaffProjectile : Falling Star
+			JetwelderCrawler : Crawler
+			JetwelderFinal : Bomber
+			JetwelderFinalMissle : Rocket
+			JetwelderGatler : Gatler
+			JetwelderJumper : Jumper
+			JetwelderJumperMissle : Grenade
+			JetwelderJumperExplosion : Rocket
+			CogwheelHitbox : Cogwheel
+			BuzzsawProj : Buzzsaw
+			PhantomBuzzsaw : Buzzsaw
+			JetwelderFlame : Jetwelder
+			VitricArmorProjectileIdle : Enchanted Glass
+			VitricSummonHammer : Shockwave
+			VitricSummonJavelin : Enchanted Vitric Weapons
+			VitricSummonKnife : Enchanted Vitric Weapons
+			VitricSummonOrb : Enchanted Vitric Weapons
+			VitricSummonSword : Enchanted Vitric Weapons
+			IgnitionGauntletCharge : Ignition Gauntlets
+			IgnitionGauntletCone : Ignition Gauntlets
+			IgnitionGauntletLaunch : Ignition Gauntlets
+			IgnitionGauntletsImpactRing : Ignition Gauntlets
+			IgnitionPunch : Ignition Gauntlets
+			IgnitionPunchPhantom : Ignition Gauntlets
+			ConstructRing : Explosion
+			GauntletSpawner : TODO
+			SpawnEgg : TODO
+			Dart : Cursed Dart
+			SawbladeSmall : Cursed Sawblade
+			Spear : Cursed Spear
+		}
+		BuffName : 
+		{
+			FerrofluidDraftBuff : Ferrofluid Draft
+			HotspringHeal : Refreshing Dip
+			Ivy : Ivy
+			IvySnare : Snared
+			PrismaticDrown : Prismatic Drown
+			Squash : Pancaked
+			StaticShock : TODO
+			PalestoneSummonBuff : TODO
+			VitricSummonBuff : TODO
+			SupplyBeaconDefense : TODO
+			SupplyBeaconDefenseDust : TODO
+			ShovelQuickFall : TODO
+			PlexusChaliceBuff : Plexus Resistance
+			MoonfuryDebuff : TODO
+			UrnFreeze : TODO
+			CogwheelBuff : TODO
+		}
+		BuffDescription : 
+		{
+			FerrofluidDraftBuff : Nearby Items gravitate towards you
+			HotspringHeal : The hot springs restore your body and mind
+			Ivy : It's rooted in you!
+			IvySnare : You've been caught!
+			PrismaticDrown : You are drowning in prismatic waters!
+			Squash : You're flat now.
+			StaticShock : TODO
+			PalestoneSummonBuff : TODO
+			VitricSummonBuff : TODO
+			SupplyBeaconDefense : TODO
+			SupplyBeaconDefenseDust : TODO
+			ShovelQuickFall : TODO
+			PlexusChaliceBuff : +30% to DoT Resistance
+			MoonfuryDebuff : TODO
+			UrnFreeze : TODO
+			CogwheelBuff : TODO
+		}
+		Prefix : 
+		{
+			Feral : TODO
+			Jumpy : TODO
+			Tanklike : TODO
+		}
+	}
+}
