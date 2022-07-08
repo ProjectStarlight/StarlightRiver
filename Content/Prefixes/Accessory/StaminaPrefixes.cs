@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -8,11 +9,13 @@ namespace StarlightRiver.Prefixes.Accessory
     {
         private readonly int power;
         private readonly string name;
+        private readonly string tip;
 
-        internal StaminaPrefix(int power, string name, string tip) : base(tip)
+        internal StaminaPrefix(int power, string name, string tip)
         {
             this.power = power;
             this.name = name;
+            this.tip = tip;
         }
 
         public override bool CanRoll(Item Item) => Item.accessory;
@@ -27,7 +30,15 @@ namespace StarlightRiver.Prefixes.Accessory
         {
             Player.GetHandler().StaminaRegenRate += power;
         }
-    }
+
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
+            TooltipLine newline = new TooltipLine(StarlightRiver.Instance, "StaminaPrefixTip", tip);
+            newline.IsModifier = true;
+
+            tooltips.Add(newline);
+		}
+	}
 
     internal class StaminaPrefix1 : StaminaPrefix
     {

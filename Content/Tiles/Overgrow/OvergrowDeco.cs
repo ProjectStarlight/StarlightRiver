@@ -19,6 +19,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
         public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
+            TileObjectData.newTile.DrawYOffset = 2;
             TileObjectData.newTile.StyleHorizontal = true;
             TileObjectData.newTile.RandomStyleRange = 3;
             QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Stone, SoundID.Tink, false, new Color(50, 50, 75));

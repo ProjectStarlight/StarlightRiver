@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Alchemy
 
 		public override void SetStaticDefaults()
 		{
-			(this).QuickSetFurniture(3, 2, DustType<Air>(), SoundID.Tink, false, new Color(50, 50, 50), false, false, "Alchemic Cauldron");
+			(this).QuickSetFurniture(3, 2, DustType<Air>(), SoundID.Tink, true, new Color(50, 50, 50), false, false, "Alchemic Cauldron");
 		}
 
         public override bool RightClick(int i, int j)
