@@ -57,7 +57,7 @@ Mods :
 				Consuming mana boosts barrier regen by 1% per 4 points of mana consumed in the past 5 seconds 
 				-10 barrier
 				'''
-			InertStaff : ‘This broken artifact still holds some latent astral energy’
+			InertStaff : 'This broken artifact still holds some latent astral energy'
 			Cloudstrike : 
 				'''
 				Accumulate electrical charge while not firing
@@ -79,7 +79,7 @@ Mods :
 			#Rabbit : TODO
 			#Steak : TODO
 			#Toast : TODO
-			Meal : Rich food that provides these buffs:
+			Meal : "Rich food that provides these buffs:"
 			#BlackPepper : TODO
 			#Dressing : TODO
 			#SeaSalt : TODO
@@ -259,7 +259,7 @@ Mods :
 				'''
 			#UrnWindLine : TODO
 			InoculationPotion : +30% to DoT Resistance
-			Astroscrap : ‘Alloy salvaged from the wreckage of your world’s invaders’
+			Astroscrap : "'Alloy salvaged from the wreckage of your world's invaders'"
 			Thunderbuss : 
 				'''
 				Fires powerful lightning at enemies in a cone
@@ -445,14 +445,14 @@ Mods :
 			Trowel : Autotrowel 9000
 			ForestIvyHead : Forest Ivy Leggings
 			ForestIvyBlowdart : Forest Ivy Blowpipe
-			GeomancerHood : Effects of different gems:
+			GeomancerHood : "Effects of different gems:"
 			#RainbowCycleDye : TODO
 			EmeraldHeart : Ruby Dagger
 			PoltergeistHead : Haunting Robes
 			Gluttony : Ghoul
 			GravediggerItem : Grave digger
 			#GravediggerPlayer : TODO
-			MagmaSword : [PH] Magma Sword
+			MagmaSword : "[PH] Magma Sword"
 			#BalloonInABalloon : TODO
 			BloodAmulet : Ghoul
 			#BuffChalice : TODO
