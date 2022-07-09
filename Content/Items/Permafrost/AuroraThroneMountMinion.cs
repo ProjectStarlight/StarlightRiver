@@ -15,7 +15,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 	{
         public override string Texture => AssetDirectory.SquidBoss + "Auroraling";
 
-        public override void SetDefaults()
+		public override void SetStaticDefaults()
+		{
+            Terraria.ID.ProjectileID.Sets.TrailCacheLength[Type] = 20;
+            Terraria.ID.ProjectileID.Sets.TrailingMode[Type] = 2;
+        }
+
+		public override void SetDefaults()
         {
             Projectile.width = 26;
             Projectile.height = 30;
@@ -31,16 +37,24 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             var target = Helpers.Helper.FindNearestNPC(Projectile.Center, true);
 
-            if (target != null)
-                Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.15f;
+            if (target != null && Projectile.ai[0] > 30)
+                Projectile.velocity += Vector2.Normalize(Projectile.Center - target.Center) * -0.55f;
 
-            if (Projectile.velocity.LengthSquared() > 30) 
+            if (Projectile.ai[0] < 30 || Projectile.velocity.Length() > 10) 
                 Projectile.velocity *= 0.95f;
+
+            Projectile.velocity += Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(Projectile.ai[0] * 0.1f) * 0.01f;
 
             if (Projectile.ai[0] % 15 == 0) 
                 Projectile.velocity.Y -= 0.5f;
 
             Projectile.rotation = Projectile.velocity.X * 0.25f;
+
+            float sin = 1 + (float)Math.Sin(Projectile.ai[0] / 10f);
+            float cos = 1 + (float)Math.Cos(Projectile.ai[0] / 10f);
+            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+
+            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
         }
 
 		public override void Kill(int timeLeft)
@@ -51,12 +65,16 @@ namespace StarlightRiver.Content.Items.Permafrost
                 npc.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
             }
 
+            float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
+            float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
+            Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+
             for (int k = 0; k < 20; k++)
             {
-                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Smoke>(), Main.rand.NextVector2Circular(5, 5), 150, new Color(80, 50, 50) * 0.5f, 1);
+                Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Smoke>(), Main.rand.NextVector2Circular(5, 5), 150, rainbowColor * 0.2f, 1);
 
                 var sparkOff = Main.rand.NextVector2Circular(3, 3);
-                Dust.NewDustPerfect(Projectile.Center + sparkOff * 5, DustType<Dusts.Cinder>(), sparkOff, 0, new Color(255, 20, 20), 1);
+                Dust.NewDustPerfect(Projectile.Center + sparkOff * 5, DustType<Dusts.Cinder>(), sparkOff, 0, rainbowColor, 1);
             }
 
             Helpers.Helper.PlayPitched("SquidBoss/LightSplash", 0.6f, 1f, Projectile.Center);
@@ -75,16 +93,33 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow").Value;
             Texture2D tex2 = Request<Texture2D>(AssetDirectory.SquidBoss + "AuroralingGlow2").Value;
+            Texture2D tex3 = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
 
-            float sin = 1 + (float)Math.Sin(Projectile.ai[0] / 10f);
-            float cos = 1 + (float)Math.Cos(Projectile.ai[0] / 10f);
-            Color color = new Color(1.2f + sin * 0.1f, 0.7f + sin * -0.25f, 0.25f) * 0.7f;
+            for (int k = 0; k < Projectile.oldPos.Length; k++)
+            {
+                var pos = Projectile.oldPos[k];
+                var opacity = 1 - k / (float)Projectile.oldPos.Length;
+                var scale = 1f;
 
-            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, frame, drawColor * 1.2f, Projectile.rotation, Projectile.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, color * 0.8f, Projectile.rotation, Projectile.Size / 2, 1, 0, 0);
-            spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, Projectile.Size / 2, 1, 0, 0);
+                if (opacity < 1)
+                {
+                    opacity *= 0.5f;
+                    scale = 0.8f;
+                }
 
-            Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.5f);
+                float sin = 1 + (float)Math.Sin(Projectile.ai[0] / 10f);
+                float cos = 1 + (float)Math.Cos(Projectile.ai[0] / 10f);
+                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f) * 0.7f * opacity;
+
+                spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos - Main.screenPosition, frame, drawColor * 1.2f * opacity, Projectile.oldRot[k], Projectile.Size / 2, scale, 0, 0);
+                spriteBatch.Draw(tex, pos - Main.screenPosition, frame, color * 0.8f, Projectile.oldRot[k], Projectile.Size / 2, scale, 0, 0);
+                spriteBatch.Draw(tex2, pos - Main.screenPosition, frame, color, Projectile.oldRot[k], Projectile.Size / 2, scale, 0, 0);
+
+                color.A = 0;
+
+                spriteBatch.Draw(tex3, pos - Main.screenPosition, null, color, Projectile.oldRot[k], tex3.Size() / 2, opacity, 0, 0);
+            }
+         
             return false;
         }
     }
@@ -121,13 +156,21 @@ namespace StarlightRiver.Content.Items.Permafrost
         }
 
 		public override void Update(NPC npc, ref int buffIndex)
-		{
-            Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Cinder>(), 0, 0, 0, new Color(255, 50, 50), 0.5f);
+        {
+            float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
+            float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
+            Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+
+            Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Cinder>(), 0, 0, 0, rainbowColor, 0.5f);
         }
 
 		public override void Update(Player player, ref int buffIndex)
-		{
-            Dust.NewDust(player.position, player.width, player.height, DustType<Dusts.Cinder>(), 0, 0, 0, new Color(255, 50, 50), 0.5f);
+        {
+            float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
+            float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
+            Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+
+            Dust.NewDust(player.position, player.width, player.height, DustType<Dusts.Cinder>(), 0, 0, 0, rainbowColor, 0.5f);
         }
 	}
 }
