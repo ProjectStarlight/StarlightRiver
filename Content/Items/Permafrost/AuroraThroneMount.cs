@@ -16,8 +16,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
 	internal class AuroraThroneMount : CombatMount
 	{
-		List<Projectile> buffedMinions = new List<Projectile>();
-
 		public override string PrimaryIconTexture => AssetDirectory.PermafrostItem + "AuroraThroneMountPrimary";
 		public override string SecondaryIconTexture => AssetDirectory.PermafrostItem + "AuroraThroneMountSecondary";
 
@@ -25,8 +23,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			primarySpeedCoefficient = 26;
 			primaryCooldownCoefficient = 20;
-			secondaryCooldownCoefficient = 600;
-			secondarySpeedCoefficient = 120;
+			secondaryCooldownCoefficient = 900;
+			secondarySpeedCoefficient = 30;
 			damageCoefficient = 42;
 			autoReuse = true;
 		}
@@ -38,10 +36,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (progress < 1)
 			{
-				for (int k = 0; k < 2; k++)
+				for (int k = 0; k < 3; k++)
 				{
-					var pos = player.Center + new Vector2(0, 58 - (int)(progress * 58));
-					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-20, 20), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, new Color(255, 255, 200), 0.5f);
+					var pos = player.Center + new Vector2(0, 12 - (int)(progress * 68));
+					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-20, 20), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, Main.DiscoColor, 0.65f);
 				}
 			}
 
@@ -50,13 +48,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			player.Hitbox.Offset(new Point(0, -32));
 
-			player.fullRotation = -0.2f * player.direction + player.velocity.X * -0.05f;
+			player.fullRotation = (1 - mp.mountingTime / 60f) * (-0.2f * player.direction + player.velocity.X * -0.03f);
 			player.fullRotationOrigin = new Vector2(player.width / 2, player.height);
 
-			player.gfxOffY = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 4f;
+			if(mp.mountingTime <= 0)
+				player.gfxOffY = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 4f;
 
-			if (player.velocity.Y > 0)
-				player.velocity.Y *= 0.9f;
+			if (player.velocity.Y > 0 && !player.controlDown)
+				player.velocity.Y *= 0.92f;
+
+			/*if (player.controlJump && player.rocketTime > 0)
+			{
+				player.rocketTime--;
+				player.velocity.Y -= 0.55f;
+
+				for(int k = 0; k < 3; k++)
+					Dust.NewDustPerfect(player.Center + new Vector2(-6 * player.direction, -16), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY.RotatedByRandom(0.6f) * Main.rand.NextFloat(3, 6), 0, Main.DiscoColor, 0.65f);
+			}*/
 
 			Lighting.AddLight(player.Center, Color.Lerp(Color.White, Main.DiscoColor, 0.5f).ToVector3());
 		}
@@ -82,34 +90,20 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void OnStartSecondaryAction(Player player)
 		{
-			foreach (Projectile proj in Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.minion))
-			{
-				proj.extraUpdates++;
-				buffedMinions.Add(proj);
-			}
+
 		}
 
 		public override void SecondaryAction(int timer, Player player)
 		{
-			var animTime = secondarySpeedCoefficient / 4f;
-			var time = Math.Max(0, (timer - animTime * 3) / (animTime));
-
-			if (time > 0)
-				Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
-			else
-				Filters.Scene.Deactivate("Shockwave");
-
-			if (timer == 1)
+			for(int k = 0; k < 10; k++)
 			{
-				foreach (Projectile proj in buffedMinions)
+				int check = (int)(k / 10f * secondarySpeedCoefficient);
+
+				if (timer == check)
 				{
-					proj.extraUpdates--;
-
-					if (proj.extraUpdates < 0)
-						proj.extraUpdates = 0;
+					var vel = Vector2.UnitY.RotateRandom(1) * -Main.rand.NextFloat(6, 22);
+					Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, vel, ModContent.ProjectileType<AuroraThroneMountMinion>(), damageCoefficient, 10, player.whoAmI);
 				}
-
-				buffedMinions.Clear();
 			}
 		}
 	}
@@ -135,6 +129,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			var tex = ModContent.Request<Texture2D>(Texture).Value;
 			var tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 			var tex3 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+			var tex4 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
 			var mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
 			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
@@ -145,22 +140,22 @@ namespace StarlightRiver.Content.Items.Permafrost
 			var source2 = new Rectangle(0, frameNumber * 58 + 58 - (int)(progress * 58), 64, 2);
 
 			if (mp.mountingTime <= 0)
-				pos.Y += drawPlayer.gfxOffY;	
+			{ 
+				pos.Y += drawPlayer.gfxOffY;
 
-			var color = Main.DiscoColor;
-			color.A = 0;
+				var color = Main.DiscoColor;
+				color.A = 0;
 
-			var glowRot = 3.14f + 0.2f * drawPlayer.direction;
-			playerDrawData.Add(new DrawData(tex3, pos, null, color * (0.25f + 0.05f * sin), glowRot, tex3.Size() / 2, 0.32f + 0.025f * sin, spriteEffects, 0));
+				var glowRot = 3.14f + 0.2f * drawPlayer.direction;
+				playerDrawData.Add(new DrawData(tex3, pos, null, color * (0.25f + 0.05f * sin), glowRot, tex3.Size() / 2, 0.32f + 0.025f * sin, spriteEffects, 0));
+			}
 
 			float rot = 0.2f * drawPlayer.direction;
 			playerDrawData.Add(new DrawData(tex, pos, source, drawColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
 			playerDrawData.Add(new DrawData(tex2, pos, source, Main.DiscoColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
 
 			if (progress < 1)
-				playerDrawData.Add(new DrawData(tex2, pos, source2, Color.White, rot, new Vector2(32, 58), 1, spriteEffects, 0));
-
-			Main.NewText(drawPlayer.Hitbox);
+				playerDrawData.Add(new DrawData(tex2, pos, source2, Main.DiscoColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
 
 			return false;
 		}
@@ -171,12 +166,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 			MountData.acceleration = 0.35f;
 			MountData.jumpSpeed = 10f;
 			MountData.blockExtraJumps = false;
-			MountData.heightBoost = 0;
+			MountData.heightBoost = 12;
 			MountData.runSpeed = 5f;
 
 			// Frame data and player offsets
 			MountData.totalFrames = 1;
-			MountData.playerYOffsets = Enumerable.Repeat(26, MountData.totalFrames).ToArray();
+			MountData.playerYOffsets = Enumerable.Repeat(30, MountData.totalFrames).ToArray();
 			MountData.xOffset = 13;
 			MountData.yOffset = -62;
 			MountData.playerHeadOffset = 22;
