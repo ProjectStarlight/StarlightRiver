@@ -104,6 +104,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 					var vel = Vector2.UnitY.RotateRandom(1) * -Main.rand.NextFloat(6, 22);
 					Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, vel, ModContent.ProjectileType<AuroraThroneMountMinion>(), damageCoefficient, 10, player.whoAmI);
 				}
+
+				if (Main.rand.NextBool(3))
+				{
+					var dir = -Vector2.UnitY.RotatedByRandom(1);
+					Dust.NewDustPerfect(player.Center + dir * 120, ModContent.DustType<Dusts.GlowLine>(), dir * Main.rand.NextFloat(20), 0, new Color(255, Main.rand.Next(100), 0));
+				}
 			}
 		}
 	}
@@ -155,7 +161,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			playerDrawData.Add(new DrawData(tex2, pos, source, Main.DiscoColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
 
 			if (progress < 1)
-				playerDrawData.Add(new DrawData(tex2, pos, source2, Main.DiscoColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
+				playerDrawData.Add(new DrawData(tex4, pos, source2, Main.DiscoColor, rot, new Vector2(32, 58), 1, spriteEffects, 0));
 
 			return false;
 		}

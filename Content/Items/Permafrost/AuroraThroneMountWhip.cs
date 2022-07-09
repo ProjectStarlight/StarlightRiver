@@ -18,7 +18,18 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public AuroraThroneMountWhip() : base("Tentacle", 15, 0.57f, new Color(153, 255, 255)) { }
 
-        public override int SegmentVariant(int segment)
+		public override void Load()
+		{
+            On.Terraria.Projectile.Colliding += SpecialWhipColission; //We need to use a custom hook here since vanilla oofs whip colission before tmods colliding hook can run.
+		}
+
+		public override void SetDefaults()
+		{
+            Projectile.DefaultToWhip();
+            Projectile.ownerHitCheck = false;
+        }
+
+		public override int SegmentVariant(int segment)
         {
             int variant;
             switch (segment)
@@ -43,10 +54,30 @@ namespace StarlightRiver.Content.Items.Permafrost
             return variant;
         }
 
+        private bool SpecialWhipColission(On.Terraria.Projectile.orig_Colliding orig, Projectile self, Rectangle myRect, Rectangle targetRect)
+        {
+            if (self.type == ModContent.ProjectileType<AuroraThroneMountWhip>())
+            {
+                self.WhipPointsForCollision.Clear();
+                (self.ModProjectile as AuroraThroneMountWhip).SetPoints(self.WhipPointsForCollision);
+
+                List<Vector2> points = self.WhipPointsForCollision;
+
+                for (int i = 0; i < points.Count - 1; i++)
+                {
+                    float collisionPoint = 0f;
+                    if (Collision.CheckAABBvLineCollision(targetRect.TopLeft(), targetRect.Size(), points[i], points[i + 1], 8, ref collisionPoint))
+                        return true;
+                }
+
+                return false;
+            }
+
+            return orig(self, myRect, targetRect);
+        }
+
         public override bool PreAI()
         {
-            Player player = Main.player[Projectile.owner];
-
             if (_flyTime == 0)
             {
                 _flyTime = Projectile.ai[0];
@@ -66,16 +97,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             if (Projectile.ai[0] == (int)(_flyTime / 2f))
             {
-                Projectile.WhipPointsForCollision.Clear();
-                SetPoints(Projectile.WhipPointsForCollision);
                 Vector2 position = Projectile.WhipPointsForCollision[Projectile.WhipPointsForCollision.Count - 1];
                 SoundEngine.PlaySound(SoundID.Item153, position);
-            }
-
-            if (Utils.GetLerpValue(0.1f, 0.7f, Projectile.ai[0] / _flyTime, true) * Utils.GetLerpValue(0.9f, 0.7f, Projectile.ai[0] / _flyTime, true) > 0.5f)
-            {
-                Projectile.WhipPointsForCollision.Clear();
-                SetPoints(Projectile.WhipPointsForCollision);
             }
 
             ArcAI();
@@ -101,10 +124,8 @@ namespace StarlightRiver.Content.Items.Permafrost
             }
 
             //vanilla code
-            float realRange = Projectile.ai[0] - 1f;
             Player player = Main.player[Projectile.owner];
-            Item heldItem = player.HeldItem;
-            realRange = (50) * time * player.whipRangeMultiplier;
+            float realRange = (50) * time * player.whipRangeMultiplier;
             float segmentLength = Projectile.velocity.Length() * realRange * timeModified * _rangeMultiplier / (float)_segments;
             Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile) + new Vector2(0, 12);
             Vector2 firstPos = playerArmPosition;
