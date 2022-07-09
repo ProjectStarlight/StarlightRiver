@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
 using System;
 using System.Linq;
@@ -44,6 +45,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void Kill(int timeLeft)
 		{
+            foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy(this, false) && Vector2.Distance(n.Center, Projectile.Center) < 120))
+            {
+                npc.StrikeNPC(Projectile.damage, Projectile.knockBack, Projectile.Center.X > npc.Center.X ? 1 : -1, false);
+                npc.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
+            }
+
             for (int k = 0; k < 20; k++)
             {
                 Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Smoke>(), Main.rand.NextVector2Circular(5, 5), 150, new Color(80, 50, 50) * 0.5f, 1);
@@ -58,8 +65,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-           
-		}
+            target.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
+        }
 
 		public override bool PreDraw(ref Color drawColor)
         {
@@ -81,4 +88,46 @@ namespace StarlightRiver.Content.Items.Permafrost
             return false;
         }
     }
+
+	public class AuroraThroneMountMinionDebuff : SmartBuff
+	{
+        public override string Texture => AssetDirectory.Debug;
+
+        public AuroraThroneMountMinionDebuff() : base("Inked", "You take increased damage", true, false) { }
+
+		public override void Load()
+		{
+            StarlightNPC.ModifyHitByProjectileEvent += takeExtraSummonDamage;
+            StarlightPlayer.ModifyHitByNPCEvent += takeExtraDamage;
+            StarlightPlayer.ModifyHitByProjectileEvent += takeExtraDamageProjectile;       
+		}
+
+		private void takeExtraSummonDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+            if (Inflicted(NPC) && Projectile.CountsAsClass(DamageClass.Summon))
+                damage = (int)(damage * 1.25f);
+		}
+
+        private void takeExtraDamage(Player player, NPC NPC, ref int damage, ref bool crit)
+        {
+            if (Inflicted(player))
+                damage = (int)(damage * 1.25f);         
+        }
+
+        private void takeExtraDamageProjectile(Player player, Projectile proj, ref int damage, ref bool crit)
+        {
+            if (Inflicted(player))
+                damage = (int)(damage * 1.25f);
+        }
+
+		public override void Update(NPC npc, ref int buffIndex)
+		{
+            Dust.NewDust(npc.position, npc.width, npc.height, DustType<Dusts.Cinder>(), 0, 0, 0, new Color(255, 50, 50), 0.5f);
+        }
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+            Dust.NewDust(player.position, player.width, player.height, DustType<Dusts.Cinder>(), 0, 0, 0, new Color(255, 50, 50), 0.5f);
+        }
+	}
 }
