@@ -1,0 +1,32 @@
+﻿using StarlightRiver.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
+namespace StarlightRiver.Content.Items.Food.Special
+{
+	internal class Salad : BonusIngredient
+	{
+		public Salad() : base("+10% movement speed, defense, health, and mana") { }
+
+		public override FoodRecipie Recipie() => new FoodRecipie(
+			Type,
+			ModContent.ItemType<Cabbage>(),
+			ModContent.ItemType<Lettuce>(),
+			ModContent.ItemType<Carrot>(),
+			ModContent.ItemType<Cashews>()
+			);
+
+        public override void BuffEffects(Player Player, float multiplier)
+        {
+			//Player.GetCritChance(DamageClass.Generic) += 0.1f * multiplier;
+			Player.statDefense += (int)(Player.statDefense * (0.1f * multiplier));
+			Player.moveSpeed *= (0.1f * multiplier);
+		}
+	}
+}

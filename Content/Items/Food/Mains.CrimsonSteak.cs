@@ -5,9 +5,9 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Steak : Ingredient
+    internal class CrimsonSteak : Ingredient
     {
-        public Steak() : base("+5% all damage", 400, IngredientType.Main) { }
+        public CrimsonSteak() : base("+5% all damage", 400, IngredientType.Main) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
