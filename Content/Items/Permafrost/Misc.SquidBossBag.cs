@@ -41,16 +41,17 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void OpenBossBag(Player Player)
         {
-            int weapon = Main.rand.Next(4);
+            int weapon = Main.rand.Next(6);
 
             for (int k = 0; k < 2; k++) //PORT: k < Main.MasterMode ? 3 : 2
             {
-                switch (weapon % 2)
+                switch (weapon % 3)
                 {
                     case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<OverflowingUrn>()); break;
                     case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraBell>()); break;
-                        //TODO: Add drops as they're implemented
-                }
+					case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraThroneMountItem>()); break;
+						//TODO: Add drops as they're implemented
+				}
                 weapon++;
             }
 
