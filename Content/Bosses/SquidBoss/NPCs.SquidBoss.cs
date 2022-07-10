@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
             {
                 Bestiary.SLRSpawnConditions.AuroraSquid,
-                new FlavorTextBestiaryInfoElement("[PH] Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss Squid Boss ")
+                new FlavorTextBestiaryInfoElement("An aquatic titan that stalks the impossibly cold waters behind its temple, channeling the light of the aurora into powerful magic to hunt its prey.")
             });
         }
 
@@ -156,6 +156,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
             ));
 
             npcLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 4));
+            npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.AuroracleTrophyItem>(), 10, 1, 1));
         }
 
         public override void BossLoot(ref string name, ref int potionType)
