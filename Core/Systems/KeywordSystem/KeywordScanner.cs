@@ -159,6 +159,23 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 						thisKeywords.Add(keyword);
 
 					strings[k] = BuildKeyword(keyword);
+					continue;
+				}
+
+				var suffix = word.Substring(word.Length - 1);
+
+				if (suffix == ":" || suffix == "," || suffix == "." || suffix == ";") //Common punctuation that shouldnt invalidate a keyword.
+				{
+					if (keywords.Any(n => string.Equals(n.keyword, word.Substring(0, word.Length - 1), StringComparison.OrdinalIgnoreCase)))
+					{
+						var keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word.Substring(0, word.Length - 1), StringComparison.OrdinalIgnoreCase));
+
+						if (!thisKeywords.Contains(keyword))
+							thisKeywords.Add(keyword);
+
+						strings[k] = BuildKeyword(keyword) + suffix;
+						continue;
+					}
 				}
 			}
 
