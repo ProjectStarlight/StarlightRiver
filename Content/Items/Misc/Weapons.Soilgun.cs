@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.noUseGraphic = true;
             Item.noMelee = true;
             Item.channel = true;
+            Item.knockBack = 1f;
         }   
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -168,7 +169,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of sand that split into many grains of sand upon death"); break;
                     case ItemID.CrimsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
-                    case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun it apply stacks of Haunted to enemies\nHaunted does 1 DPS per haunted stack, maxing at 20\nWhen an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks"); break;
+                    case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies\nHaunted does 1 DPS per haunted stack, maxing at 20\nWhen an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks"); break;
                     case ItemID.PearlsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Pearlsand that home in on enemies"); break;
                     case ItemID.DirtBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of dirt"); break;
                     case ItemID.SiltBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
