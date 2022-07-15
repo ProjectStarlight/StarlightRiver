@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 if (HauntedStacks == MaxHauntedStacks)
                 {
                     if (SpawnHauntedSoulTimer == 60)
-                        Helper.PlayPitched($"{nameof(StarlightRiver)}/Sounds/ShadowSpawn", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.position);
+                        Helper.PlayPitched("ShadowSpawn", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.position);
 
 
                     if (SpawnHauntedSoulTimer % 5 == 0)

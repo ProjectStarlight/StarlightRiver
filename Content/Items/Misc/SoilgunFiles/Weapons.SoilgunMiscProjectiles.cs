@@ -470,7 +470,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public override void Kill(int timeLeft)
         {
-            Helper.PlayPitched($"{nameof(StarlightRiver)}/Sounds/ShadowDeath", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+            Helper.PlayPitched("ShadowDeath", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
             const int Repeats = 45;
             for (int i = 0; i < Repeats; ++i)
             {
