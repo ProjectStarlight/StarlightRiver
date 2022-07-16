@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public int comboState;
 
-		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nFinal strike rends enemy armor\nRight click to throw your axe") { }
+		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemy armor\nRight click to throw your axe") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "AxeBook";
 
