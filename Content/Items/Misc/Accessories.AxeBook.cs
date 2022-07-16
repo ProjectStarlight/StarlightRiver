@@ -45,9 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Equipped(player))
 			{
 				if (item.CountsAsClass(DamageClass.Melee) && item.pick <= 0 && item.axe > 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
-				{
 					return true;
-				}
 			}
 
 			return false;
@@ -110,9 +108,9 @@ namespace StarlightRiver.Content.Items.Misc
 					if (pitch >= 1)
 						pitch = 1;
 
-					//Helpers.Helper.PlayPitched("ChainHit", 1, pitch, player.Center);
-					Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, player.Center);
-					Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, player.Center);
+					//Helper.PlayPitched("ChainHit", 1, pitch, player.Center);
+					Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, player.Center);
+					Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, player.Center);
 
 					if (Item.UseSound.HasValue)
 						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, player.Center);
@@ -169,11 +167,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == Player.whoAmI);
 
 			if (instance != null && instance.active)
-			{
-				var mp = instance.ModProjectile as AxeBookProjectile;
-
 				Player.SetCompositeArmFront(true, 0, instance.rotation - (Player.direction == 1 ? 1.57f : -3.14f));
-			}
 		}
 
 		public override void AI()
@@ -185,7 +179,6 @@ namespace StarlightRiver.Content.Items.Misc
 			switch (comboState)
 			{
 				case 0:
-
 					if (Progress == 0)
 					{
 						Projectile.timeLeft -= 20;
@@ -198,14 +191,12 @@ namespace StarlightRiver.Content.Items.Misc
 					break;
 
 				case 1:
-
 					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
 					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.3f;
 
 					break;
 
 				case 2:
-
 					if (Progress == 0)
 					{
 						Projectile.timeLeft -= 60;
@@ -222,7 +213,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 					break;
 			}
-
 			
 			ManageTrail();
 
@@ -248,7 +238,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var start = Owner.Center;
 			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * 1.15f;
 
-			if (freeze <= 1 && Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
+			if (freeze <= 1 && Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -268,7 +258,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
+			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			Core.Systems.CameraSystem.Shake += 4;
 
 			if (comboState == 2 && target.defense > 0)
@@ -400,7 +390,7 @@ namespace StarlightRiver.Content.Items.Misc
 				storedScale = Projectile.scale;
 
 			if (Projectile.timeLeft % 40 == 0 && Projectile.friendly)
-				Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
+				Helper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
 			
 			if (Progress < 0.2f)
 			{
@@ -448,14 +438,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Helpers.Helper.CheckCircularCollision(Projectile.Center, (int)(length * Projectile.scale) / 2, targetHitbox);
+			return Helper.CheckCircularCollision(Projectile.Center, (int)(length * Projectile.scale) / 2, targetHitbox);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			for (int k = 0; k < 10; k++)
 			{
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 6), 0, GetSwingColor(1));
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 6), 0, GetSwingColor());
 
 				for (int n = 0; n < 3; n++)
 				{
@@ -463,7 +453,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
+			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			Core.Systems.CameraSystem.Shake += 4;
 
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * Projectile.knockBack * 2 * target.knockBackResist;
@@ -505,9 +495,9 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private Color GetSwingColor(float factor)
+		private Color GetSwingColor()
 		{
-				return Color.Lerp(trailColor, Color.Red, Progress) * FadeOut;
+			return Color.Lerp(trailColor, Color.Red, Progress) * FadeOut;
 		}
 
 		private void ManageTrail()
@@ -517,13 +507,11 @@ namespace StarlightRiver.Content.Items.Misc
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
 
-				return GetSwingColor(factor.X);
+				return GetSwingColor();
 			});
 
 			if (cache != null)
-			{
 				trail.Positions = cache.ToArray();
-			}
 		}
 
 		public void DrawPrimitives()
