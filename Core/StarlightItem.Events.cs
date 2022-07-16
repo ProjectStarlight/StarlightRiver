@@ -65,6 +65,22 @@ namespace StarlightRiver.Core
             return true;
         }
 
+        public delegate bool AltFunctionUseDelegate(Item item, Player player);
+        public static event AltFunctionUseDelegate AltFunctionUseEvent;
+		public override bool AltFunctionUse(Item item, Player player)
+		{
+            if(AltFunctionUseEvent != null)
+			{
+                bool result = false;
+                foreach (AltFunctionUseDelegate del in AltFunctionUseEvent.GetInvocationList())
+				{
+                    result |= del(item, player);
+				}
+                return result;
+			}
+			return base.AltFunctionUse(item, player);
+		}
+
 		public override void Unload()
 		{
             GetHealLifeEvent = null;

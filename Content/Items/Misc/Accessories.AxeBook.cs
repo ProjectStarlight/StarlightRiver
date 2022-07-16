@@ -26,16 +26,31 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += OverrideAxeEffects;
+			StarlightItem.AltFunctionUseEvent += AllowRightClick;
 		}
 
 		public override void Unload()
 		{
 			StarlightItem.CanUseItemEvent -= OverrideAxeEffects;
+			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
 		}
 
 		public override void SafeSetDefaults()
 		{
 			Item.rare = Terraria.ID.ItemRarityID.Orange;
+		}
+
+		private bool AllowRightClick(Item item, Player player)
+		{
+			if (Equipped(player))
+			{
+				if (item.CountsAsClass(DamageClass.Melee) && item.pick <= 0 && item.axe > 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		private bool OverrideAxeEffects(Item item, Player player)
@@ -50,11 +65,36 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<AxeBookProjectile>() && n.owner == player.whoAmI))
 						return false;
 
+					if(Main.mouseRight)
+					{
+						if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<ThrownAxeProjectile>() && n.owner == player.whoAmI))
+							return false;
+
+						var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Max(5, item.damage * 0.12f);
+
+						int i2 = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
+						var proj2 = Main.projectile[i2];
+
+						proj2.timeLeft = 300;
+						proj2.scale = item.scale * 1.25f;
+
+						if (proj2.ModProjectile is ThrownAxeProjectile)
+						{
+							var modProj = proj2.ModProjectile as ThrownAxeProjectile;
+							modProj.trailColor = ItemColorUtility.GetColor(item.type);
+							modProj.texture = TextureAssets.Item[item.type].Value;
+							modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
+							modProj.lifeSpan = 300;
+						}
+
+						return false;
+					}
+
 					int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI);
 					var proj = Main.projectile[i];
 
 					proj.timeLeft = item.useAnimation * 5;
-					proj.scale = item.scale;
+					proj.scale = item.scale * (1.2f + comboState * 0.3f);
 
 					if (proj.ModProjectile is AxeBookProjectile)
 					{
@@ -67,13 +107,15 @@ namespace StarlightRiver.Content.Items.Misc
 						modProj.comboState = comboState;
 					}
 
-					float pitch = 1 - item.useAnimation / 60f;
+					float pitch = -0.3f;
 					pitch += comboState * 0.1f;
 
 					if (pitch >= 1)
 						pitch = 1;
 
-					Helpers.Helper.PlayPitched("Effects/HeavyWhooshShort", 1, pitch, player.Center);
+					//Helpers.Helper.PlayPitched("ChainHit", 1, pitch, player.Center);
+					Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, player.Center);
+					Helpers.Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, player.Center);
 
 					if (Item.UseSound.HasValue)
 						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, player.Center);
@@ -160,7 +202,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 				case 1:
 
-					Projectile.scale = 1.2f;
 					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
 					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.3f;
 
@@ -179,7 +220,6 @@ namespace StarlightRiver.Content.Items.Misc
 					var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * .75f;
 					Dust.NewDust(end - Vector2.One * 5, 10, 10, ModContent.DustType<Dusts.Cinder>(), 0, 0, 0, GetSwingColor(Progress));
 
-					Projectile.scale = 1.5f;
 					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
 					holdOut = (float)Math.Sin(SwingEase(Progress) * 3.14f) * length * 0.4f;
 
@@ -189,7 +229,7 @@ namespace StarlightRiver.Content.Items.Misc
 			
 			ManageTrail();
 
-			if (freeze > 0)
+			if (freeze > 1)
 			{
 				freeze--;
 				Projectile.timeLeft++;
@@ -209,9 +249,9 @@ namespace StarlightRiver.Content.Items.Misc
 			var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
 			var start = Owner.Center;
-			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut);
+			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * 1.15f;
 
-			if (freeze <= 0 && Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
+			if (freeze <= 1 && Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -231,7 +271,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
+			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			Core.Systems.CameraSystem.Shake += 4;
 
 			if (comboState == 2 && target.defense > 0)
@@ -240,7 +280,8 @@ namespace StarlightRiver.Content.Items.Misc
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 			target.immune[0] += 22;
 
-			freeze += 20;
+			if(freeze == 0)
+				freeze += 24;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -305,6 +346,166 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				trail.Positions = realCache;
+			}
+		}
+
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
+
+			trail?.Render(effect);
+		}
+	}
+
+	class ThrownAxeProjectile : ModProjectile, IDrawPrimitive
+	{
+		public float length;
+		public Texture2D texture;
+		public int lifeSpan;
+		public Color trailColor;
+
+		private int freeze = 0;
+		private List<Vector2> cache;
+		private Trail trail;
+		private Vector2 freezePoint;
+
+		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
+		public Player Owner => Main.player[Projectile.owner];
+		public float FadeOut => Projectile.timeLeft < 60 ? Projectile.timeLeft / 60f : 1;
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetDefaults()
+		{
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.extraUpdates = 3;
+		}
+
+		public override void AI()
+		{
+			if (!Projectile.friendly)
+			{
+				Projectile.Center = Owner.Center;
+				Projectile.scale = 0;
+				trailColor = Color.Transparent;
+			}
+
+			ManageTrail();
+
+			if (freeze > 0)
+			{
+				freeze--;
+				Projectile.timeLeft++;
+				Projectile.position -= Projectile.velocity;
+				return;
+			}
+
+			ManageCaches();
+
+			Projectile.rotation += 0.12f;
+
+			if (Progress > 0.2f)
+			{
+				Projectile.velocity += -Vector2.Normalize(Projectile.Center - Owner.Center) * 0.1f;
+
+				if (Vector2.Distance(Projectile.Center, Owner.Center) < 30 && Projectile.friendly)
+				{
+					Projectile.friendly = false;
+					freezePoint = Projectile.Center;
+				}
+			}
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Helpers.Helper.CheckCircularCollision(Projectile.Center, (int)(length * Projectile.scale) / 2, targetHitbox);
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			for (int k = 0; k < 10; k++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 6), 0, GetSwingColor(1));
+
+				for (int n = 0; n < 3; n++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, Terraria.ID.DustID.Blood, Main.rand.NextVector2Circular(6, 6));
+				}
+			}
+
+			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
+			Core.Systems.CameraSystem.Shake += 4;
+
+			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * Projectile.knockBack * 2 * target.knockBackResist;
+			target.immune[0] += 22;
+
+			if (freeze == 0)
+				freeze += 12;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			var rot = Projectile.rotation;
+			var pos = Projectile.Center - Main.screenPosition;
+
+			Main.spriteBatch.Draw(texture, pos, default, lightColor * FadeOut, rot, texture.Size() / 2, Projectile.scale, 0, 0);
+			return false;
+		}
+
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+
+				for (int i = 0; i < 50; i++)
+				{
+					cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+				}
+			}
+
+			if(Projectile.friendly)
+				cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+			else
+				cache.Add(freezePoint + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
+
+			while (cache.Count > 50)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private Color GetSwingColor(float factor)
+		{
+				return Color.Lerp(trailColor, Color.Red, Progress) * FadeOut;
+		}
+
+		private void ManageTrail()
+		{
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+			{
+				if (factor.X >= 0.98f)
+					return Color.White * 0;
+
+				return GetSwingColor(factor.X);
+			});
+
+			if (cache != null)
+			{
+				trail.Positions = cache.ToArray();
 			}
 		}
 
