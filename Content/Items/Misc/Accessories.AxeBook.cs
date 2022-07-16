@@ -378,6 +378,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private Trail trail;
 		private Vector2 freezePoint;
+		private float storedScale;
 
 		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
 		public Player Owner => Main.player[Projectile.owner];
@@ -396,6 +397,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
+			Owner.heldProj = Projectile.whoAmI;
+
+			if (storedScale == 0)
+				storedScale = Projectile.scale;
+
+			if(Progress < 0.2f)
+			{
+				Projectile.Center = Owner.Center;
+				Projectile.rotation += 0.01f + (Progress / 0.2f * 0.11f);
+
+				Owner.SetCompositeArmFront(true, 0, Owner.direction * 1.57f + Owner.direction * (Progress / 0.2f * 4.71f));
+				Projectile.scale = Progress / 0.2f * storedScale;
+
+				return;
+			}
+
 			if (!Projectile.friendly)
 			{
 				Projectile.Center = Owner.Center;
@@ -417,7 +434,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Projectile.rotation += 0.12f;
 
-			if (Progress > 0.2f)
+			if (Progress > 0.4f)
 			{
 				Projectile.velocity += -Vector2.Normalize(Projectile.Center - Owner.Center) * 0.1f;
 
