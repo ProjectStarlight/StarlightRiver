@@ -292,9 +292,9 @@ namespace StarlightRiver.Content.Items.Moonstone
         private Trail trail;
         private Trail trail2;
 
-        private float Progress => 1 - (Projectile.timeLeft / 10f);
+        protected float Progress => 1 - (Projectile.timeLeft / 10f);
 
-        private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+        protected virtual float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
         public override void SetDefaults()
         {
             Projectile.width = 80;
