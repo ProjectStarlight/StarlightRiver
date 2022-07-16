@@ -62,15 +62,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (item.CountsAsClass(DamageClass.Melee) && item.pick <= 0 && item.axe > 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
 				{
-					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<AxeBookProjectile>() && n.owner == player.whoAmI))
+					if (Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<AxeBookProjectile>() || n.type == ModContent.ProjectileType<ThrownAxeProjectile>()) && n.owner == player.whoAmI))
 						return false;
 
 					if(Main.mouseRight)
 					{
-						if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<ThrownAxeProjectile>() && n.owner == player.whoAmI))
-							return false;
-
-						var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Max(5, item.damage * 0.12f);
+						var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
 
 						int i2 = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
 						var proj2 = Main.projectile[i2];
@@ -175,7 +172,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				var mp = instance.ModProjectile as AxeBookProjectile;
 
-				Player.SetCompositeArmFront(true, 0, instance.rotation - 1.57f);
+				Player.SetCompositeArmFront(true, 0, instance.rotation - (Player.direction == 1 ? 1.57f : -3.14f));
 			}
 		}
 
@@ -402,7 +399,10 @@ namespace StarlightRiver.Content.Items.Misc
 			if (storedScale == 0)
 				storedScale = Projectile.scale;
 
-			if(Progress < 0.2f)
+			if (Projectile.timeLeft % 40 == 0 && Projectile.friendly)
+				Helpers.Helper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
+			
+			if (Progress < 0.2f)
 			{
 				Projectile.Center = Owner.Center;
 				Projectile.rotation += 0.01f + (Progress / 0.2f * 0.11f);
