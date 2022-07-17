@@ -48,6 +48,9 @@ namespace StarlightRiver.Content.Items.Breacher
     {
         private bool HasTouchedMouse;
 
+        private bool initialized = false;
+
+        private float distanceToExplode = 130;
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetStaticDefaults()
@@ -66,20 +69,31 @@ namespace StarlightRiver.Content.Items.Breacher
 
             Projectile.timeLeft = 240;
             Projectile.penetrate = 1;
+            distanceToExplode = Main.rand.Next(145, 175);
         }
 
         public override void AI()
         {
+            if (!initialized)
+            {
+                initialized = true;
+                if (Projectile.Distance(Main.MouseWorld) > distanceToExplode)
+                {
+                    distanceToExplode = Projectile.Distance(Main.MouseWorld) * Main.rand.NextFloat(0.9f,1.1f);
+                }
+            }
+
             Projectile.rotation = Projectile.velocity.ToRotation();
 
             Projectile.velocity *= 1.025f;
 
-            if (Projectile.position.Distance(Main.MouseWorld) < 20f)
+            if (distanceToExplode < 0)
                 HasTouchedMouse = true;
 
             if (Main.myPlayer == Projectile.owner && Projectile.timeLeft < 230 && HasTouchedMouse) //only explodes into scrap after a certain amount of time to prevent "shotgunning"
-                ExplodeIntoScrap(); 
+                ExplodeIntoScrap();
 
+            distanceToExplode -= Projectile.velocity.Length();
         }
 
         public override void Kill(int timeLeft)
