@@ -364,12 +364,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
             {
-                return Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress);
+                return new Color(100, 0, 255);
             });
 
             trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
             {
-                return Color.White;
+                return Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress);
             });
             float nextplace = 33f / 32f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));

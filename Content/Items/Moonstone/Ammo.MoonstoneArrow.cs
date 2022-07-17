@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 
             Color glowColor = new Color(100, 20, 255, 0);
-            for (float i = Projectile.rotation + (gravity * 6); i < Projectile.rotation + (gravity * 6) + 6.28f; i += 1.57f)
+            for (float i = Projectile.rotation + ((float)Main.timeForVisualEffects * 0.15f); i < Projectile.rotation + ((float)Main.timeForVisualEffects * 0.15f) + 6.28f; i += 1.57f)
             {
                 Vector2 offset = (i.ToRotationVector2() * charge * 13) + ((Projectile.rotation + 1.57f).ToRotationVector2() * 10);
                 Main.spriteBatch.Draw(whiteTex, offset + Projectile.Center - Main.screenPosition, null, glowColor * charge * 0.25f, Projectile.rotation, whiteTex.Size() / 2, Projectile.scale * (float)Math.Sqrt(charge) * 2, SpriteEffects.None, 0f);
