@@ -9,6 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
+using Terraria.Audio;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
@@ -58,7 +59,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private float trailWidth => 0.4f;
 
-        private float gravity = -0.1f;
+        private Vector2 velBase = Vector2.Zero;
+
+        private float gravity = 0.15f;
 
         private int targetID = -1;
 
@@ -79,13 +82,15 @@ namespace StarlightRiver.Content.Items.Moonstone
             Projectile.timeLeft = 400;
             Projectile.tileCollide = true;
             Projectile.ignoreWater = false;
-            Projectile.aiStyle = 2;
         }
+
+        public override bool ShouldUpdatePosition() => base.ShouldUpdatePosition();
 
         public override void AI()
         {
-            gravity += 0.01f;
-            Projectile.velocity.Y += gravity;
+            if (velBase == Vector2.Zero)
+                velBase = Projectile.velocity;
+            velBase.Y += gravity * (0.5f + (charge * 1.7f));
             Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
             Lighting.AddLight(Projectile.Center, Color.BlueViolet.ToVector3() * 0.5f);
@@ -98,7 +103,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 damageIncrementer++;
                 if (damageIncrementer % 10 == 0)
                     Projectile.damage++;
-                Dust.NewDustPerfect((Projectile.Center - offset * 60) + (Projectile.velocity * 5), ModContent.DustType<MoonstoneArrowDust>(), offset * 2, 0, Color.BlueViolet, charge);
+                Dust.NewDustPerfect((Projectile.Center - offset * 60) + (Projectile.velocity * 2), ModContent.DustType<MoonstoneArrowDust>(), offset * 2, 0, Color.BlueViolet, charge);
             }
 
             if (!Main.dedServ)
@@ -106,6 +111,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 ManageCaches();
                 ManageTrail();
             }
+
+            Projectile.velocity = velBase * (0.5f + (charge * 1.7f));
         }
 
         private void ManageCaches()
@@ -194,6 +201,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         }
         public override void Kill(int timeLeft)
         {
+            SoundEngine.PlaySound(SoundID.Item68 with { Volume = (float)Math.Sqrt(charge), Pitch = Main.rand.NextFloat(0.8f,1.2f)}, Projectile.Center);
             Core.Systems.CameraSystem.Shake += (int)(6 * charge);
 
             for (int j = 0; j < 17; j++)
