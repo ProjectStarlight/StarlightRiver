@@ -9,7 +9,8 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.ID;
-
+using Terraria.DataStructures;
+using Terraria.Enums;
 using System;
 using System.Collections.Generic;
 using static Terraria.ModLoader.ModContent;
@@ -24,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
         public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod");
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 4, 0));
             MinPick = int.MaxValue;
         }
 
