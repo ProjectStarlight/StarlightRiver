@@ -42,9 +42,12 @@ namespace StarlightRiver.Core
             {
                 if (Main.tile[x,y].HasTile)
                 {
-                    WorldGen.PlaceObject(x, y - 1, TileType<CrashPod>());
-                    if (Main.tile[x, y - 1].TileType == TileType<CrashPod>())
+                    WorldGen.PlaceObject(x, y - 1, 376); //placing and checking a crate because thats easier than manually checking whether the droppod can be placed (and placing the droppod via placeobject crashes because it's a dummy tile
+                    if (Main.tile[x, y - 1].TileType == 376)
+                    {
+                        Helper.PlaceMultitile(new Point16(x, y - 4), TileType<CrashPod>());
                         return true;
+                    }
                     return false;
                 }
             }

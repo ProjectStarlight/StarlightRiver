@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 4, 0));
-            MinPick = int.MaxValue;
+            MinPick = 999;
         }
 
         public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
@@ -57,6 +57,10 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         {
             Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ModContent.ItemType<Astroscrap>(), Main.rand.Next(10,20));
         }
+
+        public override bool CanKillTile(int i, int j, ref bool blockDamaged) => false;
+
+        public override bool CanExplode(int i, int j) => false;
     }
     internal class CrashPodDummy : Dummy
     {
