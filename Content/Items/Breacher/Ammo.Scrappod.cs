@@ -47,6 +47,7 @@ namespace StarlightRiver.Content.Items.Breacher
     internal class ScrappodProjectile : ModProjectile
     {
         private bool HasTouchedMouse;
+
         public override string Texture => AssetDirectory.BreacherItem + Name;
 
         public override void SetStaticDefaults()

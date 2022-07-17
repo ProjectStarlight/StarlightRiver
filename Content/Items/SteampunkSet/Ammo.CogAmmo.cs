@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
         internal bool hasBounced;
 
         internal bool firstHit;
+
         public override string Texture => AssetDirectory.SteampunkItem + Name;
 
         public override void SetStaticDefaults()

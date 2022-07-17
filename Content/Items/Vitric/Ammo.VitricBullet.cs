@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.Items.Vitric
     }
     internal class VitricBulletProjectile : ModProjectile
     {
+        private List<Vector2> cache;
+        private Trail trail;
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetStaticDefaults()
@@ -77,6 +79,12 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AI()
         {
             Projectile.rotation = Projectile.velocity.ToRotation();
+
+            if (!Main.dedServ)
+            {
+                ManageCaches();
+                ManageTrail();
+            }
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -109,6 +117,61 @@ namespace StarlightRiver.Content.Items.Vitric
                     Crystal.enemyID = target.whoAmI;
                 }
             }
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            Main.spriteBatch.End();
+            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.06f);
+            effect.Parameters["repeats"].SetValue(1);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+
+            trail?.Render(effect);
+
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LightningTrail").Value);
+
+            trail?.Render(effect);
+
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+            return true;
+        }
+
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                for (int i = 0; i < 13; i++)
+                {
+                    cache.Add(Projectile.Center);
+                }
+            }
+
+            cache.Add(Projectile.Center);
+
+            while (cache.Count > 13)
+            {
+                cache.RemoveAt(0);
+            }
+
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 3, factor =>
+            {
+                return new Color(70, 178, 201) * 0.5f * factor.X;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
     }
 
@@ -180,25 +243,57 @@ namespace StarlightRiver.Content.Items.Vitric
                 switch (Projectile.frame)
                 {
                     case 0:
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore1").Type).timeLeft = 60;
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore2").Type).timeLeft = 60;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore1").Type).timeLeft = 45;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore2").Type).timeLeft = 45;
                         break;
                     case 1:
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore3").Type).timeLeft = 60;
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore4").Type).timeLeft = 60;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore3").Type).timeLeft = 45;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore4").Type).timeLeft = 45;
                         break;
                     case 2:
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore5").Type).timeLeft = 60;
-                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore6").Type).timeLeft = 60;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore5").Type).timeLeft = 45;
+                        Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity, Mod.Find<ModGore>(Name + "_Gore6").Type).timeLeft = 45;
                         break;
                 }
 
                 SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<VitricBulletCrystalExplosion>(), Projectile.damage, 0f, Projectile.owner);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<VitricBulletCrystalExplosion>(), Projectile.damage, 0f, Projectile.owner, enemyID);
                 CameraSystem.Shake += 1;
+
+                for (int i = 0; i < 6; i++)
+                {
+                    Dust.NewDustDirect(Projectile.Center, 2, 2, ModContent.DustType<VitricShardDust>(), 0f, 0f, 0, default, Main.rand.NextFloat(0.6f, 0.85f));
+                }
             }     
         }
+
+        /*public override bool PreDraw(ref Color lightColor) //this drawcode draws offset and weird so if someone better with custom drawing could fix dis plz <3
+        {
+            Main.instance.LoadProjectile(Projectile.type);
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+
+            SpriteEffects spriteEffects = Projectile.direction == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+            int startY = frameHeight * Projectile.frame;
+
+            Rectangle frameRect = new Rectangle(0, startY, texture.Width, frameHeight);
+
+            Color drawColor = Projectile.GetAlpha(lightColor) * (1 - (Projectile.alpha / 255));
+
+            float rotationOffset = -1.25f;
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
+                Projectile.scale * 0.55f, spriteEffects, 0);
+
+            rotationOffset = -0.75f;
+
+            Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, frameRect, drawColor, Projectile.rotation + rotationOffset, texture.Size() / 2f,
+                Projectile.scale * 0.65f, spriteEffects, 0);
+            return true;
+        }*/
+
         public override void SendExtraAI(BinaryWriter writer)
         {
             writer.WritePackedVector2(offset);
@@ -214,11 +309,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
     internal class VitricBulletCrystalExplosion : ModProjectile
     {
-        public override string Texture => AssetDirectory.Invisible;
+        private ref float NPCWhoAmI => ref Projectile.ai[0];
 
         private float Progress => 1 - (Projectile.timeLeft / 5f);
 
         private float Radius => 35 * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+        public override bool? CanHitNPC(NPC target) => target.whoAmI == NPCWhoAmI; //only hit the npc that the crystal was on
+
+        public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {
@@ -247,6 +346,28 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 return true;
             }
+            return false;
+        }
+    }
+
+    public class VitricShardDust : ModDust
+    {
+        public override string Texture => AssetDirectory.Dust + "VitricShard";
+
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.noLight = false;
+        }
+
+        public override bool Update(Dust dust)
+        {
+            dust.position += dust.velocity;
+            dust.velocity.Y += 0.15f;
+            dust.rotation += 0.1f;
+            dust.scale *= 0.98f;
+            if (dust.scale <= 0.2)
+                dust.active = false;
             return false;
         }
     }
