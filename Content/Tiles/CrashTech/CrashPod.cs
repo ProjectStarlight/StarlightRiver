@@ -1,91 +1,75 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Items.Breacher;
+using StarlightRiver.Content.Items.SpaceEvent;
 using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Terraria.ID;
+
 using System;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.CrashTech
 {
-	class CrashPod : LootChest
+    class CrashPod : DummyTile
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/CrashTech/CrashPod";
 
+        public override int DummyType => ProjectileType<CrashPodDummy>();
+
         public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Tink, false, new Color(255, 200, 40), false, false, "Crashed Pod");
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod");
+            MinPick = int.MaxValue;
         }
 
-        public override bool CanOpen(Player Player) => Helper.HasItem(Player, ItemID.ShadowKey, 1);
-
-        public override void MouseOver(int i, int j)
+        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
         {
-            Player Player = Main.LocalPlayer;
-            Player.cursorItemIconID = ItemID.ShadowKey;
-            Player.noThrow = 2;
-            Player.cursorItemIconEnabled = true;
+            Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
+            //if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Content.Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            var tile = Framing.GetTileSafely(i, j);
-
-            var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/CrashTech/CrashPodGlow").Value;
-            var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
-            var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
-            var color = Color.White * (0.4f + (float)Math.Sin(Main.GameUpdateCount / 40f) * 0.25f);
-
-            spriteBatch.Draw(tex, pos, frame, color);
-        }
-
-        public override bool RightClick(int i, int j)
-        {
-            var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
-
-            if (CanOpen(Main.LocalPlayer) && tile.TileFrameX < 32)
+            if (Main.tile[i, j].TileFrameX == 0 && Main.tile[i, j].TileFrameY == 0)
             {
-                for(int x = 0; x < 2; x++)
-                    for(int y = 0; y < 4; y++)
-                    {
-                        int realX = x + i - tile.TileFrameX / 18;
-                        int realY = y + j - tile.TileFrameY / 18;
+                var dummy = Dummy(i, j);
 
-                        Framing.GetTileSafely(realX, realY).TileFrameX += 36;
-                    }
+                if (dummy is null)
+                    return;
 
-                Loot[] smallLoot = new Loot[5];
+                Texture2D tex = Request<Texture2D>(Texture + "_Glow").Value;
+                Texture2D tex2 = Request<Texture2D>(Texture + "_Glow2").Value;
 
-                List<Loot> types = Helper.RandomizeList(SmallLootPool);
-                for (int k = 0; k < 5; k++) smallLoot[k] = types[k];
+                spriteBatch.Draw(tex, (Helper.TileAdj + new Vector2(i, j)) * 16 - Main.screenPosition, null, Color.White);
+                spriteBatch.Draw(tex2, (Helper.TileAdj + new Vector2(i, j)) * 16 + new Vector2(-1, 0) - Main.screenPosition, null, Helper.IndicatorColorProximity(150, 300, dummy.Center));
 
-                UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
-                UILoader.GetUIState<LootUI>().Visible = true;
-                return true;
             }
-            return false;
         }
 
-        internal override List<Loot> GoldLootPool =>
-            new List<Loot>
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ModContent.ItemType<Astroscrap>(), Main.rand.Next(10,20));
+        }
+    }
+    internal class CrashPodDummy : Dummy
+    {
+        public CrashPodDummy() : base(TileType<CrashPod>(), 32, 48) { }
+
+        public override void Collision(Player Player)
+        {
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
-                new Loot(ItemID.DirtBlock, 1)
-            };
+                WorldGen.KillTile(ParentX, ParentY);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
-        internal override List<Loot> SmallLootPool =>
-            new List<Loot>
-            {
-                new Loot(ItemID.DirtBlock, 10, 20),
-                new Loot(ItemID.StoneBlock, 10, 20),
-                new Loot(ItemID.Wood, 10, 20),
-                new Loot(ItemID.Gel, 10, 20),
-                new Loot(ItemID.IronBar, 10, 20)
-
-            };
-
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+            }
+        }
     }
 }

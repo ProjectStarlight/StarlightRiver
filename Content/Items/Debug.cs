@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
             var tile = Framing.GetTileSafely(center.X, center.Y);
