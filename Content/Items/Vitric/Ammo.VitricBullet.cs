@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 }
             }
 
-            if (Main.rand.NextBool(2) && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<VitricBulletCrystalProjectile>()] < 6)
+            if (Main.rand.NextBool(2) && Main.player[Projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<VitricBulletCrystalProjectile>()] < 6 && Main.myPlayer == Projectile.owner)
             {
                 Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), target.position, Vector2.Zero, ModContent.ProjectileType<VitricBulletCrystalProjectile>(), Projectile.damage, 0f, Projectile.owner);
 

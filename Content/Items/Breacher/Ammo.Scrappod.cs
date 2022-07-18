@@ -144,7 +144,8 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             for (int i = 0; i < 3; i++)
             {
-                Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f), ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
+                if (Main.myPlayer == Projectile.owner)
+                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f), ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
             }
             //maybe better sound here
             Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
