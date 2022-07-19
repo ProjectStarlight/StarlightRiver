@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
@@ -62,6 +63,16 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             if (dust.scale <= 0.2f)
                 dust.active = false;
             return false;
+        }
+    }
+    //this should very much probably be moved to the Dust folder
+    public class VitricSandDust : ModDust
+    {
+        public override string Texture => AssetDirectory.Dust + Name;
+
+        public override void OnSpawn(Dust dust)
+        {
+            UpdateType = DustID.Sand;
         }
     }
 }

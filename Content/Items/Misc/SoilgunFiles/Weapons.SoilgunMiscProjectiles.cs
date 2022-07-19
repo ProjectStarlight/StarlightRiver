@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             Projectile.scale *= 0.99f;
 
-            if (Projectile.scale < 0.1f)
+            if (Projectile.scale < 0.3f)
                 Projectile.Kill();
 
             if (Projectile.velocity.Y == 0)
@@ -312,7 +312,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public bool foundTarget;
 
         public bool HasCharged;
-        public override bool? CanDamage() => Projectile.timeLeft < 60;
+        public override bool? CanDamage() => Projectile.timeLeft < 90;
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         {
             NPC npc = Projectile.FindTargetWithinRange(450f);
             Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-            if (npc != null && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1) && !npc.dontTakeDamage && !npc.immortal && !foundTarget && Projectile.timeLeft < 60)
+            if (npc != null && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1) && !npc.dontTakeDamage && !npc.immortal && !foundTarget && Projectile.timeLeft < 90)
             {
                 foundTarget = true;
                 if (!HasCharged)
@@ -359,7 +359,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             }
             if (!foundTarget)
             {
-                Projectile.velocity.Y += 0.05f;
+                Projectile.velocity.Y += 0.07f;
             }
         }
 
@@ -529,6 +529,151 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
+        }
+    }
+
+    class SoilgunVitricCrystals : ModProjectile
+    {
+        internal bool hitByBullet = false;
+
+        internal bool exploding;
+
+        internal int enemyID;
+
+        internal Vector2 offset = Vector2.Zero;
+
+        public override string Texture => AssetDirectory.MiscItem + Name;
+
+        public override bool? CanDamage() => false;
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Volatile Crystal");
+            Main.projFrames[Projectile.type] = 3;
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.penetrate = -1;
+            Projectile.width = Projectile.height = 16;
+
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+
+            Projectile.tileCollide = false;
+            Projectile.netUpdate = true;
+
+            Projectile.frame = Main.rand.Next(3);
+
+            Projectile.timeLeft = 240;
+
+            Projectile.scale = 0.4f;
+        }
+
+        public override void AI()
+        {
+            Projectile.ai[0]++;
+
+            NPC target = Main.npc[enemyID];
+            Projectile.position = target.position + offset;
+
+            if (!target.active || target.GetGlobalNPC<SoilgunGlobalNPC>().ShardTimer <= 0)
+                Projectile.Kill();
+            else if (!exploding)
+            {
+                if (Main.rand.NextBool(15))
+                    Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlassGravity>(), 0f, 0f, 0, default, Main.rand.NextFloat(0.5f, 0.8f));
+
+                Projectile.timeLeft = 2;
+            }
+            else if (exploding)
+            {
+                if (Projectile.timeLeft < 100 && Main.rand.NextBool(15))
+                {
+                    Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<MoltenGlassGravity>(), 0f, 0f, 0, default, Main.rand.NextFloat(0.5f, 0.8f));
+                    if (Main.rand.NextBool(2))
+                        Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.FireSparkle>(), 0f, 0f, 0, default, Main.rand.NextFloat(0.3f, 0.5f));
+                }
+
+                if (Projectile.timeLeft < 20)
+                    Projectile.scale += 0.02f;
+
+                if (Projectile.timeLeft == 60)
+                    Helper.PlayPitched("Magic/FireCast", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+            }
+
+            if (Projectile.ai[0] < 60)
+                Projectile.scale += 0.01f;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            Main.npc[enemyID].GetGlobalNPC<SoilgunGlobalNPC>().ShardAmount--;
+
+            SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
+            if (exploding)
+            {
+                if (Main.myPlayer == Projectile.owner)
+                    Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SoilgunExplosion>(), Projectile.damage, 0f, Projectile.owner, 50);
+
+                CameraSystem.Shake += 2;
+
+                Helper.PlayPitched("Magic/FireHit", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+
+                for (int i = 0; i < 2; i++)
+                {
+                    Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<MoltenGlassGravity>(), 0f, 0f, 0, default, Main.rand.NextFloat(0.6f, 0.85f));
+
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(0.6f, 0.9f), 10, Color.Orange, Main.rand.NextFloat(0.6f, 0.75f));
+
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(0.5f, 0.7f), 10, Color.DarkOrange, Main.rand.NextFloat(0.7f, 0.9f));
+                }
+
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.NeedlerDust>(), Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(3f, 4.5f), 85, default, Main.rand.NextFloat(0.5f, 0.8f)).rotation = Main.rand.NextFloat(6.18f);
+
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.NeedlerDustTwo>(), Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(3f, 4.5f), 85, default, Main.rand.NextFloat(0.5f, 0.8f)).rotation = Main.rand.NextFloat(6.18f);
+
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.NeedlerDustFour>(), Vector2.One.RotatedByRandom(6.18f) * Main.rand.NextFloat(3f, 4.5f), 85, default, Main.rand.NextFloat(0.5f, 0.8f)).rotation = Main.rand.NextFloat(6.18f);
+                return;
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlassGravity>(), 0f, 0f).scale = Main.rand.NextFloat(0.7f, 1.1f);
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var spriteBatch = Main.spriteBatch;
+            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+
+            Rectangle frameRect = texture.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
+            Vector2 drawOrigin = frameRect.Size() / 2f;
+
+            Color drawColor = Projectile.GetAlpha(lightColor);
+
+            spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+                frameRect, drawColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+            if (exploding)
+            {
+                texture = (Texture2D)ModContent.Request<Texture2D>(Texture + "_Orange");
+                drawColor = Color.Lerp(Color.Transparent, Color.White, (1 - (Projectile.timeLeft / 120f)));
+                spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+                    frameRect, drawColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+            }
+
+            return false;
+        }
+        public override void SendExtraAI(BinaryWriter writer)
+        {
+            writer.WritePackedVector2(offset);
+            writer.Write(enemyID);
+        }
+
+        public override void ReceiveExtraAI(BinaryReader reader)
+        {
+            offset = reader.ReadPackedVector2();
+            enemyID = reader.ReadInt32();
         }
     }
 }
