@@ -38,21 +38,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			}
 		}
 
-		const int height = 1;
 		public override void HitWire(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			int topY = j - tile.TileFrameY / 18 % height;
 			short frameAdjustment = (short)(tile.TileFrameX > 0 ? -18 : 18);
 
-			for (int h = 0; h < height; h++)
-				Main.tile[i, topY + h].TileFrameX += frameAdjustment;
-
-			for (int k = 0; k < height; k++)
-				Wiring.SkipWire(i, topY + k);
+			Main.tile[i, j].TileFrameX += frameAdjustment;
+			Wiring.SkipWire(i, j);
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
-				NetMessage.SendTileSquare(-1, i, topY + (int)Math.Floor(height / 2f), height, TileChangeType.None);
+				NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
 		}
 	}
 
