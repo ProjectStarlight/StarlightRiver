@@ -79,15 +79,17 @@ namespace StarlightRiver.Content.Tiles.CrashTech
                 WorldGen.KillTile(ParentX, ParentY);
                 NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
+                Core.Systems.CameraSystem.Shake += 4;
+
                 for (int k = 1; k <= 5; k++)
-                    Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("CrashPodGore" + k).Type);
+                    Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(4)).RotatedByRandom(MathHelper.ToRadians(35f)), Mod.Find<ModGore>("CrashPodGore" + k).Type);
 
                 for (int i = 0; i < 17; i++)
                 {
                     //for some reason the BuzzSpark dust spawns super offset 
-                    Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f) + Main.rand.NextVector2Circular(15,25), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(7.5f)).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
+                    Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f) + Main.rand.NextVector2Circular(15,25), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9.5f)).RotatedByRandom(MathHelper.ToRadians(5f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
 
-                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.Glow>(), (Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
+                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.Glow>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
                 }
 
 
