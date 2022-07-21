@@ -166,6 +166,14 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             return false;
         }
 
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 12);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
+
         private List<NPC> FindTargets(Player Player)
         {
             List<NPC> targets = new List<NPC>();
@@ -181,6 +189,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
             }
             return targets;
         }
+
     }
 
     internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive
