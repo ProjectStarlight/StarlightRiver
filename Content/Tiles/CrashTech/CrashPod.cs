@@ -85,9 +85,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
                 for (int i = 0; i < 17; i++)
                 {
                     //for some reason the BuzzSpark dust spawns super offset 
-                    Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), (Main.rand.NextVector2Circular(10, 10) * 0.75f).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
+                    Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f) + Main.rand.NextVector2Circular(15,25), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(7.5f)).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
 
-                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), (Main.rand.NextVector2Circular(10,10) * Main.rand.NextFloat(0.5f, 0.6f)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
+                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.Glow>(), (Vector2.Normalize(-Player.velocity) * Main.rand.NextFloat(6)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
                 }
 
 
