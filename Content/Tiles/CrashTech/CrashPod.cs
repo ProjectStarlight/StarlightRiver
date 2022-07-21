@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
         public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 4, 0));
+            QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0));
             MinPick = 999;
         }
 
@@ -64,6 +64,12 @@ namespace StarlightRiver.Content.Tiles.CrashTech
     }
     internal class CrashPodDummy : Dummy
     {
+        public override void Load()
+        {
+            for (int k = 1; k < 6; k++)
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, "StarlightRiver/Assets/Tiles/CrashTech/CrashPodGore" + k);
+        }
+
         public CrashPodDummy() : base(TileType<CrashPod>(), 32, 48) { }
 
         public override void Collision(Player Player)
@@ -72,6 +78,18 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             {
                 WorldGen.KillTile(ParentX, ParentY);
                 NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+
+                for (int k = 1; k <= 5; k++)
+                    Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("CrashPodGore" + k).Type);
+
+                for (int i = 0; i < 17; i++)
+                {
+                    //for some reason the BuzzSpark dust spawns super offset 
+                    Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), (Main.rand.NextVector2Circular(10, 10) * 0.75f).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
+
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), (Main.rand.NextVector2Circular(10,10) * Main.rand.NextFloat(0.5f, 0.6f)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
+                }
+
 
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
             }
