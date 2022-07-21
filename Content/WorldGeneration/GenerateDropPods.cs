@@ -40,10 +40,9 @@ namespace StarlightRiver.Core
 
             for (int y = 10; y < Main.maxTilesY; y++)
             {
-                if (Main.tile[x,y].HasTile)
+                if (Main.tile[x, y].HasTile && Main.tile[x, y + 1].HasTile)
                 {
-                    WorldGen.PlaceObject(x, y - 1, 376); //placing and checking a crate because thats easier than manually checking whether the droppod can be placed (and placing the droppod via placeobject crashes because it's a dummy tile
-                    if (Main.tile[x, y - 1].TileType == 376)
+                    if (Main.tile[x,y].BlockType == BlockType.Solid && Main.tile[x + 1, y].BlockType == BlockType.Solid && Helper.CheckAirRectangle(new Point16(x, y - 4), new Point16(2,4)))
                     {
                         Helper.PlaceMultitile(new Point16(x, y - 4), TileType<CrashPod>());
                         return true;

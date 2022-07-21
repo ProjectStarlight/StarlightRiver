@@ -97,4 +97,36 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             }
         }
     }
+    public class CrashPodGTile : GlobalTile
+    {
+        public override bool CanExplode(int i, int j, int type)
+        {
+            if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
+                return false;
+            return base.CanExplode(i, j, type);
+        }
+
+        public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
+        {
+            if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
+                return false;
+            return base.CanKillTile(i, j, type, ref blockDamaged);
+        }
+
+        public override void RandomUpdate(int i, int j, int type)
+        {
+            if (j < Main.worldSurface * 0.35f && Main.rand.NextBool(10000))
+            {
+                Tile tile1 = Main.tile[i, j];
+                Tile tile2 = Main.tile[1, j];
+                if (tile1.HasTile && tile2.HasTile && Main.tileSolid[tile1.TileType] && Main.tileSolid[tile2.TileType])
+                {
+                    if (tile1.BlockType == BlockType.Solid && tile2.BlockType == BlockType.Solid && Helper.CheckAirRectangle(new Point16(i, j - 4), new Point16(2, 4)))
+                    {
+                        Helper.PlaceMultitile(new Point16(i, j - 4), TileType<CrashPod>());
+                    }
+                }
+            }
+        }
+    }
 }
