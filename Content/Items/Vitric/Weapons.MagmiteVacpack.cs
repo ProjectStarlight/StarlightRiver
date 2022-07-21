@@ -87,6 +87,7 @@ namespace StarlightRiver.Content.Items.Vitric
     internal class MagmiteVacpackHoldout : ModProjectile
     {
         private int time;
+
         public ref float MaxFramesTillShoot => ref Projectile.ai[1];
 
         public ref float ShootDelay => ref Projectile.ai[0];
@@ -131,9 +132,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 MaxFramesTillShoot = owner.HeldItem.useAnimation;
 
             if (!CanHold)
-            {
                 Projectile.Kill();
-            }
 
             if (ShootDelay >= MaxFramesTillShoot)
             {
@@ -253,8 +252,6 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             if (stuck)
             {
-                Projectile.localAI[0] += 0.000001f;
-
                 Projectile.scale -= 0.0025f;    
 
                 if (Main.npc[enemyID].active)
@@ -289,13 +286,11 @@ namespace StarlightRiver.Content.Items.Vitric
             MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
             if (globalNPC.MagmiteAmount < 3)
             {
-                Vector2 Offset = new Vector2(0f, 0f);
                 stuck = true;
                 Projectile.friendly = false;
                 Projectile.tileCollide = false;
                 enemyID = target.whoAmI;
                 offset = Projectile.position - target.position;
-                offset -= Offset;
                 Projectile.netUpdate = true;
 
                 globalNPC.MagmiteAmount++;
@@ -308,6 +303,7 @@ namespace StarlightRiver.Content.Items.Vitric
             else
             {
                 MaxBounces--;
+
                 Projectile.velocity.X *= -1f;
 
                 Projectile.scale -= 0.1f;
@@ -445,7 +441,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (projectile.owner == MagmiteOwner && projectile.friendly && (projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true) && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
             {
-                damage = damage + MagmiteAmount * 3;
+                damage = damage + (MagmiteAmount * 3);
             }
         }
     }
