@@ -30,7 +30,6 @@ namespace StarlightRiver.Core
                         break;
                 }
             }
-
         }
 
         private bool SpawnDropPod(int x)

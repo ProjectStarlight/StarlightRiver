@@ -29,10 +29,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             MinPick = 999;
         }
 
-        public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+        public override void SafeNearbyEffects(int i, int j, bool closer)
         {
             Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
-            //if (Main.rand.Next(4) == 0) Dust.NewDustPerfect(new Vector2(i + Main.rand.NextFloat(), j + Main.rand.NextFloat()) * 16, DustType<Content.Dusts.Stamina>(), new Vector2(0, -Main.rand.NextFloat()));
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -62,6 +61,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
         public override bool CanExplode(int i, int j) => false;
     }
+
     internal class CrashPodDummy : Dummy
     {
         public override void Load()
@@ -92,17 +92,18 @@ namespace StarlightRiver.Content.Tiles.CrashTech
                     Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.Glow>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
                 }
 
-
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
             }
         }
     }
+
     public class CrashPodGTile : GlobalTile
     {
         public override bool CanExplode(int i, int j, int type)
         {
             if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
                 return false;
+
             return base.CanExplode(i, j, type);
         }
 
@@ -110,6 +111,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         {
             if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
                 return false;
+
             return base.CanKillTile(i, j, type, ref blockDamaged);
         }
 
@@ -119,6 +121,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             {
                 Tile tile1 = Main.tile[i, j];
                 Tile tile2 = Main.tile[1, j];
+
                 if (tile1.HasTile && tile2.HasTile && Main.tileSolid[tile1.TileType] && Main.tileSolid[tile2.TileType])
                 {
                     if (tile1.BlockType == BlockType.Solid && tile2.BlockType == BlockType.Solid && Helper.CheckAirRectangle(new Point16(i, j - 4), new Point16(2, 4)))
