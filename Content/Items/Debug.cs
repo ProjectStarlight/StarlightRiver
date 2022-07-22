@@ -58,6 +58,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            Core.GenerateMoonstone.DropMoonstone();
+            return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
             var tile = Framing.GetTileSafely(center.X, center.Y);
