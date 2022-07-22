@@ -130,14 +130,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             Helper.PlayPitched("Impacts/Clink", 0.10f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
-            {
                 Projectile.velocity.X = -oldVelocity.X;
-            }
 
             if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon)
-            {
                 Projectile.velocity.Y = -oldVelocity.Y;
-            }
+
             return false;
         }
         //yeah yeah examplemod shhh

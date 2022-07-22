@@ -78,9 +78,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 initialized = true;
                 if (Projectile.Distance(Main.MouseWorld) > distanceToExplode)
-                {
                     distanceToExplode = Projectile.Distance(Main.MouseWorld) * Main.rand.NextFloat(0.9f,1.1f);
-                }
             }
 
             Projectile.rotation = Projectile.velocity.ToRotation();
@@ -111,7 +109,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            Texture2D texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
             int frameHeight = texture.Height / Main.projFrames[Projectile.type];
             int startY = frameHeight * Projectile.frame;
@@ -125,7 +123,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
             Color drawColor = Projectile.GetAlpha(lightColor);
 
-            Vector2 drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
                 Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + new Vector2(0f, Projectile.gfxOffY);
@@ -143,9 +140,12 @@ namespace StarlightRiver.Content.Items.Breacher
         public void ExplodeIntoScrap()
         {
             for (int i = 0; i < 3; i++)
-            {
+            {              
                 if (Main.myPlayer == Projectile.owner)
-                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f), ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
+                {
+                    Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f);
+                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
+                }                  
             }
             //maybe better sound here
             Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
@@ -193,11 +193,11 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             for (int i = 0; i < 4; i++)
             {
-                Vector2 dustVelo = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(Main.rand.NextFloat(-15f, 15f))) * Main.rand.NextFloat(-0.25f, -0.35f);
+                Vector2 vel = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(Main.rand.NextFloat(-15f, 15f))) * Main.rand.NextFloat(-0.25f, -0.35f);
 
-                Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), dustVelo, 0, new Color(255, 255, 60) * 0.8f, 0.95f);
+                Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), vel, 0, new Color(255, 255, 60) * 0.8f, 0.95f);
 
-                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), dustVelo * 1.2f, 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.4f));
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), vel * 1.2f, 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.4f));
             }
             SoundEngine.PlaySound(SoundID.NPCHit4.WithPitchOffset(Main.rand.NextFloat(-0.1f, 0.1f)).WithVolumeScale(0.5f), Projectile.position);
         }

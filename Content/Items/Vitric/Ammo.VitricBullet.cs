@@ -195,6 +195,7 @@ namespace StarlightRiver.Content.Items.Vitric
             GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore5");
             GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore6");
         }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Vitric Crystal");
