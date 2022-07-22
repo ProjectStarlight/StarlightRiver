@@ -6,6 +6,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 using Terraria.DataStructures;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -46,12 +47,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AddRecipes()
 		{
-            RecipeSystem.allHiddenRecipes.Add(Name); //Hide this recipe
-
             Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.Sandstone, 10);
             recipe.AddIngredient(ItemID.Topaz);
             recipe.AddTile(TileID.Anvils);
+            recipe.AddCondition(RecipeSystem.GetCondition(Item));
             recipe.Register();
 		}
 	}
