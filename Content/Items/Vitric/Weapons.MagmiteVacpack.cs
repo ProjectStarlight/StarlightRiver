@@ -20,8 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("Blasts out Magmites that stick to enemies, causing stacking DoT and dealing 3 summon tag damage per Magmite stuck to an enemy\nEnemies can have a maximum of 3 Magmites stuck to them at once" +
-                "\nMagmites bounce off of tiles and bounce off enemies if they have the maximum amount of Magmites\nMagmites deal 50% more damage to enemies with the max amount of stuck Magmites");
+            Tooltip.SetDefault("Blasts out Magmites that stick to enemies\nFor each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites\nMagmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites");
         }
 
         public override void SetDefaults()
@@ -59,9 +58,7 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
             if (drawInfo.shadow != 0f)
-            {
                 return;
-            }
 
             Texture2D tankTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricItem + "MagmiteVacpack_Tank").Value;
 
@@ -87,7 +84,6 @@ namespace StarlightRiver.Content.Items.Vitric
     internal class MagmiteVacpackHoldout : ModProjectile
     {
         private int time;
-
         public ref float MaxFramesTillShoot => ref Projectile.ai[1];
 
         public ref float ShootDelay => ref Projectile.ai[0];
@@ -142,9 +138,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 float knockBack = owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
                 Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
                 if (Main.myPlayer == Projectile.owner)
-                {
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), barrelPos, shootVelocity, ModContent.ProjectileType<MagmiteVacpackProjectile>(), damage, knockBack, owner.whoAmI);
-                }
                 
                 for (int i = 0; i < 10; i++)
                 {
@@ -324,14 +318,10 @@ namespace StarlightRiver.Content.Items.Vitric
                 Projectile.Kill();
 
             if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
-            {
                 Projectile.velocity.X = -oldVelocity.X;
-            }
 
             if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon)
-            {
                 Projectile.velocity.Y = -oldVelocity.Y;
-            }
 
             Projectile.scale -= 0.1f;
 
@@ -439,7 +429,9 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             Player player = Main.player[projectile.owner];
 
-            if (projectile.owner == MagmiteOwner && projectile.friendly && (projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true) && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
+            bool IsMinion = (projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true);
+
+            if (projectile.owner == MagmiteOwner && projectile.friendly && IsMinion && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
             {
                 damage = damage + (MagmiteAmount * 3);
             }
