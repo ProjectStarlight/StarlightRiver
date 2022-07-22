@@ -42,6 +42,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			dummy.Size++;
 			dummy.gearAnimation = 40;
 
+			GearPuzzleHandler.engagedObjectives = 0;
+
 			GearPuzzleHandler.PuzzleOriginEntity?.Engage(2);
 
 			return true;
@@ -61,7 +63,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void PostDraw(Color lightColor)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
@@ -104,6 +105,32 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
+
+			if (GearPuzzleHandler.solved) //draws the crystal gear once the puzzle is finished
+			{
+				switch (Size)
+				{
+					case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+					case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value; break;
+					case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearMid").Value; break;
+					case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearLarge").Value; break;
+					default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value; break;
+				}
+
+				var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+				effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
+				effect.Parameters["uTime"].SetValue(GearPuzzleHandler.solveTimer / 180f * 2);
+				effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, tex.Width, tex.Height));
+				effect.Parameters["texSize"].SetValue(tex.Size());
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+
+				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			}
 		}
 	}
 

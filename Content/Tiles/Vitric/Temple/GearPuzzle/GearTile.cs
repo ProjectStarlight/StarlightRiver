@@ -204,11 +204,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 					engaged = true;
 
-					Tile tile = Main.tile[Position.X, Position.Y];
-					(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
-
 					entity.RecurseOverGears(entity.Engage);
 				}
+				Tile tile = Main.tile[Position.X, Position.Y];
+				(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
 			}
 
 			engaged = true;					

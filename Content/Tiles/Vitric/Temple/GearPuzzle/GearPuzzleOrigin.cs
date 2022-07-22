@@ -30,7 +30,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override void OnEngage(GearTileEntity entity)
 		{
-			GearPuzzleHandler.engagedObjectives = 0;
+			for(int k = 0; k < 10; k++)
+				Dust.NewDustPerfect(entity.Position.ToVector2() * 16, ModContent.DustType<Dusts.Glow>(), null, 0, new Color(255, 0, 0));
 		}
 	}
 
@@ -41,6 +42,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		public override void Update()
 		{
 			base.Update();
+
+			Main.NewText(GearPuzzleHandler.engagedObjectives);
 
 			Size = 3;
 			Engaged = true;
