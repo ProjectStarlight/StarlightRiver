@@ -81,7 +81,8 @@ namespace StarlightRiver.Core
 
             Vector2 oldPos = new Vector2(SquidBossArena.Center.X, SquidBossArena.Y) * 16;
 
-            for(int k = 1; k <= 2; k++)
+            //Find locations for and place the touchstone altars which lead to the boss' arena
+            for(int k = 1; k <= 2; k++) 
 			{
                 float fraction = k / 3f;
                 int yTarget = (int)Helper.LerpFloat(SquidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
@@ -127,6 +128,36 @@ namespace StarlightRiver.Core
                     continue;
                 }
             }
+        }
+
+        private void PlaceOre(Point16 center)
+		{
+            var radius = Main.rand.Next(2, 5);
+
+            int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
+            int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
+
+            for (int x = center.X; x < center.X + radius; x++)
+                for (int y = center.Y; y < center.Y + radius; y++)
+                {
+                    int xRel = x - center.X;
+                    int yRel = y - center.Y;
+
+                    Tile tile = Framing.GetTileSafely(x, y);
+                    tile.HasTile = true;
+                    tile.TileType = (ushort)TileType<AuroraIce>();
+                    tile.TileFrameX = (short)((frameStartX + xRel) * 18);
+                    tile.TileFrameY = (short)((frameStartY + yRel) * 18);
+
+                    int r = radius - 1;
+                    if (xRel == 0 && yRel == 0) tile.Slope = SlopeType.SlopeDownRight;
+                    if (xRel == 0 && yRel == r) tile.Slope = SlopeType.SlopeUpRight;
+                    if (xRel == r && yRel == 0) tile.Slope = SlopeType.SlopeDownLeft;
+                    if (xRel == r && yRel == r) tile.Slope = SlopeType.SlopeUpLeft;
+
+                    var dum = false;
+                    GetInstance<AuroraIce>().TileFrame(x, y, ref dum, ref dum);
+                }
         }
     }
 }
