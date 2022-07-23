@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             recipe2.AddIngredient(ItemID.HellstoneBar, 40);
             recipe2.AddIngredient(ItemType<MoonstoneBarItem>(), 40);
             recipe2.AddTile(TileID.MythrilAnvil);
-            recipe.Register();
+            recipe2.Register();
         }
     }
 }

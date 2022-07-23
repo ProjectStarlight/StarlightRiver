@@ -60,8 +60,10 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.customData = player.whoAmI;
 				dust.scale = Main.rand.NextFloat(0.25f, 0.45f);
 				dust.alpha = Main.rand.Next(100);
+
 				if (modPlayer.charge - modPlayer.potentialCharge  >= 75)
 					dust.alpha += 100;
+
 				if (modPlayer.charge - modPlayer.potentialCharge >= 150)
 					dust.alpha += 100;
 			}
@@ -74,14 +76,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (player.altFunctionUse == 2)
 			{
 				if (player.GetModPlayer<IgnitionPlayer>().charge > 20 && player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
-				{
 					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCharge>(), damage, knockback, player.whoAmI);
-				}
+
 				return false;
 			}
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<IgnitionGauntletCharge>()] == 0)
 			{
 				IgnitionPlayer modPlayer = player.GetModPlayer<IgnitionPlayer>();
+
 				if (modPlayer.loadedCharge > 20)
 				{
 					float damagelerper = (modPlayer.loadedCharge - 15) / 135f;
@@ -109,6 +111,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					{
 						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(1.2f) * Main.rand.Next(3, 30) * damagelerper, 0, Color.Yellow, 2.4f * damagelerper); ;
 					}
+
 					for (int k = 0; k < 12; k++)
 					{
 						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.5f) * Main.rand.Next(3, 15) * damagelerper, 0, Color.Yellow, 1.3f * damagelerper);
@@ -138,6 +141,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Vector2 dir = player.DirectionTo(Main.MouseWorld) * 0.6f;
             }*/
 			handCounter++;
+
 			if (handCounter % 2 == 0)
 			{
 				Projectile proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI, (handCounter % 4) / 2);
@@ -163,6 +167,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.AddTile(TileID.Anvils);
 		}
 	}
+
 	public class IgnitionPlayer : ModPlayer
 	{
 		public int charge = 0;
@@ -249,17 +254,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void PostUpdate()
 		{
 			if (launching && !flipping)
-			{
 				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 1.57f * Player.direction);
-			}
 		}
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			if (launching)
-			{
 				return false;
-			}
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 		}
 	}
 }
