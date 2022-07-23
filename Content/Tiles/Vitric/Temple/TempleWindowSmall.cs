@@ -16,7 +16,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override string Texture => AssetDirectory.VitricTile + "TallWindow";
 
         public override void SetStaticDefaults() => (this).QuickSetFurniture(6, 18, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
-    }
+
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+            (r, g, b) = (0.1f, 0.05f, 0);
+		}
+	}
 
     class TallWindowItem : QuickTileItem
     {
@@ -40,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
         public override bool PreDraw(ref Color lightColor)
         {
             var spriteBatch = Main.spriteBatch;
-            Vector2 pos = Projectile.Center - Main.screenPosition;
+            Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
 
             var bgTarget = new Rectangle(6, 32, 84, 256);
             bgTarget.Offset(pos.ToPoint());
@@ -55,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             var spriteBatch = Main.spriteBatch;
 
             var tex = Request<Texture2D>(AssetDirectory.VitricTile + "TallWindowOver").Value;
-            var pos = Projectile.Center - Main.screenPosition;
+            var pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
 
             spriteBatch.Draw(tex, pos, Color.White);         
         }
