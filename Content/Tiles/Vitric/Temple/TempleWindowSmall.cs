@@ -9,23 +9,23 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-    class TempleWindowSmall : DummyTile
+    class TallWindow : DummyTile
     {
-        public override int DummyType => ProjectileType<TempleWindowSmallDummy>();
+        public override int DummyType => ProjectileType<TallWindowDummy>();
 
-        public override string Texture => AssetDirectory.Invisible;
+        public override string Texture => AssetDirectory.VitricTile + "TallWindow";
 
         public override void SetStaticDefaults() => (this).QuickSetFurniture(6, 18, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
     }
 
-    class TempleWindowSmallItem : QuickTileItem
+    class TallWindowItem : QuickTileItem
     {
-        public TempleWindowSmallItem() : base("Window Actor", "Debug Item", "TempleWindowSmall", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+        public TallWindowItem() : base("Window Actor", "Debug Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
     }
 
-    class TempleWindowSmallDummy : Dummy
+    class TallWindowDummy : Dummy
     {
-        public TempleWindowSmallDummy() : base(TileType<TempleWindowSmall>(), 16, 16) { }
+        public TallWindowDummy() : base(TileType<TallWindow>(), 16, 16) { }
 
         public override void SafeSetDefaults()
         {
