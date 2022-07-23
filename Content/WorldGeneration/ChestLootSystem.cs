@@ -42,8 +42,8 @@ namespace StarlightRiver.Content.WorldGeneration
             Initialize();
 
             AddLoot(ItemID.AcidDye, (1, 4), 0.01f, ChestRegionFlags.All);
-
-
+            AddLoot(ItemID.Abeemination, (2, 3), 0.1f, ChestRegionFlags.Sky);
+            AddLoot(ItemID.AlphabetStatueE, (50, 100), 1f, ChestRegionFlags.Ice, 20);
         }
 
         private static void AddLoot(int item, (int, int) stackRange, float chance, ChestRegionFlags chestRegions, int slotIndex = -1)
