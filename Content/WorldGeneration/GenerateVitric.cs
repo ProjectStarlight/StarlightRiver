@@ -46,7 +46,7 @@ namespace StarlightRiver.Core
                 TileID.HardenedSand, TileID.FossilOre };
             
             //Basic biome information
-            VitricBiome = new Rectangle(UndergroundDesertLocation.X - 80, UndergroundDesertLocation.Y + UndergroundDesertLocation.Height, UndergroundDesertLocation.Width + 150, vitricHeight);
+            VitricBiome = new Rectangle(UndergroundDesertLocation.X - 80, UndergroundDesertLocation.Y + UndergroundDesertLocation.Height / 2, UndergroundDesertLocation.Width + 150, vitricHeight);
             //Boss arena protection
             ProtectionWorld.ProtectedRegions.Add(VitricBossArena);
 
@@ -61,7 +61,9 @@ namespace StarlightRiver.Core
                 for (int y = VitricBiome.Y - 6; y < VitricBiome.Y + 20; y++)
                 {
                     KillTile(x, y);
-                    if (y > VitricBiome.Y + 5 && y < VitricBiome.Y + 9) PlaceTile(x, y, TileType<VitricBossBarrier>(), true, true);
+
+                    if (y > VitricBiome.Y + 5 && y < VitricBiome.Y + 9) 
+                        PlaceTile(x, y, TileType<VitricBossBarrier>(), true, true);
                 }
             }
 
@@ -87,7 +89,9 @@ namespace StarlightRiver.Core
                     if (VitricIslandLocations.Any(v => Vector2.Distance(new Vector2(x, y), v.ToVector2()) < 32) || (x > VitricBiome.X + VitricBiome.Width / 2 - 71 && x < VitricBiome.X + VitricBiome.Width / 2 + 70))
                     {
                         repeat = true;
-                        if (fail++ >= 50) break;
+
+                        if (fail++ >= 50) 
+                            break;
                     }
                     else
                         repeat = false;
