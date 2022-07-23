@@ -961,36 +961,39 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         private void StealPlatform()
         {
-            if (AttackTimer == 1)
+            for (int k = 0; k < (Main.masterMode ? 2 : 1); k++)
             {
-                ShufflePlatforms();
+                if (AttackTimer == 1)
+                {
+                    ShufflePlatforms();
 
-                Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacles[0].Center = new Vector2(platforms[0].Center.X, spawnPoint.Y - 100);
-                tentacle.BasePoint = tentacles[0].Center;
-                tentacle.NPC.netUpdate = true;
-            }
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacles[k].Center = new Vector2(platforms[k].Center.X, spawnPoint.Y - 100);
+                    tentacle.BasePoint = tentacles[k].Center;
+                    tentacle.NPC.netUpdate = true;
+                }
 
-            if (AttackTimer < 90)
-            {
-                Dust.NewDust(platforms[0].position, 200, 16, DustID.Fireworks, 0, 0, 0, default, 0.7f);
+                if (AttackTimer < 90)
+                {
+                    Dust.NewDust(platforms[k].position, 200, 16, DustID.Fireworks, 0, 0, 0, default, 0.7f);
 
-                Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacles[0].Center = Vector2.SmoothStep(tentacle.BasePoint, platforms[0].Center, AttackTimer / 90f);
-            }
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, platforms[k].Center, AttackTimer / 90f);
+                }
 
-            if (AttackTimer == 90)
-            {
-                Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacle.MovementTarget = tentacles[0].Center;
-                platforms[0].ai[3] = 450; //sets it into fall mode
-                //(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
-            }
+                if (AttackTimer == 90)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacle.MovementTarget = tentacles[k].Center;
+                    platforms[k].ai[3] = 450; //sets it into fall mode
+                                              //(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
+                }
 
-            if (AttackTimer > 90)
-            {
-                Tentacle tentacle = tentacles[0].ModNPC as Tentacle;
-                tentacles[0].position.Y += 8;
+                if (AttackTimer > 90)
+                {
+                    Tentacle tentacle = tentacles[k].ModNPC as Tentacle;
+                    tentacles[k].position.Y += 8;
+                }
             }
 
             if (AttackTimer == 180) ResetAttack();
