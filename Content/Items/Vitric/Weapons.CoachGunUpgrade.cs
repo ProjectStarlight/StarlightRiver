@@ -115,7 +115,8 @@ namespace StarlightRiver.Content.Items.Vitric
                 Vector2 smokeVelo = new Vector2(1, -0.05f * player.direction).RotatedBy(velocity.ToRotation());
                 Dust.NewDustPerfect(position + offset * 1.5f, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + smokeVelo.RotatedByRandom(0.35f) * 4.5f, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
-                Helper.PlayPitched("Guns/HandCannon", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+                Helper.PlayPitched("Guns/PlinkLever", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+                Helper.PlayPitched("Guns/RifleLight", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), position);
                 Projectile.NewProjectileDirect(source, position, velocity * 1.4f, type, damage, knockback, player.whoAmI).GetGlobalProjectile<CoachGunUpgradeGlobalProj>().ShotFromGun = true;
 
                 Gore.NewGore(source, player.Center + (offset / 2), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunUpgradeCasing").Type, 1f);
