@@ -429,12 +429,10 @@ namespace StarlightRiver.Content.Items.Vitric
         {
             Player player = Main.player[projectile.owner];
 
-            bool IsMinion = (projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true);
+            bool IsSummoner = (projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true);
 
-            if (projectile.owner == MagmiteOwner && projectile.friendly && IsMinion && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
-            {
+            if (projectile.owner == MagmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
                 damage = damage + (MagmiteAmount * 3);
-            }
         }
     }
 }
