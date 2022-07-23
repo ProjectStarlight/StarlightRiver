@@ -15,15 +15,17 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	{
 		public static void DrawBackground(SpriteBatch spriteBatch, Rectangle target)
 		{
-			Vector2 center = StarlightWorld.VitricBiome.Center.ToVector2() * 16;
-			Vector2 offset = center - target.TopLeft();
+			Vector2 center = (StarlightWorld.VitricBiome.Center.ToVector2() + new Vector2(-50, 20)) * 16;
+			Vector2 offset = (target.TopLeft() + Main.screenPosition) - center;
 
 			for(int k = 0; k < 4; k++)
 			{
 				var thisSource = target;
 				thisSource.X = 0;
 				thisSource.Y = 0;
-				thisSource.Offset(new Point((int)((center.X - Main.screenPosition.X) * 0.1f * (4 -k)), (int)((center.Y - Main.screenPosition.Y) * 0.1f * (4 - k))));
+				thisSource.Offset((offset).ToPoint());
+				thisSource.Offset(new Point((int)((center.X - Main.screenPosition.X) * 0.2f * (4 -k)), (int)((center.Y - Main.screenPosition.Y) * 0.2f * (4 - k))));
+				
 				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Backgrounds/GlassTemple" + k).Value;
 				spriteBatch.Draw(tex, target, thisSource, Color.White);
 			}

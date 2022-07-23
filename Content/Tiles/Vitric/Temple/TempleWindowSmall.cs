@@ -1,53 +1,63 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System.Collections.Generic;
 using Terraria;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	class TempleWindowSmall : ModTile
+    class TempleWindowSmall : DummyTile
     {
+        public override int DummyType => ProjectileType<TempleWindowSmallDummy>();
+
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetStaticDefaults()
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(6, 18, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+    }
+
+    class TempleWindowSmallItem : QuickTileItem
+    {
+        public TempleWindowSmallItem() : base("Window Actor", "Debug Item", "TempleWindowSmall", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+    }
+
+    class TempleWindowSmallDummy : Dummy
+    {
+        public TempleWindowSmallDummy() : base(TileType<TempleWindowSmall>(), 16, 16) { }
+
+        public override void SafeSetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 4, 8, 0, SoundID.Tink, false, Color.White);
+            Projectile.hide = true;
         }
 
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
-            var tile = Framing.GetTileSafely(i, j);
+            behindNPCsAndTiles.Add(index);
+        }
 
-            if (tile.TileFrameX != 0 || tile.TileFrameY != 0) 
-                return false;
+        public override bool PreDraw(ref Color lightColor)
+        {
+            var spriteBatch = Main.spriteBatch;
+            Vector2 pos = Projectile.Center - Main.screenPosition;
 
-            var frameTex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmallFrame").Value;
-            var pos = new Point16(i * 16, j * 16) - Main.screenPosition.ToPoint16();
-            var target = new Rectangle(pos.X, pos.Y, frameTex.Width, frameTex.Height);
+            var bgTarget = new Rectangle(6, 32, 84, 256);
+            bgTarget.Offset(pos.ToPoint());
 
-            for(int k = 0; k < 5; k++)
-            {
-                var tex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmall" + k).Value;
-                int xOff = (int)((Main.screenPosition.X + Main.screenWidth / 2 - i * 16) * (1f / ((k + 1) * 2)) * -0.35f);
-                int yOff = (int)((Main.screenPosition.Y + Main.screenHeight / 2 - j * 16) * (1f / ((k + 1) * 2)) * -0.35f);
+            TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
 
-                var source = new Rectangle(
-                    (tex.Width / 2 - frameTex.Width / 2) + xOff,
-                    (tex.Height / 2 - frameTex.Height / 2) + yOff, 
-                    frameTex.Width,
-                    frameTex.Height
-                    );
+            return true;
+        }
 
-                spriteBatch.Draw(tex, target, source, Color.White);
-            }
+        public override void PostDraw(Color lightColor)
+        {
+            var spriteBatch = Main.spriteBatch;
 
-            spriteBatch.Draw(frameTex, target, Color.White);
+            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "TallWindowOver").Value;
+            var pos = Projectile.Center - Main.screenPosition;
 
-            return false;
+            spriteBatch.Draw(tex, pos, Color.White);         
         }
     }
 }
