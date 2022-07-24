@@ -1,9 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -17,19 +19,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Sand>(), SoundID.Dig, new Color(54, 48, 42), ItemType<VitricTempleWallItem>());
-            Main.tileSolid[Type] = false;
+            QuickBlock.QuickSetFurniture(this, 4, 25, DustType<Dusts.Sand>(), SoundID.Tink, new Color(54, 48, 42));
         }
-
-		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-		{
-            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricPillarWall").Value;
-            var pos = (new Vector2(i + 0.5f, j + 1) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
-            spriteBatch.Draw(tex, pos, null, Lighting.GetColor(new Point(i, j)), 0, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-
-            return false;
-		}
-    }
+	}
 
     class VitricPillarWallItem : QuickTileItem
     {
@@ -44,17 +36,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
         public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSet(this, 0, DustType<Dusts.Sand>(), SoundID.Dig, new Color(54, 48, 42), ItemType<VitricTempleWallItem>());
-            Main.tileSolid[Type] = false;
-        }
-
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricPillarWallShort").Value;
-            var pos = (new Vector2(i + 0.5f, j + 1) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition;
-            spriteBatch.Draw(tex, pos, null, Lighting.GetColor(new Point(i, j)), 0, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
-
-            return false;
+            QuickBlock.QuickSetFurniture(this, 4, 11, DustType<Dusts.Sand>(), SoundID.Tink, new Color(54, 48, 42));
         }
     }
 

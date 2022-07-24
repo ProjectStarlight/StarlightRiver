@@ -73,6 +73,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			return Place(i, j);
 		}
 
+		public override void Update()
+		{
+			if (!IsTileValidForEntity(Position.X, Position.Y))
+				Kill(Position.X, Position.Y);
+		}
+
 		/// <summary>
 		/// Performs an action on all gears in a system. Has no built-in base case, you must implement one in your action.
 		/// </summary>
@@ -206,6 +212,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 					entity.RecurseOverGears(entity.Engage);
 				}
+
 				Tile tile = Main.tile[Position.X, Position.Y];
 				(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
 			}
