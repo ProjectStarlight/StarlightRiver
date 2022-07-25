@@ -1,17 +1,20 @@
 ﻿//TODO:
-//Laser combination dust
-//Laser combination tile collision
-//Laser combination enemy collision and extra damage
+//Super laser dust
+//Improve Super laser jank
+//Make super laser not pierce
+//Make them not sometimes despawn
 //Make it break if you break the tile
 //Sell price
 //Rarity
 //Obtainment
 //Balance
-//Hitdirection
+//Color gradiant on bloom
 //Grasscutting
 //Remove main.newtext
 //Improve item usestyle
 //Sfx
+//Lighting
+//Description
 
 
 using Microsoft.Xna.Framework;
@@ -195,9 +198,10 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Projectile.Center = tileWorldPos - originAngleRad.ToRotationVector2() * 26;
 			float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(Main.MouseWorld).ToRotation(), Projectile.rotation);
+			if (owner.HeldItem.type == ModContent.ItemType<BreachCannon>())
 			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
 
-			laserStartpoint = Projectile.Center + (Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.4f : -0.4f) * 26);
+			laserStartpoint = Projectile.Center + (Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.2f : -0.2f) * 44);
 			Vector2 offset = Vector2.Zero;
 			for (int k = 0; k < 50; k++)
 			{
@@ -256,11 +260,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.spriteBatch.Draw(baseGlowTex, tileWorldPos - Main.screenPosition, null, Color.White, baseRotation, baseOrigin, Projectile.scale, SpriteEffects.None, 0f);
 
 			float cannonRotation = Projectile.rotation;
-			Vector2 cannonOrigin = new Vector2(cannonTex.Width / 2, cannonTex.Height * 0.75f);
+			Vector2 cannonOrigin = new Vector2(cannonTex.Width * 0.3f, cannonTex.Height * 0.75f);
 			SpriteEffects cannonEffects = SpriteEffects.None;
 			if (InvertRotation())
 			{
 				cannonEffects = SpriteEffects.FlipHorizontally;
+				cannonOrigin.X = cannonTex.Width - cannonOrigin.X;
 				cannonRotation -= 3.14f;
 			}
 			Main.spriteBatch.Draw(cannonTex, Projectile.Center - Main.screenPosition, null, lightColor, cannonRotation, cannonOrigin, Projectile.scale, cannonEffects, 0f);
@@ -274,10 +279,23 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			float collisionPoint = 0f;
+			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 30, ref collisionPoint))
+				return true;
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 30, ref collisionPoint);
 		}
 
-		private void SuperLaserCheck()
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+			hitDirection = Math.Sign(target.Center.X - Projectile.Center.X);
+			Rectangle targetHitbox = target.Hitbox;
+			float collisionPoint = 0f;
+			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 30, ref collisionPoint))
+            {
+				damage = (int)(damage * Math.Sqrt(superCharge));
+            }
+        }
+
+        private void SuperLaserCheck()
         {
 			for (int projIndex = 0; projIndex < Main.projectile.Length; projIndex++) //super laser dealings
 			{
@@ -361,9 +379,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
+			Color blue = new Color(0, 0, 255);
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30, factor =>
 			{
-				return Color.Cyan;
+				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
 
 			trail.Positions = cache.ToArray();
@@ -379,7 +398,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30 * superCharge, factor =>
 			{
-				return Color.Cyan;
+				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
 
 			superTrail.Positions = superCache.ToArray();
@@ -463,22 +482,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
+			Color blue = Color.Lerp(Color.Cyan, new Color(0, 0, 255), 0.5f);
 
 			//sb.End();
 			//sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
-			var color = Color.Cyan;
 			for (int i = 0; i < 4; i++)
 			{
-				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.75f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.75f, SpriteEffects.None, 0f);
 				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f, SpriteEffects.None, 0f);
 			}
 
 			for (int i = 0; i < 4; i++)
 			{
-				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
 				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f, SpriteEffects.None, 0f);
 			}
 
@@ -486,13 +505,13 @@ namespace StarlightRiver.Content.Items.Breacher
             {
 				for (int i = 0; i < 4; i++)
 				{
-					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.75f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.75f * superCharge, SpriteEffects.None, 0f);
 					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f * superCharge, SpriteEffects.None, 0f);
 				}
 
 				for (int i = 0; i < 4; i++)
 				{
-					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.55f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.55f * superCharge, SpriteEffects.None, 0f);
 					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f * superCharge, SpriteEffects.None, 0f);
 				}
 			}
