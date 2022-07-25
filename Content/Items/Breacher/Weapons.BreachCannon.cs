@@ -8,7 +8,7 @@
 //Rarity
 //Obtainment
 //Balance
-//Color gradiant on bloom
+//waves on bloom
 //Grasscutting
 //Remove main.newtext
 //Improve item usestyle
@@ -380,7 +380,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		private void ManageTrail()
 		{
 			Color blue = new Color(0, 0, 255);
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15, factor =>
 			{
 				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
@@ -388,7 +388,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = laserEndpoint;
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15, factor =>
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7, factor =>
 			{
 				return Color.White;
 			});
@@ -396,7 +396,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = laserEndpoint;
 
-			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30 * superCharge, factor =>
+			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superCharge, factor =>
 			{
 				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
@@ -404,7 +404,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			superTrail.Positions = superCache.ToArray();
 			superTrail.NextPosition = superLaserEndpoint;
 
-			superTrail2 = superTrail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superCharge, factor =>
+			superTrail2 = superTrail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * superCharge, factor =>
 			{
 				return Color.White;
 			});
@@ -491,28 +491,28 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			for (int i = 0; i < 4; i++)
 			{
-				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.75f, SpriteEffects.None, 0f);
-				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.45f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, SpriteEffects.None, 0f);
 			}
 
 			for (int i = 0; i < 4; i++)
 			{
-				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
-				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.35f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.2f, SpriteEffects.None, 0f);
 			}
 
 			if (superLaser)
             {
 				for (int i = 0; i < 4; i++)
 				{
-					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.75f * superCharge, SpriteEffects.None, 0f);
-					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.45f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f * superCharge, SpriteEffects.None, 0f);
 				}
 
 				for (int i = 0; i < 4; i++)
 				{
-					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.55f * superCharge, SpriteEffects.None, 0f);
-					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.35f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.2f * superCharge, SpriteEffects.None, 0f);
 				}
 			}
 
