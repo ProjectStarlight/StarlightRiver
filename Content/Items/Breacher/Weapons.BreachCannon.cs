@@ -1,16 +1,17 @@
 ﻿//TODO:
-//Implement laser start and end things
-//Implement laser explosion
+//Laser combination dust
+//Laser combination tile collision
+//Laser combination enemy collision and extra damage
 //Make it break if you break the tile
 //Sell price
 //Rarity
 //Obtainment
 //Balance
-//Improve tile finding
-//Add rotation easing
+//Hitdirection
+//Grasscutting
 //Remove main.newtext
 //Improve item usestyle
-//Dust
+//Sfx
 
 
 using Microsoft.Xna.Framework;
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.Items.Breacher
 {
 	class BreachCannon : ModItem
 	{
-        public override string Texture => AssetDirectory.BreacherItem + Name;
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -69,12 +70,14 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Vector2 originTile = Vector2.Zero;
 			for (int k = 0; k < 4; k++)
-            {
+			{
 				Vector2 testPosition = position / 16;
+				testPosition.X = (int)testPosition.X;
+				testPosition.Y = (int)testPosition.Y;
 				Vector2 direction = Vector2.UnitX.RotatedBy(k * 1.57f);
 				int testDistance = 0;
-				while (testDistance < 20)
-                {
+				while (testDistance < 40)
+				{
 					testPosition += direction;
 					testDistance++;
 					if (testDistance > minDistance)
@@ -84,14 +87,14 @@ namespace StarlightRiver.Content.Items.Breacher
 					int j = (int)testPosition.Y;
 					Tile testTile = Main.tile[i, j];
 					if (testTile.HasTile && Main.tileSolid[testTile.TileType])
-                    {
+					{
 						minDistance = testDistance;
 						minDirection = k;
 						originTile = testPosition;
 						break;
-                    }
+					}
 				}
-            }
+			}
 
 			if (minDistance == 99)
 			{
@@ -102,13 +105,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			var mp = proj.ModProjectile as BreachCannonSentry;
 			mp.tileOrigin = originTile;
 			proj.originalDamage = Item.damage;
+			proj.rotation = (minDirection * 1.57f) + 3.14f;
 			player.UpdateMaxTurrets();
 			Main.NewText(minDirection.ToString());
 			return false;
 		}
 	}
 
-	public class BreachCannonSentry : ModProjectile
+	public class BreachCannonSentry : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -125,18 +129,37 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public Vector2 tileOrigin = Vector2.Zero;
 
-		public Vector2 tileWorldPos => (tileOrigin * 16) + new Vector2(8,8);
+		public Vector2 tileWorldPos => (tileOrigin * 16) + new Vector2(8, 8);
 
 		private List<Vector2> cache;
 		private Trail trail;
 		private Trail trail2;
 
+		private List<Vector2> superCache;
+		private Trail superTrail;
+		private Trail superTrail2;
 		private float laserLength => (laserEndpoint - laserStartpoint).Length();
 
-		private Vector2 laserStartpoint;
-		private Vector2 laserEndpoint;
+		public Vector2 laserStartpoint;
+		public Vector2 laserEndpoint;
 
-		public override void SetStaticDefaults()
+		public bool superLaser = false;
+		public bool superLaserContributer = false;
+		public int superCharge = 0;
+		public Vector2 superLaserStartpoint;
+		public Vector2 superLaserEndpoint;
+
+        public override void Load()
+        {
+			On.Terraria.Main.PreUpdateAllProjectiles += ResetLasers;
+        }
+
+        public override void Unload()
+        {
+			On.Terraria.Main.PreUpdateAllProjectiles -= ResetLasers;
+		}
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Breach Cannon");
 		}
@@ -154,16 +177,31 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.ignoreWater = true;
 		}
 
-        public override void AI()
+		private void ResetLasers(On.Terraria.Main.orig_PreUpdateAllProjectiles orig, Main self)
         {
-			Projectile.Center = tileWorldPos - originAngleRad.ToRotationVector2() * 26;
-			Projectile.rotation = Projectile.DirectionTo(Main.MouseWorld).ToRotation();
+			orig(self);
+			for (int index = 0; index < Main.projectile.Length; index++)
+            {
+				Projectile proj = Main.projectile[index];
+				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
+					continue;
+				var mp = proj.ModProjectile as BreachCannonSentry;
+				mp.superLaser = false;
+				mp.superLaserContributer = false;
+            }
+        }
 
-			laserStartpoint = Projectile.Center + (Projectile.DirectionTo(Main.MouseWorld).RotatedBy(InvertRotation() ? 0.4f : -0.4f) * 26);
+		public override void AI()
+		{
+			Projectile.Center = tileWorldPos - originAngleRad.ToRotationVector2() * 26;
+			float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(Main.MouseWorld).ToRotation(), Projectile.rotation);
+			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
+
+			laserStartpoint = Projectile.Center + (Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.4f : -0.4f) * 26);
 			Vector2 offset = Vector2.Zero;
-			for (int k = 0; k < 150; k++)
+			for (int k = 0; k < 50; k++)
 			{
-				offset = Projectile.DirectionTo(Main.MouseWorld) * k * 16;
+				offset = Projectile.rotation.ToRotationVector2() * k * 16;
 
 				int i = (int)((laserStartpoint.X + offset.X) / 16);
 				int j = (int)((laserStartpoint.Y + offset.Y) / 16);
@@ -173,17 +211,34 @@ namespace StarlightRiver.Content.Items.Breacher
 					break;
 				}
 			}
-			laserEndpoint = laserStartpoint + offset;
+			if (!superLaserContributer)
+			{
+				laserEndpoint = laserStartpoint + offset;
 
+				for (int index = 0; index < Main.npc.Length; index++)
+				{
+					NPC npc = Main.npc[index];
+					if (!npc.active)
+						continue;
+					float collisionPoint = 0f;
+					if (Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(), laserStartpoint, laserEndpoint, 30, ref collisionPoint))
+					{
+						laserEndpoint = Vector2.Lerp(laserStartpoint, laserEndpoint, (float)collisionPoint / laserLength);
+					}
+				}
+				SuperLaserCheck();
+			}
 			if (!Main.dedServ)
 			{
 				ManageCaches();
 				ManageTrail();
 			}
+
+			SpawnParticles();
 		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
+		public override bool PreDraw(ref Color lightColor)
+		{
 
 			var spriteBatch = Main.spriteBatch;
 
@@ -191,36 +246,121 @@ namespace StarlightRiver.Content.Items.Breacher
 			Texture2D cannonTex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D baseTex = ModContent.Request<Texture2D>(Texture + "_Base").Value;
 
-            float baseRotation = -1.57f + originAngleRad;
+			Texture2D cannonGlowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D baseGlowTex = ModContent.Request<Texture2D>(Texture + "_Base_Glow").Value;
+
+			float baseRotation = -1.57f + originAngleRad;
 			Vector2 baseOrigin = new Vector2(baseTex.Width / 2, baseTex.Height + 8);
 
 			Main.spriteBatch.Draw(baseTex, tileWorldPos - Main.screenPosition, null, lightColor, baseRotation, baseOrigin, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(baseGlowTex, tileWorldPos - Main.screenPosition, null, Color.White, baseRotation, baseOrigin, Projectile.scale, SpriteEffects.None, 0f);
 
 			float cannonRotation = Projectile.rotation;
-            Vector2 cannonOrigin = new Vector2(cannonTex.Width / 2, cannonTex.Height * 0.75f);
+			Vector2 cannonOrigin = new Vector2(cannonTex.Width / 2, cannonTex.Height * 0.75f);
 			SpriteEffects cannonEffects = SpriteEffects.None;
 			if (InvertRotation())
-            {
+			{
 				cannonEffects = SpriteEffects.FlipHorizontally;
 				cannonRotation -= 3.14f;
-            }
+			}
 			Main.spriteBatch.Draw(cannonTex, Projectile.Center - Main.screenPosition, null, lightColor, cannonRotation, cannonOrigin, Projectile.scale, cannonEffects, 0f);
+			Main.spriteBatch.Draw(cannonGlowTex, Projectile.Center - Main.screenPosition, null, Color.White, cannonRotation, cannonOrigin, Projectile.scale, cannonEffects, 0f);
+
+			//DrawBeamStart(spriteBatch);
 
 			return false;
-        }
+		}
 
-		private void ManageCaches()
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			float collisionPoint = 0f;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 30, ref collisionPoint);
+		}
+
+		private void SuperLaserCheck()
         {
+			for (int projIndex = 0; projIndex < Main.projectile.Length; projIndex++) //super laser dealings
+			{
+				Projectile proj = Main.projectile[projIndex];
+				if (!proj.active || proj.type != Projectile.type || proj == Projectile)
+					continue;
+				var mp = proj.ModProjectile as BreachCannonSentry;
+				if (mp.superLaser || mp.superLaserContributer)
+					continue;
+				Vector2[] collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mp.laserEndpoint);
+				if (collisionPoint.Length > 0)
+				{
+					mp.laserEndpoint = collisionPoint[0];
+					mp.superLaserContributer = true;
+
+					superLaser = true;
+					laserEndpoint = collisionPoint[0];
+					superCharge = 2;
+
+					Rectangle additionalCheck = new Rectangle((int)(laserEndpoint.X - 15), (int)(laserEndpoint.Y - 15), 30, 30);
+
+					float angleTotal = proj.rotation + Projectile.rotation;
+					for (int projIndex2 = 0; projIndex2 < Main.projectile.Length; projIndex2++)
+					{
+						Projectile proj2 = Main.projectile[projIndex2];
+						if (!proj2.active || proj2.type != Projectile.type)
+							continue;
+						var mp2 = proj2.ModProjectile as BreachCannonSentry;
+						if (mp2.superLaser || mp2.superLaserContributer)
+							continue;
+						float collisionPoint2 = 0f;
+						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserEndpoint, 30, ref collisionPoint2))
+						{
+							mp2.superLaserContributer = true;
+							mp2.laserEndpoint = laserEndpoint;
+							angleTotal += proj2.rotation;
+							superCharge++;
+						}
+					}
+
+					float superAngle = angleTotal / superCharge;
+
+					superLaserStartpoint = laserEndpoint;
+
+					Vector2 offset = Vector2.Zero;
+					for (int k = 0; k < 50; k++)
+					{
+						offset = superAngle.ToRotationVector2() * k * 16;
+
+						int i = (int)((superLaserStartpoint.X + offset.X) / 16);
+						int j = (int)((superLaserStartpoint.Y + offset.Y) / 16);
+						Tile testTile = Main.tile[i, j];
+						if (testTile.HasTile && Main.tileSolid[testTile.TileType])
+						{
+							break;
+						}
+					}
+					superLaserEndpoint = superLaserStartpoint + offset;
+
+
+					break;
+				}
+			}
+		}
+		private void ManageCaches()
+		{
 			cache = new List<Vector2>();
 			for (int i = 0; i < 14; i++)
-            {
+			{
 				cache.Add(Vector2.Lerp(laserStartpoint, laserEndpoint, i / 14f));
-            }
+			}
 			cache.Add(laserEndpoint);
+
+			superCache = new List<Vector2>();
+			for (int i = 0; i < 14; i++)
+			{
+				superCache.Add(Vector2.Lerp(superLaserStartpoint, superLaserEndpoint, i / 14f));
+			}
+			superCache.Add(superLaserEndpoint);
 		}
 
 		private void ManageTrail()
-        {
+		{
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30, factor =>
 			{
 				return Color.Cyan;
@@ -236,6 +376,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = laserEndpoint;
+
+			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 30 * superCharge, factor =>
+			{
+				return Color.Cyan;
+			});
+
+			superTrail.Positions = superCache.ToArray();
+			superTrail.NextPosition = superLaserEndpoint;
+
+			superTrail2 = superTrail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superCharge, factor =>
+			{
+				return Color.White;
+			});
+
+			superTrail2.Positions = superCache.ToArray();
+			superTrail2.NextPosition = superLaserEndpoint;
 		}
 
 		private void DrawTrail(SpriteBatch spriteBatch)
@@ -258,16 +414,40 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["falloff"].SetValue(1);
 
 			trail?.Render(effect);
-			trail2?.Render(effect);
+			if (superLaser)
+				superTrail?.Render(effect);
 
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["BreachLaser"].GetShader().Shader;
+
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.25f);
+			effect.Parameters["stretch"].SetValue(2f / laserLength);
+
+			effect.Parameters["dilation"].SetValue(0.8f);
+			effect.Parameters["falloff"].SetValue(1);
+
+			trail2?.Render(effect);
+			if (superLaser)
+				superTrail2?.Render(effect);
+		}
+
 		private bool InvertRotation()
-        {
+		{
 			Vector2 originVector = Projectile.rotation.ToRotationVector2();
 			switch (originAngle)
-            {
+			{
 				case 0:
 					return originVector.Y > 0;
 				case 1:
@@ -278,6 +458,95 @@ namespace StarlightRiver.Content.Items.Breacher
 					return originVector.X > 0;
 			}
 			return false;
+		}
+
+
+		public void DrawAdditive(SpriteBatch sb)
+		{
+
+			//sb.End();
+			//sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+
+			var color = Color.Cyan;
+			for (int i = 0; i < 4; i++)
+			{
+				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.75f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f, SpriteEffects.None, 0f);
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f, SpriteEffects.None, 0f);
+			}
+
+			if (superLaser)
+            {
+				for (int i = 0; i < 4; i++)
+				{
+					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.75f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.45f * superCharge, SpriteEffects.None, 0f);
+				}
+
+				for (int i = 0; i < 4; i++)
+				{
+					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, color, 0, tex.Size() / 2, 0.55f * superCharge, SpriteEffects.None, 0f);
+					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.35f * superCharge, SpriteEffects.None, 0f);
+				}
+			}
+
+			//sb.End();
+			//sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		private void SpawnParticles()
+		{
+			Vector2 direction = laserEndpoint.DirectionTo(laserStartpoint);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Dust.NewDustPerfect(laserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Cyan, Main.rand.NextFloat(0.25f, 0.6f));
+			}
+
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 vel = direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(9);
+				Dust.NewDustPerfect(laserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Cyan, Main.rand.NextFloat(1.25f, 1.6f));
+			}
+		}
+	}
+	public class BreachImpactGlow : Dusts.Glow
+	{
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.frame = new Rectangle(0, 0, 64, 64);
+
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "GlowingDustPass");
+			int a = 1;
+		}
+		public override bool Update(Dust dust)
+        {
+			dust.scale *= 0.85f;
+			return base.Update(dust);
         }
-    }
+	}
+	class BreachImpactSpark : Dusts.BuzzSpark
+    {
+		public override void OnSpawn(Dust dust)
+		{
+			dust.fadeIn = 0;
+			dust.noLight = false;
+			dust.frame = new Rectangle(0, 0, 5, 50);
+
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/ShrinkingDust").Value), "ShrinkingDustPass");
+		}
+		public override bool Update(Dust dust)
+		{
+			dust.fadeIn ++;
+			return base.Update(dust);
+		}
+	}
 }
