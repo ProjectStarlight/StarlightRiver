@@ -1,6 +1,5 @@
 ﻿//TODO:
-//Super laser dust
-//Improve Super laser jank
+//Make lasers go through platforms
 //Make super laser not pierce
 //Make them not sometimes despawn
 //Make it break if you break the tile
@@ -143,7 +142,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		private Trail superTrail2;
 		private float laserLength => (laserEndpoint - laserStartpoint).Length();
 
-		public Vector2 laserStartpoint;
+		public Vector2 laserStartpoint = Vector2.Zero;
 		public Vector2 laserEndpoint;
 
 		public bool superLaser = false;
@@ -202,36 +201,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
 
 			laserStartpoint = Projectile.Center + (Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.2f : -0.2f) * 44);
-			Vector2 offset = Vector2.Zero;
-			for (int k = 0; k < 50; k++)
-			{
-				offset = Projectile.rotation.ToRotationVector2() * k * 16;
-
-				int i = (int)((laserStartpoint.X + offset.X) / 16);
-				int j = (int)((laserStartpoint.Y + offset.Y) / 16);
-				Tile testTile = Main.tile[i, j];
-				if (testTile.HasTile && Main.tileSolid[testTile.TileType])
-				{
-					break;
-				}
-			}
+			Vector2 offset = CalculateOffset();
 			if (!superLaserContributer)
-			{
 				laserEndpoint = laserStartpoint + offset;
 
-				for (int index = 0; index < Main.npc.Length; index++)
-				{
-					NPC npc = Main.npc[index];
-					if (!npc.active)
-						continue;
-					float collisionPoint = 0f;
-					if (Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(), laserStartpoint, laserEndpoint, 30, ref collisionPoint))
-					{
-						laserEndpoint = Vector2.Lerp(laserStartpoint, laserEndpoint, (float)collisionPoint / laserLength);
-					}
-				}
+			if (!superLaserContributer)
 				SuperLaserCheck();
-			}
+
 			if (!Main.dedServ)
 			{
 				ManageCaches();
@@ -279,9 +255,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			float collisionPoint = 0f;
-			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 30, ref collisionPoint))
+			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 15 * superCharge, ref collisionPoint))
 				return true;
-			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 30, ref collisionPoint);
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 15, ref collisionPoint);
 		}
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -289,7 +265,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			hitDirection = Math.Sign(target.Center.X - Projectile.Center.X);
 			Rectangle targetHitbox = target.Hitbox;
 			float collisionPoint = 0f;
-			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 30, ref collisionPoint))
+			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 15 * superCharge, ref collisionPoint))
             {
 				damage = (int)(damage * Math.Sqrt(superCharge));
             }
@@ -305,7 +281,9 @@ namespace StarlightRiver.Content.Items.Breacher
 				var mp = proj.ModProjectile as BreachCannonSentry;
 				if (mp.superLaser || mp.superLaserContributer)
 					continue;
-				Vector2[] collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mp.laserEndpoint);
+
+				Vector2 mpTestEndpoint = mp.laserStartpoint + mp.CalculateOffset();
+				Vector2[] collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mpTestEndpoint);
 				if (collisionPoint.Length > 0)
 				{
 					mp.laserEndpoint = collisionPoint[0];
@@ -327,7 +305,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						if (mp2.superLaser || mp2.superLaserContributer)
 							continue;
 						float collisionPoint2 = 0f;
-						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserEndpoint, 30, ref collisionPoint2))
+						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserStartpoint + mp2.CalculateOffset(), 30, ref collisionPoint2))
 						{
 							mp2.superLaserContributer = true;
 							mp2.laserEndpoint = laserEndpoint;
@@ -479,6 +457,40 @@ namespace StarlightRiver.Content.Items.Breacher
 			return false;
 		}
 
+		private Vector2 CalculateOffset()
+        {
+			if (laserStartpoint == Vector2.Zero)
+				return Vector2.One;
+			Vector2 offset = Vector2.Zero;
+			for (int k = 0; k < 50; k++)
+			{
+				offset = Projectile.rotation.ToRotationVector2() * k * 16;
+
+				int i = (int)((laserStartpoint.X + offset.X) / 16);
+				int j = (int)((laserStartpoint.Y + offset.Y) / 16);
+				Tile testTile = Main.tile[i, j];
+				if (testTile.HasTile && Main.tileSolid[testTile.TileType])
+				{
+					break;
+				}
+			}
+
+			Vector2 testEndpoint = laserStartpoint + offset;
+			for (int index = 0; index < Main.npc.Length; index++)
+			{
+				NPC npc = Main.npc[index];
+				if (!npc.active)
+					continue;
+				float collisionPoint = 0f;
+				if (Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(), laserStartpoint, testEndpoint, 15, ref collisionPoint))
+				{
+					testEndpoint = Vector2.Lerp(laserStartpoint, testEndpoint, (float)collisionPoint / (laserStartpoint - testEndpoint).Length());
+				}
+			}
+
+			return testEndpoint - laserStartpoint;
+		}
+
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
@@ -533,6 +545,22 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				Vector2 vel = direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(9);
 				Dust.NewDustPerfect(laserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Cyan, Main.rand.NextFloat(1.25f, 1.6f));
+			}
+
+			if (superLaser)
+            {
+				direction = superLaserEndpoint.DirectionTo(superLaserStartpoint);
+
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(superLaserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Cyan, Main.rand.NextFloat(0.25f, 0.6f));
+				}
+
+				for (int i = 0; i < 3; i++)
+				{
+					Vector2 vel = direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(9);
+					Dust.NewDustPerfect(superLaserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Cyan, Main.rand.NextFloat(1.25f, 1.6f));
+				}
 			}
 		}
 	}
