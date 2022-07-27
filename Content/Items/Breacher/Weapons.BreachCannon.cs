@@ -1,10 +1,7 @@
 ﻿//TODO:
-//Balance
 //Improve item usestyle
 //Sfx
 //Item glowmask
-//Fix detour not applying
-
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -39,7 +36,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetDefaults()
 		{
 			Item.CloneDefaults(ItemID.QueenSpiderStaff);
-			Item.damage = 19;
+			Item.damage = 12;
 			Item.mana = 12;
 			Item.width = 40;
 			Item.height = 40;
@@ -54,6 +51,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			position = Main.MouseWorld;
+			Tile startTile = Main.tile[(int)(position.X / 16), (int)(position.Y / 16)];
+			if (startTile.HasTile && Main.tileSolid[startTile.TileType])
+				return false;
 			//0 = right
 			//1 = bottom
 			//2 = left
@@ -539,7 +539,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			Vector2 testEndpoint = start + offset;
-			NPC[] sortedNPC = Main.npc.Where(n => n.active && !n.friendly).OrderBy(n => (n.Center - start).Length()).ToArray();
+			NPC[] sortedNPC = Main.npc.Where(n => n.active && !n.friendly && !n.CountsAsACritter).OrderBy(n => (n.Center - start).Length()).ToArray();
 			if (sortedNPC.Length == 0)
 				return testEndpoint - start;
 			int pierceLeft = pierce;
