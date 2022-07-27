@@ -1,14 +1,8 @@
 ﻿//TODO:
 //Make them not sometimes despawn
-//Sell price
-//Rarity
-//Obtainment
 //Balance
-//Remove main.newtext
 //Improve item usestyle
 //Sfx
-//Lighting
-//Description
 //Item glowmask
 //Fix detour not applying
 //Make sentries unable to be placed over each other
@@ -41,7 +35,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Breach Cannon");
-			Tooltip.SetDefault("Summons a sentry that shoots a laser towards the cursor");
+			Tooltip.SetDefault("Summons a sentry that shoots a laser towards the cursor \nThese lasers can combine");
 		}
 
 		public override void SetDefaults()
@@ -51,8 +45,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.mana = 12;
 			Item.width = 40;
 			Item.height = 40;
-			Item.value = Item.sellPrice(0, 0, 80, 0);
-			Item.rare = ItemRarityID.Green;
+			Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.knockBack = 2.5f;
 			Item.UseSound = SoundID.Item25;
 			Item.shoot = ModContent.ProjectileType<BreachCannonSentry>();
@@ -99,18 +93,22 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			if (minDistance == 99)
-			{
-				Main.NewText("Placement failed");
 				return false;
-			}
 			Projectile proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
 			var mp = proj.ModProjectile as BreachCannonSentry;
 			mp.tileOrigin = originTile;
 			proj.originalDamage = Item.damage;
 			proj.rotation = (minDirection * 1.57f) + 3.14f;
 			player.UpdateMaxTurrets();
-			Main.NewText(minDirection.ToString());
 			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<Items.SpaceEvent.Astroscrap>(), 12);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -233,6 +231,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (!Main.tile[(int)tileOrigin.X, (int)tileOrigin.Y].HasTile && Projectile.timeLeft > 2)
 				Projectile.timeLeft = 2;
+
+			Color color = Color.Lerp(Color.Cyan, new Color(0, 0, 255), 0.5f);
+			Lighting.AddLight(laserStartpoint, color.ToVector3() * laserSizeMult);
 		}
 
         public override void Kill(int timeLeft)
@@ -289,7 +290,6 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (superLaser)
 				Utils.PlotTileLine(superLaserStartpoint, superLaserEndpoint, 15 * superCharge, DelegateMethods.CutTiles);
 		}
-
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
@@ -363,6 +363,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 		}
+
 		private void ManageCaches()
 		{
 			cache = new List<Vector2>();
@@ -560,7 +561,6 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, endState, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
-
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
