@@ -1,5 +1,4 @@
 ﻿//TODO:
-//Make them not sometimes despawn
 //Balance
 //Improve item usestyle
 //Sfx
@@ -220,6 +219,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.width = 58;
 			Projectile.height = 58;
 			Projectile.timeLeft = Projectile.SentryLifeTime;
+			Projectile.tileCollide = false;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.penetrate = -1;
@@ -231,6 +231,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		private void ResetLasers(On.Terraria.Main.orig_PreUpdateAllProjectiles orig, Main self)
         {
 			orig(self);
+			Main.NewText("Fortnite");
 			for (int index = 0; index < Main.projectile.Length; index++)
             {
 				Projectile proj = Main.projectile[index];
