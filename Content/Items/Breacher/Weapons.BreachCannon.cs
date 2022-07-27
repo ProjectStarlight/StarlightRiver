@@ -49,8 +49,10 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			position = Main.MouseWorld;
 			Tile startTile = Main.tile[(int)(position.X / 16), (int)(position.Y / 16)];
+
 			if (startTile.HasTile && Main.tileSolid[startTile.TileType])
 				return false;
+
 			//0 = right
 			//1 = bottom
 			//2 = left
@@ -60,6 +62,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			int minDirection = 0;
 
 			Vector2 originTile = Vector2.Zero;
+
 			for (int k = 0; k < 4; k++)
 			{
 				Vector2 testPosition = position / 16;
@@ -102,6 +105,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			proj.originalDamage = Item.damage;
 			proj.rotation = (minDirection * 1.57f) + 3.14f;
 			player.UpdateMaxTurrets();
+
 			return false;
 		}
 
@@ -124,6 +128,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
 				return !Main.tile[(int)tileCheck.X, (int)tileCheck.Y].HasTile || !Main.tileSolid[Main.tile[(int)tileCheck.X, (int)tileCheck.Y].TileType];
 			}
+
 			Vector2 ret = originTile;
 			Vector2 ret2 = originTile;
 			Vector2 moveDirection = Vector2.UnitX.RotatedBy(minDirection * 1.57f);
