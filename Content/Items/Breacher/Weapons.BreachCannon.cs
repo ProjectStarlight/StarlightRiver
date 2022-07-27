@@ -5,7 +5,6 @@
 //Sfx
 //Item glowmask
 //Fix detour not applying
-//Make sentries unable to be placed over each other
 
 
 using Microsoft.Xna.Framework;
@@ -94,6 +93,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (minDistance == 99)
 				return false;
+
+			originTile = MoveRightAndDown(originTile, minDirection);
+			if (originTile == Vector2.Zero)
+				return false;
+
 			Projectile proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
 			var mp = proj.ModProjectile as BreachCannonSentry;
 			mp.tileOrigin = originTile;
@@ -109,6 +113,45 @@ namespace StarlightRiver.Content.Items.Breacher
 			recipe.AddIngredient(ModContent.ItemType<Items.SpaceEvent.Astroscrap>(), 12);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+
+		private Vector2 MoveRightAndDown(Vector2 originTile, int minDirection)
+        {
+			bool Overlapping(Vector2 innerRet)
+            {
+				return Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<BreachCannonSentry>() && ((n.ModProjectile as BreachCannonSentry).tileOrigin - innerRet).Length() < 2).FirstOrDefault() != default;
+            }
+
+			bool tileOpen(Vector2 tileCheck)
+            {
+				return !Main.tile[(int)tileCheck.X, (int)tileCheck.Y].HasTile || !Main.tileSolid[Main.tile[(int)tileCheck.X, (int)tileCheck.Y].TileType];
+			}
+			Vector2 ret = originTile;
+			Vector2 ret2 = originTile;
+			Vector2 moveDirection = Vector2.UnitX.RotatedBy(minDirection * 1.57f);
+
+			int moveDownTries = 0;
+			while (Overlapping(ret) || tileOpen(ret))
+			{
+				ret += moveDirection.RotatedBy(1.57f);
+				if (!Overlapping(ret))
+				{
+					ret2 = ret;
+					while (tileOpen(ret2))
+					{
+						moveDownTries++;
+						if (moveDownTries >= 99)
+							return Vector2.Zero;
+						ret2 += moveDirection;
+					}
+					if (Overlapping(ret2))
+						ret2 = ret;
+					else
+						ret = ret2;
+				}
+			}
+
+			return ret;
 		}
 	}
 
