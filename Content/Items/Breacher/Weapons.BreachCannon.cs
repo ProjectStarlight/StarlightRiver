@@ -201,13 +201,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
 			for (int k = 1; k <= 5; k++)
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "Gore" + k);
-			On.Terraria.Main.PreUpdateAllProjectiles += ResetLasers;
         }
-
-        public override void Unload()
-        {
-			On.Terraria.Main.PreUpdateAllProjectiles -= ResetLasers;
-		}
 
         public override void SetStaticDefaults()
 		{
@@ -227,21 +221,6 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.DamageType = DamageClass.Summon;
 			Projectile.ignoreWater = true;
 		}
-
-		private void ResetLasers(On.Terraria.Main.orig_PreUpdateAllProjectiles orig, Main self)
-        {
-			orig(self);
-			Main.NewText("Fortnite");
-			for (int index = 0; index < Main.projectile.Length; index++)
-            {
-				Projectile proj = Main.projectile[index];
-				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
-					continue;
-				var mp = proj.ModProjectile as BreachCannonSentry;
-				mp.superLaser = false;
-				mp.superLaserContributer = false;
-            }
-        }
 
 		public override void AI()
 		{
@@ -705,4 +684,21 @@ namespace StarlightRiver.Content.Items.Breacher
 			return base.Update(dust);
 		}
 	}
+
+	class BreacherLaserUpdater : ModSystem
+    {
+        public override void PreUpdateProjectiles()
+        {
+			for (int index = 0; index < Main.projectile.Length; index++)
+			{
+				Projectile proj = Main.projectile[index];
+				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
+					continue;
+				var mp = proj.ModProjectile as BreachCannonSentry;
+				mp.superLaser = false;
+				mp.superLaserContributer = false;
+			}
+			base.PreUpdateProjectiles();
+        }
+    }
 }
