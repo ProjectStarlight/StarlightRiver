@@ -1,8 +1,4 @@
-﻿//TODO:
-//Improve item usestyle
-//Sfx
-//Item glowmask
-
+﻿
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -43,8 +39,9 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.knockBack = 2.5f;
-			Item.UseSound = SoundID.Item25;
-			Item.shoot = ModContent.ProjectileType<BreachCannonSentry>();
+            Item.UseSound = SoundID.Item25;
+			Item.useStyle = ItemUseStyleID.HoldUp;
+            Item.shoot = ModContent.ProjectileType<BreachCannonSentry>();
 			Item.shootSpeed = 0f;
 		}
 
