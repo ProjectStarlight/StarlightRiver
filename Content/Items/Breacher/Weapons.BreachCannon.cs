@@ -100,6 +100,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Projectile proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
 			var mp = proj.ModProjectile as BreachCannonSentry;
+
+			//Main.NewText("Spawned at (" + ((int)originTile.X).ToString() + "," + ((int)originTile.Y).ToString() + ")");
 			mp.tileOrigin = originTile;
 			proj.originalDamage = Item.damage;
 			proj.rotation = (minDirection * 1.57f) + 3.14f;
@@ -252,10 +254,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			Vector2 offset = CalculateOffset(laserStartpoint, Projectile.rotation, 15, 1);
 
 			if (!superLaserContributer)
+			{
 				laserEndpoint = laserStartpoint + offset;
-
-			if (!superLaserContributer)
 				SuperLaserCheck();
+			}
 
 			if (superLaser)
 				superLaserSizeMult = MathHelper.Lerp(superLaserSizeMult, superCharge, 0.05f);
@@ -273,7 +275,10 @@ namespace StarlightRiver.Content.Items.Breacher
 			SpawnParticles();
 
 			if (!Main.tile[(int)tileOrigin.X, (int)tileOrigin.Y].HasTile && Projectile.timeLeft > 2)
+			{
+				//Main.NewText("Killed at (" + ((int)tileOrigin.X).ToString() + "," + ((int)tileOrigin.Y).ToString() + ")");
 				Projectile.timeLeft = 2;
+			}
 
 			Color color = Color.Lerp(Color.Cyan, new Color(0, 0, 255), 0.5f);
 			Lighting.AddLight(laserStartpoint, color.ToVector3() * laserSizeMult);
@@ -281,6 +286,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void Kill(int timeLeft)
         {
+			//Main.NewText(Projectile.Center.X.ToString());
 			for (int k = 1; k <= 5; k++)
 				Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BreachCannonSentryGore" + k).Type);
 		}
@@ -365,7 +371,11 @@ namespace StarlightRiver.Content.Items.Breacher
 					continue;
 
 				Vector2 mpTestEndpoint = mp.laserStartpoint + mp.CalculateOffset(mp.laserStartpoint, proj.rotation, 15, 1);
-				Vector2[] collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mpTestEndpoint);
+				Vector2[] collisionPoint;
+				if (laserStartpoint == laserEndpoint || mp.laserStartpoint == mp.laserEndpoint)
+					collisionPoint = new Vector2[0];
+				else
+					collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mpTestEndpoint);
 				if (collisionPoint.Length > 0)
 				{
 					mp.laserEndpoint = collisionPoint[0];
@@ -387,7 +397,11 @@ namespace StarlightRiver.Content.Items.Breacher
 						if (mp2.superLaser || mp2.superLaserContributer)
 							continue;
 						float collisionPoint2 = 0f;
-						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserStartpoint + mp2.CalculateOffset(mp2.laserStartpoint, proj2.rotation, 15, 1), 30, ref collisionPoint2))
+
+						Vector2 mp2Offset = mp2.CalculateOffset(mp2.laserStartpoint, proj2.rotation, 15, 1);
+						if (mp2Offset == Vector2.Zero)
+							continue;
+						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserStartpoint + mp2Offset, 30, ref collisionPoint2))
 						{
 							mp2.superLaserContributer = true;
 							mp2.laserEndpoint = laserEndpoint;
