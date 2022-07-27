@@ -1,19 +1,17 @@
 ﻿//TODO:
-//Make lasers go through platforms
-//Make super laser not pierce
 //Make them not sometimes despawn
-//Make it break if you break the tile
 //Sell price
 //Rarity
 //Obtainment
 //Balance
-//waves on bloom
-//Grasscutting
 //Remove main.newtext
 //Improve item usestyle
 //Sfx
 //Lighting
 //Description
+//Item glowmask
+//Fix detour not applying
+//Make sentries unable to be placed over each other
 
 
 using Microsoft.Xna.Framework;
@@ -23,9 +21,11 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Terraria;
+using Terraria.Enums;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -137,6 +137,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		private Trail trail;
 		private Trail trail2;
 
+		private float laserSizeMult = 0;
+
 		private List<Vector2> superCache;
 		private Trail superTrail;
 		private Trail superTrail2;
@@ -151,8 +153,12 @@ namespace StarlightRiver.Content.Items.Breacher
 		public Vector2 superLaserStartpoint;
 		public Vector2 superLaserEndpoint;
 
-        public override void Load()
+		private float superLaserSizeMult = 0;
+
+		public override void Load()
         {
+			for (int k = 1; k <= 5; k++)
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "Gore" + k);
 			On.Terraria.Main.PreUpdateAllProjectiles += ResetLasers;
         }
 
@@ -197,16 +203,25 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Projectile.Center = tileWorldPos - originAngleRad.ToRotationVector2() * 26;
 			float rotDifference = Helper.RotationDifference(Projectile.DirectionTo(Main.MouseWorld).ToRotation(), Projectile.rotation);
+
 			if (owner.HeldItem.type == ModContent.ItemType<BreachCannon>())
-			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
+				Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + rotDifference, 0.07f);
 
 			laserStartpoint = Projectile.Center + (Projectile.rotation.ToRotationVector2().RotatedBy(InvertRotation() ? 0.2f : -0.2f) * 44);
-			Vector2 offset = CalculateOffset();
+			Vector2 offset = CalculateOffset(laserStartpoint, Projectile.rotation, 15, 1);
+
 			if (!superLaserContributer)
 				laserEndpoint = laserStartpoint + offset;
 
 			if (!superLaserContributer)
 				SuperLaserCheck();
+
+			if (superLaser)
+				superLaserSizeMult = MathHelper.Lerp(superLaserSizeMult, superCharge, 0.05f);
+			else
+				superLaserSizeMult *= 0.95f;
+
+			laserSizeMult = MathHelper.Lerp(laserSizeMult, 1, 0.07f);
 
 			if (!Main.dedServ)
 			{
@@ -215,9 +230,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			SpawnParticles();
+
+			if (!Main.tile[(int)tileOrigin.X, (int)tileOrigin.Y].HasTile && Projectile.timeLeft > 2)
+				Projectile.timeLeft = 2;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+        public override void Kill(int timeLeft)
+        {
+			for (int k = 1; k <= 5; k++)
+				Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BreachCannonSentryGore" + k).Type);
+		}
+
+        public override bool PreDraw(ref Color lightColor)
 		{
 
 			var spriteBatch = Main.spriteBatch;
@@ -247,10 +271,25 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.spriteBatch.Draw(cannonTex, Projectile.Center - Main.screenPosition, null, lightColor, cannonRotation, cannonOrigin, Projectile.scale, cannonEffects, 0f);
 			Main.spriteBatch.Draw(cannonGlowTex, Projectile.Center - Main.screenPosition, null, Color.White, cannonRotation, cannonOrigin, Projectile.scale, cannonEffects, 0f);
 
+			DrawBalls(Main.spriteBatch, BlendState.AlphaBlend, new Color(0,0,255), Color.Cyan, 0.65f);
 			//DrawBeamStart(spriteBatch);
 
 			return false;
 		}
+
+		public override bool? CanCutTiles()
+		{
+			return true;
+		}
+
+		public override void CutTiles()
+		{
+			DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
+			Utils.PlotTileLine(laserStartpoint, laserEndpoint, 15, DelegateMethods.CutTiles);
+			if (superLaser)
+				Utils.PlotTileLine(superLaserStartpoint, superLaserEndpoint, 15 * superCharge, DelegateMethods.CutTiles);
+		}
+
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
@@ -282,7 +321,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				if (mp.superLaser || mp.superLaserContributer)
 					continue;
 
-				Vector2 mpTestEndpoint = mp.laserStartpoint + mp.CalculateOffset();
+				Vector2 mpTestEndpoint = mp.laserStartpoint + mp.CalculateOffset(mp.laserStartpoint, proj.rotation, 15, 1);
 				Vector2[] collisionPoint = Collision.CheckLinevLine(laserStartpoint, laserEndpoint, mp.laserStartpoint, mpTestEndpoint);
 				if (collisionPoint.Length > 0)
 				{
@@ -295,7 +334,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 					Rectangle additionalCheck = new Rectangle((int)(laserEndpoint.X - 15), (int)(laserEndpoint.Y - 15), 30, 30);
 
-					float angleTotal = proj.rotation + Projectile.rotation;
+					float superAngle = MathHelper.Lerp(Projectile.rotation, Projectile.rotation + Helper.RotationDifference(proj.rotation, Projectile.rotation), 0.5f);
 					for (int projIndex2 = 0; projIndex2 < Main.projectile.Length; projIndex2++)
 					{
 						Projectile proj2 = Main.projectile[projIndex2];
@@ -305,33 +344,19 @@ namespace StarlightRiver.Content.Items.Breacher
 						if (mp2.superLaser || mp2.superLaserContributer)
 							continue;
 						float collisionPoint2 = 0f;
-						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserStartpoint + mp2.CalculateOffset(), 30, ref collisionPoint2))
+						if (Collision.CheckAABBvLineCollision(additionalCheck.TopLeft(), additionalCheck.Size(), mp2.laserStartpoint, mp2.laserStartpoint + mp2.CalculateOffset(mp2.laserStartpoint, proj2.rotation, 15, 1), 30, ref collisionPoint2))
 						{
 							mp2.superLaserContributer = true;
 							mp2.laserEndpoint = laserEndpoint;
-							angleTotal += proj2.rotation;
+							superAngle = MathHelper.Lerp(superAngle, superAngle + Helper.RotationDifference(proj2.rotation, superAngle), 1.0f / superCharge);
 							superCharge++;
 						}
 					}
 
-					float superAngle = angleTotal / superCharge;
 
 					superLaserStartpoint = laserEndpoint;
 
-					Vector2 offset = Vector2.Zero;
-					for (int k = 0; k < 50; k++)
-					{
-						offset = superAngle.ToRotationVector2() * k * 16;
-
-						int i = (int)((superLaserStartpoint.X + offset.X) / 16);
-						int j = (int)((superLaserStartpoint.Y + offset.Y) / 16);
-						Tile testTile = Main.tile[i, j];
-						if (testTile.HasTile && Main.tileSolid[testTile.TileType])
-						{
-							break;
-						}
-					}
-					superLaserEndpoint = superLaserStartpoint + offset;
+					superLaserEndpoint = superLaserStartpoint + CalculateOffset(superLaserStartpoint, superAngle, 15 * superCharge, superCharge);
 
 
 					break;
@@ -358,7 +383,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		private void ManageTrail()
 		{
 			Color blue = new Color(0, 0, 255);
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * laserSizeMult, factor =>
 			{
 				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
@@ -366,7 +391,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = laserEndpoint;
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7, factor =>
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * laserSizeMult, factor =>
 			{
 				return Color.White;
 			});
@@ -374,7 +399,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = laserEndpoint;
 
-			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superCharge, factor =>
+			superTrail = superTrail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 15 * superLaserSizeMult, factor =>
 			{
 				return Color.Lerp(Color.Cyan, blue, factor.Y);
 			});
@@ -382,7 +407,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			superTrail.Positions = superCache.ToArray();
 			superTrail.NextPosition = superLaserEndpoint;
 
-			superTrail2 = superTrail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * superCharge, factor =>
+			superTrail2 = superTrail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => 7 * superLaserSizeMult, factor =>
 			{
 				return Color.White;
 			});
@@ -457,94 +482,120 @@ namespace StarlightRiver.Content.Items.Breacher
 			return false;
 		}
 
-		private Vector2 CalculateOffset()
+		private Vector2 CalculateOffset(Vector2 start, float rot, int width, int pierce)
         {
-			if (laserStartpoint == Vector2.Zero)
+			if (start == Vector2.Zero)
 				return Vector2.One;
 			Vector2 offset = Vector2.Zero;
 			for (int k = 0; k < 50; k++)
 			{
-				offset = Projectile.rotation.ToRotationVector2() * k * 16;
+				offset = rot.ToRotationVector2() * k * 16;
 
-				int i = (int)((laserStartpoint.X + offset.X) / 16);
-				int j = (int)((laserStartpoint.Y + offset.Y) / 16);
+				int i = (int)((start.X + offset.X) / 16);
+				int j = (int)((start.Y + offset.Y) / 16);
 				Tile testTile = Main.tile[i, j];
-				if (testTile.HasTile && Main.tileSolid[testTile.TileType])
+				if (testTile.HasTile && Main.tileSolid[testTile.TileType] && !TileID.Sets.Platforms[testTile.TileType])
 				{
 					break;
 				}
 			}
 
-			Vector2 testEndpoint = laserStartpoint + offset;
-			for (int index = 0; index < Main.npc.Length; index++)
+			Vector2 testEndpoint = start + offset;
+			NPC[] sortedNPC = Main.npc.Where(n => n.active && !n.friendly).OrderBy(n => (n.Center - start).Length()).ToArray();
+			if (sortedNPC.Length == 0)
+				return testEndpoint - start;
+			int pierceLeft = pierce;
+			for (int index = 0; index < sortedNPC.Length; index++)
 			{
-				NPC npc = Main.npc[index];
-				if (!npc.active)
-					continue;
+				NPC npc = sortedNPC[index];
 				float collisionPoint = 0f;
-				if (Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(), laserStartpoint, testEndpoint, 15, ref collisionPoint))
+				if (Collision.CheckAABBvLineCollision(npc.Hitbox.TopLeft(), npc.Hitbox.Size(), start, testEndpoint, width, ref collisionPoint))
 				{
-					testEndpoint = Vector2.Lerp(laserStartpoint, testEndpoint, (float)collisionPoint / (laserStartpoint - testEndpoint).Length());
+					pierce--;
+					if (pierce <= 0)
+                    {
+						testEndpoint = Vector2.Lerp(start, testEndpoint, (float)(collisionPoint + 8) / (start - testEndpoint).Length());
+						break;
+					}
 				}
 			}
 
-			return testEndpoint - laserStartpoint;
+			return testEndpoint - start;
+		}
+
+		private void DrawBalls(SpriteBatch sb, BlendState endState, Color topColor, Color bottomColor, float scale)
+        {
+			Texture2D ballTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+
+			float ballRotation = (laserEndpoint - laserStartpoint).ToRotation();
+
+			sb.End();
+
+			Effect effect = Filters.Scene["BreachLaserBloom"].GetShader().Shader;
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.25f);
+			effect.Parameters["stretch"].SetValue(1);
+
+			effect.Parameters["dilation"].SetValue(0.8f);
+			effect.Parameters["falloff"].SetValue(1);
+
+			effect.Parameters["topColor"].SetValue(topColor.ToVector3());
+			effect.Parameters["bottomColor"].SetValue(bottomColor.ToVector3());
+
+			sb.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			sb.Draw(ballTex, laserStartpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult, SpriteEffects.None, 0f);
+			sb.Draw(ballTex, laserEndpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult * 0.85f, SpriteEffects.None, 0f);
+
+			if (superLaser)
+			{
+				float superRotation = (superLaserEndpoint - superLaserStartpoint).ToRotation();
+				sb.Draw(ballTex, superLaserStartpoint - Main.screenPosition, null, Color.White, superRotation, ballTex.Size() / 2, scale * superLaserSizeMult, SpriteEffects.None, 0f);
+				sb.Draw(ballTex, superLaserEndpoint - Main.screenPosition, null, Color.White, superRotation, ballTex.Size() / 2, scale * 0.85f * superLaserSizeMult, SpriteEffects.None, 0f);
+			}
+
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, endState, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 
 		public void DrawAdditive(SpriteBatch sb)
 		{
-			Color blue = Color.Lerp(Color.Cyan, new Color(0, 0, 255), 0.5f);
-
-			//sb.End();
-			//sb.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-
+			Color blue = new Color(0,0,255);
+			Color blueCyan = Color.Lerp(Color.Cyan, blue, 0.5f);
 			var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
-			for (int i = 0; i < 4; i++)
-			{
-				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.45f, SpriteEffects.None, 0f);
-				sb.Draw(tex, laserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f, SpriteEffects.None, 0f);
-			}
-
-			for (int i = 0; i < 4; i++)
-			{
-				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.35f, SpriteEffects.None, 0f);
-				sb.Draw(tex, laserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.2f, SpriteEffects.None, 0f);
-			}
+			sb.Draw(tex, laserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * laserSizeMult, SpriteEffects.None, 0f);
+			sb.Draw(tex, laserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * laserSizeMult, SpriteEffects.None, 0f);
 
 			if (superLaser)
-            {
-				for (int i = 0; i < 4; i++)
-				{
-					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.45f * superCharge, SpriteEffects.None, 0f);
-					sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.25f * superCharge, SpriteEffects.None, 0f);
-				}
+			{
+				sb.Draw(tex, superLaserStartpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.45f * superLaserSizeMult, SpriteEffects.None, 0f);
 
-				for (int i = 0; i < 4; i++)
-				{
-					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blue, 0, tex.Size() / 2, 0.35f * superCharge, SpriteEffects.None, 0f);
-					sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 0.2f * superCharge, SpriteEffects.None, 0f);
-				}
+				sb.Draw(tex, superLaserEndpoint - Main.screenPosition, null, blueCyan, 0, tex.Size() / 2, 0.35f * superLaserSizeMult, SpriteEffects.None, 0f);
 			}
 
-			//sb.End();
-			//sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			DrawBalls(sb, BlendState.Additive, Color.White, Color.White, 0.35f);
 		}
 
 		private void SpawnParticles()
 		{
 			Vector2 direction = laserEndpoint.DirectionTo(laserStartpoint);
 
+			Color color1 = Color.Cyan;
+			Color color2 = new Color(0, 0, 255);
 			for (int i = 0; i < 5; i++)
 			{
-				Dust.NewDustPerfect(laserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Cyan, Main.rand.NextFloat(0.25f, 0.6f));
+				Dust.NewDustPerfect(laserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Lerp(color1, color2, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.6f));
 			}
 
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 vel = direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(9);
-				Dust.NewDustPerfect(laserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Cyan, Main.rand.NextFloat(1.25f, 1.6f));
+				Dust.NewDustPerfect(laserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Lerp(color1, color2, Main.rand.NextFloat()), Main.rand.NextFloat(1.25f, 1.6f));
 			}
 
 			if (superLaser)
@@ -553,13 +604,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				for (int i = 0; i < 5; i++)
 				{
-					Dust.NewDustPerfect(superLaserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Cyan, Main.rand.NextFloat(0.25f, 0.6f));
+					Dust.NewDustPerfect(superLaserEndpoint, ModContent.DustType<BreachImpactGlow>(), direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(12), 0, Color.Lerp(color1, color2, Main.rand.NextFloat()), Main.rand.NextFloat(0.25f, 0.6f));
 				}
 
 				for (int i = 0; i < 3; i++)
 				{
 					Vector2 vel = direction.RotatedByRandom(0.6f) * Main.rand.NextFloat(9);
-					Dust.NewDustPerfect(superLaserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Cyan, Main.rand.NextFloat(1.25f, 1.6f));
+					Dust.NewDustPerfect(superLaserEndpoint + new Vector2(0, 35) + (vel * 2), ModContent.DustType<BreachImpactSpark>(), vel, 0, Color.Lerp(color1, color2, Main.rand.NextFloat()), Main.rand.NextFloat(1.25f, 1.6f));
 				}
 			}
 		}
