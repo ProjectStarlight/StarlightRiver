@@ -9,14 +9,21 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent.ItemDropRules;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class PhilosophersMortar : SmartAccessory
+    public class PhilosophersMortar :  CursedAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public PhilosophersMortar() : base("Philosopher's Mortar", "Life hearts decrease duration of Potion Sickness by 10 seconds, but heal half as much") { }
+        public PhilosophersMortar() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "PhilosophersMortar").Value) { }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Philosopher's Mortar");
+            Tooltip.SetDefault("Life hearts decrease duration of Potion Sickness by 10 seconds, but heal half as much");
+        }
 
         public override void SafeSetDefaults()
         {
