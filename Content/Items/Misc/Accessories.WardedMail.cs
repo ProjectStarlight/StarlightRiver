@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public WardedMail() : base("Warded Mail", "Barrier damage is applied to attackers as thorns \n+10% barrier resistance \n+40 barrier") { }
+        public WardedMail() : base("Warded Mail", "Barrier damage is applied to attackers as thorns \n+Barrier negates 10% more damage \n+40 barrier") { }
 
         public override List<int> ChildTypes => new List<int>()
         {
