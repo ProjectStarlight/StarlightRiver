@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
             MinPick = 999;
         }
 
-        public override void SafeNearbyEffects(int i, int j, bool closer)
+        public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
             Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
         }
