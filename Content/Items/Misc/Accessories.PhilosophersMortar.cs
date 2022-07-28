@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Misc
                 int buffIndex = player.FindBuffIndex(BuffID.PotionSickness);
                 if (buffIndex != -1)
                 {
-                    player.buffTime[buffIndex] = (int)MathHelper.Max(0, player.buffTime[buffIndex] - 300);
+                    player.buffTime[buffIndex] = (int)MathHelper.Max(0, player.buffTime[buffIndex] - 600);
                 }
                 item.active = false;
                 return false;
