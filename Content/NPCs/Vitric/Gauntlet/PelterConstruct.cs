@@ -23,16 +23,19 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class PelterConstruct : ModNPC, IGauntletNPC
+    internal class PelterConstruct : ModNPC, IHealableByHealerConstruct
     {
         public override string Texture => AssetDirectory.GauntletNpc + "PelterConstruct";
 
-        private const int BOWFRAMES = 4; 
+        public bool ableToDoCombo = true;
+
+        private const int BOWFRAMES = 4;
+        private const int XFRAMES = 3;
 
         private int aiCounter = 0;
 
-        private float enemyRotation = 0f;
-        private float enemyRotation2 = 0f;
+        private float flipRotation = 0f; //The rotation relating to the flip
+        private float leaningRotation = 0f; //The rotation relating to leaning in during the combo jump
 
         private int bowFrame = 0;
         private int bowFrameCounter = 0;
@@ -40,25 +43,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int bodyFrame;
         private int bodyFrameCounter = 0;
 
-        private bool doingCombo = false;
-        private bool comboJumped = false;
-        private bool comboFiring = false;
-        private NPC partner = default;
+        private bool doingShielderCombo = false;
+        private bool shielderComboJumped = false;
+        private bool shielderComboFiring = false;
+        private NPC shielderPartner = default;
 
         float bowRotation = 0;
         float bowArmRotation = 0;
 
         float headRotation = 0f;
 
-        private int cooldownLength = 500; //TODO: Make constant
-
-        private int XFRAMES = 3; //TODO: Make constant
+        private int cooldownLength = 500; 
 
         private int XFrame = 0;
-
-        private int pauseTimer = -1;
-
-        private Vector2 oldVel = Vector2.Zero;
 
         private Vector2 ringVel = Vector2.Zero;
 
@@ -109,29 +106,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             backupDistance = Main.rand.Next(50, 100);
         }
 
-        public override bool PreAI()
+        public override void AI()
         {
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
-            pauseTimer--;
-            if (pauseTimer == 0)
-            {
-                NPC.velocity = oldVel;
-                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
-                ring.extraUpdates = 0;
-            }
-            if (pauseTimer > 0)
-            {
-                NPC.noGravity = true;
-                NPC.velocity = Vector2.Zero;
-                NPC.rotation = enemyRotation;
-                return false;
-            }
             NPC.noGravity = false;
 
-            enemyRotation *= 0.9f;
-            if (Math.Abs(enemyRotation) < 0.4f)
-                enemyRotation = 0;
-            NPC.rotation = enemyRotation + enemyRotation2;
+            flipRotation *= 0.9f;
+
+            if (Math.Abs(flipRotation) < 0.4f)
+                flipRotation = 0;
+
+            NPC.rotation = flipRotation + leaningRotation;
             NPC.TargetClosest(true);
             Vector2 direction = bowArmPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
@@ -142,218 +127,36 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
 
             if (NPC.spriteDirection == 1)
-            {
                 headRotation = bowRotation / 2;
-            }
             else
-            {
                 headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
-            }
 
-            var tempPartner = Main.npc.Where(x =>
-            x.active &&
-            x.type == ModContent.NPCType<ShieldConstruct>() &&
-            (x.ModNPC as ShieldConstruct).guarding &&
-            (x.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
-            x.spriteDirection == NPC.spriteDirection &&
-            NPC.Distance(x.Center) > 50 &&
-            NPC.Distance(x.Center) < 600 &&
-            Math.Sign(x.Center.X - NPC.Center.X) == NPC.spriteDirection).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
-
-            if (tempPartner != default && !doingCombo)
+            if (ShieldComboLogic())
             {
-                doingCombo = true;
-                partner = tempPartner;
-                (partner.ModNPC as ShieldConstruct).bounceCooldown = cooldownLength;
-            }
-
-
-            if (doingCombo)
-            {
-                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-                if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
-                {
-                    Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
-                    if (NPC.velocity.Y == 0)
-                    {
-                        XFrame = 0;
-                        bodyFrameCounter++;
-                        if (bodyFrameCounter > 5 - (int)((Math.Abs(NPC.velocity.X)) / 2))
-                        {
-                            bodyFrameCounter = 0;
-                            bodyFrame++;
-                        }
-                        bodyFrame %= 8;
-                    }
-                    else
-                        bodyFrame = 8;
-
-                    if (Math.Abs(NPC.Center.X - partner.Center.X) < 110 && !comboJumped)
-                    {
-                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
-                        comboJumped = true;
-                    }
-                    if (comboJumped)
-                    {
-
-                        if (comboFiring)
-                        {
-                            enemyRotation2 *= 0.9f;
-                        }
-                        else
-                            enemyRotation2 = MathHelper.Lerp(enemyRotation2, NPC.spriteDirection * Math.Abs(NPC.velocity.Y) * -0.15f, 0.1f);
-                        NPC.velocity.X *= 1.05f;
-                        if (NPC.collideY && NPC.velocity.Y == 0)
-                        {
-                            comboJumped = false;
-                            comboFiring = false;
-                            doingCombo = false;
-                        }
-                        else
-                        {
-                            if (NPC.velocity.Y > 0 && NPC.Center.Y > (partner.Top.Y + 5) && !comboFiring)
-                            {
-                                ringVel = NPC.Bottom.DirectionTo(partner.Center);
-                                aiCounter = 299;
-
-                                partner.velocity.X = Math.Sign(NPC.velocity.X);
-                                NPC.velocity.X *= -1;
-                                NPC.velocity.Y = -9;
-                                enemyRotation = 6.28f * NPC.spriteDirection * 0.95f;
-                                comboFiring = true;
-
-                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
-                                ring.extraUpdates = 0;
-
-                                //pauseTimer = 7;
-                                oldVel = NPC.velocity;
-                                return false;
-                            }
-                        }
-                    }
-                    if (comboFiring)
-                    {
-                        NPC.velocity.X *= 1.04f;
-                        bowFrameCounter++;
-                    }
-                    else
-                    {
-                        NPC.velocity.X += NPC.spriteDirection * 0.1f;
-                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
-                    }
-                }
-                else
-                    doingCombo = false;
-            }
-            else
-            {
-                enemyRotation2 = 0;
-                aiCounter++;
-            }
-
-            if (aiCounter % 300 > 200 && (!doingCombo || comboFiring))
-            {
-                bowFrameCounter++;
-                if (bowFrame == 0)
-                {
-                    if (bowFrameCounter > 25)
-                    {
-                        SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                        /*if (comboFiring)
-                        {
-                            for (int i = -1; i < 1.1f; i++)
-                                Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy(((target.Center.X - NPC.Center.X) * -0.0003f) + (i * 0.3f)) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
-                        }
-                        else*/
-                            Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
-                        bowFrameCounter = 0;
-                        bowFrame++;
-                    }
-                }
-                else if (bowFrameCounter > 4)
-                {
-                    bowFrameCounter = 0;
-                    bowFrame++;
-                }
-
-                bowFrame %= BOWFRAMES;
-
-                NPC.velocity.X *= 0.9f;
-                XFrame = 1;
-                if (NPC.collideY)
-                    bodyFrame = 1;
-                else
-                    bodyFrame = 0;
-                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-                return false;
-            }
-
-            if (doingCombo)
-                return false;
-            bowFrame = 0;
-            bowFrameCounter = 0;
-            return true;
-        } //TODO: Restructure this into seperate methods all called from AI.
-
-        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
-        {
-            return false;
-        }
-
-        public override void AI()
-        {
-            if (aiCounter % 300 < 10 && NPC.velocity.Y < 0)
-                NPC.velocity.Y = 0;
-
-
-            var nearestShielder = Main.npc.Where(x =>
-            x.active &&
-            x.type == ModContent.NPCType<ShieldConstruct>() &&
-            NPC.Distance(x.Center) < 600).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
-            int xPosToBe;
-            if (nearestShielder == default)
-                xPosToBe = (int)target.Center.X;
-            else
-                xPosToBe = (int)nearestShielder.Center.X - (nearestShielder.spriteDirection * backupDistance);
-
-            int velDir = Math.Sign(xPosToBe - NPC.Center.X);
-            if (Math.Abs(NPC.Center.X - xPosToBe) < 25 || stopped)
-            {
-                stopped = true;
-                if (Math.Abs(NPC.Center.X - xPosToBe) > 105)
-                {
-                    stopped = false;
-                }
-
-                XFrame = 1;
-                if (NPC.collideY)
-                    bodyFrame = 1;
-                else
-                    bodyFrame = 0;
-                NPC.velocity *= 0.9f;
+                return;
             }
             else
             { 
-                NPC.velocity.X += acceleration * velDir;
-                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
-                if (NPC.velocity.Y == 0)
-                {
-                    XFrame = 2;
-                    bodyFrameCounter++;
-                    if (bodyFrameCounter > 4 - (int)((Math.Abs(NPC.velocity.X)) / 2))
-                    {
-                        bodyFrameCounter = 0;
-                        bodyFrame++;
-                    }
-                    bodyFrame %= 10;
-                }
-                else
-                {
-                    XFrame = 1;
-                    bodyFrame = 0;
-                }
+                leaningRotation = 0;
+                aiCounter++;
             }
-        }
+
+            if (aiCounter % 300 > 200 && (!doingShielderCombo || shielderComboFiring))
+            {
+                FireArrows();
+                return;
+            }
+
+            if (doingShielderCombo)
+                return;
+
+            bowFrame = 0;
+            bowFrameCounter = 0;
+
+            RegularMovement();
+        } 
+
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false;
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -413,9 +216,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
-        public override void HitEffect(int hitDirection, double damage)
+        public override void OnKill()
         {
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (Main.netMode != NetmodeID.Server)
             {
                 for (int i = 0; i < 9; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -423,7 +226,213 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 for (int k = 1; k <= 12; k++)
                     Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
             }
-        } //TODO: Move to kill hook
+        } 
+
+        private bool ShieldComboLogic() //returns true if it's doing the combo with the shielder
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            var tempPartner = Main.npc.Where(x =>
+           x.active &&
+           x.type == ModContent.NPCType<ShieldConstruct>() &&
+           (x.ModNPC as ShieldConstruct).guarding &&
+           (x.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
+           x.spriteDirection == NPC.spriteDirection &&
+           NPC.Distance(x.Center) > 50 &&
+           NPC.Distance(x.Center) < 600 &&
+           Math.Sign(x.Center.X - NPC.Center.X) == NPC.spriteDirection).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault(); //TODO: cache
+
+            if (tempPartner != default && !doingShielderCombo)
+            {
+                doingShielderCombo = true;
+                shielderPartner = tempPartner;
+                (shielderPartner.ModNPC as ShieldConstruct).bounceCooldown = cooldownLength;
+            }
+
+
+            if (doingShielderCombo)
+            {
+                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+
+                if (shielderPartner.active && (shielderPartner.ModNPC as ShieldConstruct).guarding)
+                {
+                    Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+
+                    if (NPC.velocity.Y == 0)
+                    {
+                        XFrame = 0;
+                        bodyFrameCounter++;
+
+                        if (bodyFrameCounter > 5 - (int)((Math.Abs(NPC.velocity.X)) / 2))
+                        {
+                            bodyFrameCounter = 0;
+                            bodyFrame++;
+                        }
+
+                        bodyFrame %= 8;
+                    }
+                    else
+                        bodyFrame = 8;
+
+                    if (Math.Abs(NPC.Center.X - shielderPartner.Center.X) < 110 && !shielderComboJumped)
+                    {
+                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, shielderPartner.Top + new Vector2(shielderPartner.spriteDirection * 15, 0), 0.1f, 120, 350);
+                        shielderComboJumped = true;
+                    }
+                    if (shielderComboJumped)
+                    {
+                        if (shielderComboFiring)
+                            leaningRotation *= 0.9f;
+                        else
+                            leaningRotation = MathHelper.Lerp(leaningRotation, NPC.spriteDirection * Math.Abs(NPC.velocity.Y) * -0.15f, 0.1f);
+
+                        NPC.velocity.X *= 1.05f;
+
+                        if (NPC.collideY && NPC.velocity.Y == 0)
+                        {
+                            shielderComboJumped = false;
+                            shielderComboFiring = false;
+                            doingShielderCombo = false;
+                        }
+                        else
+                        {
+                            if (NPC.velocity.Y > 0 && NPC.Center.Y > (shielderPartner.Top.Y + 5) && !shielderComboFiring)
+                            {
+                                ringVel = NPC.Bottom.DirectionTo(shielderPartner.Center);
+                                aiCounter = 299;
+
+                                shielderPartner.velocity.X = Math.Sign(NPC.velocity.X);
+                                NPC.velocity.X *= -1;
+                                NPC.velocity.Y = -9;
+                                flipRotation = 6.28f * NPC.spriteDirection * 0.95f;
+                                shielderComboFiring = true;
+
+                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(shielderPartner.Center).ToRotation());
+                                ring.extraUpdates = 0;
+                                return true;
+                            }
+                        }
+                    }
+
+                    if (shielderComboFiring)
+                    {
+                        NPC.velocity.X *= 1.04f;
+                        bowFrameCounter++;
+                    }
+                    else
+                    {
+                        NPC.velocity.X += NPC.spriteDirection * 0.1f;
+                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
+                    }
+
+                    return true;
+                }
+
+                doingShielderCombo = false;
+                return false;
+            }
+            return false;
+        }
+
+        private void FireArrows()
+        {
+            bowFrameCounter++;
+
+            if (bowFrame == 0)
+            {
+                if (bowFrameCounter > 25)
+                {
+                    SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
+                    Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                    bowFrameCounter = 0;
+                    bowFrame++;
+                }
+            }
+            else if (bowFrameCounter > 4)
+            {
+                bowFrameCounter = 0;
+                bowFrame++;
+            }
+
+            bowFrame %= BOWFRAMES;
+
+            NPC.velocity.X *= 0.9f;
+            XFrame = 1;
+
+            if (NPC.collideY)
+                bodyFrame = 1;
+            else
+                bodyFrame = 0;
+
+            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+        }
+
+        private void RegularMovement() //Movement it does if it isn't firing or in a combo
+        {
+            if (aiCounter % 300 < 10 && NPC.velocity.Y < 0)
+                NPC.velocity.Y = 0;
+
+
+            var nearestShielder = Main.npc.Where(x =>
+            x.active &&
+            x.type == NPCType<ShieldConstruct>() &&
+            NPC.Distance(x.Center) < 600).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault(); //This is nessecary to call every frame, since it has to constantly reposition around the actual nearest shielder, and can't stick with one
+
+            int xPosToBe;
+
+            if (nearestShielder == default)
+                xPosToBe = (int)target.Center.X;
+            else
+                xPosToBe = (int)nearestShielder.Center.X - (nearestShielder.spriteDirection * backupDistance);
+
+            int velDir = Math.Sign(xPosToBe - NPC.Center.X);
+
+            if (Math.Abs(NPC.Center.X - xPosToBe) < 25 || stopped)
+            {
+                stopped = true;
+
+                if (Math.Abs(NPC.Center.X - xPosToBe) > 105)
+                    stopped = false;
+
+                XFrame = 1;
+
+                if (NPC.collideY)
+                    bodyFrame = 1;
+                else
+                    bodyFrame = 0;
+
+                NPC.velocity *= 0.9f;
+            }
+            else
+            {
+                NPC.velocity.X += acceleration * velDir;
+                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+
+                if (NPC.velocity.Y == 0)
+                {
+                    XFrame = 2;
+                    bodyFrameCounter++;
+                    if (bodyFrameCounter > 4 - (int)((Math.Abs(NPC.velocity.X)) / 2))
+                    {
+                        bodyFrameCounter = 0;
+                        bodyFrame++;
+                    }
+                    bodyFrame %= 10;
+                }
+                else
+                {
+                    XFrame = 1;
+                    bodyFrame = 0;
+                }
+            }
+        }
+
+        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        {
+
+        }
+
     }
 
     internal class PelterConstructArrow : ModProjectile
@@ -543,5 +552,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             trail.Positions = cache.ToArray();
             trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
+
     }
 }

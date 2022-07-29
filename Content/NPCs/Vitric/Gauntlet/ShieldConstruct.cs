@@ -16,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class ShieldConstruct : ModNPC, IGauntletNPC
+    internal class ShieldConstruct : ModNPC, IHealableByHealerConstruct
     {
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
@@ -71,19 +71,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 float shieldAnimationProgress;
                 xFrame = 1;
                 yFrame = 0;
-                float lerper;
 
                 Vector2 up = new Vector2(0, -12);
                 Vector2 down = new Vector2(0, 14);
 
                 if (timer < 400)
                 {
-                    if (timer < 250)
+                    if (timer < 250) //Shield Raising, preparing to slam
                     {
                         shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease(((timer - 200) / 50f));
                         shieldOffset = up * shieldAnimationProgress;
                     }
-                    else if (timer <= 260)
+                    else if (timer <= 260) //Shield lowering towards the ground
                     {
                         shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((timer - 250) / 10f);
                         shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
@@ -103,17 +102,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
                 else
                 {
-                    if (timer < 464)
+                    if (timer < 464) //Shield slowly sliding out of the ground
                     {
                         shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((timer - 400) / 64f);
                         shieldOffset = Vector2.Lerp(down, new Vector2(0,4), shieldAnimationProgress);
                     }
-                    else if (timer < 470)
+                    else if (timer < 470) //Shield jolts out of the ground
                     {
                         shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((timer - 464) / 6f);
                         shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
                     }
-                    else
+                    else //Shield lowers back into place
                     {
                         shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((timer - 470) / 30f);
                         shieldOffset = up * (1 - shieldAnimationProgress);
@@ -122,7 +121,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     if (timer == 421)
                         Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
 
-                    if (timer == 464)
+                    if (timer == 464) //Shield exits the ground
                     {
                         Core.Systems.CameraSystem.Shake += 2;
 
@@ -228,9 +227,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
         }
 
-        public override void HitEffect(int hitDirection, double damage)
+        public override void OnKill()
         {
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (Main.netMode != NetmodeID.Server)
             {
                 for (int i = 0; i < 12; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -238,6 +237,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 for (int k = 1; k <= 17; k++)
                     Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
             }
+        }
+
+        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }

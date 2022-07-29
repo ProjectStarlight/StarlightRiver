@@ -24,11 +24,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class FlyingPelterConstruct : ModNPC, IGauntletNPC
+    internal class FlyingPelterConstruct : ModNPC, IHealableByHealerConstruct
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingPelterConstruct";
 
         private const int BOWFRAMES = 4;
+        private const int XFRAMES = 1;
+
+        public bool ableToDoCombo = true;
 
         private int bowFrame = 0;
         private int bowFrameCounter = 0;
@@ -40,7 +43,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         float headRotation = 0f;
 
-        private int XFRAMES = 1; //TODO: make const
         private int XFrame = 0;
 
         public Vector2 posToBe = Vector2.Zero;
@@ -126,7 +128,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     empowered = false;
             }
 
-            if (doingCombo)
+            if (doingCombo && ableToDoCombo)
             {
                 if (!comboPartner.active)
                     doingCombo = false;
@@ -182,72 +184,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 attacking = false;
             }
 
-            int arrowsToShoot = 3;
-            int timeToShoot = 75;
-            int timeToCharge = 4;
-
-            if (empowered)
-            {
-                arrowsToShoot = 2;
-                timeToShoot = 110;
-                timeToCharge = 5;
-            }
-
             if (attacking)
-            {
-                bowFrameCounter++;
-                if (bowFrame == 0)
-                {
-                    if (bowFrameCounter < 75)
-                        predictorLength = 0.15f;
-                    if (bowFrameCounter > timeToShoot)
-                    {
-                        arrowsShot++;
-                        if (arrowsShot > arrowsToShoot)
-                        {
-                            arrowsShot = 0;
-                            attacking = false;
-                            posToBe = target.Center + new Vector2(Main.rand.Next(-500, -100) * Math.Sign(target.Center.X - NPC.Center.X), Main.rand.Next(-200, -70));
-                            oldPos = NPC.Center;
-                        }
-                        SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                        /*if (comboFiring)
-                        {
-                            for (int i = -1; i < 1.1f; i++)
-                                Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy(((target.Center.X - NPC.Center.X) * -0.0003f) + (i * 0.3f)) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
-                        }
-                        else*/
-                        if (!empowered)
-                            Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
-                        else
-                        {
-                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos + (bowArmRotation.ToRotationVector2() * 5), bowArmRotation.ToRotationVector2() * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), NPC.damage, NPC.knockBackResist);
-                            proj.rotation = bowArmRotation + 1.57f;
-                            proj.ai[0] = proj.Distance(target.Center) / 5;
-
-                            knockbackVel = bowArmRotation.ToRotationVector2() * -5;
-
-                            for (int i = 0; i < 15; i++)
-                            {
-                                Vector2 dustPos = bowPos + Main.rand.NextVector2Circular(10, 10);
-                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
-                            }
-                        }
-                        bowFrameCounter = 0;
-                        bowFrame++;
-                    }
-                }
-                else if (bowFrameCounter > timeToCharge)
-                {
-                    bowFrameCounter = 0;
-                    bowFrame++;
-                }
-
-                bowFrame %= BOWFRAMES;
-                NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-
-                NPC.velocity.X = 0;
-            }
+                ShootArrows();
             else
             {
                 attacking = false;
@@ -393,8 +331,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (pairedGrunt != default)
                 (pairedGrunt.ModNPC as FlyingGruntConstruct).attacking = true;
+        }
 
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server) //TODO: Move to kill hook
+        public override void OnKill()
+        {
+            if (Main.netMode != NetmodeID.Server) 
             {
                 for (int i = 0; i < 9; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -402,6 +343,73 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 for (int k = 1; k <= 12; k++)
                     Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
             }
+        }
+
+        private void ShootArrows()
+        {
+            int arrowsToShoot = 3;
+            int timeToShoot = 75;
+            int timeToCharge = 4;
+
+            if (empowered)
+            {
+                arrowsToShoot = 2;
+                timeToShoot = 110;
+                timeToCharge = 5;
+            }
+
+            bowFrameCounter++;
+            if (bowFrame == 0)
+            {
+                if (bowFrameCounter < 75)
+                    predictorLength = 0.15f;
+                if (bowFrameCounter > timeToShoot)
+                {
+                    arrowsShot++;
+                    if (arrowsShot > arrowsToShoot)
+                    {
+                        arrowsShot = 0;
+                        attacking = false;
+                        posToBe = target.Center + new Vector2(Main.rand.Next(-500, -100) * Math.Sign(target.Center.X - NPC.Center.X), Main.rand.Next(-200, -70));
+                        oldPos = NPC.Center;
+                    }
+
+                    SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
+
+                    if (!empowered)
+                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                    else
+                    {
+                        Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos + (bowArmRotation.ToRotationVector2() * 5), bowArmRotation.ToRotationVector2() * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), NPC.damage, NPC.knockBackResist);
+                        proj.rotation = bowArmRotation + 1.57f;
+                        proj.ai[0] = proj.Distance(target.Center) / 5;
+
+                        knockbackVel = bowArmRotation.ToRotationVector2() * -5;
+
+                        for (int i = 0; i < 15; i++)
+                        {
+                            Vector2 dustPos = bowPos + Main.rand.NextVector2Circular(10, 10);
+                            Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), bowArmRotation.ToRotationVector2().RotatedByRandom(0.7f) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+                        }
+                    }
+                    bowFrameCounter = 0;
+                    bowFrame++;
+                }
+            }
+            else if (bowFrameCounter > timeToCharge)
+            {
+                bowFrameCounter = 0;
+                bowFrame++;
+            }
+
+            bowFrame %= BOWFRAMES;
+            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+
+            NPC.velocity.X = 0;
+        }
+        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        {
+
         }
     }
 
@@ -507,55 +515,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
                 Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
-                for (int i = 0; i < 6; i++) //TODO: Perhaps make spawning this its own method?
-                {
-                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
-                    dust.velocity = Main.rand.NextVector2Circular(3, 3);
-                    dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-                    dust.alpha = 70 + Main.rand.Next(60);
-                    dust.rotation = Main.rand.NextFloat(6.28f);
-                }
-                for (int i = 0; i < 6; i++)
-                {
-                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
-                    dust.velocity = Main.rand.NextVector2Circular(3, 3);
-                    dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
-                    dust.alpha = Main.rand.Next(80) + 40;
-                    dust.rotation = Main.rand.NextFloat(6.28f);
-
-                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
-                }
-
-                for (int i = 0; i < 3; i++)
-                {
-                    var velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
-                    Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
-                    proj.friendly = false;
-                    proj.hostile = true;
-                    proj.scale = Main.rand.NextFloat(0.85f, 1.15f); 
-                }
-
-                Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), Projectile.damage, 0);
-                (proj2.ModProjectile as ConstructRing).finalRadius = 60;
-
-                for (int i = 0; i < 6; i++)
-                {
-                    Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
-                    Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<CoachGunDustFive>());
-                    dust.velocity = vel * Main.rand.Next(4);
-                    dust.scale = Main.rand.NextFloat(0.25f, 0.5f);
-                    dust.alpha = 70 + Main.rand.Next(60);
-                    dust.rotation = Main.rand.NextFloat(6.28f);
-                }
-
-                for (int i = 0; i < 3; i++)
-                {
-                    Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
-                    /*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
-                    Main.dust[dustID].noGravity = false;*/
-
-                    Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
-                }
+                SpawnParticles();
             }
             return false;
         }
@@ -597,6 +557,59 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             var color = Color.OrangeRed;
             for (int i = 0; i < 6; i++)
                 sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
+        }
+
+        private void SpawnParticles()
+        {
+            for (int i = 0; i < 6; i++) //TODO: Perhaps make spawning this its own method?
+            {
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+                dust.velocity = Main.rand.NextVector2Circular(3, 3);
+                dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+                dust.alpha = 70 + Main.rand.Next(60);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+            for (int i = 0; i < 6; i++)
+            {
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+                dust.velocity = Main.rand.NextVector2Circular(3, 3);
+                dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+                dust.alpha = Main.rand.Next(80) + 40;
+                dust.rotation = Main.rand.NextFloat(6.28f);
+
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustFour>()).scale = 0.9f;
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                var velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+                proj.friendly = false;
+                proj.hostile = true;
+                proj.scale = Main.rand.NextFloat(0.85f, 1.15f);
+            }
+
+            Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), Projectile.damage, 0);
+            (proj2.ModProjectile as ConstructRing).finalRadius = 60;
+
+            for (int i = 0; i < 6; i++)
+            {
+                Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
+                Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16) + (vel * Main.rand.Next(70)), 0, 0, ModContent.DustType<CoachGunDustFive>());
+                dust.velocity = vel * Main.rand.Next(4);
+                dust.scale = Main.rand.NextFloat(0.25f, 0.5f);
+                dust.alpha = 70 + Main.rand.Next(60);
+                dust.rotation = Main.rand.NextFloat(6.28f);
+            }
+
+            for (int i = 0; i < 3; i++)
+            {
+                Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
+                /*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+                Main.dust[dustID].noGravity = false;*/
+
+                Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
+            }
         }
     }
 

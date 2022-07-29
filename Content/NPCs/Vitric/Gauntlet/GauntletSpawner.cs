@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    public class GauntletSpawner : ModProjectile, IGauntletNPC
+    public class GauntletSpawner : ModProjectile
     {
         public ref float NPCType => ref Projectile.ai[0];
         public ref float Timer => ref Projectile.ai[1];

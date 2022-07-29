@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             foreach (NPC enemy in Main.npc)
             {
-                if (enemy.active && enemy.ModNPC is IGauntletNPC)
+                if (enemy.active && enemy.ModNPC is IHealableByHealerConstruct)
                 {
                     allEnemiesDowned = false;
                     continue;

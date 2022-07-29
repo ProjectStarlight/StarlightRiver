@@ -30,13 +30,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         swinging = 2,
     }
 
-    internal class FlyingGruntConstruct : ModNPC, IGauntletNPC
+    internal class FlyingGruntConstruct : ModNPC, IHealableByHealerConstruct
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
 
-        private Player target => Main.player[NPC.target];
+        private const int XFRAMES = 2;
 
-        private int XFRAMES = 2;
+        public bool ableToDoCombo = true;
+
         private int xFrame = 0;
         private int yFrame = 0;
 
@@ -56,6 +57,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int attackCooldown = 0;
 
         private int swingDirection = 1;
+
+        private Player target => Main.player[NPC.target];
+
 
         public override void SetStaticDefaults()
         {
@@ -151,10 +155,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
-        public override void HitEffect(int hitDirection, double damage) //TODO: Change to kill hook
+        public override void HitEffect(int hitDirection, double damage) => attacking = true;
+
+        public override void OnKill()
         {
-            attacking = true;
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (Main.netMode != NetmodeID.Server)
             {
                 for (int i = 0; i < 9; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -302,6 +307,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 yFrame++;
                 yFrame %= 7;
             }
+        }
+
+        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }

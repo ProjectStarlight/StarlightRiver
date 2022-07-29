@@ -23,13 +23,16 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class GruntConstruct : ModNPC, IGauntletNPC
+    internal class GruntConstruct : ModNPC, IHealableByHealerConstruct //TODO: ableToDoCombo bool
     {
         public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
 
         private Player target => Main.player[NPC.target];
 
-        private int XFRAMES = 3; //TODO: Swap to using NPC.Frame
+        private const int XFRAMES = 3; //TODO: Swap to using NPC.Frame
+
+        public bool ableToDoCombo = true;
+
         private int xFrame = 0;
         private int yFrame = 0;
         private int frameCounter = 0;
@@ -113,117 +116,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             NPC.rotation = unboundRotation;
 
-            var tempPartner = Main.npc.Where(x => //TODO: Cache partner, only rescan when resetting attack. Reset attack if partner becomes invalid.
-            x.active &&
-            x.type == ModContent.NPCType<ShieldConstruct>() &&
-            (x.ModNPC as ShieldConstruct).guarding &&
-            (x.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
-            x.spriteDirection == NPC.spriteDirection &&
-            NPC.Distance(x.Center) > 50 &&
-            NPC.Distance(x.Center) < 600 &&
-            Math.Sign(x.Center.X - NPC.Center.X) == NPC.spriteDirection).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
-
-            if (tempPartner != default && !doingCombo)
-            {
-                doingCombo = true;
-                partner = tempPartner;
-                (partner.ModNPC as ShieldConstruct).bounceCooldown = 300;
-            }
-
-            if (doingCombo)
-            {
-                if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
-                {
-
-                    if (!comboJumpedTwice)
-                    {
-                        if (xFrame != 1)
-                        {
-                            frameCounter = 0;
-                            yFrame = 0;
-                            xFrame = 1;
-                        }
-                        frameCounter++;
-
-                        if (frameCounter > 3)
-                        {
-                            frameCounter = 0;
-                            yFrame++;
-                            yFrame %= 8;
-                        }
-                    }
-                    else
-                    {
-                        if (xFrame != 2)
-                        {
-                            frameCounter = 0;
-                            yFrame = 3;
-                            xFrame = 2;
-                        }
-
-                        if (NPC.velocity.Y > 0)
-                        {
-                            frameCounter++;
-
-                            if (frameCounter > 3)
-                            {
-                                frameCounter = 0;
-
-                                if (yFrame < 13)
-                                    yFrame++;
-                            }
-                        }
-                    }
-
-                    if (Math.Abs(NPC.Center.X - partner.Center.X) < 110 && !comboJumped)
-                    {
-                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
-                        comboJumped = true;
-                    }
-
-                    if (comboJumped)
-                    {
-                        NPC.velocity.X *= 1.05f;
-
-                        if (NPC.collideY && NPC.velocity.Y == 0)
-                        {
-                            comboJumped = false;
-                            comboJumpedTwice = false;
-                            doingCombo = false;
-                        }
-                        else
-                        {
-                            if (NPC.velocity.Y > 0 && NPC.Center.Y > (partner.Top.Y + 5) && !comboJumpedTwice)
-                            {
-                                comboDirection = NPC.spriteDirection;
-                                partner.velocity.X = -1 * comboDirection;
-                                NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
-                                NPC.velocity.X *= 2f;
-                                unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
-                                comboJumpedTwice = true;
-
-                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
-                                ring.extraUpdates = 0;
-                            }
-                        }
-                    }
-
-                    if (comboJumpedTwice)
-                        NPC.spriteDirection = comboDirection;
-                    else
-                    {
-                        NPC.velocity.X += NPC.spriteDirection * 0.5f;
-                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
-                    }
-                }
-                else
-                {
-                    comboJumped = false;
-                    comboJumpedTwice = false;
-                    doingCombo = false;
-                }
+            if (ComboBehavior())
                 return;
-            }
 
             if (Math.Abs(target.Center.X - NPC.Center.X) < 400 && !idling)
             {
@@ -285,9 +179,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 IdleBehavior();
         }
 
-        public override void HitEffect(int hitDirection, double damage) //TODO: There is a kill hook. Use it.
+        public override void OnKill()
         {
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (Main.netMode != NetmodeID.Server)
             {
                 for (int i = 0; i < 9; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -397,6 +291,138 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     NPC.velocity.Y = -3;
                 }
             }
+        }
+
+        private bool ComboBehavior() //returns true if combo is being done
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            if (partner == default || !SuitablePartner(partner))
+            {
+                var tempPartner = Main.npc.Where(x =>
+                SuitablePartner(x)).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
+
+                if (tempPartner != default && !doingCombo)
+                {
+                    doingCombo = true;
+                    partner = tempPartner;
+                    (partner.ModNPC as ShieldConstruct).bounceCooldown = 300;
+                }
+            }
+
+            if (doingCombo)
+            {
+                if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
+                {
+
+                    if (!comboJumpedTwice)
+                    {
+                        if (xFrame != 1)
+                        {
+                            frameCounter = 0;
+                            yFrame = 0;
+                            xFrame = 1;
+                        }
+                        frameCounter++;
+
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+                            yFrame++;
+                            yFrame %= 8;
+                        }
+                    }
+                    else
+                    {
+                        if (xFrame != 2)
+                        {
+                            frameCounter = 0;
+                            yFrame = 3;
+                            xFrame = 2;
+                        }
+
+                        if (NPC.velocity.Y > 0)
+                        {
+                            frameCounter++;
+
+                            if (frameCounter > 3)
+                            {
+                                frameCounter = 0;
+
+                                if (yFrame < 13)
+                                    yFrame++;
+                            }
+                        }
+                    }
+
+                    if (Math.Abs(NPC.Center.X - partner.Center.X) < 110 && !comboJumped)
+                    {
+                        NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
+                        comboJumped = true;
+                    }
+
+                    if (comboJumped)
+                    {
+                        NPC.velocity.X *= 1.05f;
+
+                        if (NPC.collideY && NPC.velocity.Y == 0)
+                        {
+                            comboJumped = false;
+                            comboJumpedTwice = false;
+                            doingCombo = false;
+                        }
+                        else
+                        {
+                            if (NPC.velocity.Y > 0 && NPC.Center.Y > (partner.Top.Y + 5) && !comboJumpedTwice)
+                            {
+                                comboDirection = NPC.spriteDirection;
+                                partner.velocity.X = -1 * comboDirection;
+                                NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
+                                NPC.velocity.X *= 2f;
+                                unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
+                                comboJumpedTwice = true;
+
+                                Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+                                ring.extraUpdates = 0;
+                            }
+                        }
+                    }
+
+                    if (comboJumpedTwice)
+                        NPC.spriteDirection = comboDirection;
+                    else
+                    {
+                        NPC.velocity.X += NPC.spriteDirection * 0.5f;
+                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+                    }
+                }
+                else
+                {
+                    comboJumped = false;
+                    comboJumpedTwice = false;
+                    doingCombo = false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private bool SuitablePartner(NPC potentialPartner)
+        {
+            return potentialPartner.active &&
+            potentialPartner.type == ModContent.NPCType<ShieldConstruct>() &&
+            (potentialPartner.ModNPC as ShieldConstruct).guarding &&
+            (potentialPartner.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
+            potentialPartner.spriteDirection == NPC.spriteDirection &&
+            NPC.Distance(potentialPartner.Center) > 50 &&
+            NPC.Distance(potentialPartner.Center) < 600 &&
+            Math.Sign(potentialPartner.Center.X - NPC.Center.X) == NPC.spriteDirection;
+        }
+
+        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        {
+
         }
     }
 }
