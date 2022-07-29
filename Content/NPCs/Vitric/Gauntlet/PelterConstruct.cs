@@ -27,9 +27,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "PelterConstruct";
 
-        private Player target => Main.player[NPC.target];
-
-        private const int BOWFRAMES = 4;
+        private const int BOWFRAMES = 4; 
 
         private int aiCounter = 0;
 
@@ -47,23 +45,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private bool comboFiring = false;
         private NPC partner = default;
 
-        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
-        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
-
-        private Vector2 headPos => NPC.Center + new Vector2(4 * NPC.spriteDirection, -2).RotatedBy(NPC.rotation);
-
-        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
-
-        float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
-
         float bowRotation = 0;
         float bowArmRotation = 0;
 
         float headRotation = 0f;
 
-        private int cooldownLength = 500;
+        private int cooldownLength = 500; //TODO: Make constant
 
-        private int XFRAMES = 3;
+        private int XFRAMES = 3; //TODO: Make constant
 
         private int XFrame = 0;
 
@@ -78,6 +67,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int backupDistance = 75;
 
         private bool stopped = false;
+
+        private Player target => Main.player[NPC.target];
+
+        private Vector2 bowArmPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
+        private Vector2 backArmPos => NPC.Center + new Vector2(-5 * NPC.spriteDirection, 2).RotatedBy(NPC.rotation);
+
+        private Vector2 headPos => NPC.Center + new Vector2(4 * NPC.spriteDirection, -2).RotatedBy(NPC.rotation);
+
+        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
+
+        float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
 
         public override void SetStaticDefaults()
         {
@@ -99,14 +99,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 Pitch = -0.3f
             };
             NPC.DeathSound = SoundID.Shatter;
-            maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
-            acceleration = Main.rand.NextFloat(0.22f, 0.35f);
-            backupDistance = Main.rand.Next(50, 100);
         }
 
         public override void OnSpawn(IEntitySource source)
         {
             cooldownLength = Main.rand.Next(450,550);
+            maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
+            acceleration = Main.rand.NextFloat(0.22f, 0.35f);
+            backupDistance = Main.rand.Next(50, 100);
         }
 
         public override bool PreAI()
@@ -293,7 +293,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             bowFrame = 0;
             bowFrameCounter = 0;
             return true;
-        }
+        } //TODO: Restructure this into seperate methods all called from AI.
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
@@ -360,15 +360,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             SpriteEffects effects = SpriteEffects.None;
             SpriteEffects bowEffects = SpriteEffects.None;
 
-            Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D mainTex = Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
-            Texture2D armTex = ModContent.Request<Texture2D>(Texture + "_Arms").Value;
-            Texture2D armGlowTex = ModContent.Request<Texture2D>(Texture + "_Arms_Glow").Value;
+            Texture2D armTex = Request<Texture2D>(Texture + "_Arms").Value;
+            Texture2D armGlowTex = Request<Texture2D>(Texture + "_Arms_Glow").Value;
 
-            Texture2D headTex = ModContent.Request<Texture2D>(Texture + "_Head").Value;
+            Texture2D headTex = Request<Texture2D>(Texture + "_Head").Value;
 
-            Texture2D bowTex = ModContent.Request<Texture2D>(Texture + "_Bow").Value;
+            Texture2D bowTex = Request<Texture2D>(Texture + "_Bow").Value;
 
             int armFrameSize = armTex.Height / 2;
             Rectangle frontFrame = new Rectangle(0, 0, armTex.Width, armFrameSize);
@@ -385,6 +385,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Vector2 bowArmOrigin = new Vector2(1, 5);
             Vector2 bowOrigin = new Vector2(18, 20);
             Vector2 headOrigin = new Vector2(headTex.Width / 2, headTex.Height);
+
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
@@ -422,7 +423,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 for (int k = 1; k <= 12; k++)
                     Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
             }
-        }
+        } //TODO: Move to kill hook
     }
 
     internal class PelterConstructArrow : ModProjectile
@@ -464,17 +465,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
             effect.Parameters["repeats"].SetValue(1);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
 
-            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+            effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
             trail?.Render(effect);
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D tex = Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             return false;
@@ -490,13 +491,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 Dust.NewDustPerfect(Projectile.Center + dir - (((Projectile.rotation + 1.57f).ToRotationVector2() * 15) * lerper), DustType<Dusts.GlassGravity>(), dir * 0.3f);
             }*/
             SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
+
             for (int i = 0; i < 3; i++)
             {
                 Vector2 dir = -(Projectile.rotation - 1.57f).ToRotationVector2().RotatedByRandom(1.57f) * Main.rand.NextFloat(5);
                 /*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
                 Main.dust[dustID].noGravity = false;*/
 
-                Gore.NewGoreDirect(new EntitySource_Misc("Spawned from magma gun"), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
+                Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
             }
         }
 
@@ -507,12 +509,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 ManageCaches();
                 ManageTrail();
             }
+
             Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
         }
 
         private void ManageCaches()
         {
-            if (cache == null)
+            if (cache is null)
             {
                 cache = new List<Vector2>();
                 for (int i = 0; i < 13; i++)
@@ -532,7 +535,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor =>
+            trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor =>
             {
                 return new Color(255, 100, 65) * 0.5f * factor.X;
             });

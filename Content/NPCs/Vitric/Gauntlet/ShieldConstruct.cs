@@ -20,16 +20,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
-        private Player target => Main.player[NPC.target];
-
-
         public int bounceCooldown = 0;
-        public bool guarding => aiCounter > 260;
-
-        private int aiCounter = 0;
+        private int timer = 0;
 
         private Vector2 shieldOffset;
 
+        private Player target => Main.player[NPC.target];
+
+        public bool guarding => timer > 260;
+      
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Shield Construct");
@@ -49,36 +48,42 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.behindTiles = true;
         }
 
-        public override bool PreAI()
+        public override bool PreAI() //TODO: Document checks with actions and real conditions
         {
             NPC.TargetClosest(false);
+
             if (bounceCooldown > 0)
                 bounceCooldown--;
-            if (aiCounter < 300 || aiCounter >= 400)
-                aiCounter++;
 
-            aiCounter %= 500;
-            if (aiCounter > 200)
+            if (timer < 300 || timer >= 400)
+                timer++;
+
+            timer %= 500;
+
+            if (timer > 200)
             {
-                float lerper;
+                float shieldAnimationProgress;
                 Vector2 up = new Vector2(0, -12);
                 Vector2 down = new Vector2(0, 14);
-                if (aiCounter < 400)
+
+                if (timer < 400)
                 {
-                    if (aiCounter < 250)
+                    if (timer < 250)
                     {
-                        lerper = EaseFunction.EaseCubicInOut.Ease(((aiCounter - 200) / 50f));
-                        shieldOffset = up * lerper;
+                        shieldAnimationProgress = EaseFunction.EaseCubicInOut.Ease(((timer - 200) / 50f));
+                        shieldOffset = up * shieldAnimationProgress;
                     }
-                    else if (aiCounter <= 260)
+                    else if (timer <= 260)
                     {
-                        lerper = EaseFunction.EaseQuarticIn.Ease((aiCounter - 250) / 10f);
-                        shieldOffset = Vector2.Lerp(up, down, lerper);
+                        shieldAnimationProgress = EaseFunction.EaseQuarticIn.Ease((timer - 250) / 10f);
+                        shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
                     }
-                    if (aiCounter == 260)
+
+                    if (timer == 260) //Shield hits the ground
                     {
                         Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
                         Core.Systems.CameraSystem.Shake += 4;
+
                         for (int i = 0; i < 10; i++)
                         {
                             Dust.NewDustPerfect(NPC.Center + new Vector2(16 * NPC.spriteDirection, 20), DustID.Copper);
@@ -88,28 +93,29 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
                 else
                 {
-                    if (aiCounter < 464)
+                    if (timer < 464)
                     {
-                        lerper = EaseFunction.EaseQuadIn.Ease((aiCounter - 400) / 64f);
-                        shieldOffset = Vector2.Lerp(down, new Vector2(0,4), lerper);
+                        shieldAnimationProgress = EaseFunction.EaseQuadIn.Ease((timer - 400) / 64f);
+                        shieldOffset = Vector2.Lerp(down, new Vector2(0,4), shieldAnimationProgress);
                     }
-                    else if (aiCounter < 470)
+                    else if (timer < 470)
                     {
-                        lerper = EaseFunction.EaseQuadOut.Ease((aiCounter - 464) / 6f);
-                        shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, lerper);
+                        shieldAnimationProgress = EaseFunction.EaseQuadOut.Ease((timer - 464) / 6f);
+                        shieldOffset = Vector2.Lerp(new Vector2(0, 4), up, shieldAnimationProgress);
                     }
                     else
                     {
-                        lerper = EaseFunction.EaseQuinticInOut.Ease((aiCounter - 470) / 30f);
-                        shieldOffset = up * (1 - lerper);
+                        shieldAnimationProgress = EaseFunction.EaseQuinticInOut.Ease((timer - 470) / 30f);
+                        shieldOffset = up * (1 - shieldAnimationProgress);
                     }
-                    if (aiCounter == 421)
-                    {
+
+                    if (timer == 421)
                         Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
-                    }
-                    if (aiCounter == 464)
+
+                    if (timer == 464)
                     {
                         Core.Systems.CameraSystem.Shake += 2;
+
                         for (int i = 0; i < 6; i++)
                         {
                             Dust.NewDustPerfect(NPC.Center + new Vector2(16 * NPC.spriteDirection, 20), DustID.Copper);
@@ -118,13 +124,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     }
                 }
 
-
-                if (guarding && (Math.Sign(NPC.Center.DirectionTo(target.Center).X) != NPC.spriteDirection || NPC.Distance(target.Center) > 350) && aiCounter < 400)
-                    aiCounter = 400;
+                if (guarding && (Math.Sign(NPC.Center.DirectionTo(target.Center).X) != NPC.spriteDirection || NPC.Distance(target.Center) > 350) && timer < 400)
+                    timer = 400;
 
                 NPC.velocity.X *= 0.9f;
                 return false;
             }
+
             shieldOffset = Vector2.Zero;
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
             return true;
@@ -132,7 +138,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
-            if (aiCounter < 10 && NPC.velocity.Y < 0)
+            if (timer < 10 && NPC.velocity.Y < 0)
                 NPC.velocity.Y = 0;
         }
 
@@ -140,14 +146,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             SpriteEffects effects = SpriteEffects.None;
 
-            Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-            Texture2D shieldTex = ModContent.Request<Texture2D>(Texture + "_Shield").Value;
+            Texture2D mainTex = Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
+
             if (NPC.spriteDirection != 1)
-            {
                 effects = SpriteEffects.FlipHorizontally;
-                //bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
-            }
+
             Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, Color.White, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, mainTex.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
@@ -158,6 +163,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (guarding)
                 return base.CanHitPlayer(target, ref cooldownSlot);
+
             return false;
         }
 
@@ -165,17 +171,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
                 knockback = 0f;
+
             if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
                 if (guarding)
-                {
                     damage = 1;
-                }
                 else
-                {
                     damage = (int)(damage * 0.4f);
-                }
             }
             else
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);
@@ -186,17 +189,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
                 knockback = 0f;
+
             if (Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
                 if (guarding)
-                {
                     damage = 1;
-                }
                 else
-                {
                     damage = (int)(damage * 0.4f);
-                }
             }
             else
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.3f }, NPC.Center);

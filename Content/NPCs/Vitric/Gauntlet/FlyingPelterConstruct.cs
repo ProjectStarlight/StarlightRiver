@@ -28,36 +28,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingPelterConstruct";
 
-        private Player target => Main.player[NPC.target];
-
         private const int BOWFRAMES = 4;
-
-
-        private float enemyRotation = 0f;
-        private float enemyRotation2 = 0f;
 
         private int bowFrame = 0;
         private int bowFrameCounter = 0;
 
         private int bodyFrame;
-        private int bodyFrameCounter = 0;
-
-        private Vector2 bowArmPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
-        private Vector2 backArmPos => NPC.Center + new Vector2(1 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
-
-        private Vector2 headPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
-
-        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
-
-        float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
 
         float bowRotation = 0;
         float bowArmRotation = 0;
 
         float headRotation = 0f;
 
-        private int XFRAMES = 1;
-
+        private int XFRAMES = 1; //TODO: make const
         private int XFrame = 0;
 
         public Vector2 posToBe = Vector2.Zero;
@@ -83,6 +66,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private float predictorLength = 1f;
 
         private Vector2 knockbackVel = Vector2.Zero;
+
+        private Player target => Main.player[NPC.target];
+
+        private Vector2 bowArmPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+        private Vector2 backArmPos => NPC.Center + new Vector2(1 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+
+        private Vector2 headPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
+
+        private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
+
+        float backArmRotation => backArmPos.DirectionTo(bowPos).ToRotation();
 
         public override void SetStaticDefaults()
         {
@@ -117,54 +111,57 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void AI()
         {
             knockbackVel *= 0.87f;
+
             if (pairedGrunt != default)
             {
                 if (!pairedGrunt.active)
-                {
                     pairedGrunt = default;
-                }
             }
 
             if (empowered)
             {
                 glowCounter += 0.1f;
+
                 if (!comboPartner.active)
                     empowered = false;
             }
+
             if (doingCombo)
             {
                 if (!comboPartner.active)
-                {
                     doingCombo = false;
-                }
+
                 posToBe = new Vector2(MathHelper.Lerp(comboPartner.Center.X, target.Center.X, 0.5f), comboPartner.Center.Y - 100);
+
                 if (stayInPlace)
                     posToBe = NPC.Center;
             }
+
             bobCounter += 0.02f;
             NPC.TargetClosest(true);
+
             Vector2 direction = bowArmPos.DirectionTo(target.Center);
+
             if (!empowered)
                 direction = direction.RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
+
             float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
             if (!empowered || bowFrameCounter < 75)
                 bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
+
             bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
 
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
 
             if (NPC.spriteDirection == 1)
-            {
                 headRotation = bowRotation / 2;
-            }
             else
-            {
                 headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
-            }
 
             float distance = posToBe.X - oldPos.X;
             float progress = (NPC.Center.X - oldPos.X) / distance;
+
             if (progress < 0)
             {
                 progress = MathHelper.Clamp(progress, 0, 1);
@@ -172,7 +169,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 dir = NPC.DirectionTo(posToBe);
-
 
             if (NPC.Distance(posToBe) < 30 || attacking || NPC.collideX || NPC.collideY)
             {
@@ -259,7 +255,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bowFrameCounter = 0;
             }
             NPC.velocity += knockbackVel;
-        }
+        }//TODO: Cleanup
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -273,6 +269,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 float sin = 0.5f + ((float)Math.Sin(glowCounter) * 0.5f);
                 float distance = (sin * 4) + 2;
+
                 for (int i = 0; i < 8; i++)
                 {
                     float rad = i * 6.28f / 8;
@@ -291,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
-        private void DrawComponents(bool glow, Vector2 screenPos, Color drawColor, Vector2 offset)
+        private void DrawComponents(bool glow, Vector2 screenPos, Color drawColor, Vector2 offset) //TODO: Potentially have glow use a preview sprite instead of repeating this logic multiple times.
         {
             SpriteEffects effects = SpriteEffects.None;
             SpriteEffects bowEffects = SpriteEffects.None;
@@ -323,6 +320,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Vector2 bowArmOrigin = new Vector2(1, 5);
             Vector2 bowOrigin = new Vector2(18, 20);
             Vector2 headOrigin = new Vector2(headTex.Width / 2, headTex.Height);
+
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
@@ -336,18 +334,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
             Main.spriteBatch.Draw(mainTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+
             if (!glow)
                 Main.spriteBatch.Draw(glowTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
 
             Main.spriteBatch.Draw(headTex, offset + headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
-
             Main.spriteBatch.Draw(armTex, offset + bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+
             if (!glow)
                 Main.spriteBatch.Draw(armGlowTex, offset + bowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
 
             Main.spriteBatch.Draw(bowTex, offset + bowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
-
             Main.spriteBatch.Draw(armTex, offset + backArmPos + slopeOffset - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
+
             if (!glow)
                 Main.spriteBatch.Draw(armGlowTex, offset + backArmPos + slopeOffset - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
         }
@@ -359,10 +358,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             float charge = EaseFunction.EaseQuadInOut.Ease(MathHelper.Clamp(bowFrameCounter / 100f, 0, 1));
             float opacity = (float)Math.Sqrt(charge);
+
             if (bowFrameCounter > 100)
-            {
                 opacity *= 1 - ((bowFrameCounter - 100) / 10f);
-            }
+
             Vector2 scale = new Vector2((0.1f + (1 - charge)) * 0.3f, predictorLength);
             Vector2 origin = new Vector2(predictorTex.Width / 2, predictorTex.Height);
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
@@ -380,6 +379,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             float charge = 1 - MathHelper.Clamp(bowFrameCounter / 100f, 0, 1);
             float distance = (charge * 8);
+
             for (int i = 0; i < 8; i++)
             {
                 float rad = i * 6.28f / 8;
@@ -392,10 +392,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void HitEffect(int hitDirection, double damage)
         {
             if (pairedGrunt != default)
-            {
                 (pairedGrunt.ModNPC as FlyingGruntConstruct).attacking = true;
-            }
-            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
+
+            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server) //TODO: Move to kill hook
             {
                 for (int i = 0; i < 9; i++)
                     Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
@@ -471,19 +470,24 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (firstPos == Vector2.Zero)
                 firstPos = Projectile.Center;
+
             if (!Main.dedServ)
             {
                 if (Projectile.extraUpdates > 0)
                     ManageCaches();
+
                 ManageTrail();
             }
+
             if (Projectile.extraUpdates == 0)
             {
                 Projectile.timeLeft++;
                 fade-= 0.025f;
+
                 if (fade <= 0)
                     Projectile.active = false;
             }
+
             else
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
         }
@@ -494,14 +498,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 Projectile.extraUpdates = 0;
                 Projectile.position += oldVelocity;
+
                 if (!Main.dedServ)
                     ManageCaches();
+
                 Projectile.velocity = Vector2.Zero;
 
-                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+                SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
                 Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 6; i++) //TODO: Perhaps make spawning this its own method?
                 {
                     Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
                     dust.velocity = Main.rand.NextVector2Circular(3, 3);
@@ -531,6 +537,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), Projectile.damage, 0);
                 (proj2.ModProjectile as ConstructRing).finalRadius = 60;
+
                 for (int i = 0; i < 6; i++)
                 {
                     Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
@@ -547,7 +554,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     /*int dustID = Dust.NewDust(Projectile.Center, 2, 2, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
                     Main.dust[dustID].noGravity = false;*/
 
-                    Gore.NewGoreDirect(new EntitySource_Misc("Spawned from magma gun"), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
+                    Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center - (Projectile.velocity), dir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.7f));
                 }
             }
             return false;
@@ -570,7 +577,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 cache.RemoveAt(0);
             }
-
         }
 
         private void ManageTrail()
@@ -580,14 +586,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 return new Color(255, 100, 65) * 0.5f * (float)(Math.Sqrt(factor.X));
             });
 
-
             trail.Positions = cache.ToArray();
             trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawAdditive(SpriteBatch sb)
         {
-
             var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
             var color = Color.OrangeRed;
@@ -595,18 +599,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 sb.Draw(tex, firstPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1.25f * fade, SpriteEffects.None, 0f);
         }
     }
+
     internal class ConstructRing : ModProjectile
     {
         public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
 
-        //private List<Vector2> cache;
-
-        //private Trail trail;
-        //private Trail trail2;
+        public int finalRadius = 60;
 
         private float Progress => 1 - (Projectile.timeLeft / 5f);
-
-        public int finalRadius = 60;
         private float Radius => finalRadius * (float)Math.Sqrt(Math.Sqrt(Progress));
 
         public override void SetDefaults()
@@ -625,18 +625,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             DisplayName.SetDefault("Explosion");
         }
 
-
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
             line.Normalize();
             line *= Radius;
+
             if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-            {
                 return true;
-            }
+
             return false;
         }
-        public override bool PreDraw(ref Color lightColor) => false;
+
+        public override bool PreDraw(ref Color lightColor)
+		{
+            return false;
+		}
     }
 }

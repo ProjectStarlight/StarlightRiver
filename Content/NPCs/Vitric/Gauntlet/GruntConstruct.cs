@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
-        private int XFRAMES = 3;
+        private int XFRAMES = 3; //TODO: Swap to using NPC.Frame
         private int xFrame = 0;
         private int yFrame = 0;
         private int frameCounter = 0;
@@ -47,16 +47,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private NPC partner = default;
         private int comboDirection = 0;
 
-        private float enemyRotation;
+        private float unboundRotation;
 
         private int cooldownDuration = 80;
         private float maxSpeed = 5;
-        private float acceleration = 0.3f;
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Grunt Construct");
-            Main.npcFrameCount[NPC.type] = 15;
-        }
+		private float acceleration = 0.3f;
 
         public override void Load()
         {
@@ -64,6 +59,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/ConstructGore" + k);
             for (int j = 1; j <= 3; j++)
                 GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/GruntSwordGore" + j);
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Grunt Construct");
+            Main.npcFrameCount[NPC.type] = 15;
         }
 
         public override void SetDefaults()
@@ -78,33 +79,41 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.HitSound = SoundID.Item27 with
             {
                 Pitch = -0.3f
-            };
+            };           
             NPC.DeathSound = SoundID.Shatter;
             cooldownDuration = Main.rand.Next(65, 90);
             maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
             acceleration = Main.rand.NextFloat(0.22f, 0.35f);
         }
 
-        public override void AI()
+		public override void FindFrame(int frameHeight)
+		{
+            NPC.frame = new Rectangle(0, 0, 116, 82);
+        }
+
+		public override void AI() //TODO: Document snippets with their intended behavior
         {
-            if (xFrame == 2 && yFrame == 6 && frameCounter == 1)
+            if (xFrame == 2 && yFrame == 6 && frameCounter == 1) //Dust when the enemy swings it's sword
             {
                 for (int i = 0; i < 15; i++)
                 {
                     Vector2 dustPos = NPC.Center + new Vector2(NPC.spriteDirection * 40, 0) + Main.rand.NextVector2Circular(20, 20);
-                    Dust.NewDustPerfect(dustPos, DustType<Dusts.Cinder>(), Vector2.Normalize(NPC.velocity).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f,1f) * 12f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f,1.25f)).noGravity = false;
+                    Dust.NewDustPerfect(dustPos, DustType<Cinder>(), Vector2.Normalize(NPC.velocity).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f,1f) * 12f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f,1.25f)).noGravity = false;
                 }
             }
+
             NPC.TargetClosest(false);
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             attackCooldown--;
 
-            enemyRotation *= 0.9f;
-            if (Math.Abs(enemyRotation) < 0.4f)
-                enemyRotation = 0;
-            NPC.rotation = enemyRotation;
+            unboundRotation *= 0.9f;
 
-            var tempPartner = Main.npc.Where(x =>
+            if (Math.Abs(unboundRotation) < 0.4f)
+                unboundRotation = 0;
+
+            NPC.rotation = unboundRotation;
+
+            var tempPartner = Main.npc.Where(x => //TODO: Cache partner, only rescan when resetting attack. Reset attack if partner becomes invalid.
             x.active &&
             x.type == ModContent.NPCType<ShieldConstruct>() &&
             (x.ModNPC as ShieldConstruct).guarding &&
@@ -135,6 +144,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             xFrame = 1;
                         }
                         frameCounter++;
+
                         if (frameCounter > 3)
                         {
                             frameCounter = 0;
@@ -150,29 +160,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             yFrame = 3;
                             xFrame = 2;
                         }
+
                         if (NPC.velocity.Y > 0)
                         {
                             frameCounter++;
+
                             if (frameCounter > 3)
                             {
                                 frameCounter = 0;
+
                                 if (yFrame < 13)
                                     yFrame++;
                             }
                         }
                     }
 
-
-
                     if (Math.Abs(NPC.Center.X - partner.Center.X) < 110 && !comboJumped)
                     {
                         NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
                         comboJumped = true;
                     }
+
                     if (comboJumped)
                     {
-
                         NPC.velocity.X *= 1.05f;
+
                         if (NPC.collideY && NPC.velocity.Y == 0)
                         {
                             comboJumped = false;
@@ -187,7 +199,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                                 partner.velocity.X = -1 * comboDirection;
                                 NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
                                 NPC.velocity.X *= 2f;
-                                enemyRotation = -6.28f * NPC.spriteDirection * 0.95f;
+                                unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
                                 comboJumpedTwice = true;
 
                                 Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
@@ -195,10 +207,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             }
                         }
                     }
+
                     if (comboJumpedTwice)
-                    {
                         NPC.spriteDirection = comboDirection;
-                    }
                     else
                     {
                         NPC.velocity.X += NPC.spriteDirection * 0.5f;
@@ -226,7 +237,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     }
                 }
 
-                NPC closestPelter = Main.npc.Where(x =>
+                NPC closestPelter = Main.npc.Where(x => //TODO: Same as shielder combo, cache partner
                 x.active &&
                 x.type == ModContent.NPCType<PelterConstruct>() &&
                 NPC.Distance(x.Center) < 600).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
@@ -234,8 +245,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 if (closestPelter != default && !attacking)
                 {
-
                     xPosToBe = (int)MathHelper.Lerp(closestPelter.Center.X, target.Center.X, 0.8f);
+
                     if (Math.Abs(xPosToBe - NPC.Center.X) < 25 || idling)
                     {
                         idling = true;
@@ -244,9 +255,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     }
                 }
                 else
-                {
                     xPosToBe = (int)target.Center.X;
-                }
 
                 float xDir = xPosToBe - NPC.Center.X;
                 int xSign = Math.Sign(xDir);
@@ -257,7 +266,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     yFrame = 0;
                     xFrame = 1;
                 }
+
                 frameCounter++;
+
                 if (frameCounter > 3)
                 {
                     frameCounter = 0;
@@ -274,7 +285,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 IdleBehavior();
         }
 
-        public override void HitEffect(int hitDirection, double damage)
+        public override void HitEffect(int hitDirection, double damage) //TODO: There is a kill hook. Use it.
         {
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
@@ -304,11 +315,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 origin.Y -= 2;
             if (xFrame == 0)
                 origin.Y += 2;
+
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
                 origin.X = frameWidth - origin.X;
             }
+
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
             Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, frameBox, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, frameBox, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
@@ -317,7 +330,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (xFrame == 2 && yFrame >= 6)
+            if (xFrame == 2 && yFrame >= 6) //TODO: Change to being based off of state directly
                 return base.CanHitPlayer(target, ref cooldownSlot);
             return false;
         }
@@ -353,6 +366,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 yFrame = 0;
                 xFrame = 2;
             }
+
             if (yFrame >= 6)
                 NPC.spriteDirection = Math.Sign(NPC.velocity.X);
 
@@ -362,9 +376,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 NPC.velocity.X *= 0.9f;
             else
                 NPC.velocity.X *= 0.96f;
+
             if (frameCounter > 3)
             {
                 frameCounter = 0;
+
                 if (yFrame < 13)
                     yFrame++;
                 else

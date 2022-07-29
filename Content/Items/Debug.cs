@@ -58,6 +58,10 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<NPCs.Vitric.Gauntlet.GauntletSpawner>(), 0, 0, Main.myPlayer, ModContent.NPCType<NPCs.Vitric.Gauntlet.GruntConstruct>());
+
+            return true;
+
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
             var tile = Framing.GetTileSafely(center.X, center.Y);

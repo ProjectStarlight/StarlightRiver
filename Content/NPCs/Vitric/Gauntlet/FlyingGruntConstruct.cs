@@ -23,13 +23,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-
     internal enum AttackPhase
     {
         charging = 0,
         slowing = 1,
         swinging = 2,
     }
+
     internal class FlyingGruntConstruct : ModNPC, IGauntletNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
@@ -37,17 +37,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Player target => Main.player[NPC.target];
 
         private int XFRAMES = 2;
-
         private int xFrame = 0;
-
         private int yFrame = 0;
 
         public bool attacking = false;
 
         private NPC archerPartner = default;
 
-        private Vector2 posToBe = Vector2.Zero;
-
+        private Vector2 movementTarget = Vector2.Zero;
         private Vector2 oldPosition = Vector2.Zero;
 
         private float bobCounter = 0f;
@@ -85,15 +82,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void OnSpawn(IEntitySource source)
         {
-            posToBe = oldPosition = NPC.Center;
+            movementTarget = oldPosition = NPC.Center;
         }
 
         public override void AI()
         {
             attackCooldown--;
             bobCounter += 0.02f;
+
             NPC.TargetClosest(true);
-            if (archerPartner == default || !archerPartner.active)
+
+            if (archerPartner == default || !archerPartner.active) 
             {
                 archerPartner = Main.npc.Where(x =>
                 x.active &&
@@ -112,19 +111,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 if (NPC.Distance(target.Center) < 300 && attackCooldown <= 0)
                     attacking = true;
+
                 AnimateIdle();
                 attackPhase = AttackPhase.charging;
             }
             else
-            {
                 AttackBehavior();
-            }
+
             NPC.velocity.X *= 1.05f;
         }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D mainTex = Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
@@ -135,20 +135,23 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (xFrame == 2)
                 origin.Y -= 2;
+
             if (xFrame == 0)
                 origin.Y += 2;
+
             if (NPC.spriteDirection != 1)
             {
                 effects = SpriteEffects.FlipHorizontally;
                 origin.X = frameWidth - origin.X;
             }
+
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
             Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, frameBox, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, frameBox, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
         }
 
-        public override void HitEffect(int hitDirection, double damage)
+        public override void HitEffect(int hitDirection, double damage) //TODO: Change to kill hook
         {
             attacking = true;
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
@@ -165,17 +168,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             if (xFrame == 1 && yFrame >= 7)
                 return base.CanHitPlayer(target, ref cooldownSlot);
+
             return false;
         }
 
         private void IdleBehavior()
         {
-            if (GoToPos(posToBe, oldPosition))
+            if (GoToPos(movementTarget, oldPosition))
             {
                 oldPosition = NPC.Center;
-                posToBe = Main.rand.NextVector2Circular(500,400);
-                posToBe.Y *= -Math.Sign(posToBe.Y);
-                posToBe += target.Center;
+                movementTarget = Main.rand.NextVector2Circular(500,400);
+                movementTarget.Y *= -Math.Sign(movementTarget.Y);
+                movementTarget += target.Center;
             }
         }
 
@@ -186,7 +190,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 attacking = false;
                 return;
             }
-            posToBe = NPC.Center + Vector2.One;
+
+            movementTarget = NPC.Center + Vector2.One;
             oldPosition = NPC.Center;
             Vector2 direction = NPC.DirectionTo(target.Center);
 
@@ -196,24 +201,29 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     AnimateIdle();
                     NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedByRandom(0.6f) * 10, 0.05f);
+
                     if (NPC.Distance(target.Center) < 200)
-                    {
                         attackPhase = AttackPhase.slowing;
-                    }
+
                     break;
+
                 case AttackPhase.slowing:
 
                     NPC.velocity *= 0.8f;
+
                     if (NPC.velocity.Length() < 2)
                     {
                         frameCounter = 0;
                         attackPhase = AttackPhase.swinging;
                     }
+
                     break;
+
                 case AttackPhase.swinging:
 
                     xFrame = 1;
                     frameCounter++;
+
                     if (frameCounter > 4)
                     {
                         frameCounter = 0;
@@ -227,17 +237,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                             frameCounter = 0;
                             yFrame = 0;
                         }
+
                         if (yFrame == 7)
                         {
                             NPC.velocity = direction * 15;
                             swingDirection = Math.Sign(NPC.velocity.X);
                         }
                     }
+
                     if (yFrame >= 7)
                     {
                         NPC.velocity *= 0.92f;
                         NPC.spriteDirection = swingDirection;
                     }
+
                     break;
             }
         }
@@ -245,27 +258,36 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private void PairedBehavior()
         {
             Vector2 potentialPos = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f); 
-            if (GoToPos(posToBe, oldPosition) && potentialPos.Distance(NPC.Center) > 60)
+
+            if (GoToPos(movementTarget, oldPosition) && potentialPos.Distance(NPC.Center) > 60)
             {
                 oldPosition = NPC.Center;
-                posToBe = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
+                movementTarget = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
                 NPC.velocity.X = 0;
                 NPC.velocity.Y = (float)Math.Cos(bobCounter) * 0.15f;
             }
         }
 
+        /// <summary>
+        /// Attempts to navigate to the given position 
+        /// </summary>
+        /// <param name="pos"> the destination for the NPC </param>
+        /// <param name="oldPos"> the point at which the NPC started it's journey </param>
+        /// <returns> If the enemy has reached it's destination </returns>
         private bool GoToPos(Vector2 pos, Vector2 oldPos)
         {
             float distance = pos.X - oldPos.X;
             float progress = MathHelper.Clamp((NPC.Center.X - oldPos.X) / distance, 0, 1);
 
             Vector2 dir = NPC.DirectionTo(pos);
+
             if (NPC.Distance(pos) > 7 && !NPC.collideY && !NPC.collideX)
             {
                 NPC.velocity = dir * ((float)Math.Sin(progress * 3.14f) + 0.1f) * 5;
                 NPC.velocity.Y += (float)Math.Cos(bobCounter) * 0.15f;
                 return false;
             }
+
             NPC.velocity.Y = (float)Math.Cos(bobCounter) * 0.15f;
             return true;
         }

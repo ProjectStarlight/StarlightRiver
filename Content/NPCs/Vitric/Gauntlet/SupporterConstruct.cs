@@ -18,17 +18,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class SupporterConstruct : ModNPC, IDrawAdditive
+    internal class SupporterConstruct : ModNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
 
-        private Player target => Main.player[NPC.target];
-
-        private int directionCounter = 0;
-
         private int direction = 0;
-
-        private int directionThreshhold = 15;
+        private int directionCounter = 0;
+        private int directionThreshhold = 15; //TODO: Make constant
 
         private int switchTimer = 0;
 
@@ -47,7 +43,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int comboTimer = 0;
 
         private bool doingCombo = false;
-        private bool stuck = false;
+        private bool boundToPartner = false;
         private Vector2 stuckOffset = Vector2.Zero;
 
         private Vector2 comboPos = Vector2.Zero;
@@ -77,11 +73,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
-            if (stuck)
+            if (boundToPartner)
             {
                 if (!healingTarget.active)
                 {
-                    stuck = false;
+                    boundToPartner = false;
                     switchTimer = 98;
                     healingTarget = default;
                     comboTimer = 0;
@@ -89,14 +85,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 else
                 {
                     NPC.noGravity = true;
+
                     if ((stuckOffset - new Vector2(8, -30)).Length() > 2)
                     {
                         frameCounter++;
+
                         if (frameCounter > 3)
                         {
                             frameCounter = 0;
                             yFrame++;
                         }
+
                         yFrame %= Main.npcFrameCount[NPC.type];
                     }
                     else
@@ -109,80 +108,91 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     return;
                 }
             }
+
             NPC.noGravity = false;
+
             if (doingCombo)
             {
-                var targetMN = healingTarget.ModNPC as FlyingPelterConstruct;
+                var targetModNPC = healingTarget.ModNPC as FlyingPelterConstruct;
+
                 if (!healingTarget.active)
                 {
-                    stuck = false;
+                    boundToPartner = false;
                     switchTimer = 98;
-                    healingTarget = default;
+                    healingTarget = default; //TODO: Should probably be null not default, with appropriate checks elsewhere
                     comboTimer = 0;
                     return;
                 }
+
                 comboTimer++;
+
                 if (comboTimer == 100)
                 {
                     NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
                     return;
                 }
+
                 if (comboTimer > 100)
                 {
                     frameCounter = 0;
                     yFrame = 3;
                     NPC.velocity.X *= 1.07f;
-                    targetMN.stayInPlace = true;
+                    targetModNPC.stayInPlace = true;
+
                     if (Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, healingTarget.position, healingTarget.Size) && NPC.velocity.Y > 0)
                     {
-                        targetMN.stayInPlace = false;
-                        targetMN.doingCombo = false;
-                        targetMN.empowered = true;
-                        stuck = true;
+                        targetModNPC.stayInPlace = false;
+                        targetModNPC.doingCombo = false;
+                        targetModNPC.empowered = true;
+                        boundToPartner = true;
                         stuckOffset = NPC.Center - healingTarget.Center;
                         stuckOffset.X *= healingTarget.spriteDirection;
                         doingCombo = false;
                     }
+
                     if (NPC.collideY)
                     {
                         switchTimer = 98;
                         healingTarget = default;
                         doingCombo = false;
                         comboTimer = 0;
-                        targetMN.stayInPlace = false;
-                        targetMN.doingCombo = false;
+                        targetModNPC.stayInPlace = false;
+                        targetModNPC.doingCombo = false;
                     }
                     return;
                 }
             }
+
             if (switchTimer % 100 == 0 && !doingCombo)
             {
-                healingTarget = Main.npc.Where(n => n.active && !n.friendly && n.Distance(NPC.Center) < 800 && n.type != NPC.type && n.ModNPC is IGauntletNPC && !alreadyHealed.Contains(n)).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
+                healingTarget = Main.npc.Where(n => n.active && !n.friendly && n.Distance(NPC.Center) < 800 && n.type != NPC.type && n.ModNPC is IGauntletNPC && !alreadyHealed.Contains(n)).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault(); //TODO: This probably isnt the right way to get this.
+                
                 if (healingTarget != default)
-                {
                     alreadyHealed.Add(healingTarget);
-                }
                 else
-                {
-                    alreadyHealed = new List<NPC>();
-                }
+                    alreadyHealed = new List<NPC>();           
             }
+
             switchTimer++;
 
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             NPC.noGravity = false;
-            laserTimer++;
+
+            laserTimer++; //TODO: Move to top of AI?
             healCounter++;
 
             NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+
             if (Math.Abs(NPC.velocity.X) > 0.3f && NPC.collideY)
             {
                 frameCounter++;
+
                 if (frameCounter > 3)
                 {
                     frameCounter = 0;
                     yFrame++;
                 }
+
                 yFrame %= Main.npcFrameCount[NPC.type];
             }
             else
@@ -190,6 +200,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 frameCounter = 0;
                 yFrame = 3;
             }
+
             if (healingTarget != default)
             {
                 if (!healingTarget.active)
@@ -200,6 +211,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     comboTimer = 0;
                     return;
                 }
+
                 directionCounter++;
                 float laserRotation = NPC.DirectionTo(healingTarget.Center).ToRotation();
                 int width = (int)(NPC.Center - healingTarget.Center).Length();
@@ -209,24 +221,27 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 {
                     for (int i = 10; i < width; i += 10)
                     {
-                        if (Main.rand.Next(50) == 0)
+                        if (Main.rand.NextBool(50))
                             Dust.NewDustPerfect(NPC.Center + (Vector2.UnitX.RotatedBy(laserRotation) * i) + (Vector2.UnitY.RotatedBy(laserRotation) * Main.rand.NextFloat(-8, 8)), DustType<Dusts.Glow>(), -Vector2.UnitX.RotatedBy(laserRotation) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
                     }
                 }
 
-                if (healingTarget.type == ModContent.NPCType<FlyingPelterConstruct>() && !(healingTarget.ModNPC as FlyingPelterConstruct).empowered)
+                if (healingTarget.type == NPCType<FlyingPelterConstruct>() && !(healingTarget.ModNPC as FlyingPelterConstruct).empowered)
                 {
                     var targetMN = healingTarget.ModNPC as FlyingPelterConstruct;
                     targetMN.doingCombo = true;
                     targetMN.comboPartner = NPC;
                     targetMN.attacking = false;
+
                     if (comboTimer == 0)
                     {
                         comboPos = healingTarget.Center - new Vector2(150 * healingTarget.spriteDirection, 0);
                         targetMN.oldPos = healingTarget.Center;
                     }
+
                     doingCombo = true;
                 }
+
                 if (healCounter % 10 == 0 && healingTarget.Distance(NPC.Center) < 300)
                 {
                     if (healingTarget.life < healingTarget.lifeMax - 5)
@@ -242,10 +257,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
 
                 Vector2 posToBe = healingTarget.Center;
+
                 if (healingTarget.type == ModContent.NPCType<ShieldConstruct>())
                     posToBe.X -= 150 * healingTarget.spriteDirection;
+
                 if (doingCombo)
                     posToBe = comboPos;
+
                 if ((NPC.Center - posToBe).Length() > 100)
                     NPC.velocity.X += Math.Sign(posToBe.X - NPC.Center.X) * 5f;
                 else
@@ -254,12 +272,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     {
                         directionCounter = 0;
                         direction = Main.rand.Next(-1, 2);
+
                         if (direction == 0)
                             directionThreshhold = 30;
                         else
                             directionThreshhold = Main.rand.Next(12, 18);
                     }
                     NPC.velocity.X += direction * 0.5f;
+
                     if (direction == 0)
                         NPC.velocity.X *= 0.9f;
                 }
@@ -276,16 +296,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 
             Rectangle frameBox = new Rectangle(0, frameHeight * yFrame, mainTex.Width, frameHeight);
-            if (NPC.spriteDirection != 1)
-            {
-                spriteEffects = SpriteEffects.FlipHorizontally;
-            }
 
-            if (healingTarget != default && healingTarget.Distance(NPC.Center) < 300 && !stuck)
+            if (NPC.spriteDirection != 1)
+                spriteEffects = SpriteEffects.FlipHorizontally;
+
+            if (healingTarget != default && healingTarget.Distance(NPC.Center) < 300 && !boundToPartner)
             {
                 Color color = Color.OrangeRed;
                 Vector2 pos = NPC.Center - Main.screenPosition;
-                float laserRotation = NPC.DirectionTo(healingTarget.Center).ToRotation();
+                float laserRotation = NPC.DirectionTo(healingTarget.Center).ToRotation(); //TODO: Simplyify from copy/paste ceiros laser
                 var texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
                 var texBeam2 = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamTrail").Value;
 
@@ -310,7 +329,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 spriteBatch.Draw(texBeam, target, source, color, laserRotation, origin, 0, 0);
                 spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, laserRotation, origin2, 0, 0);
 
-                for (int i = 10; i < width; i += 10)
+                for (int i = 10; i < width; i += 10) //TODO: Move this somewhere more appropriate
                 {
                     Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(laserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
                 }
@@ -319,19 +338,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
-
             Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, frameBox, drawColor, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
             Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, frameBox, Color.White, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
 
             return false;
         }
 
-        public void DrawAdditive(SpriteBatch spriteBatch)
-        {
-
-        }
-
-        public override void HitEffect(int hitDirection, double damage)
+        public override void HitEffect(int hitDirection, double damage) //TODO: Move to kill hook
         {
             if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
