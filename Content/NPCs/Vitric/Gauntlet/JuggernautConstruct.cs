@@ -42,6 +42,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private bool attacking = false;
         private int attackCooldown = 0;
 
+        private bool doingCombo = false;
+        private NPC comboPartner = default;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Juggernaut Construct");
@@ -70,7 +73,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             attackCooldown--;
 
-            WalkingBehavior();
+            if (!attacking && attackCooldown <= 0 && Math.Abs(target.Center.X - NPC.Center.X) < 200)
+            {
+                attacking = true;
+                xFrame = 1;
+                yFrame = 0;
+                frameCounter = 0;
+            }
+
+            if (attacking)
+                AttackBehavior();
+            else
+                WalkingBehavior();
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -132,6 +146,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.velocity.X += ACCELERATION * xSign;
             NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MAXSPEED, MAXSPEED);
             NPC.spriteDirection = xSign;
+        }
+
+        private void AttackBehavior()
+        {
+            attackCooldown = 400;
+            NPC.velocity.X *= 0.9f;
+            xFrame = 1;
+            frameCounter++;
+
+            if ((frameCounter > 4 && yFrame < 20) || frameCounter > 30)
+            {
+                frameCounter = 0;
+                if (yFrame < 20)
+                    yFrame++;
+                else
+                {
+                    xFrame = 2;
+                    yFrame = 0;
+                    attacking = false;
+                }
+
+                if (yFrame == 15)
+                    Core.Systems.CameraSystem.Shake += 8;
+
+            }
         }
 
         public void DrawHealingGlow(SpriteBatch spriteBatch)
