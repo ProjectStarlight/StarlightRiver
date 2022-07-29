@@ -23,7 +23,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class GruntConstruct : ModNPC, IHealableByHealerConstruct //TODO: ableToDoCombo bool
+    internal class GruntConstruct : ModNPC, IHealableByHealerConstruct 
     {
         public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
 
