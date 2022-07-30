@@ -324,6 +324,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     }
                     else
                     {
+                        aiCounter = 100;
                         NPC.velocity.X += NPC.spriteDirection * 0.1f;
                         NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
                     }
