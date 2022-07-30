@@ -29,13 +29,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
-        private const int XFRAMES = 3; //TODO: Swap to using NPC.Frame
+        private const int XFRAMES = 4; //TODO: Swap to using NPC.Frame
 
         public bool ableToDoCombo = true;
 
         private int xFrame = 0;
         private int yFrame = 0;
         private int frameCounter = 0;
+
+        private int savedDirection = 0;
 
         private int xPosToBe = 0;
 
@@ -51,6 +53,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int comboDirection = 0;
 
         private float unboundRotation;
+
+        private float unboundRollRotation = 0f;
 
         private int cooldownDuration = 80;
         private float maxSpeed = 5;
@@ -118,7 +122,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (Math.Abs(unboundRotation) < 0.4f)
                 unboundRotation = 0;
 
-            NPC.rotation = unboundRotation;
+            if (!juggernautComboLaunched || NPC.velocity.Y > 0)
+                unboundRollRotation = MathHelper.Lerp(unboundRollRotation, 6.28f, 0.2f);
+
+            NPC.rotation = unboundRotation + (unboundRollRotation * Math.Sign(NPC.velocity.X));
 
             if (ComboBehavior() || JuggernautComboBehavior())
                 return;
@@ -229,6 +236,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
             if (xFrame == 2 && yFrame >= 6) //TODO: Change to being based off of state directly
+                return base.CanHitPlayer(target, ref cooldownSlot);
+
+            if (xFrame == 3)
                 return base.CanHitPlayer(target, ref cooldownSlot);
             return false;
         }
@@ -421,6 +431,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 if (!juggernautComboLaunched)
                 {
+                    savedDirection = NPC.spriteDirection;
                     if (juggernautPartner == null || juggernautPartner == default || !juggernautPartner.active)
                     {
                         juggernautPartner = default;
@@ -473,30 +484,45 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
                 else //When launched
                 {
+                    NPC.direction = NPC.spriteDirection = savedDirection;
                     NPC.velocity.X *= 1.05f;
 
-                    if (xFrame != 2)
+                    if (NPC.velocity.Y < -1) //In ball form
                     {
-                        frameCounter = 0;
-                        yFrame = 3;
-                        xFrame = 2;
+                        yFrame = 0;
+                        xFrame = 3;
+                        unboundRollRotation += 0.5f;
                     }
-
-                    frameCounter++;
-
-                    if (frameCounter > 3)
+                    else //Slashing
                     {
-                        frameCounter = 0;
+                        if (xFrame != 2)
+                        {
+                            frameCounter = 0;
+                            yFrame = 3;
+                            xFrame = 2;
+                            unboundRollRotation %= 6.28f;
+                        }
 
-                        if (yFrame < 13)
-                            yFrame++;
-                    }
+                        frameCounter++;
 
-                    if (yFrame > 3 && NPC.collideY)
-                    {
-                        juggernautPartner = default;
-                        doingJuggernautCombo = false;
-                        juggernautComboLaunched = false;
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+
+                            if (yFrame < 13)
+                                yFrame++;
+                        }
+
+                        if (NPC.collideY)
+                        {
+                            unboundRollRotation %= 6.28f;
+                            frameCounter = 0;
+                            xFrame = 1;
+                            yFrame = 0;
+                            juggernautPartner = default;
+                            doingJuggernautCombo = false;
+                            juggernautComboLaunched = false;
+                        }
                     }
                 }
 

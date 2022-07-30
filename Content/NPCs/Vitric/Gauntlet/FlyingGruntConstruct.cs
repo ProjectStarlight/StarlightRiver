@@ -424,9 +424,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         potentialArrow.active = false;
                         for (float i = -1; i < 1.1f; i += 1)
                         {
-                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowPos.DirectionTo(target.Center).RotatedBy(i / 2f) * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), NPC.damage, NPC.knockBackResist);
-                            proj.rotation = arrowPos.DirectionTo(target.Center).ToRotation() + 1.57f + i;
-                            proj.ai[0] = proj.Distance(target.Center) / 5;
+                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
 
                             for (int k = 0; k < 15; k++)
                             {

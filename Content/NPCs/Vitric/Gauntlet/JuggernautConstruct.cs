@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 xFrame = 0;
                 frameCounter++;
 
-                if ((frameCounter > 4 && yFrame < 20) || frameCounter > 30)
+                if ((frameCounter > 4 && yFrame < 22) || frameCounter > 30)
                 {
                     frameCounter = 0;
 

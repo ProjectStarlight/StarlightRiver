@@ -282,7 +282,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         if (bowFrameCounter > 25)
                         {
                             SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                            Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            proj.aiStyle = -1;
                             bowFrameCounter = 0;
                             bowFrame++;
                         }
@@ -618,6 +619,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 ManageTrail();
             }
 
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
             Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(6, 6), 6, null, 0, default, 1.1f);
         }
 
