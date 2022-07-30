@@ -425,6 +425,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     {
                         juggernautPartner = default;
                         doingJuggernautCombo = false;
+                        return false;
                     }
 
                     if (Math.Abs(juggernautPartner.Center.X + (juggernautPartner.direction * 60) - NPC.Center.X) > 10) //Run to partner
