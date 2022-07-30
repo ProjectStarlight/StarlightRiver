@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private bool idling = false;
 
-        private bool doingCombo = false;
+        public bool doingCombo = false;
         private bool comboJumped = false;
         private bool comboJumpedTwice = false;
         private NPC partner = default;
@@ -55,6 +55,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int cooldownDuration = 80;
         private float maxSpeed = 5;
 		private float acceleration = 0.3f;
+
+        public bool doingJuggernautCombo = false;
+        public bool juggernautComboLaunched = false;
+        public NPC juggernautPartner = default;
 
         public override void Load()
         {
@@ -116,7 +120,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             NPC.rotation = unboundRotation;
 
-            if (ComboBehavior())
+            if (ComboBehavior() || JuggernautComboBehavior())
                 return;
 
             if (Math.Abs(target.Center.X - NPC.Center.X) < 400 && !idling)
@@ -405,6 +409,99 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 }
                 return true;
             }
+            return false;
+        }
+
+        private bool JuggernautComboBehavior()
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            if (doingJuggernautCombo)
+            {
+                if (!juggernautComboLaunched)
+                {
+                    if (juggernautPartner == null || juggernautPartner == default || !juggernautPartner.active)
+                    {
+                        juggernautPartner = default;
+                        doingJuggernautCombo = false;
+                    }
+
+                    if (Math.Abs(juggernautPartner.Center.X + (juggernautPartner.direction * 60) - NPC.Center.X) > 10) //Run to partner
+                    {
+                        NPC.direction = NPC.spriteDirection = Math.Sign(juggernautPartner.Center.X + (juggernautPartner.direction * 80) - NPC.Center.X);
+
+                        if (xFrame != 1)
+                        {
+                            frameCounter = 0;
+                            yFrame = 0;
+                            xFrame = 1;
+                        }
+                        frameCounter++;
+
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+                            yFrame++;
+                            yFrame %= 8;
+                        }
+
+                        NPC.velocity.X += NPC.spriteDirection * 0.5f;
+                        NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+                    }
+                    else //Idle in front of partner
+                    {
+                        NPC.velocity.X *= 0.9f;
+
+                        if (xFrame != 0)
+                        {
+                            frameCounter = 0;
+                            yFrame = 0;
+                            xFrame = 0;
+                        }
+
+                        frameCounter++;
+
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+                            if (yFrame < 14)
+                                yFrame++;
+                        }
+                    }
+                }
+                else //When launched
+                {
+                    NPC.velocity.X *= 1.05f;
+
+                    if (xFrame != 2)
+                    {
+                        frameCounter = 0;
+                        yFrame = 3;
+                        xFrame = 2;
+                    }
+
+                    frameCounter++;
+
+                    if (frameCounter > 3)
+                    {
+                        frameCounter = 0;
+
+                        if (yFrame < 13)
+                            yFrame++;
+                    }
+
+                    if (yFrame > 3 && NPC.collideY)
+                    {
+                        juggernautPartner = default;
+                        doingJuggernautCombo = false;
+                        juggernautComboLaunched = false;
+                    }
+                }
+
+                return true;
+            }
+
             return false;
         }
 

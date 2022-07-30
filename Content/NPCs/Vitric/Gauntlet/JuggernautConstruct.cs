@@ -5,6 +5,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core;
+using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
@@ -35,15 +36,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public bool ableToDoCombo = true;
 
+        private bool doingLaunchCombo = false;
+        private NPC launchTarget = default;
+        private int launchComboCooldown = 0;
+
         private int xFrame = 0;
         private int yFrame = 0;
         private int frameCounter = 0;
 
+        private int savedDirection = 1;
+
         private bool attacking = false;
         private int attackCooldown = 0;
-
-        private bool doingCombo = false;
-        private NPC comboPartner = default;
+        private int spikeCounter = -1; //if its greater than 0 and divisible by 10, spawn a spike
 
         public override void SetStaticDefaults()
         {
@@ -69,9 +74,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
-            NPC.TargetClosest(false);
+            NPC.TargetClosest(xFrame == 2);
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             attackCooldown--;
+
+            if (ComboLogic())
+                return;
 
             if (!attacking && attackCooldown <= 0 && Math.Abs(target.Center.X - NPC.Center.X) < 200)
             {
@@ -79,6 +87,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 xFrame = 1;
                 yFrame = 0;
                 frameCounter = 0;
+                savedDirection = NPC.spriteDirection;
             }
 
             if (attacking)
@@ -150,6 +159,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private void AttackBehavior()
         {
+            NPC.direction = NPC.spriteDirection = savedDirection;
             attackCooldown = 400;
             NPC.velocity.X *= 0.9f;
             xFrame = 1;
@@ -167,12 +177,139 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     attacking = false;
                 }
 
+                if (yFrame == 3) //Spawn early since it spawns with a telegraph
+                    spikeCounter = 30;
                 if (yFrame == 15)
                     Core.Systems.CameraSystem.Shake += 8;
+            }
 
+            if (spikeCounter >= 0)
+            {
+                if (spikeCounter % 10 == 0)
+                {
+                    SpawnSpike();
+                }
+                spikeCounter--;
             }
         }
 
+        private bool ComboLogic()
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            launchComboCooldown--;
+
+            if (!doingLaunchCombo && launchComboCooldown < 0)
+            {
+                launchTarget = Main.npc.Where(n =>
+                n.active &&
+                n.type == ModContent.NPCType<GruntConstruct>() &&
+                !(n.ModNPC as GruntConstruct).doingCombo &&
+                !(n.ModNPC as GruntConstruct).doingJuggernautCombo &&
+                Math.Abs(NPC.Center.X - n.Center.X) < 500).OrderBy(n => Math.Abs(NPC.Center.X - n.Center.X)).FirstOrDefault();
+            }
+
+            if (launchTarget != default && !doingLaunchCombo && launchComboCooldown < 0)
+            {
+                doingLaunchCombo = true;
+                //launchComboCooldown = 400;
+                yFrame = 0;
+                frameCounter = 0;
+                savedDirection = NPC.spriteDirection;
+                var launchTargetModNPC = (launchTarget.ModNPC as GruntConstruct);
+
+                launchTargetModNPC.doingJuggernautCombo = true;
+                launchTargetModNPC.juggernautPartner = NPC;
+            }
+
+            if (doingLaunchCombo)
+            {
+                if (yFrame < 16 && (launchTarget == null || launchTarget == default || !launchTarget.active))
+                {
+                    launchTarget = default;
+                    doingLaunchCombo = false;
+                    return false;
+                }
+
+                NPC.direction = NPC.spriteDirection = savedDirection;
+
+                var launchTargetModNPC = (launchTarget.ModNPC as GruntConstruct);
+
+                //animation logic
+                xFrame = 0;
+                frameCounter++;
+
+                if ((frameCounter > 4 && yFrame < 20) || frameCounter > 30)
+                {
+                    frameCounter = 0;
+
+                    if (yFrame < 22)
+                    {
+                        if (yFrame == 13)
+                        { 
+                            if (Math.Abs(NPC.Center.X + (NPC.direction * 60) - launchTarget.Center.X) < 40)
+                            {
+                                yFrame++;
+                            }
+                        }
+                        else
+                            yFrame++;
+
+                        if (yFrame == 16)
+                        {
+                            Core.Systems.CameraSystem.Shake += 8;
+                            launchTargetModNPC.juggernautComboLaunched = true;
+                            launchTarget.velocity.Y = -6;
+                            launchTarget.velocity.X = NPC.direction * 18;
+
+                            Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
+                            Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + (ringVel * 35), ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
+                            ring.extraUpdates = 0;
+                        }
+                    }
+                    else
+                    {
+                        xFrame = 2;
+                        yFrame = 0;
+                        doingLaunchCombo = false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SpawnSpike()
+        {
+            float endPositionX = NPC.Center.X + (NPC.spriteDirection * 300);
+            float startPositionX = NPC.Center.X + (NPC.spriteDirection * 110);
+
+            float spikePositionX = MathHelper.Lerp(endPositionX, startPositionX, spikeCounter / 30f);
+            float spikePositionY = NPC.Bottom.Y + 16;
+            int tries = 20;
+
+            int i = (int)(spikePositionX / 16);
+            int j = (int)(spikePositionY / 16);
+            while (Main.tile[i,j].HasTile && Main.tileSolid[Main.tile[i, j].TileType]) //move up until no longer on solid tile
+            {
+                spikePositionY -= 16;
+                j = (int)(spikePositionY / 16);
+                if (tries-- < 0)
+                    return;
+            }
+            spikePositionY += 32;
+
+            Vector2 spikePos = new Vector2(spikePositionX, spikePositionY);
+            Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 20, 1f, Main.myPlayer, -20, 1 - (spikeCounter / 30f));
+            raise.direction = NPC.spriteDirection;
+            raise.scale = 0.65f;
+
+            raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
+            raise.width = (int)(raise.width * raise.scale);
+        }
         public void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 

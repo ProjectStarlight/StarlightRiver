@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (Timer == raise - 59)
             {
-                Projectile.height = (int)(MathHelper.Lerp(240, 150, WhoAmI));
+                Projectile.height = (int)((MathHelper.Lerp(240, 150, WhoAmI)) * Projectile.scale);
 
                 Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
 
@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     float height = -totalHeight * lerp * (float)Math.Sqrt(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 30 + (7f * lerp), Timer, true));
                     float width = baseWidth * (1.1f - lerp);
 
-                    points[i] = Projectile.Bottom + new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 200, raise + 150, Timer, true))) * 80f);
+                    points[i] = Projectile.Bottom + ((new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 200, raise + 150, Timer, true))) * 80f)) * Projectile.scale);
                     int j = maxSpikes - i - 1;
                     float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
                     if (Timer > raise + 140 - i * 3)
@@ -368,8 +368,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             fade.A = 0;            
             Color fadeInner = Color.OrangeRed * Utils.GetLerpValue(raise * 0.66f, raise * 0.35f, Timer, true);
             fadeInner.A = 0;
-            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.8f, Timer, true)) * 4f;
-            float width = 0.6f + (float)Math.Pow(Utils.GetLerpValue(raise * 0.17f, raise, Timer, true), 2) * 6f;
+            float height = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, raise * 0.8f, Timer, true)) * 4f * Projectile.scale;
+            float width = 0.6f + (float)Math.Pow(Utils.GetLerpValue(raise * 0.17f, raise, Timer, true), 2) * 6f * Projectile.scale;
             Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frameGlow, fade, Projectile.rotation * 0.3f, tellOrigin, new Vector2(width, height), 0, 0);
             Main.EntitySpriteDraw(tellTex.Value, Projectile.Bottom - new Vector2(0, 10) - Main.screenPosition, frame, fadeInner, Projectile.rotation * 0.3f, tellOrigin, new Vector2(1f, height * 0.6f), 0, 0);
         }
