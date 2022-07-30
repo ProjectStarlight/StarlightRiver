@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         } 
 
-        private bool ShieldComboLogic() //returns true if it's doing the combo with the shielder
+        private bool ShieldComboLogic() //returns true if it's doing the combo with the shielder and not firing
         {
             if (!ableToDoCombo)
                 return false;
@@ -317,8 +317,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     if (shielderComboFiring)
                     {
-                        NPC.velocity.X *= 1.04f;
+                        aiCounter = 298;
+                        NPC.velocity.X *= 1.03f;
                         bowFrameCounter++;
+                        return false;
                     }
                     else
                     {
@@ -357,7 +359,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             bowFrame %= BOWFRAMES;
 
-            NPC.velocity.X *= 0.9f;
+            if (!shielderComboFiring)
+                NPC.velocity.X *= 0.9f;
             XFrame = 1;
 
             if (NPC.collideY)
