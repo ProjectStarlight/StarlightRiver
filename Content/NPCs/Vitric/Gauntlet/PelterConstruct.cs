@@ -47,13 +47,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private bool shielderComboJumped = false;
         private bool shielderComboFiring = false;
         private NPC shielderPartner = default;
+        private int shielderComboCooldown = 500;
+
+        private bool doingFlyingCombo = false;
+        private int flyingComboCooldown = 0;
+        private NPC flyingPartner = default;
+
 
         float bowRotation = 0;
         float bowArmRotation = 0;
 
         float headRotation = 0f;
 
-        private int cooldownLength = 500; 
 
         private int XFrame = 0;
 
@@ -100,7 +105,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void OnSpawn(IEntitySource source)
         {
-            cooldownLength = Main.rand.Next(450,550);
+            shielderComboCooldown = Main.rand.Next(450,550);
             maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
             acceleration = Main.rand.NextFloat(0.22f, 0.35f);
             backupDistance = Main.rand.Next(50, 100);
@@ -119,27 +124,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.rotation = flipRotation + leaningRotation;
             NPC.TargetClosest(true);
             Vector2 direction = bowArmPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f);
-            float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
 
-            bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
-            bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
+            if (FlyingComboLogic())
+                return;
 
-            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-
-            if (NPC.spriteDirection == 1)
-                headRotation = bowRotation / 2;
-            else
-                headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
+            RotateBodyParts(direction);
 
             if (ShieldComboLogic())
-            {
                 return;
-            }
-            else
-            { 
-                leaningRotation = 0;
-                aiCounter++;
-            }
+
+            leaningRotation = 0;
+            aiCounter++;
 
             if (aiCounter % 300 > 200 && (!doingShielderCombo || shielderComboFiring))
             {
@@ -228,6 +223,91 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         } 
 
+        private bool FlyingComboLogic() //returns true if it's doing the combo with the flyer
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            flyingComboCooldown--;
+
+            if (flyingComboCooldown > 0)
+                return false;
+
+            if (flyingPartner == default && !doingFlyingCombo)
+            {
+                var tempPartner = Main.npc.Where(x =>
+                  x.active &&
+                  x.type == ModContent.NPCType<FlyingGruntConstruct>() &&
+                  !(x.ModNPC as FlyingGruntConstruct).attacking &&
+                  !(x.ModNPC as FlyingGruntConstruct).doingPelterCombo &&
+                  NPC.Distance(x.Center) < 800).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault(); 
+
+                if (tempPartner != default)
+                {
+                    flyingPartner = tempPartner;
+                    doingFlyingCombo = true;
+
+                    FlyingGruntConstruct flyingModNPC = flyingPartner.ModNPC as FlyingGruntConstruct;
+                    flyingModNPC.doingPelterCombo = true;
+                    flyingModNPC.pelterPartner = NPC;
+                    flyingModNPC.oldPosition = flyingPartner.Center;
+
+                    bowFrameCounter = 0;
+                    bowFrame = 0;
+                }
+            }
+
+            if (doingFlyingCombo)
+            {
+                //flyingComboCooldown = 400;
+
+                if (flyingPartner == null || flyingPartner == default || !flyingPartner.active)
+                {
+                    doingFlyingCombo = false;
+                    flyingPartner = default;
+                    return false;
+                }
+
+                FlyingGruntConstruct flyingModNPC = flyingPartner.ModNPC as FlyingGruntConstruct;
+
+                Vector2 arrowTarget = flyingPartner.Center + new Vector2(flyingPartner.spriteDirection * 20, 10);
+                RotateBodyParts(bowArmPos.DirectionTo(arrowTarget));
+
+                if (flyingModNPC.readyForPelterArrow)
+                {
+                    bowFrameCounter++;
+
+                    if (bowFrame == 0)
+                    {
+                        if (bowFrameCounter > 25)
+                        {
+                            SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
+                            Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            bowFrameCounter = 0;
+                            bowFrame++;
+                        }
+                    }
+                    else if ((bowFrameCounter > 4 && bowFrame < BOWFRAMES - 1) || bowFrameCounter > 50)
+                    {
+                        bowFrameCounter = 0;
+                        bowFrame++;
+                    }
+
+                    bowFrame %= BOWFRAMES;
+                }
+
+                if (flyingModNPC.hitPelterArrow)
+                {
+                    doingFlyingCombo = false;
+                    flyingPartner = default;
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
         private bool ShieldComboLogic() //returns true if it's doing the combo with the shielder and not firing
         {
             if (!ableToDoCombo)
@@ -247,7 +327,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 doingShielderCombo = true;
                 shielderPartner = tempPartner;
-                (shielderPartner.ModNPC as ShieldConstruct).bounceCooldown = cooldownLength;
+                (shielderPartner.ModNPC as ShieldConstruct).bounceCooldown = shielderComboCooldown;
             }
 
 
@@ -430,6 +510,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     bodyFrame = 0;
                 }
             }
+        }
+
+        private void RotateBodyParts(Vector2 direction)
+        {
+            float rotDifference = Helper.RotationDifference(direction.ToRotation(), bowArmRotation);
+
+            bowArmRotation = MathHelper.Lerp(bowArmRotation, bowArmRotation + rotDifference, 0.1f);
+            bowRotation = backArmPos.DirectionTo(bowPos).ToRotation();
+
+            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+
+            if (NPC.spriteDirection == 1)
+                headRotation = bowRotation / 2;
+            else
+                headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
         }
 
         public void DrawHealingGlow(SpriteBatch spriteBatch)

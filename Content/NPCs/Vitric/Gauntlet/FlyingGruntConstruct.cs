@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
 
-        private const int XFRAMES = 2;
+        private const int XFRAMES = 5;
 
         public bool ableToDoCombo = true;
 
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private NPC archerPartner = default;
 
         private Vector2 movementTarget = Vector2.Zero;
-        private Vector2 oldPosition = Vector2.Zero;
+        public Vector2 oldPosition = Vector2.Zero;
 
         private float bobCounter = 0f;
 
@@ -58,13 +58,19 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int swingDirection = 1;
 
+        public bool doingPelterCombo = false;
+        public NPC pelterPartner = default;
+        public bool pelterComboCharging = false;
+        public bool readyForPelterArrow = false;
+        public bool hitPelterArrow = false;
+
         private Player target => Main.player[NPC.target];
 
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flying Grunt Construct");
-            Main.npcFrameCount[NPC.type] = 12;
+            Main.npcFrameCount[NPC.type] = 19;
         }
 
         public override void SetDefaults()
@@ -95,6 +101,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             bobCounter += 0.02f;
 
             NPC.TargetClosest(true);
+
+            if (PelterComboLogic())
+                return;
 
             if (archerPartner == default || !archerPartner.active) 
             {
@@ -132,16 +141,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
-            Rectangle frameBox = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);
+            Rectangle frameBox = new Rectangle(xFrame * frameWidth, yFrame * frameHeight, frameWidth, frameHeight);
 
             SpriteEffects effects = SpriteEffects.None;
             Vector2 origin = new Vector2(frameWidth / 2.5f, (frameHeight * 0.4f));
 
             if (xFrame == 2)
-                origin.Y -= 2;
+                origin.Y -= 1;
 
             if (xFrame == 0)
-                origin.Y += 2;
+                origin.Y += 1;
 
             if (NPC.spriteDirection != 1)
             {
@@ -150,8 +159,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, frameBox, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, frameBox, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, frameBox, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, frameBox, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
             return false;
         }
 
@@ -307,6 +316,130 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 yFrame++;
                 yFrame %= 7;
             }
+        }
+
+        private bool PelterComboLogic()
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            if (doingPelterCombo)
+            {
+                if (pelterPartner == default || pelterPartner == null || !pelterPartner.active)
+                {
+                    xFrame = 0;
+                    yFrame = 0;
+                    pelterPartner = default;
+                    doingPelterCombo = false;
+                    readyForPelterArrow = false;
+                    pelterComboCharging = false;
+                    hitPelterArrow = false;
+                    return false;
+                }
+
+                if (hitPelterArrow)
+                {
+                    xFrame = 4;
+                    frameCounter++;
+                    if (frameCounter > 3)
+                    {
+                        frameCounter = 0;
+                        yFrame++;
+
+                        if (yFrame == 7)
+                        {
+                            xFrame = 0;
+                            yFrame = 0;
+
+                            oldPosition = NPC.Center;
+                            pelterPartner = default;
+                            doingPelterCombo = false;
+                            readyForPelterArrow = false;
+                            pelterComboCharging = false;
+                            hitPelterArrow = false;
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+
+                NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+
+                if (!readyForPelterArrow)
+                {
+                    if (!pelterComboCharging) //go to combo spot
+                    {
+                        Vector2 posToGoTo = new Vector2(MathHelper.Lerp(target.Center.X, pelterPartner.Center.X, 0.7f), pelterPartner.Center.Y - 300);
+
+                        if (GoToPos(posToGoTo, oldPosition))
+                        {
+                            oldPosition = NPC.Center;
+                            pelterComboCharging = true;
+                        }
+                        AnimateIdle();
+                    }
+                    else //charge up animation
+                    {
+                        NPC.velocity *= 0.9f;
+                        xFrame = 2;
+                        frameCounter++;
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+                            yFrame++;
+
+                            if (yFrame == 19)
+                            {
+                                xFrame = 3;
+                                yFrame = 0;
+                                readyForPelterArrow = true;
+                            }
+                        }
+                    }
+                }
+                else //ready to hit arrow!
+                {
+                    NPC.velocity *= 0.9f;
+                    Vector2 arrowPos = NPC.Center + new Vector2(NPC.spriteDirection * 20, 10);
+                    xFrame = 3;
+                    frameCounter++;
+                    if (frameCounter > 3)
+                    {
+                        frameCounter = 0;
+                        yFrame++;
+                        yFrame %= 6;
+                    }
+
+                    var potentialArrow = Main.projectile.Where(p =>
+                    p.active &&
+                    p.type == ModContent.ProjectileType<PelterConstructArrow>() &&
+                    p.Distance(arrowPos) < 20).OrderBy(p => p.Distance(NPC.Center + new Vector2(NPC.spriteDirection * 20, 0))).FirstOrDefault();
+
+                    if (potentialArrow != default)
+                    {
+                        xFrame = 4;
+                        yFrame = 0;
+                        frameCounter = 0;
+                        hitPelterArrow = true;
+                        potentialArrow.active = false;
+                        for (float i = -1; i < 1.1f; i += 1)
+                        {
+                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowPos.DirectionTo(target.Center).RotatedBy(i / 2f) * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), NPC.damage, NPC.knockBackResist);
+                            proj.rotation = arrowPos.DirectionTo(target.Center).ToRotation() + 1.57f + i;
+                            proj.ai[0] = proj.Distance(target.Center) / 5;
+
+                            for (int k = 0; k < 15; k++)
+                            {
+                                Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
+                                Dust.NewDustPerfect(dustPos, DustType<Dusts.Glow>(), arrowPos.DirectionTo(target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+                            }
+                        }
+                    }
+                }
+
+                return true;
+            }
+            return false;
         }
 
         public void DrawHealingGlow(SpriteBatch spriteBatch)
