@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private bool doingLaunchCombo = false;
         private NPC launchTarget = default;
-        private int launchComboCooldown = 0;
+        private int launchComboCooldown = 400;
 
         private int xFrame = 0;
         private int yFrame = 0;
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private bool ComboLogic()
         {
-            if (!ableToDoCombo)
+            if (!ableToDoCombo || attacking)
                 return false;
 
             launchComboCooldown--;
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (launchTarget != default && !doingLaunchCombo && launchComboCooldown < 0)
             {
                 doingLaunchCombo = true;
-                //launchComboCooldown = 400;
+                launchComboCooldown = 400;
                 yFrame = 0;
                 frameCounter = 0;
                 savedDirection = NPC.spriteDirection;

@@ -439,7 +439,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         return false;
                     }
 
-                    if (Math.Abs(juggernautPartner.Center.X + (juggernautPartner.direction * 60) - NPC.Center.X) > 10) //Run to partner
+                    if (Math.Abs(juggernautPartner.Center.X + (juggernautPartner.direction * 60) - NPC.Center.X) > 20) //Run to partner
                     {
                         NPC.direction = NPC.spriteDirection = Math.Sign(juggernautPartner.Center.X + (juggernautPartner.direction * 80) - NPC.Center.X);
 
@@ -487,7 +487,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     NPC.direction = NPC.spriteDirection = savedDirection;
                     NPC.velocity.X *= 1.05f;
 
-                    if (NPC.velocity.Y < -1) //In ball form
+                    if (NPC.velocity.Y < -1 && frameCounter == 0 && Math.Abs(target.Center.X - NPC.Center.X) > 100) //In ball form
                     {
                         yFrame = 0;
                         xFrame = 3;
@@ -498,7 +498,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         if (xFrame != 2)
                         {
                             frameCounter = 0;
-                            yFrame = 3;
+                            yFrame = 5;
                             xFrame = 2;
                             unboundRollRotation %= 6.28f;
                         }
@@ -513,7 +513,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                                 yFrame++;
                         }
 
-                        if (NPC.collideY)
+                        if (NPC.collideY && yFrame > 5)
                         {
                             unboundRollRotation %= 6.28f;
                             frameCounter = 0;
