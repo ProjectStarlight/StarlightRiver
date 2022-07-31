@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.WorldGeneration;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
@@ -35,7 +36,8 @@ namespace StarlightRiver.Core
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
-            ModContent.GetInstance<StarlightRiver>().PopulateChests();
+            //ModContent.GetInstance<StarlightRiver>().PopulateChests();
+            ChestLootSystem.PopulateAllChests();
         }
     }
 }
