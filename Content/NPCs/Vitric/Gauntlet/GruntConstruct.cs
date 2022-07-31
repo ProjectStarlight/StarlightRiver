@@ -184,6 +184,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 NPC.velocity.X += acceleration * xSign;
                 NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+
+                if (NPC.collideX && NPC.velocity.Y == 0)
+                    NPC.velocity.Y = -8;
+
                 NPC.spriteDirection = xSign;
 
             }

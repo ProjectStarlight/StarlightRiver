@@ -299,6 +299,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
 
+                if (NPC.collideX && NPC.velocity.Y == 0)
+                    NPC.velocity.Y = -8;
+
                 for (int i = 10; i < width; i += 10) 
                 {
                     Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(laserRotation) * i + Main.screenPosition, color.ToVector3() * 0.030f);

@@ -498,6 +498,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 if (NPC.velocity.Y == 0)
                 {
+                    if (NPC.collideX)
+                        NPC.velocity.Y = -8;
                     XFrame = 2;
                     bodyFrameCounter++;
                     if (bodyFrameCounter > 4 - (int)((Math.Abs(NPC.velocity.X)) / 2))
