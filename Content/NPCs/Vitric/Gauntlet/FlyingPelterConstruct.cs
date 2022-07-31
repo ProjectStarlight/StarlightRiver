@@ -226,6 +226,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
+        public override void FindFrame(int frameHeight)
+        {
+            int frameWidth = 42;
+            NPC.frame = new Rectangle(frameWidth * XFrame, bodyFrame * frameHeight, frameWidth, frameHeight);
+        }
+
         private void DrawComponents(bool glow, Vector2 screenPos, Color drawColor, Vector2 offset) //TODO: Potentially have glow use a preview sprite instead of repeating this logic multiple times.
         {
             SpriteEffects effects = SpriteEffects.None;
@@ -252,7 +258,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int mainFrameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
             int mainFrameWidth = mainTex.Width / XFRAMES;
-            Rectangle mainFrameBox = new Rectangle(mainFrameWidth * XFrame, bodyFrame * mainFrameHeight, mainFrameWidth, mainFrameHeight);
 
             Vector2 backArmOrigin = new Vector2(3, 7);
             Vector2 bowArmOrigin = new Vector2(1, 5);
@@ -271,10 +276,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, offset + NPC.Center + slopeOffset - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 
             if (!glow)
-                Main.spriteBatch.Draw(glowTex, offset + NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+                Main.spriteBatch.Draw(glowTex, offset + NPC.Center + slopeOffset - screenPos, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 
             Main.spriteBatch.Draw(headTex, offset + headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
             Main.spriteBatch.Draw(armTex, offset + bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);

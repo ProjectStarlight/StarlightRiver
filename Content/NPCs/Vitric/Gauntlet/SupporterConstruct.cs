@@ -306,6 +306,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         }
 
+        public override void FindFrame(int frameHeight)
+        {
+            int frameWidth = 32;
+            NPC.frame = new Rectangle(0, frameHeight * yFrame, frameWidth, frameHeight);
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
@@ -313,8 +319,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             SpriteEffects spriteEffects = SpriteEffects.None;
 
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
-
-            Rectangle frameBox = new Rectangle(0, frameHeight * yFrame, mainTex.Width, frameHeight);
 
             if (NPC.spriteDirection != 1)
                 spriteEffects = SpriteEffects.FlipHorizontally;
@@ -352,8 +356,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
             }
 
-            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, frameBox, drawColor, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
-            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, frameBox, Color.White, 0f, frameBox.Size() / 2, NPC.scale, spriteEffects, 0f);
+            Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2, NPC.scale, spriteEffects, 0f);
+            Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, NPC.frame, Color.White, 0f, NPC.frame.Size() / 2, NPC.scale, spriteEffects, 0f);
 
             return false;
         }

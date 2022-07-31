@@ -99,7 +99,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void FindFrame(int frameHeight)
 		{
-            NPC.frame = new Rectangle(0, 0, 116, 82);
+            int frameWidth = 116;
+            NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);
         }
 
 		public override void AI() //TODO: Document snippets with their intended behavior
@@ -211,7 +212,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
-            Rectangle frameBox = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);
 
             SpriteEffects effects = SpriteEffects.None;
             Vector2 origin = new Vector2(frameWidth / 4, (frameHeight * 0.75f) - 8);
@@ -228,8 +228,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, frameBox, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, frameBox, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
             return false;
         }
 

@@ -159,10 +159,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 NPC.velocity.Y = 0;
         }
 
+        public override void FindFrame(int frameHeight)
+        {
+            int frameWidth = 46;
+            NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight) + 1, frameWidth, frameHeight);
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             SpriteEffects effects = SpriteEffects.None;
-
 
             Texture2D mainTex = Request<Texture2D>(Texture).Value;
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
@@ -170,16 +175,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
-            Rectangle frameBox = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight) + 1, frameWidth, frameHeight);
 
             Vector2 bodyOffset = new Vector2((-6 * NPC.spriteDirection) + 4, 9);
 
             if (NPC.spriteDirection != 1)
                 effects = SpriteEffects.FlipHorizontally;
             
-            Main.spriteBatch.Draw(mainTex, bodyOffset + NPC.Center - screenPos, frameBox, drawColor, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, bodyOffset + NPC.Center - screenPos, frameBox, Color.White, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, frameBox.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(mainTex, bodyOffset + NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(glowTex, bodyOffset + NPC.Center - screenPos, NPC.frame, Color.White, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+            Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
 
             return false;
         }
