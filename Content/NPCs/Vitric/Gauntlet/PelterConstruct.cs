@@ -273,7 +273,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 Vector2 arrowTarget = flyingPartner.Center + new Vector2(flyingPartner.spriteDirection * 20, 10);
                 RotateBodyParts(bowArmPos.DirectionTo(arrowTarget));
 
-                if (flyingModNPC.readyForPelterArrow)
+                if (flyingModNPC.pelterComboCharging && (15 - flyingModNPC.yFrame < (bowPos - arrowTarget).Length() / 40f) || flyingModNPC.readyForPelterArrow) //If the grunt has time to charge up before the arrow would reach him
                 {
                     bowFrameCounter++;
 
@@ -296,6 +296,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     bowFrame %= BOWFRAMES;
                 }
+                else
+                    bowFrameCounter = 24; //immediately ready to shoot
 
                 if (flyingModNPC.hitPelterArrow)
                 {

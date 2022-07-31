@@ -38,8 +38,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public bool ableToDoCombo = true;
 
-        private int xFrame = 0;
-        private int yFrame = 0;
+        public int xFrame = 0;
+        public int yFrame = 0;
 
         public bool attacking = false;
 
@@ -383,12 +383,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         NPC.velocity *= 0.9f;
                         xFrame = 2;
                         frameCounter++;
-                        if (frameCounter > 3)
+                        if (frameCounter > 4)
                         {
                             frameCounter = 0;
                             yFrame++;
 
-                            if (yFrame == 19)
+                            if (yFrame == 13)
                             {
                                 xFrame = 3;
                                 yFrame = 0;
