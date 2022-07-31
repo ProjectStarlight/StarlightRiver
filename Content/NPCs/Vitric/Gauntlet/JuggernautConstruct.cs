@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     attacking = false;
                 }
 
-                if (yFrame == 3) //Spawn early since it spawns with a telegraph
+                if (yFrame == 2) //Spawn early since it spawns with a telegraph
                     spikeCounter = 30;
                 if (yFrame == 15)
                     Core.Systems.CameraSystem.Shake += 8;
@@ -292,10 +292,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             float spikePositionX = MathHelper.Lerp(endPositionX, startPositionX, spikeCounter / 30f);
             float spikePositionY = NPC.Bottom.Y + 16;
-            int tries = 20;
+            int tries = 30;
 
             int i = (int)(spikePositionX / 16);
             int j = (int)(spikePositionY / 16);
+
+            while (!Main.tile[i, j].HasTile || !Main.tileSolid[Main.tile[i, j].TileType]) //move down until on a solid tile
+            {
+                spikePositionY += 16;
+                j = (int)(spikePositionY / 16);
+                if (tries-- < 0)
+                    return;
+            }
+
+            tries = 20;
             while (Main.tile[i,j].HasTile && Main.tileSolid[Main.tile[i, j].TileType]) //move up until no longer on solid tile
             {
                 spikePositionY -= 16;

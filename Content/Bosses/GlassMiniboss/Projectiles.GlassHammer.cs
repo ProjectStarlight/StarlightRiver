@@ -179,6 +179,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private float[] offsets;
 
+        private float heightEaser = 0; //Variable for easing height increase
+
         public const int raise = 40;
 
         public ref float Timer => ref Projectile.ai[0];
@@ -307,14 +309,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 for (int i = 0; i < maxSpikes; i++)
                 {
                     float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
-                    float height = -totalHeight * lerp * (float)Math.Sqrt(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 30 + (7f * lerp), Timer, true));
+                    float height = -totalHeight * lerp * (float)Math.Sqrt(Core.EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(raise - 10 + (10f * lerp), raise + 30 + (7f * lerp), Timer, true)));
                     float width = baseWidth * (1.1f - lerp);
 
                     points[i] = Projectile.Bottom + ((new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 200, raise + 150, Timer, true))) * 80f)) * Projectile.scale);
                     int j = maxSpikes - i - 1;
                     float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
                     if (Timer > raise + 140 - i * 3)
-                        points[j] += Main.rand.NextVector2Circular(2, 5);
+                        points[j] += Main.rand.NextVector2Circular(2, 5) * Projectile.scale;
 
                     int growthSize = (int)((float)Math.Sqrt(lerp) * 5f);
                     float growthProg = Utils.GetLerpValue(raise + 20 - (float)Math.Pow(lerp, 2) * 15, raise + 190 - lerp * 20, Timer, true);
