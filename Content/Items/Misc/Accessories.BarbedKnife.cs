@@ -10,13 +10,9 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class BarbedKnife : SmartAccessory, IChestItem
+	public class BarbedKnife : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-
-        public int Stack => 1;
-
-        public ChestRegionFlags Regions => ChestRegionFlags.Surface;
 
         public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to five times") { }
 

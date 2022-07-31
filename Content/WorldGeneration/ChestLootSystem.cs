@@ -10,52 +10,76 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.WorldGeneration
 {
     public static class ChestLootSystem
     {
-        public static List<ChestLootInfo> LootInfo;
-        public static Dictionary<ChestRegionFlags, int[]> RegionsToFraming;
+        private static Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionLootInfo;
+        private static Dictionary<int, ChestRegionFlags> FramingToRegions;
 
         public static void Initialize()
         {
-            LootInfo = new List<ChestLootInfo>();
-            RegionsToFraming = new Dictionary<ChestRegionFlags, int[]>
+            FramingToRegions = new Dictionary<int, ChestRegionFlags>
             {
-                [ChestRegionFlags.Surface] = new int[] { 0, 432 }, // Wooden and living wood.
-                [ChestRegionFlags.Underground] = new int[] { 36 },
-                [ChestRegionFlags.Ice] = new int[] { 396 },
-                [ChestRegionFlags.Jungle] = new int[] { 288, 360 },
-                [ChestRegionFlags.Temple] = new int[] { 576 },
-                [ChestRegionFlags.Sky] = new int[] { 468 },
-                [ChestRegionFlags.Underwater] = new int[] { 612 },
-                [ChestRegionFlags.Spider] = new int[] { 540 },
-                [ChestRegionFlags.Granite] = new int[] { 1800 },
-                [ChestRegionFlags.Marble] = new int[] { 1836 },
-                [ChestRegionFlags.Underworld] = new int[] { 144 },
-                [ChestRegionFlags.Dungeon] = new int[] { 72 },
+                [0] = ChestRegionFlags.Surface,
+                [36] = ChestRegionFlags.Underground,
+                [396] = ChestRegionFlags.Ice,
+                [288] = ChestRegionFlags.Jungle,
+                [360] = ChestRegionFlags.JungleShrine,
+                [576] = ChestRegionFlags.Temple,
+                [468] = ChestRegionFlags.Sky,
+                [612] = ChestRegionFlags.Underwater,
+                [540] = ChestRegionFlags.Spider,
+                [1800] = ChestRegionFlags.Granite,
+                [1836] = ChestRegionFlags.Marble,
+                [144] = ChestRegionFlags.Underworld,
+                [72] = ChestRegionFlags.Dungeon,
+                [432] = ChestRegionFlags.Livingwood,
+                [2360] = ChestRegionFlags.Desert,
+                [2432] = ChestRegionFlags.Biome
             };
+
+            RegionLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
+
+            foreach (ChestRegionFlags val in Enum.GetValues<ChestRegionFlags>())
+                RegionLootInfo.Add(val, new List<ChestLootInfo>());
         }
 
         public static void Load()
         {
             Initialize();
 
-            AddLoot(ItemID.AcidDye, (1, 4), 0.01f, ChestRegionFlags.Ice);
-            AddLoot(ItemID.Abeemination, (2, 3), 0.75f, ChestRegionFlags.Sky);
-            AddLoot(ItemID.AlphabetStatueE, (50, 100), 1f, ChestRegionFlags.All, 20);
+            AddLoot(ModContent.ItemType<BarbedKnife>(), 1, ChestRegionFlags.Surface);
+            AddLoot(ModContent.ItemType<Cheapskates>(), 1, ChestRegionFlags.Ice);
+            AddLoot(ModContent.ItemType<Slitherring>(), 1, ChestRegionFlags.Jungle);
+            AddLoot(ModContent.ItemType<SojournersScarf>(), 1, ChestRegionFlags.Underground | ChestRegionFlags.Surface | ChestRegionFlags.Granite | ChestRegionFlags.Marble);
+
+
+            AddLoot(ItemID.Abeemination, (2, 3), ChestRegionFlags.Sky, 0.75f);
+            AddLoot(ItemID.AlphabetStatueE, (50, 100), ChestRegionFlags.All, 1f, 20);
         }
 
-        private static void AddLoot(int item, (int, int) stackRange, float chance, ChestRegionFlags chestRegions, int slotIndex = -1)
+        private static void AddLoot(int item, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1)
         {
-            LootInfo.Add(new ChestLootInfo(item, stackRange, chance, chestRegions, slotIndex));
+            foreach(ChestRegionFlags flag in chestRegions.GetFlags())
+                RegionLootInfo[flag].Add(new ChestLootInfo(item, stackRange, chance, chestRegions, slotIndex));
+        }
+        /// <summary>
+        /// legacy overload, tries to replace main chest loot
+        /// </summary>
+        private static void AddLoot(int item, int stack, ChestRegionFlags chestRegions, float chance = 0.125f, int slotIndex = 0)
+        {
+            foreach (ChestRegionFlags flag in chestRegions.GetFlags())
+                RegionLootInfo[flag].Add(new ChestLootInfo(item, (stack, stack), chance, chestRegions, slotIndex));
         }
 
         public static void Unload()
         {
-            LootInfo = null;
-            RegionsToFraming = null;
+            RegionLootInfo = null;
+            FramingToRegions = null;
         }
 
         public static void PopulateAllChests()
@@ -70,6 +94,13 @@ namespace StarlightRiver.Content.WorldGeneration
                 // Within this block this chest is valid to put an Item in.
                 if (chest != null && Framing.GetTileSafely(chest.x, chest.y) is Tile tile && tile.HasTile)
                 {
+                    // Selects a random Item to be placed in a chest
+                    ChestLootInfo itemInfo = WorldGen.genRand.Next(
+                        RegionLootInfo[
+                            FramingToRegions[tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0)]]);
+
+
+
                     //if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.TileFrameX))
                     //{
                     //    PlaceDisplayCaseOn(chest);
@@ -78,8 +109,6 @@ namespace StarlightRiver.Content.WorldGeneration
                     //    continue;
                     //}
 
-                    // Selects a random Item to be placed in a chest.
-                    ChestLootInfo itemInfo = WorldGen.genRand.Next(LootInfo);
 
                     // Type check is to prevent dungeon wooden chests being treated as surface ones.
                     if (WorldGen.genRand.NextFloat() < itemInfo.chance && chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(itemInfo.chestRegions, tile))
@@ -114,38 +143,39 @@ namespace StarlightRiver.Content.WorldGeneration
 
             return Item;
         }
-        private static bool TileMatchesRegionFlags(ChestRegionFlags flags, Tile tile)
-        {
-            if (flags.HasFlag(ChestRegionFlags.All))
-            {
-                return true;
-            }
 
-            ChestRegionFlags[] values = (ChestRegionFlags[])Enum.GetValues(typeof(ChestRegionFlags));
+        //private static bool TileMatchesRegionFlags(ChestRegionFlags flags, Tile tile)
+        //{
+        //    if (flags.HasFlag(ChestRegionFlags.All))
+        //    {
+        //        return true;
+        //    }
 
-            foreach (ChestRegionFlags flag in values)
-            {
-                if (flag == ChestRegionFlags.All)
-                {
-                    continue;
-                }
+        //    ChestRegionFlags[] values = (ChestRegionFlags[])Enum.GetValues(typeof(ChestRegionFlags));
 
-                if (flags.HasFlag(flag))
-                {
-                    int[] frames = RegionsToFraming[flag];
+        //    foreach (ChestRegionFlags flag in values)
+        //    {
+        //        if (flag == ChestRegionFlags.All)
+        //        {
+        //            continue;
+        //        }
 
-                    foreach (int frame in frames)
-                    {
-                        if (tile.TileFrameX == frame)
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
+        //        if (flags.HasFlag(flag))
+        //        {
+        //            int[] frames = RegionsToFraming[flag];
 
-            return false;
-        }
+        //            foreach (int frame in frames)
+        //            {
+        //                if (tile.TileFrameX == frame)
+        //                {
+        //                    return true;
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return false;
+        //}
     }
 
     public class ChestLootInfo

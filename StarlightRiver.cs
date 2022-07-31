@@ -133,7 +133,6 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
                 LightingBufferInstance = null;
-                chestItems = null;
 
                 SLRSpawnConditions.Unload();
             }

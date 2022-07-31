@@ -17,22 +17,22 @@ namespace StarlightRiver
 
         private const float chanceToReplaceMainChestLootWithModdedItem = 0.125f;
 
-        private List<(int, IChestItem)> chestItems;
+        //private List<(int, IChestItem)> chestItems;
 
         private Dictionary<ChestRegionFlags, int[]> regionsToFraming;
 
         private void AutoloadChestItems()
         {
-            chestItems = new List<(int, IChestItem)>();
+            //chestItems = new List<(int, IChestItem)>();
 
             for (int i = 0; i < ItemLoader.ItemCount; i++)
             {
                 ModItem ModItem = ItemLoader.GetItem(i);
 
-                if (ModItem is IChestItem chestItem)
-                {
-                    chestItems.Add((i, chestItem));
-                }
+                //if (ModItem is IChestItem chestItem)
+                //{
+                //    chestItems.Add((i, chestItem));
+                //}
             }
 
             // Kind off ugly, but not really sure what else I could do.
@@ -73,17 +73,17 @@ namespace StarlightRiver
                         continue;
                     }
 
-                    // Selects a random Item to be placed in a chest.
-                    (int, IChestItem) typeAndChestItem = Main.rand.Next(chestItems);
+                    //// Selects a random Item to be placed in a chest.
+                    //(int, IChestItem) typeAndChestItem = Main.rand.Next(chestItems);
 
-                    IChestItem chestItem = typeAndChestItem.Item2;
+                    //IChestItem chestItem = typeAndChestItem.Item2;
 
-                    // Type check is to prevent dungeon wooden chests being treated as surface ones.
-                    if (chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(chestItem.Regions, tile) && WorldGen.genRand.NextFloat() < chanceToReplaceMainChestLootWithModdedItem)
-                    {
-                        // Replaces the "main" chest Item. I'm assuming this is always in slot 0.
-                        chest.item[0] = SetupItem(typeAndChestItem.Item1, chestItem.Stack, false);
-                    }
+                    //// Type check is to prevent dungeon wooden chests being treated as surface ones.
+                    //if (chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(chestItem.Regions, tile) && WorldGen.genRand.NextFloat() < chanceToReplaceMainChestLootWithModdedItem)
+                    //{
+                    //    // Replaces the "main" chest Item. I'm assuming this is always in slot 0.
+                    //    chest.item[0] = SetupItem(typeAndChestItem.Item1, chestItem.Stack, false);
+                    //}
                 }
             }
 

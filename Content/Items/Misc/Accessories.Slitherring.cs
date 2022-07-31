@@ -18,13 +18,9 @@ using ReLogic.Content;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class Slitherring : SmartAccessory, IChestItem
+    public class Slitherring : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-
-        public int Stack => 1;
-
-        public ChestRegionFlags Regions => ChestRegionFlags.Jungle;
 
         public Slitherring() : base("Slitherring", "Whips have a chance to shoot out a smaller, snake whip") { }
 

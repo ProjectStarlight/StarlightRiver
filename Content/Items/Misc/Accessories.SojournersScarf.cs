@@ -6,13 +6,9 @@ using Terraria;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class SojournersScarf : SmartAccessory, IChestItem
+	public class SojournersScarf : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-
-        public int Stack => 1;
-
-        public ChestRegionFlags Regions => ChestRegionFlags.Underground | ChestRegionFlags.Surface | ChestRegionFlags.Granite | ChestRegionFlags.Marble;
 
         public SojournersScarf() : base("Sojourner's Scarf", "20% increased movement speed\n50% decreased life regeneration while stationary") { }
 

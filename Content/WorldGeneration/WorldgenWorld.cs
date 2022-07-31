@@ -36,7 +36,6 @@ namespace StarlightRiver.Core
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
-            //ModContent.GetInstance<StarlightRiver>().PopulateChests();
             ChestLootSystem.PopulateAllChests();
         }
     }
