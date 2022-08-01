@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.WorldGeneration
                 [684] = ChestRegionFlags.Biome,// Corruption
                 [720] = ChestRegionFlags.Biome,// Crimson
                 [756] = ChestRegionFlags.Biome,// Hallowed
-                [792] = ChestRegionFlags.Biome,//Ice
+                [792] = ChestRegionFlags.Biome,// Ice
                 [2432] = ChestRegionFlags.Biome,// Desert
                 [2144] = ChestRegionFlags.TrappedUnderground,
                 [2360] = ChestRegionFlags.Desert,
@@ -68,19 +68,16 @@ namespace StarlightRiver.Content.WorldGeneration
         {
             Initialize();
 
-            AddLoot(ModContent.ItemType<BarbedKnife>(), ChestRegionFlags.Surface, 0.175f);
+            AddLoot(ModContent.ItemType<BarbedKnife>(), ChestRegionFlags.Surface | ChestRegionFlags.Barrel);
             AddLoot(ModContent.ItemType<Cheapskates>(), ChestRegionFlags.Ice);
             AddLoot(ModContent.ItemType<Slitherring>(), ChestRegionFlags.Jungle, 0.20f);
             AddLoot(ModContent.ItemType<SojournersScarf>(), ChestRegionFlags.Underground | ChestRegionFlags.Surface | ChestRegionFlags.Granite | ChestRegionFlags.Marble, 0.1f);
 
 
-            AddLoot(ItemID.NecromanticScroll, ChestRegionFlags.Livingwood, 0.75f, (2, 3), false);
-            AddLoot(ItemID.AlphabetStatueE, ChestRegionFlags.All, 1f, (50, 100), false, 20);
-
-            AddLoot(ItemID.Abeemination, ChestRegionFlags.All, 0.75f, (2, 3), false);
-            AddLoot(ItemID.DeepTealPaint, ChestRegionFlags.All, 1f, (2, 67), false);
-            AddLoot(ItemID.CyanPaint, ChestRegionFlags.All, 1f, (2, 67), false);
-            AddLoot(ItemID.NegativePaint, ChestRegionFlags.All, 1f, (2, 67), false);
+            //AddLoot(ItemID.NecromanticScroll, ChestRegionFlags.Livingwood, 0.75f, (2, 3), false);
+            //AddLoot(ItemID.AlphabetStatueE, ChestRegionFlags.All, 1f, (50, 100), false, 20);
+            //AddLoot(ItemID.Abeemination, ChestRegionFlags.All, 0.75f, (2, 3), false);
+            //AddLoot(ItemID.DeepTealPaint, ChestRegionFlags.All, 1f, (2, 67), false);
         }
 
         private static void AddLoot(int item, ChestRegionFlags chestRegions, float chance, (int, int) stackRange, bool exclusive = true, int slotIndex = -1)
@@ -102,6 +99,7 @@ namespace StarlightRiver.Content.WorldGeneration
         public static void Unload()
         {
             RegionLootInfo = null;
+            RegionExclusiveLootInfo = null;
             FramingToRegion = null;
         }
 
@@ -134,7 +132,7 @@ namespace StarlightRiver.Content.WorldGeneration
                             ChestLootInfo exclusiveitemInfo = WorldGen.genRand.Next(itemInfoList);
 
                             if (WorldGen.genRand.NextFloat() < exclusiveitemInfo.chance)
-                                AddChestItems(exclusiveitemInfo, chest);
+                                AddChestItem(exclusiveitemInfo, chest);
                         }
                     }
 
@@ -148,7 +146,7 @@ namespace StarlightRiver.Content.WorldGeneration
                         if(itemInfoList.Count > 0)
                             foreach (ChestLootInfo itemInfo in itemInfoList)
                                 if (WorldGen.genRand.NextFloat() < itemInfo.chance)
-                                    AddChestItems(itemInfo, chest);
+                                    AddChestItem(itemInfo, chest);
                     }
 
                     //if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.TileFrameX))
@@ -171,7 +169,7 @@ namespace StarlightRiver.Content.WorldGeneration
 
             return Item;
         }
-        private static void AddChestItems(ChestLootInfo info, Chest chest)
+        private static void AddChestItem(ChestLootInfo info, Chest chest)
         {
             int stack = WorldGen.genRand.Next(info.stackRange.Item1, info.stackRange.Item2 + 1);
             int slot = info.slotIndex;
