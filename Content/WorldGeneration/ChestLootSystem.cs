@@ -18,11 +18,12 @@ namespace StarlightRiver.Content.WorldGeneration
     public static class ChestLootSystem
     {
         private static Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionLootInfo;
-        private static Dictionary<int, ChestRegionFlags> FramingToRegions;
+        private static Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionExclusiveLootInfo;
+        private static Dictionary<int, ChestRegionFlags> FramingToRegion;
 
         public static void Initialize()
         {
-            FramingToRegions = new Dictionary<int, ChestRegionFlags>
+            FramingToRegion = new Dictionary<int, ChestRegionFlags>
             {
                 [0] = ChestRegionFlags.Surface,
                 [36] = ChestRegionFlags.Underground,
@@ -38,48 +39,70 @@ namespace StarlightRiver.Content.WorldGeneration
                 [144] = ChestRegionFlags.Underworld,
                 [72] = ChestRegionFlags.Dungeon,
                 [432] = ChestRegionFlags.Livingwood,
+                [1152] = ChestRegionFlags.Mushroom,
+                [180] = ChestRegionFlags.Barrel,
+                [216] = ChestRegionFlags.Trashcan,
+                [648] = ChestRegionFlags.Biome,// Jungle
+                [684] = ChestRegionFlags.Biome,// Corruption
+                [720] = ChestRegionFlags.Biome,// Crimson
+                [756] = ChestRegionFlags.Biome,// Hallowed
+                [792] = ChestRegionFlags.Biome,//Ice
+                [2432] = ChestRegionFlags.Biome,// Desert
+                [2144] = ChestRegionFlags.TrappedUnderground,
                 [2360] = ChestRegionFlags.Desert,
-                [2432] = ChestRegionFlags.Biome
+
             };
 
             RegionLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
 
             foreach (ChestRegionFlags val in Enum.GetValues<ChestRegionFlags>())
                 RegionLootInfo.Add(val, new List<ChestLootInfo>());
+
+            RegionExclusiveLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
+
+            foreach (ChestRegionFlags val in Enum.GetValues<ChestRegionFlags>())
+                RegionExclusiveLootInfo.Add(val, new List<ChestLootInfo>());
         }
 
         public static void Load()
         {
             Initialize();
 
-            AddLoot(ModContent.ItemType<BarbedKnife>(), 1, ChestRegionFlags.Surface);
-            AddLoot(ModContent.ItemType<Cheapskates>(), 1, ChestRegionFlags.Ice);
-            AddLoot(ModContent.ItemType<Slitherring>(), 1, ChestRegionFlags.Jungle);
-            AddLoot(ModContent.ItemType<SojournersScarf>(), 1, ChestRegionFlags.Underground | ChestRegionFlags.Surface | ChestRegionFlags.Granite | ChestRegionFlags.Marble);
+            AddLoot(ModContent.ItemType<BarbedKnife>(), ChestRegionFlags.Surface, 0.175f);
+            AddLoot(ModContent.ItemType<Cheapskates>(), ChestRegionFlags.Ice);
+            AddLoot(ModContent.ItemType<Slitherring>(), ChestRegionFlags.Jungle, 0.20f);
+            AddLoot(ModContent.ItemType<SojournersScarf>(), ChestRegionFlags.Underground | ChestRegionFlags.Surface | ChestRegionFlags.Granite | ChestRegionFlags.Marble, 0.1f);
 
 
-            AddLoot(ItemID.Abeemination, (2, 3), ChestRegionFlags.Sky, 0.75f);
-            AddLoot(ItemID.AlphabetStatueE, (50, 100), ChestRegionFlags.All, 1f, 20);
+            AddLoot(ItemID.NecromanticScroll, ChestRegionFlags.Livingwood, 0.75f, (2, 3), false);
+            AddLoot(ItemID.AlphabetStatueE, ChestRegionFlags.All, 1f, (50, 100), false, 20);
+
+            AddLoot(ItemID.Abeemination, ChestRegionFlags.All, 0.75f, (2, 3), false);
+            AddLoot(ItemID.DeepTealPaint, ChestRegionFlags.All, 1f, (2, 67), false);
+            AddLoot(ItemID.CyanPaint, ChestRegionFlags.All, 1f, (2, 67), false);
+            AddLoot(ItemID.NegativePaint, ChestRegionFlags.All, 1f, (2, 67), false);
         }
 
-        private static void AddLoot(int item, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1)
+        private static void AddLoot(int item, ChestRegionFlags chestRegions, float chance, (int, int) stackRange, bool exclusive = true, int slotIndex = -1)
         {
             foreach(ChestRegionFlags flag in chestRegions.GetFlags())
-                RegionLootInfo[flag].Add(new ChestLootInfo(item, stackRange, chance, chestRegions, slotIndex));
+                (exclusive ? RegionExclusiveLootInfo[flag] : RegionLootInfo[flag]).Add(
+                    new ChestLootInfo(item, stackRange, chestRegions, chance, slotIndex));
         }
         /// <summary>
-        /// legacy overload, tries to replace main chest loot
+        /// legacy overload, uses slot 0 to replace main chest loot
         /// </summary>
-        private static void AddLoot(int item, int stack, ChestRegionFlags chestRegions, float chance = 0.125f, int slotIndex = 0)
+        private static void AddLoot(int item, ChestRegionFlags chestRegions, float chance = 0.125f, int stack = 1, bool exclusive = true, int slotIndex = 0)
         {
             foreach (ChestRegionFlags flag in chestRegions.GetFlags())
-                RegionLootInfo[flag].Add(new ChestLootInfo(item, (stack, stack), chance, chestRegions, slotIndex));
+                (exclusive ? RegionExclusiveLootInfo[flag] : RegionLootInfo[flag]).Add(
+                    new ChestLootInfo(item, (stack, stack), chestRegions, chance, slotIndex));
         }
 
         public static void Unload()
         {
             RegionLootInfo = null;
-            FramingToRegions = null;
+            FramingToRegion = null;
         }
 
         public static void PopulateAllChests()
@@ -94,42 +117,47 @@ namespace StarlightRiver.Content.WorldGeneration
                 // Within this block this chest is valid to put an Item in.
                 if (chest != null && Framing.GetTileSafely(chest.x, chest.y) is Tile tile && tile.HasTile)
                 {
-                    // Selects a random Item to be placed in a chest
-                    ChestLootInfo itemInfo = WorldGen.genRand.Next(
-                        RegionLootInfo[
-                            FramingToRegions[tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0)]]);
+                    // This adds 2000 to the frame offset if the chest uses the alterative sheet
+                    if (!FramingToRegion.TryGetValue(tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0), out ChestRegionFlags region))
+                        continue;
 
+                    // Item type check is to prevent dungeon wooden chests being treated as surface ones.
+                    if (chest.item[0].type != ItemID.GoldenKey)
+                    {
+                        // Gets all valid items for this chest type plus the all chest type
+                        List<ChestLootInfo> itemInfoList = new(RegionExclusiveLootInfo[region]);
+                        itemInfoList.AddRange(RegionExclusiveLootInfo[ChestRegionFlags.All]);
 
+                        if (itemInfoList.Count > 0)
+                        {
+                            // Selects a random exclusive item to be placed in the chest
+                            ChestLootInfo exclusiveitemInfo = WorldGen.genRand.Next(itemInfoList);
+
+                            if (WorldGen.genRand.NextFloat() < exclusiveitemInfo.chance)
+                                AddChestItems(exclusiveitemInfo, chest);
+                        }
+                    }
+
+                    // If this is a wooden dungeon chest is not checked for non-exclusive items
+                    {
+                        // Gets all valid items for this chest type plus the all chest type and then shuffles it.
+                        List<ChestLootInfo> itemInfoList = new(RegionLootInfo[region]);
+                        itemInfoList.AddRange(RegionLootInfo[ChestRegionFlags.All]);
+                        itemInfoList = itemInfoList.OrderBy(x => WorldGen.genRand.Next()).ToList();
+
+                        if(itemInfoList.Count > 0)
+                            foreach (ChestLootInfo itemInfo in itemInfoList)
+                                if (WorldGen.genRand.NextFloat() < itemInfo.chance)
+                                    AddChestItems(itemInfo, chest);
+                    }
 
                     //if (WorldGen.genRand.NextFloat() < displayCaseChance && IsDisplayCaseReplaceable(tile.TileFrameX))
                     //{
                     //    PlaceDisplayCaseOn(chest);
-
+                    //
                     //    // Continues because we don't want the code after this to touch a chest that is no longer accessible.
                     //    continue;
                     //}
-
-
-                    // Type check is to prevent dungeon wooden chests being treated as surface ones.
-                    if (WorldGen.genRand.NextFloat() < itemInfo.chance && chest.item[0].type != ItemID.GoldenKey && TileMatchesRegionFlags(itemInfo.chestRegions, tile))
-                    {
-                        int stack = WorldGen.genRand.Next(itemInfo.stackRange.Item1, itemInfo.stackRange.Item2 + 1);
-                        int slot = itemInfo.slotIndex;
-
-                        //finds first open slot
-                        if(slot == -1)
-                            for (int g = 0; g < chest.item.Length; g++)
-                                if (chest.item[g].IsAir) {
-                                    slot = g;
-                                    break;
-                                }
-
-                        //slot is checked again in case no open slot was found, and stack is checked in case the minimum was zero
-                        if(slot != -1 && stack > 0)
-                        {
-                            chest.item[slot] = SetupItem(itemInfo.itemType, stack, false);//isRelic option is unused
-                        }
-                    }
                 }
             }
         }
@@ -143,54 +171,76 @@ namespace StarlightRiver.Content.WorldGeneration
 
             return Item;
         }
+        private static void AddChestItems(ChestLootInfo info, Chest chest)
+        {
+            int stack = WorldGen.genRand.Next(info.stackRange.Item1, info.stackRange.Item2 + 1);
+            int slot = info.slotIndex;
 
-        //private static bool TileMatchesRegionFlags(ChestRegionFlags flags, Tile tile)
+            // Finds first open slot
+            if (slot == -1)
+                for (int g = 0; g < chest.item.Length; g++)
+                    if (chest.item[g].IsAir)
+                    {
+                        slot = g;
+                        break;
+                    }
+
+            // Slot is checked in case no open slot was found, Stack is checked in case the minimum was zero
+            if (slot != -1 && stack > 0)
+                chest.item[slot] = SetupItem(info.itemType, stack, false);//isRelic option is unused
+        }
+        //private static void PlaceDisplayCaseOn(Chest chest)
         //{
-        //    if (flags.HasFlag(ChestRegionFlags.All))
+        //    int type = ItemID.None;
+
+        //    for (int i = 0; i < chest.item.Length; i++)
         //    {
-        //        return true;
-        //    }
+        //        Item Item = chest.item[i];
 
-        //    ChestRegionFlags[] values = (ChestRegionFlags[])Enum.GetValues(typeof(ChestRegionFlags));
-
-        //    foreach (ChestRegionFlags flag in values)
-        //    {
-        //        if (flag == ChestRegionFlags.All)
+        //        // Checks if the "main" chest Item is replaceable (weapon or accessory, and not stackable).
+        //        if (Item.accessory || (Item.damage > 0 && Item.notAmmo && Item.maxStack == 1))
         //        {
-        //            continue;
-        //        }
+        //            type = chest.item[i].type;
 
-        //        if (flags.HasFlag(flag))
-        //        {
-        //            int[] frames = RegionsToFraming[flag];
-
-        //            foreach (int frame in frames)
-        //            {
-        //                if (tile.TileFrameX == frame)
-        //                {
-        //                    return true;
-        //                }
-        //            }
+        //            break;
         //        }
         //    }
 
-        //    return false;
+        //    if (type != ItemID.None)
+        //    {
+        //        Item Item = SetupItem(type, 1, true);
+
+        //        Helper.PlaceMultitile(new Point16(chest.x, chest.y - 1), ModContent.TileType<DisplayCase>());
+        //        TileEntity.PlaceEntityNet(chest.x, chest.y - 1, ModContent.TileEntityType<DisplayCaseEntity>());
+        //        (TileEntity.ByPosition[new Point16(chest.x, chest.y - 1)] as DisplayCaseEntity).containedItem = Item;
+        //    }
         //}
+
+        //private static bool IsDisplayCaseReplaceable(short frameX)
+        //    => frameX == 36 || // Gold. 
+        //    frameX == 72 || // Locked Gold.
+        //    frameX == 144 || // Locked Evil.
+        //    frameX == 288 || // Mahogany.
+        //    frameX == 360 || // Ivy.
+        //    frameX == 396 || // Ice.
+        //    frameX == 468; // Sky.
     }
 
     public class ChestLootInfo
     {
         public readonly int itemType;//this may need to be a func<int> instead
         public readonly (int, int) stackRange;
-        public readonly float chance;
         public readonly ChestRegionFlags chestRegions;
+        //public readonly bool exclusive;
+        public readonly float chance;
         public readonly int slotIndex;
-        public ChestLootInfo(int itemType, (int, int) stackRange, float chance, ChestRegionFlags chestRegions, int slotIndex = -1) 
+        public ChestLootInfo(int itemType, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1) 
         { 
             this.itemType = itemType;
             this.stackRange = stackRange;
-            this.chance = chance;
             this.chestRegions = chestRegions;
+            //this.exclusive = exclusive;
+            this.chance = chance;
             this.slotIndex = slotIndex;
         }
     }

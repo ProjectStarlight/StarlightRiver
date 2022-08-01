@@ -22,5 +22,9 @@ namespace StarlightRiver.Content.WorldGeneration
         Jungle = 0b100000000000000,
         JungleShrine = 0b1000000000000000,
         Temple = 0b10000000000000000,
+        Mushroom = 0b100000000000000000,
+        TrappedUnderground = 0b1000000000000000000,
+        Barrel = 0b10000000000000000000,
+        Trashcan = 0b100000000000000000000,
     }
 }
