@@ -169,8 +169,6 @@ namespace StarlightRiver
 
             NetEasy.NetEasy.Register(this);
 
-            AutoloadChestItems();
-
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))

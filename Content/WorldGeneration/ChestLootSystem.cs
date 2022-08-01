@@ -20,6 +20,7 @@ namespace StarlightRiver.Content.WorldGeneration
         private static Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionLootInfo;
         private static Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionExclusiveLootInfo;
         private static Dictionary<int, ChestRegionFlags> FramingToRegion;
+        //private const float displayCaseChance = 0.125f;
 
         public static void Initialize()
         {
