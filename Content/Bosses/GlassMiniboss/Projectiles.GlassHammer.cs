@@ -230,12 +230,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                 Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundGlassRaise", 0.5f, 0.3f, Projectile.Center);
                 //shotgun projectiles up?
 
-                for (int i = 0; i < 70; i++)
+                for (int i = 0; i < 70 * Projectile.scale; i++)
                 {
                     Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(40, 2) - Vector2.UnitY * 2;
                     Vector2 dustVel = new Vector2(0, -Main.rand.Next(15)).RotatedBy(dustPos.AngleFrom(Projectile.Bottom) + MathHelper.PiOver2).RotatedBy(Projectile.rotation);
                     dustVel.X *= (float)Projectile.width / Projectile.height;
-                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel, 0, Glassweaver.GlowDustOrange, 1.2f);
+                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel * Projectile.scale, 0, Glassweaver.GlowDustOrange, 1.2f);
                 }
             }
 
@@ -250,11 +250,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             //    }
             //}
 
-            if (Timer > raise + 135 && Timer < raise + 190)
+            if (Timer > raise + 135 && Timer < raise + 190 && Main.rand.NextFloat() < Projectile.scale)
             {
                 float up = Utils.GetLerpValue(raise + 195, raise + 130, Timer, true);
                 int dustPos = (int)((1f - up) * maxSpikes);
-                Dust.NewDustPerfect(points[dustPos] + Main.rand.NextVector2Circular(50 * up, 40 * up), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.5f) * 5f);
+                Dust.NewDustPerfect(points[dustPos] + Main.rand.NextVector2Circular(50 * up, 40 * up), DustType<Dusts.GlassGravity>(), -Vector2.UnitY.RotatedByRandom(0.5f) * 5f * Projectile.scale);
             }
 
             if (Timer > raise + 60 && Timer < raise + 170)
