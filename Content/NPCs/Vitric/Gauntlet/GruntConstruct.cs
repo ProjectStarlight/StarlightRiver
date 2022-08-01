@@ -464,6 +464,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                         NPC.velocity.X += NPC.spriteDirection * 0.5f;
                         NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+
+                        if (NPC.collideX && NPC.velocity.Y == 0)
+                            NPC.velocity.Y = -8;
                     }
                     else //Idle in front of partner
                     {
