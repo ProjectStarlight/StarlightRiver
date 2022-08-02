@@ -60,13 +60,13 @@ namespace StarlightRiver.Content.Items.Beach
 	}
 
 	class SeaglassRingFishingPlayer : ModPlayer
-    {
-        public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition)
-        {
-            if (attempt.rare && Main.rand.NextBool(15) && Player.ZoneBeach)
-            {
+	{
+		public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition)
+		{
+			if (attempt.rare && Main.rand.NextBool(15) && Player.ZoneBeach)
+			{ 
 				itemDrop = ModContent.ItemType<SeaglassRing>();
-            }
-        }
-    }
+			}
+		}
+	}
 }
