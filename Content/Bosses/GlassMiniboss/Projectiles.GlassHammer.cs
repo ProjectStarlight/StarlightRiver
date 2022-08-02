@@ -235,7 +235,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     Vector2 dustPos = Projectile.Bottom + Main.rand.NextVector2Circular(40, 2) - Vector2.UnitY * 2;
                     Vector2 dustVel = new Vector2(0, -Main.rand.Next(15)).RotatedBy(dustPos.AngleFrom(Projectile.Bottom) + MathHelper.PiOver2).RotatedBy(Projectile.rotation);
                     dustVel.X *= (float)Projectile.width / Projectile.height;
-                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel * Projectile.scale, 0, Glassweaver.GlowDustOrange, 1.2f);
+                    Dust.NewDustPerfect(dustPos + Vector2.UnitY * 5, DustType<Dusts.Cinder>(), dustVel * Projectile.scale, 0, Glassweaver.GlowDustOrange, 1.2f * Projectile.scale);
                 }
             }
 

@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private bool FlyingComboLogic() //returns true if it's doing the combo with the flyer
         {
-            if (!ableToDoCombo)
+            if (!ableToDoCombo || doingShielderCombo)
                 return false;
 
             flyingComboCooldown--;
@@ -408,8 +408,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     else
                     {
                         aiCounter = 100;
-                        NPC.velocity.X += NPC.spriteDirection * 0.1f;
+                        NPC.velocity.X += NPC.spriteDirection * 0.15f;
                         NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
+                        Main.NewText(NPC.velocity.X.ToString());
                     }
 
                     return true;
