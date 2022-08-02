@@ -12,6 +12,8 @@ using Terraria.ModLoader;
 using Terraria.Audio;
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -20,16 +22,25 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
+        private const int XFRAMES = 2;
+        private readonly int NUMSTACKS = 3; //How many shielders can stack
+
         public int bounceCooldown = 0;
         private int timer = 0;
 
         private Vector2 shieldOffset;
 
-        private int XFRAMES = 2;
         private int xFrame = 0;
         private int yFrame = 0;
         private int frameCounter = 0;
 
+        public bool stacked = false;
+        public bool jumpingUp = false;
+        public NPC stackPartnerBelow = default;
+        public NPC stackPartnerAbove = default;
+        public int stacksLeft = 5;
+        public int stackCooldown = 0;
+        public Vector2 stackOffset = Vector2.Zero; //The offset of the stacker when they first land
         private Player target => Main.player[NPC.target];
 
         public bool guarding => timer > 260;
@@ -60,6 +71,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (bounceCooldown > 0)
                 bounceCooldown--;
+
+            if (StackingComboLogic())
+                return false;
 
             if (timer < 300 || timer >= 400)
                 timer++;
@@ -190,7 +204,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
         {
-            if (guarding)
+            if (guarding || stacked)
                 return base.CanHitPlayer(target, ref cooldownSlot);
 
             return false;
@@ -198,13 +212,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
         {
-            if (guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
+            if (guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection || stacked)
                 knockback = 0f;
 
             if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
-                if (guarding)
+                if (guarding || stacked)
                     damage = 1;
                 else
                     damage = (int)(damage * 0.4f);
@@ -246,6 +260,103 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
+        }
+
+        private bool StackingComboLogic() //return true if stacked
+        {
+            if (!ableToDoCombo)
+                return false;
+
+            if (!stacked)
+            {
+                stacksLeft = NUMSTACKS - 1;
+                stackCooldown--;
+            }
+
+            if (stackPartnerAbove == null || stackPartnerAbove == default || !stackPartnerAbove.active || (stackPartnerAbove.ModNPC as ShieldConstruct).stackPartnerBelow != NPC)
+                stackPartnerAbove = default;
+
+            if (stackCooldown > 0)
+                return false;
+
+            if (!stacked && !jumpingUp && stackPartnerAbove == default)
+            {
+                NPC potentialPartner = Main.npc.Where(x =>
+                x.active &&
+                x.type == NPC.type &&
+                x != NPC &&
+                Math.Abs(NPC.Center.X - x.Center.X) < 150 &&
+                !(x.ModNPC as ShieldConstruct).jumpingUp &&
+                (x.ModNPC as ShieldConstruct).stackPartnerAbove == default && 
+                ((!(x.ModNPC as ShieldConstruct).stacked && (x.ModNPC as ShieldConstruct).guarding) || (x.ModNPC as ShieldConstruct).stacksLeft > 0)
+                ).OrderBy(x => Math.Abs(NPC.Center.X - x.Center.X)).FirstOrDefault();
+
+                if (potentialPartner != default)
+                {
+                    stackPartnerBelow = potentialPartner;
+                    jumpingUp = true;
+                }
+                else
+                    return false;
+            }
+
+            if (stackPartnerBelow == null || stackPartnerBelow == default || !stackPartnerBelow.active)
+            {
+                stackPartnerBelow = default;
+                jumpingUp = false;
+                stacked = false;
+                stackCooldown = 300;
+                return false;
+            }
+
+            ShieldConstruct partnerModNPC = stackPartnerBelow.ModNPC as ShieldConstruct;
+
+            if (!partnerModNPC.stacked && !partnerModNPC.guarding)
+            {
+                stackPartnerBelow = default;
+                jumpingUp = false;
+                stacked = false;
+                stackCooldown = 300;
+                return false;
+            }
+
+            partnerModNPC.stackPartnerAbove = NPC;
+
+            NPC.spriteDirection = stackPartnerBelow.spriteDirection;
+            stacksLeft = partnerModNPC.stacksLeft - 1;
+            timer = 0;
+            shieldOffset = Vector2.Zero;
+            xFrame = 1;
+            yFrame = 0;
+
+
+            if (jumpingUp)
+            {
+                int directionToPartner = Math.Sign(stackPartnerBelow.Center.X - NPC.Center.X);
+                if (NPC.velocity.Y == 0)
+                {
+                    NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.2f, 120, 850);
+                }
+
+                if (NPC.velocity.Y > 0 && Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, stackPartnerBelow.position, stackPartnerBelow.Size))
+                {
+                    NPC.velocity = Vector2.Zero;
+                    stackOffset = NPC.Center - (stackPartnerBelow.Center); 
+                    jumpingUp = false;
+                    stacked = true;
+                }
+                return true;
+            }
+            if (stacked)
+            {
+                NPC.velocity = Vector2.Zero;
+                stackOffset = Vector2.Lerp(stackOffset, new Vector2(0, -48), 0.1f);
+                NPC.Center = stackOffset + stackPartnerBelow.Center;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

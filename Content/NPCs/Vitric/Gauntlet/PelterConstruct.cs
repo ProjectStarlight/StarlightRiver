@@ -318,6 +318,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
            x.active &&
            x.type == ModContent.NPCType<ShieldConstruct>() &&
            (x.ModNPC as ShieldConstruct).guarding &&
+           !(x.ModNPC as ShieldConstruct).stacked &&
+           !(x.ModNPC as ShieldConstruct).jumpingUp &&
            (x.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
            x.spriteDirection == NPC.spriteDirection &&
            NPC.Distance(x.Center) > 50 &&

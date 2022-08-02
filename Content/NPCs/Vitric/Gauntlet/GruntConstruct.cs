@@ -542,6 +542,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return potentialPartner.active &&
             potentialPartner.type == ModContent.NPCType<ShieldConstruct>() &&
             (potentialPartner.ModNPC as ShieldConstruct).guarding &&
+            !(potentialPartner.ModNPC as ShieldConstruct).jumpingUp &&
+            !(potentialPartner.ModNPC as ShieldConstruct).stacked &&
             (potentialPartner.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
             potentialPartner.spriteDirection == NPC.spriteDirection &&
             NPC.Distance(potentialPartner.Center) > 50 &&
