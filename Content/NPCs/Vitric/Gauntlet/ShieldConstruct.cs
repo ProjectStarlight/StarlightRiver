@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
         private const int XFRAMES = 2;
-        private readonly int NUMSTACKS = 3; //How many shielders can stack
+        private const int MAXSTACK = 4; //How many shielders can stack
 
         public int bounceCooldown = 0;
         private int timer = 0;
@@ -269,7 +269,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (!stacked)
             {
-                stacksLeft = NUMSTACKS - 1;
+                stacksLeft = MAXSTACK - 1;
                 stackCooldown--;
             }
 
@@ -333,6 +333,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (jumpingUp)
             {
                 int directionToPartner = Math.Sign(stackPartnerBelow.Center.X - NPC.Center.X);
+
                 if (NPC.velocity.Y == 0)
                 {
                     NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.2f, 120, 850);
@@ -345,14 +346,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     jumpingUp = false;
                     stacked = true;
                 }
+
                 return true;
             }
+
             if (stacked)
             {
                 NPC.velocity = Vector2.Zero;
                 stackOffset = Vector2.Lerp(stackOffset, new Vector2(0, -48), 0.1f);
                 NPC.Center = stackOffset + stackPartnerBelow.Center;
-
                 return true;
             }
 
