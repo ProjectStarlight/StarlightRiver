@@ -289,7 +289,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 !(x.ModNPC as ShieldConstruct).jumpingUp &&
                 (x.ModNPC as ShieldConstruct).stackPartnerAbove == default && 
                 ((!(x.ModNPC as ShieldConstruct).stacked && (x.ModNPC as ShieldConstruct).guarding) || (x.ModNPC as ShieldConstruct).stacksLeft > 0)
-                ).OrderBy(x => Math.Abs(NPC.Center.X - x.Center.X)).FirstOrDefault();
+                ).OrderBy(x => Math.Abs(NPC.Center.X - x.Center.X) + ((x.ModNPC as ShieldConstruct).stacksLeft * 50)).FirstOrDefault();
 
                 if (potentialPartner != default)
                 {
@@ -353,12 +353,37 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (stacked)
             {
                 NPC.velocity = Vector2.Zero;
-                stackOffset = Vector2.Lerp(stackOffset, new Vector2(0, -48), 0.1f);
+
+                int partnersAboveOffset = 3 * GetPartnersAbove();
+                shieldOffset = new Vector2(0, -partnersAboveOffset);
+                stackOffset = Vector2.Lerp(stackOffset, new Vector2(0, -48 + partnersAboveOffset), 0.1f);
                 NPC.Center = stackOffset + stackPartnerBelow.Center;
                 return true;
             }
 
             return false;
+        }
+
+        private int GetPartnersAbove()
+        {
+            if (stackPartnerAbove == default)
+                return 0;
+
+            int ret = 1;
+            NPC highestPartner = stackPartnerAbove;
+            NPC highestPartnerNext = (highestPartner.ModNPC as ShieldConstruct).stackPartnerAbove;
+
+            while (highestPartnerNext != null && highestPartnerNext != default && highestPartnerNext.active && (highestPartnerNext.ModNPC as ShieldConstruct).stacked)
+            {
+                ret++;
+                highestPartner = (highestPartner.ModNPC as ShieldConstruct).stackPartnerAbove;
+
+                if (ret > MAXSTACK)
+                    return ret;
+
+                highestPartnerNext = (highestPartner.ModNPC as ShieldConstruct).stackPartnerAbove;
+            }
+            return ret;
         }
     }
 }
