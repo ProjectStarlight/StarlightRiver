@@ -30,13 +30,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         swinging = 2,
     }
 
-    internal class FlyingGruntConstruct : ModNPC, IHealableByHealerConstruct
+    internal class FlyingGruntConstruct : VitricConstructNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
 
         private const int XFRAMES = 5;
-
-        public bool ableToDoCombo = true;
 
         public int xFrame = 0;
         public int yFrame = 0;
@@ -445,7 +443,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             return false;
         }
 
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }

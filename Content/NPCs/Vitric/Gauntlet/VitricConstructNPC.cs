@@ -17,8 +17,14 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    public interface IHealableByHealerConstruct
+    public abstract class VitricConstructNPC : ModNPC
     {
-        public void DrawHealingGlow(SpriteBatch spriteBatch);
+        public bool ableToDoCombo = true;
+
+        public virtual string previewTexturePath => Texture + "_Preview";
+
+        public virtual string previewTextureGlowmaskPath => Texture + "_Preview_Glow";
+
+        public virtual void DrawHealingGlow(SpriteBatch spriteBatch) { }
     }
 }

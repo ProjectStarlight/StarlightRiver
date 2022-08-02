@@ -23,15 +23,13 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class GruntConstruct : ModNPC, IHealableByHealerConstruct 
+    internal class GruntConstruct : VitricConstructNPC 
     {
         public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
 
         private Player target => Main.player[NPC.target];
 
         private const int XFRAMES = 4; //TODO: Swap to using NPC.Frame
-
-        public bool ableToDoCombo = true;
 
         private int xFrame = 0;
         private int yFrame = 0;
@@ -551,7 +549,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Math.Sign(potentialPartner.Center.X - NPC.Center.X) == NPC.spriteDirection;
         }
 
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }

@@ -18,13 +18,12 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class SupporterConstruct : ModNPC 
+    internal class SupporterConstruct : VitricConstructNPC 
     {
         public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
 
         private const int DIRECTIONTTHRESHHOLD = 15;
 
-        public bool ableToDoCombo = true;
 
         private int direction = 0;
         private int directionCounter = 0;
@@ -177,7 +176,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 !n.friendly && 
                 n.Distance(NPC.Center) < 800 && 
                 n.type != NPC.type && 
-                n.ModNPC is IHealableByHealerConstruct && !alreadyHealed.Contains(n))
+                n.ModNPC is VitricConstructNPC && !alreadyHealed.Contains(n))
                 .OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
 
                 if (healingTarget != default && healingTarget != null)
@@ -377,7 +376,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         }
 
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }

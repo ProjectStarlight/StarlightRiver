@@ -24,7 +24,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class JuggernautConstruct : ModNPC, IHealableByHealerConstruct 
+    internal class JuggernautConstruct : VitricConstructNPC 
     {
         public override string Texture => AssetDirectory.GauntletNpc + "JuggernautConstruct";
 
@@ -33,8 +33,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private const int XFRAMES = 3; //TODO: Swap to using NPC.Frame
         private readonly float ACCELERATION = 0.2f;
         private readonly float MAXSPEED = 2;
-
-        public bool ableToDoCombo = true;
 
         private bool doingLaunchCombo = false;
         private NPC launchTarget = default;
@@ -326,7 +324,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             raise.position.X += (1 - raise.scale) * (raise.width / 2); //readjusting width to match scale
             raise.width = (int)(raise.width * raise.scale);
         }
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }

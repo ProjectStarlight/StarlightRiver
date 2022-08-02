@@ -16,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class ShieldConstruct : ModNPC, IHealableByHealerConstruct
+    internal class ShieldConstruct : VitricConstructNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         }
 
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }

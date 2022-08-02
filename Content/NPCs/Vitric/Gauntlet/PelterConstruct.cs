@@ -23,11 +23,9 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-    internal class PelterConstruct : ModNPC, IHealableByHealerConstruct
+    internal class PelterConstruct : VitricConstructNPC
     {
         public override string Texture => AssetDirectory.GauntletNpc + "PelterConstruct";
-
-        public bool ableToDoCombo = true;
 
         private const int BOWFRAMES = 4;
         private const int XFRAMES = 3;
@@ -410,7 +408,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         aiCounter = 100;
                         NPC.velocity.X += NPC.spriteDirection * 0.15f;
                         NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -5, 5);
-                        Main.NewText(NPC.velocity.X.ToString());
+                        //Main.NewText(NPC.velocity.X.ToString());
                     }
 
                     return true;
@@ -533,7 +531,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 headRotation = Helper.RotationDifference(bowRotation, 3.14f) / 2;
         }
 
-        public void DrawHealingGlow(SpriteBatch spriteBatch)
+        public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
         }
