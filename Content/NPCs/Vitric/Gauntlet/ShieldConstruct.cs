@@ -230,13 +230,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
+            if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection || stacked)
                 knockback = 0f;
 
             if (Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
-                if (guarding)
+                if (guarding || stacked)
                     damage = 1;
                 else
                     damage = (int)(damage * 0.4f);
