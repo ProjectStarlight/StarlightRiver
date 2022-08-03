@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int bowFrameCounter = 0;
 
         private int bodyFrame;
+        private int frameCounter;
 
         float bowRotation = 0;
         float bowArmRotation = 0;
@@ -69,10 +70,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
-        private Vector2 bowArmPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
-        private Vector2 backArmPos => NPC.Center + new Vector2(1 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+        private Vector2 bowArmPos => NPC.Center + new Vector2(16 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+        private Vector2 backArmPos => NPC.Center + new Vector2(5 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
 
-        private Vector2 headPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
+        private Vector2 headPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
 
         private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
 
@@ -81,7 +82,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flying Pelter Construct");
-            Main.npcFrameCount[NPC.type] = 1;
+            Main.npcFrameCount[NPC.type] = 5;
         }
 
         public override void SetDefaults()
@@ -139,6 +140,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             bobCounter += 0.02f;
             NPC.TargetClosest(true);
+
+            frameCounter++;
+
+            if (frameCounter > 4)
+            {
+                frameCounter = 0;
+
+                bodyFrame++;
+                bodyFrame %= Main.npcFrameCount[NPC.type];
+            }
 
             Vector2 direction = bowArmPos.DirectionTo(target.Center);
 
@@ -226,7 +237,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void FindFrame(int frameHeight)
         {
-            int frameWidth = 42;
+            int frameWidth = 46;
             NPC.frame = new Rectangle(frameWidth * XFrame, bodyFrame * frameHeight, frameWidth, frameHeight);
         }
 
