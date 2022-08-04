@@ -327,11 +327,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             timer = 0;
             shieldOffset = Vector2.Zero;
             xFrame = 1;
-            yFrame = 0;
 
 
             if (jumpingUp)
             {
+                yFrame = 1;
                 int directionToPartner = Math.Sign(stackPartnerBelow.Center.X - NPC.Center.X);
 
                 if (NPC.velocity.Y == 0)
@@ -352,6 +352,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (stacked)
             {
+                yFrame = 0;
                 NPC.velocity = Vector2.Zero;
 
                 int partnersAboveOffset = 3 * GetPartnersAbove();
