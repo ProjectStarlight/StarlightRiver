@@ -46,6 +46,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private float acceleration = 0.2f;
         private float timerTickSpeed = 1;
 
+        private int savedDirection = 1;
+
         private Player target => Main.player[NPC.target];
 
         public bool guarding => timer > 260;
@@ -99,6 +101,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 Vector2 up = new Vector2(0, -12);
                 Vector2 down = new Vector2(0, 14);
+
+                NPC.spriteDirection = savedDirection;
 
                 if (timer < 400)
                 {
@@ -166,7 +170,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             shieldOffset = Vector2.Zero;
-            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+            savedDirection = NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
+
 
             RegularMovement();
         }
@@ -379,6 +384,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (stacked)
             {
+                NPC.spriteDirection = savedDirection;
                 yFrame = 0;
                 NPC.velocity = Vector2.Zero;
 
