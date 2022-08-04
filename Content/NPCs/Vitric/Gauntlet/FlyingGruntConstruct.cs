@@ -141,6 +141,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.velocity.X *= 1.05f;
         }
 
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            position.X -= 16 * NPC.spriteDirection;
+            position.Y += 10;
+            return true;
+        }
+
         public override void FindFrame(int frameHeight)
         {
             int frameWidth = 69;

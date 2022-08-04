@@ -202,7 +202,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bowFrameCounter = 0;
             }
             NPC.velocity += knockbackVel;
-        }//TODO: Cleanup
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            position.X += 8 * NPC.spriteDirection;
+            position.Y -= 5;
+            return true;
+        }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
