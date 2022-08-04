@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     doingCombo = true;
                 }
 
-                if (healCounter % 10 == 0 && healingTarget.Distance(NPC.Center) < 300)
+                /*if (healCounter % 10 == 0 && healingTarget.Distance(NPC.Center) < 300)
                 {
                     if (healingTarget.life < healingTarget.lifeMax - 5)
                     {
@@ -266,7 +266,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         healingTarget.HealEffect(healingTarget.lifeMax - healingTarget.life);
                         healingTarget.life = healingTarget.lifeMax;
                     }
-                }
+                }*/
 
                 Vector2 posToBe = healingTarget.Center;
 

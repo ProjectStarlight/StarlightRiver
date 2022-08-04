@@ -95,6 +95,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (xFrame == 1 && yFrame == 7 && frameCounter == 1) //Dust when the enemy swings it's sword
+            {
+                for (int i = 0; i < 15; i++)
+                {
+                    Vector2 dustPos = NPC.Center + new Vector2(NPC.spriteDirection * 10, 0) + Main.rand.NextVector2Circular(20, 20);
+                    Dust.NewDustPerfect(dustPos, DustType<Cinder>(), Vector2.Normalize(NPC.velocity).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f, 1f) * 12f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+                }
+            }
+
             attackCooldown--;
             bobCounter += 0.02f;
 

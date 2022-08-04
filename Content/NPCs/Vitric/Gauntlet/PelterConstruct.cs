@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (doingFlyingCombo)
             {
-                //flyingComboCooldown = 400;
+                flyingComboCooldown = 400;
 
                 if (flyingPartner == null || flyingPartner == default || !flyingPartner.active)
                 {

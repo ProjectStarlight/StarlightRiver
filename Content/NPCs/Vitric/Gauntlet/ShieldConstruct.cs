@@ -222,7 +222,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
                 if (guarding || stacked)
+                {
                     damage = 1;
+                    CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+                }
                 else
                     damage = (int)(damage * 0.4f);
             }
@@ -240,7 +243,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
                 if (guarding || stacked)
+                {
                     damage = 1;
+                    CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+                }
                 else
                     damage = (int)(damage * 0.4f);
             }
