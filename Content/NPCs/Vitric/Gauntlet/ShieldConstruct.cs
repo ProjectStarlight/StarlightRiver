@@ -8,7 +8,7 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
+using Terraria.DataStructures;
 using Terraria.Audio;
 
 using System;
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private const int MAXSTACK = 4; //How many shielders can stack
 
         public int bounceCooldown = 0;
-        private int timer = 0;
+        private float timer = 0;
 
         private Vector2 shieldOffset;
 
@@ -41,6 +41,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public int stacksLeft = 5;
         public int stackCooldown = 0;
         public Vector2 stackOffset = Vector2.Zero; //The offset of the stacker when they first land
+
+        private float maxSpeed = 2;
+        private float acceleration = 0.2f;
+        private float timerTickSpeed = 1;
+
         private Player target => Main.player[NPC.target];
 
         public bool guarding => timer > 260;
@@ -60,12 +65,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.lifeMax = 250;
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
-            NPC.aiStyle = 3;
             NPC.DeathSound = SoundID.Shatter;
             NPC.behindTiles = true;
         }
 
-        public override bool PreAI() //TODO: Document checks with actions and real conditions
+        public override void OnSpawn(IEntitySource source)
+        {
+            maxSpeed = Main.rand.NextFloat(1f, 1.25f);
+            acceleration = Main.rand.NextFloat(0.12f, 0.25f);
+            timerTickSpeed = Main.rand.NextFloat(0.85f, 1f);
+        }
+
+        public override void AI()
         {
             NPC.TargetClosest(false);
 
@@ -73,10 +84,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bounceCooldown--;
 
             if (StackingComboLogic())
-                return false;
+                return;
 
             if (timer < 300 || timer >= 400)
-                timer++;
+                timer += timerTickSpeed;
 
             timer %= 500;
 
@@ -102,7 +113,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
                     }
 
-                    if (timer == 260) //Shield hits the ground
+                    if ((int)timer == 260) //Shield hits the ground
                     {
                         Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
                         Core.Systems.CameraSystem.Shake += 4;
@@ -132,10 +143,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         shieldOffset = up * (1 - shieldAnimationProgress);
                     }
 
-                    if (timer == 421)
+                    if ((int)timer == 421)
                         Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
 
-                    if (timer == 464) //Shield exits the ground
+                    if ((int)timer == 464) //Shield exits the ground
                     {
                         Core.Systems.CameraSystem.Shake += 2;
 
@@ -151,26 +162,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     timer = 400;
 
                 NPC.velocity.X *= 0.9f;
-                return false;
+                return;
             }
-
-            xFrame = 0;
-            frameCounter++;
-
-            if (frameCounter % 3 == 0)
-                yFrame++;
-
-            yFrame %= Main.npcFrameCount[NPC.type] = 8;
 
             shieldOffset = Vector2.Zero;
             NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-            return true;
-        }
 
-        public override void AI()
-        {
-            if (timer < 10 && NPC.velocity.Y < 0)
-                NPC.velocity.Y = 0;
+            RegularMovement();
         }
 
         public override void FindFrame(int frameHeight)
@@ -262,6 +260,34 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         }
 
+        private void RegularMovement() //Movement if it isn't shielding or in a combo
+        {
+            int xPosToBe = (int)target.Center.X;
+
+            int velDir = Math.Sign(xPosToBe - NPC.Center.X);
+
+            NPC.velocity.X += acceleration * velDir;
+            NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+
+            if (NPC.velocity.Y == 0)
+            {
+                if (NPC.collideX)
+                    NPC.velocity.Y = -8;
+                xFrame = 0;
+                frameCounter++;
+
+                if (frameCounter % 3 == 0)
+                    yFrame++;
+
+                yFrame %= Main.npcFrameCount[NPC.type] = 8;
+            }
+            else
+            {
+                xFrame = 1;
+                yFrame = 1;
+            }
+        }
+
         private bool StackingComboLogic() //return true if stacked
         {
             if (!ableToDoCombo)
@@ -334,6 +360,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 yFrame = 1;
                 int directionToPartner = Math.Sign(stackPartnerBelow.Center.X - NPC.Center.X);
 
+                NPC.velocity.X *= 1.05f;
                 if (NPC.velocity.Y == 0)
                 {
                     NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.2f, 120, 850);
