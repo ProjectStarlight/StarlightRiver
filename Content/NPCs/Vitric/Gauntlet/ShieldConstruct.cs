@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -281,6 +282,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Once its spiked shield is dug into the ground, this stalwart protector is immovable.")
+            });
         }
 
         private void RegularMovement() //Movement if it isn't shielding or in a combo

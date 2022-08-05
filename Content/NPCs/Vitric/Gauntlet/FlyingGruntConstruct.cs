@@ -20,6 +20,7 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -468,6 +469,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             int offset = 25 * NPC.direction;
             boundingBox = new Rectangle(boundingBox.X - offset, boundingBox.Y + 15, (int)(boundingBox.Width * 0.8f), (int)(boundingBox.Height * 1.25f));
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] { 
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. An already formidable duelist, made airborne - speed is war.") 
+            });
         }
     }
 }
