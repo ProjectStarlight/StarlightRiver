@@ -94,6 +94,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 WalkingBehavior();
         }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+            return false;
+        }
+
         public override void FindFrame(int frameHeight)
         {
             int frameWidth = 122;

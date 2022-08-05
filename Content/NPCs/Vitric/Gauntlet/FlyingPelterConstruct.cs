@@ -21,6 +21,7 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private int bowFrameCounter = 0;
 
         private int bodyFrame;
+        private int frameCounter;
 
         float bowRotation = 0;
         float bowArmRotation = 0;
@@ -69,10 +71,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private Player target => Main.player[NPC.target];
 
-        private Vector2 bowArmPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
-        private Vector2 backArmPos => NPC.Center + new Vector2(1 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+        private Vector2 bowArmPos => NPC.Center + new Vector2(16 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
+        private Vector2 backArmPos => NPC.Center + new Vector2(5 * NPC.spriteDirection, -4).RotatedBy(NPC.rotation);
 
-        private Vector2 headPos => NPC.Center + new Vector2(8 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
+        private Vector2 headPos => NPC.Center + new Vector2(12 * NPC.spriteDirection, -8).RotatedBy(NPC.rotation);
 
         private Vector2 bowPos => bowArmPos + ((16 + (float)Math.Abs(Math.Sin(bowArmRotation)) * 3) * bowArmRotation.ToRotationVector2()).RotatedBy(NPC.rotation);
 
@@ -81,7 +83,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Flying Pelter Construct");
-            Main.npcFrameCount[NPC.type] = 1;
+            Main.npcFrameCount[NPC.type] = 5;
         }
 
         public override void SetDefaults()
@@ -140,6 +142,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             bobCounter += 0.02f;
             NPC.TargetClosest(true);
 
+            frameCounter++;
+
+            if (frameCounter > 4)
+            {
+                frameCounter = 0;
+
+                bodyFrame++;
+                bodyFrame %= Main.npcFrameCount[NPC.type];
+            }
+
             Vector2 direction = bowArmPos.DirectionTo(target.Center);
 
             if (!empowered)
@@ -191,7 +203,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 bowFrameCounter = 0;
             }
             NPC.velocity += knockbackVel;
-        }//TODO: Cleanup
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            position.X += 8 * NPC.spriteDirection;
+            position.Y -= 5;
+            return true;
+        }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -226,7 +245,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void FindFrame(int frameHeight)
         {
-            int frameWidth = 42;
+            int frameWidth = 46;
             NPC.frame = new Rectangle(frameWidth * XFrame, bodyFrame * frameHeight, frameWidth, frameHeight);
         }
 
@@ -348,6 +367,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         }
 
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Shares its ground variant's fragility, but it's wings grant it unparalleled vantage.")
+            });
+        }
+
         private void ShootArrows()
         {
             int arrowsToShoot = 3;
@@ -449,7 +476,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override bool PreDraw(ref Color lightColor)
         {
             Main.spriteBatch.End();
-            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;

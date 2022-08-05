@@ -8,13 +8,14 @@ using StarlightRiver.Helpers;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-
+using Terraria.DataStructures;
 using Terraria.Audio;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -26,7 +27,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private const int MAXSTACK = 4; //How many shielders can stack
 
         public int bounceCooldown = 0;
-        private int timer = 0;
+        private float timer = 0;
 
         private Vector2 shieldOffset;
 
@@ -41,9 +42,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public int stacksLeft = 5;
         public int stackCooldown = 0;
         public Vector2 stackOffset = Vector2.Zero; //The offset of the stacker when they first land
+
+        private float maxSpeed = 2;
+        private float acceleration = 0.2f;
+        private float timerTickSpeed = 1;
+
+        private int savedDirection = 1;
+
         private Player target => Main.player[NPC.target];
 
         public bool guarding => timer > 260;
+
+        private int ExplosionTimer = 120;
       
         public override void SetStaticDefaults()
         {
@@ -60,23 +70,39 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.lifeMax = 250;
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
-            NPC.aiStyle = 3;
             NPC.DeathSound = SoundID.Shatter;
             NPC.behindTiles = true;
         }
 
-        public override bool PreAI() //TODO: Document checks with actions and real conditions
+        public override void OnSpawn(IEntitySource source)
+        {
+            maxSpeed = Main.rand.NextFloat(1f, 1.25f);
+            acceleration = Main.rand.NextFloat(0.12f, 0.25f);
+            timerTickSpeed = Main.rand.NextFloat(0.85f, 1f);
+        }
+
+        public override void AI()
         {
             NPC.TargetClosest(false);
+
+            if (!AnyOtherConstructs())
+            {
+                ExplosionTimer--;
+
+                if (ExplosionTimer <= 0)
+                    NPC.Kill();
+            }
+            else
+                ExplosionTimer = 120;
 
             if (bounceCooldown > 0)
                 bounceCooldown--;
 
             if (StackingComboLogic())
-                return false;
+                return;
 
             if (timer < 300 || timer >= 400)
-                timer++;
+                timer += timerTickSpeed;
 
             timer %= 500;
 
@@ -88,6 +114,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 Vector2 up = new Vector2(0, -12);
                 Vector2 down = new Vector2(0, 14);
+
+                NPC.spriteDirection = savedDirection;
 
                 if (timer < 400)
                 {
@@ -102,7 +130,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         shieldOffset = Vector2.Lerp(up, down, shieldAnimationProgress);
                     }
 
-                    if (timer == 260) //Shield hits the ground
+                    if ((int)timer == 260) //Shield hits the ground
                     {
                         Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
                         Core.Systems.CameraSystem.Shake += 4;
@@ -132,10 +160,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         shieldOffset = up * (1 - shieldAnimationProgress);
                     }
 
-                    if (timer == 421)
+                    if ((int)timer == 421)
                         Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
 
-                    if (timer == 464) //Shield exits the ground
+                    if ((int)timer == 464) //Shield exits the ground
                     {
                         Core.Systems.CameraSystem.Shake += 2;
 
@@ -151,26 +179,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     timer = 400;
 
                 NPC.velocity.X *= 0.9f;
-                return false;
+                return;
             }
 
-            xFrame = 0;
-            frameCounter++;
-
-            if (frameCounter % 3 == 0)
-                yFrame++;
-
-            yFrame %= Main.npcFrameCount[NPC.type] = 8;
-
             shieldOffset = Vector2.Zero;
-            NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
-            return true;
-        }
+            savedDirection = NPC.spriteDirection = Math.Sign(NPC.Center.DirectionTo(target.Center).X);
 
-        public override void AI()
-        {
-            if (timer < 10 && NPC.velocity.Y < 0)
-                NPC.velocity.Y = 0;
+
+            RegularMovement();
         }
 
         public override void FindFrame(int frameHeight)
@@ -219,7 +235,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = 0.1f }, NPC.Center);
                 if (guarding || stacked)
+                {
                     damage = 1;
+                    CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+                }
                 else
                     damage = (int)(damage * 0.4f);
             }
@@ -230,14 +249,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
+            if (guarding || Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection || stacked)
                 knockback = 0f;
 
             if (Math.Sign(NPC.Center.DirectionTo(target.Center).X) == NPC.spriteDirection)
             {
                 SoundEngine.PlaySound(SoundID.Item27 with { Pitch = -0.6f }, NPC.Center);
-                if (guarding)
+                if (guarding || stacked)
+                {
                     damage = 1;
+                    CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+                }
                 else
                     damage = (int)(damage * 0.4f);
             }
@@ -260,6 +282,42 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Once its spiked shield is dug into the ground, this stalwart protector is immovable.")
+            });
+        }
+
+        private void RegularMovement() //Movement if it isn't shielding or in a combo
+        {
+            int xPosToBe = (int)target.Center.X;
+
+            int velDir = Math.Sign(xPosToBe - NPC.Center.X);
+
+            NPC.velocity.X += acceleration * velDir;
+            NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -maxSpeed, maxSpeed);
+
+            if (NPC.velocity.Y == 0)
+            {
+                if (NPC.collideX)
+                    NPC.velocity.Y = -8;
+                xFrame = 0;
+                frameCounter++;
+
+                if (frameCounter % 3 == 0)
+                    yFrame++;
+
+                yFrame %= Main.npcFrameCount[NPC.type] = 8;
+            }
+            else
+            {
+                xFrame = 1;
+                yFrame = 1;
+            }
         }
 
         private bool StackingComboLogic() //return true if stacked
@@ -327,13 +385,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             timer = 0;
             shieldOffset = Vector2.Zero;
             xFrame = 1;
-            yFrame = 0;
 
 
             if (jumpingUp)
             {
+                yFrame = 1;
                 int directionToPartner = Math.Sign(stackPartnerBelow.Center.X - NPC.Center.X);
 
+                NPC.velocity.X *= 1.05f;
                 if (NPC.velocity.Y == 0)
                 {
                     NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.2f, 120, 850);
@@ -352,6 +411,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (stacked)
             {
+                NPC.spriteDirection = savedDirection;
+                yFrame = 0;
                 NPC.velocity = Vector2.Zero;
 
                 int partnersAboveOffset = 3 * GetPartnersAbove();
@@ -384,6 +445,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 highestPartnerNext = (highestPartner.ModNPC as ShieldConstruct).stackPartnerAbove;
             }
             return ret;
+        }
+
+        private bool AnyOtherConstructs()
+        {
+            NPC otherConstruct = Main.npc.Where(x => 
+            x.active &&
+            x.ModNPC is VitricConstructNPC &&
+            x.type != NPCType<ShieldConstruct>() && 
+            x.Distance(NPC.Center) < 2000f).FirstOrDefault();
+
+            if (otherConstruct == null || otherConstruct == default)
+                return false;
+            else
+                return true;
         }
     }
 }

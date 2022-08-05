@@ -20,6 +20,7 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -257,7 +258,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (doingFlyingCombo)
             {
-                //flyingComboCooldown = 400;
+                flyingComboCooldown = 400;
 
                 if (flyingPartner == null || flyingPartner == default || !flyingPartner.active)
                 {
@@ -538,6 +539,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         }
 
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Relatively fragile, it draws intricate arrows from its own molten body.")
+            });
+        }
+
     }
 
     internal class PelterConstructArrow : ModProjectile
@@ -570,7 +579,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override bool PreDraw(ref Color lightColor)
         {
             Main.spriteBatch.End();
-            Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["CeirosRing"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;

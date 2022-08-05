@@ -20,6 +20,7 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -95,6 +96,15 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void AI()
         {
+            if (xFrame == 1 && yFrame == 7 && frameCounter == 1) //Dust when the enemy swings it's sword
+            {
+                for (int i = 0; i < 15; i++)
+                {
+                    Vector2 dustPos = NPC.Center + new Vector2(NPC.spriteDirection * 10, 0) + Main.rand.NextVector2Circular(20, 20);
+                    Dust.NewDustPerfect(dustPos, DustType<Cinder>(), Vector2.Normalize(NPC.velocity).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f, 1f) * 12f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+                }
+            }
+
             attackCooldown--;
             bobCounter += 0.02f;
 
@@ -130,6 +140,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 AttackBehavior();
 
             NPC.velocity.X *= 1.05f;
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            position.X -= 16 * NPC.spriteDirection;
+            position.Y += 10;
+            return true;
         }
 
         public override void FindFrame(int frameHeight)
@@ -446,6 +463,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
+        {
+            int offset = 25 * NPC.direction;
+            boundingBox = new Rectangle(boundingBox.X - offset, boundingBox.Y + 15, (int)(boundingBox.Width * 0.8f), (int)(boundingBox.Height * 1.25f));
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] { 
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. An already formidable duelist, made airborne - speed is war.") 
+            });
         }
     }
 }
