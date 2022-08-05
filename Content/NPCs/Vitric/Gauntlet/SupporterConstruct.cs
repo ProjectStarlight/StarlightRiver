@@ -183,6 +183,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     alreadyHealed.Add(healingTarget);
                 else
                 {
+                    switchTimer = 98;
                     healingTarget = null;
                     alreadyHealed = new List<NPC>();
                 }

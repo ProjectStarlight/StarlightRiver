@@ -51,6 +51,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Player target => Main.player[NPC.target];
 
         public bool guarding => timer > 260;
+
+        private int ExplosionTimer = 120;
       
         public override void SetStaticDefaults()
         {
@@ -81,6 +83,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void AI()
         {
             NPC.TargetClosest(false);
+
+            if (!AnyOtherConstructs())
+            {
+                ExplosionTimer--;
+
+                if (ExplosionTimer <= 0)
+                    NPC.Kill();
+            }
+            else
+                ExplosionTimer = 120;
 
             if (bounceCooldown > 0)
                 bounceCooldown--;
@@ -424,6 +436,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 highestPartnerNext = (highestPartner.ModNPC as ShieldConstruct).stackPartnerAbove;
             }
             return ret;
+        }
+
+        private bool AnyOtherConstructs()
+        {
+            NPC otherConstruct = Main.npc.Where(x => 
+            x.active &&
+            x.ModNPC is VitricConstructNPC &&
+            x.type != NPCType<ShieldConstruct>() && 
+            x.Distance(NPC.Center) < 2000f).FirstOrDefault();
+
+            if (otherConstruct == null || otherConstruct == default)
+                return false;
+            else
+                return true;
         }
     }
 }

@@ -463,5 +463,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
 
         }
+
+        public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
+        {
+            int offset = 25 * NPC.direction;
+            boundingBox = new Rectangle(boundingBox.X - offset, boundingBox.Y + 15, (int)(boundingBox.Width * 0.8f), (int)(boundingBox.Height * 1.25f));
+        }
     }
 }
