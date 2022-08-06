@@ -115,95 +115,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             laserTimer++;
             healCounter++;
 
-            if (boundToPartner && ableToDoCombo)
-            {
-                if (healingTarget == null || !healingTarget.active)
-                {
-                    boundToPartner = false;
-                    switchTimer = 98;
-                    healingTarget = null;
-                    comboTimer = 0;
-                }
-                else
-                {
-                    NPC.noGravity = true;
-
-                    if ((stuckOffset - new Vector2(8, -30)).Length() > 2)
-                    {
-                        frameCounter++;
-
-                        if (frameCounter > 3)
-                        {
-                            frameCounter = 0;
-                            yFrame++;
-                        }
-
-                        yFrame %= Main.npcFrameCount[NPC.type];
-                    }
-                    else
-                    {
-                        frameCounter = 0;
-                        yFrame = 3;
-                    }
-                    stuckOffset = Vector2.Lerp(stuckOffset, new Vector2(8, -30), 0.1f);
-                    NPC.Center = healingTarget.Center + new Vector2(stuckOffset.X * healingTarget.spriteDirection, stuckOffset.Y);
-                    return;
-                }
-            }
-
-            NPC.noGravity = false;
-
-            if (doingCombo && ableToDoCombo)
-            {
-                if (healingTarget == null || !healingTarget.active)
-                {
-                    boundToPartner = false;
-                    switchTimer = 98;
-                    healingTarget = null;
-                    comboTimer = 0;
-                    return;
-                }
-
-                var targetModNPC = healingTarget.ModNPC as FlyingPelterConstruct;
-
-                comboTimer++;
-
-                if (comboTimer == 100)
-                {
-                    NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
-                    return;
-                }
-
-                if (comboTimer > 100)
-                {
-                    frameCounter = 0;
-                    yFrame = 3;
-                    NPC.velocity.X *= 1.07f;
-                    targetModNPC.stayInPlace = true;
-
-                    if (Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, healingTarget.position, healingTarget.Size) && NPC.velocity.Y > 0)
-                    {
-                        targetModNPC.stayInPlace = false;
-                        targetModNPC.doingCombo = false;
-                        targetModNPC.empowered = true;
-                        boundToPartner = true;
-                        stuckOffset = NPC.Center - healingTarget.Center;
-                        stuckOffset.X *= healingTarget.spriteDirection;
-                        doingCombo = false;
-                    }
-
-                    if (NPC.collideY)
-                    {
-                        switchTimer = 98;
-                        healingTarget = null;
-                        doingCombo = false;
-                        comboTimer = 0;
-                        targetModNPC.stayInPlace = false;
-                        targetModNPC.doingCombo = false;
-                    }
-                    return;
-                }
-            }
+            if (ComboLogic())
+                return;
 
             if (switchTimer % 100 == 0 && !doingCombo)
             {
@@ -266,6 +179,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 int width = (int)(NPC.Center - healingTarget.Center).Length();
                 Color color = Color.OrangeRed;
                 Vector2 pos = NPC.Center - Main.screenPosition;
+
                 if (healingTarget.Distance(NPC.Center) < 300)
                 {
                     for (int i = 10; i < width; i += 10)
@@ -290,20 +204,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     doingCombo = true;
                 }
-
-                /*if (healCounter % 10 == 0 && healingTarget.Distance(NPC.Center) < 300)
-                {
-                    if (healingTarget.life < healingTarget.lifeMax - 5)
-                    {
-                        healingTarget.HealEffect(5);
-                        healingTarget.life += 5;
-                    }
-                    else if (healingTarget.life < healingTarget.lifeMax)
-                    {
-                        healingTarget.HealEffect(healingTarget.lifeMax - healingTarget.life);
-                        healingTarget.life = healingTarget.lifeMax;
-                    }
-                }*/
 
                 Vector2 posToBe = healingTarget.Center;
 
@@ -339,9 +239,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     NPC.velocity.Y = -8;
 
                 for (int i = 10; i < width; i += 10) 
-                {
                     Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(laserRotation) * i + Main.screenPosition, color.ToVector3() * 0.030f);
-                }
             }
         }
 
@@ -413,17 +311,107 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
         }
 
-        public override void DrawHealingGlow(SpriteBatch spriteBatch)
-        {
-
-        }
-
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
         {
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
                 Bestiary.SLRSpawnConditions.VitricDesert,
                 new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Channels its power to strengthen its allies' glass bodies. This may result in a power surge.")
             });
+        }
+
+        private bool ComboLogic() //returns true if enemy is in combo
+        {
+            if (boundToPartner && ableToDoCombo)
+            {
+                if (healingTarget == null || !healingTarget.active)
+                {
+                    boundToPartner = false;
+                    switchTimer = 98;
+                    healingTarget = null;
+                    comboTimer = 0;
+                }
+                else
+                {
+                    NPC.noGravity = true;
+
+                    if ((stuckOffset - new Vector2(8, -30)).Length() > 2)
+                    {
+                        frameCounter++;
+
+                        if (frameCounter > 3)
+                        {
+                            frameCounter = 0;
+                            yFrame++;
+                        }
+
+                        yFrame %= Main.npcFrameCount[NPC.type];
+                    }
+                    else
+                    {
+                        frameCounter = 0;
+                        yFrame = 3;
+                    }
+                    stuckOffset = Vector2.Lerp(stuckOffset, new Vector2(8, -30), 0.1f);
+                    NPC.Center = healingTarget.Center + new Vector2(stuckOffset.X * healingTarget.spriteDirection, stuckOffset.Y);
+                    return true;
+                }
+            }
+
+            NPC.noGravity = false;
+
+            if (doingCombo && ableToDoCombo)
+            {
+                if (healingTarget == null || !healingTarget.active)
+                {
+                    boundToPartner = false;
+                    switchTimer = 98;
+                    healingTarget = null;
+                    comboTimer = 0;
+                    return true;
+                }
+
+                var targetModNPC = healingTarget.ModNPC as FlyingPelterConstruct;
+
+                comboTimer++;
+
+                if (comboTimer == 100)
+                {
+                    NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, healingTarget.Center + new Vector2(healingTarget.spriteDirection * 15, -100), 0.2f, 120, 450);
+                    return true;
+                }
+
+                if (comboTimer > 100)
+                {
+                    frameCounter = 0;
+                    yFrame = 3;
+                    NPC.velocity.X *= 1.07f;
+                    targetModNPC.stayInPlace = true;
+
+                    if (Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, healingTarget.position, healingTarget.Size) && NPC.velocity.Y > 0)
+                    {
+                        targetModNPC.stayInPlace = false;
+                        targetModNPC.doingCombo = false;
+                        targetModNPC.empowered = true;
+                        boundToPartner = true;
+                        stuckOffset = NPC.Center - healingTarget.Center;
+                        stuckOffset.X *= healingTarget.spriteDirection;
+                        doingCombo = false;
+                    }
+
+                    if (NPC.collideY)
+                    {
+                        switchTimer = 98;
+                        healingTarget = null;
+                        doingCombo = false;
+                        comboTimer = 0;
+                        targetModNPC.stayInPlace = false;
+                        targetModNPC.doingCombo = false;
+                    }
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
