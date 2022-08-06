@@ -282,7 +282,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                         if (yFrame == 7)
                         {
-                            NPC.velocity = direction * 15;
+                            NPC.velocity = direction * 25;
                             swingDirection = Math.Sign(NPC.velocity.X);
                         }
                     }
