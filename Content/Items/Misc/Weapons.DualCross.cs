@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public int ticker;
+		public int ticker; // Alternates every fire, whether it's even or odd indicates whether or not it skips an ammo.
 
 		public override void SetStaticDefaults()
 		{
@@ -57,6 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             bool canShoot = false;
             bool flag1 = false;
+
             for (int index = 54; index < 58; ++index)
             {
                 if (Player.inventory[index].ammo == Item.useAmmo && Player.inventory[index].stack > 0)
@@ -66,6 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
                     break;
                 }
             }
+
             if (!flag1)
             {
                 for (int index = 0; index < 54; ++index)
@@ -77,10 +79,12 @@ namespace StarlightRiver.Content.Items.Misc
                     }
                 }
             }
+
             if (canShoot)
             {
                 return true;
             }
+
             return false;
         }
 
@@ -93,8 +97,10 @@ namespace StarlightRiver.Content.Items.Misc
                 player.itemTime = 19;
                 Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, player.whoAmI);
             }
+
             else
                 position -= velocity;
+
             return base.Shoot(player, source, position, velocity, type, damage, knockback);
         }
 
@@ -116,13 +122,13 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override void SetStaticDefaults() => DisplayName.SetDefault("Double Cross");
-
-        Player owner => Main.player[Projectile.owner];
-
         private bool initialized = false;
 
         private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
+
+        Player owner => Main.player[Projectile.owner];
+
+        public override void SetStaticDefaults() => DisplayName.SetDefault("Double Cross");
 
         public override void SetDefaults()
         {
@@ -143,8 +149,10 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AI()
         {
             owner.heldProj = Projectile.whoAmI;
+
             if (owner.itemTime <= 1)
                 Projectile.active = false;
+
             Projectile.Center = owner.Center;
 
             if (!initialized)
@@ -164,13 +172,12 @@ namespace StarlightRiver.Content.Items.Misc
                 SpriteEffects effects1 = SpriteEffects.None;
                 Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), texture.Size() / 2, Projectile.scale, effects1, 0.0f);
             }
-
             else
             {
                 SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
                 Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, texture.Size() / 2, Projectile.scale, effects1, 0.0f);
-
             }
+
             return false;
         }
     }
@@ -180,34 +187,35 @@ namespace StarlightRiver.Content.Items.Misc
         private static Item GetAmmo(int skip, Item weapon, Player Player, ref bool canShoot)
         {
             Item obj = new Item();
-            bool flag1 = false;
-            bool canShootInner = false;
+            bool ammoInAmmoSlot = false;
+            bool ret = false; //Whether it returns the item. If it's false, it returns null
 
-            int innerTicker = 0;
+            int innerTicker = 0; //This represents how many ammos have been found.
 
             for (int index = 54; index < 58; ++index)
             {
                 if (Player.inventory[index].ammo == weapon.useAmmo && Player.inventory[index].stack > 0)
                 {
                     obj = Player.inventory[index];
-                    canShootInner = true;
+                    ret = true;
                     innerTicker++;
 
                     if (innerTicker > skip)
                     {
-                        flag1 = true;
+                        ammoInAmmoSlot = true;
                         break;
                     }
                 }
             }
-            if (!flag1)
+
+            if (!ammoInAmmoSlot)
             {
                 for (int index = 0; index < 54; ++index)
                 {
                     if (Player.inventory[index].ammo == weapon.useAmmo && Player.inventory[index].stack > 0)
                     {
                         obj = Player.inventory[index];
-                        canShootInner = true;
+                        ret = true;
                         innerTicker++;
 
                         if (innerTicker > skip)
@@ -215,7 +223,8 @@ namespace StarlightRiver.Content.Items.Misc
                     }
                 }
             }
-            if (canShootInner)
+
+            if (ret)
             {
                 canShoot = true;
                 return obj;
@@ -233,16 +242,19 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 speed *= 1.1f;
             }
+
             speed += obj.shootSpeed;
+
             if (Player.archery)
             {
-                if ((double)speed < 20.0)
+                if (speed < 20)
                 {
                     speed *= 1.2f;
-                    if ((double)speed > 20.0)
+                    if (speed > 20)
                         speed = 20f;
                 }
             }
+
             return speed;
         }
 
@@ -250,8 +262,6 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (obj.shoot > 0)
                 type = obj.shoot;
-            if (weapon.type == 3019 && type == 1)
-                type = 485;
 
             if (type == 42)
             {
@@ -269,8 +279,6 @@ namespace StarlightRiver.Content.Items.Misc
                 }
             }
 
-            if (Player.inventory[Player.selectedItem].type == 2888 && type == 1)
-                type = 469;
             return type;
         }
 
@@ -285,15 +293,14 @@ namespace StarlightRiver.Content.Items.Misc
             int type2 = 0;
 
             var mp = weapon.ModItem as DualCross;
-            int ticker = mp.ticker;
+            int ticker = mp.ticker; //Ticker represents whether it skips 1 when looking for ammo
 
             bool canShoot = false;
-            Item obj = new Item();
-            Item obj2 = new Item();
-            obj = DualCrossGlobalItem.GetAmmo(ticker % 2, weapon, player, ref canShoot);
-            obj2 = DualCrossGlobalItem.GetAmmo((ticker + 1) % 2, weapon, player, ref canShoot);
 
-            damage += obj.damage;
+            Item obj = GetAmmo(ticker % 2, weapon, player, ref canShoot);
+            Item obj2 = GetAmmo((ticker + 1) % 2, weapon, player, ref canShoot);
+
+            damage.Flat += obj.damage;
 
             if (!canShoot)
                 return;
@@ -313,31 +320,37 @@ namespace StarlightRiver.Content.Items.Misc
             float speed2 = GetSpeed(player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
             speed = ((speed1 + speed2) / 2) / (proj.extraUpdates + 1);
 
-            bool flag2 = false;
+            bool saveAmmo = false;
 
-            if (weapon.type == 3475 && Main.rand.Next(3) != 0)
-                flag2 = true;
-            if (weapon.type == 3540 && Main.rand.Next(3) != 0)
-                flag2 = true;
-            if (player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.Next(5) == 0)
-                flag2 = true;
+            if (player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.Next(5) == 0) //Copied from vanilla, as clean as I could get it
+                saveAmmo = true;
+
             if (player.ammoBox && Main.rand.Next(5) == 0)
-                flag2 = true;
+                saveAmmo = true;
+
             if (player.ammoPotion && Main.rand.Next(5) == 0)
-                flag2 = true;
+                saveAmmo = true;
+
             if (player.ammoCost80 && Main.rand.Next(5) == 0)
-                flag2 = true;
+                saveAmmo = true;
+
             if (player.ammoCost75 && Main.rand.Next(4) == 0)
-                flag2 = true;
+                saveAmmo = true;
+
             if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)
-                flag2 = true;
+                saveAmmo = true;
+
             if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
-                flag2 = true;
-            if (flag2 || !obj.consumable)
+                saveAmmo = true;
+
+            if (saveAmmo || !obj.consumable)
                 return;
-            --obj.stack;
+
+            obj.stack--;
+
             if (obj.stack > 0)
                 return;
+
             obj.active = false;
             obj.TurnToAir();
         }
