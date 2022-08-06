@@ -14,6 +14,7 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -415,6 +416,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
 
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Channels its power to strengthen its allies' glass bodies. This may result in a power surge.")
+            });
         }
     }
 }

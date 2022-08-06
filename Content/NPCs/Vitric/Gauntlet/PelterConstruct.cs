@@ -154,8 +154,20 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (NPC.IsABestiaryIconDummy)
+            {
+                DrawBestiary(spriteBatch, screenPos, drawColor);
+                return false;
+            }
+
             DrawConstruct(spriteBatch, screenPos, drawColor, Vector2.Zero, true);
             return false;
+        }
+
+        private void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            Texture2D tex = ModContent.Request<Texture2D>(previewTexturePath).Value;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2, NPC.scale, NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
         }
 
         private void DrawConstruct(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, Vector2 offset, bool drawGlowTex)

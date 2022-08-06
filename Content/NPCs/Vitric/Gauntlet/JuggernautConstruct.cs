@@ -20,6 +20,7 @@ using Terraria.Audio;
 
 using System;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -109,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D mainTex = Request<Texture2D>(Texture).Value;
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
-            DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
+            DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, NPC.IsABestiaryIconDummy ? new Vector2(8,8) : Vector2.Zero, true);
             return false;
         }
         private void DrawConstruct(Texture2D mainTex, Texture2D glowTex, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, Vector2 offset, bool drawGlowTex)
@@ -354,6 +355,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             spriteBatch.End();
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. This sturdy brute will often use its allies as projectiles when out of smashing range.")
+            });
         }
     }
 }

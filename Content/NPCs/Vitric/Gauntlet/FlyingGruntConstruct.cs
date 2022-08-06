@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D mainTex = Request<Texture2D>(Texture).Value;
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
-            DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
+            DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, NPC.IsABestiaryIconDummy ? new Vector2(-16, 0) : Vector2.Zero, true);
             return false;
         }
 
@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             spriteBatch.Draw(mainTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
 
             if (drawGlowTex)
-                spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
+                spriteBatch.Draw(glowTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
         }
 
         public override void HitEffect(int hitDirection, double damage) => attacking = true;

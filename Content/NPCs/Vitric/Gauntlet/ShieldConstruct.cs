@@ -201,6 +201,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
             Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
 
+            if (NPC.IsABestiaryIconDummy)
+            {
+                DrawConstruct(mainTex, shieldTex, glowTex, spriteBatch, screenPos, Color.White, Vector2.Zero, false);
+                return false;
+            }
+
             DrawConstruct(mainTex, shieldTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
 
             return false;
