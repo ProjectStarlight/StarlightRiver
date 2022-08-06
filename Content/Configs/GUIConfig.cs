@@ -35,6 +35,6 @@ namespace StarlightRiver.Configs
         [Label("Keyword Style")]
         [DrawTicks]
         [Tooltip("How keywords should be displayed in tooltips")]
-        public KeywordStyle KeywordStyle = KeywordStyle.Colors;
+        public KeywordStyle KeywordStyle = KeywordStyle.Both;
     }
 }

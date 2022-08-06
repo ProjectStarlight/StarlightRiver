@@ -130,7 +130,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				line.Text = ScanLine(line.Text);
 			}
 
-			if (thisKeywords.Count > 0)
+			if (thisKeywords.Count > 0 && !Main.LocalPlayer.controlUp)
 				tooltips.Add(new TooltipLine(Mod, "KeywordInfo", "[c/AAAAAA:Press UP for more info]"));
 		}
 
