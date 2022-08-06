@@ -79,6 +79,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             maxSpeed = Main.rand.NextFloat(1f, 1.25f);
             acceleration = Main.rand.NextFloat(0.12f, 0.25f);
             timerTickSpeed = Main.rand.NextFloat(0.85f, 1f);
+            timer = Main.rand.Next(100);
         }
 
         public override void AI()
@@ -425,16 +426,18 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 NPC.velocity.X *= 1.05f;
                 if (NPC.velocity.Y == 0)
                 {
-                    NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.2f, 120, 850);
+                    NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, stackPartnerBelow.Top + new Vector2(directionToPartner * 15, 0), 0.3f, 120, 850);
                 }
 
                 if (NPC.velocity.Y > 0 && Collision.CheckAABBvAABBCollision(NPC.position, NPC.Size, stackPartnerBelow.position, stackPartnerBelow.Size))
                 {
                     NPC.velocity = Vector2.Zero;
-                    stackOffset = NPC.Center - (stackPartnerBelow.Center); 
+                    stackOffset = NPC.Center - (stackPartnerBelow.Center);
                     jumpingUp = false;
                     stacked = true;
                 }
+                else
+                    NPC.velocity.Y += 0.1f;
 
                 return true;
             }
