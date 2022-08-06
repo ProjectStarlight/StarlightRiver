@@ -1,9 +1,8 @@
 ﻿//Todo on falling trees:
 
 //Cache frame data
-//Wood dropping
+//Make it drop if you chop it at the top
 //Sfx
-//Chop direction
 //Make it include the bottom
 
 using Microsoft.Xna.Framework.Graphics;
@@ -167,18 +166,24 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			Framing.GetTileSafely(i, j).HasTile = false;
 
-			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>() && Framing.GetTileSafely(i - 1, j).HasTile;
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>() && Framing.GetTileSafely(i + 1, j).HasTile;
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>() && Framing.GetTileSafely(i, j - 1).HasTile;
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>() && Framing.GetTileSafely(i, j - 1).HasTile;
 
-			if (!down && right)
-				SpawnFallingTree(new EntitySource_TileBreak(i, j), i, j);
 
-			if (left) WorldGen.KillTile(i - 1, j);
-			if (right) WorldGen.KillTile(i + 1, j);
-			if (up) WorldGen.KillTile(i, j - 1);
-			if (down) WorldGen.KillTile(i, j - 1);
+			if (Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>() && !noItem)
+				SpawnFallingTree(new EntitySource_TileBreak(i, j), i, j, 1);
+
+			if (Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>() && !noItem)
+				SpawnFallingTree(new EntitySource_TileBreak(i - 1, j), i - 1, j, -1);
+
+			noItem = true;
+
+			if (left) {KillTile(i - 1, j, ref fail, ref effectOnly, ref noItem); }
+			if (right) { KillTile(i + 1, j, ref fail, ref effectOnly, ref noItem); }
+			if (up) { KillTile(i, j - 1, ref fail, ref effectOnly, ref noItem); }
+			if (down) { KillTile(i, j - 1, ref fail, ref effectOnly, ref noItem); }
 
 		}
 
@@ -213,7 +218,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			return false;
         }
 
-        private static void SpawnFallingTree(IEntitySource source, int i, int j)
+        private static void SpawnFallingTree(IEntitySource source, int i, int j, int direction)
         {
             int height = 1;
             for (; height < 50; height++)
@@ -221,8 +226,8 @@ namespace StarlightRiver.Content.Tiles.Forest
                 if (Framing.GetTileSafely(i, j - height).TileType != ModContent.TileType<ThickTree>())
                     break;
             }
+
 			height++;
-			Main.NewText(height.ToString());
             Vector2 tilePosition = new Vector2(i, j);
             Vector2 worldPosition = tilePosition * 16;
             Projectile proj = Projectile.NewProjectileDirect(source, worldPosition, Vector2.Zero, ModContent.ProjectileType<ThickTreeFalling>(), 0, 0, 255);
@@ -230,7 +235,7 @@ namespace StarlightRiver.Content.Tiles.Forest
             ThickTreeFalling modProjectile = proj.ModProjectile as ThickTreeFalling;
 
 			modProjectile.height = height;
-
+			modProjectile.direction = direction;
 			modProjectile.originalBase = tilePosition.ToPoint();
 
         }
@@ -357,10 +362,17 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Rectangle spawnRect = new Rectangle((int)(position.X * 16) - 8, (int)(position.Y * 16) - 8, 16, 16);
 
 				for (int j = 0; j < 12; j++)
-                {
 					Dust.NewDustPerfect((position * 16) + Main.rand.NextVector2Circular(16, 16), 7, Main.rand.NextVector2Circular(2, 2) - new Vector2(0, 3), 0, default, Main.rand.NextFloat(1,1.6f));
-                }
-				Item.NewItem(new EntitySource_DropAsItem(Projectile), spawnRect, ItemID.Wood, 2);
+
+				Item.NewItem(new EntitySource_DropAsItem(Projectile), spawnRect, ItemID.Wood, 5);
+			}
+
+			for (int k = 0; k < 600; k++)
+            {
+				Vector2 gorePos = (position * 16) + Main.rand.NextVector2Circular(128, 128);
+				Tile tile = Main.tile[(int)gorePos.X / 16, (int)gorePos.Y / 16];
+				if (!tile.HasTile || !Main.tileSolid[tile.TileType])
+					Gore.NewGoreDirect(new EntitySource_DropAsItem(Projectile), gorePos, Main.rand.NextVector2Circular(3, 3), GoreID.TreeLeaf_Normal);
 			}
 		}
         private bool TouchingTile()
