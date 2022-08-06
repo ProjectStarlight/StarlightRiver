@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.NPCs.Forest
         private bool blowing = false;
 
         private Player target => Main.player[NPC.target];
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Blover");
