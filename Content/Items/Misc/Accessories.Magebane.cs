@@ -16,55 +16,23 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Magebane() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Magebane").Value) {}
 
-        public override void SetStaticDefaults()
+        public override void Load()
         {
-            Tooltip.SetDefault("Mana replenishing items cannot be used\nMagic attacks have a twenty-five percent chance to leech a large portion of damage as mana on hit");
+            StarlightPlayer.CanUseItemEvent += PreventManaPotion;
+            StarlightPlayer.OnHitNPCEvent += ManaLeechOnHit;
+            StarlightPlayer.OnHitNPCWithProjEvent += ManaLeechOnHitProj;
         }
 
-        public override void SafeUpdateEquip(Player Player)
+        public override void Unload()
         {
-            Player.GetModPlayer<MagebaneModPlayer>().equipped = true;
-        }
-    }
-
-    class MagebaneModPlayer : ModPlayer
-    {
-        public bool equipped;
-
-        public override void ResetEffects()
-        {
-            equipped = false;
+            StarlightPlayer.CanUseItemEvent -= PreventManaPotion;
+            StarlightPlayer.OnHitNPCEvent -= ManaLeechOnHit;
+            StarlightPlayer.OnHitNPCWithProjEvent -= ManaLeechOnHitProj;
         }
 
-        public override bool CanUseItem(Item item)
+        private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
-            if (equipped && item.healMana > 0)
-                return false;
-
-            return base.CanUseItem(item);
-        }
-        //there arent any vanilla magic weapons that dont use projectiles but just in case a mod adds one
-        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
-        {
-           if (item.DamageType == DamageClass.Magic && equipped && Main.rand.NextFloat() < 0.25f)
-           {
-                double decay = Math.Pow(1 * (1 - 0.02f), damage);
-                decay = Math.Clamp(decay, 0.185f, 1);
-                int manaAmount = (int)(damage * decay);
-
-                Player.ManaEffect(manaAmount);
-
-                Player.statMana += manaAmount;
-                if (Player.statMana > Player.statManaMax2)
-                    Player.statMana = Player.statManaMax2;
-
-                NetMessage.SendData(MessageID.ManaEffect, -1, -1, null, Player.whoAmI, manaAmount); // I think this is what im supposed to do for mana heal idk
-           }
-        }
-
-        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
-        {
-            if (proj.DamageType == DamageClass.Magic && equipped && Main.rand.NextFloat() < 0.25f)
+            if (proj.DamageType == DamageClass.Magic && Equipped(Player) && Main.rand.NextFloat() < 0.25f)
             {
                 double decay = Math.Pow(1 * (1 - 0.02f), damage);
                 decay = Math.Clamp(decay, 0.185f, 1);
@@ -78,6 +46,37 @@ namespace StarlightRiver.Content.Items.Misc
 
                 NetMessage.SendData(MessageID.ManaEffect, -1, -1, null, Player.whoAmI, manaAmount);
             }
+        }
+
+        private void ManaLeechOnHit(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
+        {
+            if (Item.DamageType == DamageClass.Magic && Equipped(player) && Main.rand.NextFloat() < 0.25f)
+            {
+                double decay = Math.Pow(1 * (1 - 0.02f), damage);
+                decay = Math.Clamp(decay, 0.185f, 1);
+                int manaAmount = (int)(damage * decay);
+
+                player.ManaEffect(manaAmount);
+
+                player.statMana += manaAmount;
+                if (player.statMana > player.statManaMax2)
+                    player.statMana = player.statManaMax2;
+
+                NetMessage.SendData(MessageID.ManaEffect, -1, -1, null, player.whoAmI, manaAmount); // I think this is what im supposed to do for mana heal idk
+            }
+        }
+
+        private bool PreventManaPotion(Player player, Item item)
+        {
+            if (Equipped(player) && item.healMana > 0)
+                return false;
+
+            return true;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            Tooltip.SetDefault("Mana replenishing items cannot be used\nMagic attacks have a twenty-five percent chance to leech a large portion of damage as mana on hit");
         }
     }
 }
