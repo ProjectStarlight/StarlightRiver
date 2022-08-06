@@ -43,8 +43,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
-			Main.NewText(GearPuzzleHandler.engagedObjectives);
-
 			Size = 3;
 			Engaged = true;
 			RotationVelocity = 2;

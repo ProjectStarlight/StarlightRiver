@@ -59,6 +59,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			base.Update();
 
 			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
+
+			if (Size == 0)
+				Lighting.AddLight(Projectile.Center, new Vector3(0.65f, 0.4f, 0.1f));
 		}
 
 		public override void PostDraw(Color lightColor)

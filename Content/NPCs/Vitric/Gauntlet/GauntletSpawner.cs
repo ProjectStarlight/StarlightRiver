@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (Timer > 70)
             {
-                NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+                //NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
                 Projectile.Kill();
             }
         }

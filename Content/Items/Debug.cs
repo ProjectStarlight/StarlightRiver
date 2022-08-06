@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            Item.createTile = ModContent.TileType<Tiles.Vitric.Temple.OldCeirosShrine>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -58,6 +58,10 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.Faewhip.Whip>();
+            return true;
+
             Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), Main.MouseWorld, Vector2.Zero, ModContent.ProjectileType<NPCs.Vitric.Gauntlet.GauntletSpawner>(), 0, 0, Main.myPlayer, ModContent.NPCType<NPCs.Vitric.Gauntlet.GruntConstruct>());
 
             return true;

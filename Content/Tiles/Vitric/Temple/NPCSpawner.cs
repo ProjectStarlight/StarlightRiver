@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					spawned--;
 			}
 
-			if (Main.player.Any(n => Vector2.Distance(n.Center, Projectile.Center) < 600) && (active || spawned <= 0))
+			if (Main.player.Any(n => Vector2.Distance(n.Center, Projectile.Center) < 300) && (active || spawned <= 0))
 			{
 				var nearby = Main.npc.Count(n => n.active && Vector2.Distance(n.Center, Projectile.Center) < 600);
 
