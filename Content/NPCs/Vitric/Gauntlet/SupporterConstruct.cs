@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int switchTimer = 0;
 
-        private NPC healingTarget = null;
+        public NPC healingTarget = null;
 
         private List<NPC> alreadyHealed = new List<NPC>();
 
@@ -50,6 +50,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Vector2 stuckOffset = Vector2.Zero;
 
         private Vector2 comboPos = Vector2.Zero;
+
+        public override void Load()
+        {
+            On.Terraria.Main.DrawNPCs += DrawBarrierGlow;
+            base.Load();
+        }
 
         public override void SetStaticDefaults()
         {
@@ -72,6 +78,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             };
             NPC.DeathSound = SoundID.Shatter;
             NPC.noGravity = false;
+        }
+
+        private void DrawBarrierGlow(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
+        {
+            for (int i = 0; i < Main.npc.Length; i++)
+            {
+                NPC npc = Main.npc[i];
+
+                if (npc.type != ModContent.NPCType<SupporterConstruct>())
+                    continue;
+
+                var modNPC = npc.ModNPC as SupporterConstruct;
+                NPC toDraw = modNPC.healingTarget;
+
+                if (toDraw == null || toDraw == default || !toDraw.active)
+                    continue;
+
+                if (toDraw.behindTiles == behindTiles)
+                {
+                    VitricConstructNPC toDrawModNPC = toDraw.ModNPC as VitricConstructNPC;
+                    toDrawModNPC.DrawHealingGlow(Main.spriteBatch);
+                }
+            }
+
+            orig(self, behindTiles);
         }
 
         public override void AI()

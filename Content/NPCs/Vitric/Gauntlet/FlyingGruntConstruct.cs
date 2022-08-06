@@ -160,6 +160,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Texture2D mainTex = Request<Texture2D>(Texture).Value;
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
+            DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
+            return false;
+        }
+
+        private void DrawConstruct(Texture2D mainTex, Texture2D glowTex, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, Vector2 offset, bool drawGlowTex)
+        {
+
             int frameWidth = mainTex.Width / XFRAMES;
             int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 
@@ -179,9 +186,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
-            return false;
+            spriteBatch.Draw(mainTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
+
+            if (drawGlowTex)
+                spriteBatch.Draw(glowTex, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
         }
 
         public override void HitEffect(int hitDirection, double damage) => attacking = true;
@@ -462,7 +470,24 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            Texture2D tex = Request<Texture2D>(Texture).Value;
+            float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
+            float distance = (sin * 6) + 4;
+
+            for (int i = 0; i < 8; i++)
+            {
+                float rad = i * 6.28f / 8;
+                Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+
+                DrawConstruct(tex, null, spriteBatch, Main.screenPosition, color, offset, false);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)

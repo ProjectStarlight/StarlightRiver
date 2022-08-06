@@ -154,6 +154,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            DrawConstruct(spriteBatch, screenPos, drawColor, Vector2.Zero, true);
+            return false;
+        }
+
+        private void DrawConstruct(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, Vector2 offset, bool drawGlowTex)
+        {
             SpriteEffects effects = SpriteEffects.None;
             SpriteEffects bowEffects = SpriteEffects.None;
 
@@ -194,20 +200,25 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 //bowOrigin = new Vector2(bowTex.Width - bowOrigin.X, bowOrigin.Y);
             }
 
-            Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(mainTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
+            Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY) + offset;
+            spriteBatch.Draw(mainTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, drawColor, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(headTex, headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
+            if (drawGlowTex)
+                spriteBatch.Draw(glowTex, NPC.Center + slopeOffset - screenPos, mainFrameBox, Color.White, NPC.rotation, mainFrameBox.Size() / 2, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(armTex, bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
-            Main.spriteBatch.Draw(armGlowTex, bowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+            spriteBatch.Draw(headTex, headPos + slopeOffset - screenPos, null, drawColor, headRotation + NPC.rotation, headOrigin, NPC.scale, effects, 0f);
 
-            Main.spriteBatch.Draw(bowTex, bowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
+            spriteBatch.Draw(armTex, bowArmPos + slopeOffset - screenPos, backFrame, drawColor, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
 
-            Main.spriteBatch.Draw(armTex, backArmPos + slopeOffset - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
-            Main.spriteBatch.Draw(armGlowTex, backArmPos + slopeOffset - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
-            return false;
+            if (drawGlowTex)
+                spriteBatch.Draw(armGlowTex, bowArmPos + slopeOffset - screenPos, backFrame, Color.White, bowArmRotation + NPC.rotation, bowArmOrigin, NPC.scale, bowEffects, 0f);
+
+            spriteBatch.Draw(bowTex, bowPos + slopeOffset - screenPos, bowFrameBox, drawColor, bowRotation + NPC.rotation, bowOrigin, NPC.scale, bowEffects, 0f);
+
+            spriteBatch.Draw(armTex, backArmPos + slopeOffset - screenPos, frontFrame, drawColor, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
+
+            if (drawGlowTex)
+                spriteBatch.Draw(armGlowTex, backArmPos + slopeOffset - screenPos, frontFrame, Color.White, backArmRotation + NPC.rotation, backArmOrigin, NPC.scale, bowEffects, 0f);
         }
 
         public override void OnKill()
@@ -536,7 +547,23 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
+            float distance = (sin * 6) + 4;
+
+            for (int i = 0; i < 8; i++)
+            {
+                float rad = i * 6.28f / 8;
+                Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+
+                DrawConstruct(spriteBatch, Main.screenPosition, color, offset, false);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

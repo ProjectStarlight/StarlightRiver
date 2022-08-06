@@ -439,7 +439,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         }
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
+            float distance = (sin * 4) + 2;
+
+            for (int i = 0; i < 8; i++)
+            {
+                float rad = i * 6.28f / 8;
+                Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+                DrawComponents(true, Main.screenPosition, color, offset);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 

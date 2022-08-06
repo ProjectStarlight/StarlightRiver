@@ -197,25 +197,30 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            SpriteEffects effects = SpriteEffects.None;
-
             Texture2D mainTex = Request<Texture2D>(Texture).Value;
             Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
             Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
 
-            int frameWidth = mainTex.Width / XFRAMES;
-            int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
+            DrawConstruct(mainTex, shieldTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
+
+            return false;
+        }
+
+        private void DrawConstruct(Texture2D mainTex, Texture2D shieldTex, Texture2D glowTex, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, Vector2 offset, bool drawGlowTex)
+        {
+            SpriteEffects effects = SpriteEffects.None;
 
             Vector2 bodyOffset = new Vector2((-6 * NPC.spriteDirection) + 4, 9);
 
             if (NPC.spriteDirection != 1)
                 effects = SpriteEffects.FlipHorizontally;
-            
-            Main.spriteBatch.Draw(mainTex, bodyOffset + NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(glowTex, bodyOffset + NPC.Center - screenPos, NPC.frame, Color.White, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
-            Main.spriteBatch.Draw(shieldTex, NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
 
-            return false;
+            spriteBatch.Draw(mainTex, offset + bodyOffset + NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+
+            if (drawGlowTex)
+                spriteBatch.Draw(glowTex, offset + bodyOffset + NPC.Center - screenPos, NPC.frame, Color.White, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
+
+            spriteBatch.Draw(shieldTex, offset + NPC.Center - screenPos + shieldOffset, null, drawColor, 0f, NPC.frame.Size() / 2 + new Vector2(0, 8), NPC.scale, effects, 0f);
         }
 
         public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -281,7 +286,26 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            Texture2D tex = Request<Texture2D>(Texture).Value;
+            Texture2D shieldTex = Request<Texture2D>(Texture + "_Shield").Value;
+
+            float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
+            float distance = (sin * 6) + 4;
+
+            for (int i = 0; i < 8; i++)
+            {
+                float rad = i * 6.28f / 8;
+                Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+
+                DrawConstruct(tex, shieldTex, null, spriteBatch, Main.screenPosition, color, offset, false);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
