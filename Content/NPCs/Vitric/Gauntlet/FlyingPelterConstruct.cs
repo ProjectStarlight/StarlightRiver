@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.damage = 10;
             NPC.defense = 5;
             NPC.lifeMax = 250;
-            NPC.value = 10f;
+            NPC.value = 0f;
             NPC.knockBackResist = 0.6f;
             NPC.HitSound = SoundID.Item27 with
             {
@@ -214,6 +214,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (NPC.IsABestiaryIconDummy)
+            {
+                DrawBestiary(spriteBatch, screenPos, Color.White);
+                return false;
+            }
+
             if (empowered)
             {
                 Main.spriteBatch.End();
@@ -241,6 +247,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             }
             DrawComponents(false, screenPos, drawColor, Vector2.Zero);
             return false;
+        }
+
+        private void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            Texture2D tex = ModContent.Request<Texture2D>(previewTexturePath).Value;
+            spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2, NPC.scale, NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
         }
 
         public override void FindFrame(int frameHeight)
@@ -439,7 +451,22 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         }
         public override void DrawHealingGlow(SpriteBatch spriteBatch)
         {
+            spriteBatch.End();
+            spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+            float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
+            float distance = (sin * 3) + 2;
+
+            for (int i = 0; i < 8; i++)
+            {
+                float rad = i * 6.28f / 8;
+                Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
+                Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
+                DrawComponents(false, Main.screenPosition, color, offset);
+            }
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 
