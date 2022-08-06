@@ -251,7 +251,19 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
 		}
-	}
+
+        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+        {
+			Tile tile = Main.tile[i, j];
+			if (!Framing.GetTileSafely(i + 1, j - 1).HasTile && tile.TileFrameX == 18 && tile.TileFrameY == 0)
+            {
+				Texture2D tex = ModContent.Request<Texture2D>(Texture + "_TopEdge").Value;
+				var pos = ((new Vector2(i, j) + Helpers.Helper.TileAdj) * 16) - new Vector2(0, 4);
+				spriteBatch.Draw(tex, pos - Main.screenPosition, null, Lighting.GetColor(new Point(i, j)), 0f, Vector2.Zero, 1, SpriteEffects.None, 0f);
+            }
+            return base.PreDraw(i, j, spriteBatch);
+        }
+    }
 
 	public class ThickTreeFalling : ModProjectile
     {
@@ -288,13 +300,20 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			Projectile.rotation += rotationalVelocity;
 
-			if (Math.Abs(Projectile.rotation) > 2 || TouchingTile())
+            if (Math.Abs(Projectile.rotation) > 2 || TouchingTile())
 				Projectile.Kill();
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+			Texture2D edgeTex = ModContent.Request<Texture2D>(Texture + "_BottomEdge").Value;
+
+			Vector2 origin = new Vector2(16 + (16 * direction), 16);
+			Vector2 edgePos = ((originalBase.ToVector2() + new Vector2(1,1)) * 16) - Main.screenPosition;
+				edgePos.X += 16 * direction;
+			Main.spriteBatch.Draw(edgeTex, edgePos, null, Lighting.GetColor(originalBase), Projectile.rotation, new Vector2(16 + (16 * direction), 0), Projectile.scale, SpriteEffects.None, 0f);
 
 			for (int j = 1-height; j <= 0; j++)
 			{
@@ -329,7 +348,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 					Rectangle frame = new Rectangle(xFrame, yFrame, 16, 16);
 
-					Vector2 origin = new Vector2(16 + (16 * direction), 16);
 					drawPos += (new Vector2(i,j).RotatedBy(Projectile.rotation) * 16) + origin;
 
 					Point lightingSample = ((drawPos + Main.screenPosition) / 16).ToPoint();
