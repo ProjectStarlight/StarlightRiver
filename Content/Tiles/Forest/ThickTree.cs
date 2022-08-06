@@ -298,9 +298,23 @@ namespace StarlightRiver.Content.Tiles.Forest
 			if (rotationalVelocity < maxVelocity)
 				rotationalVelocity += acceleration * direction;
 
-			Projectile.rotation += rotationalVelocity;
+			if (Math.Abs(Projectile.rotation) < 1.75f)
+				Projectile.rotation += rotationalVelocity;
+			else
+            {
+				Projectile.velocity.Y += Math.Abs(rotationalVelocity) * 2;
+				Projectile.rotation += rotationalVelocity * 0.2f;
+			}
 
-            if (Math.Abs(Projectile.rotation) > 2 || TouchingTile())
+			Vector2 headPos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * (height + 2) * 16);
+			Vector2 gorePos = headPos + Main.rand.NextVector2Circular(128, 128);
+			Vector2 goreVel = Projectile.rotation.ToRotationVector2().RotatedByRandom(0.5f) * direction * Main.rand.NextFloat(12);
+			Tile tile = Main.tile[(int)gorePos.X / 16, (int)gorePos.Y / 16];
+
+				if (!tile.HasTile || !Main.tileSolid[tile.TileType])
+					Gore.NewGoreDirect(new EntitySource_DropAsItem(Projectile), gorePos, goreVel, GoreID.TreeLeaf_Normal);
+
+			if (TouchingTile())
 				Projectile.Kill();
         }
 
@@ -310,10 +324,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			Texture2D edgeTex = ModContent.Request<Texture2D>(Texture + "_BottomEdge").Value;
 
+			Point basePos = (Projectile.Center / 16).ToPoint();
 			Vector2 origin = new Vector2(16 + (16 * direction), 16);
-			Vector2 edgePos = ((originalBase.ToVector2() + new Vector2(1,1)) * 16) - Main.screenPosition;
+			Vector2 edgePos = ((Projectile.Center / 16 + new Vector2(1,1)) * 16) - Main.screenPosition;
 				edgePos.X += 16 * direction;
-			Main.spriteBatch.Draw(edgeTex, edgePos, null, Lighting.GetColor(originalBase), Projectile.rotation, new Vector2(16 + (16 * direction), 0), Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(edgeTex, edgePos, null, Lighting.GetColor(basePos), Projectile.rotation, new Vector2(16 + (16 * direction), 0), Projectile.scale, SpriteEffects.None, 0f);
 
 			for (int j = 1-height; j <= 0; j++)
 			{
@@ -321,7 +336,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 				{
 					Point framePoint = new Point(originalBase.X + i, originalBase.Y + j);
 
-					Vector2 drawPos = (originalBase.ToVector2() * 16) - Main.screenPosition;
+					Vector2 drawPos = Projectile.Center - Main.screenPosition;
 
 					var treeRand = new Random(framePoint.X + framePoint.Y);
 
@@ -375,8 +390,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 
         public override void Kill(int timeLeft)
         {
+			Point basePos = (Projectile.Center / 16).ToPoint();
 			Core.Systems.CameraSystem.Shake += 15;
-			Vector2 position = (originalBase.ToVector2()) + new Vector2(0.5f, 0);
+			Vector2 position = (basePos.ToVector2()) + new Vector2(0.5f, 0);
 
 			Vector2 unitVector = (Projectile.rotation - 1.57f).ToRotationVector2();
 			for (int i = 0; i < height; i++)
@@ -400,7 +416,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
         private bool TouchingTile()
         {
-			Vector2 position = (originalBase.ToVector2()) + new Vector2(0.5f, 0);
+			Point basePos = (Projectile.Center / 16).ToPoint();
+			Vector2 position = (basePos.ToVector2()) + new Vector2(0.5f, 0);
 
 			Vector2 unitVector = (Projectile.rotation - 1.57f).ToRotationVector2();
 			for (int i = 0; i < height; i++)
