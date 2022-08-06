@@ -139,7 +139,7 @@ namespace StarlightRiver
             }
         }
 
-        public override void AddRecipeGroups()
+        public override void AddRecipeGroups()/* tModPorter Note: Removed. Use ModSystem.AddRecipeGroups */
         {
             foreach (var group in recipeGroupCache)
             {
