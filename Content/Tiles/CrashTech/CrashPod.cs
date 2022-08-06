@@ -27,11 +27,14 @@ namespace StarlightRiver.Content.Tiles.CrashTech
         {
             QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Lava, SoundID.Shatter, false, new Color(255, 200, 40), false, false, "Crashed Pod", new AnchorData(AnchorType.SolidWithTop | AnchorType.SolidTile, 2, 0));
             MinPick = 999;
+            Main.tileLighted[Type] = true;
         }
 
         public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
         {
-            Lighting.AddLight(new Vector2(i, j) * 16, new Vector3(1, 0.5f, 0.2f) * 0.3f);
+            r = 1;
+            g = 0.5f;
+            b = 0.2f;
         }
 
         public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
