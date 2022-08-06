@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public int ticker; // Alternates every fire, whether it's even or odd indicates whether or not it skips an ammo.
+		public int shotsTilSwitch; // Alternates every fire, whether it's even or odd indicates whether or not it skips an ammo.
 
 		public override void SetStaticDefaults()
 		{
@@ -81,16 +81,14 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             if (canShoot)
-            {
                 return true;
-            }
 
             return false;
         }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            if (ticker % 2 == 1)
+            if (shotsTilSwitch % 2 == 1)
             {
                 Vector2 offset = Vector2.Normalize(velocity).RotatedBy(-1.57f * player.direction) * 10;
                 position += offset;
@@ -190,7 +188,7 @@ namespace StarlightRiver.Content.Items.Misc
             bool ammoInAmmoSlot = false;
             bool ret = false; //Whether it returns the item. If it's false, it returns null
 
-            int innerTicker = 0; //This represents how many ammos have been found.
+            int ammosFound = 0; 
 
             for (int index = 54; index < 58; ++index)
             {
@@ -198,9 +196,9 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     obj = Player.inventory[index];
                     ret = true;
-                    innerTicker++;
+                    ammosFound++;
 
-                    if (innerTicker > skip)
+                    if (ammosFound > skip)
                     {
                         ammoInAmmoSlot = true;
                         break;
@@ -216,9 +214,9 @@ namespace StarlightRiver.Content.Items.Misc
                     {
                         obj = Player.inventory[index];
                         ret = true;
-                        innerTicker++;
+                        ammosFound++;
 
-                        if (innerTicker > skip)
+                        if (ammosFound > skip)
                             break;
                     }
                 }
@@ -293,7 +291,7 @@ namespace StarlightRiver.Content.Items.Misc
             int type2 = 0;
 
             var mp = weapon.ModItem as DualCross;
-            int ticker = mp.ticker; //Ticker represents whether it skips 1 when looking for ammo
+            int ticker = mp.shotsTilSwitch; //Ticker represents whether it skips 1 when looking for ammo
 
             bool canShoot = false;
 
@@ -305,7 +303,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (!canShoot)
                 return;
 
-            mp.ticker++;
+            mp.shotsTilSwitch++;
 
             type = GetProjType(weapon, obj, player, type);
             type2 = GetProjType(weapon, obj2, player, type2);
