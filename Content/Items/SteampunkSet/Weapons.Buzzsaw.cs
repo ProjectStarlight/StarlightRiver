@@ -113,6 +113,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
                 flickerTime++;
             }
+            else
+                Charge += 0.1f;
 
             Projectile.velocity = Vector2.Zero;
             Projectile.timeLeft = 2;
