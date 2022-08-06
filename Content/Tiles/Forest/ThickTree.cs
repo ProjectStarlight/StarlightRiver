@@ -329,17 +329,22 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 					Rectangle frame = new Rectangle(xFrame, yFrame, 16, 16);
 
-					Vector2 origin = new Vector2(16, 16);
+					Vector2 origin = new Vector2(16 + (16 * direction), 16);
 					drawPos += (new Vector2(i,j).RotatedBy(Projectile.rotation) * 16) + origin;
 
 					Point lightingSample = ((drawPos + Main.screenPosition) / 16).ToPoint();
 					var color = Lighting.GetColor(lightingSample);
 					Main.spriteBatch.Draw(tex, drawPos, frame, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
 
+
+
 					if (right && !up && down)
 					{
 						drawPos -= new Vector2((tex.Width / 2), tex.Height).RotatedBy(Projectile.rotation);
-						drawPos += new Vector2(-20,16).RotatedBy(Projectile.rotation);
+						if (direction == 1)
+							drawPos += new Vector2(-32,16).RotatedBy(Projectile.rotation);
+						else
+							drawPos += new Vector2(0, 16).RotatedBy(Projectile.rotation);
 						var topTex = ModContent.Request<Texture2D>(Texture + "Top").Value;
 						Main.spriteBatch.Draw(topTex, drawPos + new Vector2(50, 40).RotatedBy(Projectile.rotation), null, color.MultiplyRGB(Color.Gray), ThickTree.GetLeafSway(0, 0.05f, 0.01f) + Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 						Main.spriteBatch.Draw(topTex, drawPos + new Vector2(-30, 80).RotatedBy(Projectile.rotation), null, color.MultiplyRGB(Color.DarkGray), ThickTree.GetLeafSway(2, 0.025f, 0.012f) + Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
