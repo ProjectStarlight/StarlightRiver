@@ -2,6 +2,7 @@
 using System;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ObjectData;
 using static Terraria.WorldGen;
 
@@ -112,6 +113,12 @@ namespace StarlightRiver.Helpers
             }
             return clear;
         }
+
+        public static AnchorData AnchorTableTop(int width, bool floor = false, int start = 0) =>
+            new AnchorData(AnchorType.SolidWithTop | (floor ? AnchorType.SolidTile | AnchorType.Table : AnchorType.Table), width, start);
+
+        public static AnchorData AnchorFloor(int width, int start = 0) => 
+            new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, width, start);
     }
 }
 
