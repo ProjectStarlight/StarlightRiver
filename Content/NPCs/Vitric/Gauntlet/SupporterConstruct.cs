@@ -86,13 +86,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             {
                 NPC npc = Main.npc[i];
 
-                if (npc.type != ModContent.NPCType<SupporterConstruct>())
+                if (npc.type != ModContent.NPCType<SupporterConstruct>() || !npc.active)
                     continue;
 
                 var modNPC = npc.ModNPC as SupporterConstruct;
+
+                if (modNPC.boundToPartner)
+                    continue;
+
                 NPC toDraw = modNPC.healingTarget;
 
-                if (toDraw == null || toDraw == default || !toDraw.active)
+                if (toDraw == null || toDraw == default || !toDraw.active || toDraw.Distance(npc.Center) >= 300)
                     continue;
 
                 if (toDraw.behindTiles == behindTiles)

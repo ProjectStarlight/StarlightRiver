@@ -341,13 +341,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             Texture2D tex = Request<Texture2D>(Texture).Value;
             float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
-            float distance = (sin * 6) + 4;
+            float distance = (sin * 3) + 4;
 
             for (int i = 0; i < 8; i++)
             {
                 float rad = i * 6.28f / 8;
                 Vector2 offset = Vector2.UnitX.RotatedBy(rad) * distance;
-                Color color = Color.OrangeRed * (1.5f - sin) * 0.7f;
+                Color color = Color.OrangeRed * (1.75f - sin) * 0.7f;
 
                 DrawConstruct(tex, null, spriteBatch, Main.screenPosition, color, offset, false);
             }
