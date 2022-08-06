@@ -451,10 +451,10 @@ namespace StarlightRiver.Core
 
         private static void GenTemple()
         {
-            const int X_OFFSET = 59;
+            const int X_OFFSET = 113;
             const int Y_OFFSET = 71;
             StructureHelper.Generator.GenerateStructure(
-                "Structures/VitricTemple",
+                "Structures/VitricTempleNew",
                 new Point16(VitricBiome.Center.X - X_OFFSET, VitricBiome.Center.Y - Y_OFFSET),
                 StarlightRiver.Instance
                 );

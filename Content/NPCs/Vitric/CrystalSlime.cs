@@ -27,17 +27,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SetDefaults()
         {
-            NPC.width = 48;
-            NPC.height = 32;
-            NPC.damage = 10;
-            NPC.defense = 5;
-            NPC.lifeMax = 25;
+            NPC.width = 34;
+            NPC.height = 28;
+            NPC.damage = 22;
+            NPC.defense = 2;
+            NPC.lifeMax = 85;
             NPC.HitSound = SoundID.NPCHit42;
             NPC.DeathSound = SoundID.NPCDeath1;
             NPC.value = 10f;
             NPC.knockBackResist = 0.6f;
             NPC.aiStyle = 1;
             NPC.immortal = true;
+
+            AnimationType = NPCID.BlueSlime;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -126,8 +128,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
             if (Shield == 1)
             {
                 Color color = Helper.IndicatorColor;
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - screenPos + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
-                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - screenPos + new Vector2(-3, -6), color);
+                var tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
+                var texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
+
+                spriteBatch.Draw(tex, NPC.Center - screenPos, null, Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16), 0, tex.Size() / 2, 1, 0, 0);
+                spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, 0, texGlow.Size() / 2, 1, 0, 0);
             }
         }
     }
