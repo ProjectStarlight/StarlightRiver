@@ -1,4 +1,12 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿//Todo on falling trees:
+
+//Cache frame data
+//Wood dropping
+//Sfx
+//Chop direction
+//Make it include the bottom
+
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +34,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 			
 			Main.tileAxe[Type] = true;
 			AddMapEntry(new Color(169, 125, 93), name);
-
-			ItemDrop = ItemID.Wood;
 		}
 
-		private float GetLeafSway(float offset, float magnitude, float speed)
+		public static float GetLeafSway(float offset, float magnitude, float speed)
 		{
 			return (float)Math.Sin(Main.GameUpdateCount * speed + offset) * magnitude;
 		}
@@ -166,14 +172,19 @@ namespace StarlightRiver.Content.Tiles.Forest
 			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
 			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
+			if (!down && right)
+				SpawnFallingTree(new EntitySource_TileBreak(i, j), i, j);
+
 			if (left) WorldGen.KillTile(i - 1, j);
 			if (right) WorldGen.KillTile(i + 1, j);
 			if (up) WorldGen.KillTile(i, j - 1);
 			if (down) WorldGen.KillTile(i, j - 1);
+
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
+			var treeRand = new Random(i + j);
 			short x = 0;
 			short y = 0;
 
@@ -189,9 +200,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 				if (left)
 					x = 18;
 
-				y = (short)(Main.rand.Next(3) * 18);
+				y = (short)(treeRand.Next(3) * 18);
 
-				if (Main.rand.NextBool(3))
+				if (treeRand.Next(3) == 1)
 					x += 18 * 2;
 			}
 
@@ -200,10 +211,32 @@ namespace StarlightRiver.Content.Tiles.Forest
 			tile.TileFrameY = y;
 
 			return false;
-		}
-	}
+        }
 
-	class ThickTreeBase : ModTile
+        private static void SpawnFallingTree(IEntitySource source, int i, int j)
+        {
+            int height = 1;
+            for (; height < 50; height++)
+            {
+                if (Framing.GetTileSafely(i, j - height).TileType != ModContent.TileType<ThickTree>())
+                    break;
+            }
+			height++;
+			Main.NewText(height.ToString());
+            Vector2 tilePosition = new Vector2(i, j);
+            Vector2 worldPosition = tilePosition * 16;
+            Projectile proj = Projectile.NewProjectileDirect(source, worldPosition, Vector2.Zero, ModContent.ProjectileType<ThickTreeFalling>(), 0, 0, 255);
+
+            ThickTreeFalling modProjectile = proj.ModProjectile as ThickTreeFalling;
+
+			modProjectile.height = height;
+
+			modProjectile.originalBase = tilePosition.ToPoint();
+
+        }
+    }
+
+    class ThickTreeBase : ModTile
 	{
 		public override string Texture => AssetDirectory.ForestTile + Name;
 
@@ -215,4 +248,136 @@ namespace StarlightRiver.Content.Tiles.Forest
 		}
 	}
 
+	public class ThickTreeFalling : ModProjectile
+    {
+		public override string Texture => AssetDirectory.ForestTile + "ThickTree";
+
+		public int direction = 1;
+
+		public int height;
+
+		public Point originalBase;
+
+		private float acceleration = 0.0003f;
+		private float maxVelocity = 0.05f;
+		private float rotationalVelocity = 0;
+		public override void SetDefaults()
+		{
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.friendly = false;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 1000;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Falling Tree");
+		}
+
+        public override void AI()
+        {
+			if (rotationalVelocity < maxVelocity)
+				rotationalVelocity += acceleration * direction;
+
+			Projectile.rotation += rotationalVelocity;
+
+			if (Math.Abs(Projectile.rotation) > 2 || TouchingTile())
+				Projectile.Kill();
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+			for (int j = 1-height; j <= 0; j++)
+			{
+				for (int i = 1; i > -1; i--)
+				{
+					Point framePoint = new Point(originalBase.X + i, originalBase.Y + j);
+
+					Vector2 drawPos = (originalBase.ToVector2() * 16) - Main.screenPosition;
+
+					var treeRand = new Random(framePoint.X + framePoint.Y);
+
+					int xFrame = 0;
+					int yFrame = 0;
+
+					var left = i == 1;
+					var right = i == 0;
+					var down = j != 0;
+					var up = j != 1 - height;
+
+					if ((up || down))
+					{
+						if (right)
+							xFrame = 0;
+						if (left)
+							xFrame = 18;
+
+						yFrame = (short)(treeRand.Next(3) * 18);
+
+						if (treeRand.Next(3) == 1)
+							xFrame += 18 * 2;
+					}
+
+					Rectangle frame = new Rectangle(xFrame, yFrame, 16, 16);
+
+					Vector2 origin = new Vector2(16, 16);
+					drawPos += (new Vector2(i,j).RotatedBy(Projectile.rotation) * 16) + origin;
+
+					Point lightingSample = ((drawPos + Main.screenPosition) / 16).ToPoint();
+					var color = Lighting.GetColor(lightingSample);
+					Main.spriteBatch.Draw(tex, drawPos, frame, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+
+					if (right && !up && down)
+					{
+						drawPos -= new Vector2((tex.Width / 2), tex.Height).RotatedBy(Projectile.rotation);
+						drawPos += new Vector2(-20,16).RotatedBy(Projectile.rotation);
+						var topTex = ModContent.Request<Texture2D>(Texture + "Top").Value;
+						Main.spriteBatch.Draw(topTex, drawPos + new Vector2(50, 40).RotatedBy(Projectile.rotation), null, color.MultiplyRGB(Color.Gray), ThickTree.GetLeafSway(0, 0.05f, 0.01f) + Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+						Main.spriteBatch.Draw(topTex, drawPos + new Vector2(-30, 80).RotatedBy(Projectile.rotation), null, color.MultiplyRGB(Color.DarkGray), ThickTree.GetLeafSway(2, 0.025f, 0.012f) + Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+						Main.spriteBatch.Draw(topTex, drawPos, null, color, ThickTree.GetLeafSway(3, 0.05f, 0.008f) + Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
+					}
+				}
+			}
+            return false;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+			Core.Systems.CameraSystem.Shake += 15;
+			Vector2 position = (originalBase.ToVector2()) + new Vector2(0.5f, 0);
+
+			Vector2 unitVector = (Projectile.rotation - 1.57f).ToRotationVector2();
+			for (int i = 0; i < height; i++)
+			{
+				position += unitVector;
+				Rectangle spawnRect = new Rectangle((int)(position.X * 16) - 8, (int)(position.Y * 16) - 8, 16, 16);
+
+				for (int j = 0; j < 12; j++)
+                {
+					Dust.NewDustPerfect((position * 16) + Main.rand.NextVector2Circular(16, 16), 7, Main.rand.NextVector2Circular(2, 2) - new Vector2(0, 3), 0, default, Main.rand.NextFloat(1,1.6f));
+                }
+				Item.NewItem(new EntitySource_DropAsItem(Projectile), spawnRect, ItemID.Wood, 2);
+			}
+		}
+        private bool TouchingTile()
+        {
+			Vector2 position = (originalBase.ToVector2()) + new Vector2(0.5f, 0);
+
+			Vector2 unitVector = (Projectile.rotation - 1.57f).ToRotationVector2();
+			for (int i = 0; i < height; i++)
+            {
+				position += unitVector;
+
+				Tile tile = Main.tile[(int)position.X, (int)position.Y];
+				if (tile.HasTile && Main.tileSolid[tile.TileType])
+					return true;
+            }
+
+			return false;
+        }
+    }
 }
