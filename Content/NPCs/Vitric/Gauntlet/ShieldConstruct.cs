@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.damage = 10;
             NPC.defense = 5;
             NPC.lifeMax = 250;
-            NPC.value = 10f;
+            NPC.value = 0f;
             NPC.knockBackResist = 0.6f;
             NPC.DeathSound = SoundID.Shatter;
             NPC.behindTiles = true;
