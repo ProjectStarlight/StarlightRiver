@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Tooltip.SetDefault("Press <right> to throw out an unstable crystal bomb\nExplodes shortly after, causing all other crystal bombs to also explode\n" +
                 "Shoot to detonate it early, if detonated early enough, it will explode into a cone of crystal shards\n" +
                 "If a crystal bomb is detonated by another crystal bomb, its damage is increased by 50%\n" +
-                "Explosions and crystal shards inflict Sweltered\nSweltered increases damage taken by 35%, and deals 20 damage over time\n'Ultrakill style'");
+                "Explosions and crystal shards inflict Sweltered\n'Ultrakill style'");
         }
 
         public override void SetDefaults()
@@ -56,13 +56,18 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.value = Item.sellPrice(gold: 2, silver: 75);
 
             Item.shoot = ModContent.ProjectileType<CoachGunUpgradeBomb>();
-            Item.shootSpeed = 23.5f;
+            Item.shootSpeed = 18.5f; // this was way too fast
             Item.useAmmo = AmmoID.Bullet;
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe().AddIngredient(ModContent.ItemType<CoachGun>()).AddIngredient(ModContent.ItemType<MagmaCore>(), 3).AddIngredient(ItemID.HellstoneBar, 12).AddTile(TileID.Anvils).Register();
+            CreateRecipe().
+                AddIngredient(ModContent.ItemType<CoachGun>()).
+                AddIngredient(ModContent.ItemType<MagmaCore>(), 3).
+                AddIngredient(ItemID.HellstoneBar, 12).
+                AddTile(TileID.Anvils).
+                Register();
         }
 
         public override Vector2? HoldoutOffset()
@@ -126,7 +131,7 @@ namespace StarlightRiver.Content.Items.Vitric
         }
     }
 
-    public class CoachGunUpgradeGlobalProj : GlobalProjectile
+    public class CoachGunUpgradeGlobalProj : GlobalProjectile //this is needed cause otherwise every projectile could break the crystal, only bullets fired from the gun should break the crystal
     {
         public override bool InstancePerEntity => true;
 
@@ -642,9 +647,27 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public SwelteredDeBuff() : base("Sweltered", "Damage taken increased by 35%", false) { }
 
+        public override void Load()
+        {
+            StarlightNPC.ModifyHitByItemEvent += ModifyItemHit;
+            StarlightNPC.ModifyHitByProjectileEvent += ModifyProjectileHit;
+        }
+
+        private void ModifyProjectileHit(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (Inflicted(NPC))
+                damage = (int)(damage * 1.35f);
+        }
+
+        private void ModifyItemHit(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+        {
+            if (Inflicted(NPC))
+                damage = (int)(damage * 1.35f);
+        }
+
         public override void Update(NPC npc, ref int buffIndex)
         {
-            npc.GetGlobalNPC<SwelteredGlobalNPC>().Sweltered = true;
+            npc.GetGlobalNPC<StarlightNPC>().DoT += 10;
 
             Vector2 vel = new Vector2(0, -1).RotatedByRandom(0.5f) * 0.4f;
             if (Main.rand.NextBool(4))
@@ -652,35 +675,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if (Main.rand.NextBool(2))
                 Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.Glow>(), 0, 0, 0,Color.DarkOrange, 0.6f);
-        }
-    }
-    public class SwelteredGlobalNPC : GlobalNPC
-    {
-        public override bool InstancePerEntity => true;
-        public bool Sweltered;
-
-        public override void ResetEffects(NPC NPC)
-        {
-            Sweltered = false;
-        }
-
-        public override void UpdateLifeRegen(NPC npc, ref int damage)
-        {
-            if (Sweltered)
-            {
-                if (npc.lifeRegen > 0)
-                    npc.lifeRegen = 0;
-
-                npc.lifeRegen -= 20;
-                if (damage < 1)
-                    damage = 1;
-            }
-        }
-
-        public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (Sweltered)
-                damage = (int)(damage * 1.35f);
         }
     }
 }
