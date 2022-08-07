@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("Plexus Resistance");
-				Description.SetDefault("+30% to DoT Resistance");
+				Description.SetDefault("+30% Inoculation");
 			}
 
 			public override void Update(Player Player, ref int buffIndex)

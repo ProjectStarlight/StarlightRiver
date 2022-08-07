@@ -14,6 +14,14 @@ namespace StarlightRiver.Configs
         Never = 3
     }
 
+    public enum KeywordStyle
+	{       
+        Colors = 0,
+        Brackets = 1,
+        Both = 2,
+        Neither = 3
+	}
+
     public class GUIConfig : ModConfig
     {
         public override ConfigScope Mode => ConfigScope.ClientSide;
@@ -23,5 +31,10 @@ namespace StarlightRiver.Configs
         [Tooltip("When/If the overhead stamina meter should display")]
         [DefaultValue(typeof(OverlayState), "WhileNotFull")]
         public OverlayState OverheadStaminaState = OverlayState.WhileNotFull;
+
+        [Label("Keyword Style")]
+        [DrawTicks]
+        [Tooltip("How keywords should be displayed in tooltips")]
+        public KeywordStyle KeywordStyle = KeywordStyle.Both;
     }
 }
