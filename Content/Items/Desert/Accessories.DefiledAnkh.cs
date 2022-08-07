@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Desert
             bp.BarrierDamageReduction -= 0.25f;
             bp.MaxBarrier += 40;
 
-            if (Equipped(player) && player.GetModPlayer<BarrierPlayer>().Barrier > 0)
+            if (player.GetModPlayer<BarrierPlayer>().Barrier > 0)
             {
                 for (int i = 0; i < Main.maxBuffTypes; i++) //vanilla debuffs
                 {
