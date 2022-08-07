@@ -21,6 +21,8 @@ using System;
 using System.Linq;
 using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.ItemDropRules;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -96,7 +98,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             acceleration = Main.rand.NextFloat(0.22f, 0.35f);
         }
 
-		public override void FindFrame(int frameHeight)
+        public override void FindFrame(int frameHeight)
 		{
             int frameWidth = 116;
             NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);

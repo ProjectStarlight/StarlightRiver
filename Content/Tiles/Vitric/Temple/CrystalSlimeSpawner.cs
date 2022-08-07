@@ -59,6 +59,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				{
 					Dust.NewDust(Projectile.Center, 20, 20, ModContent.DustType<Dusts.Cinder>());
 				}
+
+				active = false;
 			}
 		}
 

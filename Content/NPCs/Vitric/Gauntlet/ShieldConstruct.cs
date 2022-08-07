@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {

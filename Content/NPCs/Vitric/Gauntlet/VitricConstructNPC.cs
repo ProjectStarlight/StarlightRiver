@@ -14,6 +14,8 @@ using Terraria.Audio;
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.ItemDropRules;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -26,5 +28,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public virtual string previewTextureGlowmaskPath => Texture + "_Preview_Glow";
 
         public virtual void DrawHealingGlow(SpriteBatch spriteBatch) { }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.ByCondition(new TempleCondition(), ItemType<TempleKey>(), 4));
+        }
     }
 }

@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (Timer > 70)
             {
-                //NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+                NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
                 Projectile.Kill();
             }
         }
@@ -73,11 +73,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		}
 
 		public override bool PreDraw(ref Color lightColor)
-        {
-            var tex = Terraria.GameContent.TextureAssets.Npc[(int)NPCType].Value;
+        {          
             var fakeNPC = new NPC();
             fakeNPC.SetDefaults((int)NPCType);
-            fakeNPC.FindFrame();
+
+            var tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).previewTexturePath).Value;
 
             Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, fakeNPC.frame, Color.White, 0, fakeNPC.frame.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

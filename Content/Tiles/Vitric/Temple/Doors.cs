@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
@@ -12,7 +13,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	class DoorVertical : ModTile
+    class DoorVertical : ModTile
     {
         public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -22,6 +23,22 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
             TileID.Sets.DrawsWalls[Type] = true;
             (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
+
+        public override void MouseOver(int i, int j)
+        {
+            Player Player = Main.LocalPlayer;
+            Player.cursorItemIconID = ItemType<TempleKey>();
+            Player.noThrow = 2;
+            Player.cursorItemIconEnabled = true;
+        }
+
+        public override bool RightClick(int i, int j)
+        {
+            if (Main.LocalPlayer.inventory.ConsumeItems(n => n.type == ItemType<TempleKey>(), 1))
+                WorldGen.KillTile(i, j);
+
+            return true;
+        }
     }
 
     class DoorVerticalItem : QuickTileItem
@@ -29,21 +46,26 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
         public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
     }
 
-    class DoorHorizontal : ModTile
+    class DoorGears : ModTile
     {
-        public override string Texture => AssetDirectory.VitricTile + Name;
+        public override string Texture => AssetDirectory.VitricTile + "DoorVertical";
 
         public override void SetStaticDefaults()
         {
             MinPick = int.MaxValue;
             TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+            (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
         }
-    }
 
-    class DoorHorizontalItem : QuickTileItem
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+            Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.solved;
+		}
+	}
+
+    class DoorGearsItem : QuickTileItem
     {
-        public DoorHorizontalItem() : base("Horizontal Temple Door", "Temple Door, But what if it was horizontal?", "DoorHorizontal", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+        public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
     }
 
     class DashableDoor : DummyTile

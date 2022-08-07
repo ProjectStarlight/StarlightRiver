@@ -21,6 +21,8 @@ using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
+using StarlightRiver.Content.Items.Vitric;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -89,7 +91,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.noGravity = true;
         }
 
-        public override void OnSpawn(IEntitySource source)
+		public override void OnSpawn(IEntitySource source)
         {
             movementTarget = oldPosition = NPC.Center;
         }
