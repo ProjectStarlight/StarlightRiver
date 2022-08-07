@@ -120,7 +120,14 @@ namespace StarlightRiver.Core
             return true;
         }
 
-		public override void Unload()
+        public delegate void PostUpdateRunSpeedsDelegate(Player player);
+        public static event PostUpdateRunSpeedsDelegate PostUpdateRunSpeedsEvent;
+        public override void PostUpdateRunSpeeds()
+        {
+            PostUpdateRunSpeedsEvent?.Invoke(Player);
+        }
+
+        public override void Unload()
 		{
             ModifyHitByNPCEvent = null;
             ModifyHitByProjectileEvent = null;
@@ -134,6 +141,7 @@ namespace StarlightRiver.Core
             PostUpdateEvent = null;
             PreDrawEvent = null;
             PreHurtEvent = null;
+            PostUpdateRunSpeedsEvent = null;
             ResetEffectsEvent = null;
 
             spawners = null;
