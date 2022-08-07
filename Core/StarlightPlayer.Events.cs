@@ -120,7 +120,14 @@ namespace StarlightRiver.Core
             return true;
         }
 
-		public override void Unload()
+        public delegate void PreUpdateBuffsDelegate(Player player);
+        public static event PreUpdateBuffsDelegate PreUpdateBuffsEvent;
+        public override void PreUpdateBuffs()
+        {
+            PreUpdateBuffsEvent?.Invoke(Player);
+        }
+
+        public override void Unload()
 		{
             ModifyHitByNPCEvent = null;
             ModifyHitByProjectileEvent = null;
@@ -134,6 +141,7 @@ namespace StarlightRiver.Core
             PostUpdateEvent = null;
             PreDrawEvent = null;
             PreHurtEvent = null;
+            PreUpdateBuffsEvent = null;
             ResetEffectsEvent = null;
 
             spawners = null;

@@ -121,6 +121,8 @@ namespace StarlightRiver.Core
 
         public const string EvilBiomesItem =        Assets + "Items/EvilBiomes/";
 
+        public const string DesertItem =                Assets + "Items/Desert/";
+
         //structures
         public const string StructureFolder =       "Structures/";
 
