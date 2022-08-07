@@ -1,7 +1,8 @@
 ﻿//Todo on falling trees:
 
 //Cache frame data
-//Make it drop if you chop it at the top
+//Fix jankiness with cutting it high up from the left
+//Fix jankiness with recutting trees
 //Sfx
 //Make it include the bottom
 
@@ -221,7 +222,7 @@ namespace StarlightRiver.Content.Tiles.Forest
         private static void SpawnFallingTree(IEntitySource source, int i, int j, int direction)
         {
             int height = 1;
-            for (; height < 50; height++)
+            for (; height < 500; height++)
             {
                 if (Framing.GetTileSafely(i, j - height).TileType != ModContent.TileType<ThickTree>())
                     break;
@@ -230,7 +231,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			height++;
             Vector2 tilePosition = new Vector2(i, j);
             Vector2 worldPosition = tilePosition * 16;
-            Projectile proj = Projectile.NewProjectileDirect(source, worldPosition, Vector2.Zero, ModContent.ProjectileType<ThickTreeFalling>(), 0, 0, 255);
+            Projectile proj = Projectile.NewProjectileDirect(source, worldPosition, Vector2.Zero, ModContent.ProjectileType<ThickTreeFalling>(), 500, 0, Main.LocalPlayer.whoAmI);
 
             ThickTreeFalling modProjectile = proj.ModProjectile as ThickTreeFalling;
 
@@ -280,12 +281,13 @@ namespace StarlightRiver.Content.Tiles.Forest
 		private float rotationalVelocity = 0;
 		public override void SetDefaults()
 		{
+			Projectile.friendly = true;
 			Projectile.width = 16;
 			Projectile.height = 16;
-			Projectile.friendly = false;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 1000;
+			//Projectile.hide = true;
 		}
 
 		public override void SetStaticDefaults()
@@ -293,18 +295,27 @@ namespace StarlightRiver.Content.Tiles.Forest
 			DisplayName.SetDefault("Falling Tree");
 		}
 
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+			//behindNPCsAndTiles.Add(index);
+        }
+
         public override void AI()
         {
-			if (rotationalVelocity < maxVelocity)
-				rotationalVelocity += acceleration * direction;
 
 			if (Math.Abs(Projectile.rotation) < 1.75f)
-				Projectile.rotation += rotationalVelocity;
-			else
-            {
-				Projectile.velocity.Y += Math.Abs(rotationalVelocity) * 2;
-				Projectile.rotation += rotationalVelocity * 0.2f;
+			{
+				if (rotationalVelocity < maxVelocity)
+					rotationalVelocity += acceleration * direction;
 			}
+			else
+			{
+				Projectile.velocity.Y += Math.Abs(maxVelocity) * 2;
+				Projectile.rotation += rotationalVelocity * 0.2f;
+				rotationalVelocity = MathHelper.Lerp(rotationalVelocity, maxVelocity * 0.2f * direction, 0.1f);
+			}
+
+			Projectile.rotation += rotationalVelocity;
 
 			Vector2 headPos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * (height + 2) * 16);
 			Vector2 gorePos = headPos + Main.rand.NextVector2Circular(128, 128);
@@ -316,6 +327,12 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (TouchingTile())
 				Projectile.Kill();
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+			Vector2 headPos = Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * (height + 2) * 16);
+			return Collision.CheckAABBvAABBCollision(targetHitbox.TopLeft(), targetHitbox.Size(), headPos - new Vector2(64, 64), new Vector2(128, 128));
         }
 
         public override bool PreDraw(ref Color lightColor)
