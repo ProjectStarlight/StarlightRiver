@@ -283,8 +283,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
             if (doingFlyingCombo)
             {
-                flyingComboCooldown = 400;
-
                 if (flyingPartner == null || flyingPartner == default || !flyingPartner.active)
                 {
                     doingFlyingCombo = false;
@@ -325,6 +323,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                 if (flyingModNPC.hitPelterArrow)
                 {
+                    flyingComboCooldown = 400;
                     doingFlyingCombo = false;
                     flyingPartner = default;
                     return false;
