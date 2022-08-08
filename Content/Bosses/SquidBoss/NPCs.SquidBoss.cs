@@ -152,6 +152,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 ItemType<OverflowingUrn>(),
                 ItemType<AuroraBell>(),
                 ItemType<AuroraThroneMountItem>(),
+                ItemType<Tentalance>(),
             }
             ));
 

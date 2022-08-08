@@ -50,6 +50,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                     case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<OverflowingUrn>()); break;
                     case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraBell>()); break;
 					case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraThroneMountItem>()); break;
+					case 3: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Tentalance>()); break;
 						//TODO: Add drops as they're implemented
 				}
                 weapon++;
