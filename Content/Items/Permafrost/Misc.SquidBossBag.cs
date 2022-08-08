@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             for (int k = 0; k < 2; k++) //PORT: k < Main.MasterMode ? 3 : 2
             {
-                switch (weapon % 3)
+                switch (weapon % 4)
                 {
                     case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<OverflowingUrn>()); break;
                     case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraBell>()); break;

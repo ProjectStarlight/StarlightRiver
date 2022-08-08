@@ -39,6 +39,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.shoot = ModContent.ProjectileType<TentalanceProjectile>();
 			Item.shootSpeed = 60;
 			Item.rare = Terraria.ID.ItemRarityID.Green;
+			Item.autoReuse = true;
 		}
 
 		public Color GetColor(float off)
@@ -51,6 +52,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override bool CanUseItem(Player player)
 		{
 			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
+		}
+
+		public override bool CanShoot(Player player)
+		{
+			return CanUseItem(player);	
 		}
 
 		public override void HoldItem(Player player)
@@ -80,7 +86,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private Trail trail;
 
 		public Player Owner => Main.player[Projectile.owner];
-		public int Charge => (Owner.HeldItem.ModItem as Tentalance).charge;
+		public int Charge => (Owner.HeldItem.ModItem is Tentalance) ? (Owner.HeldItem.ModItem as Tentalance).charge : 0;
 
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float ChargeSnapshot => ref Projectile.ai[1];
@@ -100,6 +106,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void AI()
 		{
+			//Owner.heldProj = Projectile.whoAmI;
+
 			if (!Owner.channel || Timer > 0)
 			{
 				Timer++;
@@ -116,6 +124,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
 				Projectile.timeLeft = 120;
 				Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Owner.Center) * Projectile.velocity.Length();
+
+				Owner.SetCompositeArmFront(true, 0, Projectile.rotation - 1.57f);
+				Owner.direction = Projectile.velocity.X > 0 ? 1 : -1;
 			}
 
 			if (Timer == 10 && ChargeSnapshot >= 15)
