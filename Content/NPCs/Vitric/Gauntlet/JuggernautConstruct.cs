@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.DeathSound = SoundID.Shatter;
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             NPC.TargetClosest(xFrame == 2);
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);

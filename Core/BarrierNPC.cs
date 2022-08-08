@@ -79,20 +79,39 @@ namespace StarlightRiver.Core
 
 			TimeSinceLastHit++;
 
-			if (TimeSinceLastHit >= RechargeDelay && Barrier < MaxBarrier)
+			if (TimeSinceLastHit >= RechargeDelay)
+			{
+				if (Barrier < MaxBarrier && RechargeRate > 0)
+				{
+					int rechargeRateWhole = RechargeRate / 60;
+
+					Barrier += Math.Min(rechargeRateWhole, MaxBarrier - Barrier);
+
+					if (RechargeRate % 60 != 0)
+					{
+						int rechargeSubDelay = 60 / (RechargeRate % 60);
+
+						if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier < MaxBarrier)
+							Barrier++;
+					}
+				}
+			}
+
+			if (Barrier > 0 && RechargeRate < 0) //If recharge rate is negative, the NPC loses barrier over time.
 			{
 				int rechargeRateWhole = RechargeRate / 60;
 
-				Barrier += Math.Min(rechargeRateWhole, MaxBarrier - Barrier);
+				Barrier += Math.Min(rechargeRateWhole, Barrier);
 
 				if (RechargeRate % 60 != 0)
 				{
-					int rechargeSubDelay = 60 / (RechargeRate % 60);
+					int rechargeSubDelay = 60 / (Math.Abs(RechargeRate) % 60);
 
-					if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier < MaxBarrier)
-						Barrier++;
+					if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier > 0)
+						Barrier--;
 				}
 			}
+
 
 			if (Barrier > MaxBarrier && !DontDrainOvercharge)
 			{

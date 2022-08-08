@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             movementTarget = oldPosition = NPC.Center;
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             if (xFrame == 1 && yFrame == 7 && frameCounter == 1) //Dust when the enemy swings it's sword
             {

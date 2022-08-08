@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             oldPos = NPC.Center;
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             knockbackVel *= 0.87f;
 

@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);
         }
 
-		public override void AI() //TODO: Document snippets with their intended behavior
+		public override void SafeAI() //TODO: Document snippets with their intended behavior
         {
             if (xFrame == 2 && yFrame == 6 && frameCounter == 1) //Dust when the enemy swings it's sword
             {

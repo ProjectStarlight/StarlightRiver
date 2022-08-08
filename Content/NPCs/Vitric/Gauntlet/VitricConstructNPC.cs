@@ -23,6 +23,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public bool ableToDoCombo = true;
 
+        public int healingCounter = 0;//Counts down from 5 if the enemy isn't being healed
+
+        public int barrierCounter = 0;//Counts up, if its divisible by 8 max barrier goes down
+
         public virtual string previewTexturePath => Texture + "_Preview";
 
         public virtual string previewTextureGlowmaskPath => Texture + "_Preview_Glow";
@@ -33,5 +37,29 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             npcLoot.Add(ItemDropRule.ByCondition(new TempleCondition(), ItemType<TempleKey>(), 4));
         }
+
+        public override void AI()
+        {
+            SafeAI();
+            BarrierNPC barrierNPC = NPC.GetGlobalNPC<BarrierNPC>();
+
+            barrierCounter++;
+            barrierNPC.MaxBarrier = 120;
+            barrierNPC.BarrierDamageReduction = 0.75f;
+            if (healingCounter > 0)
+            {
+                healingCounter--;
+                barrierNPC.RechargeRate = 30;
+            }
+            else
+            {
+                if (barrierNPC.Barrier > 0)
+                    barrierNPC.RechargeRate = -30;
+                else
+                    barrierNPC.RechargeRate = 0;
+            }
+        }
+
+        public virtual void SafeAI() { }
     }
 }

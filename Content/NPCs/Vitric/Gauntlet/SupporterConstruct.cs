@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             orig(self, behindTiles);
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             laserTimer++;
             healCounter++;
@@ -204,6 +204,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
                     doingCombo = true;
                 }
+
+                var modNPC = healingTarget.ModNPC as VitricConstructNPC;
+                modNPC.healingCounter = 5;
 
                 Vector2 posToBe = healingTarget.Center;
 

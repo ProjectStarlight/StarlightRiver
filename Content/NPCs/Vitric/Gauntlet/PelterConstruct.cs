@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             backupDistance = Main.rand.Next(50, 100);
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
             NPC.noGravity = false;

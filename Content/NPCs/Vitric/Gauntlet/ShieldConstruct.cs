@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             timer = Main.rand.Next(100);
         }
 
-        public override void AI()
+        public override void SafeAI()
         {
             NPC.TargetClosest(false);
 
