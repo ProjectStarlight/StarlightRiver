@@ -49,15 +49,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (healingCounter > 0)
             {
                 healingCounter--;
-                barrierNPC.RechargeRate = 30;
+                barrierNPC.RechargeRate = 70;
             }
             else
-            {
-                if (barrierNPC.Barrier > 0)
-                    barrierNPC.RechargeRate = -30;
-                else
-                    barrierNPC.RechargeRate = 0;
-            }
+                barrierNPC.RechargeRate = -30;
         }
 
         public virtual void SafeAI() { }
