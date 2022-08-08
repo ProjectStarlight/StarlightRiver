@@ -102,6 +102,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.extraUpdates = 1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 20;
+			Projectile.DamageType = DamageClass.Melee;
 		}
 
 		public override void AI()
