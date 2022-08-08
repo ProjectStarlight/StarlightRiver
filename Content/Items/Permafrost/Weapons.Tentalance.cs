@@ -19,6 +19,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("Launches a shimmering tentacle lance\nCharge to fire up to 4 more lances at once");
+		}
+
 		public override void SetDefaults()
 		{
 			Item.width = 54;
@@ -33,6 +38,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.channel = true;
 			Item.shoot = ModContent.ProjectileType<TentalanceProjectile>();
 			Item.shootSpeed = 60;
+			Item.rare = Terraria.ID.ItemRarityID.Green;
 		}
 
 		public Color GetColor(float off)
@@ -160,10 +166,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation + 1.57f / 2, texGlow.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(texGlow2, Projectile.Center - Main.screenPosition, null, GetColor(Charge * 0.1f), Projectile.rotation + 1.57f / 2, texGlow2.Size() / 2, 1, 0, 0);
 
-			for (int k = 0; k < 16; k++)
+			for (int k = 0; k < 24; k++)
 			{
-				Vector2 pos = Vector2.Lerp(basePos, Projectile.Center, k / 16f);
-				pos += Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(k / 16f * 6.28f * 2) * 5;
+				Vector2 pos = Vector2.Lerp(basePos, Projectile.Center, k / 29f);
+				pos += Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(k / 24f * 6.28f * 2) * 5;
 				var texSegment = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Segment").Value;
 
 				spriteBatch.Draw(texSegment, pos - Main.screenPosition, null, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), Projectile.rotation, texSegment.Size() / 2, 1, 0, 0);
