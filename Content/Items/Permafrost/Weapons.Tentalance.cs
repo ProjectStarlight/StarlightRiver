@@ -35,8 +35,28 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.shootSpeed = 60;
 		}
 
+		public Color GetColor(float off)
+		{
+			float sin = 1 + (float)Math.Sin(off);
+			float cos = 1 + (float)Math.Cos(off);
+			return new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			return !Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<TentalanceProjectile>() && n.owner == player.whoAmI);
+		}
+
 		public override void HoldItem(Player player)
 		{
+			if (charge == 29)
+			{
+				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
+
+				for (int k = 0; k < 40; k++)
+					Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(k / 40f * 6.28f) * 1.5f, 0, GetColor(k / 40f * 6.28f * 3), Main.rand.NextFloat(0.5f, 1));
+			}
+
 			if (player.channel && charge < 30)
 				charge++;
 		}
@@ -44,7 +64,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void UpdateInventory(Player player)
 		{
 			if (!player.channel && charge > 0)
-				charge--;
+				charge = 0;
 		}
 	}
 
@@ -82,25 +102,32 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					ChargeSnapshot = Charge;
 					Projectile.damage += Charge;
+
+					Helper.PlayPitched("SquidBoss/LightSplash", 0.2f, -0.5f, Owner.Center);
 				}
 			}
 			else
+			{
 				Projectile.timeLeft = 120;
+				Projectile.velocity = Vector2.Normalize(Main.MouseWorld - Owner.Center) * Projectile.velocity.Length();
+			}
 
 			if (Timer == 10 && ChargeSnapshot >= 15)
 			{
 				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
 				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.25f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 14);
+				Helper.PlayPitched("SquidBoss/LightSplash", 0.3f, -0.5f, Owner.Center);
 			}
 
 			if (Timer == 20 && ChargeSnapshot >= 30)
 			{
 				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
 				Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Projectile.velocity.RotatedBy(-0.45f), Type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, 0, 1);
+				Helper.PlayPitched("SquidBoss/SuperSplash", 0.5f, -0.5f, Owner.Center);
 			}
 
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
-			var dist = ((float)Math.Sin((Timer / 120f) * 3.14f) - (Charge / 30f) * 0.2f);
+			var dist = ((float)Math.Sin((Timer / 120f) * 3.14f) - (Charge / 30f) * 0.1f);
 			var rot = (float)Math.Sin((Timer / 120f) * 6.28f) * 0.05f;
 			Projectile.Center = basePos + dist * Projectile.velocity.RotatedBy(rot) * (4 + ChargeSnapshot / 7.5f);
 
@@ -185,7 +212,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 15, factor =>
 			{
-				return GetColor(factor.X) * factor.X * (float)Math.Sin(Projectile.timeLeft / 120f * 3.14f);
+				return GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f);
 			});
 
 			Vector2[] realCache = new Vector2[60];
