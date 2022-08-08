@@ -39,6 +39,9 @@ namespace StarlightRiver.Helpers
         /// </summary>
         public static Vector2 TwoValueMax(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Max(vector.X, vector2.X), Math.Max(vector.Y, vector2.Y));
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
+        /// <summary>
+        /// Seperates all flags stored in a enum out into an array
+        /// </summary>
         public static IEnumerable<Enum> GetFlags(this Enum input)
         {
             foreach (Enum value in Enum.GetValues(input.GetType()))

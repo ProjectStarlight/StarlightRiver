@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.WorldGeneration;
+﻿using StarlightRiver.Core.Systems.ChestLootSystem;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Generation;
@@ -7,7 +7,7 @@ using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModSystem
+    public partial class StarlightWorld : ModSystem
     {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
@@ -36,7 +36,7 @@ namespace StarlightRiver.Core
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
-            ChestLootSystem.PopulateAllChests();
+            ChestLootSystem.Instance.PopulateAllChests();
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace StarlightRiver.Content.WorldGeneration
+namespace StarlightRiver.Core.Systems.ChestLootSystem
 {
-	[Flags]
+    [Flags]
     public enum ChestRegionFlags
     {
         All = 0b1, // Applies to any of these listed chests.
@@ -26,5 +26,8 @@ namespace StarlightRiver.Content.WorldGeneration
         TrappedUnderground = 0b1000000000000000000,
         Barrel = 0b10000000000000000000,
         Trashcan = 0b100000000000000000000,
+        Vitric = 0b1000000000000000000000,
+        Permafrost = 0b10000000000000000000000,
+        Overgrowth = 0b100000000000000000000000,
     }
 }
