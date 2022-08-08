@@ -3,8 +3,10 @@
 //Cache frame data
 //Fix jankiness with cutting it high up from the left
 //Fix jankiness with recutting trees
+//Make top of trees regenerate
 //Sfx
 //Make it include the bottom
+//Make them harder to chop
 
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -437,7 +439,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Vector2 position = (basePos.ToVector2()) + new Vector2(0.5f, 0);
 
 			Vector2 unitVector = (Projectile.rotation - 1.57f).ToRotationVector2();
-			for (int i = 0; i < height; i++)
+			for (int i = 0; i < height + 5; i++)
             {
 				position += unitVector;
 
