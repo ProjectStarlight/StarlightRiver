@@ -1,3 +1,11 @@
+//TODO:
+//Tile item
+//Dust
+//Make loot generate in the chest
+//Better map color
+//Code cleanup
+
+
 using System;
 
 using Microsoft.Xna.Framework;
