@@ -1,12 +1,11 @@
 ﻿//Todo on falling trees:
 
 //Cache frame data
-//Fix jankiness with cutting it high up from the left
 //Fix jankiness with recutting trees
-//Make top of trees regenerate
 //Sfx
 //Make it include the bottom
 //Make them harder to chop
+//Make the bottom choppable by axe
 
 using Microsoft.Xna.Framework.Graphics;
 using System;
