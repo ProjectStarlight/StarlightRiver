@@ -1,11 +1,3 @@
-//TODO:
-//Tile item
-//Dust
-//Make loot generate in the chest
-//Better map color
-//Code cleanup
-
-
 using System;
 
 using Microsoft.Xna.Framework;
@@ -61,13 +53,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 			TileObjectData.addTile(Type);
 
 			ModTranslation name = CreateMapEntryName();
-			AddMapEntry(new Color(255, 0, 255), name, MapChestName);
+			AddMapEntry(Color.Gold, name, MapChestName);
 			name = CreateMapEntryName(Name + "_Locked");
 			name.SetDefault("Ankh Chest");
-			AddMapEntry(new Color(255, 0, 255), name, MapChestName);
-			DustType = 206; //TODO: Change
+			AddMapEntry(Color.Cyan, name, MapChestName);
+			DustType = DustID.Sand; 
 			AdjTiles = new int[] { TileID.Containers };
-			ChestDrop = 76; //TODO: Change
+			ChestDrop = ModContent.ItemType<AnkhChestItem>();
 			ContainerName.SetDefault("Ankh Chest");
 		}
 
@@ -76,26 +68,25 @@ namespace StarlightRiver.Content.Tiles.Desert
 			int left = i;
 			int top = j;
 			Tile tile = Main.tile[i, j];
+
 			if (tile.TileFrameX % 36 != 0)
 			{
 				left--;
 			}
+
 			if (tile.TileFrameY != 0)
 			{
 				top--;
 			}
+
 			int chest = Chest.FindChest(left, top);
-			if (chest < 0) {
+
+			if (chest < 0) 
 				return Language.GetTextValue("LegacyChestType.0");
-			}
 			else if (Main.chest[chest].name == "")
-			{
 				return name;
-			}
 			else
-			{
 				return name + ": " + Main.chest[chest].name;
-			}
 		}
 
         public override bool SpawnConditions(int i, int j)
@@ -104,8 +95,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 			return tile.TileFrameX == 72 && tile.TileFrameY == 0;
 		}
 
-        public override ushort GetMapOption(int i, int j) {
+        public override ushort GetMapOption(int i, int j) 
+		{
 			int style = Main.tile[i, j].TileFrameX / 36;
+
 			// MapOption don't match up with styles, since 0 and 2 were used.
 			return (ushort)(style == 0 ? 0 : 1);
 		}
@@ -114,7 +107,8 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override bool IsLockedChest(int i, int j) => Main.tile[i, j].TileFrameX / 36 == 2;
 
-		public override bool UnlockChest(int i, int j, ref short frameXAdjustment, ref int dustType, ref bool manual) {
+		public override bool UnlockChest(int i, int j, ref short frameXAdjustment, ref int dustType, ref bool manual) 
+		{
 			frameXAdjustment = -72;
 			return true;
 		}
@@ -279,21 +273,19 @@ namespace StarlightRiver.Content.Tiles.Desert
 			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				Player.GetHandler().ActiveAbility?.Deactivate();
+				Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
 
-				if (Main.myPlayer == Player.whoAmI)
+				int i = (int)(Projectile.position.X / 16);
+				int j = (int)(Projectile.position.Y / 16);
+
+				for (int k = 0; k < 2; k++)
 				{
-					int i = (int)(Projectile.position.X / 16);
-					int j = (int)(Projectile.position.Y / 16);
-
-					for (int k = 0; k < 2; k++)
+					for (int l = 0; l < 2; l++)
 					{
-						for (int l = 0; l < 2; l++)
-						{
-							Tile tile = Framing.GetTileSafely(i + k, j + l);
-							tile.TileFrameX -= 72;
-						}
+						Tile tile = Framing.GetTileSafely(i + k, j + l);
+						tile.TileFrameX -= 72;
 					}
-					//NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 				}
 
 				for (int k = 0; k <= 10; k++)
@@ -301,6 +293,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
+
 				Projectile.active = false;
 			}
 		}
@@ -312,5 +305,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, -1) - Main.screenPosition, color);
 		}
+	}
+
+	class AnkhChestItem : QuickTileItem
+	{
+		public AnkhChestItem() : base("Ankh Chest", "", "AnkhChest", 1, AssetDirectory.DesertTile, false) { }
 	}
 }

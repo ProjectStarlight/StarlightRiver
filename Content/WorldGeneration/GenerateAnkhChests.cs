@@ -18,13 +18,13 @@ namespace StarlightRiver.Core
 
             int tries = 0;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 25; i++)
             {
                 if (!PlaceAnkhChest(WorldGen.UndergroundDesertLocation.X + Main.rand.Next(-500, 500), WorldGen.UndergroundDesertLocation.Y + (WorldGen.UndergroundDesertLocation.Height / 2) + Main.rand.Next(-500, 500)))
                 {
                     tries++;
                     i--;
-                    if (tries > 300)
+                    if (tries > 999)
                         break;
                 }
             }
