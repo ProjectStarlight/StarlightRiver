@@ -76,6 +76,8 @@ namespace StarlightRiver.Core
 
         public const string AshHellTile =           Assets + "Tiles/AshHell/";
 
+        public const string DesertTile =            Assets + "Tiles/Desert/";
+
         public const string VoidTile =              Assets + "Tiles/Void/";
 
         public const string CookingTile =           Assets + "Tiles/Cooking/";
