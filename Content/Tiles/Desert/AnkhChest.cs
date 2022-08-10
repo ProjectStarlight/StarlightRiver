@@ -244,22 +244,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			int chest = Chest.FindChest(left, top);
 
-			if (chest < 0)
+			if (chest >= 0 && tile.TileFrameX < 72)
 			{
 				player.cursorItemIconID = ChestDrop;
-				player.cursorItemIconText = Language.GetTextValue("LegacyChestType.0");
+				player.cursorItemIconText = "";
 				player.noThrow = 2;
 				player.cursorItemIconEnabled = true;
 			}
-			else
-			{
-				return;
-			}
-		}
-
-		public override void MouseOverFar(int i, int j)
-		{
-			MouseOver(i, j);
 		}
 	}
 	internal class AnkhChestDummy : Dummy
