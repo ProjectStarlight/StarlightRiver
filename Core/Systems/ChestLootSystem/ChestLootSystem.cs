@@ -62,6 +62,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
                 [ModContent.TileType<Content.Tiles.Vitric.VitricRock>() + 10000] = ChestRegionFlags.Vitric,//placeholder tile
                 [ModContent.TileType<Content.Tiles.Permafrost.AuroraIce>() + 10000] = ChestRegionFlags.Permafrost,//placeholder tile
                 [ModContent.TileType<Content.Tiles.Overgrow.Rock2x2>() + 10000] = ChestRegionFlags.Overgrowth,//placeholder tile
+                [ModContent.TileType<Content.Tiles.Desert.AnkhChest>() + 10000] = ChestRegionFlags.Ankh,
             };
 
             DisplayCaseReplaceable = new HashSet<ChestRegionFlags> // Could be a dictionary if seperate chances are needed
