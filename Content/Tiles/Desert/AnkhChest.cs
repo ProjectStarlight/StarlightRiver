@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			if (chest < 0)
 			{
-				player.cursorItemIconID = -1;
+				player.cursorItemIconID = ChestDrop;
 				player.cursorItemIconText = Language.GetTextValue("LegacyChestType.0");
 				player.noThrow = 2;
 				player.cursorItemIconEnabled = true;
