@@ -30,7 +30,7 @@ namespace StarlightRiver.Core
         public int lastGrazeDamage; // damage of the last projectile the player grazed, before defense etc. 
 
         private int grazeCooldown;
-        public int GrazeCooldown = 120; // modify this if you want to change the cooldown
+        public int GrazeCooldownLength = 120; // modify this if you want to change the cooldown
 
         public bool doGrazeLogic;
 
@@ -47,7 +47,7 @@ namespace StarlightRiver.Core
             doGrazeLogic = false;
             grazeProj = null;
 
-            GrazeCooldown = 120;
+            GrazeCooldownLength = 120;
 
             if (grazeCooldown > 0)
                 grazeCooldown --;
@@ -60,7 +60,7 @@ namespace StarlightRiver.Core
 
             if (grazeCooldown > 0)
             {
-                float scale = MathHelper.Lerp(0.55f, 0.15f, 1f - (grazeCooldown / (float)GrazeCooldown));
+                float scale = MathHelper.Lerp(0.55f, 0.15f, 1f - (grazeCooldown / (float)GrazeCooldownLength));
                 Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, GrazeColor, scale);
                 if (grazeCooldown == 1)
                     SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
@@ -104,7 +104,7 @@ namespace StarlightRiver.Core
                 {
                     grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
 
-                    grazeCooldown = GrazeCooldown;
+                    grazeCooldown = GrazeCooldownLength;
 
                     lastGrazeDamage = grazeProj.damage;
 
