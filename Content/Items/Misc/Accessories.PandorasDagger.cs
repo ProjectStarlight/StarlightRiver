@@ -28,6 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.rare = ItemRarityID.Orange;
             Item.value = Item.sellPrice(gold: 1);
         }
+
         public override void SafeUpdateEquip(Player Player)
         {
             var gp = Player.GetModPlayer<GrazePlayer>();
@@ -41,6 +42,15 @@ namespace StarlightRiver.Content.Items.Misc
                         (int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(15), 3.5f, Player.whoAmI);
                 }
             }
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+            AddIngredient(ModContent.ItemType<HolyAmulet>()).
+            AddIngredient(ModContent.ItemType<BloodAmulet>()).
+            AddTile(TileID.Anvils).
+            Register();
         }
     }
 
