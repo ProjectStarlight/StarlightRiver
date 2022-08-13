@@ -98,9 +98,7 @@ namespace StarlightRiver.Core
                     }
 
                     if (grazeProj.Hitbox.Intersects(grazeRect))
-                    {
                         inGrazeRect = true;
-                    }
 
                     if (!grazeProj.Hitbox.Intersects(grazeRect) && inGrazeRect)
                     {
