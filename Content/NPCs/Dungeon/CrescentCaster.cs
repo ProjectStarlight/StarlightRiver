@@ -1,7 +1,10 @@
 ﻿//TODO:
 //Bestiary
-//Make beams "shake" more
-//Make him unable to support through walls
+//Make beams midpoint reset if the NPC gets far enough away
+//Make criteria for support targets stricter
+//Reset beam midpoint if enemy moves too far away from it's original position
+//Make beams disappear if enemy is no longer active or too far away
+//Dust on targets
 //Spawning
 //Drops
 //Value
@@ -12,6 +15,9 @@
 
 //MAYBE TODO:
 //Make support targets lose barrier gradually
+//Make him unable to support through walls
+//support target aura
+//Make beams "shake" less often
 
 
 using Microsoft.Xna.Framework;
@@ -83,7 +89,15 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         public void UpdateTrailPoints()
         {
-            trail.Positions = trail2.Positions = BezierPoints().ToArray();
+            List<Vector2> points = BezierPoints();
+
+            List<Vector2> pointsWithOffset = new List<Vector2>();
+            foreach(Vector2 point in points)
+            {
+                pointsWithOffset.Add(point + Main.rand.NextVector2Circular(5, 5));
+            }
+
+            trail.Positions = trail2.Positions = pointsWithOffset.ToArray();
             trail.NextPosition = trail2.NextPosition = TargetNPC.Center;
         }
 
@@ -216,7 +230,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             foreach(NPC boltNPC in toAddBolts)
             {
                 Vector2 directionTo = NPC.DirectionTo(boltNPC.Center);
-                Bolts.Add(new CrescentCasterBolt(boltNPC, NPC, CalculateMidpoint(boltNPC), Main.rand.NextVector2Circular(1, 1), Main.instance.GraphicsDevice));
+                Bolts.Add(new CrescentCasterBolt(boltNPC, NPC, CalculateMidpoint(boltNPC), Main.rand.NextVector2Circular(2.5f, 2.5f), Main.instance.GraphicsDevice));
             }
 
             supportTargets = tempTargets;
@@ -266,7 +280,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 if (Main.rand.NextBool(40)) //Change bolt curve
                 {
                     bolt.MidPoint = CalculateMidpoint(bolt.TargetNPC);
-                    bolt.MidPointDirection = Main.rand.NextVector2Circular(1, 1);
+                    bolt.MidPointDirection = Main.rand.NextVector2Circular(2.5f, 2.5f);
                 }
                 bolt.MidPoint += bolt.MidPointDirection;
 
