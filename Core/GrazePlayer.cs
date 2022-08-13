@@ -63,55 +63,56 @@ namespace StarlightRiver.Core
                 float scale = MathHelper.Lerp(0.55f, 0.15f, 1f - (grazeCooldown / (float)GrazeCooldownLength));
                 Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, GrazeColor, scale);
                 if (grazeCooldown == 1)
-                    SoundEngine.PlaySound(SoundID.MaxMana, Player.position);
+                    SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.position);
             }
 
-            Rectangle grazeRect = new Rectangle(Player.Hitbox.X - (int)(12 * (grazeRectangleMult + 1f)), Player.Hitbox.Y - (int)(22 * (grazeRectangleMult + 1f)), (int)(Player.Hitbox.Width * (2f + grazeRectangleMult)), (int)(Player.Hitbox.Height * (2f + grazeRectangleMult)));
-
-            float maxDist = 200f;
-            for (int i = 0; i < Main.maxProjectiles; i++)
+            if (grazeCooldown <= 0) // this was changed because before it would scan targets while on cooldown, causing you to immediately graze again after the cooldown is over, even if there isnt a projectile nearby to graze
             {
-                Projectile proj = Main.projectile[i];
+                Rectangle grazeRect = new Rectangle(Player.Hitbox.X - (int)(12 * (grazeRectangleMult + 1f)), Player.Hitbox.Y - (int)(22 * (grazeRectangleMult + 1f)), (int)(Player.Hitbox.Width * (2f + grazeRectangleMult)), (int)(Player.Hitbox.Height * (2f + grazeRectangleMult)));
 
-                if (proj.hostile && proj.active && proj.Distance(Player.Center) < maxDist && !proj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Contains(Player))
+                float maxDist = 200f;
+                for (int i = 0; i < Main.maxProjectiles; i++)
                 {
-                    float dist = proj.Distance(Player.Center);
-                    if (dist < maxDist)
+                    Projectile proj = Main.projectile[i];
+                    //TODO: use entity sources to make it so that projectiles spawned from npcs that were spawned from statues dont proc grazes. I have no fucking clue how to do this but
+                    if (proj.hostile && proj.active && proj.Distance(Player.Center) < maxDist && !proj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Contains(Player))
                     {
-                        grazeProj = proj;
-                        maxDist = dist;
+                        float dist = proj.Distance(Player.Center);
+                        if (dist < maxDist)
+                        {
+                            grazeProj = proj;
+                            maxDist = dist;
+                        }
                     }
                 }
-            }
 
-            if (grazeProj != null)
-            {
-                if (grazeProj.Hitbox.Intersects(Player.Hitbox))
+                if (grazeProj != null)
                 {
-                    grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
-                    grazeProj = null;
-                    justGrazed = false;
-                    inGrazeRect = false;
-                    return;
-                }
+                    if (grazeProj.Hitbox.Intersects(Player.Hitbox))
+                    {
+                        grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
+                        grazeProj = null;
+                        justGrazed = false;
+                        inGrazeRect = false;
+                        return;
+                    }
 
-                if (grazeProj.Hitbox.Intersects(grazeRect))
-                {
-                    inGrazeRect = true;
-                }
+                    if (grazeProj.Hitbox.Intersects(grazeRect))
+                        inGrazeRect = true;
 
-                if (!grazeProj.Hitbox.Intersects(grazeRect) && inGrazeRect && grazeCooldown <= 0)
-                {
-                    grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
+                    if (!grazeProj.Hitbox.Intersects(grazeRect) && inGrazeRect)
+                    {
+                        grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
 
-                    grazeCooldown = GrazeCooldownLength;
+                        grazeCooldown = GrazeCooldownLength;
 
-                    lastGrazeDamage = grazeProj.damage;
+                        lastGrazeDamage = grazeProj.damage;
 
-                    justGrazed = true;
-                    DoGrazeEffects();
-                    inGrazeRect = false;
+                        justGrazed = true;
+                        DoGrazeEffects();
+                        inGrazeRect = false;
 
+                    }
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace StarlightRiver.Core
 
         private void DoGrazeEffects()
         {
-            Helper.PlayPitched("Effects/HeavyWhooshShort", 0.5f, 0, Player.position);
+            Helper.PlayPitched("ProjectileImpact1", 0.8f, Main.rand.NextFloat(-0.05f, 0.05f), Player.position);
 
             for (int i = 0; i < 10; i++)
             {
