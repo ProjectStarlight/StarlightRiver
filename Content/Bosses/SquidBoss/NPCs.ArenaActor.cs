@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.Tiles.Permafrost;
@@ -324,6 +325,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public void DrawBigWindow(SpriteBatch spriteBatch)
         {
+            if (!Main.LocalPlayer.InModBiome<PermafrostTempleBiome>())
+                return;
+
             var drawCheck = new Rectangle(StarlightWorld.SquidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.SquidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.SquidBossArena.Width * 16, StarlightWorld.SquidBossArena.Height * 16);
             if (!Helper.OnScreen(drawCheck)) return;
 
