@@ -1,9 +1,9 @@
 ﻿//Todo on falling trees:
 
 //Cache frame data
-//Fix jankiness with recutting trees
+//Make top of trees separate tile
 //Sfx
-//Make it include the bottom
+//Make it include the bottom when you chop it
 //Make them harder to chop
 //Make the bottom choppable by axe
 
