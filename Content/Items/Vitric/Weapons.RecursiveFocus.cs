@@ -52,7 +52,6 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             if (player.ownedProjectileCounts[Item.shoot] > 0)
-            {
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile proj = Main.projectile[i];
@@ -61,7 +60,6 @@ namespace StarlightRiver.Content.Items.Vitric
                         proj.Kill();
                     }
                 }
-            }
             Projectile.NewProjectileDirect(source, player.Center, velocity, type, damage, knockback, player.whoAmI).originalDamage = Item.damage;
             player.UpdateMaxTurrets();
             return false;
@@ -126,6 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         private List<Vector2> multiCacheFour;
         private Trail multiTrailFour;
+
         public override void Load()
         {
             for (int i = 1; i < 5; i++)
@@ -165,6 +164,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
             return true;
         }
+
         public override void AI()
         {
             if (modeSwitchTransitionTimer > 0)
@@ -208,9 +208,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
             Vector2 toIdlePos = idlePos - Projectile.Center;
             if (toIdlePos.Length() < 0.0001f)
-            {
                 toIdlePos = Vector2.Zero;
-            }
+
             else
             {
                 float speed = Vector2.Distance(idlePos, Projectile.Center) * 0.2f;
@@ -368,6 +367,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 Main.EntitySpriteDraw(baseTexOrange, ((Projectile.Center + new Vector2(0, 20)) - Projectile.oldVelocity) - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, progress), Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
                 Main.EntitySpriteDraw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, progress), Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
             }
+
             else if (rightClickMode)
             {
                 Main.EntitySpriteDraw(baseTexOrange, ((Projectile.Center + new Vector2(0, 20)) - Projectile.oldVelocity) - Main.screenPosition, null, Color.White, Projectile.velocity.X * 0.075f, baseTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
