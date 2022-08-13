@@ -4,6 +4,7 @@
 //Make criteria for support targets stricter
 //Reset beam midpoint if enemy moves too far away from it's original position
 //Make beams disappear if enemy is no longer active or too far away
+//Fix prim overlap
 //Dust on targets
 //Spawning
 //Drops
@@ -12,6 +13,8 @@
 //Gore
 //Hitsound
 //Deathsound
+//Lighting on lightning
+//Change enemy AI
 
 //MAYBE TODO:
 //Make support targets lose barrier gradually
@@ -59,8 +62,15 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         public float fade;
 
+        public float resetCounter = 0;
+        public float resetCounterIncrement;
+
+        public bool cloneCreated = false;
+
         public Color baseColor = new Color(200, 230, 255);
         public Color endColor = Color.Purple;
+
+        public float distanceFade => 1 - (resetCounter / 30f);
 
         public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection, GraphicsDevice device)
         {
@@ -68,18 +78,19 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             Owner = owner;
             MidPoint = midPoint;
             MidPointDirection = midPointDirection;
+            resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
             trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
             {
                 if (factor.X > 0.99f)
                     return Color.Transparent;
 
-                return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+                return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * distanceFade;
             });
 
             trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
             {
                 float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-                return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+                return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * distanceFade;
             });
 
             UpdateTrailPoints();
@@ -228,10 +239,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             var toAddBolts = Main.npc.Where(x => x.active && tempTargets.Contains(x) && !supportTargets.Contains(x)).ToList();
 
             foreach(NPC boltNPC in toAddBolts)
-            {
-                Vector2 directionTo = NPC.DirectionTo(boltNPC.Center);
-                Bolts.Add(new CrescentCasterBolt(boltNPC, NPC, CalculateMidpoint(boltNPC), Main.rand.NextVector2Circular(2.5f, 2.5f), Main.instance.GraphicsDevice));
-            }
+                CreateBolt(boltNPC);
 
             supportTargets = tempTargets;
 
@@ -275,13 +283,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private void UpdateBolts()
         {
-            foreach(CrescentCasterBolt bolt in Bolts)
+            foreach (CrescentCasterBolt bolt in Bolts)
             {
-                if (Main.rand.NextBool(40)) //Change bolt curve
-                {
-                    bolt.MidPoint = CalculateMidpoint(bolt.TargetNPC);
-                    bolt.MidPointDirection = Main.rand.NextVector2Circular(2.5f, 2.5f);
-                }
+                bolt.resetCounter += bolt.resetCounterIncrement;
+                bolt.MidPointDirection *= 1.05f;
+
                 bolt.MidPoint += bolt.MidPointDirection;
 
                 bolt.UpdateTrailPoints();
@@ -291,10 +297,30 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                     if (bolt.fade < 1)
                         bolt.fade += 0.1f;
                 }
-                else if(bolt.fade > 0)
+                else if (bolt.fade > 0)
                     bolt.fade -= 0.1f;
 
             }
+
+            foreach (CrescentCasterBolt bolt in Bolts.ToArray())
+            {
+                if (bolt.resetCounter > 20 && !bolt.cloneCreated) //Change bolt curve
+                {
+                    bolt.cloneCreated = true;
+                    CreateBolt(bolt.TargetNPC);
+                }
+
+                if (bolt.resetCounter > 30)
+                    Bolts.Remove(bolt);
+            }
+        }
+
+        private void CreateBolt(NPC other)
+        {
+            Vector2 directionTo = NPC.DirectionTo(other.Center);
+
+            Vector2 midPoint = CalculateMidpoint(other);
+            Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint), Main.instance.GraphicsDevice));
         }
 
         private void SupportBehavior()
