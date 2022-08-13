@@ -73,7 +73,10 @@ namespace StarlightRiver.Content.Items.Vitric
             Projectile.timeLeft = 240;
             Projectile.penetrate = 1;
 
-            Projectile.extraUpdates = 2;
+            Projectile.extraUpdates = 1;
+
+            Projectile.aiStyle = 1;
+            AIType = ProjectileID.Bullet;
         }
 
         public override void AI()
@@ -93,7 +96,7 @@ namespace StarlightRiver.Content.Items.Vitric
             {
                 Projectile projectile = Main.projectile[i];
 
-                if (projectile.active && projectile.owner == Projectile.owner && projectile.type == ModContent.ProjectileType<VitricBulletCrystalProjectile>() && projectile.ModProjectile is VitricBulletCrystalProjectile && projectile.Distance(Projectile.Center) < 20f && projectile.timeLeft < 240)
+                if (projectile.active && projectile.owner == Projectile.owner && projectile.type == ModContent.ProjectileType<VitricBulletCrystalProjectile>() && projectile.ModProjectile is VitricBulletCrystalProjectile && projectile.Distance(Projectile.Center) < 25f && projectile.timeLeft < 240)
                 {
                     if (projectile.ModProjectile is VitricBulletCrystalProjectile crystal)
                         crystal.hitByBullet = true;
@@ -111,7 +114,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 if (proj.ModProjectile is VitricBulletCrystalProjectile Crystal)
                 {
-                    Vector2 Offset = Projectile.direction == -1 ? Projectile.velocity * 0.5f : -Projectile.velocity * 1.25f;
+                    Vector2 Offset = Projectile.direction == -1 ? Projectile.velocity * 0.5f : -Projectile.velocity * 0.5f;
                     Crystal.offset = Projectile.position - target.position;
                     Crystal.offset += Offset;
                     Crystal.enemyID = target.whoAmI;
@@ -205,7 +208,8 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void SetDefaults()
         {
             Projectile.penetrate = -1;
-            Projectile.width = Projectile.height = 12;
+            Projectile.width = 12;
+            Projectile.height = 8;
 
             Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
