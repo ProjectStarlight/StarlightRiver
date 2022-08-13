@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 15;
             Item.useAnimation = 15;
+            Item.noUseGraphic = true;
         }
 
 		public override bool? UseItem(Player player)
@@ -65,6 +66,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.useStyle = ItemUseStyleID.Swing;
             Item.useTime = 15;
             Item.useAnimation = 15;
+            Item.noUseGraphic = true;
         }
 
         public override bool? UseItem(Player player)
