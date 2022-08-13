@@ -14,46 +14,37 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Corpseflower").Value) { }
 
-		public override void SetStaticDefaults()
+        public override void Load()
+        {
+            StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItem;
+            StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectile;
+        }
+
+        private void ApplyDoTProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (Equipped(player))
+            {
+                target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
+                crit = false;
+                damage = 0;
+            }
+        }
+
+        private void ApplyDoTItem(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        {
+            if (Equipped(player))
+            {
+                target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
+                crit = false;
+                damage = 0;
+            }
+        }
+
+        public override void SetStaticDefaults()
 		{ 
 			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is decreased by 66%\nYou are unable to critically strike while equipped");
 		}
-
-		public override void SafeUpdateEquip(Player Player)
-		{
-			Player.GetModPlayer<CorpseflowerPlayer>().equipped = true;
-		}
 	}
-
-    class CorpseflowerPlayer : ModPlayer
-    {
-        public bool equipped;
-
-        public override void ResetEffects()
-        {
-            equipped = false;
-        }
-
-        public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit) 
-        { 
-            if (equipped)
-            {
-                target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
-                crit = false;
-                damage = 0;
-            }
-        }
-
-        public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) 
-        {
-            if (equipped)
-            {
-                target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
-                crit = false;
-                damage = 0;
-            }
-        }
-    }
 
     public struct CorpseflowerStruct
     {
@@ -61,10 +52,10 @@ namespace StarlightRiver.Content.Items.Misc
 
         public int timer;
 
-        public CorpseflowerStruct(int damage_, int timer_)
+        public CorpseflowerStruct(int damage, int timer)
         {
-            this.damage = damage_;
-            this.timer = timer_;
+            this.damage = damage;
+            this.timer = timer;
         }
     }
 
