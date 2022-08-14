@@ -1,4 +1,4 @@
-Sweltered | Increases damage NPCs take by thirty-five percent, while also dealing twenty DoT. | 255 | 100 | 35
+Sweltered | Increases damage NPCs take by 35%, while also dealing 20 damage-over-time | 255 | 100 | 35
 Barrier | Provides damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. your barrier recovers after a brief period of not taking damage. | 100 | 255 | 255
 Stamina | Allows you to use abilities. Each ability has a set stamina cost which may be modified via infusions. | 255 | 200 | 155
 Cursed | This item comes with a crippling downside, and cannot be removed normally once equipped. A scroll of undoing can destroy the item, removing its effects and freeing the slot but deleting it forever. | 200 | 100 | 255
