@@ -444,9 +444,11 @@ namespace StarlightRiver.Core
 
         private static void GenForge()
         {
-            int x = forgeSide == 0 ? VitricBiome.X - 40 : VitricBiome.Right - 40;
-            StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 10), StarlightRiver.Instance);
-            NPC.NewNPC(new EntitySource_WorldGen(), (VitricBiome.X) * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+            int x = forgeSide == 0 ? VitricBiome.X - 30 : VitricBiome.Right - 30;
+            StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, VitricBiome.Center.Y - 20), StarlightRiver.Instance);
+
+            int npcX = VitricBiome.X + (forgeSide == 0 ? 9 : -9);
+            NPC.NewNPC(new EntitySource_WorldGen(), npcX * 16, (VitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
         }
 
         private static void GenTemple()

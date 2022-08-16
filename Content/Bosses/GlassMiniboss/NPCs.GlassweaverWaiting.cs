@@ -14,6 +14,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
 
+
         public override void SetDefaults()
         {
             NPC.townNPC = true;

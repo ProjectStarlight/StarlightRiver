@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.Temple.OldCeirosShrine>();
+            Item.createTile = ModContent.TileType<Tiles.Vitric.ForgeActor>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
