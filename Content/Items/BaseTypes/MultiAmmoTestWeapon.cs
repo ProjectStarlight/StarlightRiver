@@ -41,5 +41,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
             damage = damage * 2;
         }
+
+        public override bool CanConsumeAmmo(Item ammo, Player player)
+        {
+            return false;
+        }
     }
 }

@@ -97,38 +97,46 @@ namespace StarlightRiver.Content.Items.BaseTypes
             type = currentAmmoStruct.projectileID;
         }
 
+
         public virtual bool? SafeUseItem(Player player) { return null; }
         public sealed override bool? UseItem(Player player)
         {
             SafeUseItem(player);
 
-            int type = Item.shoot;
-            bool dontConsumeAmmo = false;
-            if (player.magicQuiver && ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
-                dontConsumeAmmo = true;
-            if (player.ammoBox && Main.rand.NextBool(5))
-                dontConsumeAmmo = true;
-            if (player.ammoPotion && Main.rand.NextBool(5))
-                dontConsumeAmmo = true;
-            if (player.ammoCost80 && Main.rand.NextBool(5))
-                dontConsumeAmmo = true;
-            if (player.ammoCost75 && Main.rand.NextBool(4))
-                dontConsumeAmmo = true;
-            if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)
-                dontConsumeAmmo = true;
-            if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
-                dontConsumeAmmo = true;
-
-            if (!dontConsumeAmmo)
+            if (Item.ModItem.CanConsumeAmmo(ammoItem, player))
             {
-                ammoItem.stack--;
-                if (ammoItem.stack <= 0)
-                    ammoItem.TurnToAir();
+                ammoItem.ModItem.OnConsumedAsAmmo(Item, player);
+                Item.ModItem.OnConsumeAmmo(ammoItem, player);
+
+                int type = currentAmmoStruct.projectileID; // this code sucks ass
+                bool dontConsumeAmmo = false;
+                if (player.magicQuiver && ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (player.ammoBox && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (player.ammoPotion && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (player.ammoCost80 && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (player.ammoCost75 && Main.rand.NextBool(4))
+                    dontConsumeAmmo = true;
+                if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)
+                    dontConsumeAmmo = true;
+                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
+                    dontConsumeAmmo = true;
+
+                if (!dontConsumeAmmo)
+                {
+                    ammoItem.stack--;
+                    if (ammoItem.stack <= 0)
+                        ammoItem.TurnToAir();
+                }
             }
 
             return base.UseItem(player);
         }
 
+        public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
         public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
         {
             if (ammoItem == null)
@@ -138,6 +146,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
             var kbLine = tooltips.Find(n => n.Name == "Knockback");
             int index = kbLine is null ? tooltips.Count - 1 : tooltips.IndexOf(kbLine);
             tooltips.Insert(index + 1, AmmoLine);
+
+            SafeModifyTooltips(tooltips);
         }
 
         public sealed override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
@@ -145,7 +155,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             if (Main.playerInventory || ammoItem == null)
                 return;
 
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, $"{ammoItem.stack}", position.X, position.Y + 10, Color.White, Color.Black, origin, (scale + 0.2f) * Main.UIScale);
+            Utils.DrawBorderString(spriteBatch, $"{ammoItem.stack}", new Vector2(position.X - 2, position.Y + 8), Color.White, scale + 0.18f, 0, 0, 4);
         }
     }
 
