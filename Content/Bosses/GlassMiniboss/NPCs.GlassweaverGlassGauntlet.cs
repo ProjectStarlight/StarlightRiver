@@ -3,6 +3,7 @@ using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
+using System;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -13,23 +14,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private int Pelter => NPCType<PelterConstruct>();
         private int FlyingGrunt => NPCType<FlyingGruntConstruct>();
         private int FlyingPelter => NPCType<FlyingPelterConstruct>();
+        private int Shielder => NPCType<ShieldConstruct>();
+        private int Supporter => NPCType<SupporterConstruct>();
+        private int Juggernaut => NPCType<JuggernautConstruct>();
+
+        private int PlayerDirection => (int)Math.Sign(Target.Center.X - NPC.Center.X);
 
         private void SpawnEnemy(Vector2 pos, int type, bool onFloor = true)
         {
-            if (onFloor)
-            {
-                int x = (int)(pos.X / 16f);
-                int y = (int)(pos.Y / 16f);
-                for (int i = 2; i < 20; i++)
-                {
-                    if (WorldGen.ActiveAndWalkableTile(x, y + i))
-                    {
-                        pos = new Vector2(pos.X, (y + i) * 16f - 2);
-                        break;
-                    }
-                }
-            }
-            Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), pos, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type);
+            Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), pos, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 2);
         }
 
         private int waitTime;
@@ -63,55 +56,210 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
                 Main.NewText("Begin", Color.OrangeRed);
 
-            if (AttackTimer == 15)
-                SpawnEnemy(arenaPos + new Vector2(0, -20), Grunt);
+            if (AttackTimer == 20) //Ground melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Grunt, true);
+            }
+
+            if (AttackTimer == 30) //Ground ranged and air melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, 0), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(-450 * PlayerDirection, 0), Pelter, true);
+            }
+
+            if (AttackTimer == 40) //Air ranged and support
+            {
+
+            }
 
 
-            if (AttackTimer > 40)
+            if (AttackTimer > 160)
                 CheckGauntletWave();
         }
         
         private void GlassGauntlet_Wave1()
         {
             if (AttackTimer == 1)
-                Main.NewText("Wave 1", Color.OrangeRed);
+                Main.NewText("Wave 2", Color.OrangeRed);
 
-            if (AttackTimer == 5)
+            if (AttackTimer == 20) //Ground melee
             {
-                SpawnEnemy(arenaPos + new Vector2(140, -20), Grunt);
-                SpawnEnemy(arenaPos + new Vector2(-140, -20), Grunt);
+                SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, 0), Grunt, true);
             }
 
-            if (AttackTimer == 40)
+            if (AttackTimer == 30) //Ground ranged and air melee
             {
-                SpawnEnemy(arenaPos + new Vector2(400, -20), Pelter);
-                SpawnEnemy(arenaPos + new Vector2(-400, -20), Pelter);
+                SpawnEnemy(arenaPos + new Vector2(-450 * PlayerDirection, 0), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, -100), FlyingGrunt, false);
             }
 
-            if (AttackTimer > 240)
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                SpawnEnemy(arenaPos + new Vector2(-440 * PlayerDirection, -150), FlyingPelter, false);
+            }
+
+            if (AttackTimer > 160)
                 CheckGauntletWave();
         }
 
         private void GlassGauntlet_Wave2()
         {
             if (AttackTimer == 1)
-                Main.NewText("Wave 2", Color.OrangeRed);
+                Main.NewText("Wave 3", Color.OrangeRed);
 
-            if (AttackTimer == 5)
+            if (AttackTimer == 20) //Ground melee
             {
-                SpawnEnemy(arenaPos + new Vector2(250, -80), FlyingGrunt, false);
-                SpawnEnemy(arenaPos + new Vector2(-250, -80), FlyingGrunt, false);
+                SpawnEnemy(arenaPos + new Vector2(-300, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-400, 0), Grunt, true);
+
+                SpawnEnemy(arenaPos + new Vector2(200, 0), Shielder, true);
             }
 
-            if (AttackTimer == 20)
+            if (AttackTimer == 30) //Ground ranged and air melee
             {
-                SpawnEnemy(arenaPos + new Vector2(420, -120), Pelter);
-                SpawnEnemy(arenaPos + new Vector2(-420, -120), Pelter);
+                SpawnEnemy(arenaPos + new Vector2(400, 0), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(460, 0), Pelter, true);
             }
 
-            if (AttackTimer > 100)
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                SpawnEnemy(arenaPos + new Vector2(300, 0), Supporter, true);
+            }
+
+            if (AttackTimer > 160)
                 CheckGauntletWave();
         }
+        private void GlassGauntlet_Wave3()
+        {
+            if (AttackTimer == 1)
+                Main.NewText("Wave 4", Color.OrangeRed);
+
+            if (AttackTimer == 20) //Ground melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(-120 * PlayerDirection, 0), Shielder, true);
+                SpawnEnemy(arenaPos + new Vector2(-160 * PlayerDirection, 0), Shielder, true);
+                SpawnEnemy(arenaPos + new Vector2(-200 * PlayerDirection, 0), Shielder, true);
+            }
+
+            if (AttackTimer == 30) //Ground ranged and air melee
+            {
+                
+            }
+
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                SpawnEnemy(arenaPos + new Vector2(-240 * PlayerDirection, -100), FlyingPelter, false);
+                SpawnEnemy(arenaPos + new Vector2(-280 * PlayerDirection, -120), FlyingPelter, false);
+                SpawnEnemy(arenaPos + new Vector2(-320 * PlayerDirection, -100), FlyingPelter, false);
+
+                SpawnEnemy(arenaPos + new Vector2(-240 * PlayerDirection, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(-280 * PlayerDirection, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(-320 * PlayerDirection, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, 0), Supporter, true);
+            }
+
+            if (AttackTimer > 160)
+                CheckGauntletWave();
+        }
+        private void GlassGauntlet_Wave4()
+        {
+            if (AttackTimer == 1)
+                Main.NewText("Wave 5", Color.OrangeRed);
+
+            if (AttackTimer == 20) //Ground melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(-120 * PlayerDirection, 0), Juggernaut, true);
+                SpawnEnemy(arenaPos + new Vector2(-200 * PlayerDirection, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-280 * PlayerDirection, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, 0), Grunt, true);
+            }
+
+            if (AttackTimer == 30) //Ground ranged and air melee
+            {
+
+            }
+
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                
+            }
+
+            if (AttackTimer > 160)
+                CheckGauntletWave();
+        }
+        private void GlassGauntlet_Wave5()
+        {
+            if (AttackTimer == 1)
+                Main.NewText("Wave 6", Color.OrangeRed);
+
+            if (AttackTimer == 20) //Ground melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(200, 0), Shielder, true);
+                SpawnEnemy(arenaPos + new Vector2(260, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
+            }
+
+            if (AttackTimer == 30) //Ground ranged and air melee
+            {
+                SpawnEnemy(arenaPos + new Vector2(-200, 0), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
+
+                SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingGrunt, false);
+                //SpawnEnemy(arenaPos + new Vector2(260, -80), FlyingGrunt, false);
+                SpawnEnemy(arenaPos + new Vector2(320, -50), FlyingGrunt, false);
+            }
+
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                SpawnEnemy(arenaPos + new Vector2(-320, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(-380, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(300, 0), Supporter, true);
+
+                SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
+               // SpawnEnemy(arenaPos + new Vector2(-380, -90), FlyingPelter, false);
+            }
+
+            if (AttackTimer > 160)
+                CheckGauntletWave();
+        }
+        private void GlassGauntlet_Wave6()
+        {
+            if (AttackTimer == 1)
+                Main.NewText("Wave 7", Color.OrangeRed);
+
+            if (AttackTimer == 20) //Ground melee
+            {
+                //SpawnEnemy(arenaPos + new Vector2(40 * PlayerDirection, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
+                SpawnEnemy(arenaPos + new Vector2(-120 * PlayerDirection, 0), Shielder, true);
+                SpawnEnemy(arenaPos + new Vector2(-220 * PlayerDirection, 0), Shielder, true);
+                SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Juggernaut, true);
+            }
+
+            if (AttackTimer == 30) //Ground ranged and air melee
+            {
+                //SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, 0), Pelter, true);
+                SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
+
+                SpawnEnemy(arenaPos + new Vector2(-180 * PlayerDirection, -100), FlyingGrunt, false);
+                SpawnEnemy(arenaPos + new Vector2(-220 * PlayerDirection, -125), FlyingGrunt, false);
+            }
+
+            if (AttackTimer == 40) //Air ranged and support
+            {
+                SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
+                //SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, -150), FlyingPelter, false);
+
+                SpawnEnemy(arenaPos + new Vector2(-340 * PlayerDirection, 0), Supporter, true);
+                SpawnEnemy(arenaPos + new Vector2(-370 * PlayerDirection, 0), Supporter, true);
+            }
+
+            if (AttackTimer > 160)
+                CheckGauntletWave();
+        }
+
 
         private void GlassGauntlet_End()
         {

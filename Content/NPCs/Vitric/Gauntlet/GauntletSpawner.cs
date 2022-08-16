@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, 0, 0);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

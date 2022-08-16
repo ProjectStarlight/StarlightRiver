@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             {
                 case (int)PhaseEnum.SpawnEffects:
 
-                    arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
+                    arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(11 * 16, 70 * 16) + new Vector2(0, 256);
                     Phase = (int)PhaseEnum.JumpToBackground;
                     ResetAttack();
 
@@ -147,7 +147,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                         case 2: GlassGauntlet_Wave2(); break;
 
-                        case 3: GlassGauntlet_End(); break;
+                        case 3: GlassGauntlet_Wave3(); break;
+
+                        case 4: GlassGauntlet_Wave4(); break;
+
+                        case 5: GlassGauntlet_Wave5(); break;
+
+                        case 6: GlassGauntlet_Wave6(); break;
+
+                        case 7: GlassGauntlet_End(); break;
                     }
 
                     break;                
