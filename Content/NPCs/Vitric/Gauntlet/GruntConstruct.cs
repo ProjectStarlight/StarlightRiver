@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.width = 30;
             NPC.height = 48;
-            NPC.damage = 10;
+            NPC.damage = 30;
             NPC.defense = 3;
             NPC.lifeMax = 150;
             NPC.value = 0f;
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             if (ComboBehavior() || JuggernautComboBehavior())
                 return;
 
-            if (Math.Abs(target.Center.X - NPC.Center.X) < 400 && !idling)
+            if (Math.Abs(target.Center.X - NPC.Center.X) < 600 && !idling)
             {
                 if ((Math.Abs(target.Center.X - NPC.Center.X) < 100 || attacking))
                 {

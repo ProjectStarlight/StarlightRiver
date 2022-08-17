@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.width = 30;
             NPC.height = 48;
-            NPC.damage = 10;
+            NPC.damage = 30;
             NPC.defense = 3;
             NPC.lifeMax = 170;
             NPC.value = 0f;
@@ -454,7 +454,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         potentialArrow.active = false;
                         for (float i = -1; i < 1.1f; i += 1)
                         {
-                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
 
                             for (int k = 0; k < 15; k++)
                             {

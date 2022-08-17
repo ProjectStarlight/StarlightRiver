@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.width = 30;
             NPC.height = 48;
-            NPC.damage = 10;
+            NPC.damage = 25;
             NPC.defense = 3;
             NPC.lifeMax = 100;
             NPC.value = 0f;
@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                         if (bowFrameCounter > 25)
                         {
                             SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(arrowTarget) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
                             proj.aiStyle = -1;
                             bowFrameCounter = 0;
                             bowFrame++;
@@ -456,7 +456,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 if (bowFrameCounter > 25)
                 {
                     SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
-                    Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                    Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
                     bowFrameCounter = 0;
                     bowFrame++;
                 }

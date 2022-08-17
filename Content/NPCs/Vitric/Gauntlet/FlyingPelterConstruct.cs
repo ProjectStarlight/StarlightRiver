@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.width = 30;
             NPC.height = 48;
-            NPC.damage = 10;
+            NPC.damage = 25;
             NPC.defense = 3;
             NPC.lifeMax = 100;
             NPC.value = 0f;
@@ -421,10 +421,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                     SoundEngine.PlaySound(SoundID.Item5, NPC.Center);
 
                     if (!empowered)
-                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), NPC.damage, NPC.knockBackResist);
+                        Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos, bowPos.DirectionTo(target.Center).RotatedBy((target.Center.X - NPC.Center.X) * -0.0003f) * 10, ModContent.ProjectileType<PelterConstructArrow>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
                     else
                     {
-                        Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos + (bowArmRotation.ToRotationVector2() * 5), bowArmRotation.ToRotationVector2() * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), NPC.damage, NPC.knockBackResist);
+                        Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), bowPos + (bowArmRotation.ToRotationVector2() * 5), bowArmRotation.ToRotationVector2() * 50, ModContent.ProjectileType<PelterConstructArrowLarge>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), NPC.knockBackResist);
                         proj.rotation = bowArmRotation + 1.57f;
                         proj.ai[0] = proj.Distance(target.Center) / 5;
 
@@ -648,7 +648,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 proj.scale = Main.rand.NextFloat(0.85f, 1.15f);
             }
 
-            Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), Projectile.damage, 0);
+            Projectile proj2 = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ConstructRing>(), (int)(Projectile.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 0);
             (proj2.ModProjectile as ConstructRing).finalRadius = 60;
 
             for (int i = 0; i < 6; i++)

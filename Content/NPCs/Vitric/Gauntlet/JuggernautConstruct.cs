@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         {
             NPC.width = 104;
             NPC.height = 82;
-            NPC.damage = 30;
+            NPC.damage = 40;
             NPC.defense = 6;
             NPC.lifeMax = 350;
             NPC.value = 0f;
@@ -330,7 +330,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             spikePositionY += 32;
 
             Vector2 spikePos = new Vector2(spikePositionX, spikePositionY);
-            Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), 20, 1f, Main.myPlayer, -20, 1 - (spikeCounter / 30f));
+            Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - (spikeCounter / 30f));
             raise.direction = NPC.spriteDirection;
             raise.scale = 0.65f;
 
