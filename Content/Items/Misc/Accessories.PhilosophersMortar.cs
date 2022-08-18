@@ -19,6 +19,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public PhilosophersMortar() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "PhilosophersMortar").Value) { }
 
+        public override void Load()
+        {
+            StarlightItem.OnPickupEvent += OnPickup;
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Philosopher's Mortar");
@@ -31,28 +36,10 @@ namespace StarlightRiver.Content.Items.Misc
             Item.rare = ItemRarityID.LightRed;
         }
 
-        public override void SafeUpdateEquip(Player Player)
+        private bool OnPickup(Item item, Player player)
         {
-            Player.GetModPlayer<PhilMortarPlayer>().equipped = true;
-        }
-    }
-
-    public class PhilMortarPlayer : ModPlayer
-    {
-        public bool equipped = false;
-
-        public override void ResetEffects()
-        {
-            equipped = false;
-        }
-    }
-
-    public class PhilMortarGItem : GlobalItem
-    {
-        public override bool OnPickup(Item item, Player player)
-        {
-            if (!player.GetModPlayer<PhilMortarPlayer>().equipped)
-                return base.OnPickup(item, player);
+            if (!Equipped(player))
+                return true;
 
             if (item.type == ItemID.Heart || item.type == ItemID.CandyApple || item.type == ItemID.CandyCane)
             {
@@ -61,15 +48,17 @@ namespace StarlightRiver.Content.Items.Misc
                 player.statLife = (int)MathHelper.Min(player.statLife + 10, player.statLifeMax2);
 
                 int buffIndex = player.FindBuffIndex(BuffID.PotionSickness);
+
                 if (buffIndex != -1)
                 {
                     player.buffTime[buffIndex] = (int)MathHelper.Max(0, player.buffTime[buffIndex] - 600);
                 }
+
                 item.active = false;
                 return false;
             }
 
-            return base.OnPickup(item, player);
+            return true;
         }
     }
 }
