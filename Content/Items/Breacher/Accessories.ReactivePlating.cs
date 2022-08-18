@@ -45,6 +45,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (modPlayer.Shield)
 				Player.endurance += 0.3f;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class ArmorPlatingPlayer : ModPlayer
