@@ -13,7 +13,15 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
+        private int oldBarrier;
+
         public SpikedMail() : base("Spiked Mail", "Barrier damage is applied to attackers as thorns \n+20 barrier") { }
+
+        public override void Load()
+        {
+            StarlightPlayer.ModifyHitByNPCEvent += HitByNPC;
+            StarlightPlayer.ResetEffectsEvent += ResetEffects;
+        }
 
         public override void SafeSetDefaults()
         {
@@ -24,7 +32,6 @@ namespace StarlightRiver.Content.Items.Misc
         public override void SafeUpdateEquip(Player player)
         {
             player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
-            player.GetModPlayer<SpikedMailPlayer>().active = true;
         }
 
         public override void AddRecipes()
@@ -41,28 +48,21 @@ namespace StarlightRiver.Content.Items.Misc
             recipe.AddTile(TileID.Anvils);
             recipe.Register();
         }
-    }
 
-    public class SpikedMailPlayer : ModPlayer
-    {
-        public bool active = false;
-
-        private int oldBarrier = 0;
-
-        public override void ResetEffects()
+        private void ResetEffects(StarlightPlayer modPlayer)
         {
-            active = false;
-            if (oldBarrier != Player.GetModPlayer<BarrierPlayer>().Barrier)
-                oldBarrier = Player.GetModPlayer<BarrierPlayer>().Barrier;
+            Player player = modPlayer.Player;
+            if (oldBarrier != player.GetModPlayer<BarrierPlayer>().Barrier)
+                oldBarrier = player.GetModPlayer<BarrierPlayer>().Barrier;
         }
 
-        public override void OnHitByNPC(NPC npc, int damage, bool crit)
+        private void HitByNPC(Player player, NPC NPC, ref int damage, ref bool crit)
         {
-            BarrierPlayer barrierplayer = Player.GetModPlayer<BarrierPlayer>();
+            BarrierPlayer barrierplayer = player.GetModPlayer<BarrierPlayer>();
             if (oldBarrier > barrierplayer.Barrier)
             {
                 int damageToDeal = oldBarrier - barrierplayer.Barrier;
-                npc.StrikeNPC((int)Math.Max(1, damageToDeal - (npc.defense / 2)), 1, Math.Sign(npc.Center.X - Player.Center.X)); 
+                NPC.StrikeNPC((int)Math.Max(1, damageToDeal - (NPC.defense / 2)), 1, Math.Sign(NPC.Center.X - player.Center.X));
             }
         }
     }
