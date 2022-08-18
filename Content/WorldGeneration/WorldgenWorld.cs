@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.ChestLootSystem;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.Generation;
 using Terraria.ModLoader;
@@ -6,7 +7,7 @@ using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core
 {
-	public partial class StarlightWorld : ModSystem
+    public partial class StarlightWorld : ModSystem
     {
         public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
         {
@@ -26,6 +27,7 @@ namespace StarlightRiver.Core
 
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Ivy", ForestHerbGen));
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Surface Items", SurfaceItemPass));
+                tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Drop Pods", DropPodGen));
                 tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Big Trees", BigTreeGen));
             }
         }
@@ -35,7 +37,7 @@ namespace StarlightRiver.Core
             if (WorldGen.genRand.NextBool())
                 Flag(WorldFlags.AluminumMeteors);
 
-            ModContent.GetInstance<StarlightRiver>().PopulateChests();
+            ChestLootSystem.Instance.PopulateAllChests();
         }
     }
 }
