@@ -115,8 +115,9 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         private List<Vector2> cache;
         private Trail trail;
+        private Trail trail2;
 
-        internal const int OffsetIDTopLeft = 0; //offset ids, just for readability and easy remembering. these positions are with the player facing right, positions are flipped when the player is facing left
+        internal const int OffsetIDTopLeft = 0; //offset ids, just for readability and easy remembering. these positions are with the player facing right, X positions are flipped when the player is facing left
         internal const int OffsetIDTopRight = 1;
         internal const int OffsetIDBottomLeft = 2;
 
@@ -151,6 +152,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AI()
         {
+            if (Main.myPlayer == Projectile.owner)
+                Projectile.direction = Main.MouseWorld.X < player.Center.X ? -1 : 1;
+
             if (!Main.dedServ)
             {
                 ManageCaches();
@@ -191,7 +195,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             if (Main.myPlayer == player.whoAmI)
             {
-                Projectile.rotation = Projectile.DirectionTo(Main.MouseWorld).ToRotation() - (Main.MouseWorld.X < player.Center.X ? -MathHelper.ToRadians(rotationTimer) : MathHelper.ToRadians(rotationTimer));
+                Projectile.rotation = Projectile.DirectionTo(Main.MouseWorld).ToRotation() - (Projectile.direction == -1 ? -MathHelper.ToRadians(rotationTimer) : MathHelper.ToRadians(rotationTimer));
 
                 if (ShootDelay <= 0)
                 {
@@ -209,12 +213,12 @@ namespace StarlightRiver.Content.Items.Permafrost
                         float sin = 1 + (float)Math.Sin(Main.GameUpdateCount * 10); //yes ive reused this color like 17 times shh
                         float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 10);
                         Color color = Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-                        for (int k = 0; k < 12; k++)
+                        for (int k = 0; k < 15; k++)
                         {
-                            Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Cinder>(), (Vector2.Normalize(Main.MouseWorld - Projectile.Center) * Main.rand.NextFloat(3.5f)).RotatedByRandom(0.35f), 125, color, Main.rand.NextFloat(0.2f, 0.5f));
+                            Dust.NewDustPerfect(Projectile.Center - mouseDirection * 20f, ModContent.DustType<Dusts.Cinder>(), (mouseDirection * Main.rand.NextFloat(3.5f)).RotatedByRandom(0.35f), 80, color, Main.rand.NextFloat(0.45f, 0.7f));
                         }
                         rotationTimer = 35;
-                        Projectile.velocity += mouseDirection * -4f;
+                        Projectile.velocity += mouseDirection * -5.5f;
                         ShootDelay = 90;
                     }
                 }                   
@@ -235,35 +239,6 @@ namespace StarlightRiver.Content.Items.Permafrost
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
             DrawPrimitives(Main.spriteBatch);
-            #region tentacle drawing
-            Texture2D tentacleTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value;
-            Vector2 offset = new Vector2(-45f, 0);
-            if (Offset == OffsetIDTopRight)
-                offset = new Vector2(45f, 0);
-            if (Offset == OffsetIDBottomLeft)
-                offset = new Vector2(0, 35f);
-
-            Vector2 chainMidpoint = Vector2.Lerp(player.Center, Projectile.Center + offset, 0.5f);
-            BezierCurve curve = new BezierCurve(new Vector2[] { player.Center, chainMidpoint, Projectile.Center});
-
-            int numPoints = 6;
-            Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
-
-            for (int i = 1; i < numPoints; i++)
-            {
-                Vector2 position = chainPositions[i];
-
-                Rectangle frameRect = tentacleTex.Frame(1, 5, frameY: i - 1);
-
-                float rotation = (chainPositions[i] - chainPositions[i - 1]).ToRotation() - MathHelper.PiOver2;
-                float yScale = Vector2.Distance(chainPositions[i], chainPositions[i - 1]) / frameRect.Height; 
-
-                Vector2 scale = new Vector2(1, yScale);
-                Color chainLightColor = Lighting.GetColor((int)position.X / 16, (int)position.Y / 16);
-                Vector2 origin = frameRect.Size() / 2f;
-                Main.spriteBatch.Draw(tentacleTex, position - Main.screenPosition, frameRect, chainLightColor, rotation, origin, scale, SpriteEffects.None, 0);
-            }
-            #endregion tentacle drawing
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             SpriteEffects spriteEffects = (Main.MouseWorld.X < player.Center.X ? SpriteEffects.FlipVertically : SpriteEffects.None);
 
@@ -285,15 +260,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             for (int k = 0; k < 10; k++)
             {
-                Vector2 offset = new Vector2(-45f, 0);
-                if (Offset == OffsetIDTopRight)
-                    offset = new Vector2(45f, 0);
-                if (Offset == OffsetIDBottomLeft)
-                    offset = new Vector2(0, 35f);
-
-                Vector2 chainMidpoint = Vector2.Lerp(player.Center, Projectile.Center + offset, 0.5f);
-                BezierCurve curve = new BezierCurve(new Vector2[] { player.Center, chainMidpoint, Projectile.Center });
-
+                BezierCurve curve = GetBezierCurve();
                 int numPoints = 10;
                 Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
 
@@ -308,7 +275,19 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void ManageTrail()
         {
+            BezierCurve curve = GetBezierCurve();
+            int numPoints = 10;
+            Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 12, factor =>
+            {
+                Vector2 lightingPos = chainPositions[(int)(factor.X / 10f)];
+                return Lighting.GetColor((int)(lightingPos.X / 16), (int)(lightingPos.Y / 16));
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = cache[9];
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => MathHelper.Lerp(22, 8, factor), factor =>
             {
                 float sin = 1 + (float)Math.Sin(factor.X * 10);
                 float cos = 1 + (float)Math.Cos(factor.X * 10);
@@ -317,8 +296,8 @@ namespace StarlightRiver.Content.Items.Permafrost
                 return color * factor.X;
             });
 
-            trail.Positions = cache.ToArray();
-            trail.NextPosition = cache[9];
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = cache[9];
         }
 
         private void DrawPrimitives(SpriteBatch spriteBatch)
@@ -330,13 +309,33 @@ namespace StarlightRiver.Content.Items.Permafrost
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-            effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
-            effect.Parameters["repeats"].SetValue(6);
+            effect.Parameters["repeats"].SetValue(1);
+            effect.Parameters["time"].SetValue(0);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
+            trail2?.Render(effect);
+            effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
+            effect.Parameters["alpha"].SetValue(1);
+
             trail?.Render(effect);
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        private BezierCurve GetBezierCurve()
+        {
+            Vector2 offset = new Vector2(-45f, 0);
+            if (Offset == OffsetIDTopRight)
+                offset = new Vector2(45f, 0);
+            if (Offset == OffsetIDBottomLeft)
+                offset = new Vector2(0, 35f);
+
+            Vector2 gripPosition = Projectile.Center + new Vector2(-10, 4 * Projectile.direction).RotatedBy(Projectile.rotation);
+            Vector2 chainMidpoint = Vector2.Lerp(player.Center, gripPosition + offset, 0.5f);
+            BezierCurve curve = new BezierCurve(new Vector2[] { player.Center, chainMidpoint, gripPosition });
+            return curve;
         }
     }
 

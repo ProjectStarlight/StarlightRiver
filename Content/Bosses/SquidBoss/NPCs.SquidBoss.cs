@@ -153,6 +153,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 ItemType<AuroraBell>(),
                 ItemType<AuroraThroneMountItem>(),
                 ItemType<Tentalance>(),
+                ItemType<Octogun>(),
             }
             ));
 
