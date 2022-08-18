@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Core;
 using System;
 using Terraria;
@@ -31,7 +32,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
     class AuroraBrickDoor : AuroraBrick
     {
-        public override void NearbyEffects(int i, int j, bool closer) => Framing.GetTileSafely(i, j).IsActuated = (StarlightWorld.HasFlag(WorldFlags.SquidBossOpen));
+        public override void NearbyEffects(int i, int j, bool closer)
+        {
+            Framing.GetTileSafely(i, j).IsActuated = (StarlightWorld.HasFlag(WorldFlags.SquidBossOpen) && !NPC.AnyNPCs(NPCType<SquidBoss>()));
+        }
     }
 
     class AuroraBrickItem : QuickTileItem
