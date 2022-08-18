@@ -330,8 +330,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
                 tentacleR.NPC.Center = spawnPoint + new Vector2(800, 0);
                 tentacleL.BasePoint = tentacleL.NPC.Center;
                 tentacleR.BasePoint = tentacleR.NPC.Center;
-                tentacleL.MovementTarget = tentacleL.NPC.Center + new Vector2(0, -1050);
-                tentacleR.MovementTarget = tentacleR.NPC.Center + new Vector2(0, -1050);
+                tentacleL.MovementTarget = tentacleL.NPC.Center + new Vector2(0, -1080);
+                tentacleR.MovementTarget = tentacleR.NPC.Center + new Vector2(0, -1080);
                 tentacleL.StalkWaviness = 0;
                 tentacleR.StalkWaviness = 0;
 
