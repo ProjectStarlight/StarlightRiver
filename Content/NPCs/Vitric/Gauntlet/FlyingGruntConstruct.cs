@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         public override void SetDefaults()
         {
-            NPC.width = 30;
+            NPC.width = 40;
             NPC.height = 48;
             NPC.damage = 30;
             NPC.defense = 3;

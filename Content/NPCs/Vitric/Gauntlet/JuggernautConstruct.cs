@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.defense = 6;
             NPC.lifeMax = 350;
             NPC.value = 0f;
-            NPC.knockBackResist = 0.6f;
+            NPC.knockBackResist = 0f;
             NPC.HitSound = SoundID.Item27 with
             {
                 Pitch = -0.3f

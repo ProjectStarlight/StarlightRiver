@@ -23,9 +23,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
     {
         public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
 
-        private const int DIRECTIONTTHRESHHOLD = 15;
-
-
         private int direction = 0;
         private int directionCounter = 0;
         private int directionThreshhold = 15; 
@@ -38,8 +35,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
         private int laserTimer = 0;
 
-        private int healCounter = 0;
-
         private int frameCounter = 0;
 
         private int yFrame = 0;
@@ -51,6 +46,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         private Vector2 stuckOffset = Vector2.Zero;
 
         private Vector2 comboPos = Vector2.Zero;
+
+        private int destructionTimer = 0;
 
         public override void Load()
         {
@@ -113,7 +110,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
         public override void SafeAI()
         {
             laserTimer++;
-            healCounter++;
+
+            if (CheckDestruction())
+                return;
 
             if (ComboLogic())
                 return;
@@ -320,6 +319,31 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
                 Bestiary.SLRSpawnConditions.VitricDesert,
                 new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Channels its power to strengthen its allies' glass bodies. This may result in a power surge.")
             });
+        }
+
+        private bool CheckDestruction()
+        {
+            NPC otherConstructs = Main.npc.Where(
+               n => n.active &&
+               n.ModNPC is VitricConstructNPC &&
+               n.type != NPC.type &&
+               n.type != ModContent.NPCType<ShieldConstruct>()).FirstOrDefault();
+
+            if (otherConstructs == null || otherConstructs == default)
+            {
+                destructionTimer++;
+                if (destructionTimer > 40)
+                {
+                    NPC.Kill();
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                destructionTimer = 0;
+                return false;
+            }
         }
 
         private bool ComboLogic() //returns true if enemy is in combo

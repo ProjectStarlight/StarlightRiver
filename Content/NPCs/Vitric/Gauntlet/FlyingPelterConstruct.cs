@@ -207,6 +207,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
             NPC.velocity += knockbackVel;
         }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false;
+
         public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
         {
             position.X += 8 * NPC.spriteDirection;
