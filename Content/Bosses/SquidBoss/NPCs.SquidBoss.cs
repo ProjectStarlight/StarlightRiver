@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.DropRules;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
@@ -147,18 +148,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
         public override void ModifyNPCLoot(NPCLoot npcLoot)
         {
-            npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+            LeadingConditionRule normalMode = new LeadingConditionRule(new Conditions.NotExpert());
+            normalMode.ConditionalOneFromOptions(new int[]
             {
                 ItemType<OverflowingUrn>(),
                 ItemType<AuroraBell>(),
                 ItemType<AuroraThroneMountItem>(),
                 ItemType<Tentalance>(),
                 ItemType<Octogun>(),
-            }
-            ));
+            });
 
-            npcLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 4));
+            npcLoot.Add(normalMode);
+            npcLoot.Add(CustomDropRules.onlyInNormalMode(ItemType<SquidFins>(), 4));
             npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.AuroracleTrophyItem>(), 10, 1, 1));
+            npcLoot.Add(ItemDropRule.BossBag(ItemType<SquidBossBag>()));
         }
 
         public override void BossLoot(ref string name, ref int potionType)

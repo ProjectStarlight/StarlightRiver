@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.DropRules;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -39,7 +41,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.maxStack = 999;
         }
 
-		public override void OpenBossBag(Player Player)
+		/*public override void OpenBossBag(Player Player)
         {
             int weapon = Main.rand.Next(6);
 
@@ -59,10 +61,38 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (Main.rand.NextBool(3))
                 Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<SquidFins>());
             //Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<ShatteredAegis>()); Expert item?
-        }	
+        }*/
 
-		//This method is stolen from examplemod and I trust it to emulate vanilla accurately
-		public override void PostUpdate()
+        public override void ModifyItemLoot(ItemLoot itemLoot)
+        {
+			LeadingConditionRule notMasterMode = new LeadingConditionRule(new Conditions.NotMasterMode());
+			LeadingConditionRule masterMode = new LeadingConditionRule(new Conditions.IsMasterMode());
+			notMasterMode.ConditionalFewFromOptions(new int[] //drop two items in expert mode
+			{
+				ItemType<OverflowingUrn>(),
+				ItemType<AuroraBell>(),
+				ItemType<AuroraThroneMountItem>(),
+				ItemType<Tentalance>(),
+				ItemType<Octogun>()
+			}, 2);
+			
+			masterMode.ConditionalFewFromOptions(new int[] //drop three items in master mode
+			{
+				ItemType<OverflowingUrn>(),
+				ItemType<AuroraBell>(),
+				ItemType<AuroraThroneMountItem>(),
+				ItemType<Tentalance>(),
+				ItemType<Octogun>()
+			}, 3);
+
+			itemLoot.Add(notMasterMode);
+			itemLoot.Add(masterMode);
+
+			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 3));
+        }
+
+        //This method is stolen from examplemod and I trust it to emulate vanilla accurately
+        public override void PostUpdate()
 		{
 			Lighting.AddLight(Item.Center, Color.White.ToVector3() * 0.4f);
 
