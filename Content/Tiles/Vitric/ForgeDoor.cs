@@ -9,14 +9,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class ForgeDoor : ModTile
     {
-        public override string Texture => AssetDirectory.VitricTile + Name;
+        public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetStaticDefaults()
-        {
-            MinPick = int.MaxValue;
-            TileID.Sets.DrawsWalls[Type] = true;
-            QuickBlock.QuickSetFurniture(this, 2, 6, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Forge Door");
-        }
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black, false, true);
 
         public override void NearbyEffects(int i, int j, bool closer)
         {

@@ -119,6 +119,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                     arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(11 * 16, 70 * 16) + new Vector2(0, 256);
                     Phase = (int)PhaseEnum.JumpToBackground;
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(512, 32), Vector2.Zero, ModContent.ProjectileType<GlassweaverDoor>(), 0, 0, NPC.target);
                     ResetAttack();
 
                     break;

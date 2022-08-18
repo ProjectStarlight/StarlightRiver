@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Transparent);
     }
 
     class ForgeActorDummy : Dummy
