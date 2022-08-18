@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void Load()
         {
-            StarlightPlayer.ModifyHitByNPCEvent += HitByNPC;
+            StarlightPlayer.OnHitByNPCEvent += HitByNPC;
             StarlightPlayer.ResetEffectsEvent += ResetEffects;
         }
 
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
                 oldBarrier = player.GetModPlayer<BarrierPlayer>().Barrier;
         }
 
-        private void HitByNPC(Player player, NPC NPC, ref int damage, ref bool crit)
+        private void HitByNPC(Player player, NPC NPC, int damage, bool crit)
         {
             if (!Equipped(player))
                 return;

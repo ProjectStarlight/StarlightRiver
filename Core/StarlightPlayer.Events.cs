@@ -23,6 +23,22 @@ namespace StarlightRiver.Core
             ModifyHitByNPCEvent?.Invoke(Player, NPC, ref damage, ref crit);
         }
 
+        //for on-hit effects that run after modifyhitnpc and prehurt, contact damage
+        public delegate void OnHitByNPCDelegate(Player player, NPC npc, int damage, bool crit);
+        public static event OnHitByNPCDelegate OnHitByNPCEvent;
+        public override void OnHitByNPC(NPC npc, int damage, bool crit)
+        {
+            OnHitByNPCEvent?.Invoke(Player, npc, damage, crit);
+        }
+
+        //for on-hit effects that run after modifyhitnpc and prehurt, projectile damage
+        public delegate void OnHitByProjectileDelegate(Player player, Projectile projectile, int damage, bool crit);
+        public static event OnHitByProjectileDelegate OnHitByProjectileEvent;
+        public override void OnHitByProjectile(Projectile projectile, int damage, bool crit)
+        {
+            OnHitByProjectileEvent?.Invoke(Player, projectile, damage, crit);
+        }
+
 
         /// <summary>
         /// Use this event for the Player hitting an NPC with an Item directly (true melee).
@@ -127,6 +143,8 @@ namespace StarlightRiver.Core
             ModifyHitNPCEvent = null;
             ModifyHitNPCWithProjEvent = null;
             NaturalLifeRegenEvent = null;
+            OnHitByNPCEvent = null;
+            OnHitByProjectileEvent = null;
             OnHitNPCEvent = null;
             OnHitNPCWithProjEvent = null;
             PostDrawEvent = null;
