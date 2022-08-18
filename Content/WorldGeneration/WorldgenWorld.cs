@@ -26,8 +26,9 @@ namespace StarlightRiver.Core
                 tasks.Insert(DesertIndex + 6, new PassLegacy("Starlight River Codex", BookAltarGen));
 
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Ivy", ForestHerbGen));
-                tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Surface Items", SurfaceItemPass));
+                tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Surface Items", SurfaceItemPass)); 
                 tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Ankh Chests", AnkhChestPass));
+                tasks.Insert(SurfaceIndex + 1, new PassLegacy("Starlight River Drop Pods", DropPodGen));
                 tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Big Trees", BigTreeGen));
             }
         }
