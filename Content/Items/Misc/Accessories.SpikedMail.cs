@@ -52,13 +52,18 @@ namespace StarlightRiver.Content.Items.Misc
         private void ResetEffects(StarlightPlayer modPlayer)
         {
             Player player = modPlayer.Player;
+
             if (oldBarrier != player.GetModPlayer<BarrierPlayer>().Barrier)
                 oldBarrier = player.GetModPlayer<BarrierPlayer>().Barrier;
         }
 
         private void HitByNPC(Player player, NPC NPC, ref int damage, ref bool crit)
         {
+            if (!Equipped(player))
+                return;
+
             BarrierPlayer barrierplayer = player.GetModPlayer<BarrierPlayer>();
+
             if (oldBarrier > barrierplayer.Barrier)
             {
                 int damageToDeal = oldBarrier - barrierplayer.Barrier;
