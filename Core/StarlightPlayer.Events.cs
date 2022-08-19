@@ -7,6 +7,22 @@ namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer
     {
+        //for Can-Use effects, runs before the item is used, return false to stop item use
+        public delegate bool CanUseItemDelegate(Player player, Item item);
+        public static event CanUseItemDelegate CanUseItemEvent;
+        public override bool CanUseItem(Item item)
+        {
+            if (CanUseItemEvent != null)
+            {
+                bool result = true;
+                foreach (CanUseItemDelegate del in CanUseItemEvent.GetInvocationList())
+                {
+                    result &= del(Player, item);
+                }
+                return result;
+            }
+            return base.CanUseItem(item);
+        }
         //for on-hit effects that require more specific effects, Projectiles
         public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);
         public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
@@ -138,6 +154,7 @@ namespace StarlightRiver.Core
 
 		public override void Unload()
 		{
+            CanUseItemEvent = null;
             ModifyHitByNPCEvent = null;
             ModifyHitByProjectileEvent = null;
             ModifyHitNPCEvent = null;
