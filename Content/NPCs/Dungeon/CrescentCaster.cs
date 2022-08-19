@@ -2,14 +2,9 @@
 //[1]Balance
 //[1]Hitsound
 //[1]Deathsound
-//[2]Make beams midpoint reset if the NPC gets far enough away
-//[2]Make criteria for support targets stricter
 //[3]Bestiary
-//[3]Make beams disappear if enemy is no longer active or too far away
 //[3]Dust on targets
 //[3]No barriering enemies through walls
-//[4]Make support targets lose barrier gradually
-//[5]Fix prim overlap
 //[6]support target aura
 
 
@@ -355,7 +350,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                     CreateBolt(bolt.TargetNPC);
                 }
 
-                if (bolt.resetCounter > 30)
+                if (bolt.resetCounter > 30 || !IsValidTarget(bolt.TargetNPC))
                     Bolts.Remove(bolt);
             }
         }
@@ -455,7 +450,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 BarrierNPC clearBarrierNPC = npc.GetGlobalNPC<BarrierNPC>();
                 clearBarrierNPC.MaxBarrier = 0;
                 clearBarrierNPC.RechargeRate = 0;
-                clearBarrierNPC.Barrier = 0;
                 clearBarrierNPC.RechargeDelay = 180;
             }
 
@@ -468,7 +462,12 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private List<NPC> ValidTargets()
         {
-            return Main.npc.Where(x => x.active && !x.friendly && x.Distance(NPC.Center) < 500 && x != NPC).ToList();
+            return Main.npc.Where(x => x.active && IsValidTarget(x)).ToList();
+        }
+
+        private bool IsValidTarget(NPC potentialTarget)
+        {
+            return potentialTarget.active && !potentialTarget.friendly && potentialTarget.CanBeChasedBy() && potentialTarget.Distance(NPC.Center) < 500 && potentialTarget != NPC;
         }
 
         private Vector2 CalculateMidpoint(NPC other)
