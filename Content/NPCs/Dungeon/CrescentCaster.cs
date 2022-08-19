@@ -4,8 +4,6 @@
 //[1]Deathsound
 //[2]Make beams midpoint reset if the NPC gets far enough away
 //[2]Make criteria for support targets stricter
-//[2]Star bloom on staff when its activated
-//[2]Gore
 //[3]Bestiary
 //[3]Make beams disappear if enemy is no longer active or too far away
 //[3]Dust on targets
@@ -155,6 +153,16 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private bool Casting => aiCounter % aiCounterReset > 400;
 
+        private bool Supporting => xFrame == 2;
+
+        private float starOpacity = 0;
+
+        public override void Load()
+        {
+            for (int j = 1; j <= 5; j++)
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.DungeonNPC + "CrescentCasterGore" + j);
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Crescent Caster");
@@ -209,6 +217,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
 
             Vector2 origin = new Vector2(NPC.frame.Width / 2, 52);
             SpriteEffects effects = SpriteEffects.FlipHorizontally;
@@ -222,12 +231,28 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
             spriteBatch.Draw(glowTex, NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
 
+            if (Supporting)
+            {
+                float starSize = Main.rand.NextFloat(0.9f, 1.1f);
+                Vector2 starPos = NPC.Center + new Vector2(NPC.spriteDirection * 3, -25);
+                Color starColor = new Color(200, 230, 255, 0) * starOpacity;
+                spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, starColor, 0, starTex.Size() / 2, NPC.scale * 0.3f * starSize, SpriteEffects.None, 0f);
+
+                starColor = new Color(255, 255, 255, 0) * starOpacity;
+                spriteBatch.Draw(starTex, starPos - Main.screenPosition, null, starColor, 0, starTex.Size() / 2, NPC.scale * 0.2f * starSize, SpriteEffects.None, 0f);
+            }
             return false;
         }
 
         public override void OnKill()
         {
             ClearBarrierAndBolts(supportTargets);
+
+            if (Main.netMode != NetmodeID.Server)
+            {
+                for (int j = 1; j <= 5; j++)
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("CrescentCasterGore" + j).Type);
+            }
         }
 
         public void DrawPrimitives()
@@ -352,6 +377,14 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 yFrame++;
                 yFrame %= 5;
             }
+
+            if (aiCounter % aiCounterReset < aiCounterReset - 10)
+            {
+                if (starOpacity < 1)
+                    starOpacity += 0.1f;
+            }
+            else if (starOpacity > 0)
+                starOpacity -= 0.1f;
 
             foreach (NPC supportTarget in supportTargets)
             {
