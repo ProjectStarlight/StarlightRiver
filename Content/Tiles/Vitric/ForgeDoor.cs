@@ -11,7 +11,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black, false, true);
+        public override void SetStaticDefaults()
+        {
+            (this).QuickSetFurniture(1, 1, DustID.Copper, SoundID.Shatter, false, Color.Black, false, true);
+            MinPick = 999;
+        }
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
