@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.WorldGeneration;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs;
 using Terraria;
