@@ -56,24 +56,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
             if (AttackTimer == 1)
                 Main.NewText("Begin", Color.OrangeRed);
 
-            if (AttackTimer == 20) //Ground melee
+            if (AttackTimer == 150) //Ground melee
             {
                 SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Grunt, true);
             }
 
-            if (AttackTimer == 30) //Ground ranged and air melee
+            if (AttackTimer == 160) //Ground ranged and air melee
             {
                 SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, 0), Pelter, true);
                 SpawnEnemy(arenaPos + new Vector2(-450 * PlayerDirection, 0), Pelter, true);
             }
 
-            if (AttackTimer == 40) //Air ranged and support
+            if (AttackTimer == 170) //Air ranged and support
             {
 
             }
 
 
-            if (AttackTimer > 160)
+            if (AttackTimer > 300)
                 CheckGauntletWave();
         }
         

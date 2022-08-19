@@ -22,12 +22,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private float closeTimer;
 
-        private bool closing = false;
+        private bool opening = false;
+        private bool closed = false;
 
         public override void SetDefaults()
         {
             Projectile.width = 32;
-            Projectile.height = 80;
+            Projectile.height = 160;
             Projectile.hostile = false;
             Projectile.tileCollide = false;
             Projectile.aiStyle = -1;
@@ -38,14 +39,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         {
             var parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
 
-            if (parent != default && !closing)
+            if (parent != default && !opening)
             {
                 if (closeTimer < 1)
                     closeTimer += 0.025f;
+                else if (!closed)
+                {
+                    closed = true;
+                    Core.Systems.CameraSystem.Shake += 9;
+                    Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
+
+                    Vector2 dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
+                    for (int i = 0; i < 15; i++)
+                        Dust.NewDustPerfect(dustPos + new Vector2(Main.rand.Next(-8, 8), 0), DustID.Copper, Main.rand.NextVector2Circular(3, 3), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
+                }
             }
             else
             {
-                closing = true;
+                opening = true;
                 closeTimer -= 0.025f;
             }
 
