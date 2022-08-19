@@ -327,11 +327,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
             npcLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
-            { 
+            {
                 ItemType<FacetAndLattice>(),
                 ItemType<Coalescence>(),
                 ItemType<Needler>(),
-                ItemType<RefractiveBlade>()
+                ItemType<RefractiveBlade>(),
+                ItemType<MagmiteVacpack>()
             }
             ));
 
