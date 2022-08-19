@@ -18,7 +18,7 @@ namespace StarlightRiver.Core
 
             int tries = 0;
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < 5; i++)
             {
                 if (!PlaceAnkhChest(WorldGen.UndergroundDesertLocation.X + Main.rand.Next(-500, 500), WorldGen.UndergroundDesertLocation.Y + (WorldGen.UndergroundDesertLocation.Height / 2) + Main.rand.Next(-500, 500)))
                 {
@@ -41,7 +41,9 @@ namespace StarlightRiver.Core
                 return false;
 
             if (WorldGen.PlaceChest(i, j, (ushort)ModContent.TileType<Content.Tiles.Desert.AnkhChest>(), false, 2) != -1)
-                return true;
+                if (Framing.GetTileSafely(i, j).TileType == ModContent.TileType<Content.Tiles.Desert.AnkhChest>())
+                    return true;
+
             return false;
         }
     }
