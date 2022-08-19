@@ -16,19 +16,28 @@ using StarlightRiver.Core.Systems;
 using System.IO;
 using StarlightRiver.Content.Items.Vitric;
 using System.Linq;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {   
     // This entire thing needs balancing, hopefully this code is better than before and hopefully all issues are fixed
 
-    //some visuals here and there could be polished idk
+    public class Soilgun : MultiAmmoWeapon
+    {
+        public override List<AmmoStruct> ValidAmmos => new List<AmmoStruct>() 
+        {
+            new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
+            new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
+            new AmmoStruct(ItemID.PearlsandBlock, ModContent.ProjectileType<SoilgunPearlsandSoil>(), 15),
+            new AmmoStruct(ItemID.CrimsandBlock, ModContent.ProjectileType<SoilgunCrimsandSoil>(), 4),
+            new AmmoStruct(ItemID.DirtBlock, ModContent.ProjectileType<SoilgunDirtSoil>(), 2),
+            new AmmoStruct(ItemID.SiltBlock, ModContent.ProjectileType<SoilgunSiltSoil>(), 3),
+            new AmmoStruct(ItemID.SlushBlock, ModContent.ProjectileType<SoilgunSlushSoil>(), 3),
+            new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
+            new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
+        };
 
-    //god i spent too much time on this
-    public class Soilgun : ModItem
-    { 
-        public List<int> ValidSoils => new List<int>() { ItemID.SandBlock, ItemID.EbonsandBlock, ItemID.PearlsandBlock, ItemID.CrimsandBlock, ItemID.DirtBlock, ItemID.SiltBlock,
-            ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
-        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0 && player.GetModPlayer<SoilgunPlayer>().HasSoilItem;
+        public override bool SafeCanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
@@ -37,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             Tooltip.SetDefault("Hold <left> to charge up a volley of soil\nRelease to fire the soil at high velocities\nCan use many different types of soils\n'Soiled it! SOILED IT!'"); //idk im bad at tooltips;
         }
 
-        public override void SetDefaults()
+        public override void SafeSetDefaults()
         {
             Item.DamageType = DamageClass.Ranged;
             Item.damage = 14;
@@ -54,93 +63,22 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             Item.knockBack = 1f;
         }   
 
-        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-        {
-            damage = damage + GetSoilDamage(player);
-        }
-
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, player.GetModPlayer<SoilgunPlayer>().SoilItem.type);
+            Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, type);
+            if (proj.ModProjectile is SoilgunHoldout soilGun)
+                soilGun.SoilAmmoID = ammoItem.type;
             return false;
         }
 
         public override void AddRecipes()
         {
-            CreateRecipe().AddIngredient(ItemID.DirtRod).AddIngredient(ItemID.Sandgun).AddIngredient(ItemID.DirtBlock, 45).AddTile(TileID.WorkBenches).Register();
-        }
-
-        public override void UpdateInventory(Player player)
-        {
-            //TODO: make this prioritize top left -> bottom right, instead of bottom right -> top left, like actual ammo
-            for (int i = 0; i < player.inventory.Length; i++)
-            {
-                Item item = player.inventory[i];
-
-                if (ValidSoils.Contains(item.type))
-                {
-                    SoilgunPlayer modplayer = player.GetModPlayer<SoilgunPlayer>();
-
-                    modplayer.SoilItem = item;
-                    modplayer.HasSoilItem = true;
-                }
-            }
-        }
-
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            if (Main.LocalPlayer.GetModPlayer<SoilgunPlayer>().SoilItem == null)
-                return;
-
-            TooltipLine AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo: [i:{Main.LocalPlayer.GetModPlayer<SoilgunPlayer>().SoilItem.type}]{Main.LocalPlayer.GetModPlayer<SoilgunPlayer>().SoilItem.stack}");
-            tooltips.Add(AmmoLine);
-        }
-
-        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            if (Main.playerInventory || Main.LocalPlayer.GetModPlayer<SoilgunPlayer>().SoilItem == null)
-                return;
-
-            Utils.DrawBorderStringFourWay(spriteBatch, FontAssets.ItemStack.Value, $"{ Main.LocalPlayer.GetModPlayer<SoilgunPlayer>().SoilItem.stack}", position.X, position.Y + 15, Color.White, Color.Black, origin, (scale + 0.2f) * Main.UIScale);
-        }
-
-        //increases damage depending on type of soil, like ammos
-        public int GetSoilDamage(Player player)
-        {
-            if (player.GetModPlayer<SoilgunPlayer>().SoilItem.type == Mod.Find<ModItem>("VitricSandItem").Type)
-                return 8;
-            switch (player.GetModPlayer<SoilgunPlayer>().SoilItem.type)
-            {
-                case ItemID.SandBlock:
-                    return 2;
-                case ItemID.CrimsandBlock:
-                    return 4;
-                case ItemID.EbonsandBlock:
-                    return 4;
-                case ItemID.PearlsandBlock:
-                    return 15;
-                case ItemID.DirtBlock:
-                    return 2;
-                case ItemID.SiltBlock:
-                    return 3;
-                case ItemID.SlushBlock:
-                    return 3;
-                case ItemID.MudBlock:
-                    return 3;
-            }
-            return 0;
-        }
-    }
-
-    class SoilgunPlayer : ModPlayer
-    {
-        internal Item SoilItem;
-        internal bool HasSoilItem;
-
-        public override void ResetEffects()
-        {
-            SoilItem = null;
-            HasSoilItem = false;
+            CreateRecipe().
+                AddIngredient(ItemID.DirtRod).
+                AddIngredient(ItemID.Sandgun).
+                AddIngredient(ItemID.DirtBlock, 45).
+                AddTile(TileID.WorkBenches).
+                Register();
         }
     }
 
@@ -153,7 +91,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            //there could probably be a better color for the tooltips here, also keywords should be used for some, like Haunted
             if (!Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()))
                 return;
 
@@ -164,7 +101,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 tooltip.OverrideColor = new Color(202, 148, 115);
                 if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
                 {
-                    TooltipLine infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take two damage per second, plus a base damage of 4, up to a maximum of ten crystals\nIf an enemy has had ten crystals on them for more than four seconds, all crystals become charged, exploding shorty after");
+                    TooltipLine infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
                     tooltips.Add(infoTooltip);
                     infoTooltip.OverrideColor = new Color(202, 148, 115);
                     return;
@@ -173,7 +110,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 {
                     case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of sand that split into many grains of sand upon death"); break;
                     case ItemID.CrimsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
-                    case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies\nHaunted does 1 DPS per haunted stack, maxing at 20\nWhen an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks"); break;
+                    case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
                     case ItemID.PearlsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Pearlsand that home in on enemies"); break;
                     case ItemID.DirtBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of dirt"); break;
                     case ItemID.SiltBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
@@ -338,9 +275,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public int DrawWhiteTimer = 30;
 
+        public int SoilAmmoID;
+
         public ref float CurrentCharge => ref Projectile.ai[0];
 
-        public ref float SoilType => ref Projectile.ai[1];
+        public float SoilProjectile => Projectile.ai[1];
 
         public Player owner => Main.player[Projectile.owner];
 
@@ -478,7 +417,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             for (int i = 0; i < 4 + Main.rand.Next(3); i++)
             {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(18))) * Main.rand.NextFloat(0.9f, 1.1f), ChooseSoilType(), damage, knockBack, owner.whoAmI, SoilType);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(18))) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI, SoilAmmoID);
             }
             for (int i = 0; i < 15; i++)
             {
@@ -503,11 +442,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             owner.reuseDelay = 15;
 
-            Item item = owner.GetModPlayer<SoilgunPlayer>().SoilItem;
-            item.stack--;
-            if (item.stack <= 1)
-                item.TurnToAir();
-            //need a better sfx maybe
             Projectile.timeLeft = 30;
             SoundEngine.PlaySound(SoundID.Item61, Projectile.position);
             CanShoot = false;
@@ -516,11 +450,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public int ChooseChargeDust()
         {
             int VitricSand = Mod.Find<ModItem>("VitricSandItem").Type;
-            if (SoilType == VitricSand)
+            if (SoilAmmoID == VitricSand)
             {
                 return ModContent.DustType<VitricSandDust>();
             }
-            switch (SoilType)
+            switch (SoilAmmoID)
             {
                 case ItemID.SandBlock: return DustID.Sand;
                 case ItemID.CrimsandBlock: return DustID.CrimsonPlants;
@@ -530,26 +464,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 case ItemID.SiltBlock: return DustID.Silt;
                 case ItemID.SlushBlock: return DustID.Slush;
                 case ItemID.MudBlock: return DustID.Mud;
-            }
-            return 0;
-        }
-        public int ChooseSoilType()
-        {
-            int VitricSand = Mod.Find<ModItem>("VitricSandItem").Type;
-            if (SoilType == VitricSand)
-            {
-                return ModContent.ProjectileType<SoilgunVitricSandSoil>();
-            }
-            switch (SoilType)
-            {
-                case ItemID.SandBlock: return ModContent.ProjectileType<SoilgunSandSoil>();
-                case ItemID.CrimsandBlock: return ModContent.ProjectileType<SoilgunCrimsandSoil>();
-                case ItemID.EbonsandBlock: return ModContent.ProjectileType<SoilgunEbonsandSoil>();
-                case ItemID.PearlsandBlock: return ModContent.ProjectileType<SoilgunPearlsandSoil>();
-                case ItemID.DirtBlock: return ModContent.ProjectileType<SoilgunDirtSoil>();
-                case ItemID.SiltBlock: return ModContent.ProjectileType<SoilgunSiltSoil>();
-                case ItemID.SlushBlock: return ModContent.ProjectileType<SoilgunSlushSoil>();
-                case ItemID.MudBlock: return ModContent.ProjectileType<SoilgunMudSoil>();
             }
             return 0;
         }
