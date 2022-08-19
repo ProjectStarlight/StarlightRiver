@@ -71,22 +71,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
         }
 
         public virtual bool SafeCanUseItem(Player player) { return true; }
-        public sealed override bool CanUseItem(Player player)
-        {
-            if (!hasAmmo)
-                return false;
-
-            SafeCanUseItem(player);
-
-            return base.CanUseItem(player) && SafeCanUseItem(player);
-        }
-
+        public sealed override bool CanUseItem(Player player) => base.CanUseItem(player) && SafeCanUseItem(player) && hasAmmo;
         public virtual void SafeModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) { }
         public sealed override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             SafeModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
-
-
             float speed = velocity.Length();
             velocity.Normalize();
             velocity *= speed + currentAmmoStruct.ShootSpeed;
@@ -107,6 +96,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
             {
                 int type = currentAmmoStruct.projectileID; // this code sucks ass
                 bool dontConsumeAmmo = false;
+
                 if (player.magicQuiver && ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
                     dontConsumeAmmo = true;
                 if (player.ammoBox && Main.rand.NextBool(5))
