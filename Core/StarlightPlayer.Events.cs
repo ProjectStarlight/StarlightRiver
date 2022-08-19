@@ -7,6 +7,22 @@ namespace StarlightRiver.Core
 {
     public partial class StarlightPlayer : ModPlayer
     {
+        //for Can-Use effects, runs before the item is used, return false to stop item use
+        public delegate bool CanUseItemDelegate(Player player, Item item);
+        public static event CanUseItemDelegate CanUseItemEvent;
+        public override bool CanUseItem(Item item)
+        {
+            if (CanUseItemEvent != null)
+            {
+                bool result = true;
+                foreach (CanUseItemDelegate del in CanUseItemEvent.GetInvocationList())
+                {
+                    result &= del(Player, item);
+                }
+                return result;
+            }
+            return base.CanUseItem(item);
+        }
         //for on-hit effects that require more specific effects, Projectiles
         public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);
         public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
@@ -21,6 +37,22 @@ namespace StarlightRiver.Core
         public override void ModifyHitByNPC(NPC NPC, ref int damage, ref bool crit)
         {
             ModifyHitByNPCEvent?.Invoke(Player, NPC, ref damage, ref crit);
+        }
+
+        //for on-hit effects that run after modifyhitnpc and prehurt, contact damage
+        public delegate void OnHitByNPCDelegate(Player player, NPC npc, int damage, bool crit);
+        public static event OnHitByNPCDelegate OnHitByNPCEvent;
+        public override void OnHitByNPC(NPC npc, int damage, bool crit)
+        {
+            OnHitByNPCEvent?.Invoke(Player, npc, damage, crit);
+        }
+
+        //for on-hit effects that run after modifyhitnpc and prehurt, projectile damage
+        public delegate void OnHitByProjectileDelegate(Player player, Projectile projectile, int damage, bool crit);
+        public static event OnHitByProjectileDelegate OnHitByProjectileEvent;
+        public override void OnHitByProjectile(Projectile projectile, int damage, bool crit)
+        {
+            OnHitByProjectileEvent?.Invoke(Player, projectile, damage, crit);
         }
 
 
@@ -120,13 +152,23 @@ namespace StarlightRiver.Core
             return true;
         }
 
-		public override void Unload()
+        public delegate void PostUpdateRunSpeedsDelegate(Player player);
+        public static event PostUpdateRunSpeedsDelegate PostUpdateRunSpeedsEvent;
+        public override void PostUpdateRunSpeeds()
+        {
+            PostUpdateRunSpeedsEvent?.Invoke(Player);
+        }
+
+        public override void Unload()
 		{
+            CanUseItemEvent = null;
             ModifyHitByNPCEvent = null;
             ModifyHitByProjectileEvent = null;
             ModifyHitNPCEvent = null;
             ModifyHitNPCWithProjEvent = null;
             NaturalLifeRegenEvent = null;
+            OnHitByNPCEvent = null;
+            OnHitByProjectileEvent = null;
             OnHitNPCEvent = null;
             OnHitNPCWithProjEvent = null;
             PostDrawEvent = null;
@@ -134,6 +176,7 @@ namespace StarlightRiver.Core
             PostUpdateEvent = null;
             PreDrawEvent = null;
             PreHurtEvent = null;
+            PostUpdateRunSpeedsEvent = null;
             ResetEffectsEvent = null;
 
             spawners = null;

@@ -73,6 +73,14 @@ namespace StarlightRiver.Content.Items.Breacher
             Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
             return true;
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 12);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
     }
 
     internal class ExplosiveFlare : ModProjectile
