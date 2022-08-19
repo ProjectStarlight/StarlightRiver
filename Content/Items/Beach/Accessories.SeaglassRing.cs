@@ -58,4 +58,15 @@ namespace StarlightRiver.Content.Items.Beach
 				Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 16, 16), ModContent.ItemType<SeaglassRing>());
 		}
 	}
+
+	class SeaglassRingFishingPlayer : ModPlayer
+	{
+		public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition)
+		{
+			if (attempt.rare && Main.rand.NextBool(15) && Player.ZoneBeach)
+			{ 
+				itemDrop = ModContent.ItemType<SeaglassRing>();
+			}
+		}
+	}
 }

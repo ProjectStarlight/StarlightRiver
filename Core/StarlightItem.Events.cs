@@ -65,7 +65,39 @@ namespace StarlightRiver.Core
             return true;
         }
 
-		public override void Unload()
+        public delegate bool CanEquipAccessoryDelegate(Item item, Player player, int slot, bool modded);
+        public static event CanEquipAccessoryDelegate CanEquipAccessoryEvent;
+        public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
+        {
+            if (CanEquipAccessoryEvent != null)
+            {
+                bool result = true;
+                foreach (CanEquipAccessoryDelegate del in CanEquipAccessoryEvent.GetInvocationList())
+                {
+                    result &= del(item, player, slot, modded);
+                }
+                return result;
+            }
+            return true;
+        }
+
+        public delegate bool CanAccessoryBeEquippedWithDelegate(Item equippedItem, Item incomingItem, Player player);
+        public static event CanAccessoryBeEquippedWithDelegate CanAccessoryBeEquippedWithEvent;
+        public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
+        {
+            if (CanAccessoryBeEquippedWithEvent != null)
+            {
+                bool result = true;
+                foreach (CanAccessoryBeEquippedWithDelegate del in CanAccessoryBeEquippedWithEvent.GetInvocationList())
+                {
+                    result &= del(equippedItem, incomingItem, player);
+                }
+                return result;
+            }
+            return true;
+        }
+
+        public override void Unload()
 		{
             GetHealLifeEvent = null;
             ModifyWeaponDamageEvent = null;
@@ -73,6 +105,8 @@ namespace StarlightRiver.Core
             PickAmmoEvent = null;
             OnPickupEvent = null;
             CanUseItemEvent = null;
+            CanEquipAccessoryEvent = null;
+            CanAccessoryBeEquippedWithEvent = null;
 		}
 	}
 }

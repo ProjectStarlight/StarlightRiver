@@ -45,6 +45,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (modPlayer.Shield)
 				Player.endurance += 0.3f;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class ArmorPlatingPlayer : ModPlayer
@@ -58,7 +66,6 @@ namespace StarlightRiver.Content.Items.Breacher
 		public int flickerTime = 0;
 
 		public bool Shield => shieldTimer > 0;
-
 
 		public override void ResetEffects()
 		{
@@ -82,17 +89,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
         {
 			if (active && !Shield)
 				damageCounter += 100;
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
-        }
 
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
+        }
 	}
+
 	public class ReactivePlatingHelper : IOrderedLoadable
 	{
-
 		public float Priority => 1.05f; 
 
 		public void Load()
