@@ -41,16 +41,17 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OpenBossBag(Player Player)
         {
-            int weapon = Main.rand.Next(4);
+            int weapon = Main.rand.Next(5);
 
             for (int k = 0; k < (Main.masterMode ? 3 : 2); k++)
             {
-                switch (weapon % 4)
+                switch (weapon % 5)
                 {
                     case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<FacetAndLattice>()); break;
                     case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Coalescence>()); break;
                     case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Needler>()); break;
                     case 3: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<RefractiveBlade>()); break;
+                    case 4: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<MagmiteVacpack>()); break;
                 }
                 weapon++;
             }
