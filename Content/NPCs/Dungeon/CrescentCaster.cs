@@ -1,26 +1,18 @@
 ﻿//TODO:
-//Bestiary
-//Make beams midpoint reset if the NPC gets far enough away
-//Make criteria for support targets stricter
-//Reset beam midpoint if enemy moves too far away from it's original position
-//Make beams disappear if enemy is no longer active or too far away
-//Fix prim overlap
-//Dust on targets
-//Spawning
-//Drops
-//Value
-//Balance
-//Gore
-//Hitsound
-//Deathsound
-//Lighting on lightning
-//Change enemy AI
-
-//MAYBE TODO:
-//Make support targets lose barrier gradually
-//Make him unable to support through walls
-//support target aura
-//Make beams "shake" less often
+//[1]Balance
+//[1]Hitsound
+//[1]Deathsound
+//[2]Make beams midpoint reset if the NPC gets far enough away
+//[2]Make criteria for support targets stricter
+//[2]Star bloom on staff when its activated
+//[2]Gore
+//[3]Bestiary
+//[3]Make beams disappear if enemy is no longer active or too far away
+//[3]Dust on targets
+//[3]No barriering enemies through walls
+//[4]Make support targets lose barrier gradually
+//[5]Fix prim overlap
+//[6]support target aura
 
 
 using Microsoft.Xna.Framework;
@@ -45,7 +37,11 @@ using Terraria.Audio;
 
 using System;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using static Terraria.ModLoader.ModContent;
+using Terraria.ModLoader.Utilities;
+
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
@@ -79,6 +75,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             MidPoint = midPoint;
             MidPointDirection = midPointDirection;
             resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
+
             trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
             {
                 if (factor.X > 0.99f)
@@ -103,9 +100,18 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             List<Vector2> points = BezierPoints();
 
             List<Vector2> pointsWithOffset = new List<Vector2>();
+
+            int index = 0;
             foreach(Vector2 point in points)
             {
-                pointsWithOffset.Add(point + Main.rand.NextVector2Circular(5, 5));
+                float offsetAmount;
+                if (index == 0)
+                    offsetAmount = 0;
+                else
+                    offsetAmount = (point - points[index - 1]).Length() * 0.5f * (1.125f - (Math.Abs(7 - index) / 7f));
+
+                    index++;
+                pointsWithOffset.Add(point + Main.rand.NextVector2Circular(offsetAmount, offsetAmount));
             }
 
             trail.Positions = trail2.Positions = pointsWithOffset.ToArray();
@@ -162,7 +168,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             NPC.damage = 0;
             NPC.defense = 5;
             NPC.lifeMax = 500;
-            NPC.value = 10f;
+            NPC.value = 500f;
             NPC.knockBackResist = 0.6f;
             NPC.HitSound = SoundID.Item27 with
             {
@@ -181,6 +187,17 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             else
                 WalkBehavior();
         }
+
+        public override float SpawnChance(NPCSpawnInfo spawnInfo)
+        {
+            return SpawnCondition.Dungeon.Chance * 0.17f;
+        }
+
+        public override void ModifyNPCLoot(NPCLoot npcLoot)
+        {
+            npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Content.Items.Dungeon.InertStaff>(), 20));
+        }
+
 
         public override void FindFrame(int frameHeight)
         {
@@ -215,7 +232,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         public void DrawPrimitives()
         {
-            Effect effect = Filters.Scene["LightningTrail"].GetShader().Shader;
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["LightningTrail"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
@@ -231,7 +248,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private void CastBehavior()
         {
-            var tempTargets = Main.npc.Where(x => x.active && !x.friendly && x.Distance(NPC.Center) < 500 && x != NPC).ToList(); //purpose of temptargets is to check npcs who were being supported but are no longer
+            var tempTargets = ValidTargets(); //purpose of temptargets is to check npcs who were being supported but are no longer
             var toReduceBarrier = Main.npc.Where(x => x.active && !tempTargets.Contains(x) && supportTargets.Contains(x)).ToList();
 
             ClearBarrierAndBolts(toReduceBarrier);
@@ -300,6 +317,9 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 else if (bolt.fade > 0)
                     bolt.fade -= 0.1f;
 
+                foreach (Vector2 point in bolt.BezierPoints())
+                    Lighting.AddLight(point, Color.Cyan.ToVector3() * 0.3f * bolt.fade);
+
             }
 
             foreach (CrescentCasterBolt bolt in Bolts.ToArray())
@@ -348,27 +368,51 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             ClearBarrierAndBolts(supportTargets);
             supportTargets.Clear();
             xFrame = 0;
-            NPC.frameCounter++;
 
-            if (NPC.velocity.Y == 0)
+            int direction;
+            var positionTargets = ValidTargets(); 
+
+            if (positionTargets.Count > 0)
             {
-                if (NPC.frameCounter % 4 == 0)
-                {
-                    yFrame++;
-                    yFrame %= 8;
-                }
+                float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
+
+                if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
+                    direction = Math.Sign(xPositionToBe - NPC.Center.X);
+                else
+                    direction = 0;
             }
             else
-                yFrame = 7;
+                direction = Math.Sign(NPC.Center.X - target.Center.X);
 
-            int direction = Math.Sign(target.Center.X - NPC.Center.X);
-            NPC.direction = NPC.spriteDirection = direction;
+            if (direction != 0)
+                NPC.direction = NPC.spriteDirection = direction;
 
             NPC.velocity.X += direction * ACCELERATION;
             NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MAXSPEED, MAXSPEED);
 
             if (NPC.collideX && NPC.velocity.Y == 0)
                 NPC.velocity.Y = -6;
+
+            NPC.frameCounter++;
+
+            if (direction != 0)
+            {
+                if (NPC.velocity.Y == 0)
+                {
+                    if (NPC.frameCounter % 4 == 0)
+                    {
+                        yFrame++;
+                        yFrame %= 8;
+                    }
+                }
+                else
+                    yFrame = 7;
+            }
+            else
+            {
+                NPC.direction = NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+                yFrame = 0;
+            }
         }
 
         private void ClearBarrierAndBolts(List<NPC> npcs)
@@ -387,6 +431,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 if (npcs.Contains(bolt.TargetNPC))
                     Bolts.Remove(bolt);
             }
+        }
+
+        private List<NPC> ValidTargets()
+        {
+            return Main.npc.Where(x => x.active && !x.friendly && x.Distance(NPC.Center) < 500 && x != NPC).ToList();
         }
 
         private Vector2 CalculateMidpoint(NPC other)
