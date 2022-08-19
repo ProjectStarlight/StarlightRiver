@@ -133,6 +133,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override string Texture => AssetDirectory.PermafrostItem + "Octogun_Tentapistol";
 
+        public override void Load()
+        {
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.PermafrostItem + "Octogun_Tentapistol");
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tentapistol");
@@ -166,7 +171,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             if (ShootDelay > 0)
                 ShootDelay--;
 
-            if (Projectile.timeLeft > 20)
+            if (Projectile.timeLeft > 25)
             {
                 switch (Offset)
                 {
@@ -188,7 +193,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                 float speed = Vector2.Distance(restingPosition, Projectile.Center) * 0.2f;
                 speed = Utils.Clamp(speed, 1f, 40f);
                 direction.Normalize();
-                direction *= speed;
+                direction *= Projectile.timeLeft < 20 ? 18f : speed;
             }
 
             Projectile.velocity = (Projectile.velocity * (40f - 1) + direction) / 40f;
@@ -223,6 +228,12 @@ namespace StarlightRiver.Content.Items.Permafrost
                     }
                 }                   
             }
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.Center, Vector2.One.RotatedByRandom(6.28f) * 1.5f, Mod.Find<ModGore>("Octogun_Tentapistol").Type).timeLeft = 90;
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -0.65f }, Projectile.Center);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -269,8 +280,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 12, factor =>
             {
-                Vector2 lightingPos = chainPositions[(int)(factor.X / 10f)];
-                return Lighting.GetColor((int)(lightingPos.X / 16), (int)(lightingPos.Y / 16));
+                return Color.White; //Lighting.GetColor((int)(player.position.X / 16), (int)(player.position.X/ 16));
             });
 
             trail.Positions = cache.ToArray();
@@ -289,7 +299,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
-            effect.Parameters["alpha"].SetValue(1);
+            effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - (Projectile.timeLeft / 10f)) :1);
 
             trail?.Render(effect);
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
