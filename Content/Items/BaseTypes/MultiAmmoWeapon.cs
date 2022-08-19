@@ -105,9 +105,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
             if (Item.ModItem.CanConsumeAmmo(ammoItem, player))
             {
-                ammoItem.ModItem.OnConsumedAsAmmo(Item, player);
-                Item.ModItem.OnConsumeAmmo(ammoItem, player);
-
                 int type = currentAmmoStruct.projectileID; // this code sucks ass
                 bool dontConsumeAmmo = false;
                 if (player.magicQuiver && ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
@@ -127,6 +124,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                 if (!dontConsumeAmmo)
                 {
+                    ammoItem.ModItem.OnConsumedAsAmmo(Item, player); //idk why a non-ammo item would ever override onconsumedasammo but if it does this runs
+                    Item.ModItem.OnConsumeAmmo(ammoItem, player);
+
                     ammoItem.stack--;
                     if (ammoItem.stack <= 0)
                         ammoItem.TurnToAir();
@@ -139,6 +139,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
         public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
         {
+            SafeModifyTooltips(tooltips);
+
             if (ammoItem == null)
                 return;
 
@@ -146,15 +148,17 @@ namespace StarlightRiver.Content.Items.BaseTypes
             var kbLine = tooltips.Find(n => n.Name == "Knockback");
             int index = kbLine is null ? tooltips.Count - 1 : tooltips.IndexOf(kbLine);
             tooltips.Insert(index + 1, AmmoLine);
-
-            SafeModifyTooltips(tooltips);
         }
 
+        public virtual void SafePostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) { }
         public sealed override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
         {
+            SafePostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
+
             if (Main.playerInventory || ammoItem == null)
                 return;
 
+            //TODO: Make this show all valid ammo you have instead of just the current ammo you would use, like vanilla does it. 
             Utils.DrawBorderString(spriteBatch, $"{ammoItem.stack}", new Vector2(position.X - 2, position.Y + 8), Color.White, scale + 0.18f, 0, 0, 4);
         }
     }
