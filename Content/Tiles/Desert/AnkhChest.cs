@@ -70,14 +70,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 			Tile tile = Main.tile[i, j];
 
 			if (tile.TileFrameX % 36 != 0)
-			{
 				left--;
-			}
 
 			if (tile.TileFrameY != 0)
-			{
 				top--;
-			}
 
 			int chest = Chest.FindChest(left, top);
 
@@ -125,14 +121,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 			int top = j;
 
 			if (tile.TileFrameX % 36 != 0)
-			{
 				left--;
-			}
 
 			if (tile.TileFrameY != 0)
-			{
 				top--;
-			}
 
 			return Chest.CanDestroyChest(left, top);
 		}
@@ -152,14 +144,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 			int top = j;
 
 			if (tile.TileFrameX % 36 != 0)
-			{
 				left--;
-			}
 
 			if (tile.TileFrameY != 0)
-			{
 				top--;
-			}
 
 			if (player.sign >= 0)
 			{
@@ -233,14 +221,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 			int top = j;
 
 			if (tile.TileFrameX % 36 != 0)
-			{
 				left--;
-			}
 
 			if (tile.TileFrameY != 0)
-			{
 				top--;
-			}
 
 			int chest = Chest.FindChest(left, top);
 

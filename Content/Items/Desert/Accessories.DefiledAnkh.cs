@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Desert
             bp.BarrierDamageReduction -= 0.25f;
             bp.MaxBarrier += 40;
 
-            if (player.GetModPlayer<BarrierPlayer>().Barrier > 0)
+            if (bp.Barrier > 0) // I couldnt figure out a way to do this besides this way.
             {
                 for (int i = 0; i < Main.maxBuffTypes; i++) //vanilla debuffs
                 {
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Desert
                             player.buffImmune[buffType] = true;
                 }
 
-                for (int i = 338; i < BuffLoader.BuffCount; i++) //modded debuffs
+                for (int i = Main.maxBuffTypes; i < BuffLoader.BuffCount; i++) //modded debuffs, everything after Main.maxBuffTypes is modded
                 {
                     int buffType = i;
                     if (buffType != ModContent.BuffType<NoShieldPot>())
