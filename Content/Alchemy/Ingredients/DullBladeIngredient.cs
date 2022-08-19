@@ -29,9 +29,7 @@ namespace StarlightRiver.Content.Alchemy.Ingredients
             base.visualUpdate(wrapper);
 
             if (Main.rand.NextBool(20))
-            {
                 Dust.NewDust(wrapper.cauldronRect.TopLeft() + new Vector2(0, 20), wrapper.cauldronRect.Width, 0, ModContent.DustType<BuzzSpark>(), 0, -2, 0, new Color(200, 200, 205) * 0.8f, 0.75f);
-            }
         }
 
         public override bool addToStack(Item Item)
