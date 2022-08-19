@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.width = 60;
             Item.height = 30;
 
+            Item.crit = 6;
             Item.DamageType = DamageClass.Ranged;
             Item.damage = 15;
             Item.useTime = Item.useAnimation = 16;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             Item.shoot = ProjectileID.PurificationPowder;
             Item.shootSpeed = 20f;
-            Item.useAmmo = AmmoID.Bullet;
+            Item.useAmmo = AmmoID.Bullet;   
 
             Item.rare = ItemRarityID.Green;
             Item.autoReuse = true;
@@ -115,7 +116,6 @@ namespace StarlightRiver.Content.Items.Permafrost
     {
         private List<Vector2> cache;
         private Trail trail;
-        private Trail trail2;
 
         internal const int OffsetIDTopLeft = 0; //offset ids, just for readability and easy remembering. these positions are with the player facing right, X positions are flipped when the player is facing left
         internal const int OffsetIDTopRight = 1;
@@ -227,17 +227,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-            var texture = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
-            float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
-            float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
-            Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-            for (int i = 0; i < 3; i++)
-                Main.spriteBatch.Draw(texture, (Projectile.Center - Projectile.velocity) - Main.screenPosition, null, color, Projectile.rotation, texture.Size() / 2, 0.45f, SpriteEffects.None, 0f);
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-
             DrawPrimitives(Main.spriteBatch);
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             SpriteEffects spriteEffects = (Main.MouseWorld.X < player.Center.X ? SpriteEffects.FlipVertically : SpriteEffects.None);
@@ -286,18 +275,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = cache[9];
-
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => MathHelper.Lerp(22, 8, factor), factor =>
-            {
-                float sin = 1 + (float)Math.Sin(factor.X * 10);
-                float cos = 1 + (float)Math.Cos(factor.X * 10);
-                Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-
-                return color * factor.X;
-            });
-
-            trail2.Positions = cache.ToArray();
-            trail2.NextPosition = cache[9];
         }
 
         private void DrawPrimitives(SpriteBatch spriteBatch)
@@ -308,13 +285,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-            effect.Parameters["repeats"].SetValue(1);
-            effect.Parameters["time"].SetValue(0);
-            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-
-            trail2?.Render(effect);
+;
             effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
@@ -477,7 +448,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(Tiny ? 2f : 2.5f), factor => (Tiny ? 2.5f : 4.5f) * (factor * 2f), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(Tiny ? 1f : 2.5f), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
             {
                 float sin = 1 + (float)Math.Sin(factor.X * 10);
                 float cos = 1 + (float)Math.Cos(factor.X * 10);
