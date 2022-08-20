@@ -1,7 +1,4 @@
 ﻿//TODO:
-//[1]Balance
-//[1]Hitsound
-//[1]Deathsound
 //[3]Bestiary
 //[3]Dust on targets
 //[6]support target aura
@@ -169,14 +166,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             NPC.height = 48;
             NPC.damage = 0;
             NPC.defense = 5;
-            NPC.lifeMax = 500;
+            NPC.lifeMax = 200;
             NPC.value = 500f;
             NPC.knockBackResist = 0.6f;
-            NPC.HitSound = SoundID.Item27 with
-            {
-                Pitch = -0.3f
-            };
-            NPC.DeathSound = SoundID.Shatter;
+            NPC.HitSound = SoundID.NPCHit2;
+            NPC.DeathSound = SoundID.NPCDeath2;
         }
 
         public override void AI()
@@ -471,6 +465,8 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private Vector2 CalculateMidpoint(NPC other)
         {
+            if (other.Center == NPC.Center)
+                return NPC.Center;
             Vector2 directionTo = NPC.DirectionTo(other.Center);
             return NPC.Center + (directionTo.RotatedBy(-Math.Sign(directionTo.X) * Main.rand.NextFloat(0.5f, 1f)) * Main.rand.NextFloat(1f, 1.5f) * NPC.Distance(other.Center));
         }
