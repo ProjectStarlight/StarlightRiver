@@ -4,7 +4,6 @@
 //[1]Deathsound
 //[3]Bestiary
 //[3]Dust on targets
-//[3]No barriering enemies through walls
 //[6]support target aura
 
 
@@ -467,13 +466,30 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private bool IsValidTarget(NPC potentialTarget)
         {
-            return potentialTarget.active && !potentialTarget.friendly && potentialTarget.CanBeChasedBy() && potentialTarget.Distance(NPC.Center) < 500 && potentialTarget != NPC;
+            return potentialTarget.active && !potentialTarget.friendly && potentialTarget.CanBeChasedBy() && potentialTarget.Distance(NPC.Center) < 500 && potentialTarget != NPC && ClearPath(NPC.Center, potentialTarget.Center);
         }
 
         private Vector2 CalculateMidpoint(NPC other)
         {
             Vector2 directionTo = NPC.DirectionTo(other.Center);
             return NPC.Center + (directionTo.RotatedBy(-Math.Sign(directionTo.X) * Main.rand.NextFloat(0.5f, 1f)) * Main.rand.NextFloat(1f, 1.5f) * NPC.Distance(other.Center));
+        }
+
+        private static bool ClearPath(Vector2 pos1, Vector2 pos2)
+        {
+            Vector2 direction = pos2 - pos1;
+            int length = (int)(direction.Length() / 16);
+            direction.Normalize();
+
+            Vector2 tilePos1 = pos1 / 16;
+            for (int i = 0; i < length; i++)
+            {
+                tilePos1 += direction;
+                Tile tile = Main.tile[(int)tilePos1.X, (int)tilePos1.Y];
+                if (tile.HasTile && !TileID.Sets.Platforms[tile.TileType] && Main.tileSolid[tile.TileType])
+                    return false;
+            }
+            return true;
         }
     }
 }
