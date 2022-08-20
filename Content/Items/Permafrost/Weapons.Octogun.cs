@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
             Item.noMelee = true;
 
-            Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/SquidBoss/MagicSplash") with {Volume = 0.85f};
+            Item.UseSound = new Terraria.Audio.SoundStyle("StarlightRiver/Sounds/SquidBoss/MagicSplash") with {Volume = 0.85f, PitchVariance = 0.1f};
 
             Item.shoot = ProjectileID.PurificationPowder;
             Item.shootSpeed = 20f;
