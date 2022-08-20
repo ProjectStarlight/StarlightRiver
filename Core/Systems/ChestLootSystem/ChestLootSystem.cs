@@ -21,7 +21,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
     {
         public static ChestLootSystem Instance { get; private set; } //temp fix until a better solution is implemented in a future pr
 
-        private const float displayCaseChance = 0.925f; // = 0.125f;
+        private const float displayCaseChance = 0.125f;
 
         private Dictionary<int, ChestRegionFlags> FramingToRegion;
         private HashSet<ChestRegionFlags> DisplayCaseReplaceable;
@@ -210,7 +210,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
                 }
             }
 
-            if (type != ItemID.None && WorldGen.genRand.NextBool(10))
+            if (type != ItemID.None)
             {
                 Item Item = SetupItem(type, 1, true);
 
