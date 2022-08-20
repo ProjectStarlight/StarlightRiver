@@ -7,13 +7,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
     {
         public override void Load()
         {
-            StarlightNPC.ModifyNPCLootEvent += AddItemToBloodMoonPool;
+            StarlightNPC.ModifyGlobalLootEvent += AddItemToBloodMoonPool;
         }
 
-        private void AddItemToBloodMoonPool(Terraria.NPC npc, Terraria.ModLoader.NPCLoot npcloot)
+        private void AddItemToBloodMoonPool(Terraria.ModLoader.GlobalLoot globalLoot)
         {
-            if (npc.damage > 0 && npc.HasPlayerTarget)
-                npcloot.Add(ItemDropRule.ByCondition(new Conditions.IsBloodMoonAndNotFromStatue(), Type, 20, 1, 2));
+            globalLoot.Add(ItemDropRule.ByCondition(new Conditions.IsBloodMoonAndNotFromStatue(), Type, 10, 1, 2));
         }
 
         public LivingBlood() : base("Living Blood", "", 999, 50, 2, AssetDirectory.GravediggerItem) { }

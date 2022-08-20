@@ -55,7 +55,14 @@ namespace StarlightRiver.Core
             ModifyNPCLootEvent?.Invoke(npc, npcLoot);
 		}
 
-		public override void Unload()
+        public delegate void ModifyGlobalLootDelegate(GlobalLoot globalLoot);
+        public static event ModifyGlobalLootDelegate ModifyGlobalLootEvent;
+        public override void ModifyGlobalLoot(GlobalLoot globalLoot)
+        {
+            ModifyGlobalLootEvent?.Invoke(globalLoot);
+        }
+
+        public override void Unload()
 		{
             PostAIEvent = null;
             OnKillEvent = null;
@@ -64,6 +71,7 @@ namespace StarlightRiver.Core
             ModifyHitPlayerEvent = null;
             ResetEffectsEvent = null;
             ModifyNPCLootEvent = null;
+            ModifyGlobalLootEvent = null;
 		}
 	}
 }
