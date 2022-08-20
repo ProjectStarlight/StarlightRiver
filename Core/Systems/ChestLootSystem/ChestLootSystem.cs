@@ -210,7 +210,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
                 }
             }
 
-            if (type != ItemID.None)
+            if (type != ItemID.None && WorldGen.genRand.NextBool(10))
             {
                 Item Item = SetupItem(type, 1, true);
 
