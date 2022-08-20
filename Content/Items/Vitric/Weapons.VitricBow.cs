@@ -52,14 +52,5 @@ namespace StarlightRiver.Content.Items.Vitric
             NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj2);
             return true;
         }
-
-        public override void AddRecipes()
-        {
-            Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemType<SandstoneChunk>(), 10);
-            recipe.AddIngredient(ItemType<VitricOre>(), 20);
-            recipe.AddTile(TileID.Anvils);
-            recipe.Register();
-        }
     }
 }
