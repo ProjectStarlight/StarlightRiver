@@ -18,6 +18,8 @@ namespace StarlightRiver.Core
 {
 	public class BarrierPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that Players and NPCs share
 	{
+		public bool JustHitWithBarrier = false;
+
 		public int MaxBarrier = 0;
 		public int Barrier = 0;
 		public bool PlayerCanLiveWithOnlyBarrier = false;
@@ -108,6 +110,7 @@ namespace StarlightRiver.Core
 				ModifyDamage(ref damage, ref crit);
 				TimeSinceLastHit = 0;
 				Player.statDefense = 0;
+				JustHitWithBarrier = true;
 			}
 
 			return true;
@@ -176,6 +179,8 @@ namespace StarlightRiver.Core
 		{
 			if (Main.mouseItem.ModItem is BarrierDye)
 				Main.EquipPageSelected = 2;
+
+			JustHitWithBarrier = false;
 		}
 
 		public override void UpdateDead()

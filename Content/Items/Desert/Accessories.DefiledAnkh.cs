@@ -8,6 +8,7 @@ using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.ID;
 using StarlightRiver.Content.Items.Potions;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Desert
 {
@@ -15,6 +16,29 @@ namespace StarlightRiver.Content.Items.Desert
     {
         public override string Texture => AssetDirectory.DesertItem + Name;
         public DefiledAnkh() : base(ModContent.Request<Texture2D>(AssetDirectory.DesertItem + "DefiledAnkh").Value) { }
+
+        public override void Load()
+        {
+            StarlightPlayer.PreUpdateBuffsEvent += RemoveDebuffs;
+        }
+
+        private void RemoveDebuffs(Player player)
+        {
+            if (Equipped(player) && (player.GetModPlayer<BarrierPlayer>().Barrier > 0 || player.GetModPlayer<BarrierPlayer>().JustHitWithBarrier))
+            {
+                for (int i = 0; i < player.buffType.Length; i++)
+                {
+                    int buffType = player.buffType[i];
+
+                    if (Helper.IsValidDebuff(player, i) && buffType != ModContent.BuffType<NoShieldPot>())
+                        if (Main.debuff[buffType])
+                        {
+                            player.DelBuff(i);
+                            i--;
+                        }
+                }   
+            }
+        }
 
         public override void SetStaticDefaults()
         {
@@ -27,25 +51,6 @@ namespace StarlightRiver.Content.Items.Desert
             var bp = player.GetModPlayer<BarrierPlayer>();
             bp.BarrierDamageReduction -= 0.25f;
             bp.MaxBarrier += 40;
-
-            if (bp.Barrier > 0) // I couldnt figure out a way to do this besides this way.
-            {
-                for (int i = 0; i < Main.maxBuffTypes; i++) //vanilla debuffs
-                {
-                    int buffType = i;
-                    if (buffType != BuffID.PotionSickness || buffType != BuffID.ManaSickness)
-                        if (Main.debuff[buffType])
-                            player.buffImmune[buffType] = true;
-                }
-
-                for (int i = Main.maxBuffTypes; i < BuffLoader.BuffCount; i++) //modded debuffs, everything after Main.maxBuffTypes is modded
-                {
-                    int buffType = i;
-                    if (buffType != ModContent.BuffType<NoShieldPot>())
-                        if (Main.debuff[buffType])
-                            player.buffImmune[buffType] = true;
-                }
-            }
         }
     }
 }
