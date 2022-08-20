@@ -114,6 +114,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
     public class OctogunTentapistol : ModProjectile
     {
+        internal Color LightColor;
         private List<Vector2> cache;
         private Trail trail;
 
@@ -238,6 +239,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override bool PreDraw(ref Color lightColor)
         {
+            LightColor = Lighting.GetColor((int)(player.Center.X / 16), (int)(player.Center.Y / 16));
             DrawPrimitives(Main.spriteBatch);
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             SpriteEffects spriteEffects = (Main.MouseWorld.X < player.Center.X ? SpriteEffects.FlipVertically : SpriteEffects.None);
@@ -280,7 +282,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(40 * 4), factor => 12, factor =>
             {
-                return Color.White; //Lighting.GetColor((int)(player.position.X / 16), (int)(player.position.X/ 16));
+                return LightColor;
             });
 
             trail.Positions = cache.ToArray();
@@ -299,7 +301,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             effect = Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "Octogun_Tentacle").Value);
-            effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - (Projectile.timeLeft / 10f)) :1);
+            effect.Parameters["alpha"].SetValue(Projectile.timeLeft < 10 ? MathHelper.Lerp(1, 0, 1f - (Projectile.timeLeft / 10f)) : 1);
 
             trail?.Render(effect);
             spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
@@ -322,12 +324,15 @@ namespace StarlightRiver.Content.Items.Permafrost
 
     public class AuroracleInkBullet : ModProjectile
     {
+        private int deathTimer;
         private int FadeInTimer;
 
         private List<Vector2> cache;
         private Trail trail;
 
         private bool Tiny => Projectile.ai[0] == 1f;
+
+        public override bool? CanDamage() => Projectile.penetrate == 2;
         public override string Texture => AssetDirectory.Invisible;
 
         public override void SetStaticDefaults()
@@ -347,7 +352,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             Projectile.width = Projectile.height = 8;  
 
-            Projectile.penetrate = 1;
+            Projectile.penetrate = 2;
             Projectile.usesLocalNPCImmunity = true; //so bullets pierce but dont hog iframes
             Projectile.localNPCHitCooldown = 10;
         }
@@ -355,6 +360,15 @@ namespace StarlightRiver.Content.Items.Permafrost
         public override void AI()
         {
             Projectile.ai[1] += 0.1f;
+
+            if (Projectile.penetrate == 1)
+            {
+                Projectile.velocity = Vector2.Zero;
+                Projectile.timeLeft = 2;
+                deathTimer++;
+                if (deathTimer > 40)
+                    Projectile.Kill();
+            }
 
             if (FadeInTimer < 15)
                 FadeInTimer++;
@@ -364,7 +378,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Color color = Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
             Lighting.AddLight(Projectile.Center, color.ToVector3() * 0.35f);
 
-            if (Main.rand.NextBool(3) && Projectile.timeLeft < 475)
+            if (Main.rand.NextBool(3) && Projectile.timeLeft < 475 && Projectile.penetrate == 2)
             {
                 Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, color, 0.5f).
                     customData = Main.rand.NextFloat(0.25f, 0.75f);
@@ -382,9 +396,18 @@ namespace StarlightRiver.Content.Items.Permafrost
             }
         }
 
+        public override bool OnTileCollide(Vector2 oldVelocity)
+        {
+            Projectile.velocity = Vector2.Zero;
+            Projectile.penetrate = 1;
+            KillEffects();
+            return false;
+        }
+
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
+            KillEffects();
+            /*float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
             float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
             Color color = Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
             for (int i = 0; i < (Tiny ? 7 : 10); i++)
@@ -395,25 +418,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
                 Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.Cinder>(),
                     Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f, 1f), 0, color, 0.5f);
-            }
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
-            float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
-            Color color = Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
-            for (int i = 0; i < (Tiny ? 13 : 18); i++)
-            {
-                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.AuroraFast>(),
-                    Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3.5f, 4.5f), 0, color, 0.85f).
-                    customData = Main.rand.NextFloat(0.5f, 1f);
-
-                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.Cinder>(),
-                    Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.7f, 1.25f), 0, color, 0.5f);
-            }
-
-            Helper.PlayPitched("SquidBoss/LightSplash", 0.4f, 0, Projectile.position);
+            }*/
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -430,10 +435,29 @@ namespace StarlightRiver.Content.Items.Permafrost
             float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
             float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
             Color color = Color.Lerp(Color.Transparent, Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f), FadeInTimer / 15f);
+            if (Projectile.penetrate == 1)
+                color = Color.Lerp(color, Color.Transparent, deathTimer / 40f);
             for (int i = 0; i < 4; i++)
                 Main.spriteBatch.Draw(tex, (Projectile.Center - Projectile.velocity) - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2, Tiny ? 0.25f : 0.4f, SpriteEffects.None, 0f);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        private void KillEffects()
+        {
+            float sin = 1 + (float)Math.Sin(Projectile.timeLeft * 10);
+            float cos = 1 + (float)Math.Cos(Projectile.timeLeft * 10);
+            Color color = Main.masterMode ? new Color(1, 0.25f + sin * 0.25f, 0f) : new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
+            for (int i = 0; i < (Tiny ? 13 : 18); i++)
+            {
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.AuroraFast>(),
+                    Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3.5f, 4.5f), 0, color, 0.85f).
+                    customData = Main.rand.NextFloat(0.5f, 1f);
+
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), ModContent.DustType<Dusts.Cinder>(),
+                    Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.7f, 1.25f), 0, color, 0.5f);
+            }
+            Helper.PlayPitched("SquidBoss/LightSplash", 0.4f, 0, Projectile.position);
         }
 
         private void ManageCaches()
@@ -460,6 +484,9 @@ namespace StarlightRiver.Content.Items.Permafrost
         {
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(Tiny ? 1f : 2.5f), factor => (Tiny ? 2f : 4.5f) * (factor * 2f), factor =>
             {
+                if (Projectile.penetrate == 1 && deathTimer / 40f < factor.Y)
+                    return Color.Transparent;
+
                 float sin = 1 + (float)Math.Sin(factor.X * 10);
                 float cos = 1 + (float)Math.Cos(factor.X * 10);
                 Color color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);
