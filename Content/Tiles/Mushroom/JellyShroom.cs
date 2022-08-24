@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Mushroom
@@ -18,8 +19,15 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override void SetStaticDefaults()
         {
-            // Is the sound correct..?
-            QuickBlock.QuickSetFurniture(this, 7, 7, DustType<Content.Dusts.BlueStamina>(), SoundID.PlayerHit, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
+            QuickBlock.QuickSetFurniture(this, 7, 7, -1, SoundID.NPCDeath1, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
+        }
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 16 * 7, 16 * 7, ItemType<JellyShroomItem>(), 1);
+
+            for (int k = 0; k < 35; k++)
+                Dust.NewDust(new Vector2(i, j) * 16, 16 * 7, 16 * 7, DustType<Content.Dusts.BlueStamina>());
         }
     }
 
