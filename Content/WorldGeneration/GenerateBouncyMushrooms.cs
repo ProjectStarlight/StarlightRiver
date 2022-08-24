@@ -18,9 +18,9 @@ namespace StarlightRiver.Core
         private void BouncyMushroomGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Making the mushroom biome fun";
-            for (int i = 250; i < Main.maxTilesX - 250; i+= 4)
+            for (int i = 100; i < Main.maxTilesX - 100; i+= 4)
             {
-                for (int j = (int)Main.worldSurface; j < Main.maxTilesY - 200; j += 1)
+                for (int j = (int)Main.worldSurface; j < Main.maxTilesY - 100; j += 1)
                 {
                     Tile tile = Main.tile[i, j];
                     if (tile.HasTile && tile.TileType == TileID.MushroomGrass && WorldGen.genRand.NextBool(25) && ClearAreaForMushroom(i, j - 7, 7, 7))
