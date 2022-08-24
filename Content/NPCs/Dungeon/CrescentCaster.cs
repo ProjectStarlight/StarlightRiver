@@ -1,7 +1,5 @@
 ﻿//TODO:
 //[3]Bestiary
-//[3]Dust on targets
-//[6]support target aura
 
 
 using Microsoft.Xna.Framework;
