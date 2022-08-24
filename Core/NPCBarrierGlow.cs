@@ -94,6 +94,7 @@ namespace StarlightRiver.Core
                 if (NPC.ModNPC != null)
                 {
                     ModNPC modNPC = NPC.ModNPC;
+                    
                     if (modNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
                         Main.instance.DrawNPC(i, false);
 
@@ -103,6 +104,7 @@ namespace StarlightRiver.Core
                     Main.instance.DrawNPC(i, false);
             }
         }
+
         private void DrawBarrierOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
         {
             if (anyEnemiesWithBarrier)
