@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
+            //Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -190,7 +190,15 @@ namespace StarlightRiver.Content.Items
             spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
-	}
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+        {
+            BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
+            GNPC.MaxBarrier = 100;
+            GNPC.Barrier = 100;
+            GNPC.DrawGlow = true;
+        }
+    }
 
     class DebugModerEnabler : ModItem
 	{
