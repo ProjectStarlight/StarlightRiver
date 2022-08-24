@@ -27,6 +27,7 @@ using System.Linq;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ModLoader.Utilities;
 
 
@@ -156,6 +157,12 @@ namespace StarlightRiver.Content.NPCs.Dungeon
         {
             DisplayName.SetDefault("Crescent Caster");
             Main.npcFrameCount[NPC.type] = 10;
+
+            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+            {
+
+            };
+            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
         }
 
         public override void SetDefaults()
@@ -169,6 +176,15 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             NPC.knockBackResist = 0.6f;
             NPC.HitSound = SoundID.NPCHit2;
             NPC.DeathSound = SoundID.NPCDeath2;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheDungeon,
+                new FlavorTextBestiaryInfoElement("[PH] He be castin")
+            });
         }
 
         public override void AI()
