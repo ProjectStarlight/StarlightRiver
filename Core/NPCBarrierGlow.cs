@@ -60,7 +60,7 @@ namespace StarlightRiver.Core
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            if (Main.gameMenu || Main.dedServ || spriteBatch is null  || (NPCTarget is null && NPCTargetBehindTiles is null) || gD is null || !anyEnemiesWithBarrier)
+            if (Main.gameMenu || Main.dedServ || spriteBatch is null  || NPCTarget is null || NPCTargetBehindTiles is null || gD is null || !anyEnemiesWithBarrier)
                 return;
 
             oldScreenPos = Main.screenPosition;
