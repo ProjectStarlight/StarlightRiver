@@ -8,14 +8,7 @@ using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Core
 { 
-    public class NPCBarrierGlowSystem : ModSystem
-    {
-        public override void PreUpdateNPCs()
-        {
-            NPCBarrierGlow.anyEnemiesWithBarrier = false;
-        }
-    }
-    public class NPCBarrierGlow : IOrderedLoadable
+    public class NPCBarrierGlow : ModSystem
     {
         public static bool anyEnemiesWithBarrier = false;
 
@@ -27,9 +20,7 @@ namespace StarlightRiver.Core
 
         private static Color barrierColor => Color.Cyan;
 
-        public float Priority => 1.1f;
-
-        public void Load()
+        public override void Load()
         {
             if (Main.dedServ)
                 return;
@@ -40,10 +31,15 @@ namespace StarlightRiver.Core
             On.Terraria.Main.DrawNPCs += DrawBarrierOverlay;
         }
 
-        public void Unload()
+        public override void Unload()
         {
             Main.OnPreDraw -= Main_OnPreDraw;
             On.Terraria.Main.DrawNPCs -= DrawBarrierOverlay;
+        }
+
+        public override void PreUpdateNPCs()
+        {
+            NPCBarrierGlow.anyEnemiesWithBarrier = false;
         }
 
         public static void ResizeTarget()
@@ -57,17 +53,17 @@ namespace StarlightRiver.Core
 
         private void Main_OnPreDraw(GameTime obj)
         {
-            GraphicsDevice gD = Main.graphics.GraphicsDevice;
+            GraphicsDevice gd = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            if (Main.gameMenu || Main.dedServ || spriteBatch is null  || NPCTarget is null || NPCTargetBehindTiles is null || gD is null || !anyEnemiesWithBarrier)
+            if (Main.gameMenu || Main.dedServ || spriteBatch is null  || NPCTarget is null || NPCTargetBehindTiles is null || gd is null || !anyEnemiesWithBarrier)
                 return;
 
             oldScreenPos = Main.screenPosition;
 
-            RenderTargetBinding[] bindings = gD.GetRenderTargets();
-            gD.SetRenderTarget(NPCTarget);
-            gD.Clear(Color.Transparent);
+            RenderTargetBinding[] bindings = gd.GetRenderTargets();
+            gd.SetRenderTarget(NPCTarget);
+            gd.Clear(Color.Transparent);
 
             spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
@@ -75,15 +71,15 @@ namespace StarlightRiver.Core
 
             spriteBatch.End();
 
-            gD.SetRenderTarget(NPCTargetBehindTiles);
-            gD.Clear(Color.Transparent);
+            gd.SetRenderTarget(NPCTargetBehindTiles);
+            gd.Clear(Color.Transparent);
 
             spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
             DrawAllNPCS(spriteBatch, true);
 
             spriteBatch.End();
-            gD.SetRenderTargets(bindings);
+            gd.SetRenderTargets(bindings);
         }
 
         private static void DrawAllNPCS(SpriteBatch spriteBatch, bool behindTiles)
@@ -92,24 +88,19 @@ namespace StarlightRiver.Core
             {
                 NPC NPC = Main.npc[i];
 
-                if (NPC.behindTiles != behindTiles)
+                if (NPC.behindTiles != behindTiles || !NPC.active || NPC.GetGlobalNPC<BarrierNPC>().Barrier <= 0)
                     continue;
 
-                if (NPC.active && NPC.GetGlobalNPC<BarrierNPC>().Barrier > 0)
+                if (NPC.ModNPC != null)
                 {
-                    if (NPC.ModNPC != null)
-                    {
-                        if (NPC.ModNPC is ModNPC ModNPC)
-                        {
-                            if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
-                                Main.instance.DrawNPC(i, false);
-
-                            ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
-                        }
-                    }
-                    else
+                    ModNPC modNPC = NPC.ModNPC;
+                    if (modNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
                         Main.instance.DrawNPC(i, false);
+
+                    modNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
                 }
+                else
+                    Main.instance.DrawNPC(i, false);
             }
         }
         private void DrawBarrierOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
