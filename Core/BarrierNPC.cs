@@ -23,6 +23,8 @@ namespace StarlightRiver.Core
 
 		public float BarrierDamageReduction = 0.75f;
 
+		public bool DrawGlow = true; //Set to false to do custom barrier drawing, like the glassweaver constructs do
+
 		public override bool InstancePerEntity => true;
 
         public override void ResetEffects(NPC npc)
@@ -30,6 +32,12 @@ namespace StarlightRiver.Core
 			if (MaxBarrier != 0)
 				LastNonZeroMaxBarrier = MaxBarrier;
         }
+
+        public override void AI(NPC npc)
+        {
+            if (!NPCBarrierGlow.anyEnemiesWithBarrier && Barrier > 0)
+				NPCBarrierGlow.anyEnemiesWithBarrier = true;
+		}
 
         public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
 		{
