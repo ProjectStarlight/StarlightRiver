@@ -116,10 +116,10 @@ namespace StarlightRiver.Core
 
         private static void DrawNPCTarget(RenderTarget2D target)
         {
-            GraphicsDevice gD = Main.graphics.GraphicsDevice;
+            GraphicsDevice gd = Main.graphics.GraphicsDevice;
             SpriteBatch spriteBatch = Main.spriteBatch;
 
-            if (Main.dedServ || spriteBatch == null || target == null || gD == null)
+            if (Main.dedServ || spriteBatch == null || target == null || gd == null)
                 return;
 
             Vector2 translation = Main.screenPosition - oldScreenPos;
