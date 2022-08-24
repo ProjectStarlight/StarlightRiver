@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override void AddLoot()
         {
+            AddItem(ModContent.ItemType<Sling>(), ChestRegionFlags.Surface | ChestRegionFlags.Barrel);
             AddItem(ModContent.ItemType<BarbedKnife>(), ChestRegionFlags.Surface | ChestRegionFlags.Barrel);
             AddItem(ModContent.ItemType<Cheapskates>(), ChestRegionFlags.Ice);
             AddItem(ModContent.ItemType<Slitherring>(), ChestRegionFlags.Jungle, 0.20f);
