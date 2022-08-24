@@ -133,7 +133,7 @@ namespace StarlightRiver.Core
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, translationMatrix);
 
             float sin = (float)Math.Sin(Main.timeForVisualEffects * 0.06f);
-            float opacity = (1.5f + (sin * 0.75f)) * 0.3f;
+            float opacity = (1.5f - (sin * 0.5f)) * 0.3f;
 
             Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
             effect.Parameters["barrierColor"].SetValue(barrierColor.ToVector4() * opacity);
@@ -144,7 +144,7 @@ namespace StarlightRiver.Core
             for (int i = 0; i < 8; i++)
             {
                 float angle = (i / 8f) * MathHelper.TwoPi;
-                float distance = 3 + (2 * sin);
+                float distance = 4 + (2 * sin);
 
                 Vector2 offset = angle.ToRotationVector2() * distance;
                 spriteBatch.Draw(target, new Rectangle((int)offset.X, (int)offset.Y, Main.screenWidth, Main.screenHeight), Color.White);
