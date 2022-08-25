@@ -6,11 +6,11 @@
 //Better description
 //Visuals on arrow
 //Sprite on arrow
-//AOE damage on explosion
 //Get rid of main.newtext
 //Sync up firing animation with arrow firing
-//Make arrow not penetrate
 //Make firing animation end with no loose parts
+//Fix dust related crash
+
 
 
 using Microsoft.Xna.Framework;
@@ -260,14 +260,65 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         private static void SpawnBlood(NPC npc, Projectile projectile)
         {
+			Core.Systems.CameraSystem.Shake += 8;
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
 			for (int i = 0; i < 16; i++)
             {
-				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(projectile.velocity.Length() * 0.35f), 0, default, 0.3f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(projectile.velocity.Length() * 0.35f), 0, default, 0.3f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5,5), 0, default, 1.4f);
+
+				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
 			}
+
+			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), projectile.damage, projectile.knockBack, projectile.owner);
         }
     }
+
+	internal class BloodBolterExplosion : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+
+		public float radiusMult = 1f;
+
+		public float Progress => 1 - (Projectile.timeLeft / 10f);
+
+		private float Radius => 150 * (float)(Math.Sqrt(Progress)) * radiusMult;
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 80;
+			Projectile.height = 80;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 10;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Blood Bolter");
+		}
+
+		public override void AI()
+		{
+			
+		}
+
+		public override bool PreDraw(ref Color lightColor) => false;
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
+			line.Normalize();
+			line *= Radius;
+
+			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
+				return true;
+
+			return false;
+		}
+	}
 
 	public class BloodBolterGoreDestroyer : ModSystem
     {

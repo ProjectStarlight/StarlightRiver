@@ -48,10 +48,10 @@ namespace StarlightRiver.Content.Items.Misc
 
             foreach (Dust dust in Main.dust)
             {
-                if (dust.active && dust.type == DustType)
+                if (dust.active && dust.type == DustType && dust.customData != null)
                 {
                     borderNoise.Parameters["offset"].SetValue((float)dust.rotation);
-                    spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.White, dust.rotation, tex.Size() / 2, dust.scale * new Vector2(1f, 1.5f + (0.25f * dust.velocity.Length())), SpriteEffects.None, 0);
+                    spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.White, dust.rotation, tex.Size() / 2, dust.scale * new Vector2(1f, (float)dust.customData + (0.25f * dust.velocity.Length())), SpriteEffects.None, 0);
                 }
             }
 

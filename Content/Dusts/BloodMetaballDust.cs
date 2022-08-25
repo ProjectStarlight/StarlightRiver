@@ -31,6 +31,9 @@ namespace StarlightRiver.Content.Dusts
 		{
 			dust.position += dust.velocity;
 
+			if (dust.customData == null)
+				dust.customData = Main.rand.NextFloat(0.75f, 1.5f);
+
 			if (dust.noGravity)
 				dust.velocity = new Vector2(0, -1f);
 			else
