@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
             new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
         };
-
+        public override bool CanConsumeAmmo(Item ammo, Player player) => false;
         public override bool SafeCanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
         public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         {
             Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, type);
             if (proj.ModProjectile is SoilgunHoldout soilGun)
-                soilGun.SoilAmmoID = ammoItem.type;
+                soilGun.SoilAmmoID = currentAmmoStruct.ammoID;
             return false;
         }
 
@@ -444,6 +444,38 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             Projectile.timeLeft = 30;
             SoundEngine.PlaySound(SoundID.Item61, Projectile.position);
+            if (owner.HeldItem.ModItem is Soilgun soilGun)
+            {
+                int type = soilGun.currentAmmoStruct.projectileID; // this code is still bad
+                bool dontConsumeAmmo = false;
+
+                if (owner.magicQuiver && soilGun.ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (owner.ammoBox && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (owner.ammoPotion && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (owner.ammoCost80 && Main.rand.NextBool(5))
+                    dontConsumeAmmo = true;
+                if (owner.ammoCost75 && Main.rand.NextBool(4))
+                    dontConsumeAmmo = true;
+                if (type == 85 && owner.itemAnimation < owner.itemAnimationMax - 6)
+                    dontConsumeAmmo = true;
+                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && owner.itemAnimation < owner.itemAnimationMax - 5)
+                    dontConsumeAmmo = true;
+
+                if (!dontConsumeAmmo)
+                {
+                    if (soilGun.ammoItem.ModItem != null)
+                        soilGun.ammoItem.ModItem.OnConsumedAsAmmo(owner.HeldItem, owner);
+
+                    soilGun.OnConsumeAmmo(soilGun.ammoItem, owner);
+
+                    soilGun.ammoItem.stack--;
+                    if (soilGun.ammoItem.stack <= 0)
+                        soilGun.ammoItem.TurnToAir();
+                }
+            }
             CanShoot = false;
         }
 
