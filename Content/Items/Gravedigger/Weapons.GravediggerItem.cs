@@ -35,9 +35,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6.5f;
-			Item.value = Item.sellPrice(0, 1, 0, 0);
+			Item.value = Item.sellPrice(0, 0, 20, 0);
 			Item.crit = 4;
-			Item.rare = 2;
+			Item.rare = ItemRarityID.Green;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
 			Item.shoot = ModContent.ProjectileType<GravediggerSwing>();
@@ -54,6 +54,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
 			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 10);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
