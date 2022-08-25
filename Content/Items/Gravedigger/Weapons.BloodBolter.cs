@@ -265,11 +265,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return base.CheckDead(npc);
 		}
 
-        public override void HitEffect(NPC npc, int hitDirection, double damage)
-        {
-            
-        }
-
         private static void SpawnBlood(NPC npc, Projectile projectile)
         {
 			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
