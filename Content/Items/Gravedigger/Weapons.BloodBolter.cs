@@ -10,6 +10,8 @@
 //Sync up firing animation with arrow firing
 //Make firing animation end with no loose parts
 //Fix dust related crash
+//Some sort of target.isfleshy integration
+//Regular killdust and sfx on blood bolt
 
 
 
@@ -158,14 +160,17 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.penetrate = 1;
-			Projectile.timeLeft = 400;
+			Projectile.timeLeft = 60;
 			Projectile.tileCollide = true;
-			Projectile.ignoreWater = false;
-		}
+            Projectile.ignoreWater = false;
+        }
 
         public override void AI()
         {
-			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			Projectile.rotation = Projectile.velocity.ToRotation() - 1.57f;
+
+			if (!Projectile.friendly)
+				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2, 2) + (Projectile.velocity / 2), 0, default, 1.25f);
         }
         public override bool PreDraw(ref Color lightColor)
 		{
@@ -264,12 +269,18 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
 			for (int i = 0; i < 16; i++)
             {
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5,5), 0, default, 1.4f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
 
-				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity, ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
+
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
 			}
-
+			
+			for (int i = 0; i < 8; i++)
+            {
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3,3), 0, Color.DarkRed, Main.rand.NextFloat(1,1.5f));
+			}
 			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), projectile.damage, projectile.knockBack, projectile.owner);
         }
     }

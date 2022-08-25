@@ -43,7 +43,10 @@ namespace StarlightRiver.Content.Dusts
 				var tile = Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16];
 
 				if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
+				{
+					dust.scale *= 1.03f;
 					dust.velocity *= -0.5f;
+				}
 			}
 
 			dust.rotation = dust.velocity.ToRotation() + 1.57f;
