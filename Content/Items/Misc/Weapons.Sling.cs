@@ -408,8 +408,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Main.instance.LoadItem(ItemID.StoneBlock);
-            Texture2D tex = TextureAssets.Item[ItemID.StoneBlock].Value;
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Vector2 drawOrigin = tex.Size() / 2f;
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
