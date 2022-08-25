@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			Item.damage = 16;
+			Item.damage = 21;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -286,7 +286,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3,3), 0, Color.DarkRed, Main.rand.NextFloat(1,1.5f));
 			}
 
-			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), projectile.damage, projectile.knockBack, projectile.owner);
+			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, projectile.owner);
         }
     }
 
