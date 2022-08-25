@@ -33,6 +33,7 @@ namespace StarlightRiver.Core
 
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
         public const string MoonstoneItem =         Assets + "Items/Moonstone/";
+        public const string MoonstoneNPC =          Assets + "NPCs/Moonstone/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
         public const string DungeonItem =           Assets + "Items/Dungeon/";
         public const string GravediggerItem =       Assets + "Items/Gravedigger/";
