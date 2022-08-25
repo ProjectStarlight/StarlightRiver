@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		//1 = bottom
 		//2 = left
 		//3 = top
-		private int originAngle => (int)Projectile.ai[0];
+		private ref float originAngle => ref Projectile.ai[0];
 
 		private float originAngleRad => originAngle * 1.57f;
 
@@ -532,54 +532,4 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 	}
-	public class BreachImpactGlow : Dusts.Glow
-	{
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.frame = new Rectangle(0, 0, 64, 64);
-
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value), "GlowingDustPass");
-			int a = 1; //nessecary for data setting reasons I think?
-		}
-		public override bool Update(Dust dust)
-        {
-			dust.scale *= 0.85f;
-			return base.Update(dust);
-        }
-	}
-	class BreachImpactSpark : Dusts.BuzzSpark
-    {
-		public override void OnSpawn(Dust dust)
-		{
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(0, 0, 5, 50);
-
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/ShrinkingDust").Value), "ShrinkingDustPass");
-		}
-		public override bool Update(Dust dust)
-		{
-			dust.fadeIn++;
-			return base.Update(dust);
-		}
-	}
-
-	class BreacherLaserUpdater : ModSystem
-    {
-        public override void PreUpdateProjectiles()
-        {
-			for (int index = 0; index < Main.projectile.Length; index++)
-			{
-				Projectile proj = Main.projectile[index];
-				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
-					continue;
-				var mp = proj.ModProjectile as BreachCannonSentry;
-				mp.superLaser = false;
-				mp.superLaserContributer = false;
-			}
-
-			base.PreUpdateProjectiles();
-        }
-    }
 }
