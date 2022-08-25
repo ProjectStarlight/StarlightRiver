@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			if (npc.type == NPCID.BloodZombie || npc.type == NPCID.Drippler)
             {
-				npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<LivingBlood>(), 10));
+				npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<LivingBlood>(), 8));
             }
         }
     }
