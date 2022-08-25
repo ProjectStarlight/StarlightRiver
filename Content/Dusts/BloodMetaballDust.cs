@@ -40,12 +40,15 @@ namespace StarlightRiver.Content.Dusts
 			{
 				dust.velocity.Y += 0.2f;
 
-				var tile = Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16];
-
-				if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
+				if (dust.position.X > 16 && dust.position.Y > 16)
 				{
-					dust.scale *= 1.03f;
-					dust.velocity *= -0.5f;
+					var tile = Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16];
+
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
+					{
+						dust.scale *= 1.03f;
+						dust.velocity *= -0.5f;
+					}
 				}
 			}
 

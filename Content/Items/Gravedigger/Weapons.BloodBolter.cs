@@ -1,16 +1,3 @@
-//TODO:
-//Balance
-//Better description
-//Visuals on arrow
-//Sprite on arrow
-//Sync up firing animation with arrow firing
-//Make firing animation end with no loose parts
-//Fix dust related crash
-//Some sort of target.isfleshy integration
-//Regular killdust and sfx on blood bolt
-
-
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
@@ -39,13 +26,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bloodbolter");
-			Tooltip.SetDefault("Killing enemies impales them \nShoot enemies into walls to create gore explosions");
+			Tooltip.SetDefault("Converts wooden arrows into bloodbolts \nBloodbolts impale dead fleshy enemies, exploding them on surfaces");
 
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 60;
+			Item.damage = 16;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -61,18 +48,21 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.shootSpeed = 12f;
 			Item.autoReuse = true;
 			Item.noUseGraphic = true;
-			Item.useAmmo = AmmoID.Arrow;
-		}
+            Item.useAmmo = AmmoID.Arrow;
+			Item.UseSound = SoundID.Item5;
+        }
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
 			Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<BloodBolterHeldProj>(), 0, 0, player.whoAmI, velocity.ToRotation());
+
 			if (type == ProjectileID.WoodenArrowFriendly)
 			{
 				velocity *= 1.5f;
 				type = ModContent.ProjectileType<BloodBolt>();
 			}
-			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback,player.whoAmI);
+
+			Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback,player.whoAmI);
 			return false;
         }
 
@@ -173,11 +163,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override void AI()
         {
-			Projectile.rotation = Projectile.velocity.ToRotation() - 1.57f;
+			Projectile.rotation = Projectile.velocity.ToRotation();
 
 			if (!Projectile.friendly)
 				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2, 2) + (Projectile.velocity / 2), 0, default, 1.25f);
         }
+
         public override bool PreDraw(ref Color lightColor)
 		{
 			var spriteBatch = Main.spriteBatch;
@@ -194,6 +185,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			GNPC.boltOffset = target.Center - Projectile.Center;
 			GNPC.bolt = Projectile;
 		}
+
+        public override void Kill(int timeLeft)
+        {
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
+            for (int i = 0; i < 12; i++)
+            {
+				Vector2 dir = Vector2.Normalize(-Projectile.velocity).RotatedByRandom(0.8f);
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8, 8), DustID.Blood, dir * Main.rand.NextFloat(7), 0, default, 1.25f);
+            }
+        }
     }
 
 	public class BloodBolterGNPC : GlobalNPC
@@ -242,7 +243,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         public override bool CheckDead(NPC npc)
         {
-			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0)
+			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
 			{
 				npc.life = 1;
 				markedForDeath = true;
@@ -270,6 +271,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
         private static void SpawnBlood(NPC npc, Projectile projectile)
         {
+			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 			Core.Systems.CameraSystem.Shake += 8;
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
 			for (int i = 0; i < 16; i++)
