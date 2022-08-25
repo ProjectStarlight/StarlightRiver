@@ -51,22 +51,4 @@ namespace StarlightRiver.Content.Items.Breacher
 			return base.Update(dust);
 		}
 	}
-
-	class BreacherLaserUpdater : ModSystem
-    {
-        public override void PreUpdateProjectiles()
-        {
-			for (int index = 0; index < Main.projectile.Length; index++)
-			{
-				Projectile proj = Main.projectile[index];
-				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
-					continue;
-				var mp = proj.ModProjectile as BreachCannonSentry;
-				mp.superLaser = false;
-				mp.superLaserContributer = false;
-			}
-
-			base.PreUpdateProjectiles();
-        }
-    }
 }

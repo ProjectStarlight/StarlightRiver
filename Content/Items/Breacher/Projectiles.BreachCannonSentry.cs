@@ -18,7 +18,25 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Breacher
-{
+{ 
+	class BreacherLaserUpdater : ModSystem
+	{
+		public override void PreUpdateProjectiles()
+		{
+			for (int index = 0; index < Main.projectile.Length; index++)
+			{
+				Projectile proj = Main.projectile[index];
+				if (!proj.active || proj.type != ModContent.ProjectileType<BreachCannonSentry>())
+					continue;
+				var mp = proj.ModProjectile as BreachCannonSentry;
+				mp.superLaser = false;
+				mp.superLaserContributer = false;
+			}
+
+			base.PreUpdateProjectiles();
+		}
+	}
+
 	public class BreachCannonSentry : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
