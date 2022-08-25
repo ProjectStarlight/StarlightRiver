@@ -245,6 +245,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
 			{
+				Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 				npc.life = 1;
 				markedForDeath = true;
 				npc.immortal = true;
@@ -274,6 +275,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
 			Core.Systems.CameraSystem.Shake += 8;
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
+
 			for (int i = 0; i < 16; i++)
             {
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
@@ -288,6 +290,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
             {
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3,3), 0, Color.DarkRed, Main.rand.NextFloat(1,1.5f));
 			}
+
 			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), projectile.damage, projectile.knockBack, projectile.owner);
         }
     }
@@ -340,7 +343,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class BloodBolterGoreDestroyer : ModSystem
     {
-        public override void Load() //extremely hacky but it works hopefully, ty Mirsario
+        public override void Load() //extremely hacky but it works, ty Mirsario
         {
 			On.Terraria.Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) => 
 			{
