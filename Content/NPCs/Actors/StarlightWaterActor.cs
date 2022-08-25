@@ -12,6 +12,7 @@ using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Core;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Vanity;
+using StarlightRiver.Content.Items.Misc;
 
 namespace StarlightRiver.Content.NPCs.Actors
 {
@@ -158,6 +159,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			if (Item.type == ItemID.WoodenBoomerang) transformType = ModContent.ItemType<StarwoodBoomerang>();
 			if (Item.type == ItemID.WandofSparking) transformType = ModContent.ItemType<StarwoodStaff>();
+			if (Item.type == ModContent.ItemType<Sling>()) transformType = ModContent.ItemType<StarwoodSlingshot>();
 
             if (Item.vanity)
             {

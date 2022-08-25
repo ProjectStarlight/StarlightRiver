@@ -46,9 +46,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                                 for (int j = 0; j < 58; j++)
                                 {
                                     if (inv[j].stack > 0 && inv[j].type == ValidAmmos[x].ammoID)
-                                    {
                                         AmmoNumber += inv[j].stack; //find all valid ammo to get total amount of ammo for the number
-                                    }
                                 }
                             }
                             if (AmmoNumber > 0)

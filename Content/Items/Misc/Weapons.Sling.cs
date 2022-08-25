@@ -27,13 +27,16 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool SafeCanUseItem(Player player)
         {
+            Item.noUseGraphic = true;
+            player.itemTime = 2;
             if (currentAmmoStruct.ammoID == ItemID.Seed)
                 Item.useAnimation = Item.useTime = 50;
+
             if (currentAmmoStruct.ammoID == ItemID.Mushroom)
                 Item.useAnimation = Item.useTime = 60;
+
             if (currentAmmoStruct.ammoID == ItemID.StoneBlock)
                 Item.useAnimation = Item.useTime = 75;
-            Item.noUseGraphic = true;
             return player.ownedProjectileCounts[ModContent.ProjectileType<SlingHeldProjectile>()] <= 0;
         }
         public override bool CanConsumeAmmo(Item ammo, Player player) => false;
@@ -70,14 +73,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void HoldStyle(Player player, Rectangle heldItemFrame)
         {
-            if (player.itemTime > 0)
+            if (player.itemTime > 1)
                 return;
 
             if (Main.MouseWorld.X > player.Center.X)
                 player.ChangeDir(1);
             else
                 player.ChangeDir(-1);
-
             Vector2 itemPosition = player.MountedCenter + new Vector2(4f * player.direction, -1f * player.gravDir);
             float rotation = itemPosition.DirectionTo(Main.MouseWorld).ToRotation();
             player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation - (player.direction == 1 ? MathHelper.ToRadians(60f) : MathHelper.ToRadians(120f)));
@@ -87,21 +89,26 @@ namespace StarlightRiver.Content.Items.Misc
             HoldStyleAdjustments(player, rotation, itemPosition, itemSize, itemOrigin, true, false, true);
         }
 
+        public override void UseStyle(Player player, Rectangle heldItemFrame)
+        {
+            player.itemLocation += player.DirectionTo(Main.MouseWorld).SafeNormalize(player.direction * Vector2.UnitX) * -9f;
+        }
+
+        public override void UseAnimation(Player player)
+        {
+            Item.noUseGraphic = true;
+            if (Main.myPlayer == player.whoAmI)
+            {
+                player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, player.Center.DirectionTo(Main.MouseWorld).ToRotation() - MathHelper.ToRadians(60f));
+                player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, player.Center.DirectionTo(Main.MouseWorld).ToRotation() - MathHelper.ToRadians(30f));
+            }
+        }
+
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<SlingHeldProjectile>(), damage, knockback, player.whoAmI,
                 currentAmmoStruct.projectileID, Item.shootSpeed + currentAmmoStruct.ShootSpeed);
             return false;
-        }
-
-        public override void UseStyle(Player player, Rectangle heldItemFrame)
-        {
-            if (player.itemTime >= 1)
-                Item.noUseGraphic = true;
-            else
-                Item.noUseGraphic = false;
-
-            player.itemLocation = player.Center;
         }
 
         public void HoldStyleAdjustments(Player player, float desiredRotation, Vector2 desiredPosition, Vector2 spriteSize, Vector2? rotationOriginFromCenter = null, bool noSandstorm = false, bool flipAngle = false, bool stepDisplace = true)
@@ -181,6 +188,11 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.alpha = 255;
         }
 
+        public override bool PreAI()
+        {
+            return true;
+        }
+
         public override void AI()
         {
             if (!initialized)
@@ -203,8 +215,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Projectile.netUpdate = true;
                 }
             }
-
-            Projectile.alpha -= 40;
+            Projectile.alpha -= 50;
             Vector2 pos = Owner.RotatedRelativePoint(Owner.MountedCenter + new Vector2(0, -7f * Owner.gravDir), true);
             pos += Projectile.velocity.SafeNormalize(Owner.direction * Vector2.UnitX) * 1f;
             if (Main.myPlayer == Owner.whoAmI && Main.MouseWorld.Y > Owner.Center.Y)
@@ -218,18 +229,13 @@ namespace StarlightRiver.Content.Items.Misc
                 stretch = Player.CompositeArmStretchAmount.None;
             Owner.SetCompositeArmFront(true, stretch, Projectile.rotation - MathHelper.ToRadians(120f) * Projectile.direction);
             Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(60f) * Projectile.direction);
+            Projectile.rotation = Utils.ToRotation(Projectile.velocity);
             Projectile.position = pos - Projectile.Size * 0.5f;
             Projectile.spriteDirection = Projectile.direction;
-            Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+            Owner.ChangeDir(Projectile.direction);
+            Owner.heldProj = Projectile.whoAmI;
             if (Projectile.spriteDirection == -1)
                 Projectile.rotation += 3.1415927f;
-
-            if (++Projectile.frameCounter >= ticksPerFrame)
-            {
-                Projectile.frameCounter = 0;
-                if (++Projectile.frame >= Main.projFrames[Projectile.type])
-                    Projectile.Kill();
-            }
 
             if (Projectile.frame == 4 && !shotProjectile)
             {
@@ -237,17 +243,20 @@ namespace StarlightRiver.Content.Items.Misc
                 shotProjectile = true;
             }
 
-            Owner.ChangeDir(Projectile.direction);
-            Owner.heldProj = Projectile.whoAmI;
+            if (++Projectile.frameCounter >= ticksPerFrame)
+            {
+                Projectile.frameCounter = 0;
+                if (++Projectile.frame >= Main.projFrames[Projectile.type])
+                {
+                    Projectile.timeLeft = 1;
+                    Owner.itemTime = 0;
+                    Owner.HeldItem.noUseGraphic = false;
+                    return;
+                }
+            }
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
             Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            Owner.itemTime = 0;
-            Owner.HeldItem.noUseGraphic = false;
         }
 
         public void ShootSlingProjectile()
@@ -304,7 +313,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             DisplayName.SetDefault("Shroom");
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 3;
         }
         public override void SetDefaults()
         {
@@ -422,6 +431,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Stone).scale = Main.rand.NextFloat(0.75f, 1.2f);
             }
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.8f, Pitch = -0.1f }, Projectile.position);
         }
 
         public override bool OnTileCollide(Vector2 oldVelocity)
