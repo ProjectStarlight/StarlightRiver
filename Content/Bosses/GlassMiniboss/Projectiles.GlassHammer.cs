@@ -287,7 +287,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             bool properTime = Timer > raise + 8 && Timer < raise + 100;
-            bool inSpike = projHitbox.Intersects(targetHitbox);
+
+            var realHitbox = projHitbox;
+            realHitbox.Height = (int)((Timer - raise) / 100f * projHitbox.Height);
+            realHitbox.Y = projHitbox.Y + projHitbox.Height - realHitbox.Height;
+            bool inSpike = realHitbox.Intersects(targetHitbox);
 
             return properTime && inSpike;
         }
@@ -315,6 +319,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                     points[i] = Projectile.Bottom + ((new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(raise + 200, raise + 150, Timer, true))) * 80f)) * Projectile.scale);
                     int j = maxSpikes - i - 1;
                     float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
+
                     if (Timer > raise + 140 - i * 3)
                         points[j] += Main.rand.NextVector2Circular(2, 5) * Projectile.scale;
 

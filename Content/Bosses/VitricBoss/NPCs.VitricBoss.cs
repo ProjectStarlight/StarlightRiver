@@ -614,7 +614,6 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 case (int)AIStates.FirstToSecond:
 
-
                     //health gate the anger phase still incase the player has absurd endgame damage
                     if (NPC.life <= NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
                     {

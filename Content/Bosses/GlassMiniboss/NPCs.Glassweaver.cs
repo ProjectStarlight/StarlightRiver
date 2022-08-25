@@ -19,6 +19,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         public bool disableJumpSound = false;
         //bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
 
+        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.45f);
+        public static readonly Color GlassColor = new Color(60, 170, 205);
+
+        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
         internal ref float Phase => ref NPC.ai[0];
         internal ref float GlobalTimer => ref NPC.ai[1];
 
@@ -374,7 +379,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                             if (AttackTimer > 50)
                             {
-                                if (AttackTimer < 330)
+                                if (AttackTimer < 270)
                                     frame.Y = frameHeight * 4;
                                 else if (AttackTimer < bubbleRecoil - 60)
                                     frame.Y = frameHeight;
@@ -393,11 +398,5 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             return false;
         }
-
-        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.45f);
-        public static readonly Color GlassColor = new Color(60, 200, 175);
-
     }
 }
