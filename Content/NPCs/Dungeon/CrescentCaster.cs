@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
             {
                 BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheDungeon,
-                new FlavorTextBestiaryInfoElement("[PH] He be castin")
+                new FlavorTextBestiaryInfoElement("As the first in a long line of dead wizards, this one has had ample time to practice magic. Using its crescent staff, this fiend generates Barrier for all nearby foes - but is immobile while doing so.")
             });
         }
 
