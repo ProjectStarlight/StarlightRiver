@@ -19,7 +19,6 @@ namespace StarlightRiver.Core
         {
             progress.Message = "Making the mushroom biome fun";
             for (int i = 100; i < Main.maxTilesX - 100; i+= 4)
-            {
                 for (int j = (int)Main.worldSurface; j < Main.maxTilesY - 100; j += 1)
                 {
                     Tile tile = Main.tile[i, j];
@@ -29,7 +28,6 @@ namespace StarlightRiver.Core
                         Helper.PlaceMultitile(new Point16(i, j - 7), TileType<Tiles.Mushroom.JellyShroom>());
                     }
                 }
-            }
         }
 
         private static void ClearSquare(int x, int y, int width, int height)
