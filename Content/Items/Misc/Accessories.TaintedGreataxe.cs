@@ -48,9 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 
                         float initCrit = (proj.CritChance * 2) / 100;
                         if (Main.rand.NextFloat() < initCrit)
-                        {
                             crit = true;
-                        }
                     }
                     else
                         crit = false;
@@ -71,9 +69,7 @@ namespace StarlightRiver.Content.Items.Misc
 
                         float initCrit = ((Item.crit + player.GetTotalCritChance(DamageClass.Generic)) * 2) / 100;
                         if (Main.rand.NextFloat() < initCrit)
-                        {
                             crit = true;
-                        }
                     }
                     else
                         crit = false;
@@ -137,7 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed\nSummons an Ethereal Greataxe, which embeds itself in enemies who were just critically striked\nThe enemy that the Greataxe embeds itself in becomes Tainted\n<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
+			Tooltip.SetDefault("Cursed\nSummons an Ethereal Greataxe, which embeds itself near enemies who were just critically striked\nThe enemy that the Greataxe embeds itself in becomes Focused\n<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
 		}
 
         public override void SafeUpdateEquip(Player Player)
@@ -242,14 +238,14 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 origin = tex.Size() / 2f;
             origin.Y = (Projectile.spriteDirection == 1 ? tex.Height - 40 : 40);
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
             if (!stickyAI)
             {
+                Color green = new Color(85, 220, 55);
+                green.A = 0;
                 for (int k = 12; k > 0; k--)
                 {
                     if (k > 0 && k < oldRotation.Count)
-                        Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, new Color(85, 220, 55) * 0.5f, oldRotation[k], origin, Projectile.scale, spriteEffects, 0f);
+                        Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, green * 0.5f, oldRotation[k], origin, Projectile.scale, spriteEffects, 0f);
                 }
             }
             else
@@ -261,12 +257,10 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 3.2f);
                     var color = new Color(25, 175, 55) * (0.85f - sin * 0.1f) * 0.9f;
-
+                    color.A = 0;
                     Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + dir, null, color, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
                 }
             }
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
             Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
@@ -430,14 +424,11 @@ namespace StarlightRiver.Content.Items.Misc
             Color gray = new Color(25, 25, 25);
             Color green = new Color(85, 220, 55);
             Color ret;
+
             if (dust.alpha < 60)
-            {
                 ret = Color.Lerp(new Color(55, 140, 35), green, dust.alpha / 60f);
-            }
             else if (dust.alpha < 120)
-            {
                 ret = Color.Lerp(green, gray, (dust.alpha - 60) / 60f);
-            }
             else
                 ret = gray;
             return ret * ((255 - dust.alpha) / 255f);
