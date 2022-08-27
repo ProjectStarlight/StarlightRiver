@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
@@ -18,6 +20,35 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+
+		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+		public static ParticleSystem RelicSystem;
+
+		public override void Load()
+		{
+			RelicSystem = new ParticleSystem("StarlightRiver/Assets/MagicPixel", UpdateRelic);
+		}
+
+		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+		{
+			if (!isRelic)
+				return;
+
+			//spriteBatch.End();
+			//spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+
+			float sin = Main.rand.NextFloat(6.28f);
+			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))) - (12 * scale), position.Y + (frame.Height * Main.rand.NextFloat(0.8f,1f)) - (12 * scale));
+
+			Color color = Color.Gold;
+			color.A = 0;
+			RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, Main.rand.NextFloat(0.1f,0.2f) * scale, color, 140, new Vector2(Main.rand.NextFloat(0.002f, 0.006f), sin), default, 0));
+			RelicSystem.SetTexture(ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value);
+			RelicSystem.DrawParticles(spriteBatch);
+
+			//spriteBatch.End();
+			//spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
@@ -199,5 +230,25 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
 		}
-    }
+
+		private static void UpdateRelicBody(Particle particle)
+		{
+			float sin = particle.StoredPosition.Y;
+			float fadeSpeed = particle.StoredPosition.X;
+
+			particle.StoredPosition.Y += 0.08f;
+
+			particle.Velocity.Y = -0.3f;
+			particle.Velocity.X = 1 * (float)Math.Cos(sin);
+
+			if (particle.Timer > 130)
+				particle.Alpha += Main.rand.NextFloat(0.02f, 0.04f);
+			else
+				particle.Alpha -= fadeSpeed;
+
+			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
+			particle.Position += particle.Velocity;
+			particle.Timer--;
+		}
+	}
 }
