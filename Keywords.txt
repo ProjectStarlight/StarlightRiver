@@ -1,5 +1,7 @@
+Vulnerability | Inflicted targets take more damage by a flat amount | 150 | 30 | 30
+Exposure | Inflicted targets take more damage multiplicatively. Exposure increases are additive, not multiplicative. | 175 | 35 | 35
 Haunted | Inflicted enemies take 1 damage-per-second per haunted stack, maxing at 20 stacks. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks. | 180 | 0 | 255
-Volatile | Inflicted enemies take seven-percent more damage for every stack of Volatile, however inflicted enemies also deal three-percent more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
+Volatile | Inflicted enemies have 7% increased Exposure for every stack of Volatile, however inflicted enemies also deal 3% more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
 Grazes | Happens when an enemies projectile barely misses you. Grazes have a cooldown of two seconds at default. | 135 | 235 | 255
 Barrier | Provides damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. your barrier recovers after a brief period of not taking damage. | 100 | 255 | 255
 Stamina | Allows you to use abilities. Each ability has a set stamina cost which may be modified via infusions. | 255 | 200 | 155
