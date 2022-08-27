@@ -10,6 +10,41 @@ using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
+	public class RelicParticleDrawer : ModSystem
+    {
+		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+		public static ParticleSystem RelicSystem;
+
+		public override void Load()
+		{
+			RelicSystem = new ParticleSystem(AssetDirectory.Keys + "GlowAlpha", UpdateRelic);
+		}
+
+		private static void UpdateRelicBody(Particle particle)
+		{
+			float sin = particle.StoredPosition.Y;
+			float fadeSpeed = particle.StoredPosition.X;
+
+			particle.StoredPosition.Y += 0.05f;
+
+			particle.Velocity.Y = -0.2f;
+			particle.Velocity.X = 0.7f * (float)Math.Cos(sin);
+
+			if (particle.Timer > 120)
+				particle.Alpha += Main.rand.NextFloat(0.015f, 0.03f);
+			else
+				particle.Alpha -= fadeSpeed;
+
+			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
+			particle.Position += particle.Velocity;
+			particle.Timer--;
+		}
+
+        public override void PostDrawInterface(SpriteBatch spriteBatch)
+        {
+			RelicSystem.DrawParticles(spriteBatch);
+        }
+    }
 	class RelicItem : GlobalItem
     {
         public bool isRelic = false;
@@ -20,14 +55,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
         public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
-
-		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
-		public static ParticleSystem RelicSystem;
-
-		public override void Load()
-		{
-			RelicSystem = new ParticleSystem("StarlightRiver/Assets/MagicPixel", UpdateRelic);
-		}
 
 		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
@@ -40,11 +67,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			float sin = Main.rand.NextFloat(6.28f);
 			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))) - (12 * scale), position.Y + (frame.Height * Main.rand.NextFloat(0.8f,1f)) - (12 * scale));
 
-			Color color = Color.Gold;
+			Color color = Color.Lerp(Color.Gold, Color.White, Main.rand.NextFloat(0.2f));
 			color.A = 0;
-			RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, Main.rand.NextFloat(0.1f,0.2f) * scale, color, 140, new Vector2(Main.rand.NextFloat(0.002f, 0.006f), sin), default, 0));
-			RelicSystem.SetTexture(ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value);
-			RelicSystem.DrawParticles(spriteBatch);
+			if (Main.rand.NextBool(9))
+				RelicParticleDrawer.RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, Main.rand.NextFloat(0.1f,0.2f) * scale, color, 140, new Vector2(Main.rand.NextFloat(0.001f, 0.003f), sin), default, 0));
 
 			//spriteBatch.End();
 			//spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
@@ -229,26 +255,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
 			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
-		}
-
-		private static void UpdateRelicBody(Particle particle)
-		{
-			float sin = particle.StoredPosition.Y;
-			float fadeSpeed = particle.StoredPosition.X;
-
-			particle.StoredPosition.Y += 0.08f;
-
-			particle.Velocity.Y = -0.3f;
-			particle.Velocity.X = 1 * (float)Math.Cos(sin);
-
-			if (particle.Timer > 130)
-				particle.Alpha += Main.rand.NextFloat(0.02f, 0.04f);
-			else
-				particle.Alpha -= fadeSpeed;
-
-			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
-			particle.Position += particle.Velocity;
-			particle.Timer--;
 		}
 	}
 }
