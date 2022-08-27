@@ -10,41 +10,6 @@ using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
-	public class RelicParticleDrawer : ModSystem
-    {
-		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
-		public static ParticleSystem RelicSystem;
-
-		public override void Load()
-		{
-			RelicSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
-		}
-
-		private static void UpdateRelicBody(Particle particle)
-		{
-			float sin = particle.StoredPosition.Y; //abusing storedposition cause theres no other way to pass in special data
-			float fadeTime = particle.StoredPosition.X;
-
-			particle.StoredPosition.Y += 0.05f;
-
-			particle.Velocity.Y = -0.2f;
-			particle.Velocity.X = 0.7f * (float)Math.Cos(sin);
-
-			if (particle.Timer > 180)
-				particle.Alpha += 0.05f;
-			else if (particle.Timer < fadeTime)
-				particle.Alpha -= 0.025f;
-
-			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
-			particle.Position += particle.Velocity;
-			particle.Timer--;
-		}
-
-        public override void PostDrawInterface(SpriteBatch spriteBatch)
-        {
-			RelicSystem.DrawParticles(spriteBatch);
-        }
-    }
 	class RelicItem : GlobalItem
     {
         public bool isRelic = false;
@@ -53,28 +18,71 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool InstancePerEntity => true;
 
+		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+		public ParticleSystem RelicParticleSystem = default;
+		public ParticleSystem RelicParticleSystemBehind = default;
+
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
-        public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+		public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+
+
+        public override void UpdateInventory(Item item, Player player)
+        {
+			if (isRelic)
+			{
+				if (RelicParticleSystem == default)
+				{
+					RelicParticleSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
+					RelicParticleSystemBehind = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
+				}
+			}
+			else
+			{
+				RelicParticleSystem = default;
+				RelicParticleSystemBehind = default;
+			}
+		}
+
+		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+		{
+			if (!isRelic)
+				return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
+
+			float particleScale = Main.rand.NextFloat(0.3f, 0.45f) * scale;
+
+			float sin = Main.rand.NextFloat(6.28f);
+
+			float backScale = 0.75f;
+
+			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))), position.Y + (frame.Height * Main.rand.NextFloat(0.8f, 1f)));
+			Vector2 frontPos = pos - new Vector2(80 * particleScale, 80 * particleScale);
+			Vector2 backPos = pos - new Vector2(80 * particleScale * backScale, 80 * particleScale * backScale);
+
+			float colorLerper = Main.rand.NextFloat(0.2f);
+			Color color = Color.Lerp(Color.Gold, Color.White, colorLerper);
+			color.A = 0;
+
+			Color colorBehind = Color.Lerp(Color.Orange, Color.White, colorLerper);
+			colorBehind.A = 0;
+
+			int fadeTime = Main.rand.Next(100, 130);
+			if (Main.rand.NextBool(18))
+			{
+				RelicParticleSystem?.AddParticle(new Particle(frontPos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(fadeTime, sin), default, 0));
+				RelicParticleSystemBehind?.AddParticle(new Particle(backPos, new Vector2(0, 0), 0, particleScale * backScale, colorBehind, 200, new Vector2(fadeTime, sin), default, 0));
+			}
+
+			RelicParticleSystemBehind?.DrawParticles(spriteBatch);
+
+			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
+		}
 
 		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if (!isRelic)
 				return;
 
-			//spriteBatch.End();
-			//spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
-			float particleScale = Main.rand.NextFloat(0.3f, 0.45f) * scale;
-
-			float sin = Main.rand.NextFloat(6.28f);
-			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))) - (80 * particleScale), position.Y + (frame.Height * Main.rand.NextFloat(0.8f,1f)) - (80 * particleScale));
-
-			Color color = Color.Lerp(Color.Gold, Color.White, Main.rand.NextFloat(0.2f));
-			color.A = 0;
-			if (Main.rand.NextBool(18))
-				RelicParticleDrawer.RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(Main.rand.Next(100,130), sin), default, 0));
-
-			//spriteBatch.End();
-			//spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+			RelicParticleSystem?.DrawParticles(spriteBatch);
 		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)
@@ -256,6 +264,26 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
 			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
+		}
+
+		private static void UpdateRelicBody(Particle particle)
+		{
+			float sin = particle.StoredPosition.Y; //abusing storedposition cause theres no other way to pass in special data
+			float fadeTime = particle.StoredPosition.X;
+
+			particle.StoredPosition.Y += 0.05f;
+
+			particle.Velocity.Y = -0.2f;
+			particle.Velocity.X = 0.7f * (float)Math.Cos(sin);
+
+			if (particle.Timer > 180)
+				particle.Alpha += 0.05f;
+			else if (particle.Timer < fadeTime)
+				particle.Alpha -= 0.025f;
+
+			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
+			particle.Position += particle.Velocity;
+			particle.Timer--;
 		}
 	}
 }
