@@ -593,7 +593,7 @@ namespace StarlightRiver.Content.Items.Vitric
             if (Inflicted(NPC))
             {
                 if (Projectile.type == ProjectileType<RefractiveBladeProj>())
-                    damage = (int)(damage * 1.25f);
+                    damage = (int)(damage * 1.5f);
             }
         }
 	}
