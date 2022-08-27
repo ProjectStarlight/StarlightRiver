@@ -17,23 +17,23 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void Load()
 		{
-			RelicSystem = new ParticleSystem(AssetDirectory.Keys + "GlowAlpha", UpdateRelic);
+			RelicSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
 		}
 
 		private static void UpdateRelicBody(Particle particle)
 		{
-			float sin = particle.StoredPosition.Y;
-			float fadeSpeed = particle.StoredPosition.X;
+			float sin = particle.StoredPosition.Y; //abusing storedposition cause theres no other way to pass in special data
+			float fadeTime = particle.StoredPosition.X;
 
 			particle.StoredPosition.Y += 0.05f;
 
 			particle.Velocity.Y = -0.2f;
 			particle.Velocity.X = 0.7f * (float)Math.Cos(sin);
 
-			if (particle.Timer > 120)
-				particle.Alpha += Main.rand.NextFloat(0.015f, 0.03f);
-			else
-				particle.Alpha -= fadeSpeed;
+			if (particle.Timer > 180)
+				particle.Alpha += 0.05f;
+			else if (particle.Timer < fadeTime)
+				particle.Alpha -= 0.025f;
 
 			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
 			particle.Position += particle.Velocity;
@@ -63,14 +63,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			//spriteBatch.End();
 			//spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
+			float particleScale = Main.rand.NextFloat(0.3f, 0.45f) * scale;
 
 			float sin = Main.rand.NextFloat(6.28f);
-			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))) - (12 * scale), position.Y + (frame.Height * Main.rand.NextFloat(0.8f,1f)) - (12 * scale));
+			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))) - (80 * particleScale), position.Y + (frame.Height * Main.rand.NextFloat(0.8f,1f)) - (80 * particleScale));
 
 			Color color = Color.Lerp(Color.Gold, Color.White, Main.rand.NextFloat(0.2f));
 			color.A = 0;
-			if (Main.rand.NextBool(9))
-				RelicParticleDrawer.RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, Main.rand.NextFloat(0.1f,0.2f) * scale, color, 140, new Vector2(Main.rand.NextFloat(0.001f, 0.003f), sin), default, 0));
+			if (Main.rand.NextBool(18))
+				RelicParticleDrawer.RelicSystem.AddParticle(new Particle(pos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(Main.rand.Next(100,130), sin), default, 0));
 
 			//spriteBatch.End();
 			//spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
