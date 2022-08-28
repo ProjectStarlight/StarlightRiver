@@ -1,9 +1,6 @@
-﻿using StarlightRiver.Core.Systems;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
 using static StarlightRiver.Content.WorldGeneration.DungeonGen.DungeonRoom;
@@ -54,15 +51,6 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 
 	public abstract class DungeonMaker
 	{
-		/// <summary>
-		/// The amount of times to re-randomize the room template type before admitting failure to place a room
-		/// </summary>
-		public const int MAX_ROOM_RETRIES = 20;
-		public const int MAX_HALLWAY_RETRIES = 40;
-		public const int HALLWAY_TURN_DENOMINATOR = 10;
-		public const int MAX_OVERALL_RETRIES = 10;
-		public const int SEC_SIZE = 8;
-
 		public List<DungeonRoom> rooms;
 		public List<Point16> hallSections;
 
@@ -75,6 +63,31 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// DungeonRoom and create a TypedRoomBuilder, passing your type in as the generic parameter.
 		/// </summary>
 		public abstract List<IRoomBuildable> RoomPool { get; }
+
+		/// <summary>
+		/// The amount of times to re-pick a random room template when attempting to place a room before failing.
+		/// </summary>
+		public virtual int RoomRetries => 20;
+
+		/// <summary>
+		/// The amount of times to re-generate a hallway before failing to place it
+		/// </summary>
+		public virtual int HallwayRetries => 40;
+
+		/// <summary>
+		/// The denominator of the probability for a hallway to randomize its direction for every segment generated. 1 will cause hallways to always re-pick their direction every segment.
+		/// </summary>
+		public virtual int HallwayTurnDenominator => 10;
+
+		/// <summary>
+		/// How many times the dungeon will attempt to generate a template before ultimately failing to generate. The condition for a re-try is determined by the virtual IsDungeonValid method.
+		/// </summary>
+		public virtual int DungeonRetries => 10;
+
+		/// <summary>
+		/// The size of a section for the dungeon in tiles. Make sure to take this into account when designing your room structures.
+		/// </summary>
+		public virtual int SectionSize => 8;
 
 		public DungeonMaker(Point16 pos)
 		{
@@ -107,13 +120,21 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public virtual bool TileBlacklistCondition(Tile tile, int x, int y) => false;
 
 		/// <summary>
+		/// Allows you to attempt to overwrite the room to be generated when a room is picked. If you return default or your returned
+		/// room fails to validate, falls back to a randomized room. Note that this does NOT guarantee the room you choose here will
+		/// generate! If you're attempting to generate an essential room, make sure you check for it in validate!
+		/// </summary>
+		/// <returns></returns>
+		public virtual IRoomBuildable PickRoom() => default;
+
+		/// <summary>
 		/// How your dungeon should generate the actual tiles of hallway sections.
 		/// </summary>
 		/// <param name="pos"></param>
 		public virtual void FillHallway(Point16 pos)
 		{
-			for (int x = 0; x < SEC_SIZE; x++)
-				for (int y = 0; y < SEC_SIZE; y++)
+			for (int x = 0; x < SectionSize; x++)
+				for (int y = 0; y < SectionSize; y++)
 					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.AmberGemspark, false, true);
 		}
 
@@ -126,14 +147,14 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <exception cref="Exception"></exception>
 		public void GenerateDungeon(Point16 start, int size)
 		{
-			for (int k = 0; k < MAX_OVERALL_RETRIES; k++)
+			for (int k = 0; k < DungeonRetries; k++)
 			{
 				GenerateLimb(start, size);
 
 				if (IsDungeonValid())
 				{
 					rooms.ForEach(n => n.FillRoom(startPointInWorld));
-					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SEC_SIZE, n.Y * SEC_SIZE)));
+					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SectionSize, n.Y * SectionSize)));
 					return;
 				}
 
@@ -157,11 +178,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			if (dungeon[x, y] != secType.none) //if this tile isnt free, dont even bother checking
 				return false;
 
-			int baseX = startPointInWorld.X + x * SEC_SIZE;
-			int baseY = startPointInWorld.Y + y * SEC_SIZE;
+			int baseX = startPointInWorld.X + x * SectionSize;
+			int baseY = startPointInWorld.Y + y * SectionSize;
 
-			for (int tileX = 0; tileX < SEC_SIZE; tileX++)
-				for(int tileY = 0; tileY < SEC_SIZE; tileY++)
+			for (int tileX = 0; tileX < SectionSize; tileX++)
+				for(int tileY = 0; tileY < SectionSize; tileY++)
 				{
 					int finalX = baseX + tileX;
 					int finalY = baseY + tileY;
@@ -221,6 +242,31 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		}
 
 		/// <summary>
+		/// Attempts to offset a dungeon room to match up a door to the given position.
+		/// </summary>
+		/// <param name="toValidate"></param>
+		/// <param name="x">the X coordinate of where you want a door aligned</param>
+		/// <param name="y">the Y coordinate of where you want a door aligned</param>
+		/// <returns></returns>
+		private bool TryAttachRoom(ref DungeonRoom toValidate, int x, int y)
+		{
+			toValidate.topLeft = new Point16(x, y);
+			var doors = Helpers.Helper.RandomizeList(toValidate.GetDoorOffsets());
+
+			foreach (Point16 doorPos in doors)
+			{
+				toValidate.Offset(new Point16(-doorPos.X, -doorPos.Y)); //TODO: Add utility for inverting Point16?
+
+				if (IsRoomValid(toValidate))
+					return true; //This placement is valid, use it and move on!
+
+				toValidate.Offset(doorPos);
+			}
+
+			return false;
+		}
+
+		/// <summary>
 		/// Attempts to place a randomly selected room at the given coordinates
 		/// </summary>
 		/// <param name="x"></param>
@@ -228,29 +274,28 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <returns></returns>
 		private bool TryMakeRandomRoom(int x, int y)
 		{
-			for (int k = 0; k < MAX_ROOM_RETRIES; k++)
+			var builder = PickRoom(); //We first attempt to generate the room that's chosen by the PickRoom hook
+			var room = builder?.MakeRoom(x, y);
+
+			if (room != null && TryAttachRoom(ref room, x, y))
 			{
-				var builder = PickRandomRoom();
-				var room = builder.MakeRoom(x, y);
+				AddRoom(room);
+				return true;
+			}
 
-				// offset for and check for each possible door. Randomizes the order of doors to ensure no favoritism
-				var doors = Helpers.Helper.RandomizeList(room.GetDoorOffsets());
+			for (int k = 0; k < RoomRetries; k++) //If that fails or is default, we go to randomly picking rooms
+			{
+				builder = PickRandomRoom();
+				room = builder.MakeRoom(x, y);
 
-				foreach (Point16 doorPos in doors)
+				if (TryAttachRoom(ref room, x, y))
 				{
-					room.Offset(new Point16(-doorPos.X, -doorPos.Y)); //TODO: Add utility for inverting Point16?
-
-					if (IsRoomValid(room))
-					{
-						AddRoom(room);
-						return true; //This placement is valid, use it and move on!
-					}
-
-					room.Offset(doorPos);
+					AddRoom(room);
+					return true;
 				}
 			}
 
-			return false;
+			return false; //If we exhaust retries, we fail to generate this room
 		}
 
 		/// <summary>
@@ -289,10 +334,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				return true;
 			}
 
-			if (directionDisposition == default || WorldGen.genRand.NextBool(HALLWAY_TURN_DENOMINATOR))
+			if (directionDisposition == default || WorldGen.genRand.NextBool(HallwayTurnDenominator))
 				directionDisposition = MakeRandomDirectionalPoint16();
 
-			for (int k = 0; k < MAX_HALLWAY_RETRIES; k++)
+			for (int k = 0; k < HallwayRetries; k++)
 			{
 				if (IsSectionValid(x + directionDisposition.X, y + directionDisposition.Y))
 					return TryMakeHallway(x + directionDisposition.X, y + directionDisposition.Y, ref hallway, remainingSections - 1, directionDisposition);
