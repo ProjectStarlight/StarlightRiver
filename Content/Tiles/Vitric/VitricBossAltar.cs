@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Tile tile = (Tile)Framing.GetTileSafely(i, j).Clone();
             Player player = Main.LocalPlayer;
 
-            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
+            if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolEndless>())))
             {
                 int x = i - (tile.TileFrameX - 90) / 18;
                 int y = j - tile.TileFrameY / 18;

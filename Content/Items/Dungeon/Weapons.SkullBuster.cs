@@ -142,6 +142,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			return false;
 		}
 	}
+
 	public class SkullBusterReload : ModProjectile
 	{
 		public override string Texture => AssetDirectory.DungeonItem + "SkullBusterReload";
@@ -231,6 +232,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			return false;
         }
     }
+
 	public class SkullBusterProj : ModProjectile
     {
 		public override string Texture => AssetDirectory.DungeonItem + "SkullBuster";
@@ -371,6 +373,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Helper.PlayPitched("Guns/RevolvingReload", 0.6f, 0, owner.Center);
 			Projectile.NewProjectile(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<SkullBusterReload>(), 0, 0, owner.whoAmI);
         }
+
         public override bool PreDraw(ref Color lightColor)
         {
             if (released)
@@ -379,16 +382,19 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 				Vector2 origin = new Vector2(10, tex.Height * 0.75f);
 				SpriteEffects effects = SpriteEffects.None;
+
 				if (owner.direction != 1)
                 {
 					rot += 3.14f;
 					effects = SpriteEffects.FlipHorizontally;
 					origin.X = tex.Width - origin.X;
                 }
+
 				Main.spriteBatch.Draw(tex, owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, direction.ToRotation() - 1.57f) - Main.screenPosition, null, lightColor, rot, origin, Projectile.scale, effects, 0f);
             }
 			return false;
         }
+
 		public static bool VanillaAmmoConsumption(Player p, int ammo)
 		{
 			float chance = 0;
@@ -434,6 +440,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		{
 			DisplayName.SetDefault("Skull Bomb");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.CloneDefaults(ProjectileID.Shuriken);
@@ -448,13 +455,13 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void AI()
 		{ 
-
 			if (crosshairSin < 1f)
 				crosshairSin += 0.025f;
 
 			crosshairSin = MathHelper.Min(crosshairSin, 1);
 			crosshairRotation += 0.05f * crosshairSin;
 			float progress = 1 - (Projectile.timeLeft / 150f);
+
 			for (int i = 0; i < 2; i++)
 			{
 				Dust sparks = Dust.NewDustPerfect(Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2()) * 12, ModContent.DustType<CoachGunSparks>(), (Projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f));
@@ -463,6 +470,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			Rectangle Hitbox = new Rectangle((int)Projectile.Center.X - 50, (int)Projectile.Center.Y - 50, 100, 100);
 			var list = Main.projectile.Where(x => x.Hitbox.Intersects(Hitbox));
+
 			foreach (var proj in list)
 			{
 				if (proj.type == ModContent.ProjectileType<SkullBusterBullet>() && (proj.ModProjectile as SkullBusterBullet).target == Projectile.whoAmI && Projectile.timeLeft > 2 && proj.active && proj.velocity.Length() > 1)
@@ -494,6 +502,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				dust.alpha = Main.rand.Next(60);
 				dust.rotation = Main.rand.NextFloat(6.28f);
 			}
+
 			for (int i = 0; i < 10; i++)
 			{
 				Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<SkullbusterDustTwo>());
@@ -538,6 +547,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			
 			float progress = 1 - (Projectile.timeLeft / 150f);
 			Color overlayColor = Color.White;
+
 			if (progress < 0.5f)
 				overlayColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Gray * 0.5f, progress * 2);
 			else
@@ -620,10 +630,10 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-			{
 				return true;
-			}
+
 			return false;
 		}
 
@@ -682,6 +692,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < 15; i++)
 				{
 					cache.Add(Projectile.Center);

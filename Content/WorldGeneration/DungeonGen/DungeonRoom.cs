@@ -1,0 +1,97 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.DataStructures;
+
+namespace StarlightRiver.Content.WorldGeneration.DungeonGen
+{
+	/// <summary>
+	/// This class represents a 'type' or 'template' for a dungeon room. It defines the physical section layout,
+	/// along with the actual StructureHelper file to use to generate the final tiles.
+	/// </summary>
+	public abstract class DungeonRoom
+	{
+		public enum secType
+		{
+			none,
+			fill,
+			door,
+			hall
+		}
+
+		const int SEC_SIZE = DungeonMaker.SEC_SIZE;
+
+		public Point16 topLeft;
+		public Point16 topLeftTile => new (topLeft.X * SEC_SIZE, topLeft.Y * SEC_SIZE);
+
+		/// <summary>
+		/// The path to a StructureHelper Multistructure file to use as room variations for this room type
+		/// </summary>
+		public abstract string StructurePath { get; }
+
+		/// <summary>
+		/// A matrix representing the layout of the room, used to determine the location of doors to place hallways from
+		/// and create a list of 'used' coordinates for rooms to prevent overlapping.
+		/// </summary>
+		public abstract secType[,] Layout { get; }
+
+		public int SecWidth => Layout.GetLength(0);
+		public int SecHeight => Layout.GetLength(1);
+
+		/// <summary>
+		/// Returns a list of SECTION coordinate offsets for sections marked as doors. These are the points which a generator should
+		/// start to create hallways from.
+		/// </summary>
+		/// <returns></returns>
+		public List<Point16> GetDoorOffsets()
+		{
+			List<Point16> output = new();
+
+			for(int x = 0; x < SecWidth; x++)
+				for(int y = 0; y < SecHeight; y++)
+				{
+					if (Layout[x, y] == secType.door)
+						output.Add(new Point16(x, y));
+				}
+
+			return output;
+		}
+
+		/// <summary>
+		/// Moves the position of the room template, used to check against the multiple door positions possible for rooms
+		/// with many doors.
+		/// </summary>
+		/// <param name="amount">The amount to move by.</param>
+		public void Offset(Point16 amount)
+		{
+			topLeft += amount;
+		}
+
+		/// <summary>
+		/// Actually places the tiles of a given template, determined via a StructureHelper Multistructure file path. This should
+		/// only be called once all templates are placed and pass checks.
+		/// </summary>
+		public void FillRoom(Point16 dungeonPos)
+		{
+			StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+		}
+
+		/// <summary>
+		/// Used to flip the layout matrix, so that it can be initialized in a way that visually resembles the layout.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns></returns>
+		public secType[,] InvertMatrix(secType[,] input)
+		{
+			var output = new secType[input.GetLength(1), input.GetLength(0)];
+
+			for (int x = 0; x < input.GetLength(0); x++)
+				for (int y = 0; y < input.GetLength(1); y++)
+					output[y, x] = input[x, y];
+
+			return output;
+		}
+	}
+}
