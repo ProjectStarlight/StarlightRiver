@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Vitric
         }
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Magmatic Coach Gun"); //placeholder i couldnt think of a name, also sweltered needs a keyword cause this tooltip is already long as fuck
+            DisplayName.SetDefault("Magmatic Coach Gun"); //placeholder i couldnt think of a name
             Tooltip.SetDefault("Press <right> to throw out an unstable crystal bomb\nExplodes shortly after, causing all other crystal bombs to also explode\n" +
                 "Shoot to detonate it early, if detonated early enough, it will explode into a cone of crystal shards\n" +
                 "If a crystal bomb is detonated by another crystal bomb, its damage is increased by 50%\n" +
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.value = Item.sellPrice(gold: 2, silver: 75);
 
             Item.shoot = ModContent.ProjectileType<CoachGunUpgradeBomb>();
-            Item.shootSpeed = 18.5f; // this was way too fast
+            Item.shootSpeed = 18.5f;
             Item.useAmmo = AmmoID.Bullet;
         }
 
@@ -136,6 +136,13 @@ namespace StarlightRiver.Content.Items.Vitric
         public override bool InstancePerEntity => true;
 
         public bool ShotFromGun = false;
+
+        public IEntitySource entitySource;
+
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
+        {
+            entitySource = source;
+        }
     }
 
     internal class CoachGunUpgradeBomb : ModProjectile
@@ -335,8 +342,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 for (int d = 0; d < 2; d++)
                 {
                     Vector2 velo = (velocity.RotatedByRandom(MathHelper.ToRadians(12f))) * Main.rand.NextFloat(0.25f, 0.45f);
-                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(),
-                                        velo, 0, new Color(255, 150, 50), 0.85f);
+                    Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), velo, 0, new Color(255, 150, 50), 0.85f);
                 }
 
                 Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.CoachGunDustFour>(), (velocity.RotatedByRandom(MathHelper.ToRadians(10f))) * Main.rand.NextFloat(0.3f, 0.50f)).scale = 0.8f;

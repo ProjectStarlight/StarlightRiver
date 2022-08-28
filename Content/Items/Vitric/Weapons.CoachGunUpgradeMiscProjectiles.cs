@@ -123,6 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
                 sourceRectangle, Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
             return false;
         }
+
         private void ManageCaches()
         {
             if (cache == null)
