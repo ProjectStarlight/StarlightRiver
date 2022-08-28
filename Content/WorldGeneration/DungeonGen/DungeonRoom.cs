@@ -17,10 +17,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		{
 			none,
 			fill,
-			door
+			door,
+			hall
 		}
 
-		const int SEC_SIZE = 8;
+		const int SEC_SIZE = DungeonMaker.SEC_SIZE;
 
 		public Point16 topLeft;
 		public Point16 topLeftTile => new (topLeft.X * SEC_SIZE, topLeft.Y * SEC_SIZE);

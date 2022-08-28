@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public const int MAX_HALLWAY_RETRIES = 40;
 		public const int HALLWAY_TURN_DENOMINATOR = 10;
 		public const int MAX_OVERALL_RETRIES = 10;
+		public const int SEC_SIZE = 8;
 
 		public List<DungeonRoom> rooms;
 		public List<Point16> hallSections;
@@ -110,8 +112,8 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <param name="pos"></param>
 		public virtual void FillHallway(Point16 pos)
 		{
-			for (int x = 0; x < 8; x++)
-				for (int y = 0; y < 8; y++)
+			for (int x = 0; x < SEC_SIZE; x++)
+				for (int y = 0; y < SEC_SIZE; y++)
 					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.AmberGemspark, false, true);
 		}
 
@@ -131,7 +133,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				if (IsDungeonValid())
 				{
 					rooms.ForEach(n => n.FillRoom(startPointInWorld));
-					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * 8, n.Y * 8)));
+					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SEC_SIZE, n.Y * SEC_SIZE)));
 					return;
 				}
 
@@ -155,11 +157,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			if (dungeon[x, y] != secType.none) //if this tile isnt free, dont even bother checking
 				return false;
 
-			int baseX = startPointInWorld.X + x * 8;
-			int baseY = startPointInWorld.Y + y * 8;
+			int baseX = startPointInWorld.X + x * SEC_SIZE;
+			int baseY = startPointInWorld.Y + y * SEC_SIZE;
 
-			for (int tileX = 0; tileX < 8; tileX++)
-				for(int tileY = 0; tileY < 8; tileY++)
+			for (int tileX = 0; tileX < SEC_SIZE; tileX++)
+				for(int tileY = 0; tileY < SEC_SIZE; tileY++)
 				{
 					int finalX = baseX + tileX;
 					int finalY = baseY + tileY;
@@ -264,8 +266,6 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				{
 					dungeon[room.topLeft.X + xOff, room.topLeft.Y + yOff] = room.Layout[xOff, yOff];
 				}
-
-			PrintDungeon();
 		}
 
 		/// <summary>
@@ -312,11 +312,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			for(int k = 1; k < hallway.Count - 1; k++)
 			{
 				var hall = hallway[k];
-				dungeon[hall.X, hall.Y] = secType.fill;
+				dungeon[hall.X, hall.Y] = secType.hall;
 				hallSections.Add(hall);
 			}
-
-			PrintDungeon();
 		}
 
 		/// <summary>
@@ -331,8 +329,6 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				dungeon[hall.X, hall.Y] = secType.none;
 				hallSections.Remove(hall);
 			}
-
-			PrintDungeon();
 		}
 
 		/// <summary>
@@ -388,35 +384,6 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			hallSections.Clear();
 
 			Initialize();
-		}
-
-		/// <summary>
-		/// Debug method to show the process of generating the template in the console
-		/// </summary>
-		private void PrintDungeon()
-		{
-			Console.SetCursorPosition(0, 0);
-			System.Threading.Thread.Sleep(100);
-
-			StringBuilder dung = new StringBuilder();
-			//string dung = "";
-
-			for (int y = 0; y < dungeon.GetLength(1); y++)
-			{
-				for (int x = 0; x < dungeon.GetLength(0); x++)
-				{
-					secType type = dungeon[x, y];
-					switch (type)
-					{
-						case secType.none: dung.Append(' '); break;
-						case secType.fill: dung.Append('#'); break;
-						case secType.door: dung.Append('^'); break;
-					}
-				}
-				dung.Append('\n');
-			}
-		
-			Console.Write(dung.ToString());
 		}
 	}
 }
