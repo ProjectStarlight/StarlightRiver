@@ -5,13 +5,12 @@
 //hitsound
 //Deathsound
 
-//Give verlet chains tile collision
-//Make verlet chains pull with the snoobel
-//Make verlet chains "snap" to snoobel's face
+//Fix snoobel animation bug
 
 //Reach attack
 //Whip attack
 //Pull "attack"
+//Make it jump
 
 
 using Microsoft.Xna.Framework;
@@ -67,7 +66,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private VerletChain trunkChain;
 
-        private Vector2 trunkStart => NPC.Center + new Vector2(35 * NPC.spriteDirection, 4);
+        private Vector2 trunkStart => NPC.Center + new Vector2(28 * NPC.spriteDirection, 8);
 
         private Player target => Main.player[NPC.target];
 
@@ -99,8 +98,9 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override void OnSpawn(IEntitySource source)
         {
-            trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 4);
+            trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 4, true);
             trunkChain.forceGravity = new Vector2(0, 0.1f);
+            trunkChain.simStartOffset = 6;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -195,10 +195,11 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS - 1, new TriangularTip(20), factor => 10, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS - 1, new TriangularTip(1), factor => 10, factor =>
             {
-                return Color.White;
+                return Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16));
             });
+
 
             List<Vector2> positions = GetTrunkPoints();
             trail.NextPosition = positions[NUM_SEGMENTS - 1];
@@ -230,6 +231,9 @@ namespace StarlightRiver.Content.NPCs.Snow
             NPC.velocity.X += NPC.direction * 0.15f;
 
             NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -3, 3);
+
+            if (NPC.collideX && NPC.velocity.Y == 0)
+                NPC.velocity.Y = -6;
         }
 
         private void WhippingBehavior()
@@ -268,7 +272,11 @@ namespace StarlightRiver.Content.NPCs.Snow
             trunkChain.UpdateChain();
 
             trunkChain.startPoint = trunkStart;
-            //trunkChain.ropeSegments[1].posNow = trunkStart + new Vector2(20 * NPC.spriteDirection, 0);
+
+            for (int i = 0; i < 5; i++)
+            {
+                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, i / 5f);
+            }
         }
 
         private List<Vector2> GetTrunkPoints()
