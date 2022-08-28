@@ -21,10 +21,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			hall
 		}
 
-		const int SEC_SIZE = DungeonMaker.SEC_SIZE;
-
 		public Point16 topLeft;
-		public Point16 topLeftTile => new (topLeft.X * SEC_SIZE, topLeft.Y * SEC_SIZE);
+		public Point16 topLeftTile => new (topLeft.X * SectionSize, topLeft.Y * SectionSize);
+
+		public int SecWidth => Layout.GetLength(0);
+		public int SecHeight => Layout.GetLength(1);
 
 		/// <summary>
 		/// The path to a StructureHelper Multistructure file to use as room variations for this room type
@@ -37,8 +38,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// </summary>
 		public abstract secType[,] Layout { get; }
 
-		public int SecWidth => Layout.GetLength(0);
-		public int SecHeight => Layout.GetLength(1);
+		/// <summary>
+		/// The size of one section in your layout. Make sure this is the same as the section size of the DungeonMaker(s) you intend to use this room with.
+		/// </summary>
+		public virtual int SectionSize => 8;
 
 		/// <summary>
 		/// Returns a list of SECTION coordinate offsets for sections marked as doors. These are the points which a generator should
