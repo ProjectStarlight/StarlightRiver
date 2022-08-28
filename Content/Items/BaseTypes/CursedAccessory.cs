@@ -119,15 +119,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
             return true;
         }
 
-        public override void ModifyTooltips(List<TooltipLine> tooltips)
-        {
-            TooltipLine line = new TooltipLine(Mod, "StarlightRiverCursedWarning", "Cursed\nCannot be removed normally once equipped")
-            {
-                OverrideColor = new Color(200, 100, 255)
-            };
-            tooltips.Add(line);
-        }
-
 		public override void UpdateInventory(Player Player)
 		{
             if (!(Main.HoverItem.ModItem is CursedAccessory))

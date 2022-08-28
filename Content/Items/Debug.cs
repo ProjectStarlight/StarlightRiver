@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Debug Stick");
-            Tooltip.SetDefault("Dont use this if you're not me.");
+            Tooltip.SetDefault("Dont use this if you're not me.\nGrants a bunch of maximum barrier when you are swag\nYou have no stamina without good drip\nYou probably play cornhole");
         }
 
         public override void SetDefaults()
@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.Vitric.VitricDecor2x1>();
+            //Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
             var tile = Framing.GetTileSafely(center.X, center.Y);
@@ -189,7 +190,15 @@ namespace StarlightRiver.Content.Items
             spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
-	}
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+        {
+            BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
+            GNPC.MaxBarrier = 100;
+            GNPC.Barrier = 100;
+            GNPC.DrawGlow = true;
+        }
+    }
 
     class DebugModerEnabler : ModItem
 	{
