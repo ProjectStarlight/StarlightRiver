@@ -1,4 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿//TODO:
+//Value
+//Bestiary
+//Balance
+//hitsound
+//Deathsound
+
+//Give verlet chains tile collision
+//Make verlet chains pull with the snoobel
+//Make verlet chains "snap" to snoobel's face
+
+//Reach attack
+//Whip attack
+//Pull "attack"
+
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
