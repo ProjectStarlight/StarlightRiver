@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
         {
             var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
-            dungeon.GenerateDungeon(new Point16(30, 30));
+            dungeon.GenerateDungeon(new Point16(30, 30), 8);
 
             return true;
 
