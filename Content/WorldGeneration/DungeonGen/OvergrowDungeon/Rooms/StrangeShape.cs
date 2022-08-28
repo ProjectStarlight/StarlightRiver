@@ -10,16 +10,25 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Room
 	{
 		public override string StructurePath => "Structures/OvergrowthRooms/StrangeShape";
 
-		public override secType[,] Layout => InvertMatrix(new secType[,]
+		public override secType[,] Layout
 		{
-			{ secType.none, secType.fill, secType.door, secType.fill, secType.none },
-			{ secType.none, secType.fill, secType.fill, secType.fill, secType.none },
-			{ secType.fill, secType.fill, secType.fill, secType.fill, secType.fill },
-			{ secType.fill, secType.fill, secType.fill, secType.fill, secType.fill },
-			{ secType.fill, secType.fill, secType.fill, secType.fill, secType.fill },
-			{ secType.fill, secType.fill, secType.fill, secType.fill, secType.none },
-			{ secType.fill, secType.fill, secType.fill, secType.none, secType.none },
-			{ secType.fill, secType.door, secType.fill, secType.none, secType.none },
-		});
+			get
+			{
+				secType _ = secType.none;
+				secType W = secType.fill;
+				secType D = secType.door;
+				return InvertMatrix(new secType[,]
+				{
+					{ _, W, D, W, _ },
+					{ _, W, W, W, _ },
+					{ W, W, W, W, W },
+					{ W, W, W, W, W },
+					{ W, W, W, W, W },
+					{ W, W, W, W, _ },
+					{ W, W, W, _, _ },
+					{ W, D, W, _, _ },
+				});
+			}
+		}
 	}
 }

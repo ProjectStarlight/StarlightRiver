@@ -40,11 +40,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public int SecHeight => Layout.GetLength(1);
 
 		/// <summary>
-		/// Returns a list of SECTION coordinates for sections marked as doors. These are the points which a generator should
+		/// Returns a list of SECTION coordinate offsets for sections marked as doors. These are the points which a generator should
 		/// start to create hallways from.
 		/// </summary>
 		/// <returns></returns>
-		public List<Point16> GetDoors()
+		public List<Point16> GetDoorOffsets()
 		{
 			List<Point16> output = new();
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// Actually places the tiles of a given template, determined via a StructureHelper Multistructure file path. This should
 		/// only be called once all templates are placed and pass checks.
 		/// </summary>
-		public void FinalGenerate(Point16 dungeonPos)
+		public void FillRoom(Point16 dungeonPos)
 		{
 			StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
 		}

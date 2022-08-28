@@ -10,11 +10,20 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Room
 	{
 		public override string StructurePath => "Structures/OvergrowthRooms/Simple3x3";
 
-		public override secType[,] Layout => new secType[,]
+		public override secType[,] Layout
 		{
-			{ secType.fill, secType.door, secType.fill },
-			{ secType.door, secType.fill, secType.door },
-			{ secType.fill, secType.door, secType.fill },
-		};
+			get
+			{
+				secType _ = secType.none;
+				secType W = secType.fill;
+				secType D = secType.door;
+				return InvertMatrix(new secType[,]
+				{
+					{ W, D, W },
+					{ D, W, D },
+					{ W, D, W },
+				});
+			}
+		}
 	}
 }
