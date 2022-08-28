@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -16,11 +17,18 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public bool doubled = false;
 
+		private int tooltipSparkleCounter = 0;
+
         public override bool InstancePerEntity => true;
 
 		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+
+		private static ParticleSystem.Update UpdateRelicTooltip => UpdateRelicTooltipBody;
+
 		public ParticleSystem RelicParticleSystem = default;
 		public ParticleSystem RelicParticleSystemBehind = default;
+
+		public ParticleSystem RelicTooltipParticleSystem = default;
 
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
 		public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
@@ -34,12 +42,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				{
 					RelicParticleSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
 					RelicParticleSystemBehind = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
+					RelicTooltipParticleSystem = new ParticleSystem(AssetDirectory.Dust + "GoldSparkle", UpdateRelicTooltip);
 				}
 			}
 			else
 			{
 				RelicParticleSystem = default;
 				RelicParticleSystemBehind = default;
+				RelicTooltipParticleSystem = default;
 			}
 		}
 
@@ -77,7 +87,24 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
 
-		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+			if (!isRelic || line.Name != "ItemName")
+				return base.PreDrawTooltipLine(item, line, ref yOffset);
+
+			float scale = Main.UIScale;
+			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + ((line.Font.MeasureString(line.Text) - new Vector2(14,14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
+
+			if (tooltipSparkleCounter++ % 14 == 0)
+				RelicTooltipParticleSystem?.AddParticle(new Particle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f,1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14)));
+
+			RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
+
+			return base.PreDrawTooltipLine(item, line, ref yOffset);
+		}
+
+        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if (!isRelic)
 				return;
@@ -284,6 +311,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
 			particle.Position += particle.Velocity;
 			particle.Timer--;
+		}
+
+		private static void UpdateRelicTooltipBody(Particle particle)
+		{
+			particle.Position += particle.Velocity;
+			particle.Timer--;
+			if (particle.Timer % 5 == 0 && particle.Timer != 0)
+				particle.Frame.Y += 14;
 		}
 	}
 }
