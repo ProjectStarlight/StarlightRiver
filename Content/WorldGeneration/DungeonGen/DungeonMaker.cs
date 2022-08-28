@@ -130,12 +130,52 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <summary>
 		/// How your dungeon should generate the actual tiles of hallway sections.
 		/// </summary>
-		/// <param name="pos"></param>
-		public virtual void FillHallway(Point16 pos)
+		/// <param name="pos">The position in TILE coordinates of this hallway section</param>
+		/// <param name="connectUp">If the section above this one is a door or hallway</param>
+		/// <param name="connectRight">If the section right of this one is a door or hallway</param>
+		/// <param name="connectDown">If the section below this one is a door or hallway</param>
+		/// <param name="connectLeft">If the section left of this one is a door or hallway</param>
+		public virtual void FillHallway(Point16 pos, bool connectUp, bool connectRight, bool connectDown, bool connectLeft)
 		{
 			for (int x = 0; x < SectionSize; x++)
 				for (int y = 0; y < SectionSize; y++)
-					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.AmberGemspark, false, true);
+					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.GrayBrick, false, true);
+
+			for (int x = 0; x < SectionSize; x++)
+				for (int y = 0; y < SectionSize; y++)
+					WorldGen.PlaceWall(pos.X + x, pos.Y + y, Terraria.ID.WallID.StoneSlab);
+
+			for (int x = 2; x < SectionSize - 2; x++)
+				for (int y = 2; y < SectionSize - 2; y++)
+					WorldGen.KillTile(pos.X + x, pos.Y + y);
+
+			if (connectUp)
+			{
+				for (int x = 2; x < SectionSize - 2; x++)
+					for (int y = 0; y < 2; y++)
+						WorldGen.KillTile(pos.X + x, pos.Y + y);
+			}
+
+			if (connectRight)
+			{
+				for (int x = SectionSize - 2; x < SectionSize; x++)
+					for (int y = 2; y < SectionSize - 2; y++)
+						WorldGen.KillTile(pos.X + x, pos.Y + y);
+			}
+
+			if (connectDown)
+			{
+				for (int x = 2; x < SectionSize - 2; x++)
+					for (int y = SectionSize - 2; y < SectionSize; y++)
+						WorldGen.KillTile(pos.X + x, pos.Y + y);
+			}
+
+			if (connectLeft)
+			{
+				for (int x = 0; x < 2; x++)
+					for (int y = 2; y < SectionSize - 2; y++)
+						WorldGen.KillTile(pos.X + x, pos.Y + y);
+			}
 		}
 
 		/// <summary>
@@ -154,7 +194,12 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				if (IsDungeonValid())
 				{
 					rooms.ForEach(n => n.FillRoom(startPointInWorld));
-					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SectionSize, n.Y * SectionSize)));
+					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SectionSize, n.Y * SectionSize),
+						n.Y > 0 && (dungeon[n.X, n.Y - 1] == secType.hall || dungeon[n.X, n.Y - 1] == secType.door),
+						n.X < dungeon.GetLength(0) - 1 && (dungeon[n.X + 1, n.Y] == secType.hall || dungeon[n.X + 1, n.Y] == secType.door),
+						n.Y < dungeon.GetLength(1) - 1 && (dungeon[n.X, n.Y + 1] == secType.hall || dungeon[n.X, n.Y + 1] == secType.door),
+						n.X > 0 && (dungeon[n.X - 1, n.Y] == secType.hall || dungeon[n.X - 1, n.Y] == secType.door)
+						));
 					return;
 				}
 
