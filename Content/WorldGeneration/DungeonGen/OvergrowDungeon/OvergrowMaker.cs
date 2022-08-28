@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon
 		public override List<IRoomBuildable> RoomPool => new List<IRoomBuildable>()
 		{
 			new TypedRoomBuilder<Simple3x3>(1),
+			new TypedRoomBuilder<StrangeShape>(0.5f),
 		};
 
 		public override void Initialize()

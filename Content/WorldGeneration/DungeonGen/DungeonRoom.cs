@@ -76,5 +76,21 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		{
 			StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
 		}
+
+		/// <summary>
+		/// Used to flip the layout matrix, so that it can be initialized in a way that visually resembles the layout.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns></returns>
+		public secType[,] InvertMatrix(secType[,] input)
+		{
+			var output = new secType[input.GetLength(1), input.GetLength(0)];
+
+			for (int x = 0; x < input.GetLength(0); x++)
+				for (int y = 0; y < input.GetLength(1); y++)
+					output[y, x] = input[x, y];
+
+			return output;
+		}
 	}
 }

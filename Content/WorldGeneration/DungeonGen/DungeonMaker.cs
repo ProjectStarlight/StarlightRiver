@@ -221,6 +221,8 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				{
 					dungeon[room.topLeft.X + xOff, room.topLeft.Y + yOff] = room.Layout[xOff, yOff];
 				}
+
+			PrintDungeon();
 		}
 
 		/// <summary>
@@ -265,6 +267,20 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				dungeon[hall.X, hall.Y] = secType.fill;
 				hallSections.Add(hall);
 			}
+
+			PrintDungeon();
+		}
+
+		public void DestroyHallway(List<Point16> hallway)
+		{
+			for (int k = 1; k < hallway.Count - 1; k++)
+			{
+				var hall = hallway[k];
+				dungeon[hall.X, hall.Y] = secType.none;
+				hallSections.Remove(hall);
+			}
+
+			PrintDungeon();
 		}
 
 		public Point16 randomDirection()
@@ -295,6 +311,8 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 					foreach (Point16 door in lastRoom.GetDoors())
 						GenerateLimb(door + lastRoom.topLeft, remainingRooms - 1);
 				}
+				else
+					DestroyHallway(hall);
 			}
 		}
 
@@ -339,5 +357,31 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// </summary>
 		/// <returns>If the generation should re-try building a template with a different random seed</returns>
 		public virtual bool Validate() => true;
+
+		public void PrintDungeon()
+		{
+			Console.SetCursorPosition(0, 0);
+			System.Threading.Thread.Sleep(100);
+
+			StringBuilder dung = new StringBuilder();
+			//string dung = "";
+
+			for (int y = 0; y < dungeon.GetLength(1); y++)
+			{
+				for (int x = 0; x < dungeon.GetLength(0); x++)
+				{
+					secType type = dungeon[x, y];
+					switch (type)
+					{
+						case secType.none: dung.Append(' '); break;
+						case secType.fill: dung.Append('#'); break;
+						case secType.door: dung.Append('^'); break;
+					}
+				}
+				dung.Append('\n');
+			}
+		
+			Console.Write(dung.ToString());
+		}
 	}
 }
