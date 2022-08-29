@@ -1,9 +1,7 @@
 ﻿//TODO:
-//Value
-//Bestiary
-//Balance
-//Knockback resist
-//Deathsound
+//Gores
+
+//Code cleanup
 
 //Fix kink in midpoint on trunk
 
@@ -79,13 +77,6 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             DisplayName.SetDefault("Snoobel");
             Main.npcFrameCount[NPC.type] = 9;
-
-            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
-            {
-                
-            };
-            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-
         }
 
         public override void SetDefaults()
@@ -94,11 +85,11 @@ namespace StarlightRiver.Content.NPCs.Snow
             NPC.height = 40;
             NPC.damage = 0;
             NPC.defense = 5;
-            NPC.lifeMax = 100;
+            NPC.lifeMax = 120;
             NPC.value = 100f;
-            NPC.knockBackResist = 0f;
+            NPC.knockBackResist = 0.3f;
             NPC.HitSound = SoundID.NPCHit39;
-            NPC.DeathSound = SoundID.Grass;
+            NPC.DeathSound = SoundID.NPCDeath16;
         }
 
         public override void OnSpawn(IEntitySource source)
@@ -112,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.Player.ZoneSnow && spawnInfo.Player.Center.Y > Main.worldSurface ? 0.2f : 0;
+            return spawnInfo.Player.ZoneSnow && spawnInfo.Player.Center.Y > Main.worldSurface ? 0.1f : 0;
         }
 
         public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -155,6 +146,14 @@ namespace StarlightRiver.Content.NPCs.Snow
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D texture = Request<Texture2D>(Texture).Value;
+            Texture2D bestiaryTexture = Request<Texture2D>(Texture + "_Bestiary").Value;
+            Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
+
+            if (NPC.IsABestiaryIconDummy)
+            {
+                Main.spriteBatch.Draw(bestiaryTexture, slopeOffset + NPC.Center - screenPos, null, drawColor, NPC.rotation, bestiaryTexture.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
+                return false;
+            }
 
             SpriteEffects effects = SpriteEffects.None;
             Vector2 origin = new Vector2((NPC.width * 0.75f), (NPC.height / 2) - 6);
@@ -162,7 +161,6 @@ namespace StarlightRiver.Content.NPCs.Snow
             if (NPC.spriteDirection != 1)
                 effects = SpriteEffects.FlipHorizontally;
 
-            Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
             Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
 
             DrawTrunk();
@@ -247,7 +245,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS - 1, new TriangularTip(1), factor => 7, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new TriangularTip(1), factor => 7, factor =>
             {
                 return Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16));
             });
@@ -256,7 +254,6 @@ namespace StarlightRiver.Content.NPCs.Snow
             List<Vector2> positions = cache;
             trail.NextPosition = positions[NUM_SEGMENTS - 1];
 
-            positions.RemoveAt(NUM_SEGMENTS - 1);
             trail.Positions = positions.ToArray();
         }
 
@@ -358,7 +355,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType] && attackTimer > 6)
                 {
                     pulling = true;
-                    trunkChain.endPoint = endPos;
+                    trunkChain.endPoint = endPos + (16 * NPC.DirectionTo(endPos));
                     trunkChain.useEndPoint = true;
                     trunkChain.forceGravity = Vector2.Zero;
                 }
@@ -375,11 +372,21 @@ namespace StarlightRiver.Content.NPCs.Snow
             }
             else
             {
+                NPC.noGravity = true;
                 Vector2 dir = trunkChain.endPoint - (trunkStart + new Vector2(60 * NPC.spriteDirection, 0));
-                NPC.velocity = Vector2.Normalize(dir) * 6;
+
+                if (NPC.velocity.Length() < 15)
+                {
+                    NPC.velocity += Vector2.Normalize(dir) * 0.3f;
+                    NPC.velocity *= 1.05f;
+                }
+
                 NPC.direction = NPC.spriteDirection = Math.Sign(dir.X);
+
                 if ((NPC.Center - trunkChain.endPoint).Length() < 50 || dir.Length() < 16 || attackTimer > PULL_DURATION * 2)
                 {
+                    trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow -= Vector2.Normalize(dir) * 16;
+                    NPC.noGravity = false;
                     pulling = false;
                     trunkChain.endPoint = Vector2.Zero;
                     attackTimer = 0;
@@ -394,6 +401,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             attackTimer = 0;
             phase = (Phase)Main.rand.Next(2) + 1;
+            //phase = Phase.Pulling;
             switch (phase)
             {
                 case Phase.Whipping:
@@ -419,8 +427,8 @@ namespace StarlightRiver.Content.NPCs.Snow
                 }
             }
 
-            int anchorLength = 8;
-            int anchorStart = 1;
+            int anchorLength = 4;
+            int anchorStart = 0;
 
             for (int i = 0; i < anchorLength; i++)
             {
