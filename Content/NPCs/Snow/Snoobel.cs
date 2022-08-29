@@ -5,7 +5,6 @@
 //Knockback resist
 //Deathsound
 
-//Fix y offset on trunk
 //Fix kink in midpoint on trunk
 
 
@@ -72,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public bool canHit => (attackTimer > WHIP_BUILDUP && phase == Phase.Whipping) || pulling;
 
-        private Vector2 trunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7);
+        private Vector2 trunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7 + NPC.gfxOffY + NPC.velocity.Y);
 
         private Player target => Main.player[NPC.target];
 
