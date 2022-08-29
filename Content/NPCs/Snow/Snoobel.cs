@@ -6,11 +6,10 @@
 //Deathsound
 
 //Better attach snoobel's trunk
+//Make the trunk not gleek out if it's inside of a tile
 //Collision on snoobel's trunk
 
 //Reach attack
-//Whip attack
-//Pull "attack"
 //Make it jump
 
 
@@ -55,9 +54,15 @@ namespace StarlightRiver.Content.NPCs.Snow
         private const int XFRAMES = 2;
         private readonly int NUM_SEGMENTS = 30;
 
+        private readonly int WHIP_BUILDUP = 90;
+        private readonly int WHIP_DURATION = 20;
+
+        private readonly int PULL_DURATION = 80;
+
         private Phase phase = Phase.Walking;
 
         private Trail trail;
+        private List<Vector2> cache = new List<Vector2>();
 
         private int xFrame = 0;
         private int yFrame = 0;
@@ -65,9 +70,11 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private int attackTimer = 0;
 
+        private bool pulling = false;
+
         private VerletChain trunkChain;
 
-        private Vector2 trunkStart => NPC.Center + new Vector2(28 * NPC.spriteDirection, 8);
+        private Vector2 trunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7);
 
         private Player target => Main.player[NPC.target];
 
@@ -86,14 +93,14 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override void SetDefaults()
         {
-            NPC.width = 38;
-            NPC.height = 44;
+            NPC.width = 46;
+            NPC.height = 40;
             NPC.damage = 0;
             NPC.defense = 5;
-            NPC.lifeMax = 60;
+            NPC.lifeMax = 100;
             NPC.value = 100f;
             NPC.knockBackResist = 0f;
-            NPC.HitSound = SoundID.Grass;
+            NPC.HitSound = SoundID.NPCHit39;
             NPC.DeathSound = SoundID.Grass;
         }
 
@@ -142,7 +149,10 @@ namespace StarlightRiver.Content.NPCs.Snow
             UpdateTrunk();
 
             if (!Main.dedServ)
+            {
+                ManageCache();
                 ManageTrail();
+            }
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -150,7 +160,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             Texture2D texture = Request<Texture2D>(Texture).Value;
 
             SpriteEffects effects = SpriteEffects.None;
-            Vector2 origin = new Vector2((NPC.width * 0.75f), (NPC.height / 2) - 8);
+            Vector2 origin = new Vector2((NPC.width * 0.75f), (NPC.height / 2) - 6);
 
             if (NPC.spriteDirection != 1)
                 effects = SpriteEffects.FlipHorizontally;
@@ -164,7 +174,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override void FindFrame(int frameHeight)
         {
-            int frameWidth = 60;
+            int frameWidth = 70;
             NPC.frame = new Rectangle(frameWidth * xFrame, (frameHeight * yFrame) + 2, frameWidth, frameHeight - 2);
         }
 
@@ -178,6 +188,9 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private void DrawTrunk()
         {
+            if (trail == null || trail == default)
+                return;
+
             Main.spriteBatch.End();
             Effect effect = Terraria.Graphics.Effects.Filters.Scene["SnoobelTrunk"].GetShader().Shader;
 
@@ -187,23 +200,63 @@ namespace StarlightRiver.Content.NPCs.Snow
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Whip").Value);
+            effect.Parameters["sampleTextureEnd"].SetValue(ModContent.Request<Texture2D>(Texture + "_WhipEnd").Value);
             effect.Parameters["alpha"].SetValue(1);
             effect.Parameters["flip"].SetValue(NPC.spriteDirection == 1);
 
-            trail?.Render(effect);
+            List<Vector2> points;
+            if (cache == null)
+                points = GetTrunkPoints();
+            else
+            {
+                points = trail.Positions.ToList();
+            }
+            effect.Parameters["totalLength"].SetValue(TotalLength(points));
+            trail.Render(effect);
 
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
 
+        private void ManageCache()
+        {
+            cache = new List<Vector2>();
+            cache.Add(trunkStart);
+
+            float pointLength = TotalLength(GetTrunkPoints()) / NUM_SEGMENTS;
+
+            float pointCounter = 0;
+
+            int presision = 30; //This normalizes length between points so it doesnt squash super weirdly on certain parts
+            for (int i = 0; i < NUM_SEGMENTS - 1; i++)
+            {
+                for (int j = 0; j < presision; j++)
+                {
+                    pointCounter += (trunkChain.ropeSegments[i].posNow - trunkChain.ropeSegments[i + 1].posNow).Length() / (float)presision;
+                    while (pointCounter > pointLength)
+                    {
+                        float lerper = j / (float)presision;
+                        cache.Add(Vector2.Lerp(trunkChain.ropeSegments[i].posNow, trunkChain.ropeSegments[i + 1].posNow, lerper));
+                        pointCounter -= pointLength;
+                    }
+                }
+            }
+
+            while (cache.Count < NUM_SEGMENTS)
+                cache.Add(trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow);
+
+            while (cache.Count > NUM_SEGMENTS)
+                cache.RemoveAt(cache.Count - 1);
+        }
+
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS - 1, new TriangularTip(1), factor => 10, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS - 1, new TriangularTip(1), factor => 7, factor =>
             {
                 return Lighting.GetColor((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16));
             });
 
 
-            List<Vector2> positions = GetTrunkPoints();
+            List<Vector2> positions = cache;
             trail.NextPosition = positions[NUM_SEGMENTS - 1];
 
             positions.RemoveAt(NUM_SEGMENTS - 1);
@@ -216,7 +269,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             frameCounter++;
 
             attackTimer++;
-            if (attackTimer >= 400)
+            if (attackTimer >= 200)
             {
                 phase = Phase.Deciding;
                 attackTimer = 0;
@@ -226,6 +279,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
             if (xdist > 30)
             {
+                xFrame = 1;
                 if (frameCounter % 5 == 0)
                 {
                     yFrame++;
@@ -241,30 +295,110 @@ namespace StarlightRiver.Content.NPCs.Snow
                 if (NPC.collideX && NPC.velocity.Y == 0)
                     NPC.velocity.Y = -8;
             }
+            else
+            {
+                xFrame = 0;
+                frameCounter = 0;
+                yFrame = 0;
+            }
         }
 
         private void WhippingBehavior()
         {
-            phase = Phase.Walking;
+            if (attackTimer == 0)
+            {
+                trunkChain.customGravity = true;
+                trunkChain.forceGravity = Vector2.One;
+                trunkChain.forceGravities = new List<Vector2>();
+
+                int index = 0;
+                foreach (RopeSegment segment in trunkChain.ropeSegments)
+                {
+                    float rad = 4f * ((float)(index - 6) / NUM_SEGMENTS);
+                    float xForce = 0.5f* NPC.spriteDirection * (float)Math.Cos(rad);
+                    float yForce = -0.25f * (float)Math.Sin(rad);
+                    trunkChain.forceGravities.Add(new Vector2(xForce, -0.5f));
+                    index++;
+                }
+            }
+            xFrame = 0;
+            frameCounter = 0;
+            yFrame = 0;
+            attackTimer++;
+
+            if (attackTimer < WHIP_BUILDUP)
+            {
+
+            }
+            else
+            {
+                trunkChain.customGravity = false;
+                trunkChain.forceGravity = new Vector2(NPC.spriteDirection, 0);
+                if (attackTimer > WHIP_DURATION + WHIP_BUILDUP)
+                {
+                    trunkChain.forceGravity = new Vector2(0, 0.1f);
+                    phase = Phase.Walking;
+                    attackTimer = 0;
+                }
+            }
         }
 
         private void ReachingBehavior()
         {
-            phase = Phase.Walking;
+            phase = Phase.Pulling;
         }
 
         private void PullingBehavior()
         {
-            phase = Phase.Walking;
+            xFrame = 0;
+            frameCounter = 0;
+            yFrame = 0;
+            attackTimer++;
+
+            if (!pulling)
+            {
+                trunkChain.customGravity = false;
+                trunkChain.forceGravity = NPC.DirectionTo(target.Center) * 1.1f;
+
+                Vector2 endPos = trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow + (16 * NPC.DirectionTo(target.Center));
+                Point endPosTileGrid = new Point((int)(endPos.X / 16), (int)(endPos.Y / 16));
+                Tile tile = Framing.GetTileSafely(endPosTileGrid);
+                if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType] && attackTimer > 6)
+                {
+                    pulling = true;
+                    trunkChain.endPoint = endPos;
+                    trunkChain.useEndPoint = true;
+                    trunkChain.forceGravity = Vector2.Zero;
+                }
+
+                if (attackTimer > PULL_DURATION)
+                {
+                    trunkChain.forceGravity = new Vector2(0, 0.1f);
+                    phase = Phase.Walking;
+                    attackTimer = 0;
+                }
+            }
+            else
+            {
+                Vector2 dir = trunkChain.endPoint - trunkStart;
+                NPC.velocity = Vector2.Normalize(dir) * 6;
+                if (dir.Length() < 60 || attackTimer > PULL_DURATION * 2)
+                {
+                    pulling = false;
+                    attackTimer = 0;
+                    trunkChain.forceGravity = new Vector2(0, 0.1f);
+                    trunkChain.useEndPoint = false;
+                    phase = Phase.Walking;
+                }
+            }
         }
 
         private void DecidingBehavior()
         {
-            phase = (Phase)Main.rand.Next(4);
+            attackTimer = 0;
+            phase = (Phase)Main.rand.Next(3) + 1;
             switch (phase)
             {
-                case Phase.Walking:
-                    WalkingBehavior(); break;
                 case Phase.Whipping:
                     WhippingBehavior(); break;
                 case Phase.Reaching:
@@ -280,10 +414,25 @@ namespace StarlightRiver.Content.NPCs.Snow
 
             trunkChain.startPoint = trunkStart;
 
-            int anchorLength = 10;
+            if (pulling)
+            {
+                for (int i = 0; i < NUM_SEGMENTS; i++)
+                {
+                    float lerper = ((float)i / (NUM_SEGMENTS - 2));
+                    Vector2 posToBe = Vector2.Lerp(trunkChain.startPoint, trunkChain.endPoint, lerper);
+                    trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkChain.ropeSegments[i].posNow, posToBe, 0.5f);
+                }
+            }
+
+            int anchorLength = 14;
+            int anchorStart = 5;
+
             for (int i = 0; i < anchorLength; i++)
             {
-                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, (float)Math.Pow((float)i / (anchorLength + 1), 0.5f));
+                float lerper = (float)Math.Pow((float)(i - anchorStart) / (anchorLength + 1 - anchorStart), 0.5f);
+                if (i <= anchorStart)
+                    lerper = 0;
+                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, lerper);
             }
         }
 
@@ -295,6 +444,17 @@ namespace StarlightRiver.Content.NPCs.Snow
                 points.Add(ropeSegment.posNow);
 
             return points;
+        }
+
+        private float TotalLength(List<Vector2> points)
+        {
+            float ret = 0;
+            for (int i = 1; i < points.Count; i++)
+            {
+                ret += (points[i] - points[i - 1]).Length();
+            }
+
+            return ret;
         }
     }
 }

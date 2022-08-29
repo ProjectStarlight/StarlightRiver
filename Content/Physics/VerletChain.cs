@@ -227,8 +227,8 @@ namespace StarlightRiver.Physics
             {
                 if (useStartPoint)
                     ropeSegments[simStartOffset].posNow = startPoint;
-                //if (useEndPoint)
-                //    ropeSegments[simEndOffset].posNow = endPoint;//if the end point clamp breaks, check this
+                if (useEndPoint)
+                   ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
                 ApplyConstraint();
             }
         }
