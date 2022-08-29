@@ -2,15 +2,12 @@
 //Value
 //Bestiary
 //Balance
-//hitsound
+//Knockback resist
 //Deathsound
 
-//Better attach snoobel's trunk
-//Make the trunk not gleek out if it's inside of a tile
-//Collision on snoobel's trunk
+//Fix y offset on trunk
+//Fix kink in midpoint on trunk
 
-//Reach attack
-//Make it jump
 
 
 using Microsoft.Xna.Framework;
@@ -45,17 +42,16 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             Walking = 0,
             Whipping = 1,
-            Reaching = 2,
-            Pulling = 3,
-            Deciding = 4
+            Pulling = 2,
+            Deciding = 3
         }
         public override string Texture => AssetDirectory.SnowNPC + "Snoobel";
 
         private const int XFRAMES = 2;
-        private readonly int NUM_SEGMENTS = 30;
+        public const int NUM_SEGMENTS = 30;
 
         private readonly int WHIP_BUILDUP = 90;
-        private readonly int WHIP_DURATION = 20;
+        private readonly int WHIP_DURATION = 40;
 
         private readonly int PULL_DURATION = 80;
 
@@ -70,9 +66,11 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private int attackTimer = 0;
 
-        private bool pulling = false;
+        public bool pulling = false;
 
-        private VerletChain trunkChain;
+        public VerletChain trunkChain;
+
+        public bool canHit => (attackTimer > WHIP_BUILDUP && phase == Phase.Whipping) || pulling;
 
         private Vector2 trunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7);
 
@@ -108,7 +106,9 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 2, true);
             trunkChain.forceGravity = new Vector2(0, 0.1f);
-            trunkChain.simStartOffset = 6;
+            trunkChain.simStartOffset = 0;
+            Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<SnoobelCollider>(), (int)(40 * (Main.expertMode ? 0.5f : 1f)), 0);
+            (proj.ModProjectile as SnoobelCollider).parent = NPC;
         }
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
@@ -135,8 +135,6 @@ namespace StarlightRiver.Content.NPCs.Snow
                     WalkingBehavior(); break;
                 case Phase.Whipping:
                     WhippingBehavior(); break;
-                case Phase.Reaching:
-                    ReachingBehavior(); break;
                 case Phase.Pulling:
                     PullingBehavior(); break;
                 case Phase.Deciding:
@@ -316,7 +314,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 {
                     float rad = 4f * ((float)(index - 6) / NUM_SEGMENTS);
                     float xForce = 0.5f* NPC.spriteDirection * (float)Math.Cos(rad);
-                    float yForce = -0.25f * (float)Math.Sin(rad);
+                    float yForce = -0.25f * (float)Math.Sin(rad * 2);
                     trunkChain.forceGravities.Add(new Vector2(xForce, -0.5f));
                     index++;
                 }
@@ -341,11 +339,6 @@ namespace StarlightRiver.Content.NPCs.Snow
                     attackTimer = 0;
                 }
             }
-        }
-
-        private void ReachingBehavior()
-        {
-            phase = Phase.Pulling;
         }
 
         private void PullingBehavior()
@@ -374,17 +367,22 @@ namespace StarlightRiver.Content.NPCs.Snow
                 if (attackTimer > PULL_DURATION)
                 {
                     trunkChain.forceGravity = new Vector2(0, 0.1f);
+                    pulling = false;
+                    trunkChain.endPoint = Vector2.Zero;
+                    trunkChain.useEndPoint = false;
                     phase = Phase.Walking;
                     attackTimer = 0;
                 }
             }
             else
             {
-                Vector2 dir = trunkChain.endPoint - trunkStart;
+                Vector2 dir = trunkChain.endPoint - (trunkStart + new Vector2(60 * NPC.spriteDirection, 0));
                 NPC.velocity = Vector2.Normalize(dir) * 6;
-                if (dir.Length() < 60 || attackTimer > PULL_DURATION * 2)
+                NPC.direction = NPC.spriteDirection = Math.Sign(dir.X);
+                if ((NPC.Center - trunkChain.endPoint).Length() < 50 || dir.Length() < 16 || attackTimer > PULL_DURATION * 2)
                 {
                     pulling = false;
+                    trunkChain.endPoint = Vector2.Zero;
                     attackTimer = 0;
                     trunkChain.forceGravity = new Vector2(0, 0.1f);
                     trunkChain.useEndPoint = false;
@@ -396,13 +394,11 @@ namespace StarlightRiver.Content.NPCs.Snow
         private void DecidingBehavior()
         {
             attackTimer = 0;
-            phase = (Phase)Main.rand.Next(3) + 1;
+            phase = (Phase)Main.rand.Next(2) + 1;
             switch (phase)
             {
                 case Phase.Whipping:
                     WhippingBehavior(); break;
-                case Phase.Reaching:
-                    ReachingBehavior(); break;
                 case Phase.Pulling:
                     PullingBehavior(); break;
             }
@@ -424,12 +420,12 @@ namespace StarlightRiver.Content.NPCs.Snow
                 }
             }
 
-            int anchorLength = 14;
-            int anchorStart = 5;
+            int anchorLength = 8;
+            int anchorStart = 1;
 
             for (int i = 0; i < anchorLength; i++)
             {
-                float lerper = (float)Math.Pow((float)(i - anchorStart) / (anchorLength + 1 - anchorStart), 0.5f);
+                float lerper = (float)Math.Pow((float)(i - anchorStart) / (anchorLength + 1 - anchorStart), 0.9f);
                 if (i <= anchorStart)
                     lerper = 0;
                 trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, lerper);
@@ -455,6 +451,55 @@ namespace StarlightRiver.Content.NPCs.Snow
             }
 
             return ret;
+        }
+    }
+
+    public class SnoobelCollider : ModProjectile //Since NPCs dont support custom collision
+    {
+        public override string Texture => AssetDirectory.Assets + "Invisible";
+
+        public NPC parent;
+
+        public VerletChain chain => (parent.ModNPC as Snoobel).trunkChain;
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Snoobel");
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.hostile = true;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+        }
+
+        public override void AI()
+        {
+            if (parent.active)
+            {
+                Projectile.timeLeft = 2;
+                Projectile.Center = parent.Center;
+            }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            bool ret = false;
+
+            float collisionPoint = 0f;
+            for (int i = 1; i < Snoobel.NUM_SEGMENTS; i++)
+                ret |= Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), chain.ropeSegments[i].posNow, chain.ropeSegments[i - 1].posNow, 8, ref collisionPoint);
+
+            ret &= (parent.ModNPC as Snoobel).canHit;
+            return ret;
+        }
+
+        public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+        {
+            if ((parent.ModNPC as Snoobel).pulling)
+                damage /= 3;
         }
     }
 }
