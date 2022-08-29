@@ -5,7 +5,8 @@
 //hitsound
 //Deathsound
 
-//Fix snoobel animation bug
+//Better attach snoobel's trunk
+//Collision on snoobel's trunk
 
 //Reach attack
 //Whip attack
@@ -98,7 +99,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override void OnSpawn(IEntitySource source)
         {
-            trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 4, true);
+            trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 2, true);
             trunkChain.forceGravity = new Vector2(0, 0.1f);
             trunkChain.simStartOffset = 6;
         }
@@ -149,7 +150,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             Texture2D texture = Request<Texture2D>(Texture).Value;
 
             SpriteEffects effects = SpriteEffects.None;
-            Vector2 origin = new Vector2((NPC.width * 0.75f), (NPC.height / 2) - 6);
+            Vector2 origin = new Vector2((NPC.width * 0.75f), (NPC.height / 2) - 8);
 
             if (NPC.spriteDirection != 1)
                 effects = SpriteEffects.FlipHorizontally;
@@ -164,7 +165,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         public override void FindFrame(int frameHeight)
         {
             int frameWidth = 60;
-            NPC.frame = new Rectangle(frameWidth * xFrame, frameHeight * yFrame, frameWidth, frameHeight);
+            NPC.frame = new Rectangle(frameWidth * xFrame, (frameHeight * yFrame) + 2, frameWidth, frameHeight - 2);
         }
 
         public override void OnKill()
@@ -178,7 +179,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         private void DrawTrunk()
         {
             Main.spriteBatch.End();
-            Effect effect = Terraria.Graphics.Effects.Filters.Scene["AlphaTextureTrail"].GetShader().Shader;
+            Effect effect = Terraria.Graphics.Effects.Filters.Scene["SnoobelTrunk"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
@@ -187,6 +188,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Whip").Value);
             effect.Parameters["alpha"].SetValue(1);
+            effect.Parameters["flip"].SetValue(NPC.spriteDirection == 1);
 
             trail?.Render(effect);
 
@@ -213,12 +215,6 @@ namespace StarlightRiver.Content.NPCs.Snow
             xFrame = 1;
             frameCounter++;
 
-            if (frameCounter % 5 == 0)
-            {
-                yFrame++;
-                yFrame %= Main.npcFrameCount[NPC.type];
-            }
-
             attackTimer++;
             if (attackTimer >= 400)
             {
@@ -226,14 +222,25 @@ namespace StarlightRiver.Content.NPCs.Snow
                 attackTimer = 0;
             }
 
-            NPC.spriteDirection = NPC.direction = Math.Sign(target.Center.X - NPC.Center.X);
+            float xdist = Math.Abs(target.Center.X - NPC.Center.X);
 
-            NPC.velocity.X += NPC.direction * 0.15f;
+            if (xdist > 30)
+            {
+                if (frameCounter % 5 == 0)
+                {
+                    yFrame++;
+                    yFrame %= Main.npcFrameCount[NPC.type];
+                }
 
-            NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -3, 3);
+                NPC.spriteDirection = NPC.direction = Math.Sign(target.Center.X - NPC.Center.X);
 
-            if (NPC.collideX && NPC.velocity.Y == 0)
-                NPC.velocity.Y = -6;
+                NPC.velocity.X += NPC.direction * 0.15f;
+
+                NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -3, 3);
+
+                if (NPC.collideX && NPC.velocity.Y == 0)
+                    NPC.velocity.Y = -8;
+            }
         }
 
         private void WhippingBehavior()
@@ -273,9 +280,10 @@ namespace StarlightRiver.Content.NPCs.Snow
 
             trunkChain.startPoint = trunkStart;
 
-            for (int i = 0; i < 5; i++)
+            int anchorLength = 10;
+            for (int i = 0; i < anchorLength; i++)
             {
-                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, i / 5f);
+                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, (float)Math.Pow((float)i / (anchorLength + 1), 0.5f));
             }
         }
 
