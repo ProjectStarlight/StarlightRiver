@@ -10,13 +10,14 @@ namespace StarlightRiver.Core
 {
     public class ExposureNPC : GlobalNPC
     {
-        public int ExposureAdd;
+        //Maybe make this use a dictionary system in the future for some compatibility etc
+        public int ExposureAddAll;
         public int ExposureAddMelee;
         public int ExposureAddRanged;
         public int ExposureAddMagic;
         public int ExposureAddSummon; //literally just summon tag without the requirement of being the players minion target
 
-        public float ExposureMult;
+        public float ExposureMultAll;
         public float ExposureMultMelee;
         public float ExposureMultRanged;
         public float ExposureMultMagic;
@@ -25,13 +26,13 @@ namespace StarlightRiver.Core
         public override bool InstancePerEntity => true;
         public override void ResetEffects(NPC npc)
         {
-            ExposureAdd = 0;
+            ExposureAddAll = 0;
             ExposureAddMelee = 0;
             ExposureAddRanged = 0;
             ExposureAddMagic = 0;
             ExposureAddSummon = 0;
 
-            ExposureMult = 0f;
+            ExposureMultAll = 0f;
             ExposureMultMelee = 0f;
             ExposureMultRanged = 0f;
             ExposureMultMagic = 0f;
@@ -52,7 +53,7 @@ namespace StarlightRiver.Core
             if (item.CountsAsClass(DamageClass.Summon))
                 damage = (int)(damage * (1f + ExposureMultSummon)) + ExposureAddSummon;
 
-            damage = (int)(damage * (1f + ExposureMult)) + ExposureAdd;
+            damage = (int)(damage * (1f + ExposureMultAll)) + ExposureAddAll;
         }
 
         public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -69,7 +70,7 @@ namespace StarlightRiver.Core
             if (projectile.CountsAsClass(DamageClass.Summon))
                 damage = (int)(damage * (1f + ExposureMultSummon)) + ExposureAddSummon;
 
-            damage = (int)(damage * (1f + ExposureMult)) + ExposureAdd;
+            damage = (int)(damage * (1f + ExposureMultAll)) + ExposureAddAll;
         }
     }
 }

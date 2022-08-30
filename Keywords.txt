@@ -1,5 +1,5 @@
 Vulnerability | Increases the amount of damage a target takes by their Vulnerability | 150 | 30 | 30
-Exposure | Multiplies the amount of damage a target takes by their exposure | 175 | 35 | 35
+Exposure | Multiplies the amount of damage a target takes by their Exposure | 175 | 35 | 35
 Haunted | Inflicted enemies take 1 damage-per-second per haunted stack, maxing at 20 stacks. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks. | 180 | 0 | 255
 Volatile | Inflicted enemies take 7% increased damage for every stack of Volatile, however inflicted enemies also deal 3% more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
 Grazes | Happens when an enemies projectile barely misses you. Grazes have a cooldown of two seconds at default. | 135 | 235 | 255
