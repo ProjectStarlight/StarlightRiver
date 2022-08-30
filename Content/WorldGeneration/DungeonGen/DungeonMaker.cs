@@ -89,6 +89,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// </summary>
 		public virtual int SectionSize => 8;
 
+		/// <summary>
+		/// The length of hallways to generate. You can pass in random functions or more complex logic to customize your dungeon.
+		/// </summary>
+		public virtual int HallwaySize => WorldGen.genRand.Next(3, 5);
+
 		public DungeonMaker(Point16 pos)
 		{
 			startPointInWorld = pos;
@@ -407,7 +412,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				return;
 
 			List<Point16> hall = new List<Point16>();
-			if (TryMakeHallway(start.X, start.Y, ref hall, WorldGen.genRand.Next(3, 7)))
+			if (TryMakeHallway(start.X, start.Y, ref hall, HallwaySize))
 			{
 				if (TryMakeRandomRoom(hall.Last().X, hall.Last().Y))
 				{
