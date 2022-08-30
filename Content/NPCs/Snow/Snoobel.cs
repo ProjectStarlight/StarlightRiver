@@ -1,13 +1,4 @@
-﻿//TODO:
-//Gores
-
-//Code cleanup
-
-//Fix kink in midpoint on trunk
-
-
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
@@ -44,7 +35,6 @@ namespace StarlightRiver.Content.NPCs.Snow
         }
         public override string Texture => AssetDirectory.SnowNPC + "Snoobel";
 
-        private const int XFRAMES = 2;
         public const int NUM_SEGMENTS = 30;
 
         private readonly int WHIP_BUILDUP = 90;
@@ -73,6 +63,12 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         private Player target => Main.player[NPC.target];
 
+        public override void Load()
+        {
+            for (int j = 1; j <= 5; j++)
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.SnowNPC + "SnoobelGore" + j);
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Snoobel");
@@ -97,6 +93,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 2, true);
             trunkChain.forceGravity = new Vector2(0, 0.1f);
             trunkChain.simStartOffset = 0;
+
             Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<SnoobelCollider>(), (int)(40 * (Main.expertMode ? 0.5f : 1f)), 0);
             (proj.ModProjectile as SnoobelCollider).parent = NPC;
         }
@@ -177,7 +174,15 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             if(Main.netMode != NetmodeID.Server)
             {
-                
+                foreach (RopeSegment segment in trunkChain.ropeSegments)
+                {
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), segment.posNow, Main.rand.NextVector2Circular(1, 1), Mod.Find<ModGore>("SnoobelGore1").Type);
+                }
+
+                for (int j = 2; j <= 5; j++)
+                {
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("SnoobelGore" + j).Type);
+                }
             }
         }
 
@@ -203,9 +208,8 @@ namespace StarlightRiver.Content.NPCs.Snow
             if (cache == null)
                 points = GetTrunkPoints();
             else
-            {
                 points = trail.Positions.ToList();
-            }
+
             effect.Parameters["totalLength"].SetValue(TotalLength(points));
             trail.Render(effect);
 
@@ -283,7 +287,6 @@ namespace StarlightRiver.Content.NPCs.Snow
                 NPC.spriteDirection = NPC.direction = Math.Sign(target.Center.X - NPC.Center.X);
 
                 NPC.velocity.X += NPC.direction * 0.15f;
-
                 NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -3, 3);
 
                 if (NPC.collideX && NPC.velocity.Y == 0)
@@ -320,20 +323,12 @@ namespace StarlightRiver.Content.NPCs.Snow
             yFrame = 0;
             attackTimer++;
 
-            if (attackTimer < WHIP_BUILDUP)
-            {
-
-            }
-            else
-            {
+            if (attackTimer > WHIP_BUILDUP)
+            { 
                 trunkChain.customGravity = false;
                 trunkChain.forceGravity = new Vector2(NPC.spriteDirection, 0);
                 if (attackTimer > WHIP_DURATION + WHIP_BUILDUP)
-                {
-                    trunkChain.forceGravity = new Vector2(0, 0.1f);
-                    phase = Phase.Walking;
-                    attackTimer = 0;
-                }
+                    EndAttack();
             }
         }
 
@@ -361,14 +356,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 }
 
                 if (attackTimer > PULL_DURATION)
-                {
-                    trunkChain.forceGravity = new Vector2(0, 0.1f);
-                    pulling = false;
-                    trunkChain.endPoint = Vector2.Zero;
-                    trunkChain.useEndPoint = false;
-                    phase = Phase.Walking;
-                    attackTimer = 0;
-                }
+                    EndAttack();
             }
             else
             {
@@ -386,13 +374,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 if ((NPC.Center - trunkChain.endPoint).Length() < 50 || dir.Length() < 16 || attackTimer > PULL_DURATION * 2)
                 {
                     trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow -= Vector2.Normalize(dir) * 16;
-                    NPC.noGravity = false;
-                    pulling = false;
-                    trunkChain.endPoint = Vector2.Zero;
-                    attackTimer = 0;
-                    trunkChain.forceGravity = new Vector2(0, 0.1f);
-                    trunkChain.useEndPoint = false;
-                    phase = Phase.Walking;
+                    EndAttack();
                 }
             }
         }
@@ -458,6 +440,17 @@ namespace StarlightRiver.Content.NPCs.Snow
             }
 
             return ret;
+        }
+
+        private void EndAttack()
+        {
+            NPC.noGravity = false;
+            pulling = false;
+            trunkChain.endPoint = Vector2.Zero;
+            attackTimer = 0;
+            trunkChain.forceGravity = new Vector2(0, 0.1f);
+            trunkChain.useEndPoint = false;
+            phase = Phase.Walking;
         }
     }
 
