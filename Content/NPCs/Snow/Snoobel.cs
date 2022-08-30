@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         public override void Load()
         {
             for (int j = 1; j <= 5; j++)
-                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.SnowNPC + "SnoobelGore" + j);
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.SnowNPC + "Gores/SnoobelGore" + j);
         }
 
         public override void SetStaticDefaults()
