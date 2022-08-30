@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             Pulling = 2,
             Deciding = 3
         }
+
         public override string Texture => AssetDirectory.SnowNPC + "Snoobel";
 
         public const int NUM_SEGMENTS = 30;
@@ -57,11 +58,11 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public VerletChain trunkChain;
 
-        public bool canHit => (attackTimer > WHIP_BUILDUP && phase == Phase.Whipping) || pulling;
+        public bool CanHit => (attackTimer > WHIP_BUILDUP && phase == Phase.Whipping) || pulling;
 
-        private Vector2 trunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7 + NPC.gfxOffY + NPC.velocity.Y);
+        private Vector2 TrunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7 + NPC.gfxOffY + NPC.velocity.Y);
 
-        private Player target => Main.player[NPC.target];
+        private Player Target => Main.player[NPC.target];
 
         public override void Load()
         {
@@ -90,7 +91,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public override void OnSpawn(IEntitySource source)
         {
-            trunkChain = new VerletChain(NUM_SEGMENTS, true, trunkStart, 2, true);
+            trunkChain = new VerletChain(NUM_SEGMENTS, true, TrunkStart, 2, true);
             trunkChain.forceGravity = new Vector2(0, 0.1f);
             trunkChain.simStartOffset = 0;
 
@@ -128,7 +129,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                     DecidingBehavior(); break;
             }
 
-            if (trunkChain == null)
+            if (trunkChain is null)
                 return;
 
             UpdateTrunk();
@@ -219,7 +220,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         private void ManageCache()
         {
             cache = new List<Vector2>();
-            cache.Add(trunkStart);
+            cache.Add(TrunkStart);
 
             float pointLength = TotalLength(GetTrunkPoints()) / NUM_SEGMENTS;
 
@@ -273,7 +274,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 attackTimer = 0;
             }
 
-            float xdist = Math.Abs(target.Center.X - NPC.Center.X);
+            float xdist = Math.Abs(Target.Center.X - NPC.Center.X);
 
             if (xdist > 30)
             {
@@ -284,7 +285,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                     yFrame %= Main.npcFrameCount[NPC.type];
                 }
 
-                NPC.spriteDirection = NPC.direction = Math.Sign(target.Center.X - NPC.Center.X);
+                NPC.spriteDirection = NPC.direction = Math.Sign(Target.Center.X - NPC.Center.X);
 
                 NPC.velocity.X += NPC.direction * 0.15f;
                 NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -3, 3);
@@ -342,9 +343,9 @@ namespace StarlightRiver.Content.NPCs.Snow
             if (!pulling)
             {
                 trunkChain.customGravity = false;
-                trunkChain.forceGravity = NPC.DirectionTo(target.Center) * 1.1f;
+                trunkChain.forceGravity = NPC.DirectionTo(Target.Center) * 1.1f;
 
-                Vector2 endPos = trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow + (16 * NPC.DirectionTo(target.Center));
+                Vector2 endPos = trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow + (16 * NPC.DirectionTo(Target.Center));
                 Point endPosTileGrid = new Point((int)(endPos.X / 16), (int)(endPos.Y / 16));
                 Tile tile = Framing.GetTileSafely(endPosTileGrid);
                 if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType] && attackTimer > 6)
@@ -361,7 +362,7 @@ namespace StarlightRiver.Content.NPCs.Snow
             else
             {
                 NPC.noGravity = true;
-                Vector2 dir = trunkChain.endPoint - (trunkStart + new Vector2(60 * NPC.spriteDirection, 0));
+                Vector2 dir = trunkChain.endPoint - (TrunkStart + new Vector2(60 * NPC.spriteDirection, 0));
 
                 if (NPC.velocity.Length() < 15)
                 {
@@ -397,7 +398,7 @@ namespace StarlightRiver.Content.NPCs.Snow
         {
             trunkChain.UpdateChain();
 
-            trunkChain.startPoint = trunkStart;
+            trunkChain.startPoint = TrunkStart;
 
             if (pulling)
             {
@@ -417,7 +418,7 @@ namespace StarlightRiver.Content.NPCs.Snow
                 float lerper = (float)Math.Pow((float)(i - anchorStart) / (anchorLength + 1 - anchorStart), 0.9f);
                 if (i <= anchorStart)
                     lerper = 0;
-                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(trunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, lerper);
+                trunkChain.ropeSegments[i].posNow = Vector2.Lerp(TrunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, lerper);
             }
         }
 
@@ -460,7 +461,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 
         public NPC parent;
 
-        public VerletChain chain => (parent.ModNPC as Snoobel).trunkChain;
+        public VerletChain Chain => (parent.ModNPC as Snoobel).trunkChain;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Snoobel");
@@ -490,9 +492,9 @@ namespace StarlightRiver.Content.NPCs.Snow
 
             float collisionPoint = 0f;
             for (int i = 1; i < Snoobel.NUM_SEGMENTS; i++)
-                ret |= Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), chain.ropeSegments[i].posNow, chain.ropeSegments[i - 1].posNow, 8, ref collisionPoint);
+                ret |= Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Chain.ropeSegments[i].posNow, Chain.ropeSegments[i - 1].posNow, 8, ref collisionPoint);
 
-            ret &= (parent.ModNPC as Snoobel).canHit;
+            ret &= (parent.ModNPC as Snoobel).CanHit;
             return ret;
         }
 
