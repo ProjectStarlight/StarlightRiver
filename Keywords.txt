@@ -1,4 +1,5 @@
 Sweltered | Increases damage NPCs take by 35%, while also dealing 20 damage-over-time | 255 | 100 | 35
+Focused | The enemy in which this is inflicted on has double the chance to be critically striked, however you cannot critically strike any other enemy besides the Focused enemy. | 85 | 220 | 55
 Haunted | Inflicted enemies take 1 damage-per-second per haunted stack, maxing at 20 stacks. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks. | 180 | 0 | 255
 Volatile | Inflicted enemies take seven-percent more damage for every stack of Volatile, however inflicted enemies also deal three-percent more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
 Grazes | Happens when an enemies projectile barely misses you. Grazes have a cooldown of two seconds at default. | 135 | 235 | 255

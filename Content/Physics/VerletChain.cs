@@ -64,6 +64,8 @@ namespace StarlightRiver.Physics
         public int segmentCount;
         public int segmentDistance;
 
+        public bool collideWithTiles;
+
         public int constraintRepetitions = 2;
         public float drag = 1f;
         public Vector2 forceGravity = Vector2.Zero;
@@ -89,11 +91,12 @@ namespace StarlightRiver.Physics
         public int simStartOffset = 0;
         public int simEndOffset = 0;//if zero this gets set to the segment count on start
 
-		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance, bool CollideWithTiles = false)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
             startPoint = StartPoint;
+            collideWithTiles = CollideWithTiles;
 
             if (!specialDraw)
                 VerletChainSystem.toDraw.Add(this);
@@ -210,16 +213,22 @@ namespace StarlightRiver.Physics
                 RopeSegment segment = ropeSegments[i];
                 Vector2 velocity = (segment.posNow - segment.posOld) / drag;
                 segment.posOld = segment.posNow;
+
+                Vector2 gravityVel = customGravity ? forceGravities[i] * forceGravity : forceGravity;
+
+                velocity = TileCollision(segment.posNow, velocity);
+                gravityVel = TileCollision(segment.posNow, gravityVel);
+
                 segment.posNow += velocity;
-                segment.posNow += customGravity ? forceGravities[i] * forceGravity : forceGravity;
+                segment.posNow += gravityVel;
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
             {
                 if (useStartPoint)
                     ropeSegments[simStartOffset].posNow = startPoint;
-                //if (useEndPoint)
-                //    ropeSegments[simEndOffset].posNow = endPoint;//if the end point clamp breaks, check this
+                if (useEndPoint)
+                   ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
                 ApplyConstraint();
             }
         }
@@ -242,14 +251,14 @@ namespace StarlightRiver.Physics
                 Vector2 changeAmount = changeDir * error;
                 if (i != 0)
                 {
-                    ropeSegments[i].posNow -= changeAmount * 0.5f;
+                    ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
                     ropeSegments[i] = ropeSegments[i];
-                    ropeSegments[i + 1].posNow += changeAmount * 0.5f;
+                    ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
                     ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
                 else
                 {
-                    ropeSegments[i + 1].posNow += changeAmount;
+                    ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
                     ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
             }
@@ -381,6 +390,22 @@ namespace StarlightRiver.Physics
         {
             for (int i = 0; i < segmentCount; i++)
                 drawMethod_curPos_prevPos_nextPos(spritebatch, i, ropeSegments[i].posNow, i > 0 ? ropeSegments[i - 1].posNow : Vector2.Zero, i < segmentCount - 1 ? ropeSegments[i + 1].posNow : Vector2.Zero);
+        }
+
+        public Vector2 TileCollision(Vector2 pos, Vector2 vel)
+        {
+            if (!collideWithTiles)
+                return vel;
+
+            Vector2 newVel = Collision.noSlopeCollision(pos - (new Vector2(3, 3)), vel, 6, 6, true, true);
+            Vector2 ret = new Vector2(vel.X,vel.Y);
+            if (Math.Abs(newVel.X) < Math.Abs(vel.X))
+                ret.X *= 0;
+
+            if (Math.Abs(newVel.Y) < Math.Abs(vel.Y))
+                ret.Y *= 0;
+
+            return ret;
         }
     }
 }

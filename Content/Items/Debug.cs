@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
+using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace StarlightRiver.Content.Items
             Item.useTurn = true;
             Item.accessory = true;
 
-            Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
+            //Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
         }
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
@@ -58,6 +59,10 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
+            dungeon.GenerateDungeon(new Point16(30, 30), 8);
+            return true;
+
             return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
@@ -190,7 +195,15 @@ namespace StarlightRiver.Content.Items
             spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
             spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
         }
-	}
+
+        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+        {
+            BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
+            GNPC.MaxBarrier = 100;
+            GNPC.Barrier = 100;
+            GNPC.DrawGlow = true;
+        }
+    }
 
     class DebugModerEnabler : ModItem
 	{
