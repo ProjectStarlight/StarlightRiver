@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
+using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
@@ -58,6 +59,10 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
+            dungeon.GenerateDungeon(new Point16(30, 30), 8);
+            return true;
+
             return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
