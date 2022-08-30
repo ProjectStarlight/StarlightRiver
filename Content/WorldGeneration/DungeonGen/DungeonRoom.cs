@@ -85,8 +85,14 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public void FillRoom(Point16 dungeonPos)
 		{
 			// Attempts to generate as a structure, if this fails, it falls back to generating as a multistructure.
-			if (!StructureHelper.Generator.GenerateStructure(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance))
+			var isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
+
+			if (isMulti == true)
 				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+			else if (isMulti == false)
+				StructureHelper.Generator.GenerateStructure(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+			else
+				throw new Exception($"An invalid structure file path {StructurePath} was read for dungeon room {this.GetType()}");
 
 			OnGenerate(topLeftTile + dungeonPos);
 		}
