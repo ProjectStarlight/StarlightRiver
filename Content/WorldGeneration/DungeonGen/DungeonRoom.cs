@@ -44,6 +44,12 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public virtual int SectionSize => 8;
 
 		/// <summary>
+		/// Allows you to cause extra effects to happen after this room template generates.
+		/// </summary>
+		/// <param name="pos">The tile position of the top-left of this room</param>
+		public virtual void OnGenerate(Point16 pos) { }
+
+		/// <summary>
 		/// Returns a list of SECTION coordinate offsets for sections marked as doors. These are the points which a generator should
 		/// start to create hallways from.
 		/// </summary>
@@ -78,7 +84,17 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// </summary>
 		public void FillRoom(Point16 dungeonPos)
 		{
-			StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+			// Attempts to generate as a structure, if this fails, it falls back to generating as a multistructure.
+			var isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
+
+			if (isMulti == true)
+				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+			else if (isMulti == false)
+				StructureHelper.Generator.GenerateStructure(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+			else
+				throw new Exception($"An invalid structure file path {StructurePath} was read for dungeon room {this.GetType()}");
+
+			OnGenerate(topLeftTile + dungeonPos);
 		}
 
 		/// <summary>
