@@ -1,4 +1,4 @@
-﻿
+﻿float alpha = 0;
 matrix transformMatrix;
 
 texture sampleTexture;
@@ -32,7 +32,7 @@ VertexShaderOutput VertexShaderFunction(VertexShaderInput input)
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
 	float4 color = tex2D(samplerTex, input.TexCoords);
-    return color * float4(input.Color.rgb, 0);
+    return color * float4(input.Color.rgb, alpha);
 }
 
 technique Technique1
