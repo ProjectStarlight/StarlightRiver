@@ -60,6 +60,21 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, swingDirection);
             return false;
         }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ItemID.CopperBar, 8).
+                AddRecipeGroup(RecipeGroupID.IronBar, 12).
+                AddTile(TileID.Anvils).
+                Register();
+
+            CreateRecipe().
+                AddIngredient(ItemID.TinBar, 8).
+                AddRecipeGroup(RecipeGroupID.IronBar, 12).
+                AddTile(TileID.Anvils).
+                Register();
+        }
     }
 
     class ShreddedNPC : GlobalNPC
