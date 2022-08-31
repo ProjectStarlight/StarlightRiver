@@ -1,3 +1,4 @@
+Shredded | Inflicted enemies have their defense decreased by 2 and take 2 damage-over-time per stack, maxing at 5 stacks. | 90 | 20 | 20
 Haunted | Inflicted enemies take 1 damage-per-second per haunted stack, maxing at 20 stacks. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks. | 180 | 0 | 255
 Volatile | Inflicted enemies take seven-percent more damage for every stack of Volatile, however inflicted enemies also deal three-percent more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
 Grazes | Happens when an enemies projectile barely misses you. Grazes have a cooldown of two seconds at default. | 135 | 235 | 255
