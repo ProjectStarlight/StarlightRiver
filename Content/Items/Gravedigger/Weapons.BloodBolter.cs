@@ -183,6 +183,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			GNPC.hitFromBolter = true;
 			GNPC.boltOffset = target.Center - Projectile.Center;
 			GNPC.bolt = Projectile;
+
+			GoreDestroyerNPC goreDestroyerNPC = target.GetGlobalNPC<GoreDestroyerNPC>();
+			goreDestroyerNPC.destroyGore = true;
 		}
 
         public override void Kill(int timeLeft)
@@ -327,68 +330,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 
 			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, projectile.owner);
-		}
-	}
-
-	public class BloodBolterGoreDestroyer : ModSystem
-    {
-        public override void Load() //extremely hacky but it works, ty Mirsario
-        {
-			On.Terraria.Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) => 
-			{
-				int result = orig(entitySource, position, velocity, type, scale);
-
-				DestroyGore(entitySource, result);
-
-				return result;
-			};
-			On.Terraria.Gore.NewGoreDirect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
-			{
-				Gore result = orig(entitySource, position, velocity, type, scale);
-
-				DestroyGore(entitySource, result);
-
-				return result;
-			};
-			On.Terraria.Gore.NewGorePerfect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
-			{
-				Gore result = orig(entitySource, position, velocity, type, scale);
-
-				DestroyGore(entitySource, result);
-
-				return result;
-			};
-		}
-
-		private static void DestroyGore(IEntitySource entitySource, int goreID)
-		{
-			if (entitySource is EntitySource_HitEffect deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				Main.gore[goreID].active = false;
-
-			if (entitySource is EntitySource_Death deathSource3 && deathSource3.Entity is NPC npc3 && npc3.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				Main.gore[goreID].active = false;
-
-			if (entitySource is EntitySource_OnHit deathSource2 && deathSource2.EntityStruck is NPC npc2 && npc2.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				Main.gore[goreID].active = false;
-
-			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				Main.gore[goreID].active = false;
-
-		}
-
-		private static void DestroyGore(IEntitySource entitySource, Gore gore)
-		{
-			if (entitySource is EntitySource_HitEffect deathSource && deathSource.Entity is NPC npc && npc.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				gore.active = false;
-
-			if (entitySource is EntitySource_OnHit deathSource2 && deathSource2.EntityStruck is NPC npc2 && npc2.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				gore.active = false;
-
-			if (entitySource is EntitySource_Death deathSource3 && deathSource3.Entity is NPC npc3 && npc3.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				gore.active = false;
-
-			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<BloodBolterGNPC>().hitFromBolter)
-				gore.active = false;
 		}
 	}
 }
