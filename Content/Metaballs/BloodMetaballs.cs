@@ -61,7 +61,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
         {
-            LightingBufferRenderer.DrawRendertargetWithLighting(new Rectangle(0, 0, target.Width, target.Height), target, inColor, new Vector2(2, 2));
+            Rectangle sourceRect = new Rectangle(0, 0, target.Width, target.Height);
+            LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, inColor, new Vector2(2, 2));
             return false;
         }
     }
