@@ -27,7 +27,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			DisplayName.SetDefault("Bloodbolter");
 			Tooltip.SetDefault("Converts wooden arrows into bloodbolts \nBloodbolts impale dead fleshy enemies, exploding them on surfaces");
-
 		}
 
 		public override void SetDefaults()
@@ -197,99 +196,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
         }
     }
 
-	public class BloodBolterGNPC : GlobalNPC
-    {
-		public override bool InstancePerEntity => true;
-
-		public bool hitFromBolter = false;
-
-		public Projectile bolt = default;
-		public Vector2 boltOffset = Vector2.Zero;
-
-		public bool markedForDeath = false;
-
-		public int deathCounter = 0;
-
-        public override void ResetEffects(NPC npc)
-        {
-			hitFromBolter = false;
-        }
-
-        public override void PostAI(NPC npc)
-        {
-			if (markedForDeath && bolt != default)
-			{
-				npc.Center = bolt.Center + boltOffset + new Vector2(3, 3);
-				npc.velocity = bolt.velocity;
-
-				deathCounter++;
-
-				if (!bolt.active || ((npc.collideX || npc.collideY) && deathCounter > 2))
-                {
-					bolt.active = false;
-					npc.Kill();
-					SpawnBlood(npc, bolt);
-                }
-            }
-        }
-
-        public override bool PreKill(NPC npc)
-        {
-			if (hitFromBolter)
-				return false;
-
-			return base.PreKill(npc);
-        }
-
-        public override bool CheckDead(NPC npc)
-        {
-			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
-			{
-				Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-				npc.life = 1;
-				markedForDeath = true;
-				npc.immortal = true;
-				npc.noTileCollide = false;
-				npc.noGravity = true;
-
-				npc.width -= 6;
-				npc.height -= 6;
-
-				if (bolt != default)
-				{
-					bolt.friendly = false;
-					bolt.penetrate++;
-				}
-				return false;
-			}
-			return base.CheckDead(npc);
-		}
-
-        private static void SpawnBlood(NPC npc, Projectile projectile)
-        {
-			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			Core.Systems.CameraSystem.Shake += 8;
-			Vector2 direction = -Vector2.Normalize(projectile.velocity);
-
-			for (int i = 0; i < 16; i++)
-            {
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
-
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
-
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3,8), 0, default, 0.3f);
-			}
-			
-			for (int i = 0; i < 8; i++)
-            {
-				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3,3), 0, Color.DarkRed, Main.rand.NextFloat(1,1.5f));
-			}
-
-			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, projectile.owner);
-        }
-    }
-
 	internal class BloodBolterExplosion : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
@@ -316,11 +222,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			DisplayName.SetDefault("Blood Bolter");
 		}
 
-		public override void AI()
-		{
-			
-		}
-
 		public override bool PreDraw(ref Color lightColor) => false;
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -333,6 +234,99 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				return true;
 
 			return false;
+		}
+	}
+
+	public class BloodBolterGNPC : GlobalNPC
+	{
+		public override bool InstancePerEntity => true;
+
+		public bool hitFromBolter = false;
+
+		public Projectile bolt = default;
+		public Vector2 boltOffset = Vector2.Zero;
+
+		public bool markedForDeath = false;
+
+		public int deathCounter = 0;
+
+		public override void ResetEffects(NPC npc)
+		{
+			hitFromBolter = false;
+		}
+
+		public override void PostAI(NPC npc)
+		{
+			if (markedForDeath && bolt != default)
+			{
+				npc.Center = bolt.Center + boltOffset + new Vector2(3, 3);
+				npc.velocity = bolt.velocity;
+
+				deathCounter++;
+
+				if (!bolt.active || ((npc.collideX || npc.collideY) && deathCounter > 2))
+				{
+					bolt.active = false;
+					npc.Kill();
+					SpawnBlood(npc, bolt);
+				}
+			}
+		}
+
+		public override bool PreKill(NPC npc)
+		{
+			if (hitFromBolter)
+				return false;
+
+			return base.PreKill(npc);
+		}
+
+		public override bool CheckDead(NPC npc)
+		{
+			if (hitFromBolter && !markedForDeath && npc.knockBackResist != 0 && Helper.IsFleshy(npc))
+			{
+				Helper.PlayPitched("Impale", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+				npc.life = 1;
+				markedForDeath = true;
+				npc.immortal = true;
+				npc.noTileCollide = false;
+				npc.noGravity = true;
+
+				npc.width -= 6;
+				npc.height -= 6;
+
+				if (bolt != default)
+				{
+					bolt.friendly = false;
+					bolt.penetrate++;
+				}
+				return false;
+			}
+			return base.CheckDead(npc);
+		}
+
+		private static void SpawnBlood(NPC npc, Projectile projectile)
+		{
+			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
+			Core.Systems.CameraSystem.Shake += 8;
+			Vector2 direction = -Vector2.Normalize(projectile.velocity);
+
+			for (int i = 0; i < 16; i++)
+			{
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
+
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
+
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<SmokeDustColor>(), Main.rand.NextVector2Circular(3, 3), 0, Color.DarkRed, Main.rand.NextFloat(1, 1.5f));
+			}
+
+			Projectile.NewProjectile(new EntitySource_HitEffect(npc), npc.Center, Vector2.Zero, ModContent.ProjectileType<BloodBolterExplosion>(), (int)(projectile.damage * 1.6f), projectile.knockBack, projectile.owner);
 		}
 	}
 

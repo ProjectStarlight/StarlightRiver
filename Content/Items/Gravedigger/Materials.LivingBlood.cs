@@ -11,6 +11,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 {
     public class LivingBlood : QuickMaterial
     {
+
         public override void Load()
         {
 			StarlightNPC.ModifyNPCLootEvent += DropLivingBlood;
