@@ -21,6 +21,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class BloodMetaballDust : ModDust
 	{
+
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public override void OnSpawn(Dust dust)
