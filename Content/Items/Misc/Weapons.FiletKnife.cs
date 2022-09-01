@@ -123,11 +123,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public bool hasSword = false;
 
-        public override void SetDefaults(NPC NPC)
+        public override void OnSpawn(NPC npc, IEntitySource source)
         {
-            if (NPC.type == NPCID.BloodZombie && Main.rand.NextBool(50))
+            if (npc.type == NPCID.BloodZombie && Main.rand.NextBool(100))
                 hasSword = true;
-            base.SetDefaults(NPC);
+            base.OnSpawn(npc, source);
         }
 
         public override bool PreDraw(NPC NPC, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -147,9 +147,9 @@ namespace StarlightRiver.Content.Items.Misc
             return base.PreDraw(NPC, spriteBatch, screenPos, drawColor);
         }
 
-		public override void OnKill(NPC npc) //TODO: Figure out how to integrate this with the vanilla drop rule system later?
+		public override void OnKill(NPC npc)
         {
-            if (hasSword && Main.rand.NextBool(3))
+            if (hasSword)
                 Item.NewItem(npc.GetSource_Loot(), npc.Center, ModContent.ItemType<FiletKnife>());
 
             base.OnKill(npc);
