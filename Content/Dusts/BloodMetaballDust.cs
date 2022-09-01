@@ -66,5 +66,5 @@ namespace StarlightRiver.Content.Dusts
 		}
 	}
 
-	public class BloodMetaballDustLight : BloodMetaballDust { public int k = 0; }
+	public class BloodMetaballDustLight : BloodMetaballDust { }
 }
