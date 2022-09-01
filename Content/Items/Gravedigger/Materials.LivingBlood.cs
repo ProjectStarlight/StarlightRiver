@@ -11,11 +11,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 {
     public class LivingBlood : QuickMaterial
     {
-
         public override void Load()
         {
 			StarlightNPC.ModifyNPCLootEvent += DropLivingBlood;
         }
+
         public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Living Blood");
@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			ItemID.Sets.ItemNoGravity[Item.type] = true; 
 
 		}
+
 		public LivingBlood() : base("Living Blood", "", 999, 50, 2, AssetDirectory.GravediggerItem) { }
 
 		public static void DropLivingBlood(NPC npc, NPCLoot npcLoot)
