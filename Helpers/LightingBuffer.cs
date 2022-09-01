@@ -277,7 +277,7 @@ namespace StarlightRiver.Helpers
             else
             {
                 ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                ApplyEffect.Parameters["texSize"].SetValue(tex.Size());
+                ApplyEffect.Parameters["texSize"].SetValue(tex.Size() * scale);
                 ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
                 ApplyEffect.Parameters["zoom"].SetValue(zoom);
                 ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
@@ -285,13 +285,13 @@ namespace StarlightRiver.Helpers
                 ApplyEffect.Parameters["targetTexture"].SetValue(tex);
                 ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
 
-                verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0), source.TopLeft() * scale / tex.Size());
-                verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() * scale / tex.Size());
-                verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() * scale / tex.Size());
+                verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0), source.TopLeft() / tex.Size());
+                verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
+                verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
 
-                verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() * scale / tex.Size());
-                verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0), source.BottomRight() * scale / tex.Size());
-                verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() * scale / tex.Size());
+                verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
+                verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0), source.BottomRight() / tex.Size());
+                verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
 
                 /*verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
                   verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
