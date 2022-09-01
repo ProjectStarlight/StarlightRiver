@@ -121,7 +121,22 @@ namespace StarlightRiver.Content.Items.Misc
 
         public int DOT = 0;
 
+        public int DOTreductionCounter = 0;
+
         public bool hasSword = false;
+
+        public override void ResetEffects(NPC npc)
+        {
+            if (DOT > 0)
+            {
+                DOTreductionCounter++;
+                if (DOTreductionCounter > 200)
+                {
+                    DOT--;
+                    DOTreductionCounter = 0;
+                }
+            }
+        }
 
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
