@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Items.Misc
             if (DOT > 0)
             {
                 DOTreductionCounter++;
-                if (DOTreductionCounter > 200)
+                if (DOTreductionCounter > 330)
                 {
                     DOT--;
                     DOTreductionCounter = 0;
