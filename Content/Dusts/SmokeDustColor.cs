@@ -21,16 +21,14 @@ namespace StarlightRiver.Content.Dusts
             Color gray = new Color(25, 25, 25);
             Color black = Color.Black;
             Color ret;
+
             if (dust.alpha < 120)
-            {
                 ret = Color.Lerp(dust.color, gray, dust.alpha / 120f);
-            }
             else if (dust.alpha < 180)
-            {
                 ret = Color.Lerp(gray, black, (dust.alpha - 120) / 60f);
-            }
             else
                 ret = black;
+
             return ret * ((255 - dust.alpha) / 255f);
         }
 
