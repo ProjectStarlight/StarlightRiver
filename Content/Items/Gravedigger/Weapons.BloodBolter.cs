@@ -93,6 +93,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.Size = new Vector2(32, 32);
 			Projectile.penetrate = -1;
 		}
+
 		public override void AI()
 		{
 			Projectile.velocity = Vector2.Zero;
@@ -102,39 +103,44 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			Vector2 direction = Projectile.ai[0].ToRotationVector2();
 			owner.direction = Math.Sign(direction.X);
-
 			Projectile.rotation = Projectile.ai[0];
 
 			int frameTicker = 3;
+
 			if (Projectile.frame == Main.projFrames[Projectile.type] - 1)
 				frameTicker = 30;
+
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter >= frameTicker)
 			{
 				Projectile.frame++;
 				Projectile.frameCounter = 0;
 			}
+
 			if (Projectile.frame >= Main.projFrames[Projectile.type])
 				Projectile.active = false;
 		}
-
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
 			Vector2 origin = new Vector2(10, frameHeight * 0.5f);
 			float rotation = Projectile.rotation;
 			SpriteEffects effects = SpriteEffects.None;
+
 			if (owner.direction == -1)
 			{
 				origin = new Vector2(tex.Width - origin.X, origin.Y);
 				rotation += 3.14f;
 				effects = SpriteEffects.FlipHorizontally;
 			}
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, rotation, origin, Projectile.scale, effects, 0f);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, frame, Color.White, rotation, origin, Projectile.scale, effects, 0f);
 			return false;
@@ -317,9 +323,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			for (int i = 0; i < 16; i++)
 			{
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, Main.rand.NextVector2Circular(5, 5), 0, default, 1.4f);
-
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 2.1f);
-
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
 				Dust.NewDustPerfect(npc.Center - projectile.velocity + Main.rand.NextVector2Circular(npc.width / 2, npc.height / 2), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(3, 8), 0, default, 0.3f);
 			}
