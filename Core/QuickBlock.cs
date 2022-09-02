@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
             wall.AddMapEntry(mapColor);
         }
 
-        public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, SoundStyle? hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, Point16 Origin = default)
+        public static void QuickSetFurniture(this ModTile tile, int width, int height, int dustType, SoundStyle? hitSound, bool tallBottom, Color mapColor, bool solidTop = false, bool solid = false, string mapName = "", AnchorData bottomAnchor = default, AnchorData topAnchor = default, int[] anchorTiles = null, bool faceDirection = false, bool wallAnchor = false, Point16 Origin = default)
         {
             Main.tileLavaDeath[tile.Type] = false;
             Main.tileFrameImportant[tile.Type] = true;
@@ -98,6 +98,18 @@ namespace StarlightRiver.Core
 
             if (anchorTiles != null)
                 TileObjectData.newTile.AnchorAlternateTiles = anchorTiles;
+
+            if (wallAnchor)
+                TileObjectData.newTile.AnchorWall = true;
+
+            if (faceDirection)
+            {
+                TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+                TileObjectData.newTile.StyleHorizontal = true;
+                TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+                TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+                TileObjectData.addAlternate(1);
+            }
 
 
             TileObjectData.addTile(tile.Type);
