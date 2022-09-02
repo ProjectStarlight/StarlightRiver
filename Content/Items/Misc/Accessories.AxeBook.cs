@@ -40,6 +40,12 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = Terraria.ID.ItemRarityID.Orange;
 		}
 
+		/// <summary>
+		/// Allows the player to right click with axes that dont normally have them
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="player"></param>
+		/// <returns></returns>
 		private bool AllowRightClick(Item item, Player player)
 		{
 			if (Equipped(player))
@@ -51,6 +57,12 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
+		/// <summary>
+		/// Changes the effect of using an item with axe power, melee damage, no projectile, and a swing usestyle to the intended alternative effect
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="player"></param>
+		/// <returns></returns>
 		private bool OverrideAxeEffects(Item item, Player player)
 		{
 			if (Equipped(player))
@@ -67,15 +79,15 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
 
-						int i2 = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
-						var proj2 = Main.projectile[i2];
+						int thrownAxeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
+						var thrownAxe = Main.projectile[thrownAxeIndex];
 
-						proj2.timeLeft = 300;
-						proj2.scale = item.scale * 1.25f;
+						thrownAxe.timeLeft = 300;
+						thrownAxe.scale = item.scale * 1.25f;
 
-						if (proj2.ModProjectile is ThrownAxeProjectile)
+						if (thrownAxe.ModProjectile is ThrownAxeProjectile)
 						{
-							var modProj = proj2.ModProjectile as ThrownAxeProjectile;
+							var modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
 							modProj.trailColor = ItemColorUtility.GetColor(item.type);
 							modProj.texture = TextureAssets.Item[item.type].Value;
 							modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
@@ -85,8 +97,8 @@ namespace StarlightRiver.Content.Items.Misc
 						return false;
 					}
 
-					int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI);
-					var proj = Main.projectile[i];
+					int axeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI);
+					var proj = Main.projectile[axeIndex];
 
 					proj.timeLeft = item.useAnimation * 5;
 					proj.scale = item.scale * (1.2f + comboState * 0.3f);
@@ -165,9 +177,10 @@ namespace StarlightRiver.Content.Items.Misc
 		private void DoSwingAnimation(Player Player)
 		{
 			var instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == Player.whoAmI);
+			var modProj = instance.ModProjectile as AxeBookProjectile;
 
-			if (instance != null && instance.active)
-				Player.SetCompositeArmFront(true, 0, instance.rotation - (Player.direction == 1 ? 1.57f : -3.14f));
+			if (modProj != null && instance.active)
+				Player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
 		}
 
 		public override void AI()
