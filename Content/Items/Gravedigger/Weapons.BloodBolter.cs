@@ -22,7 +22,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bloodbolter");
@@ -73,12 +72,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			recipe.Register();
 		}
 	}
+
 	internal class BloodBolterHeldProj : ModProjectile
 	{
 
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
-		private Player owner => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
+
+		ref float OriginalRotation => ref Projectile.ai[0];
 
 		public override void SetStaticDefaults()
 		{
@@ -97,13 +99,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void AI()
 		{
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = owner.Center;
-			owner.heldProj = Projectile.whoAmI;
-			owner.itemTime = owner.itemAnimation = 2;
+			Projectile.Center = Owner.Center;
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = Owner.itemAnimation = 2;
 
-			Vector2 direction = Projectile.ai[0].ToRotationVector2();
-			owner.direction = Math.Sign(direction.X);
-			Projectile.rotation = Projectile.ai[0];
+			Vector2 direction = OriginalRotation.ToRotationVector2();
+			Owner.direction = Math.Sign(direction.X);
+			Projectile.rotation = OriginalRotation;
 
 			int frameTicker = 3;
 
@@ -134,7 +136,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			float rotation = Projectile.rotation;
 			SpriteEffects effects = SpriteEffects.None;
 
-			if (owner.direction == -1)
+			if (Owner.direction == -1)
 			{
 				origin = new Vector2(tex.Width - origin.X, origin.Y);
 				rotation += 3.14f;
@@ -150,6 +152,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	internal class BloodBolt : ModProjectile
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Bolt");
