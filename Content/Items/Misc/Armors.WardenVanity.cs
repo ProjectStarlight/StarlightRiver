@@ -112,9 +112,7 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void PostUpdate()
         {
             if (robeEquipped)
-            {
                 Player.legFrame = new Rectangle(0, 9000, 40, 56);
-            }
         }
     }
 
@@ -126,6 +124,7 @@ namespace StarlightRiver.Content.Items.Breacher
             {
                 shop[nextSlot] = ModContent.ItemType<WardenHat>();
                 nextSlot++;
+
                 shop[nextSlot] = ModContent.ItemType<WardenRobe>();
                 nextSlot++;
             }
