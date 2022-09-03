@@ -74,6 +74,12 @@ namespace StarlightRiver.Content.Items.Breacher
             hatEquipped = ((Player.armor[0].type == ItemType<WardenHat>() && Player.armor[10].type == 0) || Player.armor[10].type == ItemType<WardenHat>());
         }
 
+        public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+        {
+            if (robeEquipped)
+                drawInfo.armorHidesArms = true;
+        }
+
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
             if (!SetEquipped)
@@ -107,7 +113,6 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             if (robeEquipped)
             {
-                Player.bodyFrame = new Rectangle(0, 56 * 0, 40, 56);
                 Player.legFrame = new Rectangle(0, 9000, 40, 56);
             }
         }
