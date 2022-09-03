@@ -20,12 +20,12 @@ using System.IO;
 using Terraria.GameContent;
 using Terraria.DataStructures;
 
-namespace StarlightRiver.Content.Items.Breacher
+namespace StarlightRiver.Content.Items.Vanity
 {
     [AutoloadEquip(EquipType.Head)]
     public class WardenHat : ModItem
     {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Breacher
     [AutoloadEquip(EquipType.Body)]
     public class WardenRobe : ModItem
     {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+        public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -90,7 +90,7 @@ namespace StarlightRiver.Content.Items.Breacher
             if (!SetEquipped)
                 return;
 
-            Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "WardenQuestionmark").Value;
+            Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VanityItem + "WardenQuestionmark").Value;
             Player armorOwner = drawInfo.drawPlayer;
 
             Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - armorOwner.gfxOffY);
