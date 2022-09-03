@@ -1,4 +1,9 @@
-﻿using StarlightRiver.Core;
+﻿//TODO:
+//Update armor sheet
+//Add green particles when flying or hovering
+//Make the robe not draw over mounts for some reason
+
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
 using System;
