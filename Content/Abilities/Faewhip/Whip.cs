@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                 return;
             }
 
-           // Player.GetHandler().Stamina -= 0.0025f;
+            Player.GetHandler().Stamina -= 0.0025f;
 
             if (!attached)
             {
