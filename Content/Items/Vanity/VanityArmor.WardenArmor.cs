@@ -1,9 +1,4 @@
-﻿//TODO:
-//Update armor sheet
-//Add green particles when flying or hovering
-//Make the robe not draw over mounts for some reason
-
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Dusts;
 using System;
@@ -71,6 +66,9 @@ namespace StarlightRiver.Content.Items.Vanity
         public bool robeEquipped = false;
         public bool hatEquipped = false;
 
+        public int yFrame = 0;
+        public int frameCounter = 0;
+
         public bool SetEquipped => robeEquipped && hatEquipped;
 
         public override void ResetEffects() //Unfortunately as of right now there's no hook in ModItem to check if an ARMOR is equipped in vanity (UpdateVanity only works for accessories) so this'll have to do
@@ -83,41 +81,41 @@ namespace StarlightRiver.Content.Items.Vanity
         {
             if (robeEquipped)
                 drawInfo.armorHidesArms = true;
-        }
 
-        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
-        {
             if (!SetEquipped)
                 return;
 
             Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VanityItem + "WardenQuestionmark").Value;
             Player armorOwner = drawInfo.drawPlayer;
-
             Vector2 drawPos = (armorOwner.MountedCenter - Main.screenPosition) - new Vector2(0, 3 - armorOwner.gfxOffY);
 
             for (int i = 0; i < NUM_MARKS; i++)
             {
                 float rot = ((i * 6.28f) / (float)NUM_MARKS) + (float)(Main.timeForVisualEffects * 0.05f);
                 Vector2 offset = rot.ToRotationVector2() * 54;
-                DrawData value = new DrawData(
+                DrawData data2 = new DrawData(
                     tex,
                     new Vector2((int)(drawPos.X + offset.X), (int)(drawPos.Y + offset.Y)),
                     null,
-                    new Color(255,255,255,0),
+                    new Color(255, 255, 255, 0),
                     0f,
                     tex.Size() / 2,
                     1,
                     SpriteEffects.None,
                     0
                 );
-                drawInfo.DrawDataCache.Add(value);
+                drawInfo.DrawDataCache.Add(data2);
             }
         }
 
         public override void PostUpdate()
         {
             if (robeEquipped)
+            {
                 Player.legFrame = new Rectangle(0, 9000, 40, 56);
+                Player.bodyFrame = new Rectangle(0, 0, 40, 56);
+                frameCounter++;
+            }
         }
     }
 
