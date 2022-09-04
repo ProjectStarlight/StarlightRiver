@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Core;
@@ -17,6 +19,9 @@ namespace StarlightRiver.Content.Pickups
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
         public override Color GlowColor => new Color(255, 255, 130);
 
+        public Color[] playerImageData;
+        public float oldLerper = 0;
+
         public override bool CanPickup(Player Player)
         {
             return !Player.GetHandler().Unlocked<Whip>();
@@ -24,7 +29,7 @@ namespace StarlightRiver.Content.Pickups
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Faeflame");
+            DisplayName.SetDefault("Faewhip");
         }
 
         public override void Visuals()
@@ -38,10 +43,49 @@ namespace StarlightRiver.Content.Pickups
 
         public override void PickupVisuals(int timer)
         {
+            Player Player = Main.LocalPlayer;
+
             if (timer == 1)
             {
                 Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
                 Filters.Scene.Deactivate("Shockwave");
+            }
+
+            if (!Main.dedServ)
+            {
+                RenderTarget2D target = PlayerTarget.Target;
+                if (timer == 1)
+                {
+                    playerImageData = new Color[target.Width * target.Height];
+                    target.GetData(playerImageData);
+                }
+                if (timer > 1)
+                {
+                    float lerper = timer / 570f;
+
+                    for (int x = (int)(oldLerper * PlayerTarget.sheetSquareX); x < lerper * PlayerTarget.sheetSquareX; x += 2)
+                    {
+                        for (int y = 0; y < PlayerTarget.sheetSquareY; y+= 2)
+                        {
+                            Color pixel = playerImageData[y * target.Width + x];
+                            if (pixel.A > 0 && Main.rand.NextBool(5)) //TODO: Fix with zoom
+                            {
+                                Vector2 worldPosition = PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + Main.screenPosition + new Vector2(x, y);
+                                Vector2 direction = worldPosition.DirectionTo(Player.Center);
+
+                                Dust dust = Dust.NewDustPerfect(worldPosition + Main.rand.NextVector2Circular(40,40), ModContent.DustType<Dusts.FaewhipMetaballDust>(), direction, 0, Color.Transparent, 1);
+                                dust.customData = worldPosition;
+                            }
+                        }
+                    }
+                    oldLerper = lerper;
+                }
+                if (timer == 569)
+                    foreach (Dust dust in Main.dust)
+                    {
+                        if (dust.type == ModContent.DustType<Dusts.FaewhipMetaballDust>())
+                            dust.active = false;
+                    }
             }
         }
 

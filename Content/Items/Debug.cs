@@ -4,6 +4,8 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
@@ -59,6 +61,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            Content.Abilities.AbilityHandler mp = player.GetHandler();
+            mp.Lock<Whip>();
+            return false;
             var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
             dungeon.GenerateDungeon(new Point16(30, 30), 8);
             return true;

@@ -39,11 +39,12 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		public void Load()
 		{
 			MetaballSystem.Actors.Add(this);
+			SafeLoad();
 		}
 
 		public void Unload()
 		{
-
+			SafeUnload();
 		}
 
 		public void ResizeTarget(int width, int height)
@@ -148,5 +149,15 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 		}
+
+		public virtual void SafeLoad()
+        {
+
+        }
+
+		public virtual void SafeUnload()
+        {
+
+        }
 	}
 }
