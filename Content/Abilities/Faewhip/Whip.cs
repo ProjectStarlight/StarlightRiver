@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
             {
                 float angle = Main.rand.NextFloat(-0.5f, 0.5f);
                 var vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedBy(angle);
-                Dust.NewDustPerfect(Player.Center + new Vector2(0, 60) + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
+                Dust.NewDustPerfect(Player.Center + vel * 64, DustType<Dusts.GlowLine>(), vel * Main.rand.NextFloat(5, 15), 1, new Color(255, 190, 50), 1.0f);
             }
 
             Helpers.Helper.PlayPitched("Magic/HolyCastShort", 1, 1, Player.Center);
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                 return;
             }
 
-            Player.GetHandler().Stamina -= 0.0025f;
+           // Player.GetHandler().Stamina -= 0.0025f;
 
             if (!attached)
             {
@@ -111,7 +111,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                             attachedNPC = Main.npc[i];
                             attached = true;
 
-                            if(attachedNPC.knockBackResist == 0)
+                            if(attachedNPC.knockBackResist == 0 || attachedNPC.boss)
                                 endRooted = true;
 
                             return;
@@ -195,8 +195,8 @@ namespace StarlightRiver.Content.Abilities.Faewhip
             {
                 var pos = PointOnSpline(k / 100f);
 
-                if (k > 0 && Main.rand.Next(80) == 0)
-                    Dust.NewDustPerfect(pos + new Vector2(0, 20), DustType<Dusts.GlowLineFast>(), Vector2.Normalize(pos - trailPoints[k - 1]).RotatedByRandom(0.1f) * Main.rand.NextFloat(6, 8), 1, new Color(255, Main.rand.Next(150, 255), 50), 0.4f);
+                if (k > 0 && Main.rand.NextBool(80))
+                    Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), Vector2.Normalize(pos - trailPoints[k - 1]).RotatedByRandom(0.4f) * Main.rand.NextFloat(6, 8), 1, new Color(255, Main.rand.Next(150, 255), 50), 0.4f);
             }
         }
 
