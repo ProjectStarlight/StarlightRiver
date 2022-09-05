@@ -17,6 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -43,6 +44,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         private float bobCounter;
         private Vector2 posAbovePlayer = Vector2.Zero;
         private Vector2 risingPos = Vector2.Zero;
+
+        private float rockRotation = 0f;
+        private float rockRotationSpeed = 0.1f;
+
+        private Vector2 rockPosition = Vector2.Zero;
 
         private int spinTimer = 0;
 
@@ -85,8 +91,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             NPC.behindTiles = true;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            rockPosition = NPC.Center;
+        }
+
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            rockPosition = Vector2.Lerp(rockPosition, NPC.Center, 0.25f);
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
             SpriteEffects effects = SpriteEffects.None;
@@ -96,12 +108,18 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 effects = SpriteEffects.FlipHorizontally;
 
             Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
-            Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+
+            DrawRocks(spriteBatch, screenPos, drawColor, true);
+
+            spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+            
+            DrawRocks(spriteBatch, screenPos, drawColor, false);
             return false;
         }
 
         public override void AI()
         {
+            rockRotation += rockRotationSpeed;
             Lighting.AddLight(NPC.Center, Color.Purple.ToVector3() * 1.2f);
             NPC.TargetClosest(false);
 
@@ -129,6 +147,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         private void RisingBehavior()
         {
+            rockRotationSpeed = MathHelper.Lerp(rockRotationSpeed, 0.1f, 0.2f);
+
             bobCounter += 0.02f;
             if (posAbovePlayer == Vector2.Zero)
             {
@@ -151,22 +171,35 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             NPC.velocity = dir * ((float)Math.Sin(progress * 3.14f) + 0.3f) * 5;
             NPC.velocity.Y += (float)Math.Cos(bobCounter) * 0.15f;
 
-            if ((NPC.Center - posAbovePlayer).Length() < 4)
+            if ((NPC.Center - posAbovePlayer).Length() < 20)
             {
                 NPC.velocity = Vector2.Zero;
-                NPC.Center = posAbovePlayer;
                 phase = Phase.spinning;
                 risingPos = Vector2.Zero;
                 posAbovePlayer = Vector2.Zero;
             }
         }
 
+        private void DrawRocks(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, bool behind)
+        {
+            for (int i = 1; i < 5; i++)
+            {
+                Texture2D rockTex = ModContent.Request<Texture2D>(Texture + "_Rock" + i.ToString()).Value;
+                float angle = ((i / 4f) * 6.28f) + rockRotation;
+
+                Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
+
+                if ((behind && offset.Y < 0) || (!behind && offset.Y >= 0))
+                    spriteBatch.Draw(rockTex, offset + rockPosition - screenPos, null, Color.White, NPC.rotation, rockTex.Size() / 2, NPC.scale + (offset.Y * 0.02f), SpriteEffects.None, 0f);
+            }
+        }
+
         private void SpinBehavior()
         {
+            rockRotationSpeed = 0.1f + (spinTimer / 800f);
             bobCounter += 0.03f;
             NPC.velocity.Y = (float)Math.Sin(bobCounter) * 0.25f;
             spinTimer++;
-
 
             if (spinTimer < 150)
             {
@@ -184,7 +217,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         private void SlamBehavior()
         {
-            NPC.velocity.Y += 0.2f;
+            rockRotationSpeed = 0.35f;
+            NPC.velocity.Y += 1f;
             slamTimer++;
 
             Tile tile = Main.tile[(int)NPC.Center.X / 16, (int)(NPC.Center.Y / 16) + 2];
@@ -201,6 +235,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         private void SlammedBehavior()
         {
+            rockRotationSpeed = 0;
             slamTimer++;
             if (slamTimer > 90)
             {
