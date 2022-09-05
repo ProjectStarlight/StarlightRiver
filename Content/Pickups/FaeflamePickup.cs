@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Pickups
         public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
     }
 
-    internal class FaeflameSpawnTendril : ModProjectile, IDrawPrimitive, IDrawAdditive
+    internal class FaeflameSpawnTendril : ModProjectile, IDrawAdditive
     {
         public override string Texture => AssetDirectory.Assets + "Invisible";
 
