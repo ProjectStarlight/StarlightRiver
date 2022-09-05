@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Pickups
         {
             if (timer == 1)
             {
-                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
+                SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
             }
 
             if (Main.rand.NextBool(3) && timer > 40 && timer < 500)
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Pickups
             if (timer < 300 && timer > 50 && (Main.rand.NextBool(70) || timer % 75 == 0))
                 SummonTendril(timer);
 
-            if (timer == 569) //popup + codex entry
+            if (timer == 569) //popup
             {
                 string message = StarlightRiver.Instance.AbilityKeys.Get<Whip>().GetAssignedKeys().Count > 0 ?
                     "Press W/A/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Whip>().GetAssignedKeys()[0] + " to hook to enemies and tiles." :
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Pickups
 
             player.velocity = pos.DirectionTo(NPC.Center) * -6;
 
-            Helpers.Helper.PlayPitched("Magic/HolyCastShort", 0.3f, 1, player.Center);
+            Helper.PlayPitched("Magic/HolyCastShort", 0.3f, 1, player.Center);
         }
     }
 
@@ -143,8 +143,6 @@ namespace StarlightRiver.Content.Pickups
         public Trail glowTrail;
         public List<Vector2> cache;
         public float endScale = 0;
-
-        public float ColorLerper => 1 - (Projectile.timeLeft / 570f);
 
         public override void SetStaticDefaults()
         {
@@ -188,6 +186,7 @@ namespace StarlightRiver.Content.Pickups
                  Dust.NewDustPerfect(point + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(1.5f,1.5f), 1, new Color(255, 190, 50), Main.rand.NextFloat(0.1f,0.5f));
             }
         }
+
         private void ManageCache()
         {
             cache = new List<Vector2>();
@@ -244,30 +243,6 @@ namespace StarlightRiver.Content.Pickups
 
             spriteBatch.Draw(endTex, Projectile.Center - Main.screenPosition, null, new Color(255, 190, 100), Main.GameUpdateCount * 0.1f, endTex.Size() / 2, endScale * 0.45f, 0, 0);
             spriteBatch.Draw(endGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale * 0.75f, 0, 0);
-        }
-
-        public void DrawPrimitives()
-        {
-            return;
-
-            var tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-            var tex1 = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-            Effect effect = Filters.Scene["WhipAbility"].GetShader().Shader;
-
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-            Matrix view = Main.GameViewMatrix.ZoomMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-            effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.025f);
-            effect.Parameters["repeats"].SetValue(2f);
-            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(tex0);
-
-            trail?.Render(effect);
-
-            effect.Parameters["sampleTexture"].SetValue(tex1);
-
-            glowTrail?.Render(effect);
         }
 
         private void SpawnDust()
