@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alchemist's Shackles");
-			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nPotion sickness effects last 15 seconds longer");
+			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nCursed : Potion sickness effects last 15 seconds longer");
 		}
 
 		public override void SafeUpdateEquip(Player Player)

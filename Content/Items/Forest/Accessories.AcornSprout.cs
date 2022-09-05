@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void Unload()
 		{
             StarlightPlayer.ModifyHitNPCWithProjEvent -= SpawnAcorn;
-        }
+        }   
 
 		private void SpawnAcorn(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{

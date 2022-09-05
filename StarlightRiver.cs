@@ -133,7 +133,6 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
                 LightingBufferInstance = null;
-                chestItems = null;
 
                 SLRSpawnConditions.Unload();
             }
@@ -169,8 +168,6 @@ namespace StarlightRiver
             Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
 
             NetEasy.NetEasy.Register(this);
-
-            AutoloadChestItems();
 
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
             {

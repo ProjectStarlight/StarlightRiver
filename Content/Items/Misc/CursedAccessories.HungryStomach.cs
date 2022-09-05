@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("Restore stamina by damaging foes\nMelee weapons are twice as effective\nDisables natural stamina regenration");
+            Tooltip.SetDefault("Restore stamina by damaging foes\nMelee weapons are twice as effective\nCursed: Disables natural stamina regenration");
             DisplayName.SetDefault("Hungry Stomach");
         }
 
