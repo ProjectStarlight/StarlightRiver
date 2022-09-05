@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                     spriteBatch.Draw(midTex, (new Vector2(i + 12, j + 7.5f) * 16) - Main.screenPosition, overlayColor);
 
 
-                Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines").Value;
+                Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
                 int realX = i * 16;
                 int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
                 int realWidth = glowLines.Width - 1;//1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
