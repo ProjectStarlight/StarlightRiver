@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
             int off = (int)(BarrierProgress / 120f * tex.Height);
             int off2 = (int)(BarrierProgress / 120f * texTop.Width / 2);
 
-            LightingBufferRenderer.DrawWithLighting(new Rectangle(((int)center.X - 790 - (int)Main.screenPosition.X) - (tex.Width / 2), ((int)center.Y - off - 16 - (int)Main.screenPosition.Y) - (tex.Height / 2), tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default);
+            LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X - 790 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex, new Rectangle(0, 0, tex.Width, off), default);
             LightingBufferRenderer.DrawWithLighting(new Rectangle((int)center.X + 606 - (int)Main.screenPosition.X, (int)center.Y - off - 16 - (int)Main.screenPosition.Y, tex.Width, off), tex2, new Rectangle(0, 0, tex.Width, off), default);
 
             //left
