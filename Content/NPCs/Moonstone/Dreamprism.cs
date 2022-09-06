@@ -1,10 +1,4 @@
-﻿//TODO:
-//Gores
-//Sound effects
-//Animation
-//Glowmask
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Items.Moonstone;
@@ -42,7 +36,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         private Trail trail2;
         private float trailWidth => 0.7f;
 
-        private int xFrame = 0;
+        private int yFrame = 0;
+        private float frameCounter = 0;
 
         private Phase phase = Phase.rising;
 
@@ -67,10 +62,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         public override void Load()
         {
-            /*for (int i = 1; i < 4; i++)
+            for (int i = 1; i < 5; i++)
             {
-                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + i);
-            }*/
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Rock" + i.ToString());
+            }
+
+            for (int i = 1; i < 6; i++)
+            {
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + i.ToString());
+            }
         }
 
         public override void SetStaticDefaults()
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             DisplayName.SetDefault("Dreamprism");
             NPCID.Sets.TrailCacheLength[Type] = 10;
             NPCID.Sets.TrailingMode[Type] = 0;
-            Main.npcFrameCount[NPC.type] = 1;
+            Main.npcFrameCount[NPC.type] = 16;
         }
 
         public override void SetDefaults()
@@ -93,8 +93,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             NPC.aiStyle = -1;
             NPC.friendly = false;
 
-            NPC.HitSound = new Terraria.Audio.SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact") with {Volume = 0.8f, Pitch = 0.15f };
-            NPC.DeathSound = new Terraria.Audio.SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact") with { Volume = 1.1f, Pitch = -0.2f };
+            NPC.HitSound = SoundID.Item27 with
+            {
+                Pitch = -0.3f
+            };
+            NPC.DeathSound = SoundID.Shatter;
 
             NPC.value = Item.buyPrice(silver: 3, copper: 15);
             NPC.behindTiles = true;
@@ -117,6 +120,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
             rockPosition = Vector2.Lerp(rockPosition, NPC.Center, 0.45f);
             Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTexture = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
             SpriteEffects effects = SpriteEffects.None;
             Vector2 origin = NPC.frame.Size() / 2;
@@ -129,7 +133,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             DrawRocks(spriteBatch, screenPos, drawColor, true);
 
             spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
-            
+            spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+
             DrawRocks(spriteBatch, screenPos, drawColor, false);
             return false;
         }
@@ -137,6 +142,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         public override void AI()
         {
             rockRotation += rockRotationSpeed;
+            frameCounter += rockRotationSpeed;
+            if (frameCounter >= 1)
+            {
+                yFrame++;
+                frameCounter = 0;
+            }
+            yFrame %= Main.npcFrameCount[NPC.type];
+
             Lighting.AddLight(NPC.Center, Color.Cyan.ToVector3() * 1.2f);
             NPC.TargetClosest(false);
 
@@ -159,7 +172,23 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         public override void FindFrame(int frameHeight)
         {
-            NPC.frame = new Rectangle(0, xFrame * frameHeight, NPC.width, frameHeight);
+            NPC.frame = new Rectangle(0, yFrame * frameHeight, NPC.width, frameHeight);
+        }
+
+        public override void OnKill()
+        {
+            for (int i = 1; i < 5; i++)
+            {
+                float angle = ((i / 4f) * 6.28f) + rockRotation;
+                Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
+
+                Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + offset, Main.rand.NextVector2Circular(2,2), Mod.Find<ModGore>("Dreamprism_Rock" + i.ToString()).Type);
+            }
+
+            for (int j = 1; j < 6; j++)
+            {
+                Gore.NewGoreDirect(NPC.GetSource_FromThis(), NPC.Center + Main.rand.NextVector2Circular(10,30), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Dreamprism_Gore" + j.ToString()).Type);
+            }
         }
 
         #region trail stuff
@@ -230,6 +259,24 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         #endregion
 
+        private void DrawRocks(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, bool behind)
+        {
+            for (int i = 1; i < 5; i++)
+            {
+                Texture2D rockTex = ModContent.Request<Texture2D>(Texture + "_Rock" + i.ToString()).Value;
+                Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Rock" + i.ToString() + "_Glow").Value;
+                float angle = ((i / 4f) * 6.28f) + rockRotation;
+
+                Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
+
+                if ((behind && offset.Y < 0) || (!behind && offset.Y >= 0))
+                {
+                    spriteBatch.Draw(rockTex, offset + rockPosition - screenPos, null, drawColor, NPC.rotation, rockTex.Size() / 2, NPC.scale + (offset.Y * 0.02f), SpriteEffects.None, 0f);
+                    spriteBatch.Draw(glowTex, offset + rockPosition - screenPos, null, Color.White, NPC.rotation, rockTex.Size() / 2, NPC.scale + (offset.Y * 0.02f), SpriteEffects.None, 0f);
+                }
+            }
+        }
+
         private void RisingBehavior()
         {
             bobCounter += 0.02f;
@@ -261,9 +308,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             if (!emerged)
             {
                 NPC.velocity *= 0.1f;
+                NPC.rotation += Main.rand.NextFloat(-0.05f, 0.05f);
+                NPC.rotation *= 0.95f;
                 Tile tile = Main.tile[(int)NPC.Center.X / 16, (int)((NPC.Center.Y - 12) / 16) + 2];
                 if (!tile.HasTile || !Main.tileSolid[tile.TileType])
                 {
+                    NPC.rotation = 0;
                     emerged = true;
                     for (int k = 0; k < 5; k++)
                     {
@@ -286,20 +336,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 phase = Phase.spinning;
                 risingPos = Vector2.Zero;
                 posAbovePlayer = Vector2.Zero;
-            }
-        }
-
-        private void DrawRocks(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, bool behind)
-        {
-            for (int i = 1; i < 5; i++)
-            {
-                Texture2D rockTex = ModContent.Request<Texture2D>(Texture + "_Rock" + i.ToString()).Value;
-                float angle = ((i / 4f) * 6.28f) + rockRotation;
-
-                Vector2 offset = (angle.ToRotationVector2() * new Vector2(30, 10)).RotatedBy(0.3f * Math.Sin(rockRotation * 0.2f));
-
-                if ((behind && offset.Y < 0) || (!behind && offset.Y >= 0))
-                    spriteBatch.Draw(rockTex, offset + rockPosition - screenPos, null, drawColor, NPC.rotation, rockTex.Size() / 2, NPC.scale + (offset.Y * 0.02f), SpriteEffects.None, 0f);
             }
         }
 
@@ -338,6 +374,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
             if (NPC.collideY || slamTimer > 60)
             {
+                Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
                 for (int k = 0; k < 16; k++)
                 {
                     Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.Stone>(), new Vector2(0, -1).RotatedByRandom(1) * Main.rand.NextFloat(3, 7));
@@ -369,6 +406,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             slamTimer++;
             if (slamTimer > 90)
             {
+                Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
                 risingPos = NPC.Center;
                 posAbovePlayer = target.Center - new Vector2(0, Main.rand.Next(300, 400));
                 phase = Phase.rising;
@@ -390,6 +428,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         float counter = 0;
 
+        int frameCounter = 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Slam");
@@ -408,6 +448,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         public override void AI()
         {
+            frameCounter+= 4;
             if (counter > 0)
                 Projectile.hostile = false;
             counter += (float)(Math.PI / 2f) / 200;
@@ -417,10 +458,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         public void DrawOverTiles(SpriteBatch spriteBatch)
         {
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            int frameSize = (int)MathHelper.Min(frameCounter, (int)tex.Height / 2);
+            Rectangle frame = new Rectangle((tex.Width / 2) - frameSize, (tex.Height / 2) - frameSize, frameSize * 2, frameSize * 2);
             Color color = new Color(99, 71, 255, 0);
             color *= (float)Math.Cos(counter);
             for (int i = 0; i < 2; i++)
-                spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, ModContent.Request<Texture2D>(Texture).Value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, new Vector2(frameSize, frameSize), Projectile.scale, SpriteEffects.None, 0);
         }
     }
 }
