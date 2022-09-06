@@ -48,6 +48,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			var gaspos = Projectile.Center + Main.rand.NextVector2Circular(100, 100);
 			Dust.NewDustPerfect(gaspos, ModContent.DustType<Dusts.NoxiousGas>(), Vector2.Zero, 0, new Color(20, 230, 255) * 0.1f, 1.0f);
 
+			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.5f, 0.5f));
+
 			base.Update();
 		}
 
@@ -99,6 +101,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			var flowerTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNode").Value;
 			Main.spriteBatch.Draw(flowerTex, pos, null, lightColor, Projectile.rotation, flowerTex.Size() / 2, 1, 0, 0);
+
+			if (DetachedLife <= 0)
+			{
+				var glowTex = ModContent.Request<Texture2D>(AssetDirectory.OvergrowTile + "NoxiousNodeGlow").Value;
+				Main.spriteBatch.Draw(glowTex, pos, null, Helpers.Helper.IndicatorColorProximity(400, 512, Projectile.Center), Projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
+			}
 		}
 
 		public void UpdateWhileWhipped(Whip whip)
