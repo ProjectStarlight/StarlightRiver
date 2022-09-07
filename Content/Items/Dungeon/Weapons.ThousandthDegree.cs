@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 else if (owner.ownedProjectileCounts[ModContent.ProjectileType<ThousandthDegreeProjectileFired>()] <= 0)
                     Projectile.Kill();
 
-                if (fireProjectile is null)
+                if (fireProjectile is null || !(fireProjectile.ModProjectile is ThousandthDegreeProjectileFired)) //weird bug where sometimes during Ceiros fight the game thought that the fireProjectile was a Ceiros attack projectile. Didn't actually do anything besides throw an error, weapon still worked as normal. This is just an extra safety check
                     return;
 
                 if (!((ThousandthDegreeProjectileFired)fireProjectile.ModProjectile).returning)
@@ -185,9 +185,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 
             Projectile.position = armPos - Projectile.Size * 0.5f;
-
-            if (Projectile.alpha >= 255)
-                Projectile.alpha = 0;
 
             owner.ChangeDir(Projectile.direction);
             owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(60f) * owner.direction);
@@ -318,7 +315,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             Projectile.tileCollide = true;
 
-            Projectile.width = Projectile.height = 44;
+            Projectile.width = Projectile.height = 36;
             Projectile.timeLeft = 2400;
             Projectile.ignoreWater = true;
         }
@@ -329,23 +326,10 @@ namespace StarlightRiver.Content.Items.Dungeon
                 ManageCaches();
                 ManageTrail();
             }
-            if ((Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < (switched ? 400f : 100f) || Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 1000f) && Projectile.timeLeft < 2340)
-            {
+
+            if ((Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < (switched ? 300f : 200f) || Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 750f) && Projectile.timeLeft < 2340)
                 returning = true;
-                if (lerpTimer == 0)
-                {
-                    if (Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) >= 900f)
-                    {
-                        lerpTimer = 180;
-                        maxLerp = 180;
-                    }
-                    else
-                    {
-                        lerpTimer = 90;
-                        maxLerp = 90;
-                    }
-                }
-            }
+
             if (!returning && collided)
             {
                 if (Projectile.tileCollide)
@@ -373,9 +357,8 @@ namespace StarlightRiver.Content.Items.Dungeon
                 {
                     Projectile.rotation += (float)(moveDirection.X * moveDirection.Y) * 0.75f;
                     if (collideY)
-                    {
                         Projectile.ai[0] = 2f;
-                    }
+
                     if (!collideY && Projectile.ai[0] == 2f)
                     {
                         moveDirection.X = -moveDirection.X;
@@ -390,11 +373,10 @@ namespace StarlightRiver.Content.Items.Dungeon
                 }
                 else
                 {
-                    Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.13f;
+                    Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.45f;
                     if (collideX)
-                    {
                         Projectile.ai[0] = 2f;
-                    }
+
                     if (!collideX && Projectile.ai[0] == 2f)
                     {
                         moveDirection.Y = -moveDirection.Y;
@@ -409,7 +391,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 }
                 Projectile.velocity = speed * moveDirection;
                 Projectile.velocity = Collide();
-                if (Projectile.Center.Y < owner.Center.Y - 200)
+                if (Projectile.Center.Y < owner.Center.Y - 200) //if the wheel is too far above the player it resets its movement
                 {
                     collided = false;
                     Projectile.tileCollide = true;
@@ -429,17 +411,51 @@ namespace StarlightRiver.Content.Items.Dungeon
             }
             else if (returning)
             {
-                lerpTimer--;
-                Projectile.rotation += MathHelper.Lerp(0.75f, 0.05f, 1f - lerpTimer / maxLerp);
-                Projectile.Center = Vector2.Lerp(Projectile.Center, ((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos, 1f - lerpTimer / maxLerp);
-                Projectile.velocity = Vector2.Zero;
+                if (lerpTimer > 0)
+                {
+                    Projectile.Center = Vector2.Lerp(Projectile.Center, ((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos, 1f - lerpTimer / 30f);
+                    lerpTimer--;
+                    if (lerpTimer <= 0)
+                        Projectile.Kill();
+                }
+                else
+                {
+                    if (Projectile.localAI[0] < 15)
+                    {
+                        if (Projectile.localAI[0] == 0f)
+                            Projectile.velocity = Projectile.DirectionTo(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) * 10f + (Vector2.UnitY * -5f);
+
+                        if (Projectile.localAI[0] > 5f)
+                            Projectile.velocity.Y += 0.6f;
+
+                        if (Projectile.velocity.Y > 16f)
+                            Projectile.velocity.Y = 16f;
+
+                        Projectile.localAI[0]++;
+                    }
+                    else
+                    {
+                        VanillaBoomerangAI();
+                    }
+
+                    if (Projectile.Center.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < 50f && lerpTimer == 0)
+                    {
+                        lerpTimer = 30;
+                    }
+                }
+                Projectile.rotation += Projectile.velocity.Length() * 0.05f;
+
                 if (Projectile.Center.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < 2f)
                     Projectile.Kill();
             }
 
             if (Main.rand.NextBool(2))
             {
-                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 25, new Color(255, 50, 15), Main.rand.NextFloat(0.4f, 0.6f));
+                if (Main.rand.NextBool())
+                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 25, new Color(255, 50, 15), Main.rand.NextFloat(0.4f, 0.6f));
+                else
+                    Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), DustID.Torch, null, 0, default, Main.rand.NextFloat(1.25f, 1.6f)).noGravity = Main.rand.NextBool();
+
                 if (Main.rand.NextBool(4))
                     Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.MagmaSmoke>(), Vector2.UnitX.RotatedBy(Projectile.rotation) + Vector2.UnitY * -3f, 160, default, Main.rand.NextFloat(0.6f, 0.9f));
             }
@@ -471,9 +487,50 @@ namespace StarlightRiver.Content.Items.Dungeon
             collided = true;
             return false;
         }
+
         protected virtual Vector2 Collide()
         {
             return Collision.noSlopeCollision(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height, true, true);
+        }
+
+        private void VanillaBoomerangAI() //this is bad vanilla code but I tried to make it as readable as I could
+        {
+            Vector2 wheelPosition = ((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos;
+            Vector2 pos = new Vector2(Projectile.position.X + (float)Projectile.width * 0.5f, Projectile.position.Y + (float)Projectile.height * 0.5f);
+            float num = wheelPosition.X - pos.X;
+            float num2 = wheelPosition.Y - pos.Y;
+            float num3 = (float)Math.Sqrt(num * num + num2 * num2);
+            float speed = num3 > 450f ? 17f : 12f;
+            float adjust = 1f;
+            if (num3 > 3000f && lerpTimer == 0)
+                lerpTimer = 30;
+            num3 = speed / num3;
+            num *= num3;
+            num2 *= num3;
+            if (Projectile.velocity.X < num)
+            {
+                Projectile.velocity.X += adjust;
+                if (Projectile.velocity.X < 0f && num > 0f)
+                    Projectile.velocity.X += adjust;
+            }
+            else if (Projectile.velocity.X > num)
+            {
+                Projectile.velocity.X -= adjust;
+                if (Projectile.velocity.X > 0f && num < 0f)
+                    Projectile.velocity.X -= adjust;
+            }
+            if (Projectile.velocity.Y < num2)
+            {
+                Projectile.velocity.Y += adjust;
+                if (Projectile.velocity.Y < 0f && num2 > 0f)
+                    Projectile.velocity.Y += adjust;
+            }
+            else if (Projectile.velocity.Y > num2)
+            {
+                Projectile.velocity.Y -= adjust;
+                if (Projectile.velocity.Y > 0f && num2 < 0f)
+                    Projectile.velocity.Y -= adjust;
+            }
         }
 
         private void ManageCaches()
