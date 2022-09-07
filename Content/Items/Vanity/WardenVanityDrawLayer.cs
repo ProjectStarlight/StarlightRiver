@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Vanity
 
 		public override bool GetDefaultVisibility(PlayerDrawSet drawInfo)
         { 
-			return drawInfo.drawPlayer.GetModPlayer<WardenVanityPlayer>().robeEquipped;
+			return drawInfo.drawPlayer.GetModPlayer<WardenVanityPlayer>().robeEquipped && !drawInfo.drawPlayer.dead;
 		}
 
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Torso);
@@ -69,7 +69,9 @@ namespace StarlightRiver.Content.Items.Vanity
 
             Rectangle frame = new Rectangle(40 * xFrame, 56 * yFrame, 40, 56);
 
-            drawInfo.DrawDataCache.Add(new DrawData(
+            int shader = drawInfo.cBody;
+
+            DrawData drawData = new DrawData(
                 tex,
                 new Vector2((int)(drawPos.X), (int)(drawPos.Y)),
                 frame,
@@ -79,7 +81,12 @@ namespace StarlightRiver.Content.Items.Vanity
                 1,
                 armorOwner.direction != -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                 0
-            ));
+            );
+
+            if (shader > 0)
+                drawData.shader = shader;
+
+            drawInfo.DrawDataCache.Add(drawData);
         }
 	}
 }

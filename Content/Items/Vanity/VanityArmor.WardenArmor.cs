@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Vanity
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Warden Hat");
-            Tooltip.SetDefault("[PH] someone update this");
+            Tooltip.SetDefault("[c/198E12:???]");
         }
 
         public override void SetDefaults()
@@ -43,10 +43,16 @@ namespace StarlightRiver.Content.Items.Vanity
     {
         public override string Texture => AssetDirectory.VanityItem + Name;
 
+        public override void Load()
+        {
+           // if (Main.netMode != NetmodeID.Server)
+           //     EquipLoader.AddEquipTexture(StarlightRiver.Instance, AssetDirectory.Assets + "Invisible", EquipType.Body, null, "WardenRobe_Body");
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Warden Robe");
-            Tooltip.SetDefault("[PH] someone update this");
+            Tooltip.SetDefault("[c/198E12:???]");
         }
 
         public override void SetDefaults()
@@ -56,6 +62,11 @@ namespace StarlightRiver.Content.Items.Vanity
             Item.height = 20;
             Item.value = Item.buyPrice(0, 5, 0, 0);
             Item.rare = ItemRarityID.Green;
+        }
+
+        public override void SetMatch(bool male, ref int equipSlot, ref bool robes)
+        {
+           // equipSlot = EquipLoader.GetEquipSlot(Mod, "WardenRobe_Body", EquipType.Body);
         }
     }
 
@@ -103,7 +114,10 @@ namespace StarlightRiver.Content.Items.Vanity
                     1,
                     SpriteEffects.None,
                     0
-                );
+                )
+                {
+                    shader = drawInfo.cHead
+                };
                 drawInfo.DrawDataCache.Add(data2);
             }
         }
