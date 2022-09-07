@@ -24,10 +24,8 @@ namespace StarlightRiver.Content.Items.Misc
         private int swingDirection = 1;
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override bool CanUseItem(Player player)
-        {
-            return player.ownedProjectileCounts[ProjectileType<BladesawSwungBlade>()] <= 0;
-        }
+        public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ProjectileType<BladesawSwungBlade>()] <= 0;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Bladesaw");
@@ -40,7 +38,8 @@ namespace StarlightRiver.Content.Items.Misc
             Item.damage = 11;
             Item.crit = 6;
             Item.DamageType = DamageClass.Melee;
-            Item.useTime = Item.useAnimation = 50;
+            Item.useTime = 50;
+            Item.useAnimation = 50;
             Item.autoReuse = true;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.knockBack = 4.5f;
@@ -110,20 +109,21 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (npc.lifeRegen > 0)
                 npc.lifeRegen = 0;
+
             npc.lifeRegen -= 2 * ShreddedStacks;
+
             if (damage < 1)
                 damage = 1;
         }
 
         public override void AI(NPC npc)
         {
-            if (ShreddedStacks > 0)
-                if (Main.rand.NextBool(7 - ShreddedStacks))
-                {
-                    Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Blood).scale = 1.4f;
-                    if (Main.rand.NextBool())
-                        Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.GraveBlood>()).scale = 1.2f;
-                }   
+            if (ShreddedStacks > 0 && Main.rand.NextBool(7 - ShreddedStacks))
+            {
+                Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Blood).scale = 1.4f;
+                if (Main.rand.NextBool())
+                    Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.GraveBlood>()).scale = 1.2f;
+            }
         }
     }
 
@@ -151,10 +151,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Player Owner => Main.player[Projectile.owner];
 
-        public override bool? CanHitNPC(NPC target)
-        {
-            return !target.friendly && hitAmount <= 6 && 1 - (Projectile.timeLeft / maxTimeLeft) > 0.2f;
-        }
+        public override bool? CanHitNPC(NPC target) => !target.friendly && hitAmount <= 6 && 1 - (Projectile.timeLeft / maxTimeLeft) > 0.2f;
 
         public override void SetStaticDefaults()
         {
@@ -178,9 +175,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override void AI()
         {
             if (--pauseTimer > 0)
-            {
                 Projectile.timeLeft = oldTimeleft;
-            }
 
             if (!initialized)
             {
@@ -195,14 +190,20 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             Projectile.Center = Owner.Center + direction * 45;
+
             if (pauseTimer <= 0)
                 Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(2f * SwingDirection, -2f * SwingDirection, EaseBuilder.EaseCircularInOut.Ease(1 - (Projectile.timeLeft / maxTimeLeft)));
+
             Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+
             if (pauseTimer <= 0)
-            Projectile.scale = 1f + (float)Math.Sin(EaseBuilder.EaseCircularInOut.Ease(1 - (Projectile.timeLeft / maxTimeLeft)) * MathHelper.Pi) * 0.4f * 0.4f;
+                Projectile.scale = 1f + (float)Math.Sin(EaseBuilder.EaseCircularInOut.Ease(1 - (Projectile.timeLeft / maxTimeLeft)) * MathHelper.Pi) * 0.4f * 0.4f;
+
             Owner.heldProj = Projectile.whoAmI;
+
             if (Main.myPlayer == Owner.whoAmI)
                 Owner.direction = Main.MouseWorld.X > Owner.Center.X ? 1 : -1;
+
             if (!(Owner.HeldItem.ModItem is Bladesaw)) //since this doesnt set player.itemTime we have to manually check if the player tries to switch to another weapon. Not setting itemTime creates that smooth transition between swings
                 Projectile.Kill();
 
@@ -222,6 +223,7 @@ namespace StarlightRiver.Content.Items.Misc
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item22, Projectile.Center);
                 Projectile.soundDelay = 30;
             }
+
             for (int i = 0; i < 30; i++)
             {
                 Point bladePoint = (Owner.Center + (((2 * i) * Projectile.scale) * Projectile.rotation.ToRotationVector2())).ToTileCoordinates();
@@ -248,7 +250,6 @@ namespace StarlightRiver.Content.Items.Misc
                     Dust.NewDustPerfect((target.Center + (directionTo * 10)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * -Main.rand.NextFloat(0.5f, 5f), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
                 else
                 {
-
                     for (int j = 0; j < 6; j++)
                     {
                         Dust.NewDustPerfect(target.Center + (directionTo * 10), DustID.Blood, directionTo.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * -Main.rand.NextFloat(0.5f, 5f), 0, default, 1.3f);
