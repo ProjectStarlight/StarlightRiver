@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            var instance = ModContent.GetInstance<Archaeology.SkullArtifact>();
+            var instance = ModContent.GetInstance<Archaeology.DesertArtifact1>();
             instance.Place((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
             return true;
             var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));

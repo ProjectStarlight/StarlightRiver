@@ -19,12 +19,12 @@ namespace StarlightRiver.Content.Archaeology
     { 
         public override void Load()
         {
-            On.Terraria.Main.DrawBlack += DrawArtifacts;
+            On.Terraria.Main.DrawTiles += DrawArtifacts;
         }
 
         public override void Unload()
         {
-            On.Terraria.Main.DrawBlack -= DrawArtifacts;
+            On.Terraria.Main.DrawTiles -= DrawArtifacts;
         }
 
         public override void PreUpdateDusts()
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Archaeology
             }
         }
 
-        public void DrawArtifacts(On.Terraria.Main.orig_DrawBlack orig, Main self, bool force = false)
+        public void DrawArtifacts(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride = -1)
         {
             foreach (var item in TileEntity.ByID)
             {
@@ -47,8 +47,7 @@ namespace StarlightRiver.Content.Archaeology
                     artifact.Draw(Main.spriteBatch);
                 }
             }
-
-            orig(self, force);
+            orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
         }
     }
 }

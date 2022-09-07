@@ -37,5 +37,11 @@ namespace StarlightRiver.Content.Archaeology
                 Dust.NewDustPerfect(WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat())), SparkleDust, Vector2.Zero);
             }
         }
+
+        public void GenericDraw(SpriteBatch spriteBatch)
+        {
+            Texture2D tex = ModContent.Request<Texture2D>(TexturePath).Value;
+            spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + new Vector2(192, 192), null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+        }
     }
 }
