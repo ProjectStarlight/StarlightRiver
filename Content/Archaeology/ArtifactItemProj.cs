@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Archaeology
 			Projectile.height = 2;
 			Projectile.timeLeft = 66;
 			Projectile.friendly = false;
+            Projectile.tileCollide = false;
 		}
 
         public override void AI()

@@ -13,6 +13,8 @@ namespace StarlightRiver.Content.Archaeology
 {
     public abstract class Artifact : ModTileEntity
 	{
+        public bool displayedOnMap = false;
+
         public virtual string TexturePath { get;}
 
         public virtual Vector2 Size { get; }
