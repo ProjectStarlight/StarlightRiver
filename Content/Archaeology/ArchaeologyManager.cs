@@ -1,8 +1,10 @@
 ﻿//Artifact general TODO:
 //Better spawning method that checks to make sure the entire thing is buried
-//Cultivation
+//Better tilechecck call method
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
+//Make generic sparkle dust
+//Make said generic sparkle dust affected by light
 
 
 using Microsoft.Xna.Framework;

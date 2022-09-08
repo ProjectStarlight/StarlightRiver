@@ -21,9 +21,18 @@ namespace StarlightRiver.Content.Archaeology
 
         public virtual int SparkleRate { get; }
 
+        public virtual Color BeamColor { get; }
+
+        public virtual int ItemType { get; }
+
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
         public virtual void Draw(SpriteBatch spriteBatch) { }
+
+        public override void Update()
+        {
+            CheckOpen();
+        }
 
         public bool IsOnScreen()
         {
@@ -42,6 +51,27 @@ namespace StarlightRiver.Content.Archaeology
         {
             Texture2D tex = ModContent.Request<Texture2D>(TexturePath).Value;
             spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + new Vector2(192, 192), null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+        }
+
+        public void CheckOpen()
+        {
+            for (int i = 0; i < Size.X / 16; i++)
+                for (int j = 0; j < Size.Y / 16; j++)
+                {
+                    Tile tile = Main.tile[i + Position.X, j + Position.Y];
+                    if (tile.HasTile)
+                        return;
+                }
+
+            Kill(Position.X, Position.Y);
+
+            Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, Vector2.Zero, ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
+            ArtifactItemProj modProj = proj.ModProjectile as ArtifactItemProj;
+            modProj.itemTexture = TexturePath;
+            modProj.glowColor = BeamColor;
+            modProj.itemType = ItemType;
+            modProj.size = Size;
+
         }
     }
 }
