@@ -3,8 +3,7 @@
 //Better tilechecck call method
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
-//Implement UIscaling for minimap drawing
-//Reduce jitter on minimap drawing
+//Make map icons display text
 //Make archaeologists map obtainable
 
 
@@ -23,6 +22,8 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.Map;
+using Terraria.UI;
 
 namespace StarlightRiver.Content.Archaeology
 {
@@ -31,24 +32,11 @@ namespace StarlightRiver.Content.Archaeology
         public override void Load()
         {
             On.Terraria.Main.DrawTiles += DrawArtifacts;
-            On.Terraria.Main.DrawMap += DrawArtifactsOnMiniMap;
         }
 
         public override void Unload()
         {
             On.Terraria.Main.DrawTiles -= DrawArtifacts;
-            On.Terraria.Main.DrawMap -= DrawArtifactsOnMiniMap;
-        }
-
-        public override void PostDrawFullscreenMap(ref string mouseText)
-        {
-            var toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap);
-            foreach (var drawable in toDraw)
-            {
-                var pos = drawable.Value.Position.ToVector2();
-                // No, I don't know why it draws one tile to the right, but that's how it is
-                Helper.DrawMirrorOnFullscreenMap((int)pos.X - 1, (int)pos.Y, true, ModContent.Request<Texture2D>(AssetDirectory.Archaeology + "DigMarker_White", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
-            }
         }
 
         public override void PreUpdateDusts()
@@ -73,30 +61,19 @@ namespace StarlightRiver.Content.Archaeology
             }
             orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
         }
+    }
 
-        private static void DrawArtifactsOnMiniMap(On.Terraria.Main.orig_DrawMap orig, Main self, GameTime gameTime) //Credit to GabeHasWon for this code
+    public class ArchaeologyMapLayer : ModMapLayer
+    {
+        public override void Draw(ref MapOverlayDrawContext context, ref string text)
         {
-            orig(self, gameTime);
+            var toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap);
 
-            if (Main.mapEnabled && !Main.mapFullscreen) //Draw only on the minimap
+            foreach (var drawable in toDraw)
             {
-                var toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap);
-
-                foreach (var drawable in toDraw)
-                {
-                    float scale = Main.mapMinimapScale;
-
-                    Vector2 realPos = Helper.GetMiniMapPosition(drawable.Value.Position.ToVector2(), scale);
-
-                    scale *= Main.UIScale;
-
-                    float drawScale = (scale * 0.5f + 1f) / 3f;
-                    if (drawScale > 1f)
-                        drawScale = 1f;
-
-                    if (Helper.PointOnMinimap(realPos))
-                        Helper.DrawOnMinimap((int)realPos.X, (int)realPos.Y, drawScale, ModContent.Request<Texture2D>(AssetDirectory.Archaeology + "DigMarker_White", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
-                }
+                Artifact artifact = (Artifact) drawable.Value;
+                Texture2D mapTex = ModContent.Request<Texture2D>(artifact.MapTexturePath).Value;
+                context.Draw(mapTex, artifact.Position.ToVector2(), Color.White, new SpriteFrame(1, 1, 0, 0), 1, 1, Alignment.Center);
             }
         }
     }

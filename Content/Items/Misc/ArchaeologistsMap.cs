@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Misc
             List<Artifact> artifacts = new List<Artifact>();
             foreach (var item in TileEntity.ByID)
             {
-                if (item.Value is Artifact artifact && !artifact.displayedOnMap)
+                if (item.Value is Artifact artifact && !artifact.displayedOnMap && artifact.CanBeRevealed)
                 {
                     artifacts.Add(artifact);
                 }

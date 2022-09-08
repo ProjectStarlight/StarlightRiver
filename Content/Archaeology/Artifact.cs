@@ -16,7 +16,11 @@ namespace StarlightRiver.Content.Archaeology
 	{
         public bool displayedOnMap = false;
 
+        public virtual bool CanBeRevealed { get; set; }
+
         public virtual string TexturePath { get;}
+
+        public virtual string MapTexturePath { get; }
 
         public virtual Vector2 Size { get; }
 
@@ -61,13 +65,20 @@ namespace StarlightRiver.Content.Archaeology
 
         public void CreateSparkles()
         {
-            if (Main.rand.NextBool(SparkleRate))
-            {
-                Vector2 pos = WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
+            Vector2 pos = WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
 
-                if (Lighting.GetColor((pos / 16).ToPoint()) != Color.Black)
+            Color lightColor = Lighting.GetColor((pos / 16).ToPoint());
+            if (lightColor == Color.Black)
+                return;
+
+            float sparkleMult = MathHelper.Max(lightColor.R, MathHelper.Max(lightColor.G, lightColor.B)) / 255f;
+
+            if (sparkleMult == 0) //incase for whatever reason the Color.Black check wasn't enough
+                return;
+
+            int modifiedSparkleRate = (int)(SparkleRate / sparkleMult);
+            if (Main.rand.NextBool(modifiedSparkleRate))
                     Dust.NewDustPerfect(WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat())), SparkleDust, Vector2.Zero);
-            }
         }
 
         public void GenericDraw(SpriteBatch spriteBatch)
