@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Archaeology
 
             Kill(Position.X, Position.Y);
 
-            Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, Vector2.Zero, ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
+            Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
             ArtifactItemProj modProj = proj.ModProjectile as ArtifactItemProj;
             modProj.itemTexture = TexturePath;
             modProj.glowColor = BeamColor;

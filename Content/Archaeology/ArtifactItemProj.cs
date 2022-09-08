@@ -63,6 +63,7 @@ namespace StarlightRiver.Content.Archaeology
                 Dust.NewDustPerfect(pos, sparkleType, Main.rand.NextVector2Circular(0.5f,0.5f));
             }
 
+            Projectile.velocity.Y *= 0.96f;
 
             Lighting.AddLight(Projectile.Center + (size / 2), glowColor.ToVector3() * Fade);
         }
