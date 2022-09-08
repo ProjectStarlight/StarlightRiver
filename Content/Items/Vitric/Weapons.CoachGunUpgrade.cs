@@ -33,11 +33,11 @@ namespace StarlightRiver.Content.Items.Vitric
         }
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Magmatic Coach Gun"); //placeholder i couldnt think of a name
+            DisplayName.SetDefault("Magmatic Coach Gun");
             Tooltip.SetDefault("Press <right> to throw out an unstable crystal bomb\nExplodes shortly after, causing all other crystal bombs to also explode\n" +
                 "Shoot to detonate it early, if detonated early enough, it will explode into a cone of crystal shards\n" +
                 "If a crystal bomb is detonated by another crystal bomb, its damage is increased by 50%\n" +
-                "Explosions and crystal shards inflict Sweltered\n'Ultrakill style'");
+                "Explosions and crystal shards increase targets Exposure by 35% and inflict Sweltered\n'Ultrakill style'");
         }
 
         public override void SetDefaults()
@@ -409,28 +409,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public SwelteredDeBuff() : base("Sweltered", "Damage taken increased by 35%", false) { }
 
-        public override void Load()
-        {
-            StarlightNPC.ModifyHitByItemEvent += ModifyItemHit;
-            StarlightNPC.ModifyHitByProjectileEvent += ModifyProjectileHit;
-        }
-
-        private void ModifyProjectileHit(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (Inflicted(NPC))
-                damage = (int)(damage * 1.35f);
-        }
-
-        private void ModifyItemHit(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
-        {
-            if (Inflicted(NPC))
-                damage = (int)(damage * 1.35f);
-        }
-
         public override void Update(NPC npc, ref int buffIndex)
         {
             npc.GetGlobalNPC<StarlightNPC>().DoT += 10;
-
+            npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.35f;
             Vector2 vel = new Vector2(0, -1).RotatedByRandom(0.5f) * 0.4f;
             if (Main.rand.NextBool(4))
                 Dust.NewDust(npc.position, npc.width, npc.height, ModContent.DustType<CoachSmoke>(), vel.X, vel.Y, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
