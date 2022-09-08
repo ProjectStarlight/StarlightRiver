@@ -208,6 +208,8 @@ namespace StarlightRiver.Content.Items.Dungeon
                 }
             }
 
+            Helper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
+            Core.Systems.CameraSystem.Shake += 1;
             target.AddBuff(BuffID.OnFire, 240);
             target.AddBuff(BuffID.OnFire3, 240);
         }
@@ -271,6 +273,21 @@ namespace StarlightRiver.Content.Items.Dungeon
                 }
                 fireProjectile = proj;
             }
+
+            for (int i = 0; i < 8; i++)
+            {
+                Vector2 velo = Projectile.DirectionTo(Main.MouseWorld);
+                Dust.NewDustPerfect(wheelPos + Main.rand.NextVector2Circular(2f, 2f), ModContent.DustType<Dusts.MagmaSmoke>(), velo.RotatedByRandom(0.5f) * Main.rand.NextFloat(1.8f, 2.5f) + (Vector2.UnitY * -1f), 155, default, Main.rand.NextFloat(0.6f, 0.9f));
+                
+                Dust.NewDustPerfect(wheelPos, ModContent.DustType<Dusts.Glow>(), velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(5f, 7f), 0, new Color(255, 160, 50), 0.4f);
+                
+                Dust.NewDustPerfect(wheelPos, ModContent.DustType<Dusts.Glow>(), velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(6f, 8f), 0, new Color(255, 50, 15), 0.45f);
+                
+                Dust.NewDustPerfect(wheelPos, DustID.Torch, velo.RotatedByRandom(0.65f) * Main.rand.NextFloat(6f, 8f), 0, default, 1.35f);
+            }
+
+            Helper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
+            Core.Systems.CameraSystem.Shake += 4;
         }
     }
 
@@ -286,7 +303,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public float inputHeat;
         public int lerpTimer;
-        public float maxLerp; 
 
         public bool returning;
         public bool switched;
@@ -327,8 +343,14 @@ namespace StarlightRiver.Content.Items.Dungeon
                 ManageTrail();
             }
 
-            if ((Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < (switched ? 300f : 200f) || Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 750f) && Projectile.timeLeft < 2340)
+            if ((Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < (switched ? 300f : 200f) || Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 850f) && Projectile.timeLeft < 2340)
                 returning = true;
+
+            if (Projectile.velocity == Vector2.Zero)
+            {
+                returning = true;
+                collided = true;
+            }
 
             if (!returning && collided)
             {
@@ -408,9 +430,13 @@ namespace StarlightRiver.Content.Items.Dungeon
                 Projectile.velocity.Y += 0.6f;
                 if (Projectile.velocity.Y > 16f)
                     Projectile.velocity.Y = 16f;
+
+                if (returning)
+                    collided = true;
             }
             else if (returning)
             {
+                collided = true;
                 if (lerpTimer > 0)
                 {
                     Projectile.Center = Vector2.Lerp(Projectile.Center, ((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos, 1f - lerpTimer / 30f);
@@ -423,7 +449,16 @@ namespace StarlightRiver.Content.Items.Dungeon
                     if (Projectile.localAI[0] < 15)
                     {
                         if (Projectile.localAI[0] == 0f)
+                        {
                             Projectile.velocity = Projectile.DirectionTo(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) * 10f + (Vector2.UnitY * -5f);
+                            for (int i = 0; i < 35; ++i)
+                            {
+                                float angle2 = 6.2831855f * (float)i / (float)35;
+                                Dust dust3 = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 0, new Color(255, 50, 15), 0.6f);
+                                dust3.velocity = Utils.ToRotationVector2(angle2) * 2.75f;
+                                dust3.noGravity = true;
+                            }
+                        }
 
                         if (Projectile.localAI[0] > 5f)
                             Projectile.velocity.Y += 0.6f;
@@ -436,6 +471,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                     else
                     {
                         VanillaBoomerangAI();
+                        Projectile.tileCollide = false;
                     }
 
                     if (Projectile.Center.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) < 50f && lerpTimer == 0)
@@ -481,10 +517,32 @@ namespace StarlightRiver.Content.Items.Dungeon
         {
             target.AddBuff(BuffID.OnFire, 240);
             target.AddBuff(BuffID.OnFire3, 240);
+
+            Helper.PlayPitched("Impacts/FireBladeStab", 0.2f, Main.rand.NextFloat(-0.05f, 0.05f), Projectile.Center);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 35; ++i)
+            {
+                float angle2 = 6.2831855f * (float)i / (float)35;
+                Dust dust3 = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 0, new Color(255, 50, 15), 0.6f);
+                dust3.velocity = Utils.ToRotationVector2(angle2) * 2.75f;
+                dust3.noGravity = true;
+            }
+
+            for (int i = 0; i < 35; ++i)
+            {
+                float angle2 = 6.2831855f * (float)i / (float)35;
+                Dust dust3 = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 0, new Color(255, 160, 50), 0.45f);
+                dust3.velocity = Utils.ToRotationVector2(angle2) * 2f;
+                dust3.noGravity = true;
+            }
         }
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            collided = true;
+            if (!returning)
+                collided = true;
             return false;
         }
 
