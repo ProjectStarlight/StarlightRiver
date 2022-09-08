@@ -32,6 +32,8 @@ namespace StarlightRiver.Content.Archaeology
 
         public virtual int ItemType { get; }
 
+        public virtual float SpawnChance { get; }
+
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
         public virtual void Draw(SpriteBatch spriteBatch) { }

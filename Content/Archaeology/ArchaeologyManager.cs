@@ -4,6 +4,7 @@
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
 //Make archaeologists map obtainable
+//Further abstract generation via ArtifactFields
 
 
 using Microsoft.Xna.Framework;

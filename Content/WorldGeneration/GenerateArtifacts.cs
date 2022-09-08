@@ -1,7 +1,11 @@
 ﻿using StarlightRiver.Content.Items.Beach;
 using StarlightRiver.Helpers;
 using Terraria;
+using Terraria.Utilities;
 using Terraria.DataStructures;
+using StarlightRiver.Content.Items.BuriedArtifacts;
+using StarlightRiver.Content.Archaeology;
+using StarlightRiver.Content.Archaeology.BuriedArtifacts;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -10,6 +14,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System;
 using static Terraria.ModLoader.ModContent;
+using System.Reflection;
+using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Core
 {
@@ -18,43 +24,54 @@ namespace StarlightRiver.Core
         private void ArtifactGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Hiding ancient secrets";
+            
+            WeightedRandom<Artifact> desertPool = GetArtifactPool<DesertArtifact>(StarlightRiver.Instance);
+            int[] desertTiles = new int[] { TileID.HardenedSand, TileID.Sandstone };
+            Rectangle desertRange = new Rectangle(WorldGen.UndergroundDesertLocation.X - 500, WorldGen.UndergroundDesertLocation.Y + (WorldGen.UndergroundDesertLocation.Height / 2) - 500, 1000, 1000);
+            PlaceArtifactPool(desertRange, desertPool, desertTiles, 50, 999);
 
+            WeightedRandom<Artifact> oceanPool = GetArtifactPool<OceanArtifact>(StarlightRiver.Instance);
+            int[] oceanTiles = new int[] { TileID.Sand, TileID.ShellPile };
+            Rectangle leftOceanRange = new Rectangle(0, 0, 300, (int)Main.rockLayer);
+            Rectangle rightOceanRange = new Rectangle(Main.maxTilesX - 300, 0, 300, (int)Main.rockLayer);
+            PlaceArtifactPool(leftOceanRange, oceanPool, oceanTiles, 10, 999);
+        }
+
+        private void PlaceArtifactPool(Rectangle range, WeightedRandom<Artifact> pool, int[] validTiles, int toPlace, int maxTries)
+        {
             int tries = 0;
-
-            List<ModTileEntity> desertFossils = new List<ModTileEntity>();
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact1>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact2>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact3>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact4>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact5>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact6>());
-            desertFossils.Add(ModContent.GetInstance<Content.Archaeology.DesertArtifact7>());
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < toPlace; i++)
             {
-                if (!PlaceDesertFossil(WorldGen.UndergroundDesertLocation.X + Main.rand.Next(-500, 500), WorldGen.UndergroundDesertLocation.Y + (WorldGen.UndergroundDesertLocation.Height / 2) + Main.rand.Next(-500, 500), desertFossils))
+                if (!PlaceArtifact(range, pool, validTiles))
                 {
-                    tries++;
                     i--;
-                    if (tries > 999)
+                    tries++;
+
+                    if (tries > maxTries)
                         break;
                 }
             }
         }
 
-        private bool PlaceDesertFossil(int i, int j, List<ModTileEntity> list)
+        private bool PlaceArtifact(Rectangle range, WeightedRandom<Artifact> pool, int[] validTiles)
         {
-            if (i < 0 || i > Main.maxTilesX || j < 0 || j > Main.maxTilesY)
-                return false;
+            int i = range.Left + Main.rand.Next(range.Width);
+            int j = range.Top + Main.rand.Next(range.Height);
+            if (!WorldGen.InWorld(i, j)) return false;
 
             Tile testTile = Framing.GetTileSafely(i, j);
+            if (!testTile.HasTile || !validTiles.Contains(testTile.TileType)) return false;
 
-            if (testTile.TileType != TileID.Sandstone && testTile.TileType != TileID.HardenedSand)
-                return false;
-
-            ModTileEntity toPlace = list[Main.rand.Next(list.Count)];
-
-            toPlace.Place(i, j);
+            pool.Get().Place(i, j);
             return true;
+        }
+
+        private WeightedRandom<Artifact> GetArtifactPool<T>(Mod mod) where T : Artifact 
+        {
+            WeightedRandom<Artifact> pool = new(Main.rand);
+            foreach (T artifact in mod.GetContent<T>())
+                pool.Add(artifact, artifact.SpawnChance);
+            return pool;
         }
     }
 }
