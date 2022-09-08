@@ -71,6 +71,7 @@ namespace StarlightRiver.Content.Archaeology
             modProj.glowColor = BeamColor;
             modProj.itemType = ItemType;
             modProj.size = Size;
+            modProj.sparkleType = SparkleDust;
 
         }
     }

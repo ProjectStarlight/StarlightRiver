@@ -40,6 +40,8 @@ namespace StarlightRiver.Content.Dusts
 
             if (dust.alpha > 255)
                 dust.active = false;
+
+            dust.position += dust.velocity;
             return false;
         }
     }

@@ -32,6 +32,7 @@ namespace StarlightRiver.Core
 
         public const string BalancedItem =          Assets + "Items/Balanced/";
 
+        public const string ArtifactItem =          Assets + "Items/Artifacts";
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
         public const string MoonstoneItem =         Assets + "Items/Moonstone/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
