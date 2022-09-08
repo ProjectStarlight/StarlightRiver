@@ -27,6 +27,12 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool SafeCanUseItem(Player player)
         {
+            if (!hasAmmo)
+            {
+                Item.noUseGraphic = false;
+                player.itemTime = 0;
+                return false;
+            }
             Item.noUseGraphic = true;
             player.itemTime = 2;
             if (currentAmmoStruct.ammoID == ItemID.Seed)
