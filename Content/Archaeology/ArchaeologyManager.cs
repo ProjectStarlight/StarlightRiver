@@ -3,7 +3,6 @@
 //Better tilechecck call method
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
-//Make map icons display text
 //Make archaeologists map obtainable
 
 
@@ -68,12 +67,13 @@ namespace StarlightRiver.Content.Archaeology
         public override void Draw(ref MapOverlayDrawContext context, ref string text)
         {
             var toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap);
-
             foreach (var drawable in toDraw)
             {
                 Artifact artifact = (Artifact) drawable.Value;
                 Texture2D mapTex = ModContent.Request<Texture2D>(artifact.MapTexturePath).Value;
-                context.Draw(mapTex, artifact.Position.ToVector2(), Color.White, new SpriteFrame(1, 1, 0, 0), 1, 1, Alignment.Center);
+
+                if (context.Draw(mapTex, artifact.Position.ToVector2(), Color.White, new SpriteFrame(1, 1, 0, 0), 1, 1, Alignment.Center).IsMouseOver)
+                    text = "Artifact";
             }
         }
     }
