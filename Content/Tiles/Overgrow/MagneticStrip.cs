@@ -208,6 +208,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			if (holdOver <= 1)
 			{
+				if (direction == GravDirection.right)
+					Player.velocity.X = fakeXVel;
+
 				direction = GravDirection.down;
 			}
 			else
