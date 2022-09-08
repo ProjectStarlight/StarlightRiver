@@ -86,9 +86,9 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			switch (tile.TileFrameX)
 			{
-				case 0: rotation = 0; break;
+				case 0: rotation = 0; target.Offset(new Point(-16, -336)); break;
 				case 1: rotation = 3.14f; break;
-				case 2: rotation = 1.57f; break;
+				case 2: rotation = 1.57f; target.Offset(new Point(160, -176)); break;
 				case 3: rotation = 3.14f + 1.57f; target.Offset(new Point(-176, -160)); break;
 				default: rotation = 0; break;
 			}
@@ -101,6 +101,16 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				float time = ((Main.GameUpdateCount + k * 75) % 600) / 600f;
 				Rectangle target2 = new Rectangle((int)pos.X + 16, (int)pos.Y + 16, 16, 2);
+
+				switch (tile.TileFrameX)
+				{
+					case 0: target2.Offset(new Point(-16, -16)); break;
+					case 1: break;
+					case 2: target2.Offset(new Point(0, -16)); break;
+					case 3: target2.Offset(new Point(-16, 0)); break;
+					default: break;
+				}
+
 				target2.Offset(new Vector2(0, 160 - time * 160).RotatedBy(rotation + 3.14f).ToPoint());
 				spriteBatch.Draw(tex2, target2, source, color * (time), rotation, Vector2.Zero, 0, 0);
 			}
@@ -171,7 +181,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 				Player.position.X += fakeXVel;
 
-				Player.position.Y += -Player.velocity.X;
+				Player.position.Y -= Player.velocity.X;
 
 				Player.velocity.Y -= Player.gravity;
 
@@ -202,13 +212,57 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					Player.justJumped = true;
 				}
 			}
+
+			if (direction == GravDirection.left)
+			{
+				Player.fullRotation = 1.57f;
+				Player.fullRotationOrigin = Player.Size / 2;
+
+				Player.direction = Player.velocity.X > 0 ? 1 : -1;
+
+				if (fakeXVel > -Player.maxFallSpeed)
+					fakeXVel -= Player.gravity;
+
+				Player.position.X += fakeXVel;
+
+				Player.position.Y += Player.velocity.X;
+
+				Player.velocity.Y -= Player.gravity;
+
+				if (Player.position.X <= cutoffCoordinate + 32)
+				{
+					Player.position.X = cutoffCoordinate + 26;
+					Player.velocity.Y = 0;
+					fakeXVel = 0;
+				}
+
+				else if (Player.velocity.Y == 0)
+					Player.velocity.Y = 0.01f;
+
+				Player.position.X -= Player.velocity.X;
+
+				if (Player.velocity.Y == 0 && Player.controlJump)
+				{
+					fakeXVel = Player.jumpHeight;
+					Player.releaseJump = false;
+					Player.controlJump = false;
+					Player.justJumped = true;
+				}
+
+				if (Player.releaseJump)
+				{
+					Player.releaseJump = false;
+					Player.controlJump = false;
+					Player.justJumped = true;
+				}
+			}
 		}
 
 		public override void ResetEffects()
 		{
 			if (holdOver <= 1)
 			{
-				if (direction == GravDirection.right)
+				if (direction == GravDirection.right || direction == GravDirection.left)
 					Player.velocity.X = fakeXVel;
 
 				direction = GravDirection.down;
@@ -222,6 +276,12 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			if (direction == GravDirection.right)
 			{
 				fakeXVel = Math.Max(1, Player.velocity.X);
+				Player.velocity.X = Player.velocity.Y;
+			}
+
+			if (direction == GravDirection.left)
+			{
+				fakeXVel = Math.Min(-1, Player.velocity.X);
 				Player.velocity.X = Player.velocity.Y;
 			}
 		}
