@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.autoReuse = false;
             Item.value = Item.sellPrice(0, 0, 10, 0);
             Item.rare = ItemRarityID.Blue;
-            Item.noUseGraphic = true;
+            Item.noUseGraphic = false;
             Item.consumable = true;
             Item.maxStack = 999;
         }
@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override bool CanUseItem(Player player)
         {
             RevealArtifact(player);
-            return base.CanUseItem(player);
+            return true;
         }
 
         private void RevealArtifact(Player player)

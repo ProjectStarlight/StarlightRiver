@@ -8,6 +8,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using System;
 
 namespace StarlightRiver.Content.Archaeology
 {
@@ -34,6 +35,23 @@ namespace StarlightRiver.Content.Archaeology
         public override void Update()
         {
             CheckOpen();
+        }
+
+        public override void SaveData(TagCompound tag)
+        {
+            tag[nameof(displayedOnMap)] = displayedOnMap;
+        }
+
+        public override void LoadData(TagCompound tag)
+        {
+            try
+            {
+                displayedOnMap = tag.GetBool(nameof(displayedOnMap));
+            }
+            catch (Exception e)
+            {
+                StarlightRiver.Instance.Logger.Debug("handled error loading Artifacts: " + e);
+            }
         }
 
         public bool IsOnScreen()
