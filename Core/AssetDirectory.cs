@@ -23,6 +23,7 @@ namespace StarlightRiver.Core
         public const string RiftCrafting =          Assets + "RiftCrafting/";
 
         public const string Dust =                  Assets + "Dusts/";
+        public const string ArtifactSparkles =      Assets + "Dusts/ArtifactSparkles/";
 
         public const string BrewingItem =           Assets + "Items/Brewing/";
 

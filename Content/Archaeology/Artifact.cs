@@ -45,7 +45,10 @@ namespace StarlightRiver.Content.Archaeology
         {
             if (Main.rand.NextBool(SparkleRate))
             {
-                Dust.NewDustPerfect(WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat())), SparkleDust, Vector2.Zero);
+                Vector2 pos = WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
+
+                if (Lighting.GetColor((pos / 16).ToPoint()) != Color.Black)
+                    Dust.NewDustPerfect(WorldPosition + (Size * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat())), SparkleDust, Vector2.Zero);
             }
         }
 

@@ -3,11 +3,10 @@
 //Better tilechecck call method
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
-//Make generic sparkle dust
-//Make said generic sparkle dust affected by light
 //Implement UIscaling for minimap drawing
 //Saving and loading for whether an artifact is drawn on the map
 //Reduce jitter on minimap drawing
+//Make archaeologists map obtainable
 
 
 using Microsoft.Xna.Framework;
