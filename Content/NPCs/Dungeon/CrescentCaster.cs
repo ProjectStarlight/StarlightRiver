@@ -33,107 +33,20 @@ using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
-    public class CrescentCasterBolt
-    {
-        public NPC TargetNPC;
-        public NPC Owner;
-
-        public Vector2 MidPoint;
-        public Vector2 MidPointDirection;
-
-        public Trail trail;
-        public Trail trail2;
-
-        public float fade;
-
-        public float resetCounter = 0;
-        public float resetCounterIncrement;
-
-        public bool cloneCreated = false;
-
-        public Color baseColor = new Color(200, 230, 255);
-        public Color endColor = Color.Purple;
-
-        public float distanceFade => 1 - (resetCounter / 30f);
-
-        public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection, GraphicsDevice device)
-        {
-            TargetNPC = targetNPC;
-            Owner = owner;
-            MidPoint = midPoint;
-            MidPointDirection = midPointDirection;
-            resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
-
-            trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
-            {
-                if (factor.X > 0.99f)
-                    return Color.Transparent;
-
-                return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * distanceFade;
-            });
-
-            trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
-            {
-                float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-                return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * distanceFade;
-            });
-
-            UpdateTrailPoints();
-
-            fade = 0;
-        }
-
-        public void UpdateTrailPoints()
-        {
-            List<Vector2> points = BezierPoints();
-
-            List<Vector2> pointsWithOffset = new List<Vector2>();
-
-            int index = 0;
-            foreach(Vector2 point in points)
-            {
-                float offsetAmount;
-                if (index == 0)
-                    offsetAmount = 0;
-                else
-                    offsetAmount = (point - points[index - 1]).Length() * 0.5f * (1.125f - (Math.Abs(7 - index) / 7f));
-
-                    index++;
-                pointsWithOffset.Add(point + Main.rand.NextVector2Circular(offsetAmount, offsetAmount));
-            }
-
-            trail.Positions = trail2.Positions = pointsWithOffset.ToArray();
-            trail.NextPosition = trail2.NextPosition = TargetNPC.Center;
-        }
-
-        public List<Vector2> BezierPoints()
-        {
-            Vector2 startPoint = Owner.Center + new Vector2(Owner.spriteDirection * 3, -25);
-            BezierCurve curve = new BezierCurve(startPoint, MidPoint, TargetNPC.Center);
-            return curve.GetPoints(15);
-        }
-
-        public void Render(Effect effect)
-        {
-            trail?.Render(effect);
-            trail2?.Render(effect);
-        }
-    }
-
-    internal class CrescentCaster : ModNPC,IDrawPrimitive
+    internal class CrescentCaster : ModNPC, IDrawPrimitive
     {
         public override string Texture => AssetDirectory.DungeonNPC + Name;
 
         private const int XFRAMES = 3;
-        private readonly float ACCELERATION = 0.15f;
-        private readonly float MAXSPEED = 2;
+        private const float ACCELERATION = 0.15f;
+        private const float MAXSPEED = 2;
 
         private readonly int aiCounterReset = 800;
 
         private int xFrame = 0;
         private int yFrame = 0;
 
-        private int aiCounter = 0;
+        private ref float aiCounter => ref NPC.ai[0];
 
         private List<NPC> supportTargets = new List<NPC>();
 
@@ -197,6 +110,141 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             else
                 WalkBehavior();
         }
+
+        private void CastBehavior()
+        {
+            var tempTargets = ValidTargets(); //purpose of temptargets is to check npcs who were being supported but are no longer
+            var toReduceBarrier = Main.npc.Where(x => x.active && !tempTargets.Contains(x) && supportTargets.Contains(x)).ToList();
+
+            ClearBarrierAndBolts(toReduceBarrier);
+
+            var toAddBolts = Main.npc.Where(x => x.active && tempTargets.Contains(x) && !supportTargets.Contains(x)).ToList();
+
+            foreach (NPC boltNPC in toAddBolts)
+            {
+                BarrierNPC barrierNPC = boltNPC.GetGlobalNPC<BarrierNPC>();
+                barrierNPC.MaxBarrier += 250;
+                CreateBolt(boltNPC);
+            }
+
+            supportTargets = tempTargets;
+
+            UpdateBolts();
+
+            if (supportTargets.Count == 0)
+            {
+                aiCounter = 390;
+                WalkBehavior();
+                return;
+            }
+
+            switch (xFrame)
+            {
+                case 0: //first frame of casting
+                    xFrame = 1;
+                    NPC.frameCounter = 0;
+                    yFrame = 0;
+                    break;
+                case 1: //Winding up to cast
+                    NPC.frameCounter++;
+
+                    if (NPC.frameCounter % 4 == 0)
+                    {
+                        yFrame++;
+                    }
+
+                    if (yFrame == 10)
+                    {
+                        yFrame = 0;
+                        xFrame = 2;
+                        NPC.frameCounter = 0;
+                    }
+
+                    break;
+                case 2: //Supporting
+                    SupportBehavior();
+                    break;
+            }
+        }
+        private void SupportBehavior()
+        {
+            NPC.frameCounter++;
+
+            if (NPC.frameCounter % 4 == 0)
+            {
+                yFrame++;
+                yFrame %= 5;
+            }
+
+            if (aiCounter % aiCounterReset < aiCounterReset - 10)
+            {
+                if (starOpacity < 1)
+                    starOpacity += 0.1f;
+            }
+            else if (starOpacity > 0)
+                starOpacity -= 0.1f;
+
+            foreach (NPC supportTarget in supportTargets)
+            {
+                BarrierNPC barrierNPC = supportTarget.GetGlobalNPC<BarrierNPC>();
+
+                barrierNPC.RechargeRate = 90;
+                barrierNPC.RechargeDelay = 60;
+            }
+        }
+
+        private void WalkBehavior()
+        {
+            ClearBarrierAndBolts(supportTargets);
+            supportTargets.Clear();
+            xFrame = 0;
+
+            int direction;
+            var positionTargets = ValidTargets();
+
+            if (positionTargets.Count > 0)
+            {
+                float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
+
+                if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
+                    direction = Math.Sign(xPositionToBe - NPC.Center.X);
+                else
+                    direction = 0;
+            }
+            else
+                direction = Math.Sign(NPC.Center.X - target.Center.X);
+
+            if (direction != 0)
+                NPC.direction = NPC.spriteDirection = direction;
+
+            NPC.velocity.X += direction * ACCELERATION;
+            NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MAXSPEED, MAXSPEED);
+
+            if (NPC.collideX && NPC.velocity.Y == 0)
+                NPC.velocity.Y = -6;
+
+            NPC.frameCounter++;
+
+            if (direction != 0)
+            {
+                if (NPC.velocity.Y == 0)
+                {
+                    if (NPC.frameCounter % 4 == 0)
+                    {
+                        yFrame++;
+                        yFrame %= 8;
+                    }
+                }
+                else
+                    yFrame = 7;
+            }
+            else
+            {
+                NPC.direction = NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+                yFrame = 0;
+            }
+        }
+
 
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
@@ -273,58 +321,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                 bolt.Render(effect);
         }
 
-        private void CastBehavior()
-        {
-            var tempTargets = ValidTargets(); //purpose of temptargets is to check npcs who were being supported but are no longer
-            var toReduceBarrier = Main.npc.Where(x => x.active && !tempTargets.Contains(x) && supportTargets.Contains(x)).ToList();
-
-            ClearBarrierAndBolts(toReduceBarrier);
-
-            var toAddBolts = Main.npc.Where(x => x.active && tempTargets.Contains(x) && !supportTargets.Contains(x)).ToList();
-
-            foreach(NPC boltNPC in toAddBolts)
-                CreateBolt(boltNPC);
-
-            supportTargets = tempTargets;
-
-            UpdateBolts();
-
-            if (supportTargets.Count == 0)
-            {
-                aiCounter = 390;
-                WalkBehavior();
-                return;
-            }
-
-            switch (xFrame)
-            {
-                case 0: //first frame of casting
-                    xFrame = 1;
-                    NPC.frameCounter = 0;
-                    yFrame = 0;
-                    break;
-                case 1: //Winding up to cast
-                    NPC.frameCounter++;
-
-                    if (NPC.frameCounter % 4 == 0)
-                    {
-                        yFrame++;
-                    }
-
-                    if (yFrame == 10)
-                    {
-                        yFrame = 0;
-                        xFrame = 2;
-                        NPC.frameCounter = 0;
-                    }
-
-                    break;
-                case 2: //Supporting
-                    SupportBehavior();
-                    break;
-            }
-        }
-
         private void UpdateBolts()
         {
             foreach (CrescentCasterBolt bolt in Bolts)
@@ -368,86 +364,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
             Vector2 midPoint = CalculateMidpoint(other);
             Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint), Main.instance.GraphicsDevice));
-        }
-
-        private void SupportBehavior()
-        {
-            NPC.frameCounter++;
-
-            if (NPC.frameCounter % 4 == 0)
-            {
-                yFrame++;
-                yFrame %= 5;
-            }
-
-            if (aiCounter % aiCounterReset < aiCounterReset - 10)
-            {
-                if (starOpacity < 1)
-                    starOpacity += 0.1f;
-            }
-            else if (starOpacity > 0)
-                starOpacity -= 0.1f;
-
-            foreach (NPC supportTarget in supportTargets)
-            {
-                BarrierNPC barrierNPC = supportTarget.GetGlobalNPC<BarrierNPC>();
-
-                barrierNPC.MaxBarrier = 250;
-                barrierNPC.RechargeRate = 90;
-                barrierNPC.RechargeDelay = 60;
-            }
-        }
-
-        private void WalkBehavior()
-        {
-            ClearBarrierAndBolts(supportTargets);
-            supportTargets.Clear();
-            xFrame = 0;
-
-            int direction;
-            var positionTargets = ValidTargets(); 
-
-            if (positionTargets.Count > 0)
-            {
-                float xPositionToBe = Helper.Centeroid(positionTargets).X; //Calculate middle of valid enemies
-
-                if (Math.Abs(xPositionToBe - NPC.Center.X) > 20)
-                    direction = Math.Sign(xPositionToBe - NPC.Center.X);
-                else
-                    direction = 0;
-            }
-            else
-                direction = Math.Sign(NPC.Center.X - target.Center.X);
-
-            if (direction != 0)
-                NPC.direction = NPC.spriteDirection = direction;
-
-            NPC.velocity.X += direction * ACCELERATION;
-            NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -MAXSPEED, MAXSPEED);
-
-            if (NPC.collideX && NPC.velocity.Y == 0)
-                NPC.velocity.Y = -6;
-
-            NPC.frameCounter++;
-
-            if (direction != 0)
-            {
-                if (NPC.velocity.Y == 0)
-                {
-                    if (NPC.frameCounter % 4 == 0)
-                    {
-                        yFrame++;
-                        yFrame %= 8;
-                    }
-                }
-                else
-                    yFrame = 7;
-            }
-            else
-            {
-                NPC.direction = NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
-                yFrame = 0;
-            }
         }
 
         private void ClearBarrierAndBolts(List<NPC> npcs)
@@ -500,6 +416,93 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                     return false;
             }
             return true;
+        }
+    }
+
+    public class CrescentCasterBolt
+    {
+        public NPC TargetNPC;
+        public NPC Owner;
+
+        public Vector2 MidPoint;
+        public Vector2 MidPointDirection;
+
+        public Trail trail;
+        public Trail trail2;
+
+        public float fade;
+
+        public float resetCounter = 0;
+        public float resetCounterIncrement;
+
+        public bool cloneCreated = false;
+
+        public Color baseColor = new Color(200, 230, 255);
+        public Color endColor = Color.Purple;
+
+        public float distanceFade => 1 - (resetCounter / 30f);
+
+        public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection, GraphicsDevice device)
+        {
+            TargetNPC = targetNPC;
+            Owner = owner;
+            MidPoint = midPoint;
+            MidPointDirection = midPointDirection;
+            resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
+
+            trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
+            {
+                if (factor.X > 0.99f)
+                    return Color.Transparent;
+
+                return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * distanceFade;
+            });
+
+            trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+            {
+                float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+                return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * distanceFade;
+            });
+
+            UpdateTrailPoints();
+
+            fade = 0;
+        }
+
+        public void UpdateTrailPoints()
+        {
+            List<Vector2> points = BezierPoints();
+
+            List<Vector2> pointsWithOffset = new List<Vector2>();
+
+            int index = 0;
+            foreach (Vector2 point in points)
+            {
+                float offsetAmount;
+                if (index == 0)
+                    offsetAmount = 0;
+                else
+                    offsetAmount = (point - points[index - 1]).Length() * 0.5f * (1.125f - (Math.Abs(7 - index) / 7f));
+
+                index++;
+                pointsWithOffset.Add(point + Main.rand.NextVector2Circular(offsetAmount, offsetAmount));
+            }
+
+            trail.Positions = trail2.Positions = pointsWithOffset.ToArray();
+            trail.NextPosition = trail2.NextPosition = TargetNPC.Center;
+        }
+
+        public List<Vector2> BezierPoints()
+        {
+            Vector2 startPoint = Owner.Center + new Vector2(Owner.spriteDirection * 3, -25);
+            BezierCurve curve = new BezierCurve(startPoint, MidPoint, TargetNPC.Center);
+            return curve.GetPoints(15);
+        }
+
+        public void Render(Effect effect)
+        {
+            trail?.Render(effect);
+            trail2?.Render(effect);
         }
     }
 }
