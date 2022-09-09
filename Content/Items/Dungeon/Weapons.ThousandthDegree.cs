@@ -333,7 +333,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public Vector2 moveDirection;
         public Vector2 newVelocity = Vector2.Zero;
-        public float speed = 10f;
+        public float speed => MathHelper.Lerp(3f, 10f, speedTimer / 65f);
+        public int speedTimer;
 
         bool collideX = false;
         bool collideY = false;
@@ -378,6 +379,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (!returning && collided)
             {
+                if (speedTimer < 65)
+                    speedTimer++;
+
                 if (Projectile.tileCollide)
                     moveDirection = new Vector2(-owner.direction, 1);
 
@@ -385,6 +389,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
                 if (Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 750f && !switched)
                 {
+                    speedTimer = 0;
                     switched = true;
                     moveDirection.X = Projectile.Center.X < owner.Center.X ? 1 : -1;
                 }
