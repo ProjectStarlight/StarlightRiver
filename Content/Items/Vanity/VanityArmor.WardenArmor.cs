@@ -38,35 +38,33 @@ namespace StarlightRiver.Content.Items.Vanity
         }
     }
 
-    [AutoloadEquip(EquipType.Body)]
     public class WardenRobe : ModItem
     {
         public override string Texture => AssetDirectory.VanityItem + Name;
 
         public override void Load()
         {
-           // if (Main.netMode != NetmodeID.Server)
-           //     EquipLoader.AddEquipTexture(StarlightRiver.Instance, AssetDirectory.Assets + "Invisible", EquipType.Body, null, "WardenRobe_Body");
+            if (Main.netMode != NetmodeID.Server)
+                EquipLoader.AddEquipTexture(Mod, AssetDirectory.Invisible, EquipType.Body, null, "WardenRobe_Body");
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Warden Robe");
             Tooltip.SetDefault("[c/198E12:???]");
+
+            if (Main.netMode != NetmodeID.Server)
+                ArmorIDs.Body.Sets.HidesArms[EquipLoader.GetEquipSlot(Mod, "WardenRobe_Body", EquipType.Body)] = true;
         }
 
         public override void SetDefaults()
         {
+            Item.bodySlot = EquipLoader.GetEquipSlot(Mod, "WardenRobe_Body", EquipType.Body);
             Item.vanity = true;
             Item.width = 34;
             Item.height = 20;
             Item.value = Item.buyPrice(0, 5, 0, 0);
             Item.rare = ItemRarityID.Green;
-        }
-
-        public override void SetMatch(bool male, ref int equipSlot, ref bool robes)
-        {
-           // equipSlot = EquipLoader.GetEquipSlot(Mod, "WardenRobe_Body", EquipType.Body);
         }
     }
 
