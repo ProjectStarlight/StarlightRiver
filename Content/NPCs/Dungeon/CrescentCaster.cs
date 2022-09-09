@@ -149,9 +149,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
                     NPC.frameCounter++;
 
                     if (NPC.frameCounter % 4 == 0)
-                    {
                         yFrame++;
-                    }
 
                     if (yFrame == 10)
                     {
