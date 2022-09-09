@@ -35,6 +35,7 @@ namespace StarlightRiver.Content.Archaeology
 		{
 			DisplayName.SetDefault("Artifact");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 2;
@@ -76,24 +77,24 @@ namespace StarlightRiver.Content.Archaeology
             Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
             Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-            var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+            var glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+            var beamTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
 
             var pos = Projectile.Center + (mainTex.Size() / 2) - Main.screenPosition;
-            Main.spriteBatch.Draw(tex2, pos, null, glowColor * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 25f) * 0.1f)), 0f, tex2.Size() / 2, (mainTex.Size() / tex2.Size()) * 1.4f * Fade, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glowTex, pos, null, glowColor * (0.9f + ((float)Math.Sin(Main.GameUpdateCount / 25f) * 0.1f)), 0f, glowTex.Size() / 2, (mainTex.Size() / glowTex.Size()) * 1.4f * Fade, SpriteEffects.None, 0f);
 
-            var texShine = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Shine").Value;
+            float rot = ((Main.GameUpdateCount * 2) + Rotation);
 
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(0)), ((Main.GameUpdateCount * 2) + Rotation) / 125f, new Vector2(texShine.Width / 2, texShine.Height), 0.16f * GetProgress(0) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(34)), ((Main.GameUpdateCount * 2) + Rotation) / 175f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(34) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(70)), ((Main.GameUpdateCount * 2) + Rotation) / 160f + 5.4f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(70) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(15)), ((Main.GameUpdateCount * 2) + Rotation) / 150f + 3.14f, new Vector2(texShine.Width / 2, texShine.Height), 0.16f * GetProgress(15) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(98)), ((Main.GameUpdateCount * 2) + Rotation) / 180f + 4.0f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(98) * Fade, 0, 0);
-
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(41)), ((Main.GameUpdateCount * 2) + Rotation) / 200f, new Vector2(texShine.Width / 2, texShine.Height), 0.16f * GetProgress(41) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(26)), ((Main.GameUpdateCount * 2) + Rotation) / 105f + 2.2f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(26) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(94)), ((Main.GameUpdateCount * 2) + Rotation) / 110f + 5.4f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(94) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(32)), ((Main.GameUpdateCount * 2) + Rotation) / 190f + 3.14f, new Vector2(texShine.Width / 2, texShine.Height), 0.16f * GetProgress(32) * Fade, 0, 0);
-            Main.spriteBatch.Draw(texShine, pos, null, glowColor * 2 * (1 - GetProgress(108)), ((Main.GameUpdateCount * 2) + Rotation) / 132f + 4.0f, new Vector2(texShine.Width / 2, texShine.Height), 0.18f * GetProgress(108) * Fade, 0, 0);
+            DrawBeam(beamTex, pos, 1 - GetProgress(0), rot / 125f, 0.16f * GetProgress(0));
+            DrawBeam(beamTex, pos, 1 - GetProgress(34), rot / 175f + 2.2f, 0.18f * GetProgress(34));
+            DrawBeam(beamTex, pos, 1 - GetProgress(70), rot / 160f + 5.4f, 0.19f * GetProgress(70));
+            DrawBeam(beamTex, pos, 1 - GetProgress(15), rot / 150f + 3.14f, 0.16f * GetProgress(15));
+            DrawBeam(beamTex, pos, 1 - GetProgress(98), rot / 180f + 4.0f, 0.17f * GetProgress(98));
+            DrawBeam(beamTex, pos, 1 - GetProgress(41), rot / 200f, 0.16f * GetProgress(41));
+            DrawBeam(beamTex, pos, 1 - GetProgress(26), rot / 105f + 2.2f, 0.18f * GetProgress(26));
+            DrawBeam(beamTex, pos, 1 - GetProgress(94), rot / 110f + 5.4f, 0.18f * GetProgress(94));
+            DrawBeam(beamTex, pos, 1 - GetProgress(32), rot / 190f + 3.14f, 0.16f * GetProgress(32));
+            DrawBeam(beamTex, pos, 1 - GetProgress(108), rot / 132f + 4.0f, 0.18f * GetProgress(108));
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -101,6 +102,8 @@ namespace StarlightRiver.Content.Archaeology
             Main.spriteBatch.Draw(mainTex, pos, null, lightColor, 0f, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
+
+        private void DrawBeam(Texture2D tex, Vector2 pos, float colorMult, float rotationMult, float scaleMult) => Main.spriteBatch.Draw(tex, pos, null, glowColor * 2 * colorMult, rotationMult, new Vector2(tex.Width / 2, tex.Height), Fade * scaleMult, 0, 0);
 
         private float GetProgress(float off)
         {
