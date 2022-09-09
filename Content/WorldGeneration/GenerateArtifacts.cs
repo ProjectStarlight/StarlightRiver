@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Beach;
 using StarlightRiver.Helpers;
+
 using Terraria;
 using Terraria.Utilities;
 using Terraria.DataStructures;
@@ -24,25 +25,70 @@ namespace StarlightRiver.Core
         private void ArtifactGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Hiding ancient secrets";
-            
-            WeightedRandom<Artifact> desertPool = GetArtifactPool<DesertArtifact>(StarlightRiver.Instance);
-            int[] desertTiles = new int[] { TileID.HardenedSand, TileID.Sandstone };
-            Rectangle desertRange = new Rectangle(WorldGen.UndergroundDesertLocation.X - 500, WorldGen.UndergroundDesertLocation.Y + (WorldGen.UndergroundDesertLocation.Height / 2) - 500, 1000, 1000);
-            PlaceArtifactPool(desertRange, desertPool, desertTiles, 50, 999);
 
-            WeightedRandom<Artifact> oceanPool = GetArtifactPool<OceanArtifact>(StarlightRiver.Instance);
-            int[] oceanTiles = new int[] { TileID.Sand, TileID.ShellPile };
-            Rectangle leftOceanRange = new Rectangle(0, 0, 300, (int)Main.rockLayer);
-            Rectangle rightOceanRange = new Rectangle(Main.maxTilesX - 300, 0, 300, (int)Main.rockLayer);
-            PlaceArtifactPool(leftOceanRange, oceanPool, oceanTiles, 10, 999);
+            PlaceDesertArtifacts();
+            PlaceOceanArtifacts();
+            PlaceLavaArtifacts();
         }
 
-        private void PlaceArtifactPool(Rectangle range, WeightedRandom<Artifact> pool, int[] validTiles, int toPlace, int maxTries)
+        private void PlaceDesertArtifacts()
         {
+            var tiles = new int[]
+            {
+                  TileID.HardenedSand,
+                  TileID.Sandstone
+            };
+
+            var range = WorldGen.UndergroundDesertLocation;
+            range.Inflate(500, 500);
+
+            int amount = Main.maxTilesX / 17;
+
+            PlaceArtifactPool<DesertArtifact>(range, tiles, amount, 999);
+        }
+
+        private void PlaceOceanArtifacts()
+        {
+            var tiles = new int[]
+            {
+                  TileID.Sand,
+                  TileID.ShellPile
+            };
+
+            Rectangle leftRange = new Rectangle(0, 0, 300, (int)Main.rockLayer);
+            Rectangle rightRange = new Rectangle(0, 0, 300, (int)Main.rockLayer);
+
+            PlaceArtifactPool<OceanArtifact>(leftRange, tiles, 5, 999);
+            PlaceArtifactPool<OceanArtifact>(rightRange, tiles, 5, 999);
+        }
+
+        private void PlaceLavaArtifacts()
+        {
+            var tiles = new int[]
+            {
+                  TileID.Granite,
+                  TileID.Marble,
+                  TileID.Stone
+            };
+
+            Rectangle range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 300);
+
+            int amount = Main.maxTilesX / 800;
+
+            PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
+        }
+
+        private void PlaceArtifactPool<T>(Rectangle range, int[] validTiles, int toPlace, int maxTries) where T : Artifact
+        {
+            WeightedRandom<Artifact> pool = new(Main.rand);
+            foreach (T artifact in StarlightRiver.Instance.GetContent<T>())
+                pool.Add(artifact, artifact.SpawnChance);
+
             int tries = 0;
             for (int i = 0; i < toPlace; i++)
             {
-                if (!PlaceArtifact(range, pool, validTiles))
+                Artifact artifact = pool.Get();
+                if (!PlaceArtifact(range, artifact, validTiles))
                 {
                     i--;
                     tries++;
@@ -53,7 +99,7 @@ namespace StarlightRiver.Core
             }
         }
 
-        private bool PlaceArtifact(Rectangle range, WeightedRandom<Artifact> pool, int[] validTiles)
+        private bool PlaceArtifact(Rectangle range, Artifact artifact, int[] validTiles)
         {
             int i = range.Left + Main.rand.Next(range.Width);
             int j = range.Top + Main.rand.Next(range.Height);
@@ -62,16 +108,8 @@ namespace StarlightRiver.Core
             Tile testTile = Framing.GetTileSafely(i, j);
             if (!testTile.HasTile || !validTiles.Contains(testTile.TileType)) return false;
 
-            pool.Get().Place(i, j);
+            artifact.Place(i, j);
             return true;
-        }
-
-        private WeightedRandom<Artifact> GetArtifactPool<T>(Mod mod) where T : Artifact 
-        {
-            WeightedRandom<Artifact> pool = new(Main.rand);
-            foreach (T artifact in mod.GetContent<T>())
-                pool.Add(artifact, artifact.SpawnChance);
-            return pool;
         }
     }
 }
