@@ -114,18 +114,6 @@ namespace StarlightRiver.Tiles.Mushroom
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/JellyShroomItem";
 
-        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", "JellyShroom", 0, null, false, Item.sellPrice(0,1,0,0)) { }
-    }
-
-    class JellyShroomShop : GlobalNPC
-    {
-        public override void SetupShop(int type, Chest shop, ref int nextSlot)
-        {
-            if (type == NPCID.Truffle)
-            {
-                shop.item[nextSlot].SetDefaults(ModContent.ItemType<JellyShroomItem>());
-                nextSlot++;
-            }
-        }
+        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", "JellyShroom", 0, null, false, Item.sellPrice(0, 1, 0, 0)) { }
     }
 }
