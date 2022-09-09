@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-	public enum GravDirection
+	public enum GravDirection //for readability
 	{
 		down, up, left, right
 	}
@@ -32,16 +32,14 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
-			Rectangle rect = new Rectangle(i * 16, j * 16, 16, 160);
-
-			switch (tile.TileFrameX)
+			var rect = tile.TileFrameX switch //funny new C# feature is funny -- looks strangely like pattern matching in smth like python or ocaml?
 			{
-				case 0: rect = new Rectangle(i * 16, j * 16 - 160, 16, 160); break;
-				case 1: rect = new Rectangle(i * 16, j * 16, 16, 160); break;
-				case 2: rect = new Rectangle(i * 16, j * 16, 160, 16); break;
-				case 3: rect = new Rectangle(i * 16 - 160, j * 16, 160, 16); break;
-				default: rect = new Rectangle(i * 16, j * 16, 160, 16); break;
-			}
+				0 => new Rectangle(i * 16, j * 16 - 160, 16, 160),
+				1 => new Rectangle(i * 16, j * 16, 16, 160),
+				2 => new Rectangle(i * 16, j * 16, 160, 16),
+				3 => new Rectangle(i * 16 - 160, j * 16, 160, 16),
+				_ => new Rectangle(i * 16, j * 16, 160, 16),
+			};
 
 			var player = Main.LocalPlayer;
 
@@ -60,6 +58,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override bool Slope(int i, int j)
 		{
+			//sloping the tile will rotate it instead of normal sloping behavior!
 			var tile = Framing.GetTileSafely(i, j);
 			tile.TileFrameX++;
 			tile.TileFrameX %= 4;
@@ -75,6 +74,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
+			//Draw the glow
 			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
 			Vector2 pos = new Vector2(i * 16, j * 16) - Main.screenPosition + Helpers.Helper.TileAdj * 16;
 			Rectangle target = new Rectangle((int)pos.X + 16, (int)pos.Y + 176, 16, 160);
@@ -93,10 +93,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				default: rotation = 0; break;
 			}
 
-			spriteBatch.Draw(tex, target, source, color, rotation, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(tex, target, source, color, rotation, Vector2.Zero, 0, 0); 
 
 			var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
 
+			//Draw the lines moving in the direction of gravity
 			for (int k = 0; k < 8; k++)
 			{
 				float time = ((Main.GameUpdateCount + k * 75) % 600) / 600f;
@@ -124,7 +125,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public MagneticStripItem() : base("Magnetic Strip", "Debug item", "MagneticStrip") { }
 	}
 
-	internal class MagneticStripPlayer : ModPlayer //TODO: Consider generalizing this later?
+	internal class MagneticStripPlayer : ModPlayer //Maybe consider generalizing this later?
 	{
 		public int holdOver;
 		public int cutoffCoordinate;
@@ -134,33 +135,43 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void PreUpdateMovement()
 		{
+			//Reset the player's rotation so we dont get stuck rotated the wrong way when not in a field
 			if (holdOver == 1)
 			{
 				Player.fullRotation = 0;
 				return;
 			}
 
+			//we obviously dont need any special behavior for downwards gravity!
+
+			//upside down
 			if (direction == GravDirection.up)
 			{
+				//flip the player sprite around for visual effect
 				Player.fullRotation = 3.14f;
 				Player.fullRotationOrigin = Player.Size / 2;
 
+				//corrects their facing direction since it would be reversed due to rotation otherwise
 				Player.direction = Player.velocity.X > 0 ? -1 : 1;
 
+				//cancels the vanilla gravity and also applies upwards gravity
 				if (Player.velocity.Y > -Player.maxFallSpeed)
 					Player.velocity.Y += Player.gravity * -2;
 
+				//'ground' detection. Without this the player wont properly reset jumps or animations
 				if (Player.position.Y <= cutoffCoordinate + 18)
 					Player.velocity.Y = 0;
 
+				//logic for jumping in the correct direction
 				if (Player.velocity.Y == 0 && Player.controlJump)
 				{
 					Player.velocity.Y = Player.jumpHeight;
-					Player.releaseJump = false;
+					Player.releaseJump = false; //'consume' the player's jump input so the normal jump wont run
 					Player.controlJump = false;
 					Player.justJumped = true;
 				}
 
+				//Prevent jumping more than once
 				if (Player.releaseJump)
 				{
 					Player.releaseJump = false;
@@ -169,34 +180,44 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 			}
 
+			//sideways to the right
 			if (direction == GravDirection.right)
 			{
+				//rotate the player sprite for visual effect
 				Player.fullRotation = 3.14f + 1.57f;
 				Player.fullRotationOrigin = Player.Size / 2;
 
+				//corrects their facing direction since it would be reversed due to rotation otherwise
 				Player.direction = Player.velocity.X > 0 ? 1 : -1;
 
+				//creates gravity using an extra sideways gravity velocity field. Since we need to translate the vanilla X velocity into movement along the Y axis
+				//this is converted to/from the proper vanilla velocity on entering/leaving for a smooth transition
 				if (fakeXVel < Player.maxFallSpeed)
 					fakeXVel += Player.gravity;
 
+				//apply said fake sideways gravity
 				Player.position.X += fakeXVel;
 
+				//translate vanilla X velocity to Y. Allows us to easily simulate the desired controls with compatability with things like dashes
 				Player.position.Y -= Player.velocity.X;
 
+				//negate vanilla gravity
 				Player.velocity.Y -= Player.gravity;
 
+				//'ground' detection. Without this the player wont properly reset jumps or animations
 				if (Player.position.X >= cutoffCoordinate - 32)
 				{
 					Player.position.X = cutoffCoordinate - 32;
 					Player.velocity.Y = 0;
 					fakeXVel = 0;
 				}
-
-				else if (Player.velocity.Y == 0)
+				else if (Player.velocity.Y == 0) //We need this to prevent the game thinking were on ground if were jumping but not moving along the axis perpendicular to gravity
 					Player.velocity.Y = 0.01f;
 
+				//forces vanilla X-velocity to not apply, since were using our own fake gravity velocity.
 				Player.position.X -= Player.velocity.X;
 
+				//logic for jumping in the correct direction
 				if (Player.velocity.Y == 0 && Player.controlJump)
 				{
 					fakeXVel = -Player.jumpHeight;
@@ -205,6 +226,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					Player.justJumped = true;
 				}
 
+				//Prevents jumping more than once
 				if (Player.releaseJump)
 				{
 					Player.releaseJump = false;
@@ -213,6 +235,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 				}
 			}
 
+			//Essentially the same as above but with direction reversed.
 			if (direction == GravDirection.left)
 			{
 				Player.fullRotation = 1.57f;
@@ -260,17 +283,23 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void ResetEffects()
 		{
-			if (holdOver <= 1)
+			if (holdOver <= 1) //Effects which trigger on leaving a gravity field. Sets the player's real X velocity to the fake one for a smooth transition.
 			{
 				if (direction == GravDirection.right || direction == GravDirection.left)
 					Player.velocity.X = fakeXVel;
 
-				direction = GravDirection.down;
+				direction = GravDirection.down; //Reset to vanilla gravity direction
 			}
 			else
 				holdOver--;
 		}
 
+		/// <summary>
+		/// Effects which should trigger when entering a gravity field. Used for the left/right gravity fields to swap vanilla X velocity
+		/// with the fake gravity velocity so we can use X-velocity for inputs. Also converts their X-velocity to Y-velocity for a smooth
+		/// transition.
+		/// </summary>
+		/// <param name="direction">The direction being changed to</param>
 		internal void ChangeDirection(GravDirection direction)
 		{
 			if (direction == GravDirection.right)
