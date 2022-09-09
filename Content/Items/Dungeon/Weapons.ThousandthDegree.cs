@@ -327,6 +327,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
         public float inputHeat;
         public int lerpTimer;
+        public int switchDelay;
 
         public bool returning;
         public bool switched;
@@ -381,6 +382,9 @@ namespace StarlightRiver.Content.Items.Dungeon
             {
                 if (speedTimer < 65)
                     speedTimer++;
+
+                if (switchDelay > 0)
+                    switchDelay--;
 
                 if (Projectile.tileCollide)
                     moveDirection = new Vector2(-owner.direction, 1);
@@ -442,12 +446,18 @@ namespace StarlightRiver.Content.Items.Dungeon
                 }
                 Projectile.velocity = speed * moveDirection;
                 Projectile.velocity = Collide();
-                if (Projectile.Center.Y < owner.Center.Y - 200) //if the wheel is too far above the player it resets its movement
+                if (Projectile.Center.Y < owner.Center.Y - 200 && switchDelay <= 0) //if the wheel is too far above the player it resets its movement
                 {
-                    collided = false;
-                    Projectile.tileCollide = true;
-                }
+                    if (!switched)
+                        switched = true;
+                    else
+                    {
+                        collided = false;
+                        Projectile.tileCollide = true;
+                    }
 
+                    switchDelay = 120;
+                }
                 Vector2 pos = Projectile.direction == 1 ? Projectile.BottomLeft : Projectile.BottomRight;
                 Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 25f, 0), ModContent.DustType<Dusts.GlowFastDecelerate>(), (Vector2.UnitX * Projectile.direction) + Vector2.UnitY * Main.rand.NextFloat(), 0, new Color(255, 160, 50), Main.rand.NextFloat(0.3f, 0.5f));
                 
