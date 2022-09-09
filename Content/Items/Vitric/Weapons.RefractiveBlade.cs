@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Refractive Blade");
-            Tooltip.SetDefault("Hold RMB down to charge a laser\nEnemies struck by the laser are more vulnerable to melee damage");
+            Tooltip.SetDefault("Hold RMB down to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
         }
 
         public override void SetDefaults()
@@ -574,41 +574,24 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void Load()
         {
-            StarlightNPC.ModifyHitByProjectileEvent += ExtraDamage;
-            StarlightNPC.ModifyHitByItemEvent += ExtraMeleeDamage;
-
-            StarlightPlayer.ModifyHitByNPCEvent += PlayerExtraMeleeDamage;
+            StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamage;
         }
 
         public override void Update(NPC NPC, ref int buffIndex)
 		{
             Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
-		}
-
-		private void PlayerExtraMeleeDamage(Player Player, NPC NPC, ref int damage, ref bool crit)
-		{
-            if (Inflicted(Player))
-            {
-                damage = (int)(damage * 1.5f);
-            }
+            NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMelee += 0.25f;
         }
 
-		private void ExtraMeleeDamage(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+        public override void Update(Player player, ref int buffIndex)
+        {
+            player.GetModPlayer<ExposurePlayer>().ExposureMult += 0.5f;
+        }
+
+		private void IncreaseRefractiveDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
             if (Inflicted(NPC))
             {
-                if (Item.DamageType.Type == DamageClass.Melee.Type)
-                    damage = (int)(damage * 1.25f);
-            }
-		}
-
-		private void ExtraDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-            if (Inflicted(NPC))
-            {
-                if (Projectile.DamageType.Type == DamageClass.Melee.Type)
-                    damage = (int)(damage * 1.25f);
-
                 if (Projectile.type == ProjectileType<RefractiveBladeProj>())
                     damage = (int)(damage * 1.5f);
             }

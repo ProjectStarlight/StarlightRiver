@@ -21,7 +21,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
     {
         public static ChestLootSystem Instance { get; private set; } //temp fix until a better solution is implemented in a future pr
 
-        private const float displayCaseChance = 0.925f; // = 0.125f;
+        private const float displayCaseChance = 0.125f;
 
         private Dictionary<int, ChestRegionFlags> FramingToRegion;
         private HashSet<ChestRegionFlags> DisplayCaseReplaceable;
