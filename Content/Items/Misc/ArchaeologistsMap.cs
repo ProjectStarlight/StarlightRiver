@@ -38,15 +38,15 @@ namespace StarlightRiver.Content.Items.Misc
             Item.noUseGraphic = false;
             Item.consumable = true;
             Item.maxStack = 999;
+            Item.UseSound = SoundID.Item8;
         }
 
-        public override bool CanUseItem(Player player)
+        public override bool? UseItem(Player player)
         {
-            RevealArtifact(player);
-            return true;
+            return RevealArtifact(player);
         }
 
-        private void RevealArtifact(Player player)
+        private bool RevealArtifact(Player player)
         {
             List<Artifact> artifacts = new List<Artifact>();
             foreach (var item in TileEntity.ByID)
@@ -58,10 +58,12 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             if (artifacts.Count == 0)
-                return;
+                return false;
 
             Artifact nearestArtifact = artifacts.OrderBy(n => n.WorldPosition.Distance(player.Center)).FirstOrDefault();
             nearestArtifact.displayedOnMap = true;
+
+            return true;
         }
     }
 }
