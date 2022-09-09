@@ -53,6 +53,16 @@ namespace StarlightRiver.Content.Items.Dungeon
             Item.channel = true;
             Item.noUseGraphic = true;
         }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ModContent.ItemType<SteampunkSet.Buzzsaw>()).
+                AddIngredient(ItemID.HellstoneBar, 12).
+                AddIngredient(ItemID.Bone, 35).
+                AddTile(TileID.Anvils).
+                Register();
+        }
     }
 
     class ThousandthDegreeProjectile : ModProjectile
