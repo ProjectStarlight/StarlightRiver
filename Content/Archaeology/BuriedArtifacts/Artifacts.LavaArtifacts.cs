@@ -13,25 +13,6 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
-    public abstract class LavaArtifact : Artifact
-    {
-        public override bool CanBeRevealed => true;
-
-        public override string TexturePath => AssetDirectory.Archaeology + Name;
-
-        public override string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            GenericDraw(spriteBatch);
-        }
-
-        public override bool IsTileValidForEntity(int x, int y)
-        {
-            return true;
-        }
-    }
-
     public class LavaCharmArtifact : LavaArtifact
     {
         public override string TexturePath => "Terraria/Images/Item_906";

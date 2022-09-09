@@ -13,31 +13,6 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
-    public abstract class OceanArtifact : Artifact
-    {
-        public override bool CanBeRevealed => true;
-
-        public override string TexturePath => AssetDirectory.Archaeology + Name;
-
-        public override string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
-
-        public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>();
-
-        public override int SparkleRate => 40;
-
-        public override Color BeamColor => Color.Gold;
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            GenericDraw(spriteBatch);
-        }
-
-        public override bool IsTileValidForEntity(int x, int y)
-        {
-            return true;
-        }
-    }
-
     public class PirateChestArtifact : OceanArtifact
     {
         public override Vector2 Size => new Vector2(32, 24);
@@ -45,5 +20,11 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override float SpawnChance => 0.5f;
 
         public override int ItemType => ModContent.ItemType<PirateChestArtifactItem>();
+
+        public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>();
+
+        public override int SparkleRate => 40;
+
+        public override Color BeamColor => Color.Gold;
     }
 }

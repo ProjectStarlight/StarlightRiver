@@ -13,32 +13,16 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
-    public abstract class DesertArtifact : Artifact
-    {
-        public override bool CanBeRevealed => true;
-
-        public override string TexturePath => AssetDirectory.Archaeology + Name;
-
-        public override string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
-
+    public abstract class FossilArtifact : DesertArtifact
+    { 
         public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>();
 
         public override int SparkleRate => 40;
 
         public override Color BeamColor => Color.Gold;
-
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            GenericDraw(spriteBatch);
-        }
-
-        public override bool IsTileValidForEntity(int x, int y)
-        {
-            return true;
-        }
     }
 
-    public class DesertArtifact1 : DesertArtifact
+    public class DesertArtifact1 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(36, 62);
 
@@ -47,7 +31,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact1Item>();
     }
 
-    public class DesertArtifact2 : DesertArtifact
+    public class DesertArtifact2 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(30, 30);
 
@@ -56,7 +40,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact2Item>();
     }
 
-    public class DesertArtifact3 : DesertArtifact
+    public class DesertArtifact3 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(30, 28);
 
@@ -65,7 +49,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact3Item>();
     }
 
-    public class DesertArtifact4 : DesertArtifact
+    public class DesertArtifact4 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(24, 18);
 
@@ -74,7 +58,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact4Item>();
     }
 
-    public class DesertArtifact5 : DesertArtifact
+    public class DesertArtifact5 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(28, 20);
 
@@ -83,7 +67,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact5Item>();
     }
 
-    public class DesertArtifact6 : DesertArtifact
+    public class DesertArtifact6 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(38, 26);
 
@@ -92,7 +76,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
         public override int ItemType => ModContent.ItemType<DesertArtifact6Item>();
     }
 
-    public class DesertArtifact7 : DesertArtifact
+    public class DesertArtifact7 : FossilArtifact
     {
         public override Vector2 Size => new Vector2(30, 28);
 
