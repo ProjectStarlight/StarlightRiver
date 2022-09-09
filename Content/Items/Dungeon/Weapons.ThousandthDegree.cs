@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Dungeon
         public override void SetStaticDefaults()
         {
             //probably a bad tooltip idk
-            Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel, flying through enemies and sliding on tiles before returning\n'Rip and tear'");
+            Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel, melting through enemies and sliding on tiles before returning\n'Rip and tear'");
         }
 
         public override void SetDefaults()
@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 if (fireProjectile is null || !(fireProjectile.ModProjectile is ThousandthDegreeProjectileFired)) //weird bug where sometimes during Ceiros fight the game thought that the fireProjectile was a Ceiros attack projectile. Didn't actually do anything besides throw an error, weapon still worked as normal. This is just an extra safety check
                     return;
 
-                if (!((ThousandthDegreeProjectileFired)fireProjectile.ModProjectile).returning)
+                if (((ThousandthDegreeProjectileFired)fireProjectile.ModProjectile).lerpTimer <= 0)
                 {
                     float interpolant = Utils.GetLerpValue(5f, 25f, Projectile.Distance(fireProjectile.Center), true);
 
@@ -188,6 +188,15 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             owner.ChangeDir(Projectile.direction);
             owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(60f) * owner.direction);
+
+            if (Projectile.soundDelay == 0 && !fired)
+            {
+                Projectile.soundDelay = 20;
+                SoundEngine.PlaySound(SoundID.Item34, Projectile.position);
+            }
+
+            if (Projectile.alpha > 0)
+                Projectile.alpha -= 75;
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -206,6 +215,11 @@ namespace StarlightRiver.Content.Items.Dungeon
                     Dust.NewDustPerfect(wheelPos + Main.rand.NextVector2Circular(15f, 15f), ModContent.DustType<Dusts.Glow>(), direction.RotatedByRandom(0.35f) * -Main.rand.NextFloat(6f), 25, new Color(255, 50, 15), Main.rand.NextFloat(0.5f, 0.6f));
                     Dust.NewDustPerfect(wheelPos + Main.rand.NextVector2Circular(15f, 15f), DustID.Torch, direction.RotatedByRandom(0.3f) * -Main.rand.NextFloat(6f), 0, default, 1.25f);
                 }
+
+                for (int k = 0; k < 2; k++)
+                {
+                    Dust.NewDustPerfect(wheelPos + Main.rand.NextVector2Circular(15f, 15f) + new Vector2(0, 55), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedByRandom(0.35f) * -Main.rand.NextFloat(6f), 0, new Color(255, 160, 50), 1.9f);
+                }
             }
 
             Helper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
@@ -221,21 +235,21 @@ namespace StarlightRiver.Content.Items.Dungeon
             Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.DungeonItem + "ThousandthDegreeProjectileFired").Value;
             Texture2D wheelTexGlow = ModContent.Request<Texture2D>(AssetDirectory.DungeonItem + "ThousandthDegreeProjectileFired_Glowy").Value;
             Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
 
             if (flashTimer > 0)
             {
                 Color color = Color.Lerp(new Color(255, 50, 15), Color.Transparent, 1 - (flashTimer / 20f));
                 color.A = 0;
-                Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
+                Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
             }
 
             Color bloomColor = Color.Lerp(Color.Transparent, new Color(255, 50, 15, 0), CurrentHeat / MAXHEAT);
 
             if (!fired)
             {
-                Main.spriteBatch.Draw(wheelTex, wheelPos - Main.screenPosition, null, Color.White, wheelRot, wheelTex.Size() / 2f, Projectile.scale, Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
-                Main.spriteBatch.Draw(wheelTexGlow, wheelPos - Main.screenPosition, null, bloomColor, wheelRot, wheelTexGlow.Size() / 2f, Projectile.scale, Projectile.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
+                Main.spriteBatch.Draw(wheelTex, wheelPos - Main.screenPosition, null, Color.White, wheelRot, wheelTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
+                Main.spriteBatch.Draw(wheelTexGlow, wheelPos - Main.screenPosition, null, bloomColor, wheelRot, wheelTexGlow.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0, 0f);
 
                 for (int i = 0; i < 3; i++)
                 {
@@ -422,7 +436,7 @@ namespace StarlightRiver.Content.Items.Dungeon
                 Vector2 pos = Projectile.direction == 1 ? Projectile.BottomLeft : Projectile.BottomRight;
                 Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 25f, 0), ModContent.DustType<Dusts.GlowFastDecelerate>(), (Vector2.UnitX * Projectile.direction) + Vector2.UnitY * Main.rand.NextFloat(), 0, new Color(255, 160, 50), Main.rand.NextFloat(0.3f, 0.5f));
                 
-                Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 45f, 35), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.UnitX * -Projectile.direction) + Vector2.UnitY * -Main.rand.NextFloat(2f, 3f), 0, new Color(255, 160, 50), 1.9f);
+                Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 45f, 45), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.UnitX * -Projectile.direction) + Vector2.UnitY * -Main.rand.NextFloat(1f, 2f), 0, new Color(255, 160, 50), 2.3f);
             }
             else if (!collided)
             {
