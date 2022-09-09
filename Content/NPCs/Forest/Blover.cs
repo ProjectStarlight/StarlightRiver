@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
         private bool blowing = false;
 
-        private int blowCounter = 0;
+        private ref float blowCounter => ref NPC.ai[0];
 
         private Player target => Main.player[NPC.target];
 
