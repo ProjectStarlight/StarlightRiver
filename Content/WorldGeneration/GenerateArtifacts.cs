@@ -103,10 +103,15 @@ namespace StarlightRiver.Core
         {
             int i = range.Left + Main.rand.Next(range.Width);
             int j = range.Top + Main.rand.Next(range.Height);
-            if (!WorldGen.InWorld(i, j)) return false;
+            if (!WorldGen.InWorld(i, j) || !artifact.CanGenerate(i, j)) return false;
 
-            Tile testTile = Framing.GetTileSafely(i, j);
-            if (!testTile.HasTile || !validTiles.Contains(testTile.TileType)) return false;
+            for (int x = 0; x < artifact.Size.X / 16; x++)
+                for (int y = 0; y < artifact.Size.Y / 16; y++)
+                {
+                    Tile testTile = Main.tile[x + i, y + j];
+                    if (!testTile.HasTile || !validTiles.Contains(testTile.TileType))
+                        return false;
+                }
 
             artifact.Place(i, j);
             return true;

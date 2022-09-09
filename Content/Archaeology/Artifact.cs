@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.Archaeology
 
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
+        public virtual bool CanGenerate(int i, int j) => true;
+
         public virtual void Draw(SpriteBatch spriteBatch) { }
 
         public override void Update()

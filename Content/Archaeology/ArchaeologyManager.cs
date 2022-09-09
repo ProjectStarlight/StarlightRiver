@@ -1,8 +1,8 @@
 ﻿//Artifact general TODO:
-//Better spawning method that checks to make sure the entire thing is buried
 //Better tilechecck call method
 //Better detour for drawing
 //Uncomment buggy auroracle arena spawning
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
