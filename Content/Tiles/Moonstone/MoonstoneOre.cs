@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
         public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
         public override void SetStaticDefaults() =>
-            this.QuickSet(50, DustType<Dusts.Electric>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOreItem>(), true, true, "Moonstone Ore");
+            this.QuickSet(50, DustType<Dusts.Stone>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOreItem>(), true, true, "Moonstone Ore");
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {

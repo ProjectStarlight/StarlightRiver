@@ -156,6 +156,8 @@ namespace StarlightRiver
                         TileDrawOverLoader.ResizeTarget();
                     if (BreacherArmorHelper.NPCTarget != null)
                         BreacherArmorHelper.ResizeTarget();
+                    if (MoonstoneBiomeSystem.target != null)
+                        MoonstoneBiomeSystem.ResizeTarget();
                 }
                 _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
                 _lastViewSize = Main.ViewSize;
