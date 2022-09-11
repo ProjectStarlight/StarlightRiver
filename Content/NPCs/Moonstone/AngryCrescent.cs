@@ -160,11 +160,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                         barrierNPC.MaxBarrier = NPC.lifeMax;
                         barrierNPC.RechargeRate = 12;
                         barrierNPC.RechargeDelay = 240;
+                        barrierNPC.DrawGlow = false;
                     }
                     else
                     {
                         BarrierNPC barrierNPC = NPC.GetGlobalNPC<BarrierNPC>();
                         barrierNPC.RechargeRate = 0;
+                        barrierNPC.DrawGlow = false;
                     }
 
                     if (NPC.Distance(player.Center) < 800f && AttackDelay <= 0 && !player.dead)
