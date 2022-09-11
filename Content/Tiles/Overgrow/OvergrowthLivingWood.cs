@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			ItemDrop = ModContent.ItemType<OvergrowthLivingWoodItem>();
 
-			DustType = DustID.t_LivingWood;
+			DustType = ModContent.DustType<OvergrowthLivingWoodDust>();
 
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Overgrown Living Wood");
@@ -103,7 +103,17 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 	public class OvergrowthLivingWoodItem : QuickTileItem
 	{
-		public override string Texture => AssetDirectory.Debug;
-		public OvergrowthLivingWoodItem() : base("Overgrown Living Wood", "", "OvergrowthLivingWoodTile", texturePath: "Debug Item") { }
+		public override string Texture => AssetDirectory.OvergrowTile + Name;
+		public OvergrowthLivingWoodItem() : base("Overgrown Living Wood", "[PH] make this a wand and stuffs", "OvergrowthLivingWoodTile") { }
 	}
+	
+	class OvergrowthLivingWoodDust : ModDust
+    {
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
+
+        public override void SetStaticDefaults()
+        {
+			UpdateType = DustID.t_LivingWood;
+        }
+    }
 }
