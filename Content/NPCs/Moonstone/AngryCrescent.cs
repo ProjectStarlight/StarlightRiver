@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Items.Moonstone;
@@ -244,12 +243,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
                         if (pointOnChain == 7 && !playedWhoosh)
                         {
-                            Helper.PlayPitched("Effects/HeavyWhoosh", 0.8f, -0.05f, NPC.Center);
+                            Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, -0.05f, NPC.Center);
                             playedWhoosh = true;
                         }
                             
                         if (pointOnChain >= 14 && NPC.Distance(curvePositions[pointOnChain]) < 20f)
                         {
+                            curving = false;
                             playedWhoosh = false;
                             AttackDelay = 180;
                             AIState = 0;
@@ -257,7 +257,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                             NPC.velocity *= 0.35f;
                         }
                     }
-
                     break;
             }
         }
@@ -337,9 +336,14 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             }
         }
 
+        public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+        {
+             return curving;
+        }
+
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
-            return spawnInfo.Player.InModBiome(ModContent.GetInstance<MoonstoneBiome>()) ? 60 : 0;
+            return spawnInfo.Player.InModBiome(ModContent.GetInstance<MoonstoneBiome>()) ? 50 : 0;
         }
 
         public override void ModifyNPCLoot(NPCLoot npcLoot)
