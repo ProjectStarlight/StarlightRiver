@@ -1,4 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿//TODO:
+//Make moon runes handled in a separate file from tilecounts
+//Make moon rune shader synced with screen
+
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Tiles.Underground;
@@ -145,9 +149,9 @@ namespace StarlightRiver.Content.Biomes
 
 			Main.spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-			if (Main.rand.NextBool(30))
-				particleSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(-0.1f, 0.1f), Main.rand.NextFloat(-1.4f, -0.8f)), 0, 1, Color.White,
-					3000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.screenHeight + 20), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32)));
+			if (Main.rand.NextBool(90))
+				particleSystem.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f,0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32)));
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default);
@@ -162,9 +166,10 @@ namespace StarlightRiver.Content.Biomes
         {
             particle.Position = particle.StoredPosition - Main.screenPosition;
             particle.StoredPosition += particle.Velocity;
-            float opacity = 1;
+			particle.Velocity = particle.Velocity.RotatedByRandom(0.1f);
+			float fade = MathHelper.Min(MathHelper.Min(particle.Timer / 200f, (2000 - particle.Timer) / 200f), 0.4f);
             Color color = Color.White;
-            particle.Color = color * opacity * this.opacity;
+            particle.Color = color * this.opacity * fade;
             particle.Timer--;
         }
 	}
