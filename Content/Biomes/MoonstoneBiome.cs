@@ -1,6 +1,9 @@
 ﻿//TODO:
 //Make moon runes handled in a separate file from tilecounts
 //Make moon rune shader synced with screen
+//Make moonstone generation better
+//Make moonstone visuals not clip downward
+//Make moonstone particles not persist onto the menu
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
@@ -62,8 +65,8 @@ namespace StarlightRiver.Content.Biomes
 		private float opacity = 0;
 
 		public ParticleSystem particleSystem;
-		public ParticleSystem particleSystem_Blue;
-		public ParticleSystem particleSystem_Purple;
+		public ParticleSystem particleSystemMedium;
+		public ParticleSystem particleSystemLarge;
 
 
 		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
@@ -79,6 +82,8 @@ namespace StarlightRiver.Content.Biomes
 			ResizeTarget();
 
 			particleSystem = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunes", UpdateMoonParticles);
+			particleSystemMedium = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesMedium", UpdateMoonParticles);
+			particleSystemLarge = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesLarge", UpdateMoonParticles);
 
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
 			Main.OnPreDraw += DrawToParticleTarget;
@@ -110,6 +115,8 @@ namespace StarlightRiver.Content.Biomes
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			particleSystem.DrawParticles(Main.spriteBatch);
+			particleSystemMedium.DrawParticles(Main.spriteBatch);
+			particleSystemLarge.DrawParticles(Main.spriteBatch);
 
 			spriteBatch.End();
 			gD.SetRenderTargets(bindings);
@@ -149,9 +156,17 @@ namespace StarlightRiver.Content.Biomes
 
 			Main.spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-			if (Main.rand.NextBool(90))
-				particleSystem.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f,0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+			if (Main.rand.NextBool(150))
+				particleSystem.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.35f, 0.35f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
 					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 32 * Main.rand.Next(6), 32, 32)));
+
+			if (Main.rand.NextBool(300))
+				particleSystemMedium.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.25f, 0.25f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 46 * Main.rand.Next(4), 50, 46)));
+
+			if (Main.rand.NextBool(600))
+				particleSystemLarge.AddParticle(new Particle(Vector2.Zero, Main.rand.NextVector2Circular(0.2f, 0.2f), 0, Main.rand.NextFloat(0.8f, 1.2f), Color.White,
+					2000, new Vector2(Main.screenPosition.X + Main.rand.Next(Main.screenWidth), Main.screenPosition.Y + Main.rand.Next(Main.screenHeight)), new Rectangle(0, 60 * Main.rand.Next(4), 50, 60)));
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default);
@@ -164,7 +179,19 @@ namespace StarlightRiver.Content.Biomes
 
         protected void UpdateMoonParticles(Particle particle)
         {
-            particle.Position = particle.StoredPosition - Main.screenPosition;
+			float parallax = 0.6f;
+			if (particle.Frame.Y % 46 == 0)
+				parallax = 0.8f;
+			if (particle.Frame.Y % 60 == 0)
+				parallax = 1f;
+
+
+			if (particle.Position == Vector2.Zero)
+            {
+				particle.StoredPosition -= Main.screenPosition * (1 - parallax);
+            }
+
+            particle.Position = particle.StoredPosition - (Main.screenPosition * parallax);
             particle.StoredPosition += particle.Velocity;
 			particle.Velocity = particle.Velocity.RotatedByRandom(0.1f);
 			float fade = MathHelper.Min(MathHelper.Min(particle.Timer / 200f, (2000 - particle.Timer) / 200f), 0.4f);
