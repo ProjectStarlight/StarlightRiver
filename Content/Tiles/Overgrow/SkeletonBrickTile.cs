@@ -20,11 +20,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Main.tileBrick[Type] = true;
             HitSound = SoundID.Tink;
             Main.tileBlockLight[Type] = true;
-            AddMapEntry(Color.Black);
+            AddMapEntry(new Color(55, 55, 35));
 
             ItemDrop = ModContent.ItemType<SkeletonBrickItem>();
 
-            DustType = DustID.DungeonBlue;
+			DustType = DustID.Bone;
 
             ModTranslation name = CreateMapEntryName();
             name.SetDefault("Skeleton Brick");
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
     public class SkeletonBrickItem : QuickTileItem
     {
-        public override string Texture => AssetDirectory.Debug;
-        public SkeletonBrickItem() : base("Skeletal Brick", "", "SkeletonBrickTile", texturePath: "Debug Item") { }
+        public override string Texture => AssetDirectory.OvergrowTile + Name;
+        public SkeletonBrickItem() : base("Skeletal Brick", "", "SkeletonBrickTile") { }
     }
 }
