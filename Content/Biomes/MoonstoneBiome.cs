@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Biomes
 
 			effect.Parameters["screenWidth"].SetValue(target.Width);
 			effect.Parameters["screenHeight"].SetValue(target.Height);
-
+			effect.Parameters["screenPosition"].SetValue(Main.screenPosition); 
 			effect.Parameters["drawOriginal"].SetValue(false);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect);

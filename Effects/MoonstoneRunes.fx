@@ -18,14 +18,17 @@ float4 color2;
 float screenWidth;
 float screenHeight;
 
+float2 screenPosition;
+
 bool drawOriginal = true;
 
 float opacity = 1.0f;
 
 float4 MainPS(float2 uv : TEXCOORD) : COLOR 
 { 
-	float noiseR1 = tex2D(noiseSampler1, uv.xy).r;
-	float noiseR2 = tex2D(noiseSampler2, uv.xy).r;
+	float2 screenSize = float2(screenWidth, screenHeight);
+	float noiseR1 = tex2D(noiseSampler1, uv.xy + (screenPosition / screenSize)).r;
+	float noiseR2 = tex2D(noiseSampler2, uv.xy + (screenPosition / screenSize)).r;
 	
 	float4 whiteColor = tex2D(uImage0, uv.xy);
 	
