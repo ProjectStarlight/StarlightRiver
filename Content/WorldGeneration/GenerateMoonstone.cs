@@ -3,6 +3,7 @@ using StarlightRiver.Content.Tiles.Palestone;
 using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.Moonstone;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -160,31 +161,107 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			#region actual moonstone generation, made by Wombat
-			FastNoiseLite noise = new FastNoiseLite();
-			noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-			noise.SetFractalType(FastNoiseLite.FractalType.FBm);
-			noise.SetFrequency(0.05f);
+			#region actual moonstone generation
 
-			float radius = 16;
-			float xFrequency = 1.5f;
-			float yFrequency = 1;
-			float strength = 1;
-
-			for (int y = (int)(j - radius * 1.5f / yFrequency); y <= j + radius * 1.5f / yFrequency; y++)
-			{
-				for (int x = (int)(i - radius * 1.5f / xFrequency); x <= i + radius * 1.5f / xFrequency; x++)
-				{
-					if (noise.GetNoise(x * xFrequency, y * yFrequency) <= (1 - (Vector2.Distance(new Vector2((x - i) * xFrequency + i, (y - j) * yFrequency + j), new Vector2(i, j)) / radius)) * strength)
-					{
-						Framing.GetTileSafely(x, y).HasTile = true;
-						Framing.GetTileSafely(x, y).TileType = (ushort)ModContent.TileType<MoonstoneOre>(); 
-					}
-				}
-			}
+			Vector2 origin = new Vector2(i, j + 15);
+			GenerateTriangleRecursive(origin + 2.0f.ToRotationVector2() * 15, origin + 4.0f.ToRotationVector2() * 10, origin + 6.0f.ToRotationVector2() * 15, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)origin.X, (int)origin.Y);
 			#endregion
 
 			return true;
         }
+
+		public static void GenerateTriangleRecursive(Vector2 point1, Vector2 point2, Vector2 point3, int type, int trianglesLeft, int originalX, int originalY, List<Vector2> totalPoints = default)
+        {
+			if (trianglesLeft <= 0)
+			{
+				/*Vector2 finalPoint1 = totalPoints[Main.rand.Next(totalPoints.Count)];
+				Vector2 finalPoint2 = totalPoints[Main.rand.Next(totalPoints.Count)];
+				Vector2 finalPoint3 = new Vector2(originalX, originalY - Main.rand.Next(30,50));
+				GenerateTriangle(finalPoint1, finalPoint2, finalPoint3, type);*/
+				return;
+			}
+
+			if (totalPoints == default)
+				totalPoints = new List<Vector2>();
+
+			List<Vector2> points = GenerateTriangle(point1, point2, point3, type, trianglesLeft != 6);
+
+			if (points.Count == 0)
+				return;
+
+			foreach (Vector2 point in points)
+            {
+				if (!totalPoints.Contains(point))
+					totalPoints.Add(point);
+            }
+
+			int tries = 0;
+			int branches = Main.rand.Next(2) + 1;
+			for (int i = 0; i < branches; i++)
+			{
+
+				Vector2 newPoint1 = points[Main.rand.Next(points.Count)];
+				Vector2 newPoint2 = totalPoints[Main.rand.Next(totalPoints.Count)];
+				newPoint2.X = originalX;
+				Vector2 newPoint3 = new Vector2(Math.Sign((trianglesLeft % 2) - 0.5f) * Main.rand.Next(35, 45), 0) + new Vector2(originalX, (originalY - 60) + (trianglesLeft * 8));
+				newPoint3.X = MathHelper.Lerp(newPoint3.X, MathHelper.Lerp(newPoint1.X, newPoint2.X, 0.5f), 1 - (trianglesLeft / 15f));
+
+				float lengthA = (newPoint2 - newPoint3).Length();
+				float lengthB = (newPoint3 - newPoint1).Length();
+				float lengthC = (newPoint1 - newPoint2).Length();
+
+				float a2 = lengthA * lengthA;
+				float b2 = lengthB * lengthB;
+				float c2 = lengthC * lengthC;
+
+				float angleA = (float)Math.Acos((a2 - b2 - c2) / (-2 * lengthB * lengthC));
+				float angleB = (float)Math.Acos((b2 - a2 - c2) / (-2 * lengthA * lengthC));
+				float angleC = (float)Math.Acos((c2 - b2 - a2) / (-2 * lengthA * lengthB));
+
+				float minAngle = Math.Min(angleA, Math.Min(angleB, angleC));
+
+				if (minAngle < 0.7f && tries < 999)
+				{
+					tries++; 
+					i--;
+					continue;
+				}
+				GenerateTriangleRecursive(newPoint1, newPoint2, newPoint3, type, trianglesLeft - 1, originalX, originalY, totalPoints);
+			}
+		}
+
+		private static List<Vector2> GenerateTriangle(Vector2 point1, Vector2 point2, Vector2 point3, int type, bool place)
+        {
+			List<Vector2> points = new List<Vector2>();
+			for (int i = (int)Math.Min(Math.Min(point1.X, point2.X), point3.X); i < (int)Math.Max(Math.Max(point1.X, point2.X), point3.X); i++)
+				for (int j = (int)Math.Min(Math.Min(point1.Y, point2.Y), point3.Y); j < (int)Math.Max(Math.Max(point1.Y, point2.Y), point3.Y); j++)
+				{
+					Vector2 point = new Vector2(i, j);
+					if (InTriangle(point, point1, point2, point3))
+					{
+						points.Add(point);
+						if (place)
+						{
+							Framing.GetTileSafely(i, j).HasTile = true;
+							Framing.GetTileSafely(i, j).BlockType = BlockType.Solid;
+							Framing.GetTileSafely(i, j).TileType = (ushort)type;
+						}
+
+					}
+				}
+			return points;
+		}
+
+		private static bool InTriangle(Vector2 testPoint, Vector2 p0, Vector2 p1, Vector2 p2) //Code copied from stackoverflow
+        {
+			var s = (p0.X - p2.X) * (testPoint.Y - p2.Y) - (p0.Y - p2.Y) * (testPoint.X - p2.X);
+			var t = (p1.X - p0.X) * (testPoint.Y - p0.Y) - (p1.Y - p0.Y) * (testPoint.X - p0.X);
+
+			if ((s < 0) != (t < 0) && s != 0 && t != 0)
+				return false;
+
+			var d = (p2.X - p1.X) * (testPoint.Y - p1.Y) - (p2.Y - p1.Y) * (testPoint.X - p1.X);
+			return d == 0 || (d < 0) == (s + t <= 0);
+		}
     }
 }

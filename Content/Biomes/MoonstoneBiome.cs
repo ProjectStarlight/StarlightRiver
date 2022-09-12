@@ -1,9 +1,15 @@
 ﻿//TODO:
 //Make moon runes handled in a separate file from tilecounts
-//Make moon rune shader synced with screen
-//Make moonstone generation better
 //Make moonstone visuals not clip downward
 //Make moonstone particles not persist onto the menu
+
+//TODO ON WORLDGEN:
+//Remove stray blocks
+//Smooth and slope
+//Update tiles!
+//Minimum tile count
+//Make it a garaunteed spawn
+//Make it more consistant
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;

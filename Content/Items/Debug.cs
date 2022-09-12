@@ -59,8 +59,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
-            Core.GenerateMoonstone.DropMoonstone();
-            return false;
+            Vector2 origin = Main.MouseWorld / 16;
+            Core.GenerateMoonstone.GenerateTriangleRecursive(origin + 2.0f.ToRotationVector2() * 17, origin + 4.0f.ToRotationVector2() * 17, origin + 6.0f.ToRotationVector2() * 17, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)origin.X, (int)origin.Y);
+            return true;
             var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
             dungeon.GenerateDungeon(new Point16(30, 30), 8);
             return true;
