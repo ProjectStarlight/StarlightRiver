@@ -173,13 +173,7 @@ namespace StarlightRiver.Core
 		public static void GenerateTriangleRecursive(Vector2 point1, Vector2 point2, Vector2 point3, int type, int trianglesLeft, int originalX, int originalY, List<Vector2> totalPoints = default)
         {
 			if (trianglesLeft <= 0)
-			{
-				/*Vector2 finalPoint1 = totalPoints[Main.rand.Next(totalPoints.Count)];
-				Vector2 finalPoint2 = totalPoints[Main.rand.Next(totalPoints.Count)];
-				Vector2 finalPoint3 = new Vector2(originalX, originalY - Main.rand.Next(30,50));
-				GenerateTriangle(finalPoint1, finalPoint2, finalPoint3, type);*/
 				return;
-			}
 
 			if (totalPoints == default)
 				totalPoints = new List<Vector2>();
