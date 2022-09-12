@@ -163,14 +163,12 @@ namespace StarlightRiver.Core
 
 			#region actual moonstone generation
 
-			Vector2 origin = new Vector2(i, j + 15);
-			GenerateTriangleRecursive(origin + 2.0f.ToRotationVector2() * 15, origin + 4.0f.ToRotationVector2() * 10, origin + 6.0f.ToRotationVector2() * 15, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)origin.X, (int)origin.Y);
 			#endregion
 
 			return true;
         }
 
-		public static void GenerateTriangleRecursive(Vector2 point1, Vector2 point2, Vector2 point3, int type, int trianglesLeft, int originalX, int originalY, List<Vector2> totalPoints = default)
+		public static void GenerateTriangleRecursive(Vector2 point1, Vector2 point2, Vector2 point3, int type, int trianglesLeft, int originalX, int originalY, List<Vector2> pointsToPlace, ref int totalTriangles, List<Vector2> totalPoints = default)
         {
 			if (trianglesLeft <= 0)
 				return;
@@ -178,16 +176,25 @@ namespace StarlightRiver.Core
 			if (totalPoints == default)
 				totalPoints = new List<Vector2>();
 
-			List<Vector2> points = GenerateTriangle(point1, point2, point3, type, trianglesLeft != 6);
+			List<Vector2> points = GenerateTriangle(point1, point2, point3);
 
 			if (points.Count == 0)
 				return;
 
+			bool triangleValid = false;
 			foreach (Vector2 point in points)
             {
 				if (!totalPoints.Contains(point))
 					totalPoints.Add(point);
+				if (!pointsToPlace.Contains(point) && trianglesLeft != 6)
+				{
+					pointsToPlace.Add(point);
+					triangleValid = true;
+				}
             }
+
+			if (triangleValid)
+				totalTriangles++;
 
 			int tries = 0;
 			int branches = Main.rand.Next(2) + 1;
@@ -220,11 +227,11 @@ namespace StarlightRiver.Core
 					i--;
 					continue;
 				}
-				GenerateTriangleRecursive(newPoint1, newPoint2, newPoint3, type, trianglesLeft - 1, originalX, originalY, totalPoints);
+				GenerateTriangleRecursive(newPoint1, newPoint2, newPoint3, type, trianglesLeft - 1, originalX, originalY, pointsToPlace, ref totalTriangles, totalPoints);
 			}
 		}
 
-		private static List<Vector2> GenerateTriangle(Vector2 point1, Vector2 point2, Vector2 point3, int type, bool place)
+		private static List<Vector2> GenerateTriangle(Vector2 point1, Vector2 point2, Vector2 point3)
         {
 			List<Vector2> points = new List<Vector2>();
 			for (int i = (int)Math.Min(Math.Min(point1.X, point2.X), point3.X); i < (int)Math.Max(Math.Max(point1.X, point2.X), point3.X); i++)
@@ -232,16 +239,7 @@ namespace StarlightRiver.Core
 				{
 					Vector2 point = new Vector2(i, j);
 					if (InTriangle(point, point1, point2, point3))
-					{
 						points.Add(point);
-						if (place)
-						{
-							Framing.GetTileSafely(i, j).HasTile = true;
-							Framing.GetTileSafely(i, j).BlockType = BlockType.Solid;
-							Framing.GetTileSafely(i, j).TileType = (ushort)type;
-						}
-
-					}
 				}
 			return points;
 		}

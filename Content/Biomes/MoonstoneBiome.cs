@@ -7,9 +7,7 @@
 //Remove stray blocks
 //Smooth and slope
 //Update tiles!
-//Minimum tile count
 //Make it a garaunteed spawn
-//Make it more consistant
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;

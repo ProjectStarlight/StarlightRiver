@@ -7,6 +7,8 @@ using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Linq;
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -60,9 +62,27 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
         {
             Vector2 origin = Main.MouseWorld / 16;
-            Core.GenerateMoonstone.GenerateTriangleRecursive(origin + 2.0f.ToRotationVector2() * 17, origin + 4.0f.ToRotationVector2() * 17, origin + 6.0f.ToRotationVector2() * 17, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)origin.X, (int)origin.Y);
+            List<Vector2> pointsToPlace = new List<Vector2>();
+            int tries = 0;
+            int totalTriangles = 0;
+
+            while ((pointsToPlace.Count < 400 || totalTriangles < 5) && tries < 99)
+            {
+                tries++;
+                pointsToPlace = new List<Vector2>();
+                totalTriangles = 0;
+                GenerateMoonstone.GenerateTriangleRecursive(origin + 2.0f.ToRotationVector2() * 15, origin + 4.0f.ToRotationVector2() * 10, origin + 6.0f.ToRotationVector2() * 15, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)origin.X, (int)origin.Y, pointsToPlace, ref totalTriangles);
+            }
+
+            foreach (Vector2 point in pointsToPlace)
+            {
+                Tile tile = Framing.GetTileSafely((int)point.X, (int)point.Y);
+                tile.HasTile = true;
+                tile.BlockType = BlockType.Solid;
+                tile.TileType = (ushort)ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>();
+            }
             return true;
-            var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
+            /*var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
             dungeon.GenerateDungeon(new Point16(30, 30), 8);
             return true;
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
@@ -73,7 +93,7 @@ namespace StarlightRiver.Content.Items
             if (tileData.HasAuroraWater)
                 Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY); ;
 
-            return true;
+            return true;*/
 
             /*
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
