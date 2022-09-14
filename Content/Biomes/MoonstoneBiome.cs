@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Biomes
 			if (moonstoneBlockCount < 150)
 			{
 				if (distortion > 0)
-					distortion -= 0.02f;
+					distortion -= 0.002f;
 
 				if (opacity > 0)
 					opacity -= 0.05f;
@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Biomes
 
         private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
         {
-			if (opacity > 0 && !drawingBGtarget)
+			if (distortion > 0 && !drawingBGtarget)
 			{
 
 				Main.spriteBatch.End();
