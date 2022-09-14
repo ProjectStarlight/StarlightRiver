@@ -4,10 +4,10 @@
 //Make moonstone particles not persist onto the menu
 
 //TODO ON WORLDGEN:
-//Remove stray blocks
-//Smooth and slope
-//Update tiles!
 //Make it a garaunteed spawn
+//Move to GenerateMoonstone
+//Wall updates
+//General cleanup of post-shape stuff
 
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
@@ -72,8 +72,14 @@ namespace StarlightRiver.Content.Biomes
 		public ParticleSystem particleSystemMedium;
 		public ParticleSystem particleSystemLarge;
 
+        public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
+        {
+			//Main.ColorOfTheSkies = Color.Lerp(Main.ColorOfTheSkies, new Color(15, 10, 25), opacity);
+			//backgroundColor = Color.Lerp(backgroundColor, new Color(75, 35, 75), opacity);
+			//tileColor = Color.Lerp(tileColor, new Color(65, 25, 65), opacity);
+		}
 
-		public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
+        public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 		{
 			moonstoneBlockCount = tileCounts[ModContent.TileType<MoonstoneOre>()];
 		}
@@ -90,10 +96,35 @@ namespace StarlightRiver.Content.Biomes
 			particleSystemLarge = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesLarge", UpdateMoonParticles);
 
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
+           // On.Terraria.Main.DrawSurfaceBG += DistortBG;
 			Main.OnPreDraw += DrawToParticleTarget;
 		}
 
-		public static void ResizeTarget()
+        /*private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
+        {
+			orig(self);
+			if (opacity > 0)
+			{
+				Main.NewText(Main.drawToScreen.ToString());
+				Main.spriteBatch.End();
+
+				Effect effect = Filters.Scene["MoonstoneDistortion"].GetShader().Shader;
+				effect.Parameters["intensity"].SetValue(0.3f);
+				effect.Parameters["repeats"].SetValue(1);
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
+				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
+				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+
+				float x2 = (Main.sceneBackgroundPos.X + (float)Main.offScreenRange) * Main.caveParallax - (float)Main.offScreenRange;
+				Main.spriteBatch.Draw(Main.instance.backgroundTarget, new Vector2(x2, Main.sceneBackgroundPos.Y), Color.Red);
+
+				Main.spriteBatch.End();
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
+			}
+		}*/
+
+        public static void ResizeTarget()
 		{
 			Main.QueueMainThreadAction(() =>
 			{
@@ -138,7 +169,7 @@ namespace StarlightRiver.Content.Biomes
 					return;
 			}
 			else if (opacity < 1)
-				opacity += 0.05f;
+				opacity += 0.025f;
 
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;

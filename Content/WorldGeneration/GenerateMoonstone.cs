@@ -204,7 +204,7 @@ namespace StarlightRiver.Core
 				Vector2 newPoint1 = points[Main.rand.Next(points.Count)];
 				Vector2 newPoint2 = totalPoints[Main.rand.Next(totalPoints.Count)];
 				newPoint2.X = originalX;
-				Vector2 newPoint3 = new Vector2(Math.Sign((trianglesLeft % 2) - 0.5f) * Main.rand.Next(35, 45), 0) + new Vector2(originalX, (originalY - 60) + (trianglesLeft * 8));
+				Vector2 newPoint3 = new Vector2(Math.Sign((trianglesLeft % 2) - 0.5f) * Main.rand.Next(20, 25), 0) + new Vector2(originalX, (originalY - 60) + (trianglesLeft * 8));
 				newPoint3.X = MathHelper.Lerp(newPoint3.X, MathHelper.Lerp(newPoint1.X, newPoint2.X, 0.5f), 1 - (trianglesLeft / 15f));
 
 				float lengthA = (newPoint2 - newPoint3).Length();
@@ -255,5 +255,45 @@ namespace StarlightRiver.Core
 			var d = (p2.X - p1.X) * (testPoint.Y - p1.Y) - (p2.Y - p1.Y) * (testPoint.X - p1.X);
 			return d == 0 || (d < 0) == (s + t <= 0);
 		}
+
+		public static List<Vector2> RaiseTerrain(int x, int y, int toRaise)
+        {
+			List<Vector2> ret = new List<Vector2>();
+			int count = toRaise;
+			for (int j = y; j < y + 60; j++)
+            {
+				Tile tile = Main.tile[x, j];
+				if (tile.HasTile && Main.tileSolid[tile.TileType])
+				{
+					if (count < 0)
+					{
+						ret.Add(new Vector2(x, j));
+						tile.HasTile = false;
+						count++;
+					}
+					else if (count > 0)
+					{
+						ret.Add(new Vector2(x, j - toRaise));
+						ret.Add(new Vector2(x, j));
+
+						Tile tile2 = Main.tile[x, j - toRaise];
+						tile2.ClearEverything();
+						tile2.TileType = tile.TileType;
+						tile2.CopyFrom(tile);
+						count--;
+					}
+					else
+					{
+						Tile grassToDirt = Main.tile[x, j + 1];
+						if (toRaise < 0 && grassToDirt.TileType == TileID.Grass)
+							grassToDirt.TileType = TileID.Dirt;
+						return ret;
+					}
+				}
+				else
+					WorldGen.KillTile(x, j, false, false, true);
+            }
+			return ret;
+        }
     }
 }
