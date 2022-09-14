@@ -81,9 +81,9 @@ namespace StarlightRiver.Content.Biomes
 
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
-			Main.ColorOfTheSkies = Color.Lerp(Main.ColorOfTheSkies, new Color(15, 10, 25), opacity);
-			backgroundColor = Color.Lerp(backgroundColor, new Color(75, 35, 75), opacity);
-			tileColor = Color.Lerp(tileColor, new Color(65, 25, 65), opacity);
+			Main.ColorOfTheSkies = Color.Lerp(Main.ColorOfTheSkies, new Color(25, 15, 35), opacity);
+			backgroundColor = Color.Lerp(backgroundColor, new Color(120, 65, 120), opacity);
+			tileColor = Color.Lerp(tileColor, new Color(120, 65, 120), opacity);
 		}
 
         public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Biomes
 			if (moonstoneBlockCount < 150)
 			{
 				if (distortion > 0)
-					distortion -= 0.002f;
+					distortion -= 0.005f;
 
 				if (opacity > 0)
 					opacity -= 0.05f;
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Biomes
 					distortion += 0.001f;
 
 				if (opacity < 1)
-					opacity += 0.025f;
+					opacity += 0.001f;
 			}
 		}
 

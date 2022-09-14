@@ -93,8 +93,17 @@ namespace StarlightRiver.Content.Items
                 GenerateMoonstone.GenerateTriangleRecursive(triangleOrigin + 2.0f.ToRotationVector2() * 15, triangleOrigin + 4.0f.ToRotationVector2() * 10, triangleOrigin + 6.0f.ToRotationVector2() * 15, ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>(), 6, (int)triangleOrigin.X, (int)triangleOrigin.Y, pointsToPlace, ref totalTriangles);
             }
 
+            float angle = Main.rand.NextFloat(-0.5f, 0.5f);
+
+            List<Vector2> rotatedPointsToPlace = new List<Vector2>();
+            foreach(Vector2 point in pointsToPlace)
+            {
+                Vector2 newPoint = ((point - origin).RotatedBy(angle)) + origin;
+                rotatedPointsToPlace.Add(newPoint);
+            }
+
             int tileType = ModContent.TileType<Content.Tiles.Moonstone.MoonstoneOre>();
-            foreach (Vector2 point in pointsToPlace)
+            foreach (Vector2 point in rotatedPointsToPlace)
             {
                 Tile tile = Framing.GetTileSafely((int)point.X, (int)point.Y);
                 tile.HasTile = true;
@@ -102,7 +111,7 @@ namespace StarlightRiver.Content.Items
                 tile.TileType = (ushort)tileType;
             }
 
-            foreach (Vector2 point in pointsToPlace)
+            foreach (Vector2 point in rotatedPointsToPlace)
             {
                 Tile tile1 = Framing.GetTileSafely((int)point.X + 1, (int)point.Y);
                 Tile tile2 = Framing.GetTileSafely((int)point.X - 1, (int)point.Y);
@@ -114,7 +123,23 @@ namespace StarlightRiver.Content.Items
                 }
             }
 
-            foreach (Vector2 point in pointsToPlace)
+            foreach (Vector2 point in rotatedPointsToPlace.ToArray())
+            {
+                Tile tile = Framing.GetTileSafely((int)point.X + 1, (int)point.Y);
+                Tile tile1 = Framing.GetTileSafely((int)point.X + 2, (int)point.Y);
+                Tile tile2 = Framing.GetTileSafely((int)point.X, (int)point.Y);
+                Tile tile3 = Framing.GetTileSafely((int)point.X + 1, (int)point.Y + 1);
+                Tile tile4 = Framing.GetTileSafely((int)point.X + 1, (int)point.Y - 1);
+                if (tile1.TileType == tileType && tile2.TileType == tileType && tile3.TileType == tileType && tile4.TileType == tileType)
+                {
+                    tile.HasTile = true;
+                    tile.BlockType = BlockType.Solid;
+                    tile.TileType = (ushort)tileType;
+                    rotatedPointsToPlace.Add(new Vector2((int)point.X + 1, (int)point.Y));
+                }
+            }
+
+            foreach (Vector2 point in rotatedPointsToPlace)
             {
                 Tile.SmoothSlope((int)point.X, (int)point.Y);
                 WorldGen.TileFrame((int)point.X, (int)point.Y);
