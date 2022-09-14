@@ -2,7 +2,6 @@
 //Make moon runes handled in a separate file from tilecounts
 //Make moonstone visuals not clip downward
 //Make moonstone particles not persist onto the menu
-//Cache reflection
 
 //TODO ON WORLDGEN:
 //Make it a garaunteed spawn
@@ -70,8 +69,11 @@ namespace StarlightRiver.Content.Biomes
 		public int moonstoneBlockCount;
 
 		private float opacity = 0;
+		private float distortion = 0;
 
 		private bool drawingBGtarget = false;
+
+		private MethodInfo info = null;
 
 		public ParticleSystem particleSystem;
 		public ParticleSystem particleSystemMedium;
@@ -105,14 +107,35 @@ namespace StarlightRiver.Content.Biomes
 			Main.OnPreDraw += DrawToParticleTarget;
 		}
 
+        public override void PostUpdateEverything()
+        {
+			if (moonstoneBlockCount < 150)
+			{
+				if (distortion > 0)
+					distortion -= 0.02f;
+
+				if (opacity > 0)
+					opacity -= 0.05f;
+			}
+			else
+			{
+				if (distortion < 1)
+					distortion += 0.001f;
+
+				if (opacity < 1)
+					opacity += 0.025f;
+			}
+		}
+
         private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
         {
 			if (opacity > 0 && !drawingBGtarget)
 			{
+
 				Main.spriteBatch.End();
 
 				Effect effect = Filters.Scene["MoonstoneDistortion"].GetShader().Shader;
-				effect.Parameters["intensity"].SetValue(0.003f * opacity);
+				effect.Parameters["intensity"].SetValue(0.01f * distortion);
 				effect.Parameters["repeats"].SetValue(2);
 				effect.Parameters["time"].SetValue((float)Math.Sin(Main.timeForVisualEffects * 0.01f));
 				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
@@ -170,8 +193,9 @@ namespace StarlightRiver.Content.Biomes
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			drawingBGtarget = true;
-			MethodInfo dynMethod = Main.instance.GetType().GetMethod("DrawSurfaceBG", BindingFlags.NonPublic | BindingFlags.Instance);
-			dynMethod.Invoke(Main.instance, null);
+			if (info is null)
+				info = Main.instance.GetType().GetMethod("DrawSurfaceBG", BindingFlags.NonPublic | BindingFlags.Instance);
+			info.Invoke(Main.instance, null);
 			drawingBGtarget = false;
 
 			spriteBatch.End();
@@ -182,15 +206,8 @@ namespace StarlightRiver.Content.Biomes
         {
 			orig(self);
 
-			if (moonstoneBlockCount < 150)
-			{
-				if (opacity > 0)
-					opacity -= 0.05f;
-				else
-					return;
-			}
-			else if (opacity < 1)
-				opacity += 0.025f;
+			if (opacity <= 0)
+				return;
 
 			Main.spriteBatch.End();
 			Effect effect = Filters.Scene["MoonstoneRunes"].GetShader().Shader;
