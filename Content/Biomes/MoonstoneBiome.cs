@@ -141,6 +141,9 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
 				effect.Parameters["screenPosition"].SetValue((Main.screenPosition * new Vector2(0.5f, 0.1f)) / BGtarget.Size());
+				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
+				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
+				effect.Parameters["colorIntensity"].SetValue(0.03f * distortion);
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 
 				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);

@@ -15,6 +15,11 @@ float repeats;
 
 float2 screenPosition;
 
+float3 distortionColor1;
+float3 distortionColor2;
+
+float colorIntensity;
+
 float2 rotation(float2 coords, float delta)
 {
     float2 ret;
@@ -28,14 +33,21 @@ float4 MainPS(float2 uv : TEXCOORD) : COLOR
 	float2 offset = float2(intensity, intensity);
 	float2 uv_n = uv;
 	
+	float length = 0;
 	for (int i = 0; i < 10; i++)
 	{
 		float intensity1 = tex2D(noiseSampler1, screenPosition + (uv_n + float2(time / 6.28f,time / 6.28f) / repeats)).r;
 		float intensity2 = tex2D(noiseSampler1, screenPosition + (uv_n + float2(-time / 6.28f,time / 6.28f) / repeats)).r;
-		uv_n += rotation(offset, (time + (sqrt(intensity1 * intensity2) * 6.28f)) * tex2D(noiseSampler2, uv * 0.1f));
+		float angle = (time + (sqrt(intensity1 * intensity2) * 6.28f)) * tex2D(noiseSampler2, uv * 0.1f);
+		uv_n += rotation(offset, angle);
+		length += abs(angle);
 	}
 	
-	return tex2D(uImage0, uv_n);
+	float4 ret = tex2D(uImage0, uv_n);
+	float lerper = min(length * colorIntensity, 1);
+	float3 distortionColor = lerp(distortionColor1, distortionColor2, lerper);
+	ret.rgb = lerp(ret.rgb, distortionColor, lerper);
+	return ret;
 }
 
 technique SpriteDrawing
