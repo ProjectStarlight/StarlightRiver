@@ -2,6 +2,7 @@
 //Make moon runes handled in a separate file from tilecounts
 //Make moonstone visuals not clip downward
 //Make moonstone particles not persist onto the menu
+//Cache reflection
 
 //TODO ON WORLDGEN:
 //Make it a garaunteed spawn
@@ -16,6 +17,7 @@ using StarlightRiver.Content.Tiles.Underground;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,12 +63,15 @@ namespace StarlightRiver.Content.Biomes
 	}
 
 	public class MoonstoneBiomeSystem : ModSystem
-	{ 
+	{
 		public static RenderTarget2D target;
+		public static RenderTarget2D BGtarget;
 
 		public int moonstoneBlockCount;
 
 		private float opacity = 0;
+
+		private bool drawingBGtarget = false;
 
 		public ParticleSystem particleSystem;
 		public ParticleSystem particleSystemMedium;
@@ -74,9 +79,9 @@ namespace StarlightRiver.Content.Biomes
 
         public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
         {
-			//Main.ColorOfTheSkies = Color.Lerp(Main.ColorOfTheSkies, new Color(15, 10, 25), opacity);
-			//backgroundColor = Color.Lerp(backgroundColor, new Color(75, 35, 75), opacity);
-			//tileColor = Color.Lerp(tileColor, new Color(65, 25, 65), opacity);
+			Main.ColorOfTheSkies = Color.Lerp(Main.ColorOfTheSkies, new Color(15, 10, 25), opacity);
+			backgroundColor = Color.Lerp(backgroundColor, new Color(75, 35, 75), opacity);
+			tileColor = Color.Lerp(tileColor, new Color(65, 25, 65), opacity);
 		}
 
         public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
@@ -96,39 +101,41 @@ namespace StarlightRiver.Content.Biomes
 			particleSystemLarge = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesLarge", UpdateMoonParticles);
 
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
-           // On.Terraria.Main.DrawSurfaceBG += DistortBG;
+            On.Terraria.Main.DrawSurfaceBG += DistortBG;
 			Main.OnPreDraw += DrawToParticleTarget;
 		}
 
-        /*private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
+        private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
         {
-			orig(self);
-			if (opacity > 0)
+			if (opacity > 0 && !drawingBGtarget)
 			{
-				Main.NewText(Main.drawToScreen.ToString());
 				Main.spriteBatch.End();
 
 				Effect effect = Filters.Scene["MoonstoneDistortion"].GetShader().Shader;
-				effect.Parameters["intensity"].SetValue(0.3f);
-				effect.Parameters["repeats"].SetValue(1);
-				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
+				effect.Parameters["intensity"].SetValue(0.003f * opacity);
+				effect.Parameters["repeats"].SetValue(2);
+				effect.Parameters["time"].SetValue((float)Math.Sin(Main.timeForVisualEffects * 0.01f));
 				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
+				effect.Parameters["screenPosition"].SetValue((Main.screenPosition * new Vector2(0.5f, 0.1f)) / BGtarget.Size());
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 
-				float x2 = (Main.sceneBackgroundPos.X + (float)Main.offScreenRange) * Main.caveParallax - (float)Main.offScreenRange;
-				Main.spriteBatch.Draw(Main.instance.backgroundTarget, new Vector2(x2, Main.sceneBackgroundPos.Y), Color.Red);
+				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			}
-		}*/
+			else
+				orig(self);
+		
+		}
 
         public static void ResizeTarget()
 		{
 			Main.QueueMainThreadAction(() =>
 			{
 				target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+				BGtarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 			});
 		}
 
@@ -155,6 +162,20 @@ namespace StarlightRiver.Content.Biomes
 
 			spriteBatch.End();
 			gD.SetRenderTargets(bindings);
+
+			RenderTargetBinding[] bindings2 = gD.GetRenderTargets();
+			gD.SetRenderTarget(BGtarget);
+			gD.Clear(Color.Transparent);
+
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+
+			drawingBGtarget = true;
+			MethodInfo dynMethod = Main.instance.GetType().GetMethod("DrawSurfaceBG", BindingFlags.NonPublic | BindingFlags.Instance);
+			dynMethod.Invoke(Main.instance, null);
+			drawingBGtarget = false;
+
+			spriteBatch.End();
+			gD.SetRenderTargets(bindings2);
 		}
 
 		private void DrawParticleTarget(On.Terraria.Main.orig_DrawBackgroundBlackFill orig, Main self)
