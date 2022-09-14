@@ -144,7 +144,15 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
 				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
 				effect.Parameters["colorIntensity"].SetValue(0.03f * distortion);
+				effect.Parameters["color"].SetValue(false);
+
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
+
+				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(true);
+				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 
 				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 

@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                 else                //both
                     spriteBatch.Draw(midTex, (new Vector2(i + 12, j + 7.5f) * 16) - Main.screenPosition, overlayColor);*/
 
-                spriteBatch.Draw(midTex, (new Vector2(i + 12, (j - (j % 2) + 2) + 7.5f) * 16) - Main.screenPosition, overlayColor);
+                spriteBatch.Draw(midTex, (new Vector2(i + 12, (j - (j % 2) + 2) + 1.5f) * 16) - Main.screenPosition, null, overlayColor, default, default, new Vector2(1,2), default, default);
 
 
                 Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
@@ -114,8 +114,8 @@ namespace StarlightRiver.Content.Tiles.Moonstone
             //Dust.NewDustDirect(pos, 16, 16, ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), 0, 0, 0, Color.White, 0.05f);
             if(Main.rand.Next(50) == 0)
                 if(!Main.tile[i, j - 1].HasTile)
-                    Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-16, -8)), 
-                        ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
+                    Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-32, -16)), 
+                        ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.1f, 0.36f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
         }
 
         public override void FloorVisuals(Player player) => 

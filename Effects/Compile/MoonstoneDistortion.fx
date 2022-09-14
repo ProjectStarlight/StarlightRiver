@@ -20,6 +20,8 @@ float3 distortionColor2;
 
 float colorIntensity;
 
+bool color;
+
 float2 rotation(float2 coords, float delta)
 {
     float2 ret;
@@ -46,7 +48,9 @@ float4 MainPS(float2 uv : TEXCOORD) : COLOR
 	float4 ret = tex2D(uImage0, uv_n);
 	float lerper = min(length * colorIntensity, 1);
 	float3 distortionColor = lerp(distortionColor1, distortionColor2, lerper);
-	ret.rgb = lerp(ret.rgb, distortionColor, lerper);
+
+	if (color)
+		ret.rgb = distortionColor * lerper;
 	return ret;
 }
 
