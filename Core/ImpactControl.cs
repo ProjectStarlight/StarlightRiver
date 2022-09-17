@@ -55,11 +55,10 @@ namespace StarlightRiver.Core
                 active = false;
 
             Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["uProgress"].SetValue(timer);
-            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["vnoiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
             Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["uTargetPosition"].SetValue((position - Main.screenPosition) / Main.ScreenSize.ToVector2());
             if (Main.netMode != NetmodeID.Server && !Filters.Scene["ImpactFrame"].IsActive())
             {
-                Filters.Scene.Activate("ImpactFrame").GetShader().UseColor(Color.White.ToVector3()).UseSecondaryColor(Color.Black.ToVector3()).UseProgress(timer);
+                Filters.Scene.Activate("ImpactFrame").GetShader().UseColor(Color.White.ToVector3()).UseSecondaryColor(Color.Black.ToVector3()).UseProgress(timer).UseImage(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value, 0);
             }
         }
     }

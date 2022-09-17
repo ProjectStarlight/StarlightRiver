@@ -1,4 +1,5 @@
 ﻿sampler uImage0 : register(s0); // The contents of the screen
+sampler uImage1 : register(s1);
 
 float3 uColor;
 float3 uSecondaryColor;
@@ -18,9 +19,6 @@ float2 uImageOffset;
 float uSaturation;
 float4 uSourceRect;
 float2 uZoom;
-
-texture vnoiseTexture;
-sampler2D vnoise = sampler_state { texture = <vnoiseTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
 float noiseRepeats = 3.52f;
 
@@ -97,14 +95,14 @@ float4 White(float4 unused : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 	{
 		float2 offset = direction * (i * pixelSize);
 		offset /= uScreenResolution;
-		if (tex2D(vnoise, ((uv - offset) * noiseRepeats) % 1).r > noiseThreshhold && whiteEdge(uv - offset))
+		if (tex2D(uImage1, ((uv - offset) * noiseRepeats) % 1).r > noiseThreshhold && whiteEdge(uv - offset))
 			ret = lerp(whiteInvert, originalColor, fade);
 	}
 	
 	for (int j = 0; j < 5; j++)
 	{
 		float2 offset = direction * (j * (5 / uScreenResolution));
-		if (tex2D(vnoise, ((uTargetPosition + (offset * 20)) * noiseRepeats) % 1).r > noiseThreshhold && InWave(uv - offset))
+		if (tex2D(uImage1, ((uTargetPosition + (offset * 20)) * noiseRepeats) % 1).r > noiseThreshhold && InWave(uv - offset))
 			ret = whiteInvert;
 	}
 	return ret;
