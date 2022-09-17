@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
                         emptyRight = !tileRight0.HasTile || tileRight0.TileType != Type || tileRight0.Slope == SlopeType.SlopeDownRight || Main.tile[i + 1, j].HasTile;
 
-                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
                         yOffsetLeft = 1f;
                         break;
 
@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyRight = !((tileRight1.HasTile && tileRight1.TileType == Type && !Main.tile[i + 1, j - 1].HasTile) || 
                             (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
 
-                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
                         yOffsetRight = 1f;
                         break;
 
@@ -69,17 +69,17 @@ namespace StarlightRiver.Content.Tiles.Moonstone
                         emptyRight = !((tileRight2.HasTile && tileRight2.TileType == Type && tileRight2.Slope != SlopeType.SlopeDownRight && !Main.tile[i + 1, j - 1].HasTile) || 
                             (Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile));
 
-                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
+                        midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
                         break;
                 }
 
                 if (emptyLeft)
                     if (emptyRight) //solo
-                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo").Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
+                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
                     else            //left
-                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLeft").Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft) * 16) - Main.screenPosition, overlayColor);
+                        spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLeft", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, (new Vector2(i + 12, j + 7.5f + yOffsetLeft) * 16) - Main.screenPosition, overlayColor);
                 else if (emptyRight)//right
-                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowRight").Value, (new Vector2(i + 12, j + 7.5f + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
+                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowRight", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, (new Vector2(i + 12, j + 7.5f + yOffsetRight) * 16) - Main.screenPosition, overlayColor);
                 else                //both
                     spriteBatch.Draw(midTex, (new Vector2(i + 12, j + 7.5f) * 16) - Main.screenPosition, overlayColor);
 
