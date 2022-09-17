@@ -113,6 +113,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
                 flickerTime++;
             }
+            else
+                Charge += 0.1f;
 
             Projectile.velocity = Vector2.Zero;
             Projectile.timeLeft = 2;
@@ -209,10 +211,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                 }
                 else
                 {
-                    for (int j = 0; j < 15; j++)
+                    for (int j = 0; j < 2; j++)
                     {
-                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
-                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(4f, 6f), 0, default, 0.2f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(4f, 6f), 0, default, 0.2f);
+                        /*Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0f, 6f), 0, default, 1.5f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), DustID.Blood, direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.NextFloat(0f, 3f), 0, default, 0.8f);*/
                     }
                 }
             }
@@ -386,9 +390,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
                     Helper.PlayPitched("Impacts/StabTiny", 0.8f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
 
                     for (int j = 0; j < 2; j++)
-                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<GraveBlood>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f));
+                    {
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<BloodMetaballDust>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f), default, default, 0.2f);
+                        Dust.NewDustPerfect(Projectile.Center + (direction * 15), ModContent.DustType<BloodMetaballDustLight>(), direction.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * Main.rand.NextFloat(0.5f, 5f), default, default, 0.2f);
+                    }
                 }
-
             }
         }
 

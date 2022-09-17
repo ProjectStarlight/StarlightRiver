@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.WorldGeneration;
 using StarlightRiver.Core;
 using Terraria;
 using Terraria.DataStructures;
@@ -8,13 +7,9 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class Cheapskates : SmartAccessory, IChestItem
+	public class Cheapskates : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
-
-        public int Stack => 1;
-
-        public ChestRegionFlags Regions => ChestRegionFlags.Ice;
 
         public Cheapskates() : base("Cheapskates", "Maximum movement speed is doubled\nYou take 30% more damage and acceleration is reduced") { }
 

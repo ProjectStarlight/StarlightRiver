@@ -40,6 +40,14 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += 0.15f;
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 15);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
     }
 
     [AutoloadEquip(EquipType.Body)]
@@ -76,6 +84,14 @@ namespace StarlightRiver.Content.Items.Breacher
             if (Player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
                 Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);
         }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 20);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
     }
 
     [AutoloadEquip(EquipType.Legs)]
@@ -101,6 +117,14 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void UpdateEquip(Player Player)
         {
             Player.GetModPlayer<CritMultiPlayer>().RangedCritMult += Math.Min(0.2f, Player.velocity.Length() / 16f * 0.2f);
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 15);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 

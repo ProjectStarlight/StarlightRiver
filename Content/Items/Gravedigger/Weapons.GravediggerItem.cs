@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Gravedigger");
+			DisplayName.SetDefault("Tombsmasher");
 			Tooltip.SetDefault("Strikes enemies up into the air \nHit enemies in the air for more damage");
 		}
 
@@ -35,9 +35,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.knockBack = 6.5f;
-			Item.value = Item.sellPrice(0, 1, 0, 0);
+			Item.value = Item.sellPrice(0, 0, 20, 0);
 			Item.crit = 4;
-			Item.rare = 2;
+			Item.rare = ItemRarityID.Green;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
 			Item.shoot = ModContent.ProjectileType<GravediggerSwing>();
@@ -54,6 +54,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
 			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 10);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -349,6 +350,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			Vector2 direction = Vector2.Zero;
 			float variance = 0.5f;
+
 			switch (SwingFrame)
             {
 				case 0:
@@ -365,11 +367,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					direction = new Vector2(0, 1);
 					break;
 			}
-			for (int i = 0; i < 30; i++)
+
+			for (int i = 0; i < 15; i++)
 			{
-				Vector2 direction2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
-				direction2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
-				Dust.NewDustPerfect(target.Center, ModContent.DustType<GraveBlood>(), direction2);
+				Vector2 dustDirection = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
+				dustDirection *= Main.rand.NextFloat(0.5f, 4f + knockback);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), dustDirection, 0, default, 0.2f);
+
+				Vector2 dustDirection2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
+				dustDirection2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.BloodMetaballDustLight>(), dustDirection2, 0, default, 0.2f);
 			}
 		}
     }

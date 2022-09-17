@@ -133,13 +133,12 @@ namespace StarlightRiver
                 Instance = null;
                 AbilityKeys.Unload();
                 LightingBufferInstance = null;
-                chestItems = null;
 
                 SLRSpawnConditions.Unload();
             }
         }
 
-        public override void AddRecipeGroups()
+        public override void AddRecipeGroups()/* tModPorter Note: Removed. Use ModSystem.AddRecipeGroups */
         {
             foreach (var group in recipeGroupCache)
             {
@@ -169,8 +168,6 @@ namespace StarlightRiver
             Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
 
             NetEasy.NetEasy.Register(this);
-
-            AutoloadChestItems();
 
             foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
             {

@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -14,10 +17,100 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public bool doubled = false;
 
+		private int tooltipSparkleCounter = 0;
+
         public override bool InstancePerEntity => true;
 
+		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
+
+		private static ParticleSystem.Update UpdateRelicTooltip => UpdateRelicTooltipBody;
+
+		public ParticleSystem RelicParticleSystem = default;
+		public ParticleSystem RelicParticleSystemBehind = default;
+
+		public ParticleSystem RelicTooltipParticleSystem = default;
+
 		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
-        public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+		public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+
+
+        public override void UpdateInventory(Item item, Player player)
+        {
+			if (isRelic)
+			{
+				if (RelicParticleSystem == default)
+				{
+					RelicParticleSystem = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
+					RelicParticleSystemBehind = new ParticleSystem(AssetDirectory.Keys + "GlowHarshAlpha", UpdateRelic);
+					RelicTooltipParticleSystem = new ParticleSystem(AssetDirectory.Dust + "GoldSparkle", UpdateRelicTooltip);
+				}
+			}
+			else
+			{
+				RelicParticleSystem = default;
+				RelicParticleSystemBehind = default;
+				RelicTooltipParticleSystem = default;
+			}
+		}
+
+		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+		{
+			if (!isRelic)
+				return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
+
+			float particleScale = Main.rand.NextFloat(0.3f, 0.45f) * scale;
+
+			float sin = Main.rand.NextFloat(6.28f);
+
+			float backScale = 0.75f;
+
+			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))), position.Y + (frame.Height * Main.rand.NextFloat(0.8f, 1f)));
+			Vector2 frontPos = pos - new Vector2(80 * particleScale, 80 * particleScale);
+			Vector2 backPos = pos - new Vector2(80 * particleScale * backScale, 80 * particleScale * backScale);
+
+			float colorLerper = Main.rand.NextFloat(0.2f);
+			Color color = Color.Lerp(Color.Gold, Color.White, colorLerper);
+			color.A = 0;
+
+			Color colorBehind = Color.Lerp(Color.Orange, Color.White, colorLerper);
+			colorBehind.A = 0;
+
+			int fadeTime = Main.rand.Next(100, 130);
+			if (Main.rand.NextBool(18))
+			{
+				RelicParticleSystem?.AddParticle(new Particle(frontPos, new Vector2(0, 0), 0, particleScale, color, 200, new Vector2(fadeTime, sin), default, 0));
+				RelicParticleSystemBehind?.AddParticle(new Particle(backPos, new Vector2(0, 0), 0, particleScale * backScale, colorBehind, 200, new Vector2(fadeTime, sin), default, 0));
+			}
+
+			RelicParticleSystemBehind?.DrawParticles(spriteBatch);
+
+			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
+		}
+
+
+        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+        {
+			if (!isRelic || line.Name != "ItemName")
+				return base.PreDrawTooltipLine(item, line, ref yOffset);
+
+			float scale = Main.UIScale;
+			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + ((line.Font.MeasureString(line.Text) - new Vector2(14,14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
+
+			if (tooltipSparkleCounter++ % 14 == 0)
+				RelicTooltipParticleSystem?.AddParticle(new Particle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f,1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14)));
+
+			RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
+
+			return base.PreDrawTooltipLine(item, line, ref yOffset);
+		}
+
+        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+		{
+			if (!isRelic)
+				return;
+
+			RelicParticleSystem?.DrawParticles(spriteBatch);
+		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
@@ -199,5 +292,33 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
 		}
-    }
+
+		private static void UpdateRelicBody(Particle particle)
+		{
+			float sin = particle.StoredPosition.Y; //abusing storedposition cause theres no other way to pass in special data
+			float fadeTime = particle.StoredPosition.X;
+
+			particle.StoredPosition.Y += 0.05f;
+
+			particle.Velocity.Y = -0.2f;
+			particle.Velocity.X = 0.7f * (float)Math.Cos(sin);
+
+			if (particle.Timer > 180)
+				particle.Alpha += 0.05f;
+			else if (particle.Timer < fadeTime)
+				particle.Alpha -= 0.025f;
+
+			particle.Alpha = MathHelper.Clamp(particle.Alpha, 0, 1);
+			particle.Position += particle.Velocity;
+			particle.Timer--;
+		}
+
+		private static void UpdateRelicTooltipBody(Particle particle)
+		{
+			particle.Position += particle.Velocity;
+			particle.Timer--;
+			if (particle.Timer % 5 == 0 && particle.Timer != 0)
+				particle.Frame.Y += 14;
+		}
+	}
 }
