@@ -131,13 +131,12 @@ namespace StarlightRiver.Content.Biomes
         {
 			if (distortion > 0 && !drawingBGtarget)
 			{
-
 				Main.spriteBatch.End();
 
 				Effect effect = Filters.Scene["MoonstoneDistortion"].GetShader().Shader;
 				effect.Parameters["intensity"].SetValue(0.01f * distortion);
 				effect.Parameters["repeats"].SetValue(2);
-				effect.Parameters["time"].SetValue((float)Math.Sin(Main.timeForVisualEffects * 0.01f));
+				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
 				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
 				effect.Parameters["screenPosition"].SetValue((Main.screenPosition * new Vector2(0.5f, 0.1f)) / BGtarget.Size());
@@ -147,15 +146,13 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["color"].SetValue(false);
 
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-
 				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
 				Main.spriteBatch.End();
+
 				effect.Parameters["color"].SetValue(true);
+
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-
 				Main.spriteBatch.Draw(BGtarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			}
