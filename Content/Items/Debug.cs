@@ -59,6 +59,11 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
         {
+            ImpactControl control = ModContent.GetInstance<ImpactControl>();
+            control.active = true;
+            control.timer = 0;
+            control.position = Main.MouseWorld;
+            return true;
             var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
             dungeon.GenerateDungeon(new Point16(30, 30), 8);
             return true;
