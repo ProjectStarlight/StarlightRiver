@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -9,7 +10,17 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SafeSetDefaults()
         {
-            Item.value = 400;
+            Item.width = 16;
+            Item.height = 16;
+            Item.useTurn = true;
+            Item.autoReuse = true;
+            Item.useAnimation = 15;
+            Item.useTime = 10;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.consumable = true;
+
+            Item.createTile = TileType<Tiles.Food.Salt>();
+            Item.value = Item.sellPrice(0, 0, 4, 0);
             Item.rare = ItemRarityID.White;
         }
 

@@ -11,9 +11,25 @@ namespace StarlightRiver.Content.Items.Food
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
 
-        }
-    }
+		public override void Load()
+		{
+			StarlightPlayer.ModifyHitNPCEvent += OnHit;
+			StarlightPlayer.ModifyHitNPCWithProjEvent += OnHitProj;
+		}
+
+		private void OnHitProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+			player.ManaEffect(amount);
+			player.statMana += amount;
+		}
+
+		private void OnHit(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		{
+			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+			player.ManaEffect(amount);
+			player.statMana += amount;
+		}
+	}
 }

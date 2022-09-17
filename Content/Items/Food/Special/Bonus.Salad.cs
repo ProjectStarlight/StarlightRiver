@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Food.Special
         {
 			//Player.GetCritChance(DamageClass.Generic) += 0.1f * multiplier;
 			Player.statDefense += (int)(Player.statDefense * (0.1f * multiplier));
-			Player.moveSpeed *= (0.1f * multiplier);
+			Player.moveSpeed += (Player.moveSpeed * (0.1f * multiplier));
 		}
 	}
 }

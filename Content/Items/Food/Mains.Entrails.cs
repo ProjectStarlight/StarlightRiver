@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Food
 {
     internal class Entrails : Ingredient
     {
-        public Entrails() : base("+20% damage and -20% max health", -600, IngredientType.Main) { }
+        public Entrails() : base("+20% damage and -20% max health\n-20% duration", 360, IngredientType.Main, 0.8f) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 

@@ -44,9 +44,16 @@ namespace StarlightRiver.Content.Items.Food
 
             if (Ingredients.Count > 0)
             {
-                foreach (Item Item in Ingredients) mp.Consumed.Add(Item.Clone()); 
-                player.AddBuff(BuffType<FoodBuff>(), Fullness);
-                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f));               
+                float TotalFillMult = 1f;
+                float FullMult = 1f;
+                foreach (Item Item in Ingredients)
+                {
+                    TotalFillMult *= (Item.ModItem as Ingredient).TotalFillMult;
+                    FullMult *= (Item.ModItem as Ingredient).FullMult;
+                    mp.Consumed.Add(Item.Clone());
+                }
+                player.AddBuff(BuffType<FoodBuff>(), (int)(Fullness * TotalFillMult));
+                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f * FullMult));               
             }
             else 
                 Main.NewText("Bad food! Please report me to the Mod devs.", Color.Red);

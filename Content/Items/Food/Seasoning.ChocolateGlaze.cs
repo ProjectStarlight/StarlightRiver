@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class ChocolateGlaze : Ingredient
     {
-        public ChocolateGlaze() : base("Food buffs are 15% less effective", 5100, IngredientType.Seasoning) { }
+        public ChocolateGlaze() : base("Food buffs are 15% less effective\n+30% duration", 60, IngredientType.Seasoning, 1.3f) { }
 
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
 

@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Vinegar : Ingredient
     {
-        public Vinegar() : base("Food buffs are 40% less effective", 4800, IngredientType.Seasoning) { }
+        public Vinegar() : base("Food buffs are 5% less effective\n+10% duration", 120, IngredientType.Seasoning, 1.1f) { }
 
         public override void SafeSetDefaults()
         {
