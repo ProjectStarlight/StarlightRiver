@@ -26,11 +26,16 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ProjectileType<BladesawSwungBlade>()] <= 0;
 
+        public override bool AltFunctionUse(Player player) => true;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Bladesaw");
             Tooltip.SetDefault("Slashes with a combo heavy swings\nSlows down on hit, shredding anything unlucky enough to be caught in the way\n" +
-                "Striking enemies inflicts them with stacks of Shredded, and heats up the blade... er saw\nThe bladesaw does more damage depending on how heated it is, to a maximum of 18%");
+                "Striking enemies inflicts them with stacks of Shredded, and heats up the blade... er saw\nThe bladesaw does more damage depending on how heated it is, to a maximum of 18%\n" +
+                "<right> to cause the blade to slice through trees");
+
+            ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
         }
 
         public override void SetDefaults()
@@ -56,7 +61,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             swingDirection *= -1;
-            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, swingDirection);
+            Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, swingDirection, player.altFunctionUse == 2 ? 1f : 0f);
             return false;
         }
 
@@ -224,11 +229,12 @@ namespace StarlightRiver.Content.Items.Misc
                 Projectile.soundDelay = 30;
             }
 
-            for (int i = 0; i < 30; i++)
-            {
-                Point bladePoint = (Owner.Center + (((2 * i) * Projectile.scale) * Projectile.rotation.ToRotationVector2())).ToTileCoordinates();
-                BreakTrees(bladePoint.X, bladePoint.Y, Owner.Center + (((2 * i) * Projectile.scale) * Projectile.rotation.ToRotationVector2()));
-            }
+            if (Projectile.ai[1] == 1f)
+                for (int i = 0; i < 30; i++)
+                {
+                    Point bladePoint = (Owner.Center + (((2 * i) * Projectile.scale) * Projectile.rotation.ToRotationVector2())).ToTileCoordinates();
+                    BreakTrees(bladePoint.X, bladePoint.Y, Owner.Center + (((2 * i) * Projectile.scale) * Projectile.rotation.ToRotationVector2()));
+                }
 
             if (hitAmount > 2 && Projectile.timeLeft > 15)
                 if (Main.rand.NextBool(12 - hitAmount))
@@ -323,12 +329,17 @@ namespace StarlightRiver.Content.Items.Misc
             Tile tileAtPosition = Framing.GetTileSafely(i, j);
             if (!tileAtPosition.HasTile || !Main.tileAxe[(int)(tileAtPosition.TileType)])
                 return;
-            if (!WorldGen.CanKillTile(i, j) || pauseTimer > 0)
+            float swingCompletion = 1f - (Projectile.timeLeft / maxTimeLeft);
+
+            if (swingCompletion < 0.45f || swingCompletion > 0.6f)  
                 return;
 
-            Owner.PickTile(i, j, 30);
+            if (!WorldGen.CanKillTile(i, j) || pauseTimer > 0)
+                return;
+            
+            Owner.PickTile(i, j, 40);
             oldTimeleft = Projectile.timeLeft;
-            pauseTimer = 5;
+            pauseTimer = 6;
             for (int d = 0; d < 2; d++)
             {
                 Dust.NewDustPerfect(visualPos, DustType<Dusts.BuzzsawSteam>(), Vector2.UnitY * -2f, 25, default, 0.5f);
