@@ -53,22 +53,14 @@ bool whiteEdge(float2 coords) //CREDIT: https://github.com/James-Jones/HLSLCross
 
 float4 White(float4 unused : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 { 
-	float4 whiteInvert = float4(uColor, 1);
-	float4 blackInvert = float4(uSecondaryColor, 1);
-	
-	if (uProgress < 0.1f)
-	{
-		whiteInvert = float4(uSecondaryColor, 1);
-		blackInvert = float4(uColor, 1);
-	}
 	float4 originalColor = tex2D(uImage0, uv);
 	
 	if (uProgress < 0.01f || uProgress > 1.2f)
 		return originalColor;
 		
-	float4 ret = blackInvert;
+	float4 ret = float4(uSecondaryColor, 1);
 	if (whiteEdge(uv))
-		ret = whiteInvert;
+		ret = float4(uColor, 1);
 	return ret;
 }
 

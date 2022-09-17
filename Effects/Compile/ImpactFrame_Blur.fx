@@ -45,14 +45,6 @@ bool InWave(float2 coords)
 
 float4 White(float4 unused : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 { 
-	float4 whiteInvert = float4(uColor, 1);
-	float4 blackInvert = float4(uSecondaryColor, 1);
-	
-	if (uProgress < 0.1f)
-	{
-		whiteInvert = float4(uSecondaryColor, 1);
-		blackInvert = float4(uColor, 1);
-	}
 	float4 originalColor = tex2D(originalSample, uv);
 	
 	if (uProgress < 0.01f || uProgress > 1.2f)
@@ -69,19 +61,19 @@ float4 White(float4 unused : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 		
 	float fade = min(1, pow(uProgress, 0.7f));
 	
-	float2 directionTrue = uv - (uTargetPosition/ uScreenResolution);
+	float2 directionTrue = (uv * uScreenResolution) - uTargetPosition;
 	float2 direction = normalize(directionTrue);
-	float4 ret = blackInvert;
+	float4 ret = float4(uSecondaryColor, 1);
 	for (int i = 0; i < 40; i++)
 	{
 		float2 offset = direction * (i * pixelSize);
-		if (length(i * pixelSize) > length(directionTrue))
+		if (length(offset) > length(directionTrue))
 			offset = directionTrue;
 		offset /= uScreenResolution;
 		float4 color = tex2D(uImage0, (uv - offset));
 
-		if (tex2D(vnoise, ((uv - offset) * noiseRepeats) % 1).r > noiseThreshhold && abs(color.r - blackInvert.r) > 0.5f)
-			ret = whiteInvert;
+		if (tex2D(vnoise, ((uv - offset) * noiseRepeats) % 1).r > noiseThreshhold && abs(color.r - uSecondaryColor.r) > 0.5f)
+			ret = float4(uColor, 1);
 	}
 	return ret;
 }

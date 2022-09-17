@@ -1,9 +1,4 @@
 ﻿//TODO:
-//Eliminate curving
-//Fix wave
-//Make lines more solid somehow
-//Make it fade
-//Fix targetting offset
 //Make noise move with screen
 //clean the fuck up
 
@@ -72,7 +67,7 @@ namespace StarlightRiver.Core
                 gD.Clear(Color.Transparent);
 
                 Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["threshhold"].SetValue(1f);
-                Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["uIntensity"].SetValue(4);
+                Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["uIntensity"].SetValue(2);
                 Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["uColor"].SetValue(Color.White.ToVector3());
                 Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["uSecondaryColor"].SetValue(new Color(0,0,0.01f).ToVector3());
                 Filters.Scene["ImpactFrame_Outline"].GetShader().Shader.Parameters["uProgress"].SetValue(timer);
@@ -101,9 +96,11 @@ namespace StarlightRiver.Core
                     useSwap = !useSwap;
                 }
 
-
                 Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["originalTex"].SetValue(baseTarget);
-                Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["fade"].SetValue((float)Math.Min(1, Math.Pow(timer, 0.75f)));
+                Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["fade"].SetValue((float)Math.Min(1, Math.Max(0, timer - 0.25f) * 10));
+                Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["time"].SetValue(timer);
+                Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["uColor"].SetValue(Color.White.ToVector4());
+                Filters.Scene["ImpactFrame_Fade"].GetShader().Shader.Parameters["uSecondaryColor"].SetValue(new Color(0, 0, 0.01f).ToVector4());
                 gD.SetRenderTarget(useSwap ? shaderTargetSwap : shaderTarget);
                 gD.Clear(Color.Transparent);
 
