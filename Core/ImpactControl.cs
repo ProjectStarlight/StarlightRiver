@@ -1,4 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿//TODO:
+//Split up edge detection into its own shader
+//Eliminate curving
+//Fix wave
+//Make lines more solid somehow
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using StarlightRiver.Core;
@@ -35,31 +41,33 @@ namespace StarlightRiver.Core
         public Vector2 position;
 
         public bool active = false;
+
         public override void PostUpdateProjectiles()
         {
-            if (Main.gameMenu)
+            if (Main.gameMenu || Main.netMode == NetmodeID.Server)
                 return;
 
-            timer += 0.04f;
+            timer += 0.007f;
 
             if (!active)
             {
                 timer = 0;
                 if (Filters.Scene["ImpactFrame"].IsActive())
                     Filters.Scene["ImpactFrame"].Deactivate();
-
                 return;
             }
 
             if (timer > 2)
                 active = false;
-
-            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["uProgress"].SetValue(timer);
-            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["uTargetPosition"].SetValue((position - Main.screenPosition) / Main.ScreenSize.ToVector2());
-            if (Main.netMode != NetmodeID.Server && !Filters.Scene["ImpactFrame"].IsActive())
-            {
-                Filters.Scene.Activate("ImpactFrame").GetShader().UseColor(Color.White.ToVector3()).UseSecondaryColor(Color.Black.ToVector3()).UseProgress(timer).UseImage(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value, 0);
-            }
+            Filters.Scene["ImpactFrame"].GetShader().UseProgress(timer);
+            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["vnoiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["threshhold"].SetValue(0.65f);
+            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["noiseThreshhold"].SetValue(MathHelper.Lerp(0.7f, 0.9f, timer));
+            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["waveThreshhold"].SetValue(0.7f);
+            Filters.Scene["ImpactFrame"].GetShader().Shader.Parameters["noiseRepeats"].SetValue(3.45f);
+            Filters.Scene["ImpactFrame"].GetShader().UseTargetPosition(position + new Vector2(Main.offScreenRange, Main.offScreenRange) - Main.screenPosition);
+            if (!Filters.Scene["ImpactFrame"].IsActive())
+                Filters.Scene.Activate("ImpactFrame").GetShader().UseColor(Color.White.ToVector3()).UseSecondaryColor(Color.Black.ToVector3()).UseProgress(timer).UseTargetPosition(position - Main.screenPosition);
         }
     }
 }
