@@ -149,7 +149,7 @@ namespace StarlightRiver.Core
             if (Main.gameMenu || Main.netMode == NetmodeID.Server)
                 return;
 
-            timer += 0.01f;
+            timer += 0.015f;
 
             /*if (Filters.Scene["ImpactFrame_Outline"].IsActive())
                 Filters.Scene["ImpactFrame_Outline"].Deactivate();
