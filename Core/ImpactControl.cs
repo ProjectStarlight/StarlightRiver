@@ -1,5 +1,4 @@
 ﻿//TODO:
-//Make noise move with screen
 //clean the fuck up
 
 using Microsoft.Xna.Framework;
