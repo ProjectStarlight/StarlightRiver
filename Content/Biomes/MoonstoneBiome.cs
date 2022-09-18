@@ -4,8 +4,6 @@
 //Make moonstone particles not persist onto the menu
 
 //TODO ON WORLDGEN:
-//Make it a garaunteed spawn
-//Move to GenerateMoonstone
 //Wall updates
 //General cleanup of post-shape stuff
 

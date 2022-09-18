@@ -34,9 +34,6 @@ namespace StarlightRiver.Core
 
         public override void PostWorldGen()
         {
-            if (WorldGen.genRand.NextBool())
-                Flag(WorldFlags.AluminumMeteors);
-
             ChestLootSystem.Instance.PopulateAllChests();
         }
     }
