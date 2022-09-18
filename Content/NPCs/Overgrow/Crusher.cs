@@ -14,11 +14,15 @@ namespace StarlightRiver.Content.NPCs.Overgrow
     {
         public Tile Parent;
 
+        public ref float homeY => ref NPC.ai[0];
+
+        public bool falling { get => NPC.ai[1] == 1; set => NPC.ai[1] = value ? 1 : 0; }
+
         public override string Texture => "StarlightRiver/Assets/NPCs/Overgrow/Crusher";
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Masher");
+            DisplayName.SetDefault("Crusher");
         }
 
         public override void SetDefaults()
@@ -27,7 +31,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             NPC.height = 10;
             NPC.immortal = true;
             NPC.dontTakeDamage = true;
-            NPC.lifeMax = 1;
+            NPC.lifeMax = 100;
             NPC.dontCountMe = true;
             NPC.aiStyle = -1;
             NPC.noGravity = true;
@@ -37,26 +41,40 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 
         public override void AI()
         {
-            if (NPC.ai[0] < 10)
-            {
-                NPC.velocity.Y += 1.5f; NPC.damage = 120;
-            }
-            if (NPC.ai[0] > 40 && NPC.ai[0] < 50) { NPC.velocity.Y = -3; NPC.damage = 0; }
-            if (NPC.ai[0]++ > 80) { NPC.ai[0] = 0; NPC.velocity.Y = 0.01f; NPC.ai[1] = 0; }
-
-            if (NPC.velocity.Y == 0 && NPC.ai[1] != 1)
+            if (falling && NPC.velocity.Y == 0) //when falling, check for if the NPC hits the grond to trigger effects
             {
                 for (float k = 0; k <= 0.3f; k += 0.007f)
                 {
                     Vector2 vel = new Vector2(1, 0).RotatedBy(-k) * Main.rand.NextFloat(8);
-                    if (Main.rand.Next(2) == 0) vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8); Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
+
+                    if (Main.rand.NextBool(2))
+                        vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8);
+
+                    Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
                     Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);
                 }
+
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { PitchVariance = 0.6f }, NPC.Center);
 
                 foreach (Player Player in Main.player.Where(Player => Vector2.Distance(Player.Center, NPC.Center) <= 250))
                     Core.Systems.CameraSystem.Shake = (250 - (int)Vector2.Distance(Player.Center, NPC.Center)) / 12;
-                NPC.ai[1] = 1;
+
+                falling = false;
+            }
+
+            if (falling)
+			{
+                NPC.velocity.Y += 0.5f; //slightly faster than normal gravity to give it some extra punch/danger
+                NPC.damage = 100;
+			}
+			else
+			{
+                if (NPC.Center.Y >= homeY)
+                    NPC.velocity.Y = -0.5f;
+                else
+                    NPC.velocity.Y = 0;
+
+                NPC.damage = 0;
             }
         }
 
@@ -65,7 +83,10 @@ namespace StarlightRiver.Content.NPCs.Overgrow
             target.AddBuff(BuffType<Buffs.Squash>(), 450);
         }
 
-        public override bool? CanHitNPC(NPC target) => true;
+        public override bool? CanHitNPC(NPC target)
+		{
+            return true;
+		}
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
         {
@@ -76,6 +97,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
                 for (int k = 0; k < 1000; k++) Dust.NewDustPerfect(target.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, 3);
             }
         }
+
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Overgrow/CrusherGlow").Value;
@@ -83,9 +105,10 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 
             spriteBatch.Draw(tex, NPC.Center - screenPos + new Vector2(0, -24), tex.Bounds, Color.White * 0.8f, 0, tex.Size() / 2, 1.2f + (float)Math.Sin(NPC.ai[0] / 80f * 6.28f) * 0.2f, 0, 0);
 
-            int count = NPC.ai[0] < 10 ? (int)NPC.ai[0] / 3 : NPC.ai[0] > 40 ? (60 - (int)NPC.ai[0]) / 4 : 3;
+            int count = (int)((NPC.Center.Y - homeY) / tex2.Height);
+
             for (int k = 1; k <= count; k++)
-                spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * 28), drawColor);
+                spriteBatch.Draw(tex2, NPC.position - screenPos + new Vector2(8, -48 - k * tex2.Height), drawColor);
         }
     }
 }
