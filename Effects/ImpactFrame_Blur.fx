@@ -72,7 +72,7 @@ float4 White(float4 unused : COLOR0, float2 uv : TEXCOORD0) : COLOR0
 		offset /= uScreenResolution;
 		float4 color = tex2D(uImage0, (uv - offset));
 
-		if (tex2D(vnoise, ((uv - offset) * noiseRepeats) % 1).r > noiseThreshhold && abs(color.r - uSecondaryColor.r) > 0.5f)
+		if (tex2D(vnoise, (((uv - offset) + (uScreenPosition / uScreenResolution)) * noiseRepeats) % 1).r > noiseThreshhold && abs(color.r - uSecondaryColor.r) > 0.5f)
 			ret = float4(uColor, 1);
 	}
 	return ret;

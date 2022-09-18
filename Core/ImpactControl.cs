@@ -77,9 +77,9 @@ namespace StarlightRiver.Core
                 Main.spriteBatch.Draw(baseTarget, Vector2.Zero, Color.White);
                 Main.spriteBatch.End();
 
-
                 Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["vnoiseTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
                 Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["originalTex"].SetValue(baseTarget);
+                Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["uScreenPosition"].SetValue(Main.screenPosition);
                 Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["noiseThreshhold"].SetValue(MathHelper.Lerp(0.7f, 0.9f, timer));
                 Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["noiseRepeats"].SetValue(3.45f);
                 Filters.Scene["ImpactFrame_Blur"].GetShader().Shader.Parameters["uColor"].SetValue(Color.White.ToVector3());
