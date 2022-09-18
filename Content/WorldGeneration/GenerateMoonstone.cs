@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using StarlightRiver.Content.Tiles.Moonstone;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,8 +12,11 @@ using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 using Microsoft.Xna.Framework;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using Terraria.IO;
 using StarlightRiver.Core;
+using Terraria.Utilities;
 
 namespace StarlightRiver.Core
 {
@@ -20,109 +24,63 @@ namespace StarlightRiver.Core
     {
         public void Load(Mod mod)
         {
-            On.Terraria.WorldGen.dropMeteor += DecideMeteor;
+            IL.Terraria.WorldGen.dropMeteor += DropMoonstoneOrMeteor;
         }
 
         public void Unload()
         {
-            On.Terraria.WorldGen.dropMeteor -= DecideMeteor;
+	        IL.Terraria.WorldGen.dropMeteor -= DropMoonstoneOrMeteor;
         }
 
-		public void DecideMeteor(On.Terraria.WorldGen.orig_dropMeteor orig)
+        public static void DropMoonstoneOrMeteor(ILContext il)
         {
-			if (Main.rand.NextBool())
-				orig();
-			else
-				DropMoonstone();
-		}
-        public static void DropMoonstone() //Consistant naming with vanilla's dropMeteor and meteor methods
-        {
-			bool flag = true; //TODO: Clean this ripped vanilla code up
-			if (Main.netMode == 1)
-			{
-				return;
-			}
-			for (int i = 0; i < 255; i++)
-			{
-				if (Main.player[i].active)
-				{
-					flag = false;
-					break;
-				}
-			}
-			int num = 0;
-			float num2 = Main.maxTilesX / 4200;
-			int num3 = (int)(400f * num2);
-			for (int j = 5; j < Main.maxTilesX - 5; j++)
-			{
-				for (int k = 5; (double)k < Main.worldSurface; k++)
-				{
-					if (Main.tile[j, k].HasTile && Main.tile[j, k].TileType == 37)
-					{
-						num++;
-						if (num > num3)
-						{
-							return;
-						}
-					}
-				}
-			}
-			float num4 = 600f;
-			int num5 = 0;
-			while (!flag)
-			{
-				float num6 = (float)Main.maxTilesX * 0.08f;
-				int num7 = Main.rand.Next(150, Main.maxTilesX - 150);
-				while ((float)num7 > (float)Main.spawnTileX - num6 && (float)num7 < (float)Main.spawnTileX + num6)
-				{
-					num7 = Main.rand.Next(150, Main.maxTilesX - 150);
-				}
-				for (int l = (int)(Main.worldSurface * 0.3); l < Main.maxTilesY; l++)
-				{
-					Tile tile = Main.tile[num7, l];
-					if (!tile.HasTile || !Main.tileSolid[tile.TileType] || TileID.Sets.Platforms[tile.TileType])
-					{
-						continue;
-					}
-					int num8 = 0;
-					int num9 = 15;
-					for (int m = num7 - num9; m < num7 + num9; m++)
-					{
-						for (int n = l - num9; n < l + num9; n++)
-						{
-							if (WorldGen.SolidTile(m, n))
-							{
-								num8++;
-								if (Main.tile[m, n].TileType == 189 || Main.tile[m, n].TileType == 202)
-								{
-									num8 -= 100;
-								}
-							}
-							else if (Main.tile[m, n].LiquidAmount > 0)
-							{
-								num8--;
-							}
-						}
-					}
-					if ((float)num8 >= num4)
-					{
-						flag = Moonstone(num7, l);
-						if (flag)
-						{
-						}
-					}
-					else
-					{
-						num4 -= 0.5f;
-					}
-					break;
-				}
-				num5++;
-				if (num4 < 100f || num5 >= Main.maxTilesX * 5)
-				{
-					break;
-				}
-			}
+	        ILCursor c = new(il);
+
+	        // Create a local variable for whether we want to spawn a meteor or moonstone.
+	        int spawnMeteorLocal = il.MakeLocalVariable<bool>();
+
+	        // 50/50 chance to spawn a meteor or moonstone.
+	        c.EmitDelegate<Func<bool>>(Main.rand.NextBool);
+	        c.Emit(OpCodes.Stloc, spawnMeteorLocal);
+
+	        // Swap the meteorite check with moonstone if we want to spawn a moonstone.
+	        c.TryGotoNext(MoveType.Before, x => x.MatchLdcI4(TileID.Meteorite));
+	        c.Emit(OpCodes.Pop);
+	        c.Emit(OpCodes.Ldloc, spawnMeteorLocal);
+	        c.EmitDelegate((bool spawnMeteor) => spawnMeteor ? TileID.Meteorite : ModContent.TileType<MoonstoneOre>());
+
+	        // Jump to where meteor is called.
+	        c.TryGotoNext(x => x.MatchCall<WorldGen>("meteor"));
+
+	        // Jump to where the flag is set from meteor.
+	        int flagIndex = -1;
+	        c.TryGotoNext(MoveType.After, x => x.MatchStloc(out flagIndex));
+
+	        // Create a label after WorldGen::meteor is invoked, which we will want to jump to if we don't want to spawn a meteor.
+	        ILLabel afterMeteorLabel = il.DefineLabel(c.Next);
+	        
+	        // Step back to before relevant variables are pushed.
+	        // We step back to before the x and y values that would be passed to WorldGen::meteor are pushed.
+	        // TryGotoPrev runs its predicates in reverse for some evil reason.
+	        int xIndex = -1;
+	        int yIndex = -1;
+	        c.TryGotoPrev(x => x.MatchLdloc(out xIndex), x => x.MatchLdloc(out yIndex));
+
+	        // Create a label pointing to where WorldGen::meteor is invoked, which we will jump to if we want to spawn a meteor.
+	        ILLabel meteorLabel = il.DefineLabel(c.Next);
+	        
+	        // Jump to the meteor label if we want to spawn a meteor.
+	        c.Emit(OpCodes.Ldloc, spawnMeteorLocal);
+	        c.Emit(OpCodes.Brtrue_S, meteorLabel);
+	        
+	        // Spawn a moonstone instead.
+	        c.Emit(OpCodes.Ldloc, xIndex);
+	        c.Emit(OpCodes.Ldloc, yIndex);
+	        c.Emit(OpCodes.Call, typeof(GenerateMoonstone).GetMethod(nameof(Moonstone), BindingFlags.NonPublic | BindingFlags.Static));
+	        c.Emit(OpCodes.Stloc, flagIndex);
+
+	        // Jump to after WorldGen::meteor is invoked, since we don't want to run it if we spawned a moonstone.
+	        c.Emit(OpCodes.Br_S, afterMeteorLabel);
         }
 
         private static bool Moonstone(int i, int j)
