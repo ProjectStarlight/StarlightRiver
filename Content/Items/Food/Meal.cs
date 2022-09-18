@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Items.Food
     {
         public List<Item> Ingredients { get; set; } = new List<Item>();
         public int Fullness { get; set; }
+        public float FullnessMult { get; set; } = 1;
+        public float WellFedMult { get; set; } = 1;
 
         public override string Texture => AssetDirectory.FoodItem + Name;
 
@@ -44,16 +46,11 @@ namespace StarlightRiver.Content.Items.Food
 
             if (Ingredients.Count > 0)
             {
-                float TotalFillMult = 1f;
-                float FullMult = 1f;
                 foreach (Item Item in Ingredients)
-                {
-                    TotalFillMult *= (Item.ModItem as Ingredient).TotalFillMult;
-                    FullMult *= (Item.ModItem as Ingredient).FullMult;
                     mp.Consumed.Add(Item.Clone());
-                }
-                player.AddBuff(BuffType<FoodBuff>(), (int)(Fullness * TotalFillMult));
-                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f * FullMult));               
+
+                player.AddBuff(BuffType<FoodBuff>(), (int)(Fullness * FullnessMult));
+                player.AddBuff(BuffType<Full>(), (int)(Fullness * 1.5f * WellFedMult));               
             }
             else 
                 Main.NewText("Bad food! Please report me to the Mod devs.", Color.Red);
@@ -120,10 +117,10 @@ namespace StarlightRiver.Content.Items.Food
                 tooltips.Add(line);
             }
 
-            TooltipLine durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", Fullness / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
+            TooltipLine durationLine = new TooltipLine(Mod, "StarlightRiver: Duration", (int)(Fullness * FullnessMult) / 60 + " seconds duration") { OverrideColor = new Color(110, 235, 255) };
             tooltips.Add(durationLine);
 
-            TooltipLine cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
+            TooltipLine cooldownLine = new TooltipLine(Mod, "StarlightRiver: Cooldown", (int)(Fullness * 1.5f * WellFedMult) / 60 + " seconds fullness") { OverrideColor = new Color(255, 170, 120) };
             tooltips.Add(cooldownLine);
         }
 
@@ -131,12 +128,16 @@ namespace StarlightRiver.Content.Items.Food
         {
             tag.Add("Items", Ingredients);
             tag.Add("Fullness", Fullness);
+            tag.Add("FullnessMult", FullnessMult);
+            tag.Add("WellFedMult", WellFedMult);
         }
 
         public override void LoadData(TagCompound tag)
         {
             Ingredients = (List<Item>)tag.GetList<Item>("Items");
             Fullness = tag.GetInt("Fullness");
+            FullnessMult = tag.GetInt("FullnessMult");
+            WellFedMult = tag.GetInt("WellFedMult");
         }
     }
 }
