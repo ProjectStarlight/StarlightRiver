@@ -20,17 +20,17 @@ namespace StarlightRiver.Content.Tiles.Overgrow
             Main.tileSolid[Type] = true;
             Main.tileMergeDirt[Type] = true;
             Main.tileBlockLight[Type] = true;
-            Main.tileLighted[Type] = false;
             Main.tileMerge[Type][Mod.Find<ModTile>("BrickOvergrow").Type] = true;
             Main.tileFrameImportant[Type] = true;
+            Main.tileLighted[Type] = true;
             DustType = DustType<Dusts.GoldNoMovement>();
             AddMapEntry(new Color(81, 77, 71));
         }
 
-		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
-        {
-            Lighting.AddLight(new Vector2(i * 16, j * 16), new Vector3(255, 200, 110) * 0.005f);
-        }
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+            (r, g, b) = (1.275f, 1f, 0.5f);
+		}
 
         public override void NearbyEffects(int i, int j, bool closer)
         {
@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
             if (!Main.npc.Any(NPC => NPC.type == NPCType<Crusher>() && (NPC.ModNPC as Crusher).Parent == Main.tile[i, j] && NPC.active))
             {
-                int crusher = NPC.NewNPC(new EntitySource_WorldEvent(), (int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>(), 0, pos.Y);
+                int crusher = NPC.NewNPC(new EntitySource_WorldEvent(), (int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>(), 0, pos.Y + 16);
 
                 if (Main.npc[crusher].ModNPC is Crusher) 
                     (Main.npc[crusher].ModNPC as Crusher).Parent = Main.tile[i, j];
