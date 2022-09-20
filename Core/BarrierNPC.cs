@@ -9,6 +9,7 @@ namespace StarlightRiver.Core
 {
 	class BarrierNPC : GlobalNPC
 	{
+		public int LastNonZeroMaxBarrier = 0; //For barrier bar drawing
 		public int MaxBarrier = 0;
 		public int Barrier = 0;
 		public int MostBarrier = 0;
@@ -25,6 +26,12 @@ namespace StarlightRiver.Core
 		public bool DrawGlow = true; //Set to false to do custom barrier drawing, like the glassweaver constructs do
 
 		public override bool InstancePerEntity => true;
+
+        public override void ResetEffects(NPC npc)
+        {
+			if (MaxBarrier != 0)
+				LastNonZeroMaxBarrier = MaxBarrier;
+        }
 
         public override void AI(NPC npc)
         {
@@ -128,14 +135,14 @@ namespace StarlightRiver.Core
 
 				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-				var factor = Math.Min(Barrier / (float)MaxBarrier, 1);
+				var factor = Math.Min(Barrier / (float)LastNonZeroMaxBarrier, 1);
 
 				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
 
 				Main.spriteBatch.Draw(tex, target, source, Color.White * bright * 1.5f, 0, new Vector2(tex.Width / 2, 0), 0, 0);
 
-				if (Barrier < MaxBarrier)
+				if (Barrier < LastNonZeroMaxBarrier)
 				{
 					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
