@@ -13,30 +13,60 @@ using System;
 namespace StarlightRiver.Content.Archaeology
 {
     public abstract class Artifact : ModTileEntity
-	{
-        public bool displayedOnMap = false; //Whether or not the artifact is displayed on the map
+    {
+        /// <summary>
+        /// Whether or not the artifact is displayed on the map
+        /// </summary>
+        public bool displayedOnMap = false;
 
-        public virtual bool CanBeRevealed() => true; //Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
+        /// <summary>
+        /// Whether or not the artifact can be revealed by the archaeologist's map. Set to false if the artifact has a special reveal condition
+        /// </summary>
+        public virtual bool CanBeRevealed() => true; 
 
         public virtual string TexturePath => AssetDirectory.Archaeology + Name;
 
-        public virtual string MapTexturePath => AssetDirectory.Archaeology + "DigMarker"; //Texture path the artifact uses on the map when revealed
+        /// <summary>
+        /// Texture path the artifact uses on the map when revealed
+        /// </summary>
+        public virtual string MapTexturePath => AssetDirectory.Archaeology + "DigMarker";
 
-        public virtual Vector2 Size { get; set; } //Size of the artifact. In world coordinates, not tile coordinates
+        /// <summary>
+        /// Size of the artifact. In world coordinates, not tile coordinates
+        /// </summary>
+        public virtual Vector2 Size { get; set; }
 
-        public virtual int SparkleDust { get; set; } //The dust the artifact creates.
+        /// <summary>
+        /// The dust the artifact creates.
+        /// </summary>
+        public virtual int SparkleDust { get; set; }
 
-        public virtual int SparkleRate { get; set; } //The rate at which sparkles spawn. Increase for lower spawnrate.
+        /// <summary>
+        /// The rate at which sparkles spawn. Increase for lower spawnrate.
+        /// </summary>
+        public virtual int SparkleRate { get; set; }
 
-        public virtual Color BeamColor { get; set; } //The color of the glowy effect when the artifact is excavated
+        /// <summary>
+        /// The color of the glowy effect when the artifact is excavated
+        /// </summary>
+        public virtual Color BeamColor { get; set; }
 
-        public virtual int ItemType { get; set; } //The item the artifact drops
+        /// <summary>
+        /// The item the artifact drops
+        /// </summary>
+        public virtual int ItemType { get; set; }
 
-        public virtual float SpawnChance { get; set; } //Pretty self explanatory. Higher = higher spawnrate
+        /// <summary>
+        /// Pretty self explanatory. Higher = higher spawnrate
+        /// </summary>
+        public virtual float SpawnChance { get; set; } 
 
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
-        public virtual bool CanGenerate(int i, int j) => true; //Override if you want to check at these specific coordinates whether the artifact can generate
+        /// <summary>
+        /// Override if you want to check at these specific coordinates whether the artifact can generate
+        /// </summary>
+        public virtual bool CanGenerate(int i, int j) => true; 
 
         public virtual void Draw(SpriteBatch spriteBatch) => GenericDraw(spriteBatch);
         public override void Update()
