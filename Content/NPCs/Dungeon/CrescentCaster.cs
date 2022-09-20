@@ -1,8 +1,4 @@
-﻿//TODO:
-//[3]Bestiary
-
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using StarlightRiver.Content.Abilities;
@@ -243,7 +239,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
             }
         }
 
-
         public override float SpawnChance(NPCSpawnInfo spawnInfo)
         {
             return SpawnCondition.Dungeon.Chance * 0.17f;
@@ -253,7 +248,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
         {
             npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Content.Items.Dungeon.InertStaff>(), 20));
         }
-
 
         public override void FindFrame(int frameHeight)
         {
@@ -358,8 +352,6 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
         private void CreateBolt(NPC other)
         {
-            Vector2 directionTo = NPC.DirectionTo(other.Center);
-
             Vector2 midPoint = CalculateMidpoint(other);
             Bolts.Add(new CrescentCasterBolt(other, NPC, midPoint, Main.rand.NextFloat(2.5f) * NPC.DirectionTo(midPoint), Main.instance.GraphicsDevice));
         }
