@@ -103,7 +103,10 @@ namespace StarlightRiver.Content.Archaeology
             return false;
         }
 
-        private void DrawBeam(Texture2D tex, Vector2 pos, float colorMult, float rotationMult, float scaleMult) => Main.spriteBatch.Draw(tex, pos, null, glowColor * 2 * colorMult, rotationMult, new Vector2(tex.Width / 2, tex.Height), Fade * scaleMult, 0, 0);
+        private void DrawBeam(Texture2D tex, Vector2 pos, float colorMult, float rotationMult, float scaleMult)
+        {
+            Main.spriteBatch.Draw(tex, pos, null, glowColor * 2 * colorMult, rotationMult, new Vector2(tex.Width / 2, tex.Height), Fade * scaleMult, 0, 0);
+        }
 
         private float GetProgress(float off)
         {
