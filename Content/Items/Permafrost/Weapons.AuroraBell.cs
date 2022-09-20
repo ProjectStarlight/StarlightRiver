@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aurora Bell");
-			Tooltip.SetDefault("Summons a sentry bell /nHit the bell with a whip to ring it");
+			Tooltip.SetDefault("Summons a sentry bell \nHit the bell with a whip to ring it");
 		}
 
 		public override void SetDefaults()
