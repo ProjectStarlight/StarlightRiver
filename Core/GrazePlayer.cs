@@ -55,7 +55,7 @@ namespace StarlightRiver.Core
 
         public override void PreUpdate()
         {
-            if (!doGrazeLogic)
+            if (!doGrazeLogic || Player.dead)
                 return;
 
             if (grazeCooldown > 0)
