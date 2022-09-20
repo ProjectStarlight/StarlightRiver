@@ -158,6 +158,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void AI()
         {
+            if (player.dead)
+                Projectile.Kill();
+
             if (Main.myPlayer == Projectile.owner)
                 Projectile.direction = Main.MouseWorld.X < player.Center.X ? -1 : 1;
 
