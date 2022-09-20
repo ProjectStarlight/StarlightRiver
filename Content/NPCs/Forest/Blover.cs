@@ -35,6 +35,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 
         private bool blowing = false;
 
+        private ref float blowCounter => ref NPC.ai[0];
+
         private Player target => Main.player[NPC.target];
 
         public override void SetStaticDefaults()
@@ -108,6 +110,11 @@ namespace StarlightRiver.Content.NPCs.Forest
             }
 
             if (blowing)
+                blowCounter++;
+            else
+                blowCounter = 0;
+
+            if (blowCounter > 15)
                 BlowingBehavior();
             else
                 IdleBehavior();
