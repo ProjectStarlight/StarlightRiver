@@ -12,6 +12,7 @@ using System;
 
 namespace StarlightRiver.Content.Archaeology
 {
+    //TODO: Manually load generic artifacts once manual loading for tile entities is supported
     public abstract class Artifact : ModTileEntity
     {
         /// <summary>
@@ -69,6 +70,7 @@ namespace StarlightRiver.Content.Archaeology
         public virtual bool CanGenerate(int i, int j) => true; 
 
         public virtual void Draw(SpriteBatch spriteBatch) => GenericDraw(spriteBatch);
+
         public override void Update()
         {
             CheckOpen();
@@ -134,6 +136,7 @@ namespace StarlightRiver.Content.Archaeology
                     if (tile.HasTile)
                         return;
                 }
+
             (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
             Kill(Position.X, Position.Y);
 
@@ -144,7 +147,6 @@ namespace StarlightRiver.Content.Archaeology
             modProj.itemType = ItemType;
             modProj.size = Size;
             modProj.sparkleType = SparkleDust;
-
         }
     }
 }
