@@ -168,6 +168,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
+            Projectile.DamageType = DamageClass.Ranged;
             Projectile.friendly = true;
             Projectile.width = 240;
             Projectile.height = 240;
