@@ -12,12 +12,13 @@ using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.Enums;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
     public class BookOfFrost : SmartAccessory
     {
-        public BookOfFrost() : base ("Book Of Frost", "True melee critical strikes cause an icy explosion") {}
+        public BookOfFrost() : base ("Book Of Frost", "Melee critical strikes cause an icy explosion") {}
         public override string Texture => AssetDirectory.PermafrostItem + Name;
 
         public override void Load()
@@ -58,7 +59,7 @@ namespace StarlightRiver.Content.Items.Permafrost
         private Trail trail2;
 
         public float TimeFade => 1 - Projectile.timeLeft / 20f;
-        public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * 25f;
+        public float Radius => EaseBuilder.EaseCubicOut.Ease(1 - (Projectile.timeLeft / 20f)) * 55f;
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             Projectile.timeLeft = 20;
             Projectile.penetrate = -1;
             Projectile.usesLocalNPCImmunity = true;
-            Projectile.localNPCHitCooldown = 15;
+            Projectile.localNPCHitCooldown = 10;
         }
 
         public override void AI()
@@ -87,8 +88,23 @@ namespace StarlightRiver.Content.Items.Permafrost
                 float rot = Main.rand.NextFloat(0, 6.28f);
 
                 if (Main.netMode != NetmodeID.Server)
-                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0,
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * Radius, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0,
                         Main.rand.NextBool() ? new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) : new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225), 0.4f);
+
+                for (int i = 0; i < 2; i++)
+                {
+                    var pos = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
+                    var vel = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
+                    Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(255, 255, 255) * 0.1f, Main.rand.NextFloat(4.5f, 6.5f));
+
+                    var pos2 = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
+                    var vel2 = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
+                    Dust.NewDustPerfect(pos2, ModContent.DustType<Dusts.Gas>(), vel2, 0, new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
+
+                    var pos3 = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
+                    var vel3 = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
+                    Dust.NewDustPerfect(pos3, ModContent.DustType<Dusts.Gas>(), vel3, 0, new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
+                }
             }
         }
 
@@ -116,7 +132,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
             for (int k = 0; k < 40; k++)
             {
-                cache[k] = (Projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius + 20));
+                cache[k] = (Projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius));
             }
 
             while (cache.Count > 40)
@@ -166,11 +182,6 @@ namespace StarlightRiver.Content.Items.Permafrost
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/LightningTrail").Value);
 
             trail2?.Render(effect);
-
-            /*effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Vitric/IgnitionGauntletChargeUI_Noise").Value);
-
-            trail?.Render(effect);
-            trail2?.Render(effect);*/
         }
     }
 }
