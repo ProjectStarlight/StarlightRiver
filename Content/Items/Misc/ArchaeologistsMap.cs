@@ -52,9 +52,7 @@ namespace StarlightRiver.Content.Items.Misc
             foreach (var item in TileEntity.ByID)
             {
                 if (item.Value is Artifact artifact && !artifact.displayedOnMap && artifact.CanBeRevealed())
-                {
                     artifacts.Add(artifact);
-                }
             }
 
             if (artifacts.Count == 0)
@@ -62,7 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             Artifact nearestArtifact = artifacts.OrderBy(n => n.WorldPosition.Distance(player.Center)).FirstOrDefault();
             nearestArtifact.displayedOnMap = true;
-
+            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
             return true;
         }
     }

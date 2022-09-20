@@ -8,6 +8,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
     public class PirateChestArtifactItem : ModItem
     {
         public override string Texture => AssetDirectory.Archaeology + "PirateChestArtifact";
+
+		public override bool CanRightClick() => true;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pirate Chest");
@@ -24,8 +27,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.autoReuse = true;
 		}
 
-		public override bool CanRightClick() => true;
-
 		public override void RightClick(Player player)
 		{
 			int bar = (WorldGen.gold == TileID.Gold) ? ItemID.PlatinumBar : ItemID.GoldBar;
@@ -41,10 +42,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				ItemID.Ruby
 			};
 			int numGems = Main.rand.Next(15, 21);
+
 			for (int i = 0; i < numGems; i++)
-            {
 				Item.NewItem(Item.GetSource_DropAsItem(), player.Hitbox, gems[Main.rand.Next(gems.Length)]);
-			}
 
 			Item.NewItem(Item.GetSource_DropAsItem(), player.Hitbox, ItemID.GoldCoin, Main.rand.Next(1, 5));
 			Item.NewItem(Item.GetSource_DropAsItem(), player.Hitbox, ItemID.SilverCoin, Main.rand.Next(1, 99));

@@ -18,7 +18,7 @@ using Terraria.UI;
 
 namespace StarlightRiver.Content.Archaeology
 {
-    public class ArchaeologyManager : ModSystem
+    public class ArchaeologyHandler : ModSystem
     { 
         public override void Load()
         {
@@ -35,9 +35,7 @@ namespace StarlightRiver.Content.Archaeology
             foreach (var item in TileEntity.ByID)
             {
                 if (item.Value is Artifact artifact && artifact.IsOnScreen())
-                {
                     artifact.CreateSparkles();
-                }
             }
         }
 
@@ -46,9 +44,7 @@ namespace StarlightRiver.Content.Archaeology
             foreach (var item in TileEntity.ByID)
             {
                 if (item.Value is Artifact artifact && artifact.IsOnScreen())
-                {
                     artifact.Draw(Main.spriteBatch);
-                }
             }
             orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
         }
@@ -56,9 +52,14 @@ namespace StarlightRiver.Content.Archaeology
 
     public class ArchaeologyMapLayer : ModMapLayer
     {
+        public List<KeyValuePair<int, TileEntity>> toDraw;
+
+        public void CalculateDrawables() => toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap).ToList();
+
         public override void Draw(ref MapOverlayDrawContext context, ref string text)
         {
-            var toDraw = TileEntity.ByID.Where(x => x.Value is Artifact artifact && artifact.displayedOnMap);
+            if (toDraw is null)
+                CalculateDrawables();
             foreach (var drawable in toDraw)
             {
                 Artifact artifact = (Artifact) drawable.Value;

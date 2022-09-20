@@ -22,24 +22,23 @@ namespace StarlightRiver.Content.Archaeology
 
         public virtual string MapTexturePath => AssetDirectory.Archaeology + "DigMarker"; //Texture path the artifact uses on the map when revealed
 
-        public virtual Vector2 Size { get; } //Size of the artifact. In world coordinates, not tile coordinates
+        public virtual Vector2 Size { get; set; } //Size of the artifact. In world coordinates, not tile coordinates
 
-        public virtual int SparkleDust { get; } //The dust the artifact creates.
+        public virtual int SparkleDust { get; set; } //The dust the artifact creates.
 
-        public virtual int SparkleRate { get; } //The rate at which sparkles spawn. Increase for lower spawnrate.
+        public virtual int SparkleRate { get; set; } //The rate at which sparkles spawn. Increase for lower spawnrate.
 
-        public virtual Color BeamColor { get; } //The color of the glowy effect when the artifact is excavated
+        public virtual Color BeamColor { get; set; } //The color of the glowy effect when the artifact is excavated
 
-        public virtual int ItemType { get; } //The item the artifact drops
+        public virtual int ItemType { get; set; } //The item the artifact drops
 
-        public virtual float SpawnChance { get; } //Pretty self explanatory. Higher = higher spawnrate
+        public virtual float SpawnChance { get; set; } //Pretty self explanatory. Higher = higher spawnrate
 
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
         public virtual bool CanGenerate(int i, int j) => true; //Override if you want to check at these specific coordinates whether the artifact can generate
 
         public virtual void Draw(SpriteBatch spriteBatch) => GenericDraw(spriteBatch);
-
         public override void Update()
         {
             CheckOpen();
@@ -105,7 +104,7 @@ namespace StarlightRiver.Content.Archaeology
                     if (tile.HasTile)
                         return;
                 }
-
+            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
             Kill(Position.X, Position.Y);
 
             Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
