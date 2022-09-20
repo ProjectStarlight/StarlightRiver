@@ -10,11 +10,13 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 {
 	class RuneStaff : ModItem
     {
-        public override string Texture => AssetDirectory.CaveTempleItem + Name;
-
         int charge = 0;
 
-        public override void SetStaticDefaults()
+        public override string Texture => AssetDirectory.CaveTempleItem + Name;
+
+        public override bool IsCloneable => true;
+
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ancient Rune Staff");
             Tooltip.SetDefault("Hold to summon up to 3 explosive runes\nReleasing will fire the runes towards your cursor\nContinuing to hold will detonate them for increased damage around you");
@@ -42,11 +44,14 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
         {
             if (player.channel)
             {
+                player.itemAnimation = player.itemAnimationMax - 1;
+
                 if (charge % 30 == 0 && charge < 90)
                 {
                     int index = charge / 30;
                     float rot = MathHelper.Pi / 3f * index - MathHelper.Pi / 3f;
-                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center + Vector2.UnitY.RotatedBy(rot) * -45, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, player.whoAmI, 0, charge);
+                    var pos = player.Center + Vector2.UnitY.RotatedBy(rot) * -45;
+                    int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), pos, Vector2.Zero, ProjectileType<RuneStaffProjectile>(), Item.damage, Item.knockBack, player.whoAmI, 0, charge);
                     Main.projectile[i].frame = index;
 
                     Terraria.Audio.SoundEngine.PlaySound(SoundID.Item8, player.Center);
@@ -56,7 +61,17 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
             else charge = 0;
         }
-    }
+
+		public override ModItem Clone(Item newEntity)
+		{
+			var item = base.Clone(newEntity);
+            (item as RuneStaff).charge = charge;
+
+            Main.NewText("Cloned new staff with a charge level of: " + (item as RuneStaff).charge);
+
+            return item;
+		}
+	}
 
     class RuneStaffProjectile : ModProjectile, IDrawAdditive
     {
