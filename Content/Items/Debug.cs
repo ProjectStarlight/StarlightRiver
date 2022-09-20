@@ -32,6 +32,7 @@ namespace StarlightRiver.Content.Items
             Item.width = 38;
             Item.height = 40;
             Item.useTime = 18;
+
             Item.useAnimation = 18;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
