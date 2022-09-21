@@ -27,6 +27,12 @@ namespace StarlightRiver.Content.Items.Permafrost
             StarlightPlayer.OnHitNPCWithProjEvent += ProjectileCritExplosion;
         }
 
+        public override void SafeSetDefaults()
+        {
+            Item.rare = ItemRarityID.Green;
+            Item.value = Item.sellPrice(gold: 1, silver: 25);
+        }
+
         private void ProjectileCritExplosion(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
             if (proj.CountsAsClass(DamageClass.Melee) && crit)
@@ -43,12 +49,6 @@ namespace StarlightRiver.Content.Items.Permafrost
                 Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
                 Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damage * 1.25f), knockback * 0.25f, player.whoAmI);
             }
-        }
-
-        public override void SafeSetDefaults()
-        {
-            Item.rare = ItemRarityID.Green;
-            Item.value = Item.sellPrice(gold: 1, silver: 25);
         }
     }
 
@@ -94,16 +94,15 @@ namespace StarlightRiver.Content.Items.Permafrost
                 for (int i = 0; i < 2; i++)
                 {
                     var pos = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
+
                     var vel = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
                     Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(255, 255, 255) * 0.1f, Main.rand.NextFloat(4.5f, 6.5f));
 
-                    var pos2 = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
-                    var vel2 = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
-                    Dust.NewDustPerfect(pos2, ModContent.DustType<Dusts.Gas>(), vel2, 0, new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
+                    vel = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2; //randomize velo for each dust
+                    Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(100, 150 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 255) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
 
-                    var pos3 = Projectile.Center + Vector2.One.RotatedBy(rot) * Radius;
-                    var vel3 = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
-                    Dust.NewDustPerfect(pos3, ModContent.DustType<Dusts.Gas>(), vel3, 0, new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
+                    vel = Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2;
+                    Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Gas>(), vel, 0, new Color(0, 165 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 225) * 0.5f, Main.rand.NextFloat(4.5f, 6.5f));
                 }
             }
         }

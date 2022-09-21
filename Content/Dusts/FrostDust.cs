@@ -7,7 +7,7 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Dusts
 {
-    public class FrostDust : ModDust
+    public class LightBlueSmoke : ModDust
     {
         public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
@@ -36,6 +36,7 @@ namespace StarlightRiver.Content.Dusts
                 dust.velocity *= 0.85f;
             else
                 dust.velocity *= 0.92f;
+
             if (dust.alpha > 100)
             {
                 dust.scale += 0.01f;
@@ -55,7 +56,7 @@ namespace StarlightRiver.Content.Dusts
         }
     }
 
-    public class FrostDustTwo : ModDust
+    public class LightBlueSmokeScaleDown : ModDust
     {
         public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
@@ -106,7 +107,7 @@ namespace StarlightRiver.Content.Dusts
         }
     }
 
-    public class FrostDustThree : ModDust
+    public class LightBlueSmokeQuickFade : ModDust
     {
         public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
