@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				ItemID.Ruby
 			};
 			resultStack = Main.rand.Next(7, 15);
-			resultType = gems[Main.rand.Next(gems.Length)];
+			resultType = Main.rand.Next(gems);
 		}
 	}
 }
