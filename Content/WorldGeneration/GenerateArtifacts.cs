@@ -29,6 +29,7 @@ namespace StarlightRiver.Core
             PlaceDesertArtifacts();
             PlaceOceanArtifacts();
             PlaceLavaArtifacts();
+            PlaceUndergroundArtifacts();
         }
 
         private void PlaceDesertArtifacts()
@@ -76,6 +77,22 @@ namespace StarlightRiver.Core
             int amount = Main.maxTilesX / 800;
 
             PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
+        }
+
+        private void PlaceUndergroundArtifacts()
+        {
+            var tiles = new int[]
+            {
+                  TileID.Granite,
+                  TileID.Marble,
+                  TileID.Stone
+            };
+
+            Rectangle range = new Rectangle(100, (int)Main.rockLayer, Main.maxTilesX - 200, (Main.maxTilesY - 400) - (int)Main.rockLayer);
+
+            int amount = Main.maxTilesX / 7;
+
+            PlaceArtifactPool<UndergroundArtifact>(range, tiles, amount, 2999);
         }
 
         private void PlaceArtifactPool<T>(Rectangle range, int[] validTiles, int toPlace, int maxTries) where T : Artifact

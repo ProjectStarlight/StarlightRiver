@@ -124,7 +124,14 @@ namespace StarlightRiver.Content.Archaeology
         public void GenericDraw(SpriteBatch spriteBatch) //I have no idea why but the drawing is offset by -192 on each axis by default, so I had to correct it
         {
             Texture2D tex = ModContent.Request<Texture2D>(TexturePath).Value;
-            spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + new Vector2(192, 192), null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+
+            Vector2 offScreen = new Vector2(Main.offScreenRange);
+            if (Main.drawToScreen)
+            {
+                offScreen = Vector2.Zero;
+            }
+
+            spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + offScreen, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
         }
 
         public void CheckOpen()
