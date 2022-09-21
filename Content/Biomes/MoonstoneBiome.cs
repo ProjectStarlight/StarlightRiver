@@ -1,9 +1,4 @@
-﻿//TODO:
-//Make moon runes handled in a separate file from tilecounts
-//Make moonstone visuals not clip downward
-//Make moonstone particles not persist onto the menu
-
-//TODO ON WORLDGEN:
+﻿//TODO ON WORLDGEN:
 //Wall updates
 //General cleanup of post-shape stuff
 
@@ -127,7 +122,7 @@ namespace StarlightRiver.Content.Biomes
 
         private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
         {
-			if (distortion > 0 && !drawingBGtarget)
+			if (distortion > 0 && !drawingBGtarget && !Main.gameMenu)
 			{
 				Main.spriteBatch.End();
 
@@ -212,7 +207,7 @@ namespace StarlightRiver.Content.Biomes
         {
 			orig(self);
 
-			if (opacity <= 0)
+			if (opacity <= 0 || Main.gameMenu)
 				return;
 
 			Main.spriteBatch.End();

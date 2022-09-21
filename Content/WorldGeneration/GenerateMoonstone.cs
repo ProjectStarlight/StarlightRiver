@@ -133,7 +133,7 @@ namespace StarlightRiver.Core
 			for (int k = -craterRadiusX; k < craterRadiusX; k++)
 			{
 				int toRaise = (int)-(Math.Cos((k * 4.71f) / craterRadiusX) * craterRadiusY * Math.Pow(noise.GetNoise(0.5f + (k / (craterRadiusX * 2)), 0.5f), 0.6f));
-				GenerateMoonstone.RaiseTerrain(k + (int)origin.X, (int)origin.Y - 20, toRaise).ForEach(n => pointsToUpdate.Add(n));
+				RaiseTerrain(k + (int)origin.X, (int)origin.Y - 20, toRaise).ForEach(n => pointsToUpdate.Add(n));
 			}
 
 			List<Vector2> pointsToPlace = new List<Vector2>();
