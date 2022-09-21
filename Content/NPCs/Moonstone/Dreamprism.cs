@@ -29,13 +29,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             slamming = 2,
             slammed = 3
         }
-        public override string Texture => AssetDirectory.MoonstoneNPC + Name;
+
+        private const float TRAIL_WIDTH = 0.7f;
 
         private List<Vector2> cache;
         private Trail trail;
         private Trail trail2;
-        private float trailWidth => 0.7f;
-
+        
         private int yFrame = 0;
         private float frameCounter = 0;
 
@@ -59,6 +59,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         private int slamTimer = 0;
 
         private Player target => Main.player[NPC.target];
+
+        public override string Texture => AssetDirectory.MoonstoneNPC + Name;
 
         public override void Load()
         {
@@ -143,11 +145,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         {
             rockRotation += rockRotationSpeed;
             frameCounter += rockRotationSpeed;
+
             if (frameCounter >= 1)
             {
                 yFrame++;
                 frameCounter = 0;
             }
+
             yFrame %= Main.npcFrameCount[NPC.type];
 
             Lighting.AddLight(NPC.Center, Color.Cyan.ToVector3() * 1.2f);
@@ -237,12 +241,12 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(1), factor => (factor * 25) * trailWidth, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(1), factor => (factor * 25) * TRAIL_WIDTH, factor =>
             {
                 return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(1), factor => (50 + 0 + factor * 0) * trailWidth, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(1), factor => (50 + 0 + factor * 0) * TRAIL_WIDTH, factor =>
             {
                 return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f;
             });
@@ -280,6 +284,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         private void RisingBehavior()
         {
             bobCounter += 0.02f;
+
             if (posAbovePlayer == Vector2.Zero)
             {
                 risingPos = NPC.Center;
@@ -288,7 +293,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
             float distance = posAbovePlayer.Y - risingPos.Y;
             float progress = (NPC.Center.Y - risingPos.Y) / distance;
-
 
             if (progress < 0)
             {
@@ -311,6 +315,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 NPC.rotation += Main.rand.NextFloat(-0.05f, 0.05f);
                 NPC.rotation *= 0.95f;
                 Tile tile = Main.tile[(int)NPC.Center.X / 16, (int)((NPC.Center.Y - 12) / 16) + 2];
+
                 if (!tile.HasTile || !Main.tileSolid[tile.TileType])
                 {
                     NPC.rotation = 0;
@@ -324,6 +329,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             else
             {
                 emergeSpeed += 0.8f;
+
                 if (emergeSpeed < 3.14f)
                     NPC.velocity.Y += (float)Math.Cos(emergeSpeed) * 15;
             }
@@ -370,11 +376,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
             if (NPC.velocity.Y < 30)
                 NPC.velocity.Y += 1f;
+
             slamTimer++;
 
             if (NPC.collideY || slamTimer > 60)
             {
                 Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
+
                 for (int k = 0; k < 16; k++)
                 {
                     Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.Stone>(), new Vector2(0, -1).RotatedByRandom(1) * Main.rand.NextFloat(3, 7));
@@ -404,6 +412,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             NPC.velocity = Vector2.Zero;
             rockRotationSpeed = 0;
             slamTimer++;
+
             if (slamTimer > 90)
             {
                 Helper.PlayPitched("StoneSlide", 1f, -1f, NPC.Center);
@@ -449,12 +458,17 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         public override void AI()
         {
             frameCounter+= 4;
+
             if (counter > 0)
                 Projectile.hostile = false;
+
             counter += (float)(Math.PI / 2f) / 200;
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor)
+		{
+            return false;
+		}
 
         public void DrawOverTiles(SpriteBatch spriteBatch)
         {
@@ -463,8 +477,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             Rectangle frame = new Rectangle((tex.Width / 2) - frameSize, (tex.Height / 2) - frameSize, frameSize * 2, frameSize * 2);
             Color color = new Color(99, 71, 255, 0);
             color *= (float)Math.Cos(counter);
+
             for (int i = 0; i < 2; i++)
+            {
                 spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, color, Projectile.rotation, new Vector2(frameSize, frameSize), Projectile.scale, SpriteEffects.None, 0);
+            }
         }
     }
 }

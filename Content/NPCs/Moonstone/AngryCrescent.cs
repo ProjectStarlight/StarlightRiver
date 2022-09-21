@@ -20,16 +20,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
     //bestiary needs to be done but there isnt a moonstone bestiary template thingy
     public class AngryCrescent : ModNPC
     {
-        public ref float AIState => ref NPC.ai[0];
-
-        public ref float Timer => ref NPC.ai[1];
-
-        public ref float AttackDelay => ref NPC.ai[2];
-
         public int eyeFrame;
 
         public int flashTimer;
-
         public int lerpTimer;
 
         public int pointOnChain;
@@ -39,22 +32,20 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         public int animationTimer;
 
         public bool curving;
-
         public bool animating;
-
         public bool initialized;
-
         public bool initializeAnimation;
-
         public bool blinking;
-
         public bool blinked;
-
         public bool playedWhoosh;
 
         public Vector2[] curvePositions;
 
         public Vector2 offset;
+
+        public ref float AIState => ref NPC.ai[0];
+        public ref float Timer => ref NPC.ai[1];
+        public ref float AttackDelay => ref NPC.ai[2];
 
         public override string Texture => AssetDirectory.MoonstoneNPC + Name;
 
@@ -122,8 +113,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                         speed = Utils.Clamp(speed, 4.5f, 15f);
                         NPC.velocity = NPC.DirectionTo(player.Center + new Vector2(150 * flip, -150)) * speed;
                     }
-                    else if (player.dead) //do some idle movements if player dies
-                        if (Main.rand.NextBool(25) && NPC.velocity.Length() < 5f)
+                    else if (player.dead && Main.rand.NextBool(25) && NPC.velocity.Length() < 5f) //do some idle movements if player dies
                             NPC.velocity += Main.rand.NextVector2Circular(3, 3);
 
                     if (AttackDelay > 0)
@@ -146,6 +136,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                                 eyeFrame++;
                                 NPC.frameCounter = 0;
                             }
+
                             if (eyeFrame >= 7)
                             {
                                 eyeFrame = 0;
@@ -185,11 +176,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
                 case 1: //target found
                     Player target = Main.player[NPC.target];
+
                     if (Timer == 0)
                     {
                         BezierCurve curve = new BezierCurve(new Vector2[] { target.Center + new Vector2((150 + offset.X) * flip, -150 + offset.Y), target.Bottom + new Vector2(0, 325), target.Center + new Vector2((-150 + offset.X) * flip, -150 + offset.Y) });
                         curvePositions = curve.GetPoints(15).ToArray();
                     }
+
                     if (NPC.Distance(curvePositions[0]) > 20f && !animating)
                     {
                         float speed = NPC.Distance(curvePositions[0]) * 0.065f;
@@ -219,12 +212,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                                 initializeAnimation = true;
                                 animationTimer = 35;
                                 flashTimer = 60;
+
                                 for (int i = 0; i < 30; i++)
                                 {
                                     Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.One.RotatedByRandom(6.28f) * 2f, 25, new Color(150, 120, 255), 0.75f);
                                 }
                             }
+
                             NPC.Center = curvePositions[0];
+
                             if (animationTimer > 0)
                                 NPC.rotation += MathHelper.Lerp(0.1f, 0.55f, 1 - (animationTimer / 35f));
                             else
@@ -271,6 +267,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
             Vector2 origin = texture.Size() / 2f;
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
             for (int k = 0; k < NPC.oldPos.Length; k++)
             {
                 float progress = (float)(((float)(NPC.oldPos.Length - k) / (float)NPC.oldPos.Length));
@@ -278,6 +275,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress);
                 Main.EntitySpriteDraw(texture, drawPos, null, color, NPC.rotation, origin, NPC.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0);
             }
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -290,10 +288,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 Main.spriteBatch.Draw(glowTex, NPC.Center - screenPos, null, new Color(255, 255, 255, 0) * MathHelper.Lerp(1, 0, 1 - (flashTimer / 60f)), NPC.rotation, glowTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
             
             Rectangle frameRect = new Rectangle(0, 10 * eyeFrame, 16, 10);
-            Vector2 eyePosition = NPC.Center + new Vector2(-2, 14).RotatedBy(NPC.rotation) + (NPC.HasPlayerTarget ? NPC.DirectionTo(Main.player[NPC.target].Center) * 5f : NPC.Center);
-            Main.spriteBatch.Draw(eyeTex, eyePosition - screenPos, frameRect, Color.White, NPC.HasPlayerTarget ? NPC.DirectionTo(Main.player[NPC.target].Center).ToRotation() : NPC.rotation, frameRect.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
-            eyePosition = NPC.Center + new Vector2(-12, 8).RotatedBy(NPC.rotation) + (NPC.HasPlayerTarget ? NPC.DirectionTo(Main.player[NPC.target].Center) * 5f : NPC.Center);
-            Main.spriteBatch.Draw(eyeTex, eyePosition - screenPos, frameRect, Color.White, NPC.HasPlayerTarget ? NPC.DirectionTo(Main.player[NPC.target].Center).ToRotation() : NPC.rotation, frameRect.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
+			Vector2 directionTo = NPC.DirectionTo(Main.player[NPC.target].Center);
+			Vector2 eyePosition = NPC.Center + new Vector2(-2, 14).RotatedBy(NPC.rotation) + (NPC.HasPlayerTarget ? directionTo * 5f : NPC.Center);
+            Main.spriteBatch.Draw(eyeTex, eyePosition - screenPos, frameRect, Color.White, NPC.HasPlayerTarget ? directionTo.ToRotation() : NPC.rotation, frameRect.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
+            
+            eyePosition = NPC.Center + new Vector2(-12, 8).RotatedBy(NPC.rotation) + (NPC.HasPlayerTarget ? directionTo * 5f : NPC.Center);
+            Main.spriteBatch.Draw(eyeTex, eyePosition - screenPos, frameRect, Color.White, NPC.HasPlayerTarget ? directionTo.ToRotation() : NPC.rotation, frameRect.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
+           
             return false;
         }
 
@@ -334,7 +335,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 {
                     Dust.NewDustPerfect(NPC.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), (NPC.velocity * Main.rand.NextFloat(2f)).RotatedByRandom(0.45f), 35, new Color(150, 120, 255), Main.rand.NextFloat(0.3f, 0.5f));
                 }
-
             }
         }
 
@@ -370,6 +370,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         public override void SetDefaults()
         {
             Projectile.frame = (int)Projectile.ai[0];
+
             if (Projectile.frame == 0)
             {
                 Projectile.width = 24;
@@ -380,6 +381,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
                 Projectile.width = 32;
                 Projectile.height = 24;
             }
+
             Projectile.timeLeft = 90;
             Projectile.tileCollide = false;
         }
@@ -393,6 +395,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
         public override void Kill(int timeLeft)
         {
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, PitchVariance = 0.1f}, Projectile.position);
+
             for (int i = 0; i < 15; i++)
             {
                 Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 35, new Color(150, 120, 255), Main.rand.NextFloat(0.3f, 0.5f));
