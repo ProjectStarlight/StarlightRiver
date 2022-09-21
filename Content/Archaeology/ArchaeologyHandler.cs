@@ -39,6 +39,11 @@ namespace StarlightRiver.Content.Archaeology
             }
         }
 
+        public override void LoadWorldData(TagCompound tag)
+        {
+            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
+        }
+
         public void DrawArtifacts(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride = -1)
         {
             foreach (var item in TileEntity.ByID)

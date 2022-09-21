@@ -29,6 +29,9 @@ namespace StarlightRiver.Core
             PlaceDesertArtifacts();
             PlaceOceanArtifacts();
             PlaceLavaArtifacts();
+            PlaceJungleArtifacts();
+
+            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
         }
 
         private void PlaceDesertArtifacts()
@@ -45,6 +48,20 @@ namespace StarlightRiver.Core
             int amount = Main.maxTilesX / 17;
 
             PlaceArtifactPool<DesertArtifact>(range, tiles, amount, 999);
+        }
+
+        private void PlaceJungleArtifacts()
+        {
+            var tiles = new int[]
+            {
+                  TileID.JungleGrass,
+                  TileID.Mud
+            };
+            Rectangle range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
+
+            int amount = Main.maxTilesX / 12;
+
+            PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
         }
 
         private void PlaceOceanArtifacts()
