@@ -87,6 +87,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (cooldown > 0)
                 return false;
+
             cooldown = 75;
             return true;
         }
@@ -115,9 +116,10 @@ namespace StarlightRiver.Content.Items.Moonstone
         private Trail trail2;
 
         private float trailWidth = 1;
+        private bool stuck = false;
+
         public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
-        private bool stuck = false;
         public override void SetDefaults()
         {
             Projectile.width = 36;
@@ -136,6 +138,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = 30;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
         }
+
         public override void AI()
         {
             if (Projectile.ai[0] == 0)
@@ -145,6 +148,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Projectile.tileCollide = true;
             else
                 Projectile.tileCollide = false;
+
             if (!stuck)
             {
                 var d = Dust.NewDustPerfect(Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), ModContent.DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
@@ -181,6 +185,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     Vector2 pos = Projectile.Bottom + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15);
                     Vector2 velocity = (-Vector2.UnitY).RotatedByRandom(0.7f) * Main.rand.NextFloat(1f, 2f);
                     Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Glow>(), velocity, 0, new Color(50, 50, 255), Main.rand.NextFloat(0.4f, 0.8f)).fadeIn = 10;
+
                     if (Main.rand.Next(3) == 0)
                     {
                         Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)),
@@ -188,6 +193,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                         new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
                     }
                 }
+
                 Core.Systems.CameraSystem.Shake += 10;
                 Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), 0, 0, Projectile.owner).timeLeft = 194;
                 Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Projectile.Center);
@@ -211,6 +217,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             target.AddBuff(ModContent.BuffType<MoonfuryDebuff>(), 150);
         }
+
         private void ManageCaches()
         {
             if (cache == null)
@@ -221,6 +228,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                     cache.Add(Projectile.Bottom + new Vector2(0, 20));
                 }
             }
+
             if (Projectile.oldPos[0] != Vector2.Zero)
                 cache.Add(Projectile.oldPos[0] + new Vector2(Projectile.width / 2, Projectile.height) + new Vector2(0, 20));
 
@@ -232,7 +240,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void ManageTrail()
         {
-
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor =>
             {
                 return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth;
@@ -256,7 +263,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public void DrawPrimitives()
         {
-
             Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
@@ -283,10 +289,9 @@ namespace StarlightRiver.Content.Items.Moonstone
             spriteBatch.Draw(tex, (Projectile.Bottom + new Vector2(0, 20)) - Main.screenPosition, null, color * 0.5f, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height), Projectile.scale, SpriteEffects.None, 0);
         }
     }
+
     internal class MoonfuryRing : ModProjectile, IDrawPrimitive
     {
-        public override string Texture => AssetDirectory.MoonstoneItem + "MoonfuryProj";
-
         private List<Vector2> cache;
 
         private Trail trail;
@@ -295,6 +300,9 @@ namespace StarlightRiver.Content.Items.Moonstone
         protected float Progress => 1 - (Projectile.timeLeft / 10f);
 
         protected virtual float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+        public override string Texture => AssetDirectory.MoonstoneItem + "MoonfuryProj";
+
         public override void SetDefaults()
         {
             Projectile.width = 80;
@@ -326,6 +334,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             if (target.whoAmI == (int)Projectile.ai[0])
                 return false;
+
             return base.CanHitNPC(target);
         }
 
@@ -334,10 +343,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
             line.Normalize();
             line *= Radius;
+
             if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-            {
                 return true;
-            }
+
             return false;
         }
 
@@ -345,6 +354,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             cache = new List<Vector2>();
             float radius = Radius;
+
             for (int i = 0; i < 33; i++)
             {
                 double rad = (i / 32f) * 6.28f;
@@ -361,7 +371,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void ManageTrail()
         {
-
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
             {
                 return new Color(100, 0, 255);
@@ -398,6 +407,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             trail2?.Render(effect);
         }
     }
+
     class MoonfuryDebuff : SmartBuff
     {
         public override string Texture => AssetDirectory.Debug;

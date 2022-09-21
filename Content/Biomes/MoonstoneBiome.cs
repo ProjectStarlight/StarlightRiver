@@ -254,16 +254,15 @@ namespace StarlightRiver.Content.Biomes
         protected void UpdateMoonParticles(Particle particle)
         {
 			float parallax = 0.6f;
+
 			if (particle.Frame.Y % 46 == 0)
 				parallax = 0.8f;
+
 			if (particle.Frame.Y % 60 == 0)
 				parallax = 1f;
 
-
 			if (particle.Position == Vector2.Zero)
-            {
 				particle.StoredPosition -= Main.screenPosition * (1 - parallax);
-            }
 
             particle.Position = particle.StoredPosition - (Main.screenPosition * parallax);
             particle.StoredPosition += particle.Velocity;
