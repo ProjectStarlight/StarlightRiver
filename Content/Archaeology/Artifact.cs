@@ -144,8 +144,8 @@ namespace StarlightRiver.Content.Archaeology
                         return;
                 }
 
-            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
             Kill(Position.X, Position.Y);
+            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
 
             Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
             ArtifactItemProj modProj = proj.ModProjectile as ArtifactItemProj;
