@@ -51,16 +51,18 @@ namespace StarlightRiver.Content.Items.Permafrost
                         intensity[projectilesFound] = mp.radiusMult;
                         positions[projectilesFound] = proj.Center - new Vector2(200, 200);
                         progresses[projectilesFound] = (float)Math.Sqrt(mp.Progress);
+                        numberOfBells++;
+                        projectilesFound++;
                     }
                     if (proj.ModProjectile is Misc.GeodeBowExplosion mp2)
                     {
                         intensity[projectilesFound] = mp2.radiusMult * 4;
                         positions[projectilesFound] = proj.Center - new Vector2(200, 200);
                         progresses[projectilesFound] = (float)Math.Sqrt(mp2.Progress);
+                        numberOfBells++;
+                        projectilesFound++;
                     }
 
-                    numberOfBells++;
-                    projectilesFound++;
                     if (projectilesFound > 9)
                         break;
                 }

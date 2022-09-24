@@ -251,7 +251,7 @@ namespace StarlightRiver.Content.Items.Misc
                     break;
             }
 
-            Core.Systems.CameraSystem.Shake += (int)(5 * (float)Math.Sqrt(counter));
+            Core.Systems.CameraSystem.Shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, (int)Math.Sqrt(counter), (int)Math.Sqrt(counter) * 0.5f);
 
             for (int j = 0; j < 16; j++)
@@ -299,11 +299,6 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
-            if (Projectile.timeLeft == 15 && Projectile.ai[0] > 0)
-            {
-                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
-            }
-
             var crystals = Main.projectile.Where(x => x.active && x.type == ModContent.ProjectileType<GeodeBowGrowth>()).ToList();
 
             foreach (Projectile proj in crystals)
