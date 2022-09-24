@@ -5,6 +5,7 @@
 //Better collision on crystals
 //Visuals
 //AOE effect
+//Better arrow consumption
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -123,6 +124,17 @@ namespace StarlightRiver.Content.Items.Misc
                 else
                     Projectile.active = false;
             }
+
+            Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
+            if (Projectile.frame == 3)
+                stretch = Player.CompositeArmStretchAmount.None;
+            else if (Projectile.frame == 2)
+                stretch = Player.CompositeArmStretchAmount.Quarter;
+            else if (Projectile.frame == 1)
+                stretch = Player.CompositeArmStretchAmount.ThreeQuarters;
+            else
+                stretch = Player.CompositeArmStretchAmount.Full;
+            owner.SetCompositeArmFront(true, stretch, Projectile.rotation - 1.57f);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -160,8 +172,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            Projectile.width = 30;
-            Projectile.height = 30;
+            Projectile.width = 70;
+            Projectile.height = 70;
             Projectile.tileCollide = false;
             Projectile.friendly = false;
             Projectile.timeLeft = 500;
@@ -195,7 +207,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size(), Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
@@ -214,10 +226,14 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
         {
+            if (!shotFromGeodeBow)
+                return;
             Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowGrowth>(), projectile.damage, projectile.knockBack, projectile.owner);
             var modProj = proj.ModProjectile as GeodeBowGrowth;
+
+            Vector2 offset = (projectile.Center - target.Center);
             modProj.target = target;
-            modProj.offset = projectile.Center - target.Center;
+            modProj.offset = offset + (Vector2.Normalize(offset) * 20);
         }
     }
 }
