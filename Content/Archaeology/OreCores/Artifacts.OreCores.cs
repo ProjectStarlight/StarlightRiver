@@ -1,5 +1,4 @@
 ﻿//TODO:
-//Make them have sfx when mined
 //Manual loading
 //Implement final textures
 
@@ -95,6 +94,8 @@ namespace StarlightRiver.Content.Archaeology.OreCores
 
             for (int i = 0; i < 30; i++)
                 Dust.NewDust(WorldPosition, (int)Size.X, (int)Size.Y, DustType);
+
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, WorldPosition);
         }
 
         public override bool Open()
