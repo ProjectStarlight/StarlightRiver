@@ -1,12 +1,11 @@
 ﻿//TODO:
 //Sell price
 //Rarity
+//Obtainment
 //Better arrow consumption
-//Description updated
 //Particles
-//Fix bug where you 
+//Fix bug where screen distorts with more projectiles
 //Make crystals not disappear immediately
-//Consider adding trail to arrows
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -202,9 +201,9 @@ namespace StarlightRiver.Content.Items.Misc
         {
             Lighting.AddLight(Projectile.Center, Color.Magenta.ToVector3());
             pulseCounter += 0.05f;
-            if (scaleFactor < maxScale)
-                scaleFactor += 0.025f;
-            Projectile.scale = scaleFactor;
+            if (scaleFactor < 1.2f)
+                scaleFactor += 0.03f;
+            Projectile.scale = scaleFactor * maxScale;
 
             Projectile.rotation = offset.ToRotation() + 2.35f;
             if (!target.active)
@@ -221,14 +220,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            for (int i = 1; i <= 5; i++)
+            {
+                Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value;
+                float progress = MathHelper.Clamp((scaleFactor * 5) - i, 0, 1);
+                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress, SpriteEffects.None, 0f);
+            }
+
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
-
-            Color color = Color.White * 0.8f;
+            Color color = Color.White * 0.8f * Projectile.scale;
             color.A = 0;
-            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2, Projectile.scale + (0.1f * (float)Math.Sin(pulseCounter)), SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2, 1 + (0.1f * (float)Math.Sin(pulseCounter)), SpriteEffects.None, 0f);
             return false;
         }
 
