@@ -1,5 +1,7 @@
 ﻿//TODO:
 //Make them have sfx when mined
+//Manual loading
+//Implement final textures
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -77,20 +79,26 @@ namespace StarlightRiver.Content.Archaeology.OreCores
                 offScreen = Vector2.Zero;
             }
 
-            Rectangle frame = new Rectangle(0, 32 * frameNumber, 32, 32);
-            spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + offScreen, frame, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 2; j++)
+                {
+                    Rectangle frame = new Rectangle(0 + (i * 16), (32 * frameNumber) + (j * 16), 16, 16);
+                    Vector2 offset = new Vector2(i, j) * 16;
+                    Color color = Lighting.GetColor(Position.ToPoint() + new Point(i, j));
+                    spriteBatch.Draw(tex, (WorldPosition - Main.screenPosition) + offScreen + offset, frame, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+                }
         }
 
         public override void OnKill()
         {
-            Item.NewItem(new EntitySource_Misc("Artifact"), WorldPosition, Size, ItemType, Main.rand.Next(5,10));
+            Item.NewItem(new EntitySource_Misc("Artifact"), WorldPosition, Size, ItemType, Main.rand.Next(10,20));
 
             for (int i = 0; i < 30; i++)
                 Dust.NewDust(WorldPosition, (int)Size.X, (int)Size.Y, DustType);
         }
     }
 
-    public class CopperCore : OreCore //TODO: Manual loading once possible
+    public class CopperCore : OreCore
     { 
         public override int Tile => TileID.Copper;
 

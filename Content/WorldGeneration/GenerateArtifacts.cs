@@ -132,7 +132,6 @@ namespace StarlightRiver.Core
 
             int amount = Main.maxTilesX / 10;
 
-
             PlaceArtifactPool<OreCore>(range, tiles, amount, 99999999);
         }
 
