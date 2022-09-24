@@ -44,11 +44,20 @@ namespace StarlightRiver.Content.Items.Permafrost
             {
                 Projectile proj = Main.projectile[i];
 
-                if (proj.active && proj.damage > 0 && proj.ModProjectile is AuroraBellRing mp)
+                if (proj.active && proj.damage > 0)
                 {
-                    intensity[projectilesFound] = mp.radiusMult;
-                    positions[projectilesFound] = proj.Center - new Vector2(200,200);
-                    progresses[projectilesFound] = (float)Math.Sqrt(mp.Progress);
+                    if (proj.ModProjectile is AuroraBellRing mp)
+                    {
+                        intensity[projectilesFound] = mp.radiusMult;
+                        positions[projectilesFound] = proj.Center - new Vector2(200, 200);
+                        progresses[projectilesFound] = (float)Math.Sqrt(mp.Progress);
+                    }
+                    if (proj.ModProjectile is Misc.GeodeBowExplosion mp2)
+                    {
+                        intensity[projectilesFound] = mp2.radiusMult * 4;
+                        positions[projectilesFound] = proj.Center - new Vector2(200, 200);
+                        progresses[projectilesFound] = (float)Math.Sqrt(mp2.Progress);
+                    }
 
                     numberOfBells++;
                     projectilesFound++;

@@ -1,11 +1,12 @@
 ﻿//TODO:
-//Balance
 //Sell price
 //Rarity
-//Better collision on crystals
-//Visuals
-//AOE effect
 //Better arrow consumption
+//Description updated
+//Particles
+//Fix bug where you 
+//Make crystals not disappear immediately
+//Consider adding trail to arrows
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -25,8 +26,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Items.Misc
 {
     class GeodeBow : ModItem
-    {
-
+    { 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            Item.damage = 44;
+            Item.damage = 15;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 16;
             Item.height = 64;
@@ -165,6 +165,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Vector2 offset;
 
+        public float scaleFactor = 0;
+        public float maxScale = 1;
+
+        public float pulseCounter = 0f;
+
+        public override void Load()
+        {
+            for (int i = 1; i <= 4; i++)
+                GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "GeodeBowGrowthGore" + i.ToString());
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Geode Growth");
@@ -172,13 +183,14 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            Projectile.width = 70;
-            Projectile.height = 70;
+            Projectile.width = 24;
+            Projectile.height = 24;
             Projectile.tileCollide = false;
             Projectile.friendly = false;
             Projectile.timeLeft = 500;
-            Projectile.scale = 0;
+            Projectile.scale = 1;
             Projectile.hide = true;
+            maxScale = Main.rand.NextFloat(0.85f, 1.15f);
         }
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -188,8 +200,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
-            if (Projectile.scale < 1)
-                Projectile.scale += 0.025f;
+            Lighting.AddLight(Projectile.Center, Color.Magenta.ToVector3());
+            pulseCounter += 0.05f;
+            if (scaleFactor < maxScale)
+                scaleFactor += 0.025f;
+            Projectile.scale = scaleFactor;
 
             Projectile.rotation = offset.ToRotation() + 2.35f;
             if (!target.active)
@@ -199,22 +214,219 @@ namespace StarlightRiver.Content.Items.Misc
             }
             Projectile.Center = target.Center + offset;
 
-            if (Main.projectile.Any(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && n.GetGlobalProjectile<GeodeBowGProj>().shotFromGeodeBow))
-                Shatter();
+            Projectile proj = Main.projectile.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && n.GetGlobalProjectile<GeodeBowGProj>().shotFromGeodeBow).FirstOrDefault();
+            if (proj != null)
+                Shatter(proj);
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
+            Color color = Color.White * 0.8f;
+            color.A = 0;
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2, Projectile.scale + (0.1f * (float)Math.Sin(pulseCounter)), SpriteEffects.None, 0f);
             return false;
         }
 
-        private void Shatter()
+        private void Shatter(Projectile proj)
         {
-            Projectile.active = false;
+            proj.penetrate--;
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
+
+            int counter = 0;
+
+            foreach (Projectile otherCrystal in Main.projectile)
+            {
+                if (otherCrystal.active && otherCrystal.type == Projectile.type && (otherCrystal.ModProjectile as GeodeBowGrowth).target == target)
+                    counter++;
+
+                if (counter > 10)
+                    break;
+            }
+
+            Core.Systems.CameraSystem.Shake += (int)(5 * (float)Math.Sqrt(counter));
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, (int)Math.Sqrt(counter), (int)Math.Sqrt(counter) * 0.5f);
+
+            for (int j = 0; j < 16; j++)
+            {
+                Vector2 direction = Main.rand.NextVector2CircularEdge(1, 1);
+                Projectile shrapnel = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + (direction * 10), direction * Main.rand.Next(5, 10) * (float)Math.Sqrt(counter), ModContent.ProjectileType<GeodeBowShrapnel>(), 0, 0, owner.whoAmI);
+                (shrapnel.ModProjectile as GeodeBowShrapnel).width = Main.rand.Next(30, 50);
+                shrapnel.timeLeft = Main.rand.Next(90);
+            }
+
+            Vector2 vel = Vector2.Normalize(offset) * 5;
+            for (int i = 1; i <= 4; i++)
+                Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, vel.RotatedByRandom(0.4f), Mod.Find<ModGore>("GeodeBowGrowthGore" + i.ToString()).Type, Projectile.scale);
+            Projectile.active = false;
+        }
+    }
+
+    internal class GeodeBowExplosion : ModProjectile
+    {
+        public override string Texture => AssetDirectory.Invisible;
+
+        public float radiusMult => Projectile.ai[1];
+
+        public float Progress => 1 - (Projectile.timeLeft / 20f);
+
+        private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
+
+        public List<Projectile> cantHit = new List<Projectile>();
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 80;
+            Projectile.height = 80;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 20;
+        }
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Geode Explosion");
+        }
+
+        public override void AI()
+        {
+            if (Projectile.timeLeft == 15 && Projectile.ai[0] > 0)
+            {
+                Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), 0, 0, Projectile.owner, Projectile.ai[0] - 1, Projectile.ai[1]);
+            }
+
+            var crystals = Main.projectile.Where(x => x.active && x.type == ModContent.ProjectileType<GeodeBowGrowth>()).ToList();
+
+            foreach (Projectile proj in crystals)
+            {
+                Vector2 line = proj.Center - Projectile.Center;
+                line.Normalize();
+                line *= Radius;
+
+                if (!Collision.CheckAABBvLineCollision(proj.position, proj.Size, Projectile.Center, Projectile.Center + line))
+                    continue;
+
+                Vector2 vel = Vector2.Normalize((proj.ModProjectile as GeodeBowGrowth).offset) * 5;
+                for (int i = 1; i <= 4; i++)
+                    Gore.NewGore(Projectile.GetSource_FromThis(), proj.Center, vel.RotatedByRandom(0.4f), Mod.Find<ModGore>("GeodeBowGrowthGore" + i.ToString()).Type, proj.scale);
+                proj.active = false;
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor) => false;
+
+        public override bool? CanHitNPC(NPC target)
+        {
+            if (target.whoAmI == (int)Projectile.ai[0])
+                return false;
+
+            return base.CanHitNPC(target);
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
+            line.Normalize();
+            line *= Radius;
+
+            if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
+                return true;
+
+            return false;
+        }
+    }
+
+    public class GeodeBowShrapnel : ModProjectile, IDrawPrimitive
+    {
+        public override string Texture => AssetDirectory.Invisible;
+
+        public float width = 35;
+
+        private List<Vector2> cache;
+
+        private Trail trail;
+
+        private float Progress => 1 - (Projectile.timeLeft / 90.0f);
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Geode Shrapnel");
+        }
+
+        public override void SetDefaults()
+        {
+            Projectile.width = 8;
+            Projectile.height = 8;
+            Projectile.friendly = false;
+            Projectile.tileCollide = false;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 90;
+            Projectile.extraUpdates = 2;
+        }
+
+        public override void AI()
+        {
+            Projectile.velocity *= 0.94f;
+            if (!Main.dedServ)
+            {
+                ManageCache();
+                ManageTrail();
+            }
+        }
+
+        private void ManageCache()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+                for (int i = 0; i < 15; i++)
+                {
+                    cache.Add(Projectile.Center);
+                }
+            }
+
+            cache.Add(Projectile.Center);
+
+            while (cache.Count > 15)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new TriangularTip(4), factor => MathHelper.Lerp(1f, 0.35f, factor) * width * MathHelper.Lerp(0.2f, 1, Projectile.timeLeft / 90.0f), factor =>
+            {
+                return Color.Lerp(Color.Magenta, Color.White, Projectile.timeLeft / 90.0f);
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
+        }
+
+        public void DrawPrimitives()
+        {
+            Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+            effect.Parameters["alpha"].SetValue(1);
+            BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+            Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
+
+            trail?.Render(effect);
+
+            Main.graphics.GraphicsDevice.BlendState = oldState;
         }
     }
 
@@ -233,7 +445,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             Vector2 offset = (projectile.Center - target.Center);
             modProj.target = target;
-            modProj.offset = offset + (Vector2.Normalize(offset) * 20);
+            modProj.offset = offset + (Vector2.Normalize(offset) * 10);
         }
     }
 }
