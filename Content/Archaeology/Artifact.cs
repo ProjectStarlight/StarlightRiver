@@ -81,6 +81,18 @@ namespace StarlightRiver.Content.Archaeology
 
         public virtual void Draw(SpriteBatch spriteBatch) => GenericDraw(spriteBatch);
 
+        public virtual bool Open()
+        {
+            for (int i = 0; i < Size.X / 16; i++)
+                for (int j = 0; j < Size.Y / 16; j++)
+                {
+                    Tile tile = Main.tile[i + Position.X, j + Position.Y];
+                    if (tile.HasTile)
+                        return false;
+                }
+            return true;
+        }
+
         public override void Update()
         {
             CheckOpen();
@@ -146,13 +158,8 @@ namespace StarlightRiver.Content.Archaeology
 
         public void CheckOpen()
         {
-            for (int i = 0; i < Size.X / 16; i++)
-                for (int j = 0; j < Size.Y / 16; j++)
-                {
-                    Tile tile = Main.tile[i + Position.X, j + Position.Y];
-                    if (tile.HasTile)
-                        return;
-                }
+            if (!Open())
+                return;
 
             Kill(Position.X, Position.Y);
             (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();

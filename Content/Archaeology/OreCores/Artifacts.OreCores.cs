@@ -96,6 +96,20 @@ namespace StarlightRiver.Content.Archaeology.OreCores
             for (int i = 0; i < 30; i++)
                 Dust.NewDust(WorldPosition, (int)Size.X, (int)Size.Y, DustType);
         }
+
+        public override bool Open()
+        {
+            int tileCounter = 0;
+            for (int i = 0; i < Size.X / 16; i++)
+                for (int j = 0; j < Size.Y / 16; j++)
+                {
+                    Tile tile = Main.tile[i + Position.X, j + Position.Y];
+                    if (tile.HasTile)
+                        tileCounter++;
+                }
+
+            return tileCounter < 3;
+        }
     }
 
     public class CopperCore : OreCore
