@@ -4,7 +4,9 @@ namespace StarlightRiver.Core
     {
         public const string Assets =                "StarlightRiver/Assets/";
 
+
         public const string Archaeology =           Assets + "Archaeology/";
+        public const string OreCores =              Assets + "Archaeology/OreCores/";
         public const string Biomes =                Assets +"Biomes/";
 
         public const string Backgrounds =           Assets + "Backgrounds/";

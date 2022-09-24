@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Content.Archaeology;
 using StarlightRiver.Content.Archaeology.BuriedArtifacts;
+using StarlightRiver.Content.Archaeology.OreCores;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -31,6 +32,7 @@ namespace StarlightRiver.Core
             PlaceLavaArtifacts();
             PlaceUndergroundArtifacts();
             PlaceJungleArtifacts();
+            PlaceOreCores();
 
             (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
         }
@@ -110,6 +112,28 @@ namespace StarlightRiver.Core
             int amount = Main.maxTilesX / 7;
 
             PlaceArtifactPool<UndergroundArtifact>(range, tiles, amount, 2999);
+        }
+
+        private void PlaceOreCores()
+        {
+            var tiles = new int[]
+            {
+                  TileID.Copper,
+                  TileID.Tin,
+                  TileID.Lead,
+                  TileID.Iron,
+                  TileID.Tungsten,
+                  TileID.Silver,
+                  TileID.Gold,
+                  TileID.Platinum
+            };
+
+            Rectangle range = new Rectangle(100, (int)50, Main.maxTilesX - 200, Main.maxTilesY - 200);
+
+            int amount = Main.maxTilesX / 10;
+
+
+            PlaceArtifactPool<OreCore>(range, tiles, amount, 99999999);
         }
 
         private void PlaceArtifactPool<T>(Rectangle range, int[] validTiles, int toPlace, int maxTries) where T : Artifact

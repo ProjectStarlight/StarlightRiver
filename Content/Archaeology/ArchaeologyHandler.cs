@@ -46,12 +46,21 @@ namespace StarlightRiver.Content.Archaeology
 
         public void DrawArtifacts(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride = -1)
         {
+            List<Artifact> drawAbove = new List<Artifact>();
             foreach (var item in TileEntity.ByID)
             {
                 if (item.Value is Artifact artifact && artifact.IsOnScreen())
-                    artifact.Draw(Main.spriteBatch);
+                {
+                    if (artifact.AboveTiles)
+                        drawAbove.Add(artifact);
+                    else
+                        artifact.Draw(Main.spriteBatch);
+                }
             }
             orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
+
+            foreach (Artifact artifact in drawAbove)
+                artifact.Draw(Main.spriteBatch);
         }
     }
 

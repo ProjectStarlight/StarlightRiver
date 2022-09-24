@@ -58,9 +58,19 @@ namespace StarlightRiver.Content.Archaeology
         public virtual int ItemType { get; set; }
 
         /// <summary>
+        /// Whether the resulting projectile is spawned.
+        /// </summary>
+        public virtual bool SpawnProjectile => true;
+
+        /// <summary>
         /// Pretty self explanatory. Higher = higher spawnrate
         /// </summary>
-        public virtual float SpawnChance { get; set; } 
+        public virtual float SpawnChance { get; set; }
+
+        /// <summary>
+        /// Whether the artifact draws above tiles
+        /// </summary>
+        public virtual bool AboveTiles => false;
 
         public Vector2 WorldPosition => Position.ToVector2() * 16;
 
@@ -147,6 +157,8 @@ namespace StarlightRiver.Content.Archaeology
             Kill(Position.X, Position.Y);
             (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
 
+            if (!SpawnProjectile)
+                return;
             Projectile proj = Projectile.NewProjectileDirect(new EntitySource_Misc("Artifact"), WorldPosition, new Vector2(0, -0.5f), ModContent.ProjectileType<ArtifactItemProj>(), 0, 0);
             ArtifactItemProj modProj = proj.ModProjectile as ArtifactItemProj;
             modProj.itemTexture = TexturePath;
