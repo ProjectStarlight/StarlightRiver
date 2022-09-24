@@ -26,15 +26,15 @@ namespace StarlightRiver.Core.Loaders
         }
 
         public void AddMerge(int type1, int[] type2arr)
-        {
-            foreach(int type2 in type2arr)
-            {
-                Main.tileMerge[type1][type2] = true;
-                Main.tileMerge[type2][type1] = true;
-            }
-        }
+		{
+			foreach (int type2 in type2arr)
+			{
+				Main.tileMerge[type1][type2] = true;
+				Main.tileMerge[type2][type1] = true;
+			}
+		}
 
-        public void AddMerge(string type1, string[] type2arr)
+		public void AddMerge(string type1, string[] type2arr)
         {
             foreach (string type2 in type2arr)
             {

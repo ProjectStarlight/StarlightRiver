@@ -51,13 +51,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
     internal class MoonstoneArrowProj : ModProjectile, IDrawPrimitive
     {
-        public override string Texture => AssetDirectory.MoonstoneItem + "MoonstoneArrow";
+        private const float TRAIL_WIDTH = 0.4f;
 
         private List<Vector2> cache;
         private Trail trail;
         private Trail trail2;
-
-        private float trailWidth => 0.4f;
 
         private Vector2 velBase = Vector2.Zero;
 
@@ -68,10 +66,14 @@ namespace StarlightRiver.Content.Items.Moonstone
         private float charge = 0;
 
         private int damageIncrementer = 0;
+
+        public override string Texture => AssetDirectory.MoonstoneItem + "MoonstoneArrow";
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Moonlit Arrow");
         }
+
         public override void SetDefaults()
         {
             Projectile.width = 7;
@@ -84,8 +86,6 @@ namespace StarlightRiver.Content.Items.Moonstone
             Projectile.ignoreWater = false;
         }
 
-        public override bool ShouldUpdatePosition() => base.ShouldUpdatePosition();
-
         public override void AI()
         {
             if (velBase == Vector2.Zero)
@@ -96,6 +96,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Lighting.AddLight(Projectile.Center, Color.BlueViolet.ToVector3() * 0.5f);
 
             Vector2 offset = Main.rand.NextVector2Circular(0.5f, 1f).RotatedBy(Projectile.rotation);
+
             if (charge < 1)
             {
                 charge += 0.01f;
@@ -103,6 +104,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 damageIncrementer++;
                 if (damageIncrementer % 10 == 0)
                     Projectile.damage++;
+
                 Dust.NewDustPerfect((Projectile.Center - offset * 60) + (Projectile.velocity * 2), ModContent.DustType<MoonstoneArrowDust>(), offset * 2, 0, Color.BlueViolet, charge);
             }
 
@@ -135,14 +137,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(12), factor => (10 + factor * 25) * TRAIL_WIDTH, factor =>
             {
                 return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * charge;
             });
 
             trail.Positions = cache.ToArray();
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * trailWidth, factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 15, new RoundedTip(6), factor => (80 + 0 + factor * 0) * TRAIL_WIDTH, factor =>
             {
                 return new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * charge;
             });
@@ -184,6 +186,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 
             Color glowColor = new Color(100, 20, 255, 0);
+
             for (float i = Projectile.rotation + ((float)Main.timeForVisualEffects * 0.15f); i < Projectile.rotation + ((float)Main.timeForVisualEffects * 0.15f) + 6.28f; i += 1.57f)
             {
                 Vector2 offset = (i.ToRotationVector2() * charge * 13) + ((Projectile.rotation + 1.57f).ToRotationVector2() * 10);
@@ -199,6 +202,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             targetID = target.whoAmI;
         }
+
         public override void Kill(int timeLeft)
         {
             SoundEngine.PlaySound(SoundID.Item68 with { Volume = (float)Math.Sqrt(charge), Pitch = Main.rand.NextFloat(0.8f,1.2f)}, Projectile.Center);
@@ -209,6 +213,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
                 Dust.NewDustPerfect((Projectile.Center + new Vector2(0, 40)) + (direction * 30), ModContent.DustType<MoonstoneArrowSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.Next(2, 10) * (float)Math.Sqrt(charge), 0, Color.Purple * 0.8f, 1.6f);
             }
+
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<MoonstoneArrowRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, targetID, charge);
         }
     }
@@ -236,6 +241,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 dust.active = true;
                 dust.scale *= (1 / 0.95f);
                 dust.scale += (float)dust.customData * 0.1f;
+
                 if (dust.scale >= (float)dust.customData)
                     dust.customData = true;
             }
@@ -278,6 +284,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             if (dust.fadeIn > 40)
                 dust.active = false;
+
             return false;
         }
     }

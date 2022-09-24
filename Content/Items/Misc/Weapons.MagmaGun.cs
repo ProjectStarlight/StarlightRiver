@@ -19,65 +19,6 @@ using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	/*public class Temp
-	{
-		public void TempStuff()
-		{
-			if (TileDrawOverLoader.tileTarget != null)
-			{
-				Effect magmaTiles = Filters.Scene["MagmaTileShader"].GetShader().Shader;
-				magmaTiles.Parameters["TileTarget"].SetValue(TileDrawOverLoader.tileTarget);
-				magmaTiles.Parameters["transparency"].SetValue(0f);
-				magmaTiles.Parameters["tileScale"].SetValue(2);
-				magmaTiles.Parameters["width"].SetValue((float)Main.screenWidth / 2);
-				magmaTiles.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-				magmaTiles.Parameters["border"].SetValue(tileOutlineColor.ToVector4());
-				magmaTiles.Parameters["oldBorder"].SetValue(outlineColor.ToVector4());
-				magmaTiles.CurrentTechnique.Passes[0].Apply();
-			}
-
-			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
-
-			if (borderNoise is null)
-				return;
-
-			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
-
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone);
-			borderNoise.CurrentTechnique.Passes[0].Apply();
-
-			spriteBatch.End();
-
-			Effect metaballEdgeDetection2 = Filters.Scene["MetaballEdgeDetection2"].GetShader().Shader;
-			metaballEdgeDetection2.Parameters["width"].SetValue((float)Main.screenWidth / 2);
-			metaballEdgeDetection2.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-			metaballEdgeDetection2.Parameters["border"].SetValue(outlineColor2.ToVector4());
-
-			AddEffect(spriteBatch, graphicsDevice, Target, metaballEdgeDetection2);
-
-			Effect magmaNoise = Filters.Scene["MagmaNoise"].GetShader().Shader;
-			magmaNoise.Parameters["noiseScale"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight) / 200);
-			magmaNoise.Parameters["offset"].SetValue(2 * Main.screenPosition / new Vector2(Main.screenWidth, Main.screenHeight));
-			magmaNoise.Parameters["codedColor"].SetValue(insideColor.ToVector4());
-			magmaNoise.Parameters["newColor"].SetValue(insideColor2.ToVector4());
-			magmaNoise.Parameters["distort"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoiseLooping").Value);
-
-			AddEffect(spriteBatch, graphicsDevice, Target, magmaNoise);
-
-			if (TileDrawOverLoader.tileTarget != null)
-			{
-				Effect magmaTiles = Filters.Scene["MagmaTileShader"].GetShader().Shader;
-				magmaTiles.Parameters["TileTarget"].SetValue(TileDrawOverLoader.tileTarget);
-				magmaTiles.Parameters["transparency"].SetValue(0f);
-				magmaTiles.Parameters["tileScale"].SetValue(2);
-				magmaTiles.Parameters["width"].SetValue((float)Main.screenWidth / 2);
-				magmaTiles.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-				magmaTiles.Parameters["border"].SetValue(tileOutlineColor.ToVector4());
-				AddEffect(spriteBatch, graphicsDevice, Target, magmaTiles);
-			}
-		}
-	}*/
-
 	public class MagmaGun : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -111,19 +52,23 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 12f;
 			Item.autoReuse = true;
 		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			counter++;
+
 			foreach (Projectile Projectile in Main.projectile)
             {
 				if (Projectile.owner == player.whoAmI && Projectile.type == type && Projectile.active)
 					proj = Projectile;
             }
+
 			if (counter % 5 == 0)
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.SplashWeak with { PitchRange = (0.45f, 0.55f) }, position);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item13, position);
 			}
+
 			for (int i = 0; i < 3; i++)
 			{
 				if (proj != null && proj.active)
@@ -141,15 +86,13 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-        public override void UpdateInventory(Player player)
-        {
-            if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
-            {
+		public override void HoldItem(Player player)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
 				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
-            }
-        }
+		}
 
-        public override Vector2? HoldoutOffset()
+		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(-15, 0);
 		}
@@ -167,6 +110,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class MagmaGlob
 	{
+		public const int WIDTH = 18;
+		public const int HEIGHT = 18;
+
 		public float rotationConst;
 
 		public int embedTimer = 1;
@@ -182,28 +128,21 @@ namespace StarlightRiver.Content.Items.Misc
 		public float endScale = 1;
 		public float fadeIn = 0f;
 
-		public int width => 18;
-		public int height => 18;
+		public float scale;
+
+		public bool active = true;
+
 		public Vector2 Position;
 
 		public Vector2 Velocity;
 		public Vector2 oldVel;
-		public Vector2 Size => new Vector2(width, height);
+		public Vector2 Size => new Vector2(WIDTH, HEIGHT);
+
 		public Vector2 Center
 		{
-			get
-			{
-				return Position + (Size / 2);
-			}
-			set
-            {
-				Position = value - (Size / 2);
-            }
+			get => Position + (Size / 2);
+			set => Position = value - (Size / 2);
 		}
-
-		public float scale;
-
-		public bool active = true;
 
 		public MagmaGlob(Vector2 velocity, Vector2 position)
         {
@@ -219,6 +158,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (fadeIn < 1)
 				fadeIn += 0.1f;
+
 			scale = Math.Min(endScale, endScale * (timeLeft / 20f)) * fadeIn;
 
 			if (Main.rand.NextBool(2000))
@@ -251,21 +191,19 @@ namespace StarlightRiver.Content.Items.Misc
 			if (stoppedInTile && Main.rand.NextBool(200))
 			{
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-				int dustID = Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
+				int dustID = Dust.NewDust(Position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
 				Main.dust[dustID].noGravity = false;
 			}
-
 			else if (stoppedInTile && Main.rand.NextBool(500))
 			{
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(20);
-				int dustID = Dust.NewDust(Position + dir, width, height, ModContent.DustType<MagmaGunDust>(), 0,0);
+				int dustID = Dust.NewDust(Position + dir, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), 0,0);
 				Main.dust[dustID].noGravity = true;
 			}
-
 			else if (Velocity == Vector2.Zero && Main.rand.NextBool(700))
             {
 				Vector2 bubbleDir = -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
-				int d = Dust.NewDust(Position + (bubbleDir * 4), width, height, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
+				int d = Dust.NewDust(Position + (bubbleDir * 4), WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
 				Main.dust[d].velocity = bubbleDir;
 			}
 
@@ -280,6 +218,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Velocity = Vector2.Zero;
 				int i = 0;
 				int j = 0;
+
 				if (!TouchingTiles(ref i, ref j))
 				{
 					embedTimer = 1;
@@ -315,19 +254,19 @@ namespace StarlightRiver.Content.Items.Misc
 					stoppedInTile = true;
 					oldVel = Velocity;
 					Velocity = Vector2.Zero;
-					int k = 0;
-					int d = 0;
+					int k;
+					int d;
 
 					if (Main.rand.NextBool())
 					{
 						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
-						d = Dust.NewDust(Position + (bubbleDir * 4), width, height, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
+						d = Dust.NewDust(Position + (bubbleDir * 4), WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
 						Main.dust[d].velocity = bubbleDir;
 					}
 					else
 					{
 						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.2f) * 6;
-						Vector2 pos = Position + new Vector2(Main.rand.Next(width), Main.rand.Next(height));
+						Vector2 pos = Position + new Vector2(Main.rand.Next(WIDTH), Main.rand.Next(HEIGHT));
 						pos += (bubbleDir * 4);
 
 						if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
@@ -335,16 +274,14 @@ namespace StarlightRiver.Content.Items.Misc
 							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
 
 							if (!Main.tileSolid[tile2.TileType] || !tile2.HasTile)
-							{
 								Gore.NewGoreDirect(new EntitySource_Misc("Spawned from magma gun"), pos, bubbleDir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
-							}
 						}
 					}
 
 					for (k = 0; k < 4; k++)
 					{
 						Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-						Dust.NewDust(Position, width, height, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
+						Dust.NewDust(Position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
 					}
 
 				}
@@ -500,6 +437,7 @@ namespace StarlightRiver.Content.Items.Misc
 						}
 
                         target.AddBuff(BuffID.OnFire, 30);
+
 						return true;
 					}
 				}
@@ -518,7 +456,11 @@ namespace StarlightRiver.Content.Items.Misc
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.active)
-					Utils.PlotTileLine(glob.Center - new Vector2((glob.width / 2) * glob.scale, 0), glob.Center + new Vector2((glob.width / 2) * glob.scale, 0), glob.height * glob.scale, DelegateMethods.CutTiles);
+				{
+					var start = glob.Center - new Vector2((MagmaGlob.WIDTH / 2) * glob.scale, 0);
+					var end = glob.Center + new Vector2((MagmaGlob.WIDTH / 2) * glob.scale, 0);
+					Utils.PlotTileLine(start, end, MagmaGlob.HEIGHT * glob.scale, DelegateMethods.CutTiles);
+				}
 			}
 		}
 
@@ -539,22 +481,12 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-
-        /*public void DrawOverTiles(SpriteBatch spriteBatch)
-        {
-			foreach (MagmaGlob glob in Globs)
-			{
-				if (glob.active)
-				{
-					glob.DrawSinge(spriteBatch, ModContent.Request<Texture2D>(Texture + "_Glow").Value);
-				}
-			}
-		}*/
     }
 
 	public class MagmaGunDust : ModDust
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
+
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noLight = true;
