@@ -6,6 +6,7 @@
 //Particles
 //Fix bug where screen distorts with more projectiles
 //Make crystals not disappear immediately
+//Sound effects
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -246,7 +247,7 @@ namespace StarlightRiver.Content.Items.Misc
                 if (otherCrystal.active && otherCrystal.type == Projectile.type && (otherCrystal.ModProjectile as GeodeBowGrowth).target == target)
                     counter++;
 
-                if (counter > 10)
+                if (counter > 6)
                     break;
             }
 
