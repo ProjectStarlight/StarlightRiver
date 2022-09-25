@@ -284,7 +284,12 @@ namespace StarlightRiver.Content.Items.Misc
             for (int k = 0; k < 12; k++)
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30,30), ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(7, 7), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
 
-            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, (int)Math.Sqrt(counter), (int)Math.Sqrt(counter) * 0.5f);
+            DistortionPointHandler.AddPoint(Projectile.Center, (float)Math.Sqrt(counter), 0.5f,
+                    (intensity, ticksPassed) => intensity,
+                    (progress, ticksPassed) => (float)Math.Sqrt(ticksPassed / 10f) + 0.5f,
+                    (progress, intensity, ticksPassed) => ticksPassed <= 5);
+
+            Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, 0, (int)Math.Sqrt(counter) * 0.5f);
 
             for (int j = 0; j < 16; j++)
             {
@@ -307,9 +312,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public float radiusMult => Projectile.ai[1];
 
-        public int originalTarget => (int)Projectile.ai[0];
-
-        public float Progress => 1 - ((Projectile.timeLeft + 10) / 20f);
+        public float Progress => 1 - (Projectile.timeLeft / 10f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
 
@@ -350,14 +353,6 @@ namespace StarlightRiver.Content.Items.Misc
         }
 
         public override bool PreDraw(ref Color lightColor) => false;
-
-        public override bool? CanHitNPC(NPC target)
-        {
-            if (target.whoAmI == originalTarget)
-                return false;
-
-            return base.CanHitNPC(target);
-        }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
