@@ -77,15 +77,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 
     class MoonstoneHamaxeHoldout : ModProjectile
     {
+        private List<Vector2> cache;
+        private Trail trail;
+        private Trail trail2;
+
         private const int MAXCHARGE = 45;
 
         private const int MAXSWINGTIME = 25;
 
         private Vector2 direction;
 
+        private int flashTimer;
+
         private bool initialized;
 
         private bool swung;
+
+        private bool slammed;
 
         private ref float Charge => ref Projectile.ai[0];
 
@@ -137,10 +145,10 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 if (Charge < MAXCHARGE)
                 {
-                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
+                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
                     Charge++;
                 }
-
+                Projectile.timeLeft = 2;
                 owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90f));
             }
             else
@@ -148,20 +156,32 @@ namespace StarlightRiver.Content.Items.Moonstone
                 swung = true;
                 if (swingTimer < MAXSWINGTIME)
                 {
-                    Projectile.rotation = (Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -2f * Projectile.direction, Charge / MAXCHARGE), 1.5f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(swingTimer / MAXSWINGTIME)));
+                    if (swingTimer == MAXSWINGTIME - 1)
+                    {
+                        SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+                        flashTimer = 15;
+                    }
+                    Projectile.timeLeft = 2;
+                    Projectile.rotation = (Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(swingTimer / MAXSWINGTIME)));
                     swingTimer++;
                 }
-                else
-                    Projectile.Kill();
 
                 owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90f));
 
                 Point tilePos = Projectile.Bottom.ToTileCoordinates();
-                if (swingTimer > 10 && WorldGen.SolidTile(tilePos.X, tilePos.Y))
+                if (swingTimer > 10 && WorldGen.SolidTile(tilePos.X, tilePos.Y) && !slammed)
                 {
-                    Projectile.Kill();
+                    slammed = true;
+                    Projectile.timeLeft = 30;
+                    swingTimer = MAXSWINGTIME;
                     DoSlam();
                 }
+            }
+
+            if (Main.netMode != NetmodeID.Server && swingTimer > 1)
+            {
+                ManageCaches();
+                ManageTrail();
             }
         }
 
@@ -172,11 +192,12 @@ namespace StarlightRiver.Content.Items.Moonstone
             Item.noUseGraphic = false;
             Item.useStyle = ItemUseStyleID.Swing;
             Item.shoot = 0;
-            Item.noMelee = false;
+            Item.noMelee = false; //hacky solution but its the only one i could find for wonky stuff happening to the left click after right clicking
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
+            DrawPrimitives();
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             SpriteEffects flip = owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
             float rotation = Projectile.rotation + MathHelper.PiOver4 + (owner.direction == -1 ? MathHelper.PiOver2 : 0f);
@@ -186,13 +207,90 @@ namespace StarlightRiver.Content.Items.Moonstone
             return false;
         }
 
+        private void ManageCaches()
+        {
+            if (cache == null)
+            {
+                cache = new List<Vector2>();
+
+                for (int i = 0; i < 35; i++)
+                {
+                    cache.Add(Projectile.Center);
+                }
+            }
+
+            cache.Add(Projectile.Center);
+
+            while (cache.Count > 35)
+            {
+                cache.RemoveAt(0);
+            }
+        }
+
+        private void ManageTrail()
+        {
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 18f, factor =>
+            {
+                if (factor.X >= 0.96f)
+                    return Color.White * 0;
+
+                if (Projectile.timeLeft <= 30 && slammed)
+                    return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(1f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
+
+                return new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X;
+            });
+
+            trail.Positions = cache.ToArray();
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
+
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 35, new TriangularTip(40 * 4), factor => factor * 10f, factor =>
+            {
+                if (factor.X >= 0.96f)
+                    return Color.White * 0;
+
+                if (Projectile.timeLeft <= 30 && slammed)
+                    return new Color(120, 20 + (int)(100 * factor.X), 255) * MathHelper.Lerp(0.85f, 0f, 1f - Projectile.timeLeft / 30f) * factor.X;
+
+                return new Color(120, 20 + (int)(60 * factor.X), 255) * factor.X;
+            });
+
+            trail2.Positions = cache.ToArray();
+            trail2.NextPosition = Projectile.Center + Projectile.velocity;
+        }
+
+        public void DrawPrimitives()
+        {
+            if (!swung)
+                return;
+
+            Main.spriteBatch.End();
+            Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
+
+            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+            Matrix view = Main.GameViewMatrix.ZoomMatrix;
+            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+            effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
+            effect.Parameters["repeats"].SetValue(8f);
+            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+            effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/DatsuzeiFlameMap2").Value);
+
+            trail?.Render(effect);
+
+            effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
+
+            trail2?.Render(effect);
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        }
+
         public void DoSlam()
         {
             if (Main.myPlayer == owner.whoAmI)
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(20, 80, Charge / MAXCHARGE));
 
-            Collision.HitTiles(Projectile.Bottom, Vector2.UnitY * -Main.rand.NextFloat(2f, 4f), 32, 32);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
+            Collision.HitTiles(Projectile.Bottom, Vector2.UnitY * Main.rand.NextFloat(2f, 4f), 32, 32);
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, Projectile.Center);
         }
     }
     internal class MoonstoneHamaxeRing : ModProjectile, IDrawPrimitive
@@ -263,7 +361,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 45 * (1 - Progress), factor =>
             {
-                return new Color(100, 0, 255);
+                return new Color(100, 80, 255);
             });
 
             trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 25 * (1 - Progress), factor =>
