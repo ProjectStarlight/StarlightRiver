@@ -36,10 +36,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
             Item.damage = 15;
             Item.DamageType = DamageClass.Melee;
-            Item.useAnimation = Item.useTime = 15;
+            Item.useAnimation = Item.useTime = 14;
 
-            Item.hammer = 60;
-            Item.axe = 25;
+            Item.hammer = 55;
+            Item.axe = 15;
 
             Item.useStyle = ItemUseStyleID.Swing;
             Item.knockBack = 5f;
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         private Trail trail;
         private Trail trail2;
 
-        private const int MAXCHARGE = 45;
+        private const int MAXCHARGE = 60;
 
         private const int MAXSWINGTIME = 25;
 
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public void DoSlam()
         {
             if (Main.myPlayer == owner.whoAmI)
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(20, 80, Charge / MAXCHARGE));
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(40, 120, Charge / MAXCHARGE));
 
             Collision.HitTiles(Projectile.Bottom + Main.rand.NextVector2Circular(15f, 15f), Vector2.UnitY * Main.rand.NextFloat(2f, 4f), 16, 16);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {Volume = 1.35f, PitchVariance = 0.1f }, Projectile.Center);
@@ -384,14 +384,15 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius * 0.75f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.One.RotatedBy(rot), 0, new Color(120, 120, 255), Main.rand.NextFloat(0.35f, 0.4f));
             }
 
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 75; i++)
             {
-                double rad = (i / 39f) * 6.28f;
+                double rad = (i / 74f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
-                offset *= Main.rand.NextFloat(Radius);
+                offset *= i % 3 == 0 ? Main.rand.Next((int)Radius) : Radius;
                 Vector2 pos = Projectile.Center + offset;
                 Point point = pos.ToTileCoordinates();
-                WorldGen.KillWall(point.X, point.Y);
+                if (Collision.CanHitLine(Main.player[Projectile.owner].Center, 1, 1, pos, 1, 1))
+                    WorldGen.KillWall(point.X, point.Y);
             }
         }
 
