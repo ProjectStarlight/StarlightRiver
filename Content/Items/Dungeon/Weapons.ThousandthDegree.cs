@@ -234,7 +234,8 @@ namespace StarlightRiver.Content.Items.Dungeon
             Core.Systems.CameraSystem.Shake += 1;
             target.AddBuff(BuffID.OnFire, 240);
             target.AddBuff(BuffID.OnFire3, 240);
-            CurrentHeat += 1;
+            if (CurrentHeat < MAXHEAT)
+                CurrentHeat += 1;
         }
 
         public override bool PreDraw(ref Color lightColor)
