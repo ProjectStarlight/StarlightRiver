@@ -52,6 +52,16 @@ namespace StarlightRiver.Content.Items.Moonstone
             Item.useTurn = true;
         }
 
+        public override void UseItemHitbox(Player Player, ref Rectangle hitbox, ref bool noHitbox)
+        {
+            if (Main.rand.NextBool(15))
+            {
+                Dust.NewDustPerfect(hitbox.TopLeft() + new Vector2(Main.rand.NextFloat(hitbox.Width), Main.rand.NextFloat(hitbox.Height)),
+                ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 1.2f) * Player.direction, -Main.rand.NextFloat(0.3f, 0.5f)), 0,
+                new Color(Main.rand.NextFloat(0.15f, 0.30f), Main.rand.NextFloat(0.2f, 0.30f), Main.rand.NextFloat(0.3f, 0.5f), 0f), Main.rand.NextFloat(0.15f, 0.40f));
+            }
+        }
+
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
@@ -60,6 +70,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Item.useStyle = ItemUseStyleID.Shoot;
                 Item.noUseGraphic = true;
                 Item.shoot = ModContent.ProjectileType<MoonstoneHamaxeHoldout>();
+                Item.UseSound = null;
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<MoonstoneHamaxeHoldout>()] > 0)
                     return false;
             }
@@ -69,6 +80,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Item.noUseGraphic = false;
                 Item.shoot = 0;
                 Item.noMelee = false;
+                Item.UseSound = SoundID.Item1;
             }
 
             return base.CanUseItem(player);
@@ -132,7 +144,10 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Projectile.netUpdate = true;
             }
 
-            Projectile.Center = owner.Center + Projectile.rotation.ToRotationVector2() * 30f;
+            if (flashTimer > 0)
+                flashTimer--;
+
+            Projectile.Center = owner.MountedCenter + Projectile.rotation.ToRotationVector2() * 30f;
             owner.heldProj = Projectile.whoAmI;
             owner.ChangeDir(Projectile.direction);
             owner.itemTime = 2;
@@ -145,28 +160,34 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 if (Charge < MAXCHARGE)
                 {
+                    if (Charge == (MAXCHARGE - 1))
+                    {
+                        //DustHelper.DrawStar(owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), pointAmount: 5, mainSize: 1.5f, dustDensity: 0.7f, pointDepthMult: 0.3f, rotationAmount: Projectile.rotation, dustSize: 0.5f, color: new Color(120, 120, 255));
+                        DustHelper.DrawDustImage(owner.Center + Projectile.rotation.ToRotationVector2() * 40f, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f,
+                            ModContent.Request<Texture2D>(Texture + "_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
+                        SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+                        flashTimer = 15;
+                    }
                     Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -3f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
                     Charge++;
                 }
                 Projectile.timeLeft = 2;
-                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90f));
+                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(Projectile.direction == -1 ? 80f : 100f));
             }
             else
             {
                 swung = true;
                 if (swingTimer < MAXSWINGTIME)
                 {
-                    if (swingTimer == MAXSWINGTIME - 1)
-                    {
-                        SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
-                        flashTimer = 15;
-                    }
                     Projectile.timeLeft = 2;
                     Projectile.rotation = (Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -3f * Projectile.direction, Charge / MAXCHARGE), 2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(swingTimer / MAXSWINGTIME)));
                     swingTimer++;
                 }
 
-                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90f));
+                if (swingTimer == 10)
+                    SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
+
+                owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(Projectile.direction == -1 ? 80f : 100f));
 
                 Point tilePos = Projectile.Bottom.ToTileCoordinates();
                 if (swingTimer > 10 && WorldGen.SolidTile(tilePos.X, tilePos.Y) && !slammed)
@@ -176,6 +197,11 @@ namespace StarlightRiver.Content.Items.Moonstone
                     swingTimer = MAXSWINGTIME;
                     DoSlam();
                 }
+
+                if (slammed)
+                    owner.velocity *= 0.5f;
+
+                Dust.NewDustPerfect((owner.Center + Projectile.rotation.ToRotationVector2() * 40f) + Main.rand.NextVector2Circular(10f, 10f), ModContent.DustType<Dusts.GlowFastDecelerate>(), null, 0, new Color(120, 120, 255), 0.35f);
             }
 
             if (Main.netMode != NetmodeID.Server && swingTimer > 1)
@@ -199,12 +225,44 @@ namespace StarlightRiver.Content.Items.Moonstone
         {
             DrawPrimitives();
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             SpriteEffects flip = owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
             float rotation = Projectile.rotation + MathHelper.PiOver4 + (owner.direction == -1 ? MathHelper.PiOver2 : 0f);
-            Vector2 drawPos = owner.Center + Projectile.rotation.ToRotationVector2() * 35f - Main.screenPosition + Main.rand.NextVector2Circular(0.5f, 0.5f);
+            Vector2 drawPos = (owner.MountedCenter + new Vector2(0f, owner.gfxOffY)) + Projectile.rotation.ToRotationVector2() * 35f - Main.screenPosition + Main.rand.NextVector2Circular(0.5f, 0.5f);
 
             Main.spriteBatch.Draw(tex, drawPos, null, lightColor, rotation, tex.Size() / 2f, Projectile.scale, flip, 0f);
+
+            if (flashTimer > 0)
+                Main.spriteBatch.Draw(glowTex, drawPos, null, Color.Lerp(new Color(120, 120, 255, 0), Color.Transparent, 1f - (flashTimer / 15f)), rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
+
+            if (swingTimer > 0)
+                Main.spriteBatch.Draw(glowTex, drawPos, null, Color.Lerp(Color.Transparent, new Color(120, 120, 255, 0), (swingTimer * 0.5f) / (float)MAXSWINGTIME), rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
+
             return false;
+        }
+
+        public void DoSlam()
+        {
+            if (Main.myPlayer == owner.whoAmI)
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(20, 80, Charge / MAXCHARGE));
+
+            Collision.HitTiles(Projectile.Bottom + Main.rand.NextVector2Circular(15f, 15f), Vector2.UnitY * Main.rand.NextFloat(2f, 4f), 16, 16);
+            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {Volume = 1.35f, PitchVariance = 0.1f }, Projectile.Center);
+            Core.Systems.CameraSystem.Shake += 12;
+
+            for (int i = 0; i < 55; i++)
+            {
+                double rad = (i / 55f) * 6.28f;
+                Vector2 offset = new Vector2((float)Math.Sin(rad) * 0.5f, (float)Math.Cos(rad));
+                offset *= 4;
+                Dust.NewDustPerfect(Projectile.Bottom, ModContent.DustType<Dusts.GlowFastDecelerate>(), offset.RotatedBy(Projectile.rotation + MathHelper.PiOver4 * Projectile.direction), 0, new Color(120, 120, 255), 0.85f);
+            }
+
+            for (int i = 0; i < 25; i++)
+            {
+                Dust.NewDustPerfect(Projectile.Bottom, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-7.5f, 7.5f), 0, new Color(120, 120, 255), 0.65f);
+                Dust.NewDustPerfect(Projectile.Bottom, ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.UnitY.RotatedByRandom(0.4f) * -Main.rand.NextFloat(6f), 0, new Color(120, 120, 255), 0.65f);
+            }
         }
 
         private void ManageCaches()
@@ -283,15 +341,6 @@ namespace StarlightRiver.Content.Items.Moonstone
             trail2?.Render(effect);
             Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
-
-        public void DoSlam()
-        {
-            if (Main.myPlayer == owner.whoAmI)
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(20, 80, Charge / MAXCHARGE));
-
-            Collision.HitTiles(Projectile.Bottom, Vector2.UnitY * Main.rand.NextFloat(2f, 4f), 32, 32);
-            SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, Projectile.Center);
-        }
     }
     internal class MoonstoneHamaxeRing : ModProjectile, IDrawPrimitive
     {
@@ -323,13 +372,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         public override void AI()
         {
-            ManageCaches();
-            ManageTrail();
-
-            
-            for (int i = 0; i < 33; i++)
+            if (Main.netMode != NetmodeID.Server)
             {
-                double rad = (i / 32f) * 6.28f;
+                ManageCaches();
+                ManageTrail();
+            }
+            for (int k = 0; k < 8; k++)
+            {
+                float rot = Main.rand.NextFloat(0, 6.28f);
+
+                Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius * 0.75f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Vector2.One.RotatedBy(rot), 0, new Color(120, 120, 255), Main.rand.NextFloat(0.35f, 0.4f));
+            }
+
+            for (int i = 0; i < 40; i++)
+            {
+                double rad = (i / 39f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
                 offset *= Main.rand.NextFloat(Radius);
                 Vector2 pos = Projectile.Center + offset;
@@ -343,15 +400,15 @@ namespace StarlightRiver.Content.Items.Moonstone
             cache = new List<Vector2>();
             float radius = Radius;
 
-            for (int i = 0; i < 33; i++)
+            for (int i = 0; i < 40; i++)
             {
-                double rad = (i / 32f) * 6.28f;
+                double rad = (i / 39f) * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
                 offset *= radius;
                 cache.Add(Projectile.Center + offset);
             }
 
-            while (cache.Count > 33)
+            while (cache.Count > 40)
             {
                 cache.RemoveAt(0);
             }
@@ -359,16 +416,16 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 45 * (1 - Progress), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 100 * (1 - Progress), factor =>
             {
-                return new Color(100, 80, 255);
+                return new Color(120, 120, 255);
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 25 * (1 - Progress), factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 35 * (1 - Progress), factor =>
             {
                 return Color.White;
             });
-            float nextplace = 33f / 32f;
+            float nextplace = 40f / 39f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
             offset *= Radius;
 

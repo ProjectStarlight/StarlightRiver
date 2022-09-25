@@ -8,7 +8,7 @@ namespace StarlightRiver.Helpers
 {
 	public static class DustHelper
     {
-        public static void DrawDustImage(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, bool noGravity = true, float rot = 0.34f)
+        public static void DrawDustImage(Vector2 position, int dustType, float size, Texture2D tex, float dustSize = 1f, int Alpha = 0, Color? color = null, bool noGravity = true, float rot = 0.34f)
         {
             if (Main.netMode != NetmodeID.Server)
             {
@@ -26,13 +26,13 @@ namespace StarlightRiver.Helpers
                             double dustY = (j - (tex.Height / 2));
                             dustX *= size;
                             dustY *= size;
-                            Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation)).noGravity = noGravity;
+                            Dust.NewDustPerfect(position, dustType, new Vector2((float)dustX, (float)dustY).RotatedBy(rotation), Alpha, (Color)color, dustSize).noGravity = noGravity;
                         }
                     }
                 }
             }
         }
-        public static void DrawStar(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1)
+        public static void DrawStar(Vector2 position, int dustType, float pointAmount = 5, float mainSize = 1, float dustDensity = 1, float dustSize = 1f, float pointDepthMult = 1f, float pointDepthMultOffset = 0.5f, float randomAmount = 0, float rotationAmount = -1, Color? color = null)
         {
             float rot;
             if (rotationAmount < 0) { rot = Main.rand.NextFloat(0, (float)Math.PI * 2); }
@@ -48,7 +48,7 @@ namespace StarlightRiver.Helpers
                 float x = (float)Math.Cos(k + rand);
                 float y = (float)Math.Sin(k + rand);
                 float mult = ((Math.Abs(((k * (pointAmount / 2)) % (float)Math.PI) - (float)Math.PI / 2)) * pointDepthMult) + pointDepthMultOffset;//triangle wave function
-                Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mult * mainSize, 0, default, dustSize);
+                Dust.NewDustPerfect(position, dustType, new Vector2(x, y).RotatedBy(rot) * mult * mainSize, 0, (Color)color, dustSize);
             }
         }
 
