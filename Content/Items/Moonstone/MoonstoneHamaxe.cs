@@ -15,6 +15,7 @@ using System.Linq;
 using Terraria.Graphics.Effects;
 using StarlightRiver.Helpers;
 using Terraria.GameContent;
+using Terraria.GameContent.Achievements;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
@@ -47,16 +48,18 @@ namespace StarlightRiver.Content.Items.Moonstone
             Item.rare = ItemRarityID.Green;
             Item.UseSound = SoundID.Item1;
             Item.autoReuse = true;
-            Item.shoot = ModContent.ProjectileType<MoonstoneHamaxeHoldout>();
             Item.shootSpeed = 1f;
+            Item.useTurn = true;
         }
 
         public override bool CanUseItem(Player player)
         {
             if (player.altFunctionUse == 2)
             {
+                Item.noMelee = true;
                 Item.useStyle = ItemUseStyleID.Shoot;
                 Item.noUseGraphic = true;
+                Item.shoot = ModContent.ProjectileType<MoonstoneHamaxeHoldout>();
                 if (player.ownedProjectileCounts[ModContent.ProjectileType<MoonstoneHamaxeHoldout>()] > 0)
                     return false;
             }
@@ -64,6 +67,8 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 Item.useStyle = ItemUseStyleID.Swing;
                 Item.noUseGraphic = false;
+                Item.shoot = 0;
+                Item.noMelee = false;
             }
 
             return base.CanUseItem(player);
@@ -122,6 +127,8 @@ namespace StarlightRiver.Content.Items.Moonstone
             Projectile.Center = owner.Center + Projectile.rotation.ToRotationVector2() * 30f;
             owner.heldProj = Projectile.whoAmI;
             owner.ChangeDir(Projectile.direction);
+            owner.itemTime = 2;
+            owner.itemAnimation = 2;
 
             if (Main.myPlayer != owner.whoAmI)
                 return;
@@ -130,7 +137,7 @@ namespace StarlightRiver.Content.Items.Moonstone
             {
                 if (Charge < MAXCHARGE)
                 {
-                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -2f * Projectile.direction, Charge / MAXCHARGE);
+                    Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.Lerp(0, -2f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(Charge / MAXCHARGE));
                     Charge++;
                 }
 
@@ -141,7 +148,7 @@ namespace StarlightRiver.Content.Items.Moonstone
                 swung = true;
                 if (swingTimer < MAXSWINGTIME)
                 {
-                    Projectile.rotation = (Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -2f * Projectile.direction, Charge / MAXCHARGE), 3f * Projectile.direction, swingTimer / MAXSWINGTIME));
+                    Projectile.rotation = (Projectile.velocity.ToRotation() + MathHelper.Lerp(MathHelper.Lerp(0, -2f * Projectile.direction, Charge / MAXCHARGE), 1.5f * Projectile.direction, EaseBuilder.EaseCubicInOut.Ease(swingTimer / MAXSWINGTIME)));
                     swingTimer++;
                 }
                 else
@@ -150,12 +157,22 @@ namespace StarlightRiver.Content.Items.Moonstone
                 owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.ToRadians(90f));
 
                 Point tilePos = Projectile.Bottom.ToTileCoordinates();
-                if (WorldGen.SolidTile(tilePos.X, tilePos.Y))
+                if (swingTimer > 10 && WorldGen.SolidTile(tilePos.X, tilePos.Y))
                 {
                     Projectile.Kill();
                     DoSlam();
                 }
             }
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            Item Item = owner.HeldItem;
+
+            Item.noUseGraphic = false;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.shoot = 0;
+            Item.noMelee = false;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -172,7 +189,7 @@ namespace StarlightRiver.Content.Items.Moonstone
         public void DoSlam()
         {
             if (Main.myPlayer == owner.whoAmI)
-                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.Zero, ModContent.ProjectileType<MoonstoneHamaxeRing>(), 0, 0, owner.whoAmI, MathHelper.Lerp(20, 80, Charge / MAXCHARGE));
 
             Collision.HitTiles(Projectile.Bottom, Vector2.UnitY * -Main.rand.NextFloat(2f, 4f), 32, 32);
             SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
@@ -187,7 +204,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         protected float Progress => 1 - (Projectile.timeLeft / 25f);
 
-        protected virtual float Radius => 60 * (float)Math.Sqrt(Math.Sqrt(Progress));
+        protected virtual float Radius => Projectile.ai[0] * EaseBuilder.EaseCircularInOut.Ease(Progress);
 
         public override string Texture => AssetDirectory.Invisible;
 
@@ -218,7 +235,8 @@ namespace StarlightRiver.Content.Items.Moonstone
                 Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
                 offset *= Main.rand.NextFloat(Radius);
                 Vector2 pos = Projectile.Center + offset;
-                WorldGen.KillWall(pos.ToTileCoordinates().X, pos.ToTileCoordinates().Y);
+                Point point = pos.ToTileCoordinates();
+                WorldGen.KillWall(point.X, point.Y);
             }
         }
 
@@ -243,14 +261,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
+            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 45 * (1 - Progress), factor =>
             {
                 return new Color(100, 0, 255);
             });
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
+            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 25 * (1 - Progress), factor =>
             {
-                return Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress);
+                return Color.White;
             });
             float nextplace = 33f / 32f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
