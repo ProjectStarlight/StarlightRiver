@@ -307,11 +307,11 @@ namespace StarlightRiver.Content.Items.Misc
 
         public float radiusMult => Projectile.ai[1];
 
+        public int originalTarget => (int)Projectile.ai[0];
+
         public float Progress => 1 - ((Projectile.timeLeft + 10) / 20f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
-
-        public List<Projectile> cantHit = new List<Projectile>();
 
         public override void SetDefaults()
         {
@@ -353,7 +353,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool? CanHitNPC(NPC target)
         {
-            if (target.whoAmI == (int)Projectile.ai[0])
+            if (target.whoAmI == originalTarget)
                 return false;
 
             return base.CanHitNPC(target);
@@ -468,7 +468,6 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (shotFromGeodeBow && Main.rand.NextBool(10))
                 Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(0.85f, 1.15f) * projectile.scale);
-
         }
 
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
