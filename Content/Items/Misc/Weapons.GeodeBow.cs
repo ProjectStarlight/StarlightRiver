@@ -286,8 +286,8 @@ namespace StarlightRiver.Content.Items.Misc
 
             DistortionPointHandler.AddPoint(Projectile.Center, (float)Math.Sqrt(counter), 0.5f,
                     (intensity, ticksPassed) => intensity,
-                    (progress, ticksPassed) => (float)Math.Sqrt(ticksPassed / 10f) + 0.5f,
-                    (progress, intensity, ticksPassed) => ticksPassed <= 5);
+                    (progress, ticksPassed) => (float)Math.Sqrt(ticksPassed / 14f) + 0.5f,
+                    (progress, intensity, ticksPassed) => ticksPassed <= 7);
 
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, 0, (int)Math.Sqrt(counter) * 0.5f);
 
