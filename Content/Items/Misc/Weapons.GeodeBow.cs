@@ -1,17 +1,8 @@
-﻿//TODO:
-//Sell price
-//Rarity
-//Obtainment
-//Better arrow consumption
-//Particles
-//Fix bug where screen distorts with more projectiles
-//Make crystals not disappear immediately
-//Sound effects
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.BuriedArtifacts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,7 +38,8 @@ namespace StarlightRiver.Content.Items.Misc
             Item.noMelee = true;
             Item.noUseGraphic = true;
             Item.knockBack = 1;
-            Item.rare = ItemRarityID.Orange;
+            Item.rare = ItemRarityID.Blue;
+            Item.value = Item.sellPrice(0, 1, 0, 0);
             Item.channel = true;
             Item.shoot = ProjectileType<GeodeBowProj>();
             Item.shootSpeed = 0f;
@@ -57,6 +49,11 @@ namespace StarlightRiver.Content.Items.Misc
             Item.channel = true;
         }
 
+        public override bool CanConsumeAmmo(Item ammo, Player player)
+        {
+            return player.itemTime == 2;
+        }
+
         public override bool CanUseItem(Player player)
         {
             return !Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<GeodeBowProj>());
@@ -64,16 +61,22 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            Projectile.NewProjectile(source, position, velocity / 4f, ProjectileType<GeodeBowProj>(), damage, knockback, player.whoAmI, type);
+            Projectile.NewProjectile(source, position, velocity / 4f, ProjectileType<GeodeBowProj>(), damage, knockback, player.whoAmI);
             return false;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<ExoticGeodeArtifactItem>(), 5);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
     internal class GeodeBowProj : ModProjectile
     {
         private Player owner => Main.player[Projectile.owner];
-
-        private int arrowType => (int)Projectile.ai[0];
 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -93,6 +96,9 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
+            if (!owner.channel)
+                Projectile.active = false;
+
             owner.itemAnimation = owner.itemTime = 2;
             owner.direction = Math.Sign(owner.DirectionTo(Main.MouseWorld).X);
             Projectile.rotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
@@ -116,13 +122,8 @@ namespace StarlightRiver.Content.Items.Misc
 
             if (Projectile.frame >= 6)
             {
-                if (owner.channel)
-                {
-                    Projectile.frame = 0;
-                    Projectile.frameCounter = 0;
-                }
-                else
-                    Projectile.active = false;
+                 Projectile.frame = 0;
+                 Projectile.frameCounter = 0;
             }
 
             Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
@@ -143,23 +144,29 @@ namespace StarlightRiver.Content.Items.Misc
 
             int frameHeight = tex.Height / Main.projFrames[Projectile.type];
             Rectangle frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, lightColor, Projectile.rotation, new Vector2(0, frameHeight / 2), Projectile.scale, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center + new Vector2(0, owner.gfxOffY) - Main.screenPosition, frameBox, lightColor, Projectile.rotation, new Vector2(0, frameHeight / 2), Projectile.scale, SpriteEffects.None, 0f);
             return false;
         }
 
         private void Shoot()
         {
+            if (!owner.PickAmmo(owner.HeldItem, out int type, out float speed, out int damage, out float knockBack, out int ammoItemID, false))
+            {
+                Projectile.active = false;
+                return;
+            }
+
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
-            Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.rotation.ToRotationVector2() * 20, arrowType, Projectile.damage, Projectile.knockBack, owner.whoAmI);
+            Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.rotation.ToRotationVector2() * (speed + 12), type, damage, knockBack, owner.whoAmI);
             proj.GetGlobalProjectile<GeodeBowGProj>().shotFromGeodeBow = true;
         }
     }
 
     internal class GeodeBowGrowth : ModProjectile
     {
-        private Player owner => Main.player[Projectile.owner];
-
         public override string Texture => AssetDirectory.MiscItem + Name;
+
+        public Projectile activator;
 
         public NPC target;
 
@@ -169,6 +176,10 @@ namespace StarlightRiver.Content.Items.Misc
         public float maxScale = 1;
 
         public float pulseCounter = 0f;
+
+        private float[] crystalScales = new float[5];
+
+        private Player owner => Main.player[Projectile.owner];
 
         public override void Load()
         {
@@ -200,10 +211,27 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
+            if (activator is not null && !activator.active)
+                activator = null;
+
+            if (scaleFactor == 0)
+            {
+                for (int i = 0; i < 5; i++)
+                    crystalScales[i] = Main.rand.NextFloat(0.6f, 1.4f);
+            }
+
             Lighting.AddLight(Projectile.Center, Color.Magenta.ToVector3());
             pulseCounter += 0.05f;
-            if (scaleFactor < 1.2f)
-                scaleFactor += 0.03f;
+            if (Projectile.timeLeft > 50)
+            {
+                if (scaleFactor < 1.2f)
+                    scaleFactor += 0.03f;
+            }
+            else
+                scaleFactor -= 0.03f;
+            if (scaleFactor <= 0)
+                Projectile.active = false;
+
             Projectile.scale = scaleFactor * maxScale;
 
             Projectile.rotation = offset.ToRotation() + 2.35f;
@@ -214,7 +242,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
             Projectile.Center = target.Center + offset;
 
-            Projectile proj = Main.projectile.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && n.GetGlobalProjectile<GeodeBowGProj>().shotFromGeodeBow).FirstOrDefault();
+            Projectile proj = Main.projectile.Where(n => n.active && n != activator && n.Hitbox.Intersects(Projectile.Hitbox) && n.GetGlobalProjectile<GeodeBowGProj>().shotFromGeodeBow).FirstOrDefault();
             if (proj != null)
                 Shatter(proj);
         }
@@ -225,7 +253,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value;
                 float progress = MathHelper.Clamp((scaleFactor * 5) - i, 0, 1);
-                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress * crystalScales[i - 1], SpriteEffects.None, 0f);
             }
 
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
@@ -238,7 +266,7 @@ namespace StarlightRiver.Content.Items.Misc
         private void Shatter(Projectile proj)
         {
             proj.penetrate--;
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.Center);
+            Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
             int counter = 0;
 
@@ -252,6 +280,10 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             Core.Systems.CameraSystem.Shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
+
+            for (int k = 0; k < 12; k++)
+                Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30,30), ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(7, 7), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
+
             Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowExplosion>(), (int)(Math.Pow(counter, 0.7f) * Projectile.damage), Projectile.knockBack, owner.whoAmI, (int)Math.Sqrt(counter), (int)Math.Sqrt(counter) * 0.5f);
 
             for (int j = 0; j < 16; j++)
@@ -275,7 +307,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public float radiusMult => Projectile.ai[1];
 
-        public float Progress => 1 - (Projectile.timeLeft / 20f);
+        public float Progress => 1 - ((Projectile.timeLeft + 10) / 20f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
 
@@ -289,7 +321,7 @@ namespace StarlightRiver.Content.Items.Misc
             Projectile.friendly = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
-            Projectile.timeLeft = 20;
+            Projectile.timeLeft = 10;
         }
 
         public override void SetStaticDefaults()
@@ -349,8 +381,6 @@ namespace StarlightRiver.Content.Items.Misc
         private List<Vector2> cache;
 
         private Trail trail;
-
-        private float Progress => 1 - (Projectile.timeLeft / 90.0f);
 
         public override void SetStaticDefaults()
         {
@@ -434,16 +464,25 @@ namespace StarlightRiver.Content.Items.Misc
 
         public bool shotFromGeodeBow = false;
 
+        public override void AI(Projectile projectile)
+        {
+            if (shotFromGeodeBow && Main.rand.NextBool(10))
+                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(0.85f, 1.15f) * projectile.scale);
+
+        }
+
         public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
         {
             if (!shotFromGeodeBow)
                 return;
+
             Projectile proj = Projectile.NewProjectileDirect(projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<GeodeBowGrowth>(), projectile.damage, projectile.knockBack, projectile.owner);
             var modProj = proj.ModProjectile as GeodeBowGrowth;
 
             Vector2 offset = (projectile.Center - target.Center);
             modProj.target = target;
             modProj.offset = offset + (Vector2.Normalize(offset) * 10);
+            modProj.activator = projectile;
         }
     }
 }

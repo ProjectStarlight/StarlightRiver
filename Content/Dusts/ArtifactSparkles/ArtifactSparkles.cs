@@ -108,6 +108,50 @@ namespace StarlightRiver.Content.Dusts.ArtifactSparkles
         }
     }
 
+    class GeodeArtifactSparkleFast : GeodeArtifactSparkle
+    {
+        public override string Texture => AssetDirectory.ArtifactSparkles + "GeodeArtifactSparkle";
+
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
+                dust.customData = 1;
+            }
+
+            switch (dust.frame.X)
+            {
+                case 0:
+                    if (dust.alpha % 50 == 40)
+                        dust.frame.Y += 24;
+                    dust.alpha += 10;
+                    break;
+                case 24:
+                    if (dust.alpha % 64 == 58)
+                        dust.frame.Y += 24;
+                    dust.alpha += 16;
+                    break;
+                case 48:
+                    if (dust.alpha % 42 == 30)
+                        dust.frame.Y += 24;
+                    dust.alpha += 12;
+                    break;
+                case 72:
+                    if (dust.alpha % 50 == 40)
+                        dust.frame.Y += 24;
+                    dust.alpha += 10;
+                    break;
+            }
+
+            if (dust.alpha > 255)
+                dust.active = false;
+
+            dust.position += dust.velocity;
+            return false;
+        }
+    }
+
     class GoldArtifactSparkle : ArtifactSparkle { }
 
     class RedArtifactSparkle : ArtifactSparkle { }
