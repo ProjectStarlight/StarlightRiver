@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Utility
 
         public override void Load()
         {
-			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/Items/Utility/" + "RuneOfUndoing", CursedAccessory.UpdateShards);
+			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/Items/Utility/RuneOfUndoing", CursedAccessory.UpdateShards);
 		}
 
         public override void Unload()
