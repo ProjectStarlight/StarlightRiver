@@ -110,12 +110,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
         public override bool CanEquipAccessory(Player Player, int slot, bool modded)
         {
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
+            if (Main.mouseLeft || Main.mouseRight)
+            {
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
 
-            for (int k = 0; k <= 50; k++)
-                CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
-
+                for (int k = 0; k <= 50; k++)
+                    CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
+            }
             return true;
         }
 

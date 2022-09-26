@@ -8,14 +8,14 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Utility
 {
-	class CurseRemover : ModItem
+	class RuneOfUndoing : ModItem
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Utility/" + Name;
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Scroll of Undoing");
-			Tooltip.SetDefault("Place over an equipped cursed Item to destroy it\n'There's no turning back, most of the time'");
+			DisplayName.SetDefault("Rune of Undoing");
+			Tooltip.SetDefault("Place over an equipped cursed Item to take it off \nThis consumes the rune");
 		}
 
 		public override void SetDefaults()
@@ -34,9 +34,12 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
 		{
-			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
+			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots && Main.mouseLeft)
 			{
-				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
+				Main.mouseItem = Player.armor[slot].Clone();
+				Player.armor[slot].TurnToAir();
 				Item.TurnToAir();
 			}
 
