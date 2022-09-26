@@ -81,7 +81,8 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.15f, 0, player.Center);
                 Core.Systems.CameraSystem.Shake += 1;
-                    Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.2f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
+
+                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.2f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
 
                 Dust.NewDustPerfect(player.Bottom, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY.RotatedByRandom(0.2f) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
