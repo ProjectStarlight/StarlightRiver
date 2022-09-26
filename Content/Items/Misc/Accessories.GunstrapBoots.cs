@@ -33,14 +33,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeUpdateEquip(Player player)
         {
-            if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1 && player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true)) //slightly geeky check but AFAIK there's no other way to do this
-                Fire(player);
-
-            if (player.wingTime > 0 && player.grappling[0] < 0 && (!player.mount?.Active ?? true) && player.controlJump)
+            if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true) && player.controlJump)
             {
-                shotTimer++;
-                if (shotTimer % 6 == 0)
-                    FireShort(player);
+                if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
+                    Fire(player);
+
+                if (player.wingTime > 0)
+                {
+                    shotTimer++;
+                    if (shotTimer % 6 == 0)
+                        FireShort(player);
+                }
             }
             oldVelocity = player.velocity;
         }
@@ -70,12 +73,12 @@ namespace StarlightRiver.Content.Items.Misc
             if (player.PickAmmo(Item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemID))
             {
                 Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
-                Core.Systems.CameraSystem.Shake += 2;
+                Core.Systems.CameraSystem.Shake += 1;
                     Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.2f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
 
                 Dust.NewDustPerfect(player.Bottom, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY.RotatedByRandom(0.2f) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
-                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Bottom - new Vector2(0, 5), Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, 1.57f);
+                Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Bottom + player.velocity, Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, 1.57f);
 
                 Gore.NewGore(player.GetSource_Accessory(Item), player.Bottom, new Vector2(Main.rand.NextBool() ? 1 : -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
 
