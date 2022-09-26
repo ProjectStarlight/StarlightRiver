@@ -9,6 +9,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.GameContent;
 using Terraria.Audio;
+using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -25,12 +26,50 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public override void Load()
         {
             StarlightPlayer.ResetEffectsEvent += ResetAmmos;
+            On.Terraria.UI.ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawAmmoNumber;
+        }
+
+        private void DrawAmmoNumber(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch spriteBatch, Item[] inv, int context, int slot, Vector2 position, Color lightColor)
+        {
+            orig.Invoke(spriteBatch, inv, context, slot, position, lightColor);
+            if (!Main.playerInventory)
+            {
+                if (context == 13)
+                {
+                    if (inv[slot].ModItem is MultiAmmoWeapon weapon)
+                    {
+                        if (weapon.ammoItem != null)
+                        {
+                            int AmmoNumber = 0;
+                            for (int x = 0; x < ValidAmmos.Count; x++)
+                            {
+                                for (int j = 0; j < 58; j++)
+                                {
+                                    if (inv[j].stack > 0 && inv[j].type == ValidAmmos[x].ammoID)
+                                        AmmoNumber += inv[j].stack; //find all valid ammo to get total amount of ammo for the number
+                                }
+                            }
+                            if (AmmoNumber > 0)
+                                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, $"{AmmoNumber}", position + new Vector2(8f, 30f) * Main.inventoryScale,
+                                        lightColor, 0f, Vector2.Zero, new Vector2(Main.inventoryScale * 0.8f), -1f, Main.inventoryScale); //draw total ammo number
+                        }
+                        else
+                            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "0", position + new Vector2(8f, 30f) * Main.inventoryScale,
+                                                            lightColor, 0f, Vector2.Zero, new Vector2(Main.inventoryScale * 0.8f), -1f, Main.inventoryScale);// if ammoItem is null, the player has no valid ammo in their inventory, so draw number 0.
+                    }
+                }
+            }
         }
 
         private void ResetAmmos(StarlightPlayer Player)
         {
             ammoItem = null;
             hasAmmo = false;
+        }
+
+        public override void Unload()
+        {
+            On.Terraria.UI.ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color -= DrawAmmoNumber;
         }
 
         public virtual void SafeSetDefaults() { }
@@ -68,6 +107,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 if (exit)
                     break;
             }
+
+            if (ammoItem != null)
+                if (!player.HasItem(ammoItem.type)) //makes ammo get refreshed if thrown out of inventory or crafted, etc.
+                {
+                    hasAmmo = false;
+                    ammoItem = null;
+                }
         }
 
         public virtual bool SafeCanUseItem(Player player) { return true; }
@@ -140,18 +186,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
             var kbLine = tooltips.Find(n => n.Name == "Knockback");
             int index = kbLine is null ? tooltips.Count - 1 : tooltips.IndexOf(kbLine);
             tooltips.Insert(index + 1, AmmoLine);
-        }
-
-        public virtual void SafePostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale) { }
-        public sealed override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            SafePostDrawInInventory(spriteBatch, position, frame, drawColor, itemColor, origin, scale);
-
-            if (Main.playerInventory || ammoItem == null)
-                return;
-
-            //TODO: Make this show all valid ammo you have instead of just the current ammo you would use, like vanilla does it. 
-            Utils.DrawBorderString(spriteBatch, $"{ammoItem.stack}", new Vector2(position.X - 2, position.Y + 8), Color.White, scale + 0.18f, 0, 0, 4);
         }
     }
 

@@ -19,8 +19,7 @@ namespace StarlightRiver.Core
         private void DropPodGen(GenerationProgress progress, GameConfiguration configuration)
         {
             progress.Message = "Crashing alien tech...";
-            int[] floatingIslandPositions = typeof(WorldGen).GetField("floatingIslandHouseX", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance).GetValue(null) as int[];
-            foreach (int x in floatingIslandPositions)
+            foreach (int x in WorldGen.floatingIslandHouseX)
             {
                 if (x == 0 || x == default)
                     continue;

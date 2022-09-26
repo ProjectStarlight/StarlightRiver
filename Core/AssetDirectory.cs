@@ -4,6 +4,7 @@ namespace StarlightRiver.Core
     {
         public const string Assets =                "StarlightRiver/Assets/";
 
+        public const string Archaeology =           Assets + "Archaeology/";
         public const string Biomes =                Assets +"Biomes/";
 
         public const string Backgrounds =           Assets + "Backgrounds/";
@@ -22,6 +23,7 @@ namespace StarlightRiver.Core
         public const string RiftCrafting =          Assets + "RiftCrafting/";
 
         public const string Dust =                  Assets + "Dusts/";
+        public const string ArtifactSparkles =      Assets + "Dusts/ArtifactSparkles/";
 
         public const string BrewingItem =           Assets + "Items/Brewing/";
 
@@ -31,6 +33,7 @@ namespace StarlightRiver.Core
 
         public const string BalancedItem =          Assets + "Items/Balanced/";
 
+        public const string ArtifactItem =          Assets + "Items/BuriedArtifacts";
         public const string AluminumItem =          Assets + "Items/AstralMeteor/";
         public const string MoonstoneItem =         Assets + "Items/Moonstone/";
         public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
@@ -41,6 +44,8 @@ namespace StarlightRiver.Core
 
         public const string SpaceEventItem =        Assets + "Items/SpaceEvent/";
         public const string SpaceEventNPC =         Assets + "NPCs/SpaceEvent/";
+
+        public const string DungeonNPC =            Assets + "NPCs/Dungeon/";
 
         public const string OvergrowTile =          Assets + "Tiles/Overgrow/";
         public const string OvergrowItem =          Assets + "Items/Overgrow/";
@@ -98,6 +103,8 @@ namespace StarlightRiver.Core
         public const string PalestoneTile =         Assets + "Tiles/Palestone/";
         public const string ForestNPC =             Assets + "NPCs/Forest/";
 
+        public const string SnowNPC =               Assets + "NPCs/Snow/";
+
         public const string HerbologyTile =         Assets + "Tiles/Herbology/";
         public const string HerbologyCropTile =     Assets + "Tiles/Herbology/Crops/";
 
@@ -120,6 +127,7 @@ namespace StarlightRiver.Core
         public const string ArmorEnchant =          Assets + "ArmorEnchantment/";
 
         public const string EvilBiomesItem =        Assets + "Items/EvilBiomes/";
+
 
         //structures
         public const string StructureFolder =       "Structures/";

@@ -17,7 +17,7 @@
       <HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
     </Reference>
     <Reference Include="StructureHelper">
-      <HintPath>lib\StructureHelper_v1.1.2.dll</HintPath>
+      <HintPath>lib\StructureHelper.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>

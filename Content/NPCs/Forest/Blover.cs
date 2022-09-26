@@ -35,6 +35,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 
         private bool blowing = false;
 
+        private ref float blowCounter => ref NPC.ai[0];
+
         private Player target => Main.player[NPC.target];
 
         public override void SetStaticDefaults()
@@ -108,6 +110,11 @@ namespace StarlightRiver.Content.NPCs.Forest
             }
 
             if (blowing)
+                blowCounter++;
+            else
+                blowCounter = 0;
+
+            if (blowCounter > 15)
                 BlowingBehavior();
             else
                 IdleBehavior();
@@ -159,10 +166,10 @@ namespace StarlightRiver.Content.NPCs.Forest
             }
 
             float targetAcceleration = Math.Sign(target.Center.X - NPC.Center.X) * (float)((300 - Math.Abs(target.Center.X - NPC.Center.X)) / 300f) * 0.55f;
-            
-            if (Math.Abs(target.velocity.X) < 10 || Math.Sign(target.velocity.X) != Math.Sign(targetAcceleration))
-                target.velocity.X += targetAcceleration;
 
+            if (!target.noKnockback && (Math.Abs(target.velocity.X) < 10 || Math.Sign(target.velocity.X) != Math.Sign(targetAcceleration)))
+                target.velocity.X += targetAcceleration;
+            
             Vector2 dustPos = NPC.Center + new Vector2(60 * Math.Sign(target.Center.X - NPC.Center.X), Main.rand.Next(-15, 15));
             Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.GlowLine>(), 7 * new Vector2(Math.Sign(target.Center.X - NPC.Center.X), 0), 0, Color.White * 0.3f, 1.25f);
         }

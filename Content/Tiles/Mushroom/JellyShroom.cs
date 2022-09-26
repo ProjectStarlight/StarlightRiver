@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Tiles.Mushroom
@@ -18,8 +19,15 @@ namespace StarlightRiver.Tiles.Mushroom
 
         public override void SetStaticDefaults()
         {
-            // Is the sound correct..?
-            QuickBlock.QuickSetFurniture(this, 7, 7, DustType<Content.Dusts.BlueStamina>(), SoundID.PlayerHit, false, new Microsoft.Xna.Framework.Color(100, 200, 220), false, false, "Jelly Shroom");
+            QuickBlock.QuickSetFurniture(this, 7, 7, -1, SoundID.NPCDeath1, false, new Color(100, 200, 220), false, false, "Jelly Shroom");
+        }
+
+        public override void KillMultiTile(int i, int j, int frameX, int frameY)
+        {
+            Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 16 * 7, 16 * 7, ItemType<JellyShroomItem>(), 1);
+
+            for (int k = 0; k < 35; k++)
+                Dust.NewDust(new Vector2(i, j) * 16, 16 * 7, 16 * 7, DustType<Content.Dusts.BlueStamina>());
         }
     }
 
@@ -47,7 +55,7 @@ namespace StarlightRiver.Tiles.Mushroom
         {
             for (int k = 16; k < 96; k++)
             {
-                if (Main.rand.Next(120) == 0)
+                if (Main.rand.NextBool(120))
                 {
                     float off = -2 * k * k / 357 + 232 * k / 357 - 1280 / 119;
                     Dust.NewDustPerfect(Projectile.position + new Vector2(k, 36 - off), DustType<Content.Dusts.BlueStamina>(), new Vector2(0, Main.rand.NextFloat(0.4f, 0.6f)), 0, default, 0.7f);
@@ -106,6 +114,6 @@ namespace StarlightRiver.Tiles.Mushroom
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Mushroom/JellyShroomItem";
 
-        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", "JellyShroom", 0) { }
+        public JellyShroomItem() : base("Blue Jellyshroom", "Boing!", "JellyShroom", 0, null, false, Item.sellPrice(0, 1, 0, 0)) { }
     }
 }
