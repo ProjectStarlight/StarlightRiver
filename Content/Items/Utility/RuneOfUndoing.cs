@@ -1,10 +1,13 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -12,7 +15,21 @@ namespace StarlightRiver.Content.Items.Utility
 	{
 		public override string Texture => AssetDirectory.Assets + "Items/Utility/" + Name;
 
-		public override void SetStaticDefaults()
+		public static ParticleSystem ShardsSystem;
+
+		private Vector2 drawPos = Vector2.Zero;
+
+        public override void Load()
+        {
+			ShardsSystem = new ParticleSystem("StarlightRiver/Assets/Items/Utility/" + "RuneOfUndoing", CursedAccessory.UpdateShards);
+		}
+
+        public override void Unload()
+        {
+			ShardsSystem = null;
+		}
+
+        public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rune of Undoing");
 			Tooltip.SetDefault("Place over an equipped cursed Item to take it off \nThis consumes the rune");
@@ -36,14 +53,19 @@ namespace StarlightRiver.Content.Items.Utility
 		{
 			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots && Main.mouseLeft)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
 				Main.mouseItem = Player.armor[slot].Clone();
 				Player.armor[slot].TurnToAir();
-				Item.TurnToAir();
+
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
+				Helpers.Helper.TurnToShards(ShardsSystem, Item, drawPos);
 			}
 
 			return false;
 		}
-	}
+
+        public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+			drawPos = position + frame.Size() / 4;
+		}
+    }
 }

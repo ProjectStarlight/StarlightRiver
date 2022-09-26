@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Utility;
 using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -21,6 +22,7 @@ namespace StarlightRiver.Content.CustomHooks
             orig(self);
             CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);
             CursedAccessory.ShardsSystem.DrawParticles(Main.spriteBatch);
+            RuneOfUndoing.ShardsSystem.DrawParticles(Main.spriteBatch);
         }
     }
 }

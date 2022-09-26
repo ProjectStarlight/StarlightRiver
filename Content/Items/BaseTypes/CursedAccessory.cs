@@ -23,10 +23,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
         public bool GoingBoom = false;
         private int boomTimer = 0;
 
-        private static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
+        public static ParticleSystem.Update UpdateCursed => UpdateCursedBody;
         public static ParticleSystem CursedSystem;
 
-        private static ParticleSystem.Update UpdateShards => UpdateShardsBody;
+        public static ParticleSystem.Update UpdateShards => UpdateShardsBody;
         public static ParticleSystem ShardsSystem;
 
         public static void LoadSystem()
@@ -112,8 +112,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
         {
             if (Main.mouseLeft || Main.mouseRight)
             {
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit55);
-                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item123);
+                SoundEngine.PlaySound(SoundID.NPCHit55);
+                SoundEngine.PlaySound(SoundID.Item123);
 
                 for (int k = 0; k <= 50; k++)
                     CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.75f), 0, 1, CurseColor, 60, Vector2.Zero));
@@ -140,15 +140,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 boomTimer++;
 
             if (boomTimer == 1)
-                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/MysticCast"));
+                SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/MysticCast"));
 
             if (boomTimer >= 85)
             {
-                var tex = TextureAssets.Item[Item.type].Value;
-
-                Item.TurnToAir();
-;
-                Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
+                SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/Shadow2"));
 
                 for (int k = 0; k <= 70; k++)
                 {
@@ -158,21 +154,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                     CursedSystem.AddParticle(new Particle(drawpos, Vector2.One.RotatedByRandom(6.28f) * distance, 1, 0.8f, Color.Lerp(new Color(200, 60, 250), CurseColor * 0.8f, distance / 4.25f), 60, Vector2.Zero));
                 }
 
-                ShardsSystem.SetTexture(tex);
-
-                for (int x = 0; x < 5; x++)
-                    for (int y = 0; y < 5; y++)
-                        ShardsSystem.AddParticle(
-                            new Particle(
-                                drawpos + new Vector2(x * tex.Width / 5f, y * tex.Height / 5f),
-                                Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 2.55f),
-                                0,
-                                1.25f,
-                                Color.White,
-                                120,
-                                Vector2.Zero,
-                                new Rectangle(x * tex.Width / 5, y * tex.Height / 5, tex.Width / 5, tex.Height / 5)
-                                ));
+                Helpers.Helper.TurnToShards(ShardsSystem, Item, drawpos);
             }
         }
 

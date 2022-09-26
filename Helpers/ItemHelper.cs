@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.UI;
+using StarlightRiver.Core;
 using static Terraria.ModLoader.ModContent;
 
 
@@ -10,6 +12,27 @@ namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
     {
+
+        public static void TurnToShards(ParticleSystem system, Item item, Vector2 drawPos)
+        {
+            Texture2D tex = TextureAssets.Item[item.type].Value;
+            item.TurnToAir();
+            system.SetTexture(tex);
+
+            for (int x = 0; x < 5; x++)
+                for (int y = 0; y < 5; y++)
+                    system.AddParticle(
+                        new Particle(
+                            drawPos + new Vector2(x * tex.Width / 5f, y * tex.Height / 5f),
+                            Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1, 2.55f),
+                            0,
+                            1.25f,
+                            Color.White,
+                            120,
+                            Vector2.Zero,
+                            new Rectangle(x * tex.Width / 5, y * tex.Height / 5, tex.Width / 5, tex.Height / 5)
+                            ));
+        }
         public static void NewItemSpecific(Vector2 position, Item Item)
         {
             int targetIndex = 400;
