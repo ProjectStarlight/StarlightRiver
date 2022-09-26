@@ -1,6 +1,6 @@
 ﻿//TODO:
 //Manual loading
-//Implement final textures
+//Use lighting buffer
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
