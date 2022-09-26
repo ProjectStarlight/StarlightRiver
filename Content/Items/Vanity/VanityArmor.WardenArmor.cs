@@ -130,19 +130,4 @@ namespace StarlightRiver.Content.Items.Vanity
             }
         }
     }
-
-    public class WardenVanityGNPC : GlobalNPC
-    {
-        public override void SetupTravelShop(int[] shop, ref int nextSlot)
-        {
-            if (Main.rand.NextBool(15))
-            {
-                shop[nextSlot] = ModContent.ItemType<WardenHat>();
-                nextSlot++;
-
-                shop[nextSlot] = ModContent.ItemType<WardenRobe>();
-                nextSlot++;
-            }
-        }
-    }
 }
