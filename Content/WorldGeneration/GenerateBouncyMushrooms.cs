@@ -33,12 +33,10 @@ namespace StarlightRiver.Core
         private static void ClearSquare(int x, int y, int width, int height)
         {
             for (int i = x; i < x + width; i++)
-            {
                 for (int j = y; j < y + height; j++)
                 {
                     WorldGen.KillTile(i, j);
                 }
-            }
         }
 
         private static bool ClearAreaForMushroom(int x, int y, int width, int height)
