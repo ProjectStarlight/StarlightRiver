@@ -15,12 +15,13 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public GunstrapBoots() : base("Gunstrap Boots", "All double jumps now shoot out a shotgun blast of bullets below you" +
-            "\nUsing wings fires constant rounds of machine gun fire") { }
-
         public Vector2 oldVelocity = Vector2.Zero;
 
         private int shotTimer = 0;
+
+        public GunstrapBoots() : base("Gunstrap Boots", "All double jumps now shoot out a shotgun blast of bullets below you" +
+           "\nUsing wings fires constant rounds of machine gun fire")
+        { }
 
         public override void SafeSetDefaults()
         {
