@@ -1,7 +1,4 @@
-﻿//TODO:
-//Obtainment
-
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs;
 using Terraria;
@@ -18,7 +15,8 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public GunstrapBoots() : base("Gunstrap Boots", "All double jumps now shoot out a shotgun blast of bullets below you") { }
+        public GunstrapBoots() : base("Gunstrap Boots", "All double jumps now shoot out a shotgun blast of bullets below you" +
+            "\nUsing wings fires constant rounds of machine gun fire") { }
 
         public Vector2 oldVelocity = Vector2.Zero;
 
@@ -31,9 +29,18 @@ namespace StarlightRiver.Content.Items.Misc
             Item.useAmmo = AmmoID.Bullet;
         }
 
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemID.RocketBoots, 1);
+            recipe.AddIngredient(ItemID.IllegalGunParts, 1);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
+
         public override void SafeUpdateEquip(Player player)
         {
-            if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true) && player.controlJump)
+            if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true))
             {
                 if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
                     Fire(player);
@@ -72,7 +79,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (player.PickAmmo(Item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemID))
             {
-                Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
+                Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.15f, 0, player.Center);
                 Core.Systems.CameraSystem.Shake += 1;
                     Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.2f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
 
