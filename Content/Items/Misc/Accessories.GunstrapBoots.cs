@@ -5,7 +5,6 @@
 //Description
 //Acount for grappling hooks
 //Account for mounts
-//Actual texture
 
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
@@ -19,7 +18,8 @@ using System;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class GunstrapBoots : SmartAccessory
+    [AutoloadEquip(EquipType.Shoes)]
+    public class GunstrapBoots : SmartAccessory
     {
         public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeUpdateEquip(Player player)
         {
-            if (oldVelocity.Y != 0 && player.velocity.Y != 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1 && player.controlJump)
+            if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1 && player.controlJump) //slightly geeky check but AFAIK there's no other way to do this
                 Fire(player);
             oldVelocity = player.velocity;
         }
@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
                 Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
                 Core.Systems.CameraSystem.Shake += 2;
                 for (int i = 0; i < 6; i++)
-                    Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.5f) * ((speed + 9) * Main.rand.NextFloat(0.85f,1.15f)), projToShoot, (int)(damage + (7 * player.bulletDamage.Multiplicative)), knockBack, player.whoAmI);
+                    Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.5f) * ((speed + 9) * Main.rand.NextFloat(0.85f,1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
                 
                 Dust.NewDustPerfect(player.Bottom, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY.RotatedByRandom(0.2f) * 5, 0, new Color(60, 55, 50) * 0.5f, Main.rand.NextFloat(0.5f, 1));
 
