@@ -34,6 +34,9 @@ namespace StarlightRiver.Content.Items.Utility
 
 		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
 		{
+			if (!Main.mouseLeft && !Main.mouseRight)
+				return false;
+
 			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
 			{
 				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
