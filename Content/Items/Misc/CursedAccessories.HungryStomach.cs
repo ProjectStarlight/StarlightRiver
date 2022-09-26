@@ -6,6 +6,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.GameContent.ItemDropRules;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -27,6 +28,20 @@ namespace StarlightRiver.Content.Items.Misc
             StarlightPlayer.PostUpdateEquipsEvent += DisableRegen;
             StarlightPlayer.ModifyHitNPCEvent += LeechStaminaMelee;
             StarlightProjectile.ModifyHitNPCEvent += LeechStaminaRanged;
+            StarlightNPC.ModifyNPCLootEvent += DropFromDeerclops;
+            StarlightItem.ModifyItemLootEvent += DropFromDeerclopsBag;
+        }
+
+        private void DropFromDeerclopsBag(Item item, ItemLoot itemLoot)
+        {
+            if (item.type == ItemID.DeerclopsBossBag)
+                itemLoot.Add(ItemDropRule.Common(Type, 2)); //drop 50% of the time
+        }
+
+        private void DropFromDeerclops(NPC npc, NPCLoot npcloot)
+        {
+            if (npc.type == NPCID.Deerclops)
+                npcloot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), Type, 2)); //drop 50% of the time
         }
 
         public override void SafeUpdateAccessory(Player Player, bool hideVisual) => GUI.Stam.overrideTexture = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBlood").Value;

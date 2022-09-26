@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.Hell;
+using StarlightRiver.Content.NPCs.Vitric;
 using StarlightRiver.Core;
 using System.Linq;
 using Terraria;
@@ -35,6 +36,14 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.shoot = ModContent.ProjectileType<MagmiteBottleProjectile>();
             Item.shootSpeed = 8.5f;
             Item.consumable = true;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddIngredient(ModContent.ItemType<MagmitePassiveItem>()).
+                AddIngredient(ItemID.Bottle).
+                Register();
         }
     }
 
