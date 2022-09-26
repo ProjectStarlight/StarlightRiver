@@ -18,7 +18,14 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void SetDefaults()
 		{
-			Item.CloneDefaults(ItemID.ZephyrFish);
+			Item.damage = 0;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.width = 16;
+			Item.height = 30;
+			Item.UseSound = SoundID.Item2;
+			Item.useAnimation = 20;
+			Item.useTime = 20;
+			Item.noMelee = true;
 			Item.shoot = ModContent.ProjectileType<PerfectlyGenericPet>();
 			Item.buffType = ModContent.BuffType<PerfectlyGenericPetBuff>();
 			Item.value = Item.sellPrice(gold: 1);
