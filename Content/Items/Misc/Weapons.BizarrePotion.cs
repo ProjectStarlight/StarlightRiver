@@ -814,14 +814,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			infected = false;
 		}
-		public override void SetupShop(int type, Chest shop, ref int nextSlot)
-		{
-			if (type == NPCID.SkeletonMerchant/* && Main.moonPhase > 2 && Main.moonPhase < 5*/)
-			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<BizarrePotion>());
-				nextSlot++;
-			}
-		}
+
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
 			if (infected)

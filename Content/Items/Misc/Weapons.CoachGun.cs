@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.AddIngredient(ItemID.Musket, 1);
 			recipe.AddIngredient(ItemID.Explosives, 1);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 
 		public override void HoldItem(Player Player)

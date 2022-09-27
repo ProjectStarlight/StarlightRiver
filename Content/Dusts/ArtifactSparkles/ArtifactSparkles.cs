@@ -115,4 +115,6 @@ namespace StarlightRiver.Content.Dusts.ArtifactSparkles
     class LimeArtifactSparkle : ArtifactSparkle { }
 
     class PurpleArtifactSparkle : ArtifactSparkle { }
+
+    class WhiteArtifactSparkle : ArtifactSparkle { }
 }

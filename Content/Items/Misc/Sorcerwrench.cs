@@ -532,16 +532,4 @@ namespace StarlightRiver.Content.Items.Misc
             return false;
         }
     }
-
-    public class SorcerwrenchGlobalNPC : GlobalNPC
-    {
-        public override void SetupShop(int type, Chest shop, ref int nextSlot)
-        {
-            if (type == NPCID.Mechanic)
-            {
-                shop.item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
-                nextSlot++;
-            }
-        }
-    }
 }
