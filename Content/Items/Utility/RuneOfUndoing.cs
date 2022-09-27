@@ -1,4 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿//TODO:
+//Make scroll of undoing more common artifact
+//Make rune of undoing rarer
+//Make scroll of undoing found in chests
+//Make rune of undoing have an animation
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
