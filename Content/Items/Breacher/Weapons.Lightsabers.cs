@@ -1,10 +1,9 @@
 ﻿//TODO:
 //Clean up code
-//Collision
+//Better Collision
 //Throwing
 //Parrying
 //Better sound effects
-//Better swings
 //Obtainment
 //Balance
 //Sellprice
@@ -13,6 +12,9 @@
 //Less spritebatch restarts
 //Make all 6 lightsaber types
 //Lighting
+//Make the bloom not disappear during the throw
+//Description
+
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -90,6 +92,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		private float startRotation = 0f;
 
 		private float midRotation = 0f;
+		private float endMidRotation = 0f;
+		private float startMidRotation = 0f;
 
 		private float endRotation = 0f;
 
@@ -108,6 +112,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		private List<float> oldRotation = new List<float>();
 		private List<Vector2> oldPosition = new List<Vector2>();
 		private List<float> oldSquish = new List<float>();
+
+		private List<Vector2> oldPositionCollision = new List<Vector2>();
 
 		private List<NPC> hit = new List<NPC>();
 
@@ -132,13 +138,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
 			Projectile.Size = new Vector2(42, 42);
-			Projectile.penetrate = -1;
+			Projectile.penetrate = 1;
 			Projectile.ownerHitCheck = true;
 			Projectile.extraUpdates = 4;
 		}
 
 		public override void AI()
 		{
+			Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3() * 1.6f);
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.heldProj = Projectile.whoAmI;
@@ -159,7 +166,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 					oldRotation = new List<float>();
 					oldPosition = new List<Vector2>();
-
+					oldSquish = new List<float>();
+					oldPositionCollision = new List<Vector2>();
 				}
 				else
 				{
@@ -169,28 +177,29 @@ namespace StarlightRiver.Content.Items.Breacher
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f,0.1f)}, owner.Center);
 
 				startRotation = endRotation;
-				startSquish = endSquish;
-				midRotation = rot + Main.rand.NextFloat(-0.35f,0.35f);
+				startSquish = 0.4f;
+				endMidRotation = rot + Main.rand.NextFloat(-0.25f, 0.25f);
+				startMidRotation = rot + Main.rand.NextFloat(-0.25f, 0.25f);
 
 				switch (currentAttack)
 				{
 					case CurrentAttack.Slash1:
-						endSquish = 0.7f;
-						endRotation = rot + (2f * owner.direction);
+						endSquish = 0.3f;
+						endRotation = rot + (3f * owner.direction);
 						attackDuration = 100;
 						break;
 					case CurrentAttack.Slash2:
 						endSquish = 0.2f;
 						attackDuration = 120;
-						endRotation = rot - (1f * owner.direction);
+						endRotation = rot - (2f * owner.direction);
 						break;
 					case CurrentAttack.Slash3:
 						endSquish = 0.45f;
-						endRotation = rot + (2f * owner.direction);
+						endRotation = rot + (3f * owner.direction);
 						attackDuration = 100;
 						break;
 					case CurrentAttack.Slash4:
-						endSquish = 0.1f;
+						endSquish = 0.15f;
 						endRotation = rot - (3f * owner.direction);
 						attackDuration = 100;
 						break;
@@ -237,6 +246,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
 
 			Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
+			midRotation = MathHelper.Lerp(startMidRotation, endMidRotation, progress);
 			squish = MathHelper.Lerp(startSquish, endSquish, progress) + (0.35f * (float)Math.Sin(3.14f * progress));
 
 			float wrappedRotation = MathHelper.WrapAngle(Projectile.rotation);
@@ -254,9 +264,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.itemAnimation = owner.itemTime = 5;
 
+			if (owner.direction != 1)
+				Projectile.rotation += 0.78f;
+
 			oldSquish.Add(squish);
 			oldRotation.Add(Projectile.rotation);
 			oldPosition.Add(Projectile.Center - Main.screenPosition);
+			oldPositionCollision.Add(Projectile.Center);
 
 			if (oldRotation.Count > 16)
 				oldRotation.RemoveAt(0);
@@ -264,16 +278,20 @@ namespace StarlightRiver.Content.Items.Breacher
 				oldPosition.RemoveAt(0);
 			if (oldSquish.Count > 16)
 				oldSquish.RemoveAt(0);
+			if (oldPositionCollision.Count > 16)
+				oldPositionCollision.RemoveAt(0);
 
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			if (rotVel < 0.005f)
-				return false;
 			float collisionPoint = 0f;
-			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + (42 * Projectile.rotation.ToRotationVector2()), 20, ref collisionPoint))
-				return true;
+
+			for (int i = 0; i < oldPositionCollision.Count; i++) 
+			{
+				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), oldPositionCollision[i], GetCollisionPoint(i) + oldPositionCollision[i], 40, ref collisionPoint))
+					return true;
+			}
 			return false;
 		}
 
@@ -285,9 +303,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			Projectile.penetrate++;
 			hit.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
-			Core.Systems.CameraSystem.Shake += 2;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -313,11 +331,19 @@ namespace StarlightRiver.Content.Items.Breacher
 				effect.Parameters["rotation"].SetValue(oldRotation[i] - midRotation);
 
 				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.5f, 0.0025f));
+				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.125f, 0.00125f));
+				effect.Parameters["pommelToOriginPercent"].SetValue(-0.305f);
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Draw(glowTex, oldPosition[i], null, Color.White, midRotation, (glowTex.Size() / 2f), scaleVec, SpriteEffects.None, 0f);
+
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
+				effect.Parameters["pommelToOriginPercent"].SetValue(0.0f);
 				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(smallGlowTex, oldPosition[i], null, Color.White, midRotation, smallGlowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
-				Main.spriteBatch.Draw(glowTex, oldPosition[i], null, Color.White, midRotation, glowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
 
 				Main.spriteBatch.End();
 				effect.Parameters["color"].SetValue(Color.White.ToVector4());
@@ -339,6 +365,23 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
+
+		private Vector2 GetCollisionPoint(int i)
+        {
+			float angleShift = oldRotation[i] - midRotation;
+
+			//Get the coordinates of the angle shift.
+			Vector2 anglePoint = angleShift.ToRotationVector2();
+
+			//Squish the angle point's coordinate
+			anglePoint.X *= 1;
+			anglePoint.Y *= oldSquish[i];
+
+			//And back into an angle
+			angleShift = anglePoint.ToRotation();
+
+			return ((angleShift + midRotation).ToRotationVector2() * 80);
+		}
 
 		private float EaseProgress(float input)
 		{
