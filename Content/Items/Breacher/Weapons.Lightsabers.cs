@@ -1,4 +1,20 @@
-﻿using Microsoft.Xna.Framework;
+﻿//TODO:
+//Clean up code
+//Collision
+//Throwing
+//Parrying
+//Better sound effects
+//Better swings
+//Obtainment
+//Balance
+//Sellprice
+//Rarity
+//Make it look good when swinging to the left
+//Less spritebatch restarts
+//Make all 6 lightsaber types
+//Lighting
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
@@ -67,14 +83,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
 
-		private List<Vector2> cache;
-		private Trail trail;
-
-		private List<Vector2> cache2;
-		private Trail trail2;
-
-		private List<float> oldSquish = new List<float>();
-
 		private bool initialized = false;
 
 		private int attackDuration = 0;
@@ -99,6 +107,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private List<float> oldRotation = new List<float>();
 		private List<Vector2> oldPosition = new List<Vector2>();
+		private List<float> oldSquish = new List<float>();
 
 		private List<NPC> hit = new List<NPC>();
 
@@ -161,22 +170,22 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				startRotation = endRotation;
 				startSquish = endSquish;
-				midRotation = rot;
+				midRotation = rot + Main.rand.NextFloat(-0.35f,0.35f);
 
 				switch (currentAttack)
 				{
 					case CurrentAttack.Slash1:
-						endSquish = 0.4f;
+						endSquish = 0.7f;
 						endRotation = rot + (2f * owner.direction);
 						attackDuration = 100;
 						break;
 					case CurrentAttack.Slash2:
-						endSquish = 0.3f;
+						endSquish = 0.2f;
 						attackDuration = 120;
 						endRotation = rot - (1f * owner.direction);
 						break;
 					case CurrentAttack.Slash3:
-						endSquish = 0.4f;
+						endSquish = 0.45f;
 						endRotation = rot + (2f * owner.direction);
 						attackDuration = 100;
 						break;
@@ -214,13 +223,16 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 
-			if (Main.netMode != NetmodeID.Server)
-			{
-				ManageCaches();
-				ManageTrail();
-			}
-
 			float progress = EaseProgress(Projectile.ai[0]);
+
+			/*if (Main.netMode != NetmodeID.Server)
+			{
+				if (trailCounter % 5 == 0 || (progress > 0.1f && progress < 0.9f))
+				{
+					ManageCaches();
+					ManageTrail();
+				}
+			}*/
 
 			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
 
@@ -242,13 +254,16 @@ namespace StarlightRiver.Content.Items.Breacher
 			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.itemAnimation = owner.itemTime = 5;
 
+			oldSquish.Add(squish);
 			oldRotation.Add(Projectile.rotation);
-			oldPosition.Add(Projectile.Center);
+			oldPosition.Add(Projectile.Center - Main.screenPosition);
 
 			if (oldRotation.Count > 16)
 				oldRotation.RemoveAt(0);
 			if (oldPosition.Count > 16)
 				oldPosition.RemoveAt(0);
+			if (oldSquish.Count > 16)
+				oldSquish.RemoveAt(0);
 
 		}
 
@@ -282,119 +297,48 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
 
-            Vector2 scaleVec = new Vector2(1, squish) * 4;
+			Vector2 scaleVec = new Vector2(1, squish) * 4;
             Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
-            effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
-            effect.Parameters["pommelToOriginPercent"].SetValue(0.05f);
+            effect.Parameters["pommelToOriginPercent"].SetValue(0.0f);
             effect.Parameters["color"].SetValue(Color.White.ToVector4());
-            Main.spriteBatch.End();
-            DrawPrimitives();
-            Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
+			for (int i = 0; i < oldPosition.Count; i++) //disgusting amount of spritebatch restarts but I can't figure out another way to do it
+			{
+				scaleVec = new Vector2(1, oldSquish[i]) * 4;
+				effect.Parameters["rotation"].SetValue(oldRotation[i] - midRotation);
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, midRotation, tex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.5f, 0.0025f));
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Draw(smallGlowTex, oldPosition[i], null, Color.White, midRotation, smallGlowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(glowTex, oldPosition[i], null, Color.White, midRotation, glowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(Color.White.ToVector4());
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Draw(whiteTex, oldPosition[i], null, Color.White, midRotation, whiteTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+			}
+			scaleVec = new Vector2(1, squish) * 4;
+			Main.spriteBatch.End();
+
+			effect.Parameters["color"].SetValue(lightColor.ToVector4());
+			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
+
+			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, midRotation, tex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
             return false;
         }
-
-		private void ManageCaches()
-		{
-
-			if (cache == null)
-			{
-				cache = new List<Vector2>();
-				oldSquish = new List<float>();
-				for (int i = 0; i < 20; i++)
-				{
-					cache.Add(TrailPosAtProgressScuffed());
-					oldSquish.Add((float)Math.Sqrt(1 + (squish * squish)));
-				}
-				oldSquish.Add((float)Math.Sqrt(1 + (squish * squish)));
-			}
-
-			if (cache2 == null)
-			{
-				cache2 = new List<Vector2>();
-				for (int i = 0; i < 18; i++)
-					cache2.Add(TrailPosAtProgressScuffed());
-			}
-
-			float progress = EaseProgress(Projectile.ai[0]);
-			cache.Add(TrailPosAtProgressScuffed());
-			cache2.Add(TrailPosAtProgressScuffed());
-			oldSquish.Add(squish);
-
-			while (cache.Count > 20)
-			{
-				cache.RemoveAt(0);
-				oldSquish.RemoveAt(0);
-			}
-
-			while (cache2.Count > 18)
-				cache2.RemoveAt(0);
-		}
-
-		public Vector2 TrailPosAtProgressScuffed()
-		{
-			float angleShift = ((Projectile.rotation - midRotation) - 0.78f);
-
-			//Get the coordinates of the angle shift.
-			Vector2 anglePoint = angleShift.ToRotationVector2();
-
-			anglePoint *= new Vector2(1, squish);
-
-			//And back into an angle
-			angleShift = anglePoint.ToRotation();
-
-			return Projectile.Center + (((angleShift) + midRotation).ToRotationVector2() * (float)Math.Sqrt(1 + (squish * squish)) * 30);
-		}
-
-		private void ManageTrail()
-		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 20, new TriangularTip(4), factor => 62 * oldSquish[(int)((factor) * 20f)], factor =>
-			{
-				if (factor.X > 0.98f)
-					return Color.Transparent;
-
-				float progress = EaseProgress(Projectile.ai[0]);
-				return new Color(0, 100, 255, 0) * MathHelper.Min(Math.Min(progress * 10, (1 - progress) * 10), 1);
-			});
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center;
-
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 18, new TriangularTip(4), factor => 46 * oldSquish[(int)((factor) * 20f)], factor =>
-			{
-				if (factor.X > 0.98f)
-					return Color.Transparent;
-
-				float progress = EaseProgress(Projectile.ai[0]);
-				return Color.White * MathHelper.Min(Math.Min(progress * 10, (1 - progress) * 10), 1);
-			});
-
-			trail2.Positions = cache2.ToArray();
-			trail2.NextPosition = Projectile.Center;
-		}
-
-		public void DrawPrimitives()
-		{
-			Effect effect = Filters.Scene["LightsaberTrail"].GetShader().Shader;
-
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-
-			trail?.Render(effect);
-
-			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>(Texture + "_Trail").Value);
-			trail2?.Render(effect);
-		}
 
 		private float EaseProgress(float input)
 		{
