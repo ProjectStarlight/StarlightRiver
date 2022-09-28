@@ -40,6 +40,6 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 
         public override Color BeamColor => Color.White;
 
-        public override int ItemType => ModContent.ItemType<PerfectlyGenericArtifactItem>();
+        //public override int ItemType => ModContent.ItemType<PerfectlyGenericArtifactItem>();
     }
 }
