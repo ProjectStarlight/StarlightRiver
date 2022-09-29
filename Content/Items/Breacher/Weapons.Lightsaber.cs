@@ -32,6 +32,8 @@
 //Sound effects
 //Make the player have dashlines
 //Make the player not freeze for a second
+//Garauntee it's impossible for the player to get stuck dashing
+//Adjust color
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
