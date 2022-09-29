@@ -218,6 +218,108 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class LightsaberProj_Yellow : LightsaberProj
 	{
-		protected override Vector3 BladeColor => Color.Yellow.ToVector3() * 0.8f;
+		protected override Vector3 BladeColor => Color.Yellow.ToVector3() * 0.8f * fade;
+
+		private bool dashing = false;
+
+		private bool caughtUp = false;
+
+		private float fade = 1f;
+
+        protected override void RightClickBehavior()
+        {
+			hide = true;
+			canHit = false;
+			Projectile.active = false;
+        }
+
+        protected override void SafeLeftClickBehavior()
+        {
+			if (!thrown)
+				return;
+
+			if (Main.mouseRight && !dashing)
+			{
+				dashing = true;
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_YellowDash>(), Projectile.damage * 2, 0, owner.whoAmI);
+				owner.GetModPlayer<LightsaberPlayer>().dashing = true;
+			}
+
+			if (dashing)
+            {
+				Projectile.velocity = Vector2.Zero;
+				if (owner.Distance(Projectile.Center) < 80 || !owner.GetModPlayer<LightsaberPlayer>().dashing && !caughtUp)
+                {
+					owner.Center = Projectile.Center;
+					owner.velocity = Vector2.Zero;
+					owner.GetModPlayer<LightsaberPlayer>().dashing = false;
+					Projectile.active = true;
+					caughtUp = true;
+				}
+
+				if (caughtUp)
+                {
+					Projectile.active = true;
+					fade -= 0.01f;
+					if (fade <= 0)
+						Projectile.active = false;
+                }
+				else
+					owner.velocity = owner.DirectionTo(Projectile.Center) * 60;
+			}
+        }
+    }
+
+	public class LightsaberProj_YellowDash : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		private Player owner => Main.player[Projectile.owner];
+
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Lightsaber");
+
+		public override void SetDefaults()
+		{
+			Projectile.width = Projectile.height = 120;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.aiStyle = -1;
+			Projectile.friendly = true;
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.hide = true;
+		}
+
+		public override void AI()
+		{
+			Projectile.Center = owner.Center;
+
+			if (!owner.GetModPlayer<LightsaberPlayer>().dashing)
+				Projectile.active = false;
+		}
 	}
+
+	public class LightsaberPlayer : ModPlayer
+    {
+		public bool dashing = false;
+
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+        {
+			if (dashing)
+				return false;
+            return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
+        }
+
+        public override void PreUpdate()
+        {
+            if (dashing)
+				Player.maxFallSpeed = 2000f;
+		}
+
+        public override void PostUpdate()
+        {
+			if (Player.velocity.X == 0 || Player.velocity.Y == 0)
+				dashing = false;
+        }
+    }
 }
