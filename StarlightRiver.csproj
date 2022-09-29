@@ -1,41 +1,33 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\references\tModLoader.targets" />
+  <Import Project="..\tModLoader.targets" />
   <PropertyGroup>
     <AssemblyName>StarlightRiver</AssemblyName>
-    <TargetFramework>net45</TargetFramework>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <OutputType>Library</OutputType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <TargetFramework>net6.0</TargetFramework>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-  <Target Name="BuildMod" AfterTargets="Build">
-    <Exec Command="&quot;$(tMLBuildServerPath)&quot; -build $(ProjectDir) -define &quot;$(DefineConstants)&quot; -eac $(TargetPath) -unsafe $(AllowUnsafeBlocks)" />
-  </Target>
   <ItemGroup>
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
     <Reference Include="NetEasy">
-      <HintPath>lib\NetEasy_v0.1.7.dll</HintPath>
+      <HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
     </Reference>
     <Reference Include="ProjectStarlight.Interchange">
       <HintPath>lib\ProjectStarlight.Interchange.dll</HintPath>
     </Reference>
     <Reference Include="StructureHelper">
-      <HintPath>lib\StructureHelper_v1.1.2.dll</HintPath>
+      <HintPath>lib\StructureHelper.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="tModLoader">
+      <HintPath>..\..\..\..\..\..\HardDrive Program Files (x86)\Steam\steamapps\common\tModLoader\tModLoader.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Alchemy\Modifiers\" />
-    <Folder Include="Content\Maps\" />
-    <Folder Include="Content\Tiles\Paintings\" />
+    <Folder Include="Assets\Healthbars\" />
+    <Folder Include="Content\NPCs\Vitric\GlassTrial\" />
   </ItemGroup>
 </Project>

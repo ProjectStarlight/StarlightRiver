@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -64,7 +65,7 @@ namespace StarlightRiver.Content.Alchemy.Recipes
             {
                 foreach (Item eachOutputItem in outputItemList)
                 {
-                    Item.NewItem(wrapper.cauldronRect.Center() - new Vector2(0, 100), Vector2.Zero, eachOutputItem.type, Stack: eachOutputItem.stack, prefixGiven: eachOutputItem.prefix);
+                    Item.NewItem(new EntitySource_WorldEvent(), wrapper.cauldronRect.Center() - new Vector2(0, 100), Vector2.Zero, eachOutputItem.type, Stack: eachOutputItem.stack, prefixGiven: eachOutputItem.prefix);
                 }
                 foreach (AlchemyIngredient eachIngredient in currentingredients)
                 {
@@ -81,11 +82,7 @@ namespace StarlightRiver.Content.Alchemy.Recipes
     }
     public class BloodCrystalRecipeDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust +"NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust +"NeedlerDust";
 
         public override void OnSpawn(Dust dust)
         {

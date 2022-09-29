@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -8,12 +9,27 @@ using Terraria;
 
 namespace StarlightRiver.Physics
 {
-	public class VerletChain
-    {
-        //static
+	public class VerletChainSystem : IOrderedLoadable
+	{
         public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
         public static List<VerletChain> toDraw = new List<VerletChain>();
 
+        public float Priority => 1;
+
+		public void Load()
+		{
+		}
+
+		public void Unload()
+		{
+            target = null;
+            toDraw = null;
+		}
+	}
+
+	public class VerletChain 
+    {
+        //static
         private static readonly BasicEffect basicEffectColor = Main.dedServ ? null : new BasicEffect(Main.graphics.GraphicsDevice) { VertexColorEnabled = true };
 
         #region verlet chain example
@@ -38,7 +54,7 @@ namespace StarlightRiver.Physics
             forceGravity = new Vector2(0f, 1f),
             gravityStrengthMult = 1f
         };*/
-        //Chain.UpdateChain(projectile.Center); //chain example
+        //Chain.UpdateChain(Projectile.Center); //chain example
         #endregion
 
         //basic variables
@@ -47,6 +63,8 @@ namespace StarlightRiver.Physics
 
         public int segmentCount;
         public int segmentDistance;
+
+        public bool collideWithTiles;
 
         public int constraintRepetitions = 2;
         public float drag = 1f;
@@ -73,14 +91,15 @@ namespace StarlightRiver.Physics
         public int simStartOffset = 0;
         public int simEndOffset = 0;//if zero this gets set to the segment count on start
 
-        public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance)
+		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance, bool CollideWithTiles = false)
         {
             segmentCount = SegCount;
             segmentDistance = SegDistance;
             startPoint = StartPoint;
+            collideWithTiles = CollideWithTiles;
 
             if (!specialDraw)
-                toDraw.Add(this);
+                VerletChainSystem.toDraw.Add(this);
         }
 
         public VerletChain(int SegCount, bool specialDraw, Vector2? StartPoint = null, Vector2? EndPoint = null, int SegDistance = 5, Vector2? Grav = null)
@@ -95,7 +114,7 @@ namespace StarlightRiver.Physics
             endPoint = EndPoint ?? Vector2.Zero;
 
             if (!specialDraw)
-                toDraw.Add(this);
+                VerletChainSystem.toDraw.Add(this);
 
             //Start(EndPoint != null);
         }
@@ -119,8 +138,8 @@ namespace StarlightRiver.Physics
             if (customDistances = CustomDists)
                 segmentDistances = SegDists ?? Enumerable.Repeat(segmentDistance, segmentCount).ToList();
 
-            if (!specialDraw) 
-                toDraw.Add(this);
+            if (!specialDraw)
+                VerletChainSystem.toDraw.Add(this);
 
             //Start(EndPoint != null);
         }
@@ -194,16 +213,22 @@ namespace StarlightRiver.Physics
                 RopeSegment segment = ropeSegments[i];
                 Vector2 velocity = (segment.posNow - segment.posOld) / drag;
                 segment.posOld = segment.posNow;
+
+                Vector2 gravityVel = customGravity ? forceGravities[i] * forceGravity : forceGravity;
+
+                velocity = TileCollision(segment.posNow, velocity);
+                gravityVel = TileCollision(segment.posNow, gravityVel);
+
                 segment.posNow += velocity;
-                segment.posNow += customGravity ? forceGravities[i] * forceGravity : forceGravity;
+                segment.posNow += gravityVel;
             }
 
             for (int i = 0; i < constraintRepetitions; i++)//the amount of times Constraints are applied per update
             {
                 if (useStartPoint)
                     ropeSegments[simStartOffset].posNow = startPoint;
-                //if (useEndPoint)
-                //    ropeSegments[simEndOffset].posNow = endPoint;//if the end point clamp breaks, check this
+                if (useEndPoint)
+                   ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
                 ApplyConstraint();
             }
         }
@@ -226,14 +251,14 @@ namespace StarlightRiver.Physics
                 Vector2 changeAmount = changeDir * error;
                 if (i != 0)
                 {
-                    ropeSegments[i].posNow -= changeAmount * 0.5f;
+                    ropeSegments[i].posNow += TileCollision(ropeSegments[i].posNow, changeAmount * -0.5f);
                     ropeSegments[i] = ropeSegments[i];
-                    ropeSegments[i + 1].posNow += changeAmount * 0.5f;
+                    ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount * 0.5f);
                     ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
                 else
                 {
-                    ropeSegments[i + 1].posNow += changeAmount;
+                    ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
                     ropeSegments[i + 1] = ropeSegments[i + 1];
                 }
             }
@@ -343,7 +368,7 @@ namespace StarlightRiver.Physics
         {
             if (Main.dedServ) return;
 
-            spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+            spriteBatch.Draw(VerletChainSystem.target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
         }
 
         public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position
@@ -365,6 +390,22 @@ namespace StarlightRiver.Physics
         {
             for (int i = 0; i < segmentCount; i++)
                 drawMethod_curPos_prevPos_nextPos(spritebatch, i, ropeSegments[i].posNow, i > 0 ? ropeSegments[i - 1].posNow : Vector2.Zero, i < segmentCount - 1 ? ropeSegments[i + 1].posNow : Vector2.Zero);
+        }
+
+        public Vector2 TileCollision(Vector2 pos, Vector2 vel)
+        {
+            if (!collideWithTiles)
+                return vel;
+
+            Vector2 newVel = Collision.noSlopeCollision(pos - (new Vector2(3, 3)), vel, 6, 6, true, true);
+            Vector2 ret = new Vector2(vel.X,vel.Y);
+            if (Math.Abs(newVel.X) < Math.Abs(vel.X))
+                ret.X *= 0;
+
+            if (Math.Abs(newVel.Y) < Math.Abs(vel.Y))
+                ret.Y *= 0;
+
+            return ret;
         }
     }
 }

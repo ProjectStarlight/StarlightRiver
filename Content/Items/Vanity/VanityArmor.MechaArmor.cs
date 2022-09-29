@@ -18,14 +18,14 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = Item.sellPrice(0, 0, 10, 0);//todo
-            item.rare = ItemRarityID.Green;
-            item.vanity = true;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = Item.sellPrice(0, 0, 10, 0);//todo
+            Item.rare = ItemRarityID.Green;
+            Item.vanity = true;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
         }
 
@@ -47,20 +47,20 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = Item.sellPrice(0, 0, 10, 0);//todo
-            item.rare = ItemRarityID.Green;
-            item.vanity = true;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = Item.sellPrice(0, 0, 10, 0);//todo
+            Item.rare = ItemRarityID.Green;
+            Item.vanity = true;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
         }
 
-        public override void UpdateArmorSet(Player player)
+        public override void UpdateArmorSet(Player Player)
         {
-            //player.slotsMinions += 1f;
+            //Player.slotsMinions += 1f;
         }
 
         public override void AddRecipes()
@@ -81,14 +81,14 @@ namespace StarlightRiver.Content.Items.Vanity
 
         public override void SetDefaults()
         {
-            item.width = 18;
-            item.height = 18;
-            item.value = Item.sellPrice(0, 0, 10, 0);
-            item.rare = ItemRarityID.Green;
-            item.vanity = true;
+            Item.width = 18;
+            Item.height = 18;
+            Item.value = Item.sellPrice(0, 0, 10, 0);
+            Item.rare = ItemRarityID.Green;
+            Item.vanity = true;
         }
 
-        public override void UpdateEquip(Player player)
+        public override void UpdateEquip(Player Player)
         {
         }
 

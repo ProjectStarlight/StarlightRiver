@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override void SetDefaults()
         {
-            item.width = 20;
-            item.height = 14;
-            item.rare = ItemRarityID.Green;
+            Item.width = 20;
+            Item.height = 14;
+            Item.rare = ItemRarityID.Green;
 
             color = new Color(100, 200, 250);
         }
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
             Ability.ActivationCostBonus += 0.3f;
 
             base.OnActivate();
-            Main.PlaySound(SoundID.Item96, Player.Center);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Player.Center);
 
             Ability.Time = 10;
         }
@@ -121,41 +121,41 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
         public override int TransformTo => ItemType<Astral>();
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
             StarlightNPC.ModifyHitByItemEvent += TrackKillsMelee;
             StarlightNPC.ModifyHitByProjectileEvent += TrackKillsRanged;
 
             StarlightItem.OnPickupEvent += TrackPickup;
 
-            return base.Autoload(ref name);
+            
 		}
 
-		private bool TrackPickup(Item item, Player player)
+		private bool TrackPickup(Item Item, Player Player)
 		{
-            if (item.type == ItemID.FallenStar)
+            if (Item.type == ItemID.FallenStar)
             {
-                var objective = FindObjective(player, "Loot Fallen Stars");
+                var objective = FindObjective(Player, "Loot Fallen Stars");
 
                 if(objective != null)
-                    objective.progress += item.stack;
+                    objective.progress += Item.stack;
             }
 
             return true;
 		}
 
-		private void TrackKillsRanged(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void TrackKillsRanged(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-            var player = Main.player[projectile.owner];
-            var killObjective = FindObjective(player, "Strike Foes");
+            var Player = Main.player[Projectile.owner];
+            var killObjective = FindObjective(Player, "Strike Foes");
 
             if (killObjective != null)
                 killObjective.progress++;
 		}
 
-		private void TrackKillsMelee(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-            var killObjective = FindObjective(player, "Strike Foes");
+            var killObjective = FindObjective(Player, "Strike Foes");
 
             if (killObjective != null)
                 killObjective.progress++;

@@ -13,13 +13,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
-			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;
-			return base.Autoload(ref name);
+			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;			
 		}
 
-		private void ChaliceEffects(Player player, NPC npc, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
+		public override void Unload()
+		{
+			StatusTrackingNPC.buffCompareEffects -= ChaliceEffects;
+		}
+
+		private void ChaliceEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
 		{
 			if (Equipped(player))
 			{
@@ -32,21 +36,18 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 		class PlexusChaliceBuff : ModBuff
 		{
-			public override bool Autoload(ref string name, ref string texture)
-			{
-				texture = AssetDirectory.PotionsItem + name;
-				return base.Autoload(ref name, ref texture);
-			}
 
-			public override void SetDefaults()
+            public override string Texture => AssetDirectory.PotionsItem + Name;
+
+			public override void SetStaticDefaults()
 			{
 				DisplayName.SetDefault("Plexus Resistance");
-				Description.SetDefault("+30% to DoT Resistance");
+				Description.SetDefault("+30% Inoculation");
 			}
 
-			public override void Update(Player player, ref int buffIndex)
+			public override void Update(Player Player, ref int buffIndex)
 			{
-				player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+				Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 			}
 		}
 	}

@@ -20,10 +20,10 @@ namespace StarlightRiver.Content.CustomHooks
             On.Terraria.WorldGen.meteor += AluminumMeteor;
         }
 
-        private bool AluminumMeteor(On.Terraria.WorldGen.orig_meteor orig, int i, int j)
-        {
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().Shake += 80;
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
+		private bool AluminumMeteor(On.Terraria.WorldGen.orig_meteor orig, int i, int j, bool ignorePlayers)
+		{
+            Core.Systems.CameraSystem.Shake += 80;
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
             if (Main.rand.Next(3) > (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors) ? 0 : 1))
             {
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.CustomHooks
 
                     for (int y = 0; y < Main.maxTilesY; y++)
                     {
-                        if (Framing.GetTileSafely(x, y).active())
+                        if (Framing.GetTileSafely(x, y).HasTile)
                         {
                             target = new Point16(x, y - 20);
                             break;
@@ -61,12 +61,12 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.NewText("A shard of the moon has landed!", new Color(107, 233, 231));
 
                 else if (Main.netMode == NetmodeID.Server)
-                    NetMessage.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
+                    Terraria.Chat.ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral("A shard of the moon has landed!"), new Color(107, 233, 231));
 
                 return true;
             }
 
-            else return orig(i, j);
+            else return orig(i, j, ignorePlayers);
         }
 
         private bool CheckAroundMeteor(Point16 test)
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.CustomHooks
                     {
                         Tile tile = Framing.GetTileSafely(test + new Point16(x, y));
 
-                        if (tile.type == TileID.Containers || tile.type == TileID.Containers2)
+                        if (tile.TileType == TileID.Containers || tile.TileType == TileID.Containers2)
                             return false;
                     }
                 }

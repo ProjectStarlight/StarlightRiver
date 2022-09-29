@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -6,18 +7,26 @@ namespace StarlightRiver.Prefixes
 {
 	public abstract class CustomTooltipPrefix : ModPrefix
     {
-        public readonly string _tooltip;
+        public virtual void Update(Item Item, Player Player) { }
 
-        protected CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
+        public virtual void SafeApply(Item Item) { }
 
-        public virtual void Update(Item item, Player player) { }
+        public virtual void ModifyTooltips(Item item, List<TooltipLine> tooltips) { }
 
-        public virtual void SafeApply(Item item) { }
-
-        public override void Apply(Item item)
+        public override void Apply(Item Item)
         {
-            item.GetGlobalItem<StarlightItem>().prefixLine = _tooltip;
-            SafeApply(item);
+            SafeApply(Item);
         }
     }
+
+    public class CustomTooltipItem : GlobalItem
+	{
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
+            var prefix = PrefixLoader.GetPrefix(item.prefix);
+
+			if (prefix is CustomTooltipPrefix)
+                (prefix as CustomTooltipPrefix).ModifyTooltips(item, tooltips);
+		}
+	}
 }

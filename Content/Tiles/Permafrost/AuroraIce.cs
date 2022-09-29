@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -12,19 +13,20 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 {
 	class AuroraIce : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIce";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            QuickBlock.QuickSet(this, 0, -1, -1, new Color(100, 255, 255), ItemType<AuroraIceItem>());
+            QuickBlock.QuickSet(this, 0, -1, SoundID.Shatter, new Color(100, 255, 255), ItemType<AuroraIceItem>());
             Main.tileFrameImportant[Type] = true;
+            Main.tileLighted[Type] = true;
 
-            Main.tileMerge[TileType<PermafrostIce>()][Type] = true;
-            Main.tileMerge[Type][TileType<PermafrostIce>()] = true;
+            Main.tileMerge[TileID.IceBlock][Type] = true;
+            Main.tileMerge[Type][TileID.IceBlock] = true;
+
+            Main.tileMerge[TileID.SnowBlock][Type] = true;
+            Main.tileMerge[Type][TileID.SnowBlock] = true;
+
             TileID.Sets.DrawsWalls[Type] = true;
         }
 
@@ -32,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (!fail && tile.frameY < 4 * 18)
+            if (!fail && tile.TileFrameY < 4 * 18)
             {
                 for (int k = 0; k < 3; k++)
                 {
@@ -45,34 +47,31 @@ namespace StarlightRiver.Content.Tiles.Permafrost
                     if (color.R < 80) color.R = 80;
                     if (color.G < 80) color.G = 80;
 
-                    Dust d = Dust.NewDustPerfect(new Vector2(i, j) * 16, DustType<Dusts.Crystal>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color * Main.rand.NextFloat(0.7f, 0.9f), Main.rand.NextFloat(0.4f, 0.6f));
+                    Dust d = Dust.NewDustPerfect(new Vector2(i, j) * 16, DustType<Dusts.Crystal>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3), 0, color * Main.rand.NextFloat(1.2f, 1.5f), Main.rand.NextFloat(0.4f, 0.6f));
                     d.fadeIn = Main.rand.NextFloat(-0.1f, 0.1f);
 
                     Dust d2 = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.Aurora>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 100, color, 0);
                     d2.customData = Main.rand.NextFloat(0.25f, 0.5f);
                 }
 
-                Main.PlaySound(SoundID.DD2_WitherBeastCrystalImpact.SoundId, i * 16, j * 16, SoundID.DD2_WitherBeastCrystalImpact.Style, 0.2f, -0.8f);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Volume = 0.2f, Pitch = -0.8f }, new Vector2(i, j) * 16f);
 
                 if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
                 {
-                    tile.frameY += 4 * 18;
+                    tile.TileFrameY += 4 * 18;
+                    Item.NewItem(new Terraria.DataStructures.EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<AuroraIceItem>());
                     fail = true;
                 }
                 else
-                {
-                    tile.active(false);
-                }
+                    tile.HasTile = false;
 
                 for (int x = -1; x <= 1; x++)
                     for (int y = -1; y <= 1; y++)
                     {
                         Tile tile2 = Framing.GetTileSafely(i + x, j + y);
 
-                        if (tile2.active() && tile2.type == Type && tile2.frameY < 4 * 18)
-                        {
+                        if (tile2.HasTile && tile2.TileType == Type && tile2.TileFrameY < 4 * 18)
                             WorldGen.KillTile(i + x, j + y);
-                        }
                     }
             }
             else noItem = true;
@@ -84,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             //TODO: this is gross, change it later?
             if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
-                Framing.GetTileSafely(i, j).slope(0);
+                Framing.GetTileSafely(i, j).Slope = SlopeType.Solid;
 
             return false;
         }
@@ -93,21 +92,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
         {
             Tile tile = Framing.GetTileSafely(i, j);
 
-            if (tile.frameY >= 4 * 18 || checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
+            if (tile.TileFrameY >= 4 * 18 || checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
             {
-                float offBack = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
-
-                float sinBack = (float)Math.Sin(StarlightWorld.rottime + offBack * 0.01f * 0.2f);
-                float cosBack = (float)Math.Cos(StarlightWorld.rottime + offBack * 0.01f);
-                Color colorBack = new Color(100 * (1 + sinBack) / 255f, 140 * (1 + cosBack) / 255f, 180 / 255f);
-                Color light = Lighting.GetColor(i, j) * 0.68f; //why am I multiplying by a constant here? because terraria lighting falloff is consistent and this is close enough that it's visually indecipherable
-
-                Color final = new Color(light.R + (int)(colorBack.R * 0.1f), light.G + (int)(colorBack.G * 0.1f), light.B + (int)(colorBack.B * 0.1f));
-
-                spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY % (4 * 18), 16, 16), final);
+                Color light = Lighting.GetColor(i, j);
+                spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY % (4 * 18), 16, 16), light);
             }
 
-            if (tile.frameY >= 4 * 18) return;
+            if (tile.TileFrameY >= 4 * 18) 
+                return;
 
             int off = i + j;
             float time = Main.GameUpdateCount / 600f * 6.28f;
@@ -118,30 +110,101 @@ namespace StarlightRiver.Content.Tiles.Permafrost
             if (color.R < 80) color.R = 80;
             if (color.G < 80) color.G = 80;
 
-            spriteBatch.Draw(Main.tileTexture[tile.type], (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), color * 0.3f);
+            var pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition;
+            var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.2f) * 0.1f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.4f) * 0.4f);
-            spriteBatch.Draw(GetTexture("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow"), (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.frameX, tile.frameY, 16, 16), Color.Lerp(color, Color.White, 0.7f) * 0.8f);
+            spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, frame, color * 0.3f);
 
-            Lighting.AddLight(new Vector2(i, j) * 16, color.ToVector3() * 0.35f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIce").Value, pos, frame, Color.Lerp(color, Color.White, 0.2f) * 0.1f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow2").Value, pos, frame, Color.Lerp(color, Color.White, 0.4f) * 0.4f);
+            spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceGlow").Value, pos, frame, Color.Lerp(color, Color.White, 0.7f) * 0.8f);
 
-            if (Main.rand.Next(24) == 0)
+            if (Main.rand.NextBool(24))
             {
                 Dust d = Dust.NewDustPerfect(new Vector2(i, j) * 16 + new Vector2(Main.rand.Next(16), Main.rand.Next(16)), DustType<Dusts.Aurora>(), Vector2.Zero, 100, color, 0);
                 d.customData = Main.rand.NextFloat(0.25f, 0.5f);
             }
         }
 
-        bool checkIce(int x, int y) => Framing.GetTileSafely(x, y).type == TileType<PermafrostIce>();
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+            Tile tile = Framing.GetTileSafely(i, j);
+
+            if (tile.TileFrameY >= 4 * 18)
+                return;
+
+            int off = i + j;
+            float time = Main.GameUpdateCount / 600f * 6.28f;
+
+            float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
+            float cos = (float)Math.Cos(time + off * 0.2f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+            if (color.R < 80) color.R = 80;
+            if (color.G < 80) color.G = 80;
+
+            (r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
+        }
+
+		bool checkIce(int x, int y) => Framing.GetTileSafely(x, y).TileType == TileID.IceBlock;
     }
+
     //TODO: Move all this to a more sane place, im really tired tonight and cant be assed to put braincells into organizing this. Thanks in advance future me.
     class AuroraIceItem : QuickMaterial
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraIceItem";
 
         public AuroraIceItem() : base("Frozen Aurora Chunk", "A preserved piece of the night sky", 999, Item.sellPrice(0, 0, 5, 0), ItemRarityID.White) { }
-    }
+
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            var tex = TextureAssets.Item[Item.type].Value;
+            spriteBatch.Draw(tex, position, frame, itemColor, 0, origin, scale, 0, 0);
+
+            var overColor = Color.White;
+            overColor.A = 0;
+
+            spriteBatch.Draw(tex, position, frame, overColor * 0.75f, 0, origin, scale, 0, 0);
+
+            return false;
+        }
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            var tex = TextureAssets.Item[Item.type].Value;
+            spriteBatch.Draw(tex, Item.position - Main.screenPosition, null, Item.color * 0.25f, rotation, tex.Size() / 2, scale, 0, 0);
+
+            var overColor = Color.White;
+            overColor.A = 0;
+
+            spriteBatch.Draw(tex, Item.position - Main.screenPosition, null, overColor * 0.25f, rotation, tex.Size() / 2, scale, 0, 0);
+
+            return false;
+        }
+
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+		{
+            float off = 0;
+            float time = Main.GameUpdateCount / 200f * 6.28f;
+
+            float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
+            float cos = (float)Math.Cos(time + off * 0.2f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
+            Item.color = color;
+        }
+
+		public override void UpdateInventory(Player player)
+		{
+            float off = 0;
+            float time = Main.GameUpdateCount / 200f * 6.28f;
+
+            float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
+            float cos = (float)Math.Cos(time + off * 0.2f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
+            Item.color = color;
+        }
+	}
 
     class AuroraIceBar : QuickMaterial
     {
@@ -149,13 +212,62 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
         public AuroraIceBar() : base("Frozen Aurora Bar", "A preserved selection of the night sky", 99, Item.sellPrice(0, 0, 25, 0), ItemRarityID.Blue) { }
 
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        {
+            var tex = TextureAssets.Item[Item.type].Value;
+            spriteBatch.Draw(tex, position, frame, itemColor, 0, origin, scale, 0, 0);
+
+            var overColor = Color.White;
+            overColor.A = 0;
+
+            spriteBatch.Draw(tex, position, frame, overColor * 0.75f, 0, origin, scale, 0, 0);
+
+            return false;
+        }
+
+        public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+        {
+            var tex = TextureAssets.Item[Item.type].Value;
+            spriteBatch.Draw(tex, Item.position - Main.screenPosition, null, Item.color * 0.25f, rotation, tex.Size() / 2, scale, 0, 0);
+
+            var overColor = Color.White;
+            overColor.A = 0;
+
+            spriteBatch.Draw(tex, Item.position - Main.screenPosition, null, overColor * 0.25f, rotation, tex.Size() / 2, scale, 0, 0);
+
+            return false;
+        }
+
+        public override void Update(ref float gravity, ref float maxFallSpeed)
+        {
+            float off = 0;
+            float time = Main.GameUpdateCount / 200f * 6.28f;
+
+            float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
+            float cos = (float)Math.Cos(time + off * 0.2f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
+            Item.color = color;
+        }
+
+        public override void UpdateInventory(Player player)
+        {
+            float off = 0;
+            float time = Main.GameUpdateCount / 200f * 6.28f;
+
+            float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
+            float cos = (float)Math.Cos(time + off * 0.2f);
+            Color color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
+            Item.color = color;
+        }
+
         public override void AddRecipes()
         {
-            var r = new ModRecipe(mod);
-            r.AddIngredient(ItemType<AuroraIceItem>(), 3);
-            r.AddTile(TileID.Furnaces);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<AuroraIceItem>(), 3);
+            recipe.AddTile(TileID.Furnaces);
+            recipe.Register();
         }
     }
 }

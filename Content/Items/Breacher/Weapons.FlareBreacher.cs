@@ -13,6 +13,8 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using System.IO;
+using Terraria.GameContent;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -28,36 +30,39 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void SetDefaults()
         {
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            item.useAnimation = 30;
-            item.useTime = 30;
-            item.knockBack = 2f;
-            item.UseSound = SoundID.Item11;
-            item.width = 24;
-            item.height = 28;
-            item.damage = 23;
-            item.rare = ItemRarityID.Orange;
-            item.value = Item.sellPrice(0, 1, 0, 0);
-            item.noMelee = true;
-            item.autoReuse = true;
-            item.useTurn = false;
-            item.useAmmo = AmmoID.Flare;
-            item.ranged = true;
-            item.shoot = ModContent.ProjectileType<ExplosiveFlare>();
-            item.shootSpeed = 17;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.useAnimation = 30;
+            Item.useTime = 30;
+            Item.knockBack = 2f;
+            Item.UseSound = SoundID.Item11;
+            Item.width = 24;
+            Item.height = 28;
+            Item.damage = 23;
+            Item.rare = ItemRarityID.Orange;
+            Item.value = Item.sellPrice(0, 1, 0, 0);
+            Item.noMelee = true;
+            Item.autoReuse = true;
+            Item.useTurn = false;
+            Item.useAmmo = AmmoID.Flare;
+            Item.DamageType = DamageClass.Ranged;
+            Item.shoot = ModContent.ProjectileType<ExplosiveFlare>();
+            Item.shootSpeed = 17;
         }
 
         public override Vector2? HoldoutOffset()
         {
-            return new Vector2(-10, 0);
+            return new Vector2(2, 0);
         }
 
-
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             type = ModContent.ProjectileType<ExplosiveFlare>();
             position.Y -= 4;
-            Vector2 direction = new Vector2(speedX, speedY);
+        }
+
+        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+            Vector2 direction = velocity;
 
             for (int i = 0; i < 15; i++)
             {
@@ -65,8 +70,16 @@ namespace StarlightRiver.Content.Items.Breacher
                 dust.noGravity = true;
             }
 
-            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f));
-            return base.Shoot(player, ref position, ref speedX, ref speedY, ref type, ref damage, ref knockBack);
+            Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
+            return true;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 12);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
@@ -85,33 +98,33 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void SetDefaults()
         {
-            projectile.width = 10;
-            projectile.height = 10;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.aiStyle = 1;
-            aiType = 163;
+            Projectile.width = 10;
+            Projectile.height = 10;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.aiStyle = 1;
+            AIType = 163;
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Explosive Flare");
-            Main.projFrames[projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 2;
         }
 
         public override bool PreAI()
         {
-            Lighting.AddLight(projectile.Center, Color.Purple.ToVector3());
-            Vector2 direction = (projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
+            Lighting.AddLight(Projectile.Center, Color.Purple.ToVector3());
+            Vector2 direction = (Projectile.rotation + 1.57f + Main.rand.NextFloat(-0.2f, 0.2f)).ToRotationVector2();
 
             if (stuck)
             {
-                Dust dust = Dust.NewDustPerfect(projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3, 4));
+                Dust dust = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<BreacherDust>(), direction * Main.rand.NextFloat(3, 4));
                 dust.scale = 1.15f;
                 dust.noGravity = true;
                 NPC target = Main.npc[enemyID];
-                projectile.position = target.position + offset;
+                Projectile.position = target.position + offset;
                 explosionTimer--;
 
                 blinkCounter++;
@@ -122,7 +135,7 @@ namespace StarlightRiver.Content.Items.Breacher
                     if (!red)
                     {
                         red = true;
-                        Helper.PlayPitched("Effects/Bleep", 1, 1 - (explosionTimer / 100f));
+                        Helper.PlayPitched("Effects/Bleep", 1, 1 - (explosionTimer / 100f), Projectile.Center);
                         blinkCounter = 0;
                     }
                     else
@@ -139,14 +152,14 @@ namespace StarlightRiver.Content.Items.Breacher
             }
             else
             {
-                for (float i = 0; i < 1; i += 0.25f)
+                for (float i = -1; i < 0; i += 0.25f)
                 {
-                    Dust dust = Dust.NewDustPerfect(projectile.Center - (projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
+                    Dust dust = Dust.NewDustPerfect(Projectile.Center - (Projectile.velocity * i), ModContent.DustType<BreacherDustFour>(), direction * Main.rand.NextFloat(3, 4));
                     dust.scale = 0.85f;
                     dust.noGravity = true;
                 }
 
-                projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+                Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
             }
 
             return base.PreAI();
@@ -154,7 +167,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool OnTileCollide(Vector2 oldVelocity)
         {
-            Dust.NewDustPerfect(projectile.Center + oldVelocity, ModContent.DustType<FlareBreacherDust>(), Vector2.Zero, 60, default, 0.7f).rotation = Main.rand.NextFloat(6.28f);
+            Dust.NewDustPerfect(Projectile.Center + oldVelocity, ModContent.DustType<FlareBreacherDust>(), Vector2.Zero, 60, default, 0.7f).rotation = Main.rand.NextFloat(6.28f);
             return base.OnTileCollide(oldVelocity);
         }
 
@@ -163,12 +176,12 @@ namespace StarlightRiver.Content.Items.Breacher
             if (!stuck && target.life > 0)
             {
                 stuck = true;
-                projectile.friendly = false;
-                projectile.tileCollide = false;
+                Projectile.friendly = false;
+                Projectile.tileCollide = false;
                 enemyID = target.whoAmI;
-                offset = projectile.position - target.position;
-                offset -= projectile.velocity;
-                projectile.netUpdate = true;
+                offset = Projectile.position - target.position;
+                offset -= Projectile.velocity;
+                Projectile.netUpdate = true;
             }
         }
 
@@ -186,45 +199,45 @@ namespace StarlightRiver.Content.Items.Breacher
             enemyID = reader.ReadInt32();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            var tex = Main.projectileTexture[projectile.type];
-            var source = new Rectangle(0, 0, projectile.width, 16);
+            var tex = TextureAssets.Projectile[Projectile.type].Value;
+            var source = new Rectangle(0, 0, Projectile.width, 16);
 
             if (stuck)
                 source.Y += 16 * (red ? 1 : 0);
 
-            Main.spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, source, lightColor, projectile.rotation, (tex.Size() / 2) * new Vector2(1, 0.5f), projectile.scale, 0, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, source, lightColor, Projectile.rotation, (tex.Size() / 2) * new Vector2(1, 0.5f), Projectile.scale, 0, 0);
 
             return false;
         }
 
         private void Explode(NPC target)
         {
-            Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+            Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
             if (!target.immortal && !target.dontTakeDamage)
-                target.StrikeNPC(projectile.damage, 0f, 0);
+                target.StrikeNPC(Projectile.damage, 0f, 0);
 
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake = 10;
+            Core.Systems.CameraSystem.Shake = 10;
             int numberOfProjectiles = Main.rand.Next(4, 6);
 
-            if (Main.myPlayer == projectile.owner)
+            if (Main.myPlayer == Projectile.owner)
             {
                 for (int i = 0; i < numberOfProjectiles; i++)
                 {
                     float offsetRad = MathHelper.Lerp(0, 0.5f, i / (float)numberOfProjectiles);
-                    var pos = projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f) * target.width;
-                    var velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
+                    var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f) * target.width;
+                    var velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0 - offsetRad, offsetRad) - 1.57f) * Main.rand.NextFloat(9, 11);
 
-                    Projectile.NewProjectile(pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), projectile.damage / 4, projectile.knockBack, projectile.owner, target.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, velocity, ModContent.ProjectileType<FlareShrapnel>(), Projectile.damage / 4, Projectile.knockBack, Projectile.owner, target.whoAmI);
                 }
             }
 
             for (int i = 0; i < 4; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5, 10);
+                Dust dust = Dust.NewDustDirect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(5, 10);
                 dust.scale = Main.rand.NextFloat(0.4f, 0.7f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -232,8 +245,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
             for (int i = 0; i < 8; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10, 20);
+                Dust dust = Dust.NewDustDirect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f), 0, 0, ModContent.DustType<FlareBreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(10, 20);
                 dust.scale = Main.rand.NextFloat(0.75f, 1f);
                 dust.alpha = 40 + Main.rand.Next(40);
                 dust.rotation = Main.rand.NextFloat(6.28f);
@@ -241,12 +254,12 @@ namespace StarlightRiver.Content.Items.Breacher
 
             for (int i = 0; i < 24; i++)
             {
-                Dust dust = Dust.NewDustDirect(projectile.Center + Vector2.UnitX.RotatedBy(projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
-                dust.velocity = Vector2.UnitX.RotatedBy(projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
+                Dust dust = Dust.NewDustDirect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - 1.57f), 0, 0, ModContent.DustType<BreacherDust>());
+                dust.velocity = Vector2.UnitX.RotatedBy(Projectile.rotation + Main.rand.NextFloat(-0.3f, 0.3f) - 1.57f) * Main.rand.NextFloat(1, 5);
                 dust.scale = Main.rand.NextFloat(0.75f, 1.1f);
             }
 
-            projectile.active = false;
+            Projectile.active = false;
         }
     }
 
@@ -255,31 +268,31 @@ namespace StarlightRiver.Content.Items.Breacher
         private List<Vector2> cache;
         private Trail trail;
 
-        private NPC source => Main.npc[(int)projectile.ai[0]];
+        private NPC source => Main.npc[(int)Projectile.ai[0]];
 
         public override string Texture => AssetDirectory.BreacherItem + "ExplosiveFlare";
 
         public override void SetDefaults()
         {
-            projectile.width = 4;
-            projectile.height = 4;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.penetrate = 1;
-            projectile.timeLeft = Main.rand.Next(50, 70);
-            projectile.extraUpdates = 4;
-            projectile.alpha = 255;
+            Projectile.width = 4;
+            Projectile.height = 4;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = Main.rand.Next(50, 70);
+            Projectile.extraUpdates = 4;
+            Projectile.alpha = 255;
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Explosive Shrapnel");
-            Main.projFrames[projectile.type] = 2;
+            Main.projFrames[Projectile.type] = 2;
         }
 
         public override void AI()
         {
-            projectile.velocity *= 0.96f;
+            Projectile.velocity *= 0.96f;
             if (Main.netMode != NetmodeID.Server)
             {
                 ManageCaches();
@@ -302,11 +315,11 @@ namespace StarlightRiver.Content.Items.Breacher
                 cache = new List<Vector2>();
                 for (int i = 0; i < 20; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > 20)
             {
@@ -323,7 +336,7 @@ namespace StarlightRiver.Content.Items.Breacher
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -335,8 +348,8 @@ namespace StarlightRiver.Content.Items.Breacher
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/GlowTrail"));
-            effect.Parameters["progress"].SetValue(MathHelper.Lerp(projectile.timeLeft / 60f, 0, 0.3f));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+            effect.Parameters["progress"].SetValue(MathHelper.Lerp(Projectile.timeLeft / 60f, 0, 0.3f));
 
             trail?.Render(effect);
         }

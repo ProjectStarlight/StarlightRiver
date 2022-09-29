@@ -15,9 +15,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	{
 		public override int DummyType => ModContent.ProjectileType<ObjectiveGearDummy>();
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
-			var dummy = (Dummy(i, j).modProjectile as GearTileDummy);
+			var dummy = (Dummy(i, j).ModProjectile as GearTileDummy);
 
 			if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<Items.DebugStick>())
 			{
@@ -38,28 +38,28 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 	{
 		public ObjectiveGearDummy() : base(ModContent.TileType<ObjectiveGear>()) { }
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-			Texture2D pegTex = ModContent.GetTexture(AssetDirectory.VitricTile + "GearPeg");
-			spriteBatch.Draw(pegTex, projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
+			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
 			Texture2D tex;
 
 			switch (Size)
 			{
-				case 0: tex = ModContent.GetTexture(AssetDirectory.Invisible); break;
-				case 1: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "CeramicGearSmall"); break;
-				case 2: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "CeramicGearMid"); break;
-				case 3: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "CeramicGearLarge"); break;
-				default: tex = ModContent.GetTexture(AssetDirectory.VitricTile + "CeramicGearSmall"); break;
+				case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+				case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value; break;
+				case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearMid").Value; break;
+				case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearLarge").Value; break;
+				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CeramicGearSmall").Value; break;
 			}
 
-			spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
 		}
 	}
 
 	class ObjectiveGearItem : QuickTileItem
 	{
-		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug item", ModContent.TileType<ObjectiveGear>(), 8, AssetDirectory.Debug, true) { }
+		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }
 	}
 }

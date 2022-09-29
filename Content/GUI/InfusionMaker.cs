@@ -18,6 +18,8 @@ using static Terraria.ModLoader.ModContent;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using Terraria.GameContent;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -43,8 +45,8 @@ namespace StarlightRiver.Content.GUI
 
         UIList options = new UIList();
         InfusionMakerSlot inSlot = new InfusionMakerSlot();
-        UIImageButton craftButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "BackButton"));
-        UIImageButton exitButton = new UIImageButton(GetTexture(AssetDirectory.GUI + "ExitButton"));
+        UIImageButton craftButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "BackButton"));
+        UIImageButton exitButton = new UIImageButton(Request<Texture2D>(AssetDirectory.GUI + "ExitButton"));
         public InfusionRecipieEntry selected;
         public bool crafting;
         public int craftTime;
@@ -99,7 +101,7 @@ namespace StarlightRiver.Content.GUI
                     dragging = false;
             }
 
-            var tex = GetTexture(AssetDirectory.GUI + "InfusionBack");
+            var tex = Request<Texture2D>(AssetDirectory.GUI + "InfusionBack").Value;
             spriteBatch.Draw(tex, basePos, Color.White);
 
             if (selected != null)
@@ -111,7 +113,7 @@ namespace StarlightRiver.Content.GUI
                     pos.Y += objective.DrawText(spriteBatch, pos);
                 }
 
-                spriteBatch.DrawString(Main.fontItemStack, Helpers.Helper.WrapString(selected.output.item.ToolTip.GetLine(0), 130, Main.fontItemStack, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
+                spriteBatch.DrawString(FontAssets.ItemStack.Value, Helpers.Helper.WrapString(selected.output.Item.ToolTip.GetLine(0), 130, FontAssets.ItemStack.Value, 0.8f), basePos + new Vector2(10, 10), Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
                 if (previewFade < 1 && !crafting)
                     previewFade += 0.05f;
@@ -123,7 +125,7 @@ namespace StarlightRiver.Content.GUI
                     previewFade -= 0.1f;
 			}
 
-            if (inSlot.item != null && inSlot.item.IsAir)
+            if (inSlot.Item != null && inSlot.Item.IsAir)
             {
                 options.Clear();
                 selected = null;
@@ -137,9 +139,9 @@ namespace StarlightRiver.Content.GUI
 
                 if (craftTime >= 60)
                 {
-                    inSlot.item.TurnToAir();
-                    inSlot.item = selected.output.item.Clone();
-                    inSlot.item.SetDefaults(inSlot.item.type);
+                    inSlot.Item.TurnToAir();
+                    inSlot.Item = selected.output.Item.Clone();
+                    inSlot.Item.SetDefaults(inSlot.Item.type);
                     craftTime = 0;
                     crafting = false;
 
@@ -151,22 +153,22 @@ namespace StarlightRiver.Content.GUI
 
             base.Draw(spriteBatch);
 
-            previewGif?.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
-            previewGif?.UpdateGIF();
+            //previewGif?.Draw(spriteBatch, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.White * previewFade);
+            //previewGif?.UpdateGIF();
 
             if(previewGif is null && selected != null)
 			{
-                spriteBatch.Draw(Main.magicPixel, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
+                spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)basePos.X + 2, (int)basePos.Y + 142, 192, 192), Color.Black * previewFade);
 
                 for (int k = 0; k < 5; k++)
                 {
                     var pos = basePos + new Vector2(94, 232) + Vector2.UnitX.RotatedBy(Main.GameUpdateCount / 8f + k) * 16;
                     var color = Color.White * ((k + 1) / 5f) * previewFade;
-                    spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "charm"), pos, null, color, 0, Vector2.Zero, 0.5f, 0, 0);
+                    spriteBatch.Draw(Request<Texture2D>(AssetDirectory.GUI + "charm").Value, pos, null, color, 0, Vector2.Zero, 0.5f, 0, 0);
                 }
 			}
 
-            spriteBatch.Draw(GetTexture(AssetDirectory.GUI + "InfusionVideoFrame"), basePos + new Vector2(0, 140), Color.White);
+            spriteBatch.Draw(Request<Texture2D>(AssetDirectory.GUI + "InfusionVideoFrame").Value, basePos + new Vector2(0, 140), Color.White);
         }
 
         private void SpawnParticles()
@@ -179,7 +181,7 @@ namespace StarlightRiver.Content.GUI
 
             if(craftTime == 60)
             {
-                Main.PlaySound(SoundID.DD2_BetsyFireballImpact);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact);
                 for (int k = 0; k < 100; k++)
                 {
                     var p = new Particle(Vector2.Zero, Vector2.Zero, Main.rand.NextFloat(6.28f), 0, Color.White, 40, basePos + new Vector2(96, 236));
@@ -216,7 +218,7 @@ namespace StarlightRiver.Content.GUI
         {
             if (selected is null) return;
 
-            Main.PlaySound(SoundID.DD2_DarkMageCastHeal);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal);
             crafting = true;
         }
 
@@ -231,7 +233,14 @@ namespace StarlightRiver.Content.GUI
                 element.Height.Set(size.Y, 0);
             }
         }
-    }
+
+		public override void Unload()
+		{
+            previewGif = null;
+            particles = null;
+            infusionOptions = null;
+		}
+	}
 
     class InfusionRecipieEntry : UIElement 
     {
@@ -241,9 +250,9 @@ namespace StarlightRiver.Content.GUI
 
         public InfusionRecipieEntry(int type)
         {
-            var item = new Item();
-            item.SetDefaults(type);
-            output = (InfusionImprint)item.modItem;
+            var Item = new Item();
+            Item.SetDefaults(type);
+            output = (InfusionImprint)Item.ModItem;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -254,16 +263,16 @@ namespace StarlightRiver.Content.GUI
             {
                 if (output.Visible)
                 {
-                    var tex = GetTexture(output.Texture);
+                    var tex = Request<Texture2D>(output.Texture).Value;
                     output.Draw(spriteBatch, pos + new Vector2(14, 13), 1, false);
                     var color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
-                    spriteBatch.DrawString(Main.fontItemStack, output.item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, output.Item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
                 }
                 else
 				{
-                    var tex = GetTexture(output.FrameTexture);
+                    var tex = Request<Texture2D>(output.FrameTexture).Value;
                     spriteBatch.Draw(tex, pos, Color.Gray);
-                    spriteBatch.DrawString(Main.fontItemStack, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
+                    spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
                 }
             }
         }
@@ -287,7 +296,13 @@ namespace StarlightRiver.Content.GUI
                 Task.Factory.StartNew(n => LoadGif(token), token);
             }
 
-            Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.5f, 2.5f);
+            var soundStyle = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Slot")
+            {
+                Volume = 0.5f,
+                Pitch = 1f,
+            };
+
+            SoundEngine.PlaySound(soundStyle);
         }
 
         private void LoadGif(CancellationToken token)
@@ -302,50 +317,55 @@ namespace StarlightRiver.Content.GUI
             if (token.IsCancellationRequested)
                 return;
 
-            (parent as InfusionMaker).previewGif = gif;
-            (parent as InfusionMaker).previewGif.ShouldLoop = true;
-            (parent as InfusionMaker).previewGif.Play();
+            //(parent as InfusionMaker).previewGif = gif;
+            //(parent as InfusionMaker).previewGif.ShouldLoop = true;
+            //(parent as InfusionMaker).previewGif.Play();
         }
     }
 
     class InfusionMakerSlot : UIElement
     {
-        public Item item;
+        public Item Item;
 
         public override void Click(UIMouseEvent evt)
         {
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
 
             if ((Parent as InfusionMaker).crafting)
                 return;
 
-            if (Main.mouseItem.modItem is InfusionItem)
+            var style = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Slot")
             {
-                item = Main.mouseItem.Clone();
+                Volume = 0.75f
+            };
+
+            if (Main.mouseItem.ModItem is InfusionItem)
+            {
+                Item = Main.mouseItem.Clone();
                 Main.mouseItem.TurnToAir();
-                Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.5f);
+                SoundEngine.PlaySound(style with { Pitch = 0.5f });
                 (Parent as InfusionMaker).PopulateList();
             }
-            else if (Main.mouseItem.IsAir && !item.IsAir)
+            else if (Main.mouseItem.IsAir && !Item.IsAir)
             {
-                Main.mouseItem = item.Clone();
-                item.TurnToAir();
-                Main.PlaySound(StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").SoundId, -1, -1, StarlightRiver.Instance.GetLegacySoundSlot(SoundType.Custom, "Sounds/Slot").Style, 0.75f, 0.1f);
+                Main.mouseItem = Item.Clone();
+                Item.TurnToAir();
+                SoundEngine.PlaySound(style with { Pitch = 0.1f });
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var player = Main.LocalPlayer;
+            var Player = Main.LocalPlayer;
             var pos = GetDimensions().ToRectangle().Center.ToVector2() + Vector2.UnitY;
 
-            if(item != null && item.modItem is InfusionItem)
+            if(Item != null && Item.ModItem is InfusionItem)
             {
-                (item.modItem as InfusionItem).Draw(spriteBatch, pos, 1, false);
+                (Item.ModItem as InfusionItem).Draw(spriteBatch, pos, 1, false);
             }
-            else if (player.HeldItem.modItem is InfusionItem)
+            else if (Player.HeldItem.ModItem is InfusionItem)
             {
-                (player.HeldItem.modItem as InfusionItem).Draw(spriteBatch, pos, 0.35f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, false);
+                (Player.HeldItem.ModItem as InfusionItem).Draw(spriteBatch, pos, 0.35f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, false);
             }
         }
     }

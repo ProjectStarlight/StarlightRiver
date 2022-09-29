@@ -5,6 +5,7 @@ using System;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -16,13 +17,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
         public override int DummyType => ProjectileType<OldCeirosShrineDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+		public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
             Main.tileLighted[Type] = true;
@@ -38,19 +35,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override bool SpawnConditions(int i, int j)
 		{
             var tile = Framing.GetTileSafely(i, j);
-            return tile.frameX < 16 && tile.frameY == 0;
+            return tile.TileFrameX < 16 && tile.TileFrameY == 0;
 		}
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
         {
             if (Main.LocalPlayer.HeldItem.type == ItemType<Items.DebugStick>())
             {
                 var tile = Framing.GetTileSafely(i, j);
 
-                if (tile.frameX < 16 && tile.frameY == 0)
+                if (tile.TileFrameX < 16 && tile.TileFrameY == 0)
                 {
-                    tile.frameX++;
-                    tile.frameX %= 4;
+                    tile.TileFrameX++;
+                    tile.TileFrameX %= 4;
                 }
 
                 return true;
@@ -63,9 +60,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
             var tile = Framing.GetTileSafely(i, j);
 
-            if(tile.frameX < 16 && tile.frameY == 0)
+            if(tile.TileFrameX < 16 && tile.TileFrameY == 0)
 			{
-                var tileTex = Main.tileTexture[tile.type];
+                var tileTex = TextureAssets.Tile[tile.TileType].Value;
                 spriteBatch.Draw(tileTex, (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(0, 0, 16, 16), Lighting.GetColor(i, j));
 
                 return false;
@@ -81,26 +78,26 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Update()
 		{
-            if (Main.rand.Next(20) == 0)
+            if (Main.rand.NextBool(20))
             {
-                var pos = projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
+                var pos = Projectile.position + Vector2.UnitX * Main.rand.NextFloat(64);
                 Dust.NewDustPerfect(pos, DustType<Dusts.Aurora>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150, 255), 50), Main.rand.NextFloat(0.5f, 1f));
             }
 		}
 
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void PostDraw(Color lightColor)
 		{
-            var tex = GetTexture(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.frameX);
+            var tex = Request<Texture2D>(AssetDirectory.VitricTile + "OldCeirosOrnament" + Parent.TileFrameX).Value;
             var sin = (float)Math.Sin(Main.GameUpdateCount / 30f);
-            var pos = projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
+            var pos = Projectile.position - Main.screenPosition + new Vector2(32, -32 + sin * 4);
 
-            spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
+            Main.spriteBatch.Draw(tex, pos, null, Color.White, 0, tex.Size() / 2, 1, 0, 0);
         }
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-            var texGlow = GetTexture(AssetDirectory.VitricBoss + "LongGlow");
-            var pos = projectile.position - Main.screenPosition + new Vector2(33, 10);
+            var texGlow = Request<Texture2D>(AssetDirectory.VitricBoss + "LongGlow").Value;
+            var pos = Projectile.position - Main.screenPosition + new Vector2(33, 10);
 
             var sin = (float)Math.Sin(Main.GameUpdateCount / 18f);
 
@@ -111,6 +108,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
     class OldCeirosShrineItem : QuickTileItem 
     {
-        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", TileType<OldCeirosShrine>(), 0, AssetDirectory.Debug, true) { }
+        public OldCeirosShrineItem() : base("Old Ceiros Shrine", "Debug Item", "OldCeirosShrine", 0) { }
     }
 }

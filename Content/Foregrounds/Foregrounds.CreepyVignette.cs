@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Foregrounds
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.Foregrounds
 
 		public override void Draw(SpriteBatch spriteBatch, float opacity)
         {
-            var tex = ModContent.GetTexture(AssetDirectory.Assets + "Foregrounds/Vignette");
+            var tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Foregrounds/Vignette").Value;
             var targetRect = new Rectangle(Main.screenWidth / 2 + (int)offset.X - (int)holeSize.X / 2, Main.screenHeight / 2 + (int)offset.Y - (int)holeSize.Y / 2, (int)holeSize.X, (int)holeSize.Y);
 
             var targetLeft = new Rectangle(0, 0, targetRect.X, Main.screenHeight);
@@ -27,10 +28,10 @@ namespace StarlightRiver.Content.Foregrounds
             var targetBottom = new Rectangle(targetRect.X, targetRect.Y + targetRect.Height, targetRect.Width, Main.screenHeight - (targetRect.Y + targetRect.Height));
 
             spriteBatch.Draw(tex, targetRect, null, Color.White * opacity * opacityMult, 0, Vector2.Zero, 0, 0);
-            spriteBatch.Draw(Main.magicPixel, targetLeft, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetRight, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetTop, Color.Black * opacity * opacityMult);
-            spriteBatch.Draw(Main.magicPixel, targetBottom, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetLeft, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetRight, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetTop, Color.Black * opacity * opacityMult);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetBottom, Color.Black * opacity * opacityMult);
         }
 
         public override void Reset()

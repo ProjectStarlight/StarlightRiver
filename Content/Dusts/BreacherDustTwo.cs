@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	class BreacherDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Aurora";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Aurora";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -22,7 +18,7 @@ namespace StarlightRiver.Content.Dusts
             dust.fadeIn = 60;
             dust.frame = new Rectangle(0, 0, 100, 100);
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
             dust.shader.UseColor(Color.Transparent);
         }
 

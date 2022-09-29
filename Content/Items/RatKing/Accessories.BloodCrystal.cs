@@ -6,6 +6,7 @@ using System.Linq;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.RatKing
 {
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Items.RatKing
 	{
 		public override string Texture => AssetDirectory.RatKingItem + Name;
 
-		public BloodCrystal() : base(ModContent.GetTexture(AssetDirectory.RatKingItem + "BloodCrystal")) { }
+		public BloodCrystal() : base(ModContent.Request<Texture2D>(AssetDirectory.RatKingItem + "BloodCrystal").Value) { }
 
 		public override void SetStaticDefaults()
 		{
@@ -24,15 +25,15 @@ namespace StarlightRiver.Content.Items.RatKing
 
         public override void SafeSetDefaults()
         {
-			item.value = Item.sellPrice(0, 3, 0, 0);
+			Item.value = Item.sellPrice(0, 3, 0, 0);
         }
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
 		{
-			player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
+			Player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
 		}
 	}
 
-	class BloodCrystalComparer : ILoadable
+	class BloodCrystalComparer : IOrderedLoadable
     {
 		public float Priority => 1.4f;
 
@@ -47,7 +48,7 @@ namespace StarlightRiver.Content.Items.RatKing
 			StatusTrackingNPC.buffCompareEffects -= buffCompareEffects;
 		}
 
-		private void buffCompareEffects(Player player, NPC npc, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
+		private void buffCompareEffects(Player player, NPC NPC, int[] storedBuffs, int[] buffType, int[]storedTimes, int[]buffTime)
         {
 			if (player.GetModPlayer<BloodCrystalPlayer>().equipped)
 			{

@@ -26,25 +26,25 @@ namespace StarlightRiver.Content.Items.Vitric
         float prevRotTarget;
 
         public float timer;
-        public ref float State => ref projectile.ai[0];
+        public ref float State => ref Projectile.ai[0];
 
         float prevState;
-        public ref float Index => ref projectile.ai[1];
-        public Player Owner => Main.player[projectile.owner];
+        public ref float Index => ref Projectile.ai[1];
+        public Player Owner => Main.player[Projectile.owner];
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {
-            projectile.width = 16;
-            projectile.height = 16;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 15;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = true;
-            projectile.netImportant = true;
+            Projectile.width = 16;
+            Projectile.height = 16;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 15;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = true;
+            Projectile.netImportant = true;
         }
 
         public override void SetStaticDefaults()
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Vitric
                     parent.loaded = false;
                 }
                     
-                projectile.Kill();
+                Projectile.Kill();
             }
 
             offset = new Vector2(0, -50).RotatedBy(0.2f + (Index - 1) / -2f * 1.5f);
@@ -73,18 +73,18 @@ namespace StarlightRiver.Content.Items.Vitric
             timer++;
 
             if (State != 2) //persist
-                projectile.timeLeft = 15;
+                Projectile.timeLeft = 15;
 
             var flippedOffset = offset;
             flippedOffset.X = offset.X * -Owner.direction;
 
             posTarget = Owner.Center + flippedOffset + Vector2.UnitY * Owner.gfxOffY;
-            projectile.Center += (posTarget - projectile.Center) * 0.18f;
+            Projectile.Center += (posTarget - Projectile.Center) * 0.18f;
 
-            if (Helper.CompareAngle(projectile.rotation, rotTarget) > 0.1f)
-                projectile.rotation += Helper.CompareAngle(projectile.rotation, rotTarget) * 0.1f;
+            if (Helper.CompareAngle(Projectile.rotation, rotTarget) > 0.1f)
+                Projectile.rotation += Helper.CompareAngle(Projectile.rotation, rotTarget) * 0.1f;
             else
-                projectile.rotation = rotTarget;
+                Projectile.rotation = rotTarget;
 
             if (Owner.armor[0].type != ModContent.ItemType<VitricHead>())
             {
@@ -97,12 +97,12 @@ namespace StarlightRiver.Content.Items.Vitric
                 rotTarget = (float)Math.Sin(timer * 0.02f) * 0.2f + rotOffset * -Owner.direction;
 
                 if(timer <= 30)
-                    projectile.scale = timer / 30f * maxSize;
+                    Projectile.scale = timer / 30f * maxSize;
 
                 if (Main.myPlayer == Owner.whoAmI && parent != null && parent.loaded)
 				{
                     if (timer < 30)
-                        projectile.active = false;
+                        Projectile.active = false;
 
                     State = 1;
                     timer = 0;
@@ -112,11 +112,11 @@ namespace StarlightRiver.Content.Items.Vitric
             if(State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
 			{
 
-                rotTarget = Helpers.Helper.LerpFloat(projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+                rotTarget = Helpers.Helper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
                 if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
                 {
                     prevRotTarget = rotTarget;
-                    projectile.netUpdate = true;
+                    Projectile.netUpdate = true;
                 }
 
                 if (parent != null && !parent.loaded)
@@ -134,13 +134,13 @@ namespace StarlightRiver.Content.Items.Vitric
 
             if(State == 2)
 			{
-                projectile.scale = projectile.timeLeft / 15f * maxSize;
+                Projectile.scale = Projectile.timeLeft / 15f * maxSize;
 			}
 
             if (Main.myPlayer == Owner.whoAmI && prevState != State)
             {
                 prevState = State;
-                projectile.netUpdate = true;
+                Projectile.netUpdate = true;
             }
         }
 
@@ -156,19 +156,21 @@ namespace StarlightRiver.Content.Items.Vitric
             timer = reader.ReadInt32();
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
 		{
-            var tex = ModContent.GetTexture(Texture);
-            var texGlow = ModContent.GetTexture(Texture + "Glow");
-            var texHot = ModContent.GetTexture(Texture + "Hot");
+            var spriteBatch = Main.spriteBatch;
 
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition, null, lightColor, projectile.rotation, tex.Size() / 2, projectile.scale, 0, 0);
+            var tex = ModContent.Request<Texture2D>(Texture).Value;
+            var texGlow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+            var texHot = ModContent.Request<Texture2D>(Texture + "Hot").Value;
+
+            spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, 0, 0);
 
             if(State == 0)
-                spriteBatch.Draw(texGlow, projectile.Center - Main.screenPosition, null, VitricSummonOrb.MoltenGlow(timer / 30f * 110), projectile.rotation, texGlow.Size() / 2, projectile.scale, 0, 0);
+                spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, Helper.MoltenVitricGlow(timer / 30f * 110), Projectile.rotation, texGlow.Size() / 2, Projectile.scale, 0, 0);
 
             if (State == 1)
-                spriteBatch.Draw(texHot, projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), projectile.rotation, texHot.Size() / 2, projectile.scale, 0, 0);
+                spriteBatch.Draw(texHot, Projectile.Center - Main.screenPosition, null, Color.White * Math.Min(1, timer / 30f), Projectile.rotation, texHot.Size() / 2, Projectile.scale, 0, 0);
 
             return false;
 		}
@@ -179,21 +181,21 @@ namespace StarlightRiver.Content.Items.Vitric
         private List<Vector2> cache;
         private Trail trail;
 
-        public ref float state => ref projectile.ai[0];
+        public ref float state => ref Projectile.ai[0];
 
         public override string Texture => AssetDirectory.VitricItem + Name;
 
         public override void SetDefaults()
         {
-            projectile.width = 4;
-            projectile.height = 4;
-            projectile.ranged = true;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 180;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.extraUpdates = 5;
+            Projectile.width = 4;
+            Projectile.height = 4;
+            Projectile.DamageType = DamageClass.Ranged;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 180;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.extraUpdates = 5;
         }
 
         public override void SetStaticDefaults()
@@ -203,10 +205,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void AI()
         {
-            projectile.rotation = projectile.velocity.ToRotation() + 1.57f;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
             if (Main.rand.Next(5) == 0)
-                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
 
             if (Main.netMode != NetmodeID.Server)
             {
@@ -219,18 +221,18 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			for(int k = 0; k < 20; k++)
 			{
-                float rot = projectile.rotation - 1.57f;
-                Dust.NewDustPerfect(projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
+                float rot = Projectile.rotation - 1.57f;
+                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(rot + Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.4f);
 			}
 
-            Main.PlaySound(SoundID.DD2_ExplosiveTrapExplode, projectile.Center);
-            Main.player[projectile.owner].GetModPlayer<StarlightPlayer>().Shake += 5;
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+            Core.Systems.CameraSystem.Shake += 5;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-            projectile.velocity *= 0;
-            projectile.friendly = false;
+            Projectile.velocity *= 0;
+            Projectile.friendly = false;
             return false;
 		}
 
@@ -242,11 +244,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 for (int i = 0; i < 90; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
-            cache.Add(projectile.Center);
+            cache.Add(Projectile.Center);
 
             while (cache.Count > 90)
             {
@@ -263,14 +265,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
                 float alpha = 1;
 
-                if (projectile.timeLeft < 20)
-                    alpha = projectile.timeLeft / 20f;
+                if (Projectile.timeLeft < 20)
+                    alpha = Projectile.timeLeft / 20f;
 
                 return new Color(255, 175 + (int)((float)Math.Sin(factor.X * 3.14f * 5) * 25), 100) * (float)Math.Sin(factor.X * 3.14f) * alpha;
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = projectile.Center + projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
 
         public void DrawPrimitives()
@@ -284,7 +286,7 @@ namespace StarlightRiver.Content.Items.Vitric
             effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
             effect.Parameters["repeats"].SetValue(2f);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
         }

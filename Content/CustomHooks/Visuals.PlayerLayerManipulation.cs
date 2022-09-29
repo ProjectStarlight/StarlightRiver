@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class PlayerLayerManipulation : HookGroup
     {
-        //Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning. This might look weird if other mods do strange playerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.
+        //Swaps out some variables on PlayerLayer drawData for certain effects like the pancake and spinning. This might look weird if other mods do strange PlayerLayer stuff but it shouldnt have consquences outside of visuals. The actual patch is a bit iffy rn tho, come fix this later.
         public override SafetyLevel Safety => SafetyLevel.Fragile;
 
         public override void Load()
@@ -20,38 +20,28 @@ namespace StarlightRiver.Content.CustomHooks
             if (Main.dedServ)
                 return;
 
-            IL.Terraria.Main.DrawPlayer_DrawAllLayers += ManipulateLayers;
+            On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_TransformDrawData += CustomTransformations;
         }
 
-        public override void Unload()
+        private void CustomTransformations(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
         {
-            IL.Terraria.Main.DrawPlayer_DrawAllLayers -= ManipulateLayers;
-        }
-
-        private void ManipulateLayers(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            c.TryGotoNext(i => i.MatchStloc(2)); //I need to match more instructions here probably. TODO: that
-
-            c.Emit(OpCodes.Ldarg_1);
-            c.EmitDelegate<LayerManipDelegate>(EmitLayerManipDelegate);
-        }
-
-        private delegate DrawData LayerManipDelegate(DrawData input, Player player);
-
-        private DrawData EmitLayerManipDelegate(DrawData input, Player player)
-        {
-            /*if(!Main.gameMenu && player.HeldItem.GetGlobalItem<Items.Vitric.GlassReplica>().isReplica && input.texture == Main.itemTexture[player.HeldItem.type])
+            orig(ref drawinfo);
+            for (int k = 0; k < drawinfo.DrawDataCache.Count; k++)
             {
-                input.shader = 2; //TODO: Move this. actually bind the correct armor shader. Stop being lazy.
-            }*/
+                drawinfo.DrawDataCache[k] = ManipulateDrawInfo(drawinfo.DrawDataCache[k], drawinfo.drawPlayer);
+            }
+        }
 
-            float rotation = player.GetModPlayer<StarlightPlayer>().rotation;
+		public override void Unload() { }
+
+        private DrawData ManipulateDrawInfo(DrawData input, Player Player)
+        {
+            float rotation = Player.GetModPlayer<StarlightPlayer>().rotation;
 
             if (rotation != 0) //paper mario-style rotation
             {
-                float sin = (float)Math.Sin(rotation + 1.57f * player.direction);
-                int off = Math.Abs((int)(input.texture.Width * sin));
+                float sin = (float)Math.Sin(rotation + 1.57f * Player.direction);
+                int off = Math.Abs((int)((input.useDestinationRectangle ? input.destinationRectangle.Width : input.sourceRect?.Width ?? input.texture.Width) * sin));
 
                 SpriteEffects effect = sin > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                 if (input.effect == SpriteEffects.FlipHorizontally) effect = effect == SpriteEffects.FlipHorizontally ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
@@ -65,15 +55,15 @@ namespace StarlightRiver.Content.CustomHooks
             }
 
             //the pancake debuff
-            else if (player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
+            else if (Player.HasBuff(ModContent.BuffType<Buffs.Squash>()))
             {
-                DrawData newData = new DrawData(input.texture, new Rectangle((int)player.position.X - 20 - (int)Main.screenPosition.X, (int)player.position.Y + 20 - (int)Main.screenPosition.Y + 1, player.width + 40, player.height - 20), input.sourceRect, input.color, input.rotation, default, input.effect, 0);
+                DrawData newData = new DrawData(input.texture, new Rectangle((int)Player.position.X - 20 - (int)Main.screenPosition.X, (int)Player.position.Y + 20 - (int)Main.screenPosition.Y + 1, Player.width + 40, Player.height - 20), input.sourceRect, input.color, input.rotation, default, input.effect, 0);
                 newData.shader = input.shader;
 
                 return newData;
             }
-
-            else return input;
+            else
+                return input;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
@@ -24,13 +25,13 @@ namespace StarlightRiver.Content.Pickups
 
         public override Color GlowColor => Color.Black;
 
-        public override bool CanPickup(Player player) => player.GetHandler().InfusionLimit <= 0;
+        public override bool CanPickup(Player Player) => Player.GetHandler().InfusionLimit <= 0;
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Unnerving Device");
 
 		public override void SafeSetDefaults()
 		{
-            npc.behindTiles = true;
+            NPC.behindTiles = true;
 		}
 
 		public override void Visuals()
@@ -40,22 +41,22 @@ namespace StarlightRiver.Content.Pickups
 
         public override void PickupVisuals(int timer)
         {
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
             //blood spray and sounds
             if(timer == 15 || (timer > 120 && timer < 220 && timer % 10 == 8))
 			{
                 for (int k = 0; k < 20; k++)
                 {
-                    Dust.NewDustPerfect(player.Center, DustID.Blood, Vector2.UnitY.RotatedBy(timer / 10f - 1.57f).RotatedByRandom(0.25f) * Main.rand.NextFloat(10));
+                    Dust.NewDustPerfect(Player.Center, DustID.Blood, Vector2.UnitY.RotatedBy(timer / 10f - 1.57f).RotatedByRandom(0.25f) * Main.rand.NextFloat(10));
                 }
 
-                player.headPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
-                player.bodyPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
-                player.legPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
+                Player.headPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
+                Player.bodyPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
+                Player.legPosition = Vector2.UnitX.RotatedByRandom(3.14f) * Main.rand.NextFloat(5);
 
-                Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), player.Center);
-                Main.PlaySound(SoundID.PlayerHit, player.Center);
+                Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Player.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.PlayerHit, Player.Center);
             }
 
             if(timer >= 15)
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Pickups
 
             if (timer == 360)
             {
-                Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), player.Center); //placeholder sound
+                Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Player.Center); //placeholder sound
             }
 
             if(timer >= 360)
@@ -80,15 +81,15 @@ namespace StarlightRiver.Content.Pickups
             if (timer < 360)
                 if (Main.playerInventory)
                 {
-                    player.controlInv = true;
-                    player.releaseInventory = true;
+                    Player.controlInv = true;
+                    Player.releaseInventory = true;
                     Main.playerInventory = false;
                 }
 
             if(timer >= 360)
                 if (!Main.playerInventory)
                 {
-                    player.ToggleInv();
+                    Player.ToggleInv();
                     Main.playerInventory = true;
                 }
 
@@ -103,18 +104,18 @@ namespace StarlightRiver.Content.Pickups
             if (timer == 559) 
             {
                 UILoader.GetUIState<TextCard>().Display("Mysterious Technology", "What has it done to you?", time: 360);
-                Helper.UnlockEntry<InfusionEntry>(Main.LocalPlayer);
+                Helper.UnlockCodexEntry<InfusionEntry>(Main.LocalPlayer);
 
-                player.headPosition = Vector2.Zero;
-                player.bodyPosition = Vector2.Zero; 
-                player.legPosition = Vector2.Zero; 
+                Player.headPosition = Vector2.Zero;
+                Player.bodyPosition = Vector2.Zero; 
+                Player.legPosition = Vector2.Zero; 
             }
         }
 
-        public override void PickupEffects(Player player)
+        public override void PickupEffects(Player Player)
         {
-            player.GetHandler().InfusionLimit = 1;
-            player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 560;
+            Player.GetHandler().InfusionLimit = 1;
+            Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 560;
         }
 
 		public override void DrawBehind(int index)
@@ -122,15 +123,15 @@ namespace StarlightRiver.Content.Pickups
             //Main.instance.DrawCacheProjsBehindNPCsAndTiles.Add(index);
 		}
 
-		public override void PostDraw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch, Color drawColor)
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-            var player = Main.LocalPlayer;
-            var timer = player.GetModPlayer<StarlightPlayer>().PickupTimer;
+            var Player = Main.LocalPlayer;
+            var timer = Player.GetModPlayer<StarlightPlayer>().PickupTimer;
 
             if (timer < 1 || timer > 559)
                 return;
 
-            var tex = ModContent.GetTexture("StarlightRiver/Assets/Abilities/BrassSpike");
+            var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Abilities/BrassSpike").Value;
             var origin = new Vector2(0, tex.Height / 2);
 
             float progressFirst = Math.Min(1, timer / 12f);
@@ -138,7 +139,7 @@ namespace StarlightRiver.Content.Pickups
             if (timer > 300)
                 progressFirst = 1 - (timer - 300) / 60f;
 
-            Vector2 positionFirst = player.Center + Vector2.SmoothStep(Vector2.UnitY * 100, Vector2.Zero, progressFirst) - Main.screenPosition;
+            Vector2 positionFirst = Player.Center + Vector2.SmoothStep(Vector2.UnitY * 100, Vector2.Zero, progressFirst) - screenPos;
 
             spriteBatch.Draw(tex, positionFirst, null, Color.White, (float)Math.PI * 0.5f, origin, 1, 0, 0);
 
@@ -153,14 +154,14 @@ namespace StarlightRiver.Content.Pickups
                     if (relTime2 > 180)
                         progress = 1 - (relTime2 - 180) / 60f;
 
-                    Vector2 position = player.Center + Vector2.SmoothStep(Vector2.UnitX.RotatedBy(k) * 140, Vector2.Zero, progress) - Main.screenPosition;
+                    Vector2 position = Player.Center + Vector2.SmoothStep(Vector2.UnitX.RotatedBy(k) * 140, Vector2.Zero, progress) - screenPos;
 
                     if (progress > 0)
                     {
                         spriteBatch.Draw(tex, position, null, Color.White, k, origin, 1, 0, 0);
 
                         if(relTime2 < 140)
-                            Dust.NewDustPerfect(player.Center + Vector2.UnitX.RotatedBy(k) * Main.rand.Next(80, 140), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(k + 3.14f) * Main.rand.NextFloat(4), 0, new Color(255, 200, 100), 0.25f);
+                            Dust.NewDustPerfect(Player.Center + Vector2.UnitX.RotatedBy(k) * Main.rand.Next(80, 140), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(k + 3.14f) * Main.rand.NextFloat(4), 0, new Color(255, 200, 100), 0.25f);
                     }
 				}
 			}

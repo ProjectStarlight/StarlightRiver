@@ -9,11 +9,7 @@ namespace StarlightRiver.Content.Dusts
 {
     public class JetwelderFinalDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDustThree";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
 
         public override void OnSpawn(Dust dust)
         {
@@ -69,11 +65,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class JetwelderDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDustTwo";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
 
         public override void OnSpawn(Dust dust)
         {
@@ -141,11 +133,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class JetwelderDustTwo : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -211,11 +199,7 @@ namespace StarlightRiver.Content.Dusts
     }
     public class JetwelderJumperDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;

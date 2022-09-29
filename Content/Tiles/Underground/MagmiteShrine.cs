@@ -14,16 +14,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 {
     class MagmiteShrine : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Tiles/Underground/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Tiles/Underground/" + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileID.Sets.DrawsWalls[Type] = true;
-            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
+            TileObjectData.newTile.DrawYOffset = 2;
+            TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, 2, 0);
             QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Dusts.Stamina>(), SoundID.Tink, false, new Color(255, 150, 80), false, false, "The Boi");
         }
 
@@ -35,6 +32,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
     class MagmiteShrineItem : QuickTileItem
     {
-        public MagmiteShrineItem() : base("The Boi", "It's him!", TileType<MagmiteShrine>(), 1, "StarlightRiver/Assets/Tiles/Underground/") { }
+        public MagmiteShrineItem() : base("The Boi", "It's him!", "MagmiteShrine", 1, "StarlightRiver/Assets/Tiles/Underground/") { }
     }
 }

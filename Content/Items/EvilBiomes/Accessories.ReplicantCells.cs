@@ -17,12 +17,12 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 
 		public ReplicantCells() : base("Replicant Cells", "+15% DoT Resist\nHealth regeneration starts slightly faster") { }
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
+			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
 
-			if(player.lifeRegenTime % 5 == 0) 
-				player.lifeRegenTime++;
+			if(Player.lifeRegenTime % 5 == 0) 
+				Player.lifeRegenTime++;
 		}
 	}
 }

@@ -13,19 +13,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
     {
         public override int DummyType => ProjectileType<WindsRoomActorDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+        public override void SetStaticDefaults() => (this).QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
     }
 
     class WindsRoomActorItem  : QuickTileItem
 	{
-        public WindsRoomActorItem() : base("Winds Room Actor", "Debug item", TileType<WindsRoomActor>(), 0, AssetDirectory.Debug, true) { }
-	}
+        public WindsRoomActorItem() : base("Winds Room Actor", "Debug Item", "WindsRoomActor", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+    }
 
     class WindsRoomActorDummy : Dummy
     {
@@ -33,41 +29,68 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SafeSetDefaults()
         {
-            projectile.hide = true;
+            Projectile.hide = true;
         }
 
-        public override void DrawBehind(int index, List<int> drawCacheProjsBehindNPCsAndTiles, List<int> drawCacheProjsBehindNPCs, List<int> drawCacheProjsBehindProjectiles, List<int> drawCacheProjsOverWiresUI)
-        {
-            drawCacheProjsBehindNPCsAndTiles.Add(index);
-        }
-
-		public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			Texture2D backdrop = GetTexture(AssetDirectory.VitricTile + "WindsRoomBackground");
-			Texture2D backdropGlow = GetTexture(AssetDirectory.VitricTile + "WindsRoomBackgroundGlow");
-			Vector2 pos = projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
+            behindNPCsAndTiles.Add(index);
+		}
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdrop);
-			spriteBatch.Draw(backdropGlow, pos, Color.White);
+		public override bool PreDraw(ref Color lightColor)
+		{
+            Texture2D backdrop = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackground").Value;
+            var spriteBatch = Main.spriteBatch;
+            Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
 
-			Lighting.AddLight(projectile.Center + new Vector2(0, -400), new Vector3(1, 0.8f, 0.5f));
-			Lighting.AddLight(projectile.Center + new Vector2(-200, -200), new Vector3(1, 0.8f, 0.5f));
-			Lighting.AddLight(projectile.Center + new Vector2(200, -200), new Vector3(1, 0.8f, 0.5f));
+            var bgTarget = backdrop.Size().ToRectangle();
+            bgTarget.Offset(pos.ToPoint());
+            bgTarget.Width -= 300;
+            bgTarget.X += 150;
+            bgTarget.Height -= 100;
+            bgTarget.Y += 100;
+            TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
+            
 
-            Lighting.AddLight(projectile.Center + new Vector2(0, -32), new Vector3(1, 0.8f, 0.5f));
+            return true;
+        }
 
-            var lighting = Lighting.GetColor((int)projectile.Center.X / 16, (int)projectile.Center.Y / 16 - 6);
+		public override void PostDraw(Color lightColor)
+		{
+            var spriteBatch = Main.spriteBatch;
 
-			Texture2D left = GetTexture(AssetDirectory.VitricTile + "WindsRoomOrnamentLeft");
-			Texture2D leftGlow = GetTexture(AssetDirectory.VitricTile + "WindsRoomOrnamentLeftGlow");
-			Vector2 posLeft = projectile.Center + new Vector2(-100 + (float)System.Math.Cos(Main.GameUpdateCount / 45f) * 2, -140 + (float)System.Math.Sin(Main.GameUpdateCount / 45f) * 6) - Main.screenPosition;
+			Texture2D backdrop = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackground").Value;
+			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackgroundGlow").Value;
+			Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
+
+            spriteBatch.End();
+            spriteBatch.Begin(); //this reset is neccisary for some reason?
+
+            LightingBufferRenderer.DrawWithLighting(pos, backdrop);
+
+            spriteBatch.End();
+            spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+            spriteBatch.Draw(backdropGlow, pos, Color.White);
+
+			Lighting.AddLight(Projectile.Center + new Vector2(0, -400), new Vector3(1, 0.8f, 0.5f));
+			Lighting.AddLight(Projectile.Center + new Vector2(-200, -200), new Vector3(1, 0.8f, 0.5f));
+			Lighting.AddLight(Projectile.Center + new Vector2(200, -200), new Vector3(1, 0.8f, 0.5f));
+
+            Lighting.AddLight(Projectile.Center + new Vector2(0, -32), new Vector3(1, 0.8f, 0.5f));
+
+            var lighting = Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16 - 6);
+
+			Texture2D left = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomOrnamentLeft").Value;
+			Texture2D leftGlow = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomOrnamentLeftGlow").Value;
+			Vector2 posLeft = Projectile.Center + new Vector2(-100 + (float)System.Math.Cos(Main.GameUpdateCount / 45f) * 2, -140 + (float)System.Math.Sin(Main.GameUpdateCount / 45f) * 6) - Main.screenPosition;
 
             spriteBatch.Draw(left, posLeft, null, lighting, (float)System.Math.Cos(Main.GameUpdateCount / 30f) * 0.05f, Vector2.Zero, 1, 0, 0);
             spriteBatch.Draw(leftGlow, posLeft, null, Color.White, (float)System.Math.Cos(Main.GameUpdateCount / 30f) * 0.05f, Vector2.Zero, 1, 0, 0);
 
-            Texture2D right = GetTexture(AssetDirectory.VitricTile + "WindsRoomOrnamentRight");
-            Texture2D rightGlow = GetTexture(AssetDirectory.VitricTile + "WindsRoomOrnamentRightGlow");
-            Vector2 posRight = projectile.Center + new Vector2(0 - (float)System.Math.Cos(Main.GameUpdateCount / 30f + 5) * 2, -220 + (float)System.Math.Sin(Main.GameUpdateCount / 30f + 5) * 8) - Main.screenPosition;
+            Texture2D right = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomOrnamentRight").Value;
+            Texture2D rightGlow = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomOrnamentRightGlow").Value;
+            Vector2 posRight = Projectile.Center + new Vector2(0 - (float)System.Math.Cos(Main.GameUpdateCount / 30f + 5) * 2, -220 + (float)System.Math.Sin(Main.GameUpdateCount / 30f + 5) * 8) - Main.screenPosition;
 
             spriteBatch.Draw(right, posRight, null, lighting, (float)System.Math.Cos(Main.GameUpdateCount / 30f + 5) * 0.05f, Vector2.Zero, 1, 0, 0);
             spriteBatch.Draw(rightGlow, posRight, null, Color.White, (float)System.Math.Cos(Main.GameUpdateCount / 30f + 5) * 0.05f, Vector2.Zero, 1, 0, 0);

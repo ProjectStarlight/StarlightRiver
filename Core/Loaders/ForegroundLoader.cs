@@ -7,9 +7,9 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class ForegroundLoader : ILoadable
+	class ForegroundLoader : IOrderedLoadable
 	{
-        public static List<Foreground> Foregrounds = new List<Foreground>();
+        public static List<Foreground> Foregrounds;
 
         public float Priority => 1.0f;
 
@@ -20,9 +20,11 @@ namespace StarlightRiver.Core.Loaders
             if (Main.dedServ)
                 return;
 
-            Mod mod = StarlightRiver.Instance;
+            Foregrounds = new List<Foreground>();
 
-            foreach (Type t in mod.Code.GetTypes())
+            Mod Mod = StarlightRiver.Instance;
+
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(Foreground)) && !t.IsAbstract)
                 {
@@ -33,7 +35,8 @@ namespace StarlightRiver.Core.Loaders
 
         public void Unload()
         {
-            Foregrounds.Clear();
+            Foregrounds.ForEach(t => t.Unload());   
+            Foregrounds = null;
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -12,12 +14,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BloodlessAmulet() : base(ModContent.GetTexture(AssetDirectory.MiscItem + "BloodlessAmuletGlow")) { }
+		public BloodlessAmulet() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "BloodlessAmuletGlow").Value) { }
 
-		public override bool Autoload(ref string name)
+		public override void Load()
 		{
 			On.Terraria.Player.HealEffect += GrantRage;
-			return true;
+		}
+
+		public override void Unload()
+		{
+			On.Terraria.Player.HealEffect -= GrantRage;
 		}
 
 		private void GrantRage(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
@@ -42,15 +48,15 @@ namespace StarlightRiver.Content.Items.Misc
 				"\nUnaffected by damage over time" +
 				"\nBarrier absorbs ALL damage" +
 				"\nYou can survive without life"+
-				"\nYou cannot have life" +
-				"\nSlightly reduced barrier recharge" +
-				"\nHealing grants a decaying damage boost instead of life" +
+				"\nCursed : You cannot have life" +
+				"\n Slightly reduced barrier recharge" +
+				"\n Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			player.allDamageMult += rage / 2000f;
+			Player.GetDamage(DamageClass.Generic) += rage / 2000f;
 
 			if(rage > 0)
 				rage--;
@@ -58,13 +64,22 @@ namespace StarlightRiver.Content.Items.Misc
 			if (rage > 800)
 				rage = 800;
 
-			player.GetModPlayer<ShieldPlayer>().MaxShield += 100;
-			player.GetModPlayer<ShieldPlayer>().ShieldResistance = 1;
-			player.GetModPlayer<ShieldPlayer>().LiveOnOnlyShield = true;
-			player.GetModPlayer<ShieldPlayer>().RechargeRate -= 10;
-			player.statLife = 0;
-			player.lifeRegen = 0;
-			player.lifeRegenCount = 0;
+			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
+			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction = 1;
+			Player.GetModPlayer<BarrierPlayer>().PlayerCanLiveWithOnlyBarrier = true;
+			Player.GetModPlayer<BarrierPlayer>().RechargeRate -= 10;
+			Player.statLife = 0;
+			Player.lifeRegen = 0;
+			Player.lifeRegenCount = 0;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<BloodAmulet>());
+			recipe.AddIngredient(ModContent.ItemType<Dungeon.AquaSapphire>());
+			recipe.AddTile(TileID.TinkerersWorkbench);
+			recipe.Register();
 		}
 	}
 }

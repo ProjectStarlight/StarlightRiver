@@ -8,21 +8,11 @@ namespace StarlightRiver.Content.Waters
 {
 	public class WaterVitric : ModWaterStyle
     {
-        public override bool Autoload(ref string name, ref string texture, ref string blockTexture)
-        {
-            texture = "StarlightRiver/Assets/Waters/" + name;
-            blockTexture = texture + "_Block";
-            return base.Autoload(ref name, ref texture, ref blockTexture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Waters/" + Name;
 
-        public override bool ChooseWaterStyle()
-        {
-            BiomeHandler modPlayer = Main.LocalPlayer.GetModPlayer<BiomeHandler>();
-            return modPlayer.ZoneGlass|| modPlayer.FountainVitric;
-        }
+		public override string BlockTexture => Texture + "_Block";
 
-        public override int ChooseWaterfallStyle() => 
-            mod.GetWaterfallStyleSlot<WaterfallVitric>();
+        public override int ChooseWaterfallStyle() => ModContent.GetInstance<WaterfallVitric>().Slot;
 
         public override int GetSplashDust() => 
             DustType<Dusts.QuickSplash>();
@@ -41,10 +31,6 @@ namespace StarlightRiver.Content.Waters
 
     public class WaterfallVitric : ModWaterfallStyle
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Waters/" + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => "StarlightRiver/Assets/Waters/" + Name;
     }
 }

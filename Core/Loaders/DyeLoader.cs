@@ -15,7 +15,7 @@ using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Core.Loaders
 {
-	class DyeLoader : ILoadable
+	class DyeLoader : IOrderedLoadable
     {
 
         public void Load()

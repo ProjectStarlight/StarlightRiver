@@ -13,26 +13,22 @@ namespace StarlightRiver.Content.Buffs
 {
 	class HotspringHeal : ModBuff
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Buffs + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Buffs + "HotspringHeal";
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Refreshing Dip");
             Description.SetDefault("The hot springs restore your body and mind");
             Main.debuff[Type] = true;
         }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override void Update(Player Player, ref int buffIndex)
         {
             if (!Main.npc.Any(n => n.active && n.boss))
             {
-                player.lifeRegen += 50;
-                player.manaRegen += 50;
-                player.GetHandler().StaminaRegenRate += 1;
+                Player.lifeRegen += 50;
+                Player.manaRegen += 50;
+                Player.GetHandler().StaminaRegenRate += 1;
             }
         }
 

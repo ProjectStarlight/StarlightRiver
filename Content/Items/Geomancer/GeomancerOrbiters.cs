@@ -17,6 +17,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 using ReLogic.Graphics;
 using Terraria.ModLoader.IO;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -37,24 +38,24 @@ namespace StarlightRiver.Content.Items.Geomancer
         protected float extraSpin = 0f;
         public override void SetDefaults()
         {
-            projectile.friendly = false;
-            projectile.magic = true;
-            projectile.tileCollide = false;
-            projectile.Size = new Vector2(16, 16);
-            projectile.penetrate = -1;
+            Projectile.friendly = false;
+            Projectile.DamageType = DamageClass.Magic;
+            Projectile.tileCollide = false;
+            Projectile.Size = new Vector2(16, 16);
+            Projectile.penetrate = -1;
         }
         public override Color? GetAlpha(Color lightColor) => Color.White;
         public override void AI()
         {
-            if (projectile.scale == bigScale)
+            if (Projectile.scale == bigScale)
                 glowCounter += 0.02f;
 
             SafeAI();
-            projectile.rotation = 0f;
-            projectile.Center = Main.player[projectile.owner].Center + ((projectile.ai[0] + (Main.GlobalTime * 0.5f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
+            Projectile.rotation = 0f;
+            Projectile.Center = Main.player[Projectile.owner].Center + ((Projectile.ai[0] + ((float)Main.timeForVisualEffects * 0.025f) + extraSpin).ToRotationVector2() * MathHelper.Lerp(0, STARTOFFSET, EaseFunction.EaseCubicOut.Ease(offsetLerper)));
 
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
-            projectile.timeLeft = 2;
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
+            Projectile.timeLeft = 2;
             if ((modPlayer.DiamondStored && modPlayer.RubyStored && modPlayer.EmeraldStored && modPlayer.SapphireStored && modPlayer.TopazStored && modPlayer.AmethystStored) || released)
             {
                 if (whiteCounter < 1)
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                 if (offsetLerper <= 0)
                 {
                     Destroy();
-                    projectile.active = false;
+                    Projectile.active = false;
                     modPlayer.AmethystStored = false;
                     modPlayer.TopazStored = false;
                     modPlayer.EmeraldStored = false;
@@ -84,7 +85,7 @@ namespace StarlightRiver.Content.Items.Geomancer
                     for (int i = 0; i < 3; i++)
                     {
                         float angle = Main.rand.NextFloat(6.28f);
-                        Dust dust = Dust.NewDustPerfect(Main.player[projectile.owner].Center + (angle.ToRotationVector2() * 20), ModContent.DustType<GeoRainbowDust>());
+                        Dust dust = Dust.NewDustPerfect(Main.player[Projectile.owner].Center + (angle.ToRotationVector2() * 20), ModContent.DustType<GeoRainbowDust>());
                         dust.scale = 1f;
                         dust.velocity = angle.ToRotationVector2() * Main.rand.NextFloat() * 4;
                     }
@@ -92,38 +93,38 @@ namespace StarlightRiver.Content.Items.Geomancer
                 }
             }
             if (!modPlayer.SetBonusActive)
-                projectile.active = false;
+                Projectile.active = false;
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            Texture2D tex = Main.projectileTexture[projectile.type];
-            if (projectile.scale == bigScale)
+            Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+            if (Projectile.scale == bigScale)
             {
                 float progress = glowCounter % 1;
                 float transparency = (float)Math.Pow(1 - progress, 2);
                 float scale = 0.95f + progress;
 
-                spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), null, Color.White * transparency, projectile.rotation, tex.Size() / 2, scale * projectile.scale, SpriteEffects.None, 0f);
+                Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency, Projectile.rotation, tex.Size() / 2, scale * Projectile.scale, SpriteEffects.None, 0f);
             }
 
             float progress2 = 1 - fade;
             float transparency2 = (float)Math.Pow(1 - progress2, 2);
             float scale2 = 0.95f + progress2;
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), null, Color.White * transparency2, projectile.rotation, tex.Size() / 2, projectile.scale * scale2, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
             return false;
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override void PostDraw(Color lightColor)
         {
             if (!released)
                 return;
-            Texture2D tex = ModContent.GetTexture(Texture + "_White");
+            Texture2D tex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 
             float progress2 = 1 - fade;
             float transparency2 = (float)Math.Pow(1 - progress2, 2);
             float scale2 = 0.95f + progress2;
-            spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, projectile.rotation, tex.Size() / 2, projectile.scale * scale2, SpriteEffects.None, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, Color.White * whiteCounter * transparency2, Projectile.rotation, tex.Size() / 2, Projectile.scale * scale2, SpriteEffects.None, 0f);
         }
 
         protected virtual void SafeAI() { }
@@ -137,7 +138,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
 
             if (modPlayer.storedGem == StoredGem.Amethyst && !released)
             {
@@ -145,15 +146,15 @@ namespace StarlightRiver.Content.Items.Geomancer
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.AmethystStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.75f;
+                Projectile.scale = 0.75f;
             }
         }
     }
@@ -164,22 +165,22 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Ruby && !released)
             {
                 fade = Math.Min(1, modPlayer.timer / 40f);
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.RubyStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.75f;
+                Projectile.scale = 0.75f;
             }
         }
     }
@@ -189,22 +190,22 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Sapphire && !released)
             {
                 fade = Math.Min(1, modPlayer.timer / 40f);
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.SapphireStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.75f;
+                Projectile.scale = 0.75f;
             }
         }
     }
@@ -214,22 +215,22 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Emerald && !released)
             {
                 fade = Math.Min(1, modPlayer.timer / 40f);
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.EmeraldStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.75f;
+                Projectile.scale = 0.75f;
             }
         }
     }
@@ -240,28 +241,28 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Topaz && !released)
             {
                 fade = Math.Min(1, modPlayer.timer / 40f);
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.TopazStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.88f;
+                Projectile.scale = 0.88f;
             }
         }
 
         protected override void Destroy()
         {
-            Player player = Main.player[projectile.owner];
+            Player Player = Main.player[Projectile.owner];
         }
     }
 
@@ -271,22 +272,22 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected override void SafeAI()
         {
-            GeomancerPlayer modPlayer = Main.player[projectile.owner].GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Main.player[Projectile.owner].GetModPlayer<GeomancerPlayer>();
             if (modPlayer.storedGem == StoredGem.Diamond && !released)
             {
                 fade = Math.Min(1, modPlayer.timer / 40f);
                 if (modPlayer.timer == 1)
                 {
                     modPlayer.DiamondStored = false;
-                    projectile.active = false;
-                    GeomancerPlayer.PickOldGem(Main.player[projectile.owner]);
+                    Projectile.active = false;
+                    GeomancerPlayer.PickOldGem(Main.player[Projectile.owner]);
                     modPlayer.timer = 1200;
                 }
-                projectile.scale = bigScale;
+                Projectile.scale = bigScale;
             }
             else
             {
-                projectile.scale = 0.75f;
+                Projectile.scale = 0.75f;
             }
         }
     }

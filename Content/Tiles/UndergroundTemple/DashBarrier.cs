@@ -13,16 +13,12 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override int DummyType => ProjectileType<DashBarrierDummy>();
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             QuickBlock.QuickSetFurniture(this, 2, 3, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(204, 91, 50), false, true);
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
         }
 
         public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -43,20 +39,20 @@ namespace StarlightRiver.Tiles.Temple
     {
         public DashBarrierDummy() : base(TileType<DashBarrier>(), 32, 48) { }
 
-        public override void Collision(Player player)
+        public override void Collision(Player Player)
         {
-            if (AbilityHelper.CheckDash(player, projectile.Hitbox))
+            if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
             {
                 WorldGen.KillTile(ParentX, ParentY);
-                NetMessage.SendTileRange(player.whoAmI, (int)(projectile.position.X / 16f), (int)(projectile.position.Y / 16f), 2, 3, TileChangeType.None);
+                NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
-                Main.PlaySound(SoundID.Tink, projectile.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink, Projectile.Center);
             }
         }
     }
 
     public class DashBarrierItem : QuickTileItem
     {
-        public DashBarrierItem() : base("Dash Barrier", "Debug item", TileType<DashBarrier>(), -12, AssetDirectory.UndergroundTempleTile) { }
+        public DashBarrierItem() : base("Dash Barrier", "Debug Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }
     }
 }

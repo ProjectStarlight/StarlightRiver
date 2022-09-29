@@ -46,15 +46,21 @@ namespace StarlightRiver.Content.CustomHooks
             Main.spriteBatch.End();
         }
 
-        private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, GameTime gameTime)
+        private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
         {
+            if (Main.gameMenu)
+            {
+                orig(self, ref gameTime);
+                return;
+            }
+            
             foreach (var fg in ForegroundLoader.Foregrounds)
             {
                 if (fg != null)
                     fg.Reset();
             }
 
-            orig(self, gameTime);
+            orig(self, ref gameTime);
         }
     }
 }

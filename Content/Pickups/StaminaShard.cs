@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Pickups
 {
 	class StaminaShardPickup : AbilityPickup
     {
-        Tile Parent => Framing.GetTileSafely((int)npc.Center.X / 16, (int)npc.Center.Y / 16);
+        Tile Parent => Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
 
         public override string Texture => GetStaminaTexture();
 
@@ -21,23 +21,23 @@ namespace StarlightRiver.Content.Pickups
 
         public override bool Fancy => false;
 
-        public override bool CanPickup(Player player)
+        public override bool CanPickup(Player Player)
         {
-            AbilityHandler ah = player.GetHandler();
-            return !ah.Shards.Has(Parent.frameX);
+            AbilityHandler ah = Player.GetHandler();
+            return !ah.Shards.Has(Parent.TileFrameX);
         }
 
         public override void Visuals()
         {
-            if (Main.rand.Next(2) == 0) Dust.NewDustPerfect(npc.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Content.Dusts.Stamina>(), Vector2.UnitY * -1);
-            Lighting.AddLight(npc.Center, new Vector3(0.5f, 0.25f, 0.05f));
+            if (Main.rand.Next(2) == 0) Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Content.Dusts.Stamina>(), Vector2.UnitY * -1);
+            Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.25f, 0.05f));
         }
 
-        public override void PickupEffects(Player player)
+        public override void PickupEffects(Player Player)
         {
-            AbilityHandler ah = player.GetHandler();
+            AbilityHandler ah = Player.GetHandler();
 
-            ah.Shards.Add(Parent.frameX);
+            ah.Shards.Add(Parent.TileFrameX);
 
             if (ah.ShardCount % 3 == 0)
             {
@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.Pickups
                 UILoader.GetUIState<TextCard>().Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
             }
 
-            player.GetModPlayer<Core.StarlightPlayer>().MaxPickupTimer = 1;
+            Player.GetModPlayer<Core.StarlightPlayer>().MaxPickupTimer = 1;
 
-            Helper.UnlockEntry<StaminaShardEntry>(Main.LocalPlayer);
+            Helper.UnlockCodexEntry<StaminaShardEntry>(Main.LocalPlayer);
         }
 
         private static string GetStaminaTexture()
@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Pickups
             if (Main.gameMenu) return "StarlightRiver/Assets/Abilities/Stamina1";
 
             AbilityHandler ah = Main.LocalPlayer.GetHandler();
-            return "StarlightRiver/Assets/Abilities/Stamina" + (ah.ShardCount + 1);
+            return "StarlightRiver/Assets/Abilities/Stamina" + ((ah.ShardCount + 1) % 3);
         }
     }
 
@@ -72,10 +72,10 @@ namespace StarlightRiver.Content.Pickups
 
             Tile tile = Framing.GetTileSafely(i, j);
 
-            tile.frameX += 1;
-            if (tile.frameX > 2)
-                tile.frameX = 0;
-            Main.NewText("pickup set to stamina shard number " + tile.frameX, Color.Orange);//debug?
+            tile.TileFrameX += 1;
+            if (tile.TileFrameX > 2)
+                tile.TileFrameX = 0;
+            Main.NewText("pickup set to stamina shard number " + tile.TileFrameX, Color.Orange);//debug?
         }
     }
 
@@ -83,6 +83,6 @@ namespace StarlightRiver.Content.Pickups
     {
         public override string Texture => "StarlightRiver/Assets/Abilities/Stamina1";
 
-        public StaminaShardTileItem() : base("Stamina Shard", "Debug item", TileType<StaminaShardTile>(), 1) { }
+        public StaminaShardTileItem() : base("Stamina Shard", "Debug Item", "StaminaShardTile", 1) { }
     }
 }

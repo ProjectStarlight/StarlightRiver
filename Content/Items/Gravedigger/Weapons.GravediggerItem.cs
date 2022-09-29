@@ -6,45 +6,56 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	public class GravediggerItem : ModItem
+    public class GravediggerItem : ModItem
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + "GravediggerItem";
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Gravedigger");
+			DisplayName.SetDefault("Tombsmasher");
 			Tooltip.SetDefault("Strikes enemies up into the air \nHit enemies in the air for more damage");
 		}
 
 		public override void SetDefaults()
 		{
-			item.damage = 20;
-			item.melee = true;
-			item.width = 36;
-			item.height = 44;
-			item.useTime = 12;
-			item.useAnimation = 12;
-			item.reuseDelay = 20;
-			item.channel = true;
-			item.useStyle = ItemUseStyleID.HoldingOut;
-			item.knockBack = 6.5f;
-			item.value = Item.sellPrice(0, 1, 0, 0);
-			item.crit = 4;
-			item.rare = 2;
-			item.shootSpeed = 14f;
-			item.autoReuse = false;
-			item.shoot = ModContent.ProjectileType<GravediggerSwing>();
-			item.noUseGraphic = true;
-			item.noMelee = true;
-			item.autoReuse = false;
+			Item.damage = 20;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 36;
+			Item.height = 44;
+			Item.useTime = 12;
+			Item.useAnimation = 12;
+			Item.reuseDelay = 20;
+			Item.channel = true;
+			Item.useStyle = ItemUseStyleID.Shoot;
+			Item.knockBack = 6.5f;
+			Item.value = Item.sellPrice(0, 0, 20, 0);
+			Item.crit = 4;
+			Item.rare = ItemRarityID.Green;
+			Item.shootSpeed = 14f;
+			Item.autoReuse = false;
+			Item.shoot = ModContent.ProjectileType<GravediggerSwing>();
+			Item.noUseGraphic = true;
+			Item.noMelee = true;
+			Item.autoReuse = false;
 		}
 
-		public override bool CanUseItem(Player player) => player.GetModPlayer<GravediggerPlayer>().SwingDelay == 0;
+		public override bool CanUseItem(Player Player) => Player.GetModPlayer<GravediggerPlayer>().SwingDelay == 0;
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.IronBar, 8);
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	internal class GravediggerSwing : ModProjectile
@@ -65,27 +76,27 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grave digger");
-			Main.projFrames[projectile.type] = 5;
+			Main.projFrames[Projectile.type] = 5;
 		}
 
 		public override void SetDefaults()
 		{
-			projectile.friendly = true;
-			projectile.melee = true;
-			projectile.tileCollide = false;
-			projectile.Size = new Vector2(128, 138);
-			projectile.penetrate = -1;
-			projectile.usesLocalNPCImmunity = true;
-			projectile.localNPCHitCooldown = 16;
-			projectile.ownerHitCheck = true;
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(128, 138);
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 16;
+			Projectile.ownerHitCheck = true;
 		}
 
-		Player Player => Main.player[projectile.owner];
+		Player Player => Main.player[Projectile.owner];
 
 		private bool FirstTickOfSwing
 		{
-			get => projectile.ai[1] == 0;
-			set => projectile.ai[1] = value ? 0 : 1;
+			get => Projectile.ai[1] == 0;
+			set => Projectile.ai[1] = value ? 0 : 1;
 		}
 
 		private int SwingFrame
@@ -114,14 +125,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		}
 		public override void AI()
 		{
-			projectile.velocity = Vector2.Zero;
+			Projectile.velocity = Vector2.Zero;
 			if (FirstTickOfSwing)
 			{
 				directionTwo = Main.MouseWorld - Player.MountedCenter;
 				directionTwo.Normalize();
 				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
-				projectile.frame = 0;
-				projectile.frameCounter = 0;
+				Projectile.frame = 0;
+				Projectile.frameCounter = 0;
 				SlashWindow = 30;
 				FirstTickOfSwing = false;
 				if (Player.controlUp)
@@ -153,7 +164,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				DoSFX();
 			}
-			Player.heldProj = projectile.whoAmI;
+			Player.heldProj = Projectile.whoAmI;
 			Player.itemTime = 2;
 			Player.itemAnimation = 2;
 			Player.GetModPlayer<GravediggerPlayer>().SwingDelay = 2;
@@ -163,20 +174,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			else
 				frameOrigin = SwingOrigin;
 
-			projectile.position = Player.MountedCenter - frameOrigin;
+			Projectile.position = Player.MountedCenter - frameOrigin;
 			if (SwingFrame < 2)
 			{
 				if (!CheckFrameDeath())
 				{
-					if (SwingFrame == 0 && projectile.frame < 3) 
+					if (SwingFrame == 0 && Projectile.frame < 3) 
 						direction = direction.RotatedBy(Player.direction * 0.3f);
 					else if (SwingFrame == 1) 
 						direction = direction.RotatedBy(Player.direction * -0.45f);
 				}
 				Player.ChangeDir(Main.MouseWorld.X > Player.MountedCenter.X ? 1 : -1);
-				projectile.position += (directionTwo * 10);
+				Projectile.position += (directionTwo * 10);
 				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation()  - ((Player.direction < 0) ? 0 : MathHelper.Pi));
-				projectile.rotation = MathHelper.WrapAngle(Player.AngleFrom(projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
+				Projectile.rotation = MathHelper.WrapAngle(Player.AngleFrom(Projectile.position + frameOrigin) - ((Player.direction < 0) ? 0 : MathHelper.Pi));
 			}
 			else
 			{
@@ -188,29 +199,29 @@ namespace StarlightRiver.Content.Items.Gravedigger
 						direction = direction.RotatedBy(Player.direction * -0.2f);
 				}
 				Player.itemRotation = MathHelper.WrapAngle(direction.ToRotation() - ((Player.direction < 0) ? 0 : MathHelper.Pi));
-				projectile.rotation = 0;
+				Projectile.rotation = 0;
 			}
 
 			#region hardcoding
 			if (SwingFrame == 3 && Player.direction < 0)
-				projectile.position -= new Vector2(5, 20);
+				Projectile.position -= new Vector2(5, 20);
 
 			if (SwingFrame == 2)
-				projectile.position.X += 14 * Player.direction;
+				Projectile.position.X += 14 * Player.direction;
 
 			if (SwingFrame == 1 && Player.direction < 0)
-				projectile.position.Y += 12;
+				Projectile.position.Y += 12;
 			#endregion
 
 			if (!CheckFrameDeath())
-				projectile.frameCounter++;
+				Projectile.frameCounter++;
 
-			if (projectile.frameCounter > 4)
+			if (Projectile.frameCounter > 4)
 			{
-				projectile.frame++;
-				projectile.frameCounter = 0;
+				Projectile.frame++;
+				Projectile.frameCounter = 0;
 			}
-			if (CheckFrameDeath()) //TODO: Sync in multiplayer
+			if (CheckFrameDeath()) //TODO: Sync in multiPlayer
 			{
 				SlashWindow--;
 				if (Player == Main.LocalPlayer)
@@ -220,7 +231,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					else if (SlashWindow < 0)
 					{
 						Player.GetModPlayer<GravediggerPlayer>().Combo = 0;
-						projectile.active = false;
+						Projectile.active = false;
 					}
 				}
 			}
@@ -244,19 +255,19 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					deathFrame = COLUMNFOURFRAMES;
 					break;
 			}
-			return projectile.frame >= deathFrame;
+			return Projectile.frame >= deathFrame;
 		}
 
 		private void DoSFX()
         {
-			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 		}
 		public override Color? GetAlpha(Color lightColor) => Color.Lerp(lightColor, Color.White, 0.2f);
 
-		public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = Main.projectileTexture[projectile.type];
-			Rectangle frame = new Rectangle(frameX, projectile.frame * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
+			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+			Rectangle frame = new Rectangle(frameX, Projectile.frame * FRAMEHEIGHT, FRAMEWIDTH, FRAMEHEIGHT);
 			SpriteEffects effects;
 
 			Vector2 frameOrigin = SwingOrigin;
@@ -267,22 +278,22 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				effects = SpriteEffects.None;
 			else
 				effects = SpriteEffects.FlipHorizontally;
-			spriteBatch.Draw(tex, projectile.position - Main.screenPosition + frameOrigin, frame, projectile.GetAlpha(lightColor), projectile.rotation, frameOrigin, projectile.scale, effects, 0);
+			Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition + frameOrigin, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, frameOrigin, Projectile.scale, effects, 0);
 			return false;
 		}
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (projectile.frame > 0)
+			if (Projectile.frame > 0 || target.immune[Projectile.owner] > 0)
 				return false;
 			return base.CanHitNPC(target);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Player player = Main.player[projectile.owner];
-			player.GetModPlayer<StarlightPlayer>().Shake += 3;
-			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			Player Player = Main.player[Projectile.owner];
+			Core.Systems.CameraSystem.Shake += 3;
+			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 			if (target.knockBackResist != 0)
 			{
 				switch (SwingFrame)
@@ -329,7 +340,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY && target.life > damage)
             {
-				target.velocity.X = Main.player[projectile.owner].direction * 20;
+				target.velocity.X = Main.player[Projectile.owner].direction * 20;
 				knockback = 0;
 			}
 			CreateBlood(target, hitDirection, knockback);
@@ -339,6 +350,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         {
 			Vector2 direction = Vector2.Zero;
 			float variance = 0.5f;
+
 			switch (SwingFrame)
             {
 				case 0:
@@ -355,11 +367,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					direction = new Vector2(0, 1);
 					break;
 			}
-			for (int i = 0; i < 30; i++)
+
+			for (int i = 0; i < 15; i++)
 			{
-				Vector2 direction2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
-				direction2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
-				Dust.NewDustPerfect(target.Center, ModContent.DustType<GraveBlood>(), direction2);
+				Vector2 dustDirection = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
+				dustDirection *= Main.rand.NextFloat(0.5f, 4f + knockback);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.BloodMetaballDust>(), dustDirection, 0, default, 0.2f);
+
+				Vector2 dustDirection2 = direction.RotatedBy(Main.rand.NextFloat(0 - variance, variance));
+				dustDirection2 *= Main.rand.NextFloat(0.5f, 4f + knockback);
+				Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.BloodMetaballDustLight>(), dustDirection2, 0, default, 0.2f);
 			}
 		}
     }
@@ -374,27 +391,27 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			projectile.friendly = true;
-			projectile.melee = true;
-			projectile.tileCollide = false;
-			projectile.Size = new Vector2(128, 128);
-			projectile.penetrate = -1;
-			projectile.timeLeft = 200;
-			projectile.rotation = Main.rand.NextFloat(6.28f);
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(128, 128);
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 200;
+			Projectile.rotation = Main.rand.NextFloat(6.28f);
 		}
 		float counter = 0;
         public override void AI()
         {
-			if (projectile.timeLeft < 195)
-				projectile.friendly = false;
+			if (Projectile.timeLeft < 195)
+				Projectile.friendly = false;
 			counter += (float)(Math.PI / 2f) / 200;
         }
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor) => false;
+        public override bool PreDraw(ref Color lightColor) => false;
         public void DrawOverTiles(SpriteBatch spriteBatch)
         {
 			Color color = Color.White;
 			color *= (float)Math.Cos(counter);
-			spriteBatch.Draw(Main.projectileTexture[projectile.type], projectile.Center - Main.screenPosition, null, color, projectile.rotation, Main.projectileTexture[projectile.type].Size() / 2, projectile.scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, TextureAssets.Projectile[Projectile.type].Value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
         }
 	}
 	internal class GravediggerPlayer : ModPlayer
@@ -414,16 +431,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	class ShovelSlowFall : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public ShovelSlowFall() : base("Slow fall", "Falling Speed Reduced", false) { }
 
-		public override void Update(NPC npc, ref int buffIndex)
+		public override void Update(NPC NPC, ref int buffIndex)
 		{
-			if (npc.velocity.Y > 0.5f && !npc.HasBuff(ModContent.BuffType<ShovelQuickFall>()))
-				npc.velocity.Y -= 0.1f;
+			if (NPC.velocity.Y > 0.5f && !NPC.HasBuff(ModContent.BuffType<ShovelQuickFall>()))
+				NPC.velocity.Y -= 0.1f;
 		}
 	}
 	class ShovelQuickFall : SmartBuff
 	{
+		public override string Texture => AssetDirectory.Debug;
+
 		public ShovelQuickFall() : base("Quick fall", "You slammin", false) { }
 
 		public override void Update(NPC npc, ref int buffIndex)
@@ -433,16 +454,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (npc.collideY)
             {
 				npc.velocity.X = 0;
-				Player player = Main.player[npc.target];
+				Player Player = Main.player[npc.target];
 				npc.DelBuff(buffIndex--);
-				player.GetModPlayer<StarlightPlayer>().Shake += 10;
+				Core.Systems.CameraSystem.Shake += 10;
 				for (int k = 0; k <= 50; k++)
 				{
 					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));
 				}
-				Projectile.NewProjectile(npc.Center + new Vector2(0, npc.height / 2), Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.meleeDamage), 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
-				Main.PlaySound(SoundID.Item70, npc.Center);
-				Main.PlaySound(SoundID.NPCHit42, npc.Center);
+
+				var pos = npc.Center + new Vector2(0, npc.height / 2);
+				var damage = (int)(30 * npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.GetDamage(DamageClass.Melee).Multiplicative);
+
+				Projectile.NewProjectile(new EntitySource_Buff(npc, Type, buffIndex), pos, Vector2.Zero, ModContent.ProjectileType<GravediggerSlam>(), damage, 0, npc.GetGlobalNPC<GravediggerNPC>().SlamPlayer.whoAmI);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70, npc.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, npc.Center);
 			}
 		}
 	}

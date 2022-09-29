@@ -20,19 +20,19 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         private List<Vector2> cache;
         private Trail trail;
 
-        public float TimeFade => 1 - projectile.timeLeft / 20f;
-        public float Radius => Helper.BezierEase((20 - projectile.timeLeft) / 20f) * 100;
+        public float TimeFade => 1 - Projectile.timeLeft / 20f;
+        public float Radius => Helper.BezierEase((20 - Projectile.timeLeft) / 20f) * Projectile.ai[0];
 
         public override string Texture => AssetDirectory.Invisible;
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 1;
-            projectile.height = 1;
-            projectile.tileCollide = false;
-            projectile.timeLeft = 20;
-            projectile.penetrate = -1;
+            Projectile.hostile = true;
+            Projectile.width = 1;
+            Projectile.height = 1;
+            Projectile.tileCollide = false;
+            Projectile.timeLeft = 20;
+            Projectile.penetrate = -1;
         }
 
         public override void AI()
@@ -48,27 +48,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
                 float rot = Main.rand.NextFloat(0, 6.28f);
 
                 if (Main.netMode != NetmodeID.Server)
-                    Dust.NewDustPerfect(projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
+                    Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * (Radius + 15), ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot + Main.rand.NextFloat(1.1f, 1.3f)) * 2, 0, new Color(255, 120 + (int)(100 * (float)Math.Sin(TimeFade * 3.14f)), 65), 0.4f);
             }
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            return Helper.CheckCircularCollision(projectile.Center, (int)Radius + 20, targetHitbox);
+            return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
         }
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            target.velocity += Vector2.Normalize(target.Center - projectile.Center) * 8;
+            target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 8;
             target.AddBuff(BuffID.OnFire, 180);
 
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 for (int k = 0; k < 4; k++)
                 {
-                    Vector2 vel = Vector2.Normalize(target.Center - projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
+                    Vector2 vel = Vector2.Normalize(target.Center - Projectile.Center).RotatedByRandom(0.5f) * Main.rand.Next(5);
 
-                    Projectile.NewProjectile(target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, vel, ModContent.ProjectileType<NeedlerEmber>(), 0, 0);
                 }
             }
         }
@@ -81,13 +81,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
                 for (int i = 0; i < 40; i++)
                 {
-                    cache.Add(projectile.Center);
+                    cache.Add(Projectile.Center);
                 }
             }
 
             for (int k = 0; k < 40; k++)
             {
-                cache[k] = (projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius + 20));
+                cache[k] = (Projectile.Center + Vector2.One.RotatedBy(k / 19f * 6.28f) * (Radius + 20));
             }
 
             while (cache.Count > 40)
@@ -115,14 +115,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
             Matrix view = Main.GameViewMatrix.ZoomMatrix;
             Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-            effect.Parameters["time"].SetValue(projectile.timeLeft * 0.01f);
+            effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.01f);
             effect.Parameters["repeats"].SetValue(6);
             effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/EnergyTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
 
-            effect.Parameters["sampleTexture"].SetValue(ModContent.GetTexture("StarlightRiver/Assets/FireTrail"));
+            effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
             trail?.Render(effect);
         }

@@ -9,27 +9,25 @@ namespace StarlightRiver.NPCs.TownUpgrade
 {
 	public abstract class TownUpgrade
     {
-        public readonly string _buttonName;
-        public readonly string _npcName;
+        public readonly string _buttonName; //TODO: Why did I name these like privates?
+        public readonly string _NPCName;
         public readonly string _questName;
         public readonly string _questTip;
         public readonly string _title;
         public readonly Texture2D icon;
 
-        protected TownUpgrade(string npcName, string questName, string questTip, string buttonName, string title)
+        protected TownUpgrade(string NPCName, string questName, string questTip, string buttonName, string title)
         {
             _buttonName = buttonName;
-            _npcName = npcName;
+            _NPCName = NPCName;
             _questName = questName;
             _questTip = questTip;
             _title = title;
 
-            icon = TextureExists("StarlightRiver/Assets/NPCs/TownUpgrade/" + npcName + "Icon") ?
-                GetTexture("StarlightRiver/Assets/NPCs/TownUpgrade/" + npcName + "Icon") :
-                Terraria.Main.sunTexture;
+            icon = Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value;
         }
 
-        public bool Unlocked => StarlightWorld.TownUpgrades.TryGetValue(_npcName, out bool unlocked) && unlocked;
+        public bool Unlocked => StarlightWorld.TownUpgrades.TryGetValue(_NPCName, out bool unlocked) && unlocked;
 
         public virtual List<Loot> Requirements => new List<Loot>() { new Loot(ItemID.DirtBlock, 1) };
 

@@ -17,71 +17,82 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SetDefaults()
         {
-            projectile.hostile = true;
-            projectile.width = 22;
-            projectile.height = 22;
-            projectile.penetrate = 1;
-            projectile.timeLeft = 180;
-            projectile.tileCollide = true;
-            projectile.ignoreWater = true;
-            projectile.damage = 5;
+            Projectile.hostile = true;
+            Projectile.width = 22;
+            Projectile.height = 22;
+            Projectile.penetrate = 1;
+            Projectile.timeLeft = 180;
+            Projectile.tileCollide = true;
+            Projectile.ignoreWater = true;
+            Projectile.damage = 5;
         }
 
         public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Spike");
 
         public override void AI()
         {
-            if (projectile.timeLeft == 180)
+            if (Projectile.timeLeft == 180)
             {
-                savedVelocity = projectile.velocity;
-                projectile.velocity *= 0;
+                savedVelocity = Projectile.velocity;
+                Projectile.velocity *= 0;
+
+                if (Main.masterMode)
+                    savedVelocity *= 1.2f;
             }
 
-            if (projectile.timeLeft > 150)
-                projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (projectile.timeLeft - 150)) / 30f);
+            if (Projectile.timeLeft > 150)
+                Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, savedVelocity, (30 - (Projectile.timeLeft - 150)) / 30f);
 
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
             for (int k = 0; k <= 1; k++)
             {
-                Dust d = Dust.NewDustPerfect(projectile.Center + projectile.velocity, 264, (projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? 0.4f : -0.4f), 0, color, 1f);
+                Dust d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, 264, (Projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? 0.4f : -0.4f), 0, color, 1f);
                 d.noGravity = true;
             }
-            projectile.rotation = projectile.velocity.ToRotation() + 3.14f / 4;
+            Projectile.rotation = Projectile.velocity.ToRotation() + 3.14f / 4;
         }
 
         public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit) => target.AddBuff(BuffID.Bleeding, 300);
 
         public override void Kill(int timeLeft)
         {
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - projectile.timeLeft), 120));
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
             for (int k = 0; k <= 10; k++)
             {
-                Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), projectile.velocity.X * 0.5f, projectile.velocity.Y * 0.5f);
-                Dust.NewDust(projectile.position, 22, 22, DustType<Dusts.Glow>(), 0, 0, 0, color, 0.3f);
+                Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.GlassGravity>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+                Dust.NewDust(Projectile.position, 22, 22, DustType<Dusts.Glow>(), 0, 0, 0, color, 0.3f);
             }
-            Main.PlaySound(SoundID.Shatter, projectile.Center);
+            
+            if(Main.masterMode)
+			{
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 50);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+            }
+            else
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - projectile.timeLeft), 120));
+            var spriteBatch = Main.spriteBatch;
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120));
 
-            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, projectile.rotation, Vector2.One * 11, projectile.scale, 0, 0);
-            spriteBatch.Draw(GetTexture(Texture), projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, projectile.rotation, Vector2.One * 11, projectile.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 22, 22), lightColor, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 22, 22, 22), color, Projectile.rotation, Vector2.One * 11, Projectile.scale, 0, 0);
 
             return false;
         }
 
         public void DrawAdditive(SpriteBatch spriteBatch)
         {
-            Texture2D tex = GetTexture(Texture + "Glow");
-            float alpha = projectile.timeLeft > 160 ? 1 - (projectile.timeLeft - 160) / 20f : 1;
-            Color color = VitricSummonOrb.MoltenGlow(MathHelper.Min((200 - projectile.timeLeft), 120)) * alpha;
+            Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
+            float alpha = Projectile.timeLeft > 160 ? 1 - (Projectile.timeLeft - 160) / 20f : 1;
+            Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((200 - Projectile.timeLeft), 120)) * alpha;
 
-            spriteBatch.Draw(tex, projectile.Center + Vector2.Normalize(projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
-                color * (projectile.timeLeft / 140f), projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
+            spriteBatch.Draw(tex, Projectile.Center + Vector2.Normalize(Projectile.velocity) * -40 - Main.screenPosition, tex.Frame(),
+                color * (Projectile.timeLeft / 140f), Projectile.rotation + 3.14f, tex.Size() / 2, 1.8f, 0, 0);
         }
     }
 }

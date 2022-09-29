@@ -13,12 +13,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.Blue;
+            Item.rare = ItemRarityID.Blue;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.GetModPlayer<ShieldPlayer>().MaxShield += 20;
+            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
         }
     }
 }

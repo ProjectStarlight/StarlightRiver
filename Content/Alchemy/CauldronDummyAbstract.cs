@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Alchemy
             {
                 foreach (Item eachWorldItem in Main.item)
                 {
-                    if (eachWorldItem.active && projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
+                    if (eachWorldItem.active && Projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
                     {
                         if (AttemptAddItem(eachWorldItem.Clone()))
                         {
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Alchemy
             }
 
             wrapper.bubbleColor = new Color(127, 127, 127);
-            wrapper.cauldronRect = projectile.Hitbox;
+            wrapper.cauldronRect = Projectile.Hitbox;
 
             bool skipIngredientLogic = false;
             if (currentRecipe != null)
@@ -117,24 +117,25 @@ namespace StarlightRiver.Content.Alchemy
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
             if (mostRecentIngredient != null && wrapper.bubbleOpacity > 0f)
             {
-                Texture2D bubbleSheet = GetTexture(AssetDirectory.Alchemy + "BubbleSheet");
-                Texture2D bubbleGlow = GetTexture(AssetDirectory.Alchemy + "BubbleSheetGlow");
+                Texture2D bubbleSheet = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheet").Value;
+                Texture2D bubbleGlow = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheetGlow").Value;
                 int frameHeight = bubbleSheet.Height / bubbleAnimationFrames;
 
                 if (wrapper.bubbleOpacity > 1f)
                     wrapper.bubbleOpacity = 1f;
 
                 wrapper.bubbleColor.A = (byte)(wrapper.bubbleColor.A * wrapper.bubbleOpacity);
-                spriteBatch.Draw(bubbleSheet, projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
+                SpriteBatch spriteBatch = Main.spriteBatch;
+                spriteBatch.Draw(bubbleSheet, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                spriteBatch.Draw(bubbleGlow, projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
+                spriteBatch.Draw(bubbleGlow, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
 
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -144,7 +145,7 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// empties out cauldron and dumps items into the world and resets any data like possible recipes
+        /// empties out cauldron and dumps Items into the world and resets any data like possible recipes
         /// </summary>
         public void dumpIngredients()
         {
@@ -170,14 +171,14 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// attempts to insert a specific item into the cauldron. if cannot be added returns false and performs no additional logic.
+        /// attempts to insert a specific Item into the cauldron. if cannot be added returns false and performs no additional logic.
         /// if can be added will create and add ingredient to the current ingredients, and update possibleRecipes, returning true
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="Item"></param>
         /// <returns></returns>
-        public bool AttemptAddItem(Item item)
+        public bool AttemptAddItem(Item Item)
         {
-            List<AlchemyRecipe> newPossibilities =  AlchemyRecipeSystem.getRemainingPossiblities(item, possibleRecipes);
+            List<AlchemyRecipe> newPossibilities =  AlchemyRecipeSystem.getRemainingPossiblities(Item, possibleRecipes);
             if (newPossibilities != null && newPossibilities.Count >= 1)
             {
                 //first attempts to stack into an existing ingredient stack
@@ -185,9 +186,9 @@ namespace StarlightRiver.Content.Alchemy
                 for (int i = 0; i < currentIngredients.Count; i++)
                 {
                     AlchemyIngredient eachIngredient = currentIngredients[i];
-                    if (eachIngredient.getItemId() == item.type)
+                    if (eachIngredient.getItemId() == Item.type)
                     {
-                        if (eachIngredient.addToStack(item))
+                        if (eachIngredient.addToStack(Item))
                         {
                             mostRecentIngredient = eachIngredient;
 
@@ -207,7 +208,7 @@ namespace StarlightRiver.Content.Alchemy
 
                 if (!hasStack)
                 {
-                    AlchemyIngredient newIngredient = AlchemyRecipeSystem.instantiateIngredient(item);
+                    AlchemyIngredient newIngredient = AlchemyRecipeSystem.instantiateIngredient(Item);
 
                     mostRecentIngredient = newIngredient;
 
@@ -217,7 +218,7 @@ namespace StarlightRiver.Content.Alchemy
                 possibleRecipes = newPossibilities;
 
                 //TODO: mp logic here ?
-                //if it reaches here, means that items were successfully added to the cauldron, so we check for full validation on the recipes to see if theres only 1 and its ready
+                //if it reaches here, means that Items were successfully added to the cauldron, so we check for full validation on the recipes to see if theres only 1 and its ready
                 if (possibleRecipes.Count == 1)
                 {
                     currentRecipe = possibleRecipes[0];

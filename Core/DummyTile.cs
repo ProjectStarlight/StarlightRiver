@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 
             if (dummies.TryGetValue(key, out Projectile dummy))
             {
-                if (dummy.modProjectile is T && dummy.active)
+                if (dummy.ModProjectile is T && dummy.active)
                     return dummy;
             }
 
@@ -65,7 +65,7 @@ namespace StarlightRiver.Core
             for (int k = 0; k < Main.maxProjectiles; k++)
             {
                 var proj = Main.projectile[k];
-                if (proj.active && proj.modProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
+                if (proj.active && proj.ModProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
                     return true;
             }
 
@@ -79,7 +79,7 @@ namespace StarlightRiver.Core
         public virtual bool SpawnConditions(int i, int j)
         {
             Tile tile = Main.tile[i, j];
-            return tile.frameX == 0 && tile.frameY == 0;
+            return tile.TileFrameX == 0 && tile.TileFrameY == 0;
         }
 
         public sealed override void NearbyEffects(int i, int j, bool closer)
@@ -102,7 +102,7 @@ namespace StarlightRiver.Core
                     p.SetDefaults(type);
 
                     var spawnPos = new Vector2(i, j) * 16 + p.Size / 2;
-                    int n = Projectile.NewProjectile(spawnPos, Vector2.Zero, type, 1, 0);
+                    int n = Projectile.NewProjectile(new EntitySource_WorldEvent(), spawnPos, Vector2.Zero, type, 1, 0);
 
                     Point16 key = new Point16(i, j);
                     dummies[key] = Main.projectile[n];

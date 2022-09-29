@@ -25,12 +25,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void DrawSpecial(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
 		{
-			if (inv[slot].modItem is InworldItem && !(inv[slot].modItem as InworldItem).VisibleInUI)
+			if (inv[slot].ModItem is InworldItem && !(inv[slot].ModItem as InworldItem).VisibleInUI)
 				return;
 
-			if (inv[slot].modItem is InworldItem && context == 13)
+			if (inv[slot].ModItem is InworldItem && context == 13)
 			{
-				Texture2D back = ModContent.GetTexture("StarlightRiver/Assets/GUI/TempBack");
+				Texture2D back = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/TempBack").Value;
 				var source = new Rectangle(0, 52 * (int)(Main.GameUpdateCount / 4 % 4), 52, 52);
 
 				sb.Draw(back, position, source, Color.White, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private void AllowBigHotkeying(ILContext il)
 		{
 			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchStloc(26), n => n.MatchLdcI4(0), n => n.MatchStloc(27), n => n.MatchLdsfld<Main>("drawingPlayerChat"));
+			c.TryGotoNext(n => n.MatchStloc(29), n => n.MatchLdcI4(0), n => n.MatchStloc(30), n => n.MatchLdsfld<Main>("drawingPlayerChat"));
 			c.Index += 9;
 
 			ILLabel label = il.DefineLabel(c.Next);
@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.CustomHooks
 			c.Emit(OpCodes.Brtrue, label);
 		}
 
-		private bool ShouldAllowHotkey() => Main.mouseItem.modItem is InworldItem;
+		private bool ShouldAllowHotkey() => Main.mouseItem.ModItem is InworldItem;
 
 		private void AllowBigScrolling(ILContext il)
 		{
@@ -68,13 +68,13 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void LockMouseToSpecialItem(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
-			if (!(Main.mouseItem.modItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem))
 				orig(inv, context, slot);
 		}
 
 		private void DontDropCoolStuff(On.Terraria.Player.orig_dropItemCheck orig, Terraria.Player self)
 		{
-			if (!(Main.mouseItem.modItem is Core.InworldItem))
+			if (!(Main.mouseItem.ModItem is Core.InworldItem))
 				orig(self);
 		}
 	}

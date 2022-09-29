@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -14,9 +15,9 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Abilities
 {
-	public class AbilityHandler : ModPlayer, ILoadable
+	public class AbilityHandler : ModPlayer, IOrderedLoadable
     {
-        // The player's active ability.
+        // The Player's active ability.
         public Ability ActiveAbility
         {
             get => activeAbility;
@@ -30,7 +31,7 @@ namespace StarlightRiver.Content.Abilities
             }
         }
 
-        // The player's stamina stats.
+        // The Player's stamina stats.
         public float StaminaMax => StaminaMaxDefault + StaminaMaxBonus;
         public float StaminaMaxDefault => 1 + Shards.Count / shardsPerVessel + unlockedAbilities.Count;
         public float StaminaMaxBonus
@@ -76,19 +77,20 @@ namespace StarlightRiver.Content.Abilities
 
         //for some reason without specifically setting these values to zero with cloneNewInstances => false and contructor,
         ////on a server if someone unlocks or modifies these it will impact newly created characters from then on for that instance
-        public override bool CloneNewInstances => false;
+        protected override bool CloneNewInstances => false;
+
         public AbilityHandler()
         {
             infusions = new InfusionItem[Infusion.InfusionSlots];
             unlockedAbilities = new Dictionary<Type, Ability>();
         }
 
-        public void Load()
+		public override void Load()
 		{
             StarlightPlayer.PostDrawEvent += PostDrawAbility;
 		}
 
-        public void Unload() { }
+        public override void Unload() { }
 
         private void Unlock(Type t, Ability ability)
         {
@@ -105,7 +107,7 @@ namespace StarlightRiver.Content.Abilities
         public void Lock<T>() where T : Ability => unlockedAbilities.Remove(typeof(T));
 
         /// <summary>
-        /// Unlocks the ability type for the player.
+        /// Unlocks the ability type for the Player.
         /// </summary>
         public void Unlock<T>() where T : Ability, new()
         {
@@ -115,7 +117,7 @@ namespace StarlightRiver.Content.Abilities
         }
 
         /// <summary>
-        /// Tries to get an unlocked ability from the player.
+        /// Tries to get an unlocked ability from the Player.
         /// </summary>
         /// <typeparam name="T">The type of ability.</typeparam>
         /// <param name="value">The ability.</param>
@@ -150,26 +152,26 @@ namespace StarlightRiver.Content.Abilities
         /// <summary>
         /// Tries to add the matching infusion type.
         /// </summary>
-        /// <param name="item">The item to add.</param>
+        /// <param name="Item">The Item to add.</param>
         /// <returns>If the add was successful.</returns>
-        public bool SetInfusion(InfusionItem item, int slot)
+        public bool SetInfusion(InfusionItem Item, int slot)
         {
             // Safety check
-            if (!CanSetInfusion(item))
+            if (!CanSetInfusion(Item))
                 return false;
 
             // Null check
-            if (item == null)
+            if (Item == null)
             {
                 infusions[slot] = null;
                 return true;
             }
 
             // General use case
-            var newItem = item.item.Clone();
-            newItem.SetDefaults(item.item.type);
-            newItem.owner = player.whoAmI;
-            infusions[slot] = newItem.modItem as InfusionItem;
+            var newItem = Item.Item.Clone();
+            newItem.SetDefaults(Item.Item.type);
+            newItem.playerIndexTheItemIsReservedFor = Player.whoAmI;
+            infusions[slot] = newItem.ModItem as InfusionItem;
 
             return true;
         }
@@ -177,14 +179,14 @@ namespace StarlightRiver.Content.Abilities
         /// <summary>
         /// Checks if the infusion can be added.
         /// </summary>
-        /// <param name="item">The item.</param>
-        /// <returns>Whether the item can be added.</returns>
-        public bool CanSetInfusion(InfusionItem item)
+        /// <param name="Item">The Item.</param>
+        /// <returns>Whether the Item can be added.</returns>
+        public bool CanSetInfusion(InfusionItem Item)
         {
-            if (item == null)
+            if (Item == null)
                 return true;
 
-            if (!item.Equippable)
+            if (!Item.Equippable)
                 return false;
 
             for (int i = 0; i < infusions.Length; i++)
@@ -192,8 +194,8 @@ namespace StarlightRiver.Content.Abilities
                 InfusionItem infusion = infusions[i];
                 if (infusion is null) continue;
 
-                if (item.AbilityType != null && item.AbilityType == infusion.AbilityType ||
-                    item.GetType() == infusion.GetType())
+                if (Item.AbilityType != null && Item.AbilityType == infusion.AbilityType ||
+                    Item.GetType() == infusion.GetType())
                     return false;
             }
             return true;
@@ -203,23 +205,15 @@ namespace StarlightRiver.Content.Abilities
 
         public void SetStaminaRegenCD(int cooldownTicks) => staminaRegenCD = Math.Max(staminaRegenCD, cooldownTicks);
 
-		public override void SendClientChanges(ModPlayer clientPlayer) //TODO: Implement ablity packet
-		{
-			base.SendClientChanges(clientPlayer);
-		}
-
-		public override TagCompound Save()
+        public override void SaveData(TagCompound tag)
         {
-            return new TagCompound
-            {
-                [nameof(Shards)] = Shards.ToList(),
-                [nameof(unlockedAbilities)] = unlockedAbilities.Keys.Select(t => t.FullName).ToList(),
-                [nameof(infusions)] = infusions.Where(t => t != null).Select(t => t.item).ToList(),
-                [nameof(InfusionLimit)] = InfusionLimit
-            };
+            tag[nameof(Shards)] = Shards.ToList();
+            tag[nameof(unlockedAbilities)] = unlockedAbilities.Keys.Select(t => t.FullName).ToList();
+            tag[nameof(infusions)] = infusions.Where(t => t != null).Select(t => t.Item).ToList();
+            tag[nameof(InfusionLimit)] = InfusionLimit;
         }
 
-        public override void Load(TagCompound tag)
+        public override void LoadData(TagCompound tag)
         {
             Shards = new ShardSet();
             unlockedAbilities = new Dictionary<Type, Ability>();
@@ -229,14 +223,14 @@ namespace StarlightRiver.Content.Abilities
             {
                 // Load shards
                 var shardsTemp = tag.GetList<int>(nameof(Shards));
-                foreach (var item in shardsTemp)
-                    Shards.Add(item);
+                foreach (var Item in shardsTemp)
+                    Shards.Add(Item);
 
                 // Load unlocked abilities and init them
                 var abilitiesTemp = tag.GetList<string>(nameof(unlockedAbilities));
-                foreach (var item in abilitiesTemp)
+                foreach (var Item in abilitiesTemp)
                 {
-                    var t = typeof(Ability).Assembly.GetType(item);
+                    var t = typeof(Ability).Assembly.GetType(Item);
                     if (t != null)
                         Unlock(t, Activator.CreateInstance(t) as Ability);
                 }
@@ -244,20 +238,20 @@ namespace StarlightRiver.Content.Abilities
                 // Load infusions
                 var infusionsTemp = tag.GetList<Item>(nameof(infusions));
                 for (int i = 0; i < infusionsTemp.Count; i++)
-                    infusions[i] = infusionsTemp[i].modItem as InfusionItem;
+                    infusions[i] = infusionsTemp[i].ModItem as InfusionItem;
 
                 // Load max infusions
                 InfusionLimit = tag.GetInt(nameof(InfusionLimit));
             }
             catch (Exception e)
             {
-                StarlightRiver.Instance.Logger.Debug("handled error loading player: " + e);
+                StarlightRiver.Instance.Logger.Debug("handled error loading Player: " + e);
             }
         }
 
         public override void ResetEffects()
         {
-            //Resets the player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
+            //Resets the Player's stamina to prevent issues with gaining infinite stamina or stamina regeneration.
             staminaMaxBonus = 0;
             StaminaRegenRate = 1 / 60f * 2; // stamina per tick = 1 / 60f * (stamina per second)
             StaminaCostMultiplier = 1;
@@ -265,9 +259,9 @@ namespace StarlightRiver.Content.Abilities
 
             if (ActiveAbility != null)
             {
-                // The player cant use items while casting an ability.
-                player.noItems = true;
-                player.noBuilding = true;
+                // The Player cant use Items while casting an ability.               
+                Player.noItems = true;
+                Player.noBuilding = true;
             }
         }
 
@@ -276,7 +270,7 @@ namespace StarlightRiver.Content.Abilities
             ActiveAbility = null;
         }
 
-        public override void OnRespawn(Player player)
+        public override void OnRespawn(Player Player)
         {
             Stamina = StaminaMax;
         }
@@ -302,22 +296,22 @@ namespace StarlightRiver.Content.Abilities
             if (ActiveAbility != null)
             {
                 // Jank
-                player.velocity.Y += 0.01f;
+                Player.velocity.Y += 0.01f;
 
                 // Disable wings and rockets temporarily
-                player.canRocket = false;
-                player.rocketBoots = -1;
-                player.wings = -1;
+                Player.canRocket = false;
+                Player.rocketBoots = -1;
+                Player.wings = -1;
 
                 SetStaminaRegenCD(200);
             }
             else
                 UpdateStaminaRegen();
 
-            // To ensure fusions always have their owner set to a valid player.
+            // To ensure fusions always have their owner set to a valid Player.
             for (int i = 0; i < infusions.Length; i++)
                 if (infusions[i] != null)
-                    infusions[i].item.owner = player.whoAmI;
+                    infusions[i].Item.playerIndexTheItemIsReservedFor = Player.whoAmI;
         }
       
         private void UpdateStaminaRegen()
@@ -325,7 +319,7 @@ namespace StarlightRiver.Content.Abilities
             const int cooldownSmoothing = 10;
 
             // Faster regen while not moving much
-            if (player.velocity.LengthSquared() > 1)
+            if (Player.velocity.LengthSquared() > 1)
                 SetStaminaRegenCD(cooldownSmoothing);
 
             // Decrement cooldown
@@ -371,7 +365,7 @@ namespace StarlightRiver.Content.Abilities
                 ActiveAbility.UpdateActive();
                 ActiveAbility.UpdateActiveEffects();
 
-                if (Main.netMode != NetmodeID.Server && player == Main.LocalPlayer)                 
+                if (Main.netMode != NetmodeID.Server && Player == Main.LocalPlayer)                 
                     NetMessage.SendData(MessageID.PlayerControls, -1, -1, null, Main.LocalPlayer.whoAmI);              
             }
         }
@@ -404,22 +398,22 @@ namespace StarlightRiver.Content.Abilities
             }
         }
 
-		public override void OnEnterWorld(Player player)
+		public override void OnEnterWorld(Player Player)
 		{
-            AbilityProgress packet = new AbilityProgress(player.whoAmI, player.GetHandler());
+            AbilityProgress packet = new AbilityProgress(Player.whoAmI, Player.GetHandler());
             packet.Send();
         }
 
-		public override void ModifyDrawLayers(List<PlayerLayer> layers)
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
         {
-            ActiveAbility?.ModifyDrawLayers(layers);
+            ActiveAbility?.ModifyDrawInfo(ref drawInfo);
         }
 
-        public void PostDrawAbility(Player player, SpriteBatch spriteBatch)
+        public void PostDrawAbility(Player Player, SpriteBatch spriteBatch)
 		{
             var called = new HashSet<Ability>();
 
-            foreach (var infusion in player.GetHandler().infusions)
+            foreach (var infusion in Player.GetHandler().infusions)
             {
                 if (infusion == null) continue;
                 infusion.UpdateFixed();
@@ -428,7 +422,7 @@ namespace StarlightRiver.Content.Abilities
                     called.Add(infusion.Ability);
             }
 
-            called.SymmetricExceptWith(player.GetHandler().unlockedAbilities.Values);
+            called.SymmetricExceptWith(Player.GetHandler().unlockedAbilities.Values);
 
             foreach (var ability in called)
                 ability.DrawActiveEffects(spriteBatch);

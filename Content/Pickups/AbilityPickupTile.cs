@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Pickups
@@ -10,15 +11,11 @@ namespace StarlightRiver.Content.Pickups
         public virtual int PickupType => 0;
 
         private int spawnAttemptTimer = 0;
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Invisible;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Invisible;
 
-        public override void SetDefaults()
+        public override void PostSetDefaults()
         {
-            QuickBlock.QuickSetFurniture(this, 1, 1, 0, 0, false, Color.White);
+            QuickBlock.QuickSetFurniture(this, 1, 1, 0, SoundID.Dig, false, Color.White);
             //minPick = int.MaxValue;
         }
 
@@ -33,8 +30,8 @@ namespace StarlightRiver.Content.Pickups
 
             for (int k = 0; k < Main.maxNPCs; k++)
             {
-                NPC npc = Main.npc[k];
-                if (npc.active && npc.type == PickupType && Vector2.DistanceSquared(npc.position, new Vector2(i, j) * 16) <= 128)
+                NPC NPC = Main.npc[k];
+                if (NPC.active && NPC.type == PickupType && Vector2.DistanceSquared(NPC.position, new Vector2(i, j) * 16) <= 128)
                     return;
             }
 

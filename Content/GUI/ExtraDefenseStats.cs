@@ -4,6 +4,7 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Content.GUI
 		public int Timer = 0;
 		public Vector2 basePos;
 
-		public ExtraDefenseInfoPanel DoTResistPanel = new ExtraDefenseInfoPanel(ModContent.GetTexture(AssetDirectory.GUI + "DoTResistBG"), 1);
+		public ExtraDefenseInfoPanel DoTResistPanel = new ExtraDefenseInfoPanel(ModContent.Request<Texture2D>(AssetDirectory.GUI + "DoTResistBG").Value, 1);
 
 		public override bool Visible => Main.playerInventory;
 
@@ -31,7 +32,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var player = Main.LocalPlayer;
+			var Player = Main.LocalPlayer;
 
 			int mapHeight = 0;
 			if (Main.mapEnabled)
@@ -43,9 +44,9 @@ namespace StarlightRiver.Content.GUI
 					mapHeight = Main.screenHeight - Main.instance.RecommendedEquipmentAreaPushUp;
 			}
 
-			int slotsOff = 10 + player.extraAccessorySlots;
+			int slotsOff = 10 + Player.extraAccessorySlots;
 
-			if (slotsOff == 10 && (player.armor[8].type > 0 || player.armor[18].type > 0 || player.dye[8].type > 0))
+			if (slotsOff == 10 && (Player.armor[8].type > 0 || Player.armor[18].type > 0 || Player.dye[8].type > 0))
 				slotsOff = 9;
 
 			if (Main.screenHeight < 900 && slotsOff == 10)
@@ -54,8 +55,8 @@ namespace StarlightRiver.Content.GUI
 			int xOff = Main.screenWidth - 92;
 			int yOff = (int)((174 + mapHeight) + (slotsOff * 56) * Main.inventoryScale);
 
-			Vector2 vector = new Vector2(xOff - 118, yOff + Main.inventoryBackTexture.Height * 0.5f);
-			var defenseRect = Utils.CenteredRectangle(vector, Main.extraTexture[58].Size());
+			Vector2 vector = new Vector2(xOff - 118, yOff + TextureAssets.InventoryBack.Value.Height * 0.5f);
+			var defenseRect = Utils.CenteredRectangle(vector, TextureAssets.Extra[58].Size());
 			basePos = defenseRect.Center.ToVector2();
 
 			if (defenseRect.Contains(new Point(Main.mouseX, Main.mouseY)) && !PlayerInput.IgnoreMouseInterface) //zoinked form vanilla DrawInventory() at Main.cs
@@ -63,11 +64,11 @@ namespace StarlightRiver.Content.GUI
 				if(Timer < 25)
 					Timer++;
 
-				var ResistPlayer = player.GetModPlayer<DoTResistancePlayer>();
+				var ResistPlayer = Player.GetModPlayer<DoTResistancePlayer>();
 
 				int resistPercent = (int)Math.Round(ResistPlayer.DoTResist * 100, MidpointRounding.AwayFromZero);
 				DoTResistPanel.value = $"{resistPercent}%";
-				Main.hoverItemName += $"\n{resistPercent}% DoT Resistance";
+				Main.hoverItemName += $"\n{resistPercent}% Inoculation";
 			}
 			else if (Timer > 0)
 				Timer--;
@@ -83,7 +84,7 @@ namespace StarlightRiver.Content.GUI
 		public string value = "";
 
 		public ExtraDefenseStats ParentState => Parent as ExtraDefenseStats;
-		private Vector2 endPos => ParentState.basePos + new Vector2(offsetPosition * -Main.extraTexture[58].Width - offsetPosition * 6, 0);
+		private Vector2 endPos => ParentState.basePos + new Vector2(offsetPosition * -TextureAssets.Extra[58].Width() - offsetPosition * 6, 0);
 
 		public ExtraDefenseInfoPanel(Texture2D texture, int offsetPosition)
 		{

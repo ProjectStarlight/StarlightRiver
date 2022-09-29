@@ -4,6 +4,7 @@ using StarlightRiver.Content.NPCs.BaseTypes;
 using StarlightRiver.Core;
 using System;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -18,25 +19,27 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         public VitricBackdropLeft parent;
         public Vector2 storedCenter;
 
+        public int masterExpirationTimer;
+
         public override bool CheckActive() => false;
 
         public override void SafeSetDefaults()
         {
-            npc.width = 220;
-            npc.height = 16;
-            npc.noTileCollide = true;
-            npc.dontCountMe = true;
-            npc.lifeMax = 10;
+            NPC.width = 220;
+            NPC.height = 16;
+            NPC.noTileCollide = true;
+            NPC.dontCountMe = true;
+            NPC.lifeMax = 10;
         }
 
         public virtual bool findParent()
         {
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropLeft>())
+                NPC NPC = Main.npc[i];
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropLeft>())
                 {
-                    parent = npc.modNPC as VitricBackdropLeft;
+                    parent = NPC.ModNPC as VitricBackdropLeft;
                     return true;
                 }
             }
@@ -51,37 +54,69 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: acceleration delay
              */
 
-            if (parent == null || !parent.npc.active)
+            if (parent == null || !parent.NPC.active)
                 findParent();
 
-            if (npc.ai[0] == 0)
+            if (NPC.ai[0] == 0)
             {
-                if (npc.ai[1] > 0)
+                if (NPC.ai[1] > 0)
                 {
-                    npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
-                    npc.ai[1]--;
+                    NPC.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
+                    NPC.ai[1]--;
                 }
                 else 
-                    npc.velocity.Y = 0;
+                    NPC.velocity.Y = 0;
             }
 
-            if (npc.ai[0] == 1)
+            if (NPC.ai[0] == 1)
             {
-                npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.npc.ai[3]);
-                if (npc.position.Y <= StarlightWorld.VitricBiome.Y * 16 + 16 * 16)
-                    npc.position.Y += MaxHeight;
-
-                npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
+                NPC.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.NPC.ai[3]);
+                if (NPC.position.Y <= StarlightWorld.VitricBiome.Y * 16 + 16 * 16)
+                    NPC.position.Y += MaxHeight;
             }
 
-            if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
-                storedCenter = npc.Center;
+            if (storedCenter == Vector2.Zero && NPC.velocity.Y == 0)
+                storedCenter = NPC.Center;
+
+            if (Main.masterMode)
+            {
+                if (!DontCollide)
+                {
+                    if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
+                        masterExpirationTimer += 2;
+                    else if (masterExpirationTimer > 0)
+                        masterExpirationTimer--;
+
+                    if (masterExpirationTimer > 150)
+                    {
+                        DontCollide = true;
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+                    }
+                }
+                else
+				{
+                    masterExpirationTimer--;
+
+                    if (masterExpirationTimer <= 0)
+                        DontCollide = false;
+				}
+            }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            var tex = ModContent.GetTexture(Texture);
-            spriteBatch.Draw(tex, npc.Center + npc.visualOffset + Vector2.UnitY * 4 - Main.screenPosition, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+            var tex = ModContent.Request<Texture2D>(Texture).Value;
+
+            if (DontCollide)
+                drawColor *= 0.25f;
+
+            drawColor.A = 255;
+
+            spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
+
+            if(!DontCollide && masterExpirationTimer > 0)
+                spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, Color.Lerp(Color.Transparent, Color.Red, masterExpirationTimer / 300f), 0, tex.Size() / 2, 1, 0, 0);
+
             return false;
         }
     }
@@ -93,10 +128,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
         {
             for (int i = 0; i < Main.maxNPCs; i++)
             {
-                NPC npc = Main.npc[i];
-                if (npc.active && npc.type == ModContent.NPCType<VitricBackdropRight>())
+                NPC NPC = Main.npc[i];
+                if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropRight>())
                 {
-                    parent = npc.modNPC as VitricBackdropRight;
+                    parent = NPC.ModNPC as VitricBackdropRight;
                     return true;
                 }
             }
@@ -110,32 +145,54 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
              * 2: acceleration delay
              */
 
-            if (parent == null || !parent.npc.active)
+            if (parent == null || !parent.NPC.active)
                 findParent();
 
-            if (npc.ai[0] == 0)
+            if (NPC.ai[0] == 0)
             {
-                if (npc.ai[1] > 0)
+                if (NPC.ai[1] > 0)
                 {
-                    npc.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
-                    npc.ai[1]--;
+                    NPC.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Risetime;
+                    NPC.ai[1]--;
                 }
                 else
-                    npc.velocity.Y = 0;
+                    NPC.velocity.Y = 0;
             }
 
 
-            if (npc.ai[0] == 1)
+            if (NPC.ai[0] == 1)
             {
-                npc.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.npc.ai[3]);
-                if (npc.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
-                    npc.position.Y -= MaxHeight;
-
-                npc.visualOffset = Vector2.One.RotatedByRandom(6.28f) * parent.shake * 0.5f;
+                NPC.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.NPC.ai[3]);
+                if (NPC.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
+                    NPC.position.Y -= MaxHeight;
             }
 
-            if (storedCenter == Vector2.Zero && npc.velocity.Y == 0)
-                storedCenter = npc.Center;
+            if (storedCenter == Vector2.Zero && NPC.velocity.Y == 0)
+                storedCenter = NPC.Center;
+
+            if (Main.masterMode)
+            {
+                if (!DontCollide)
+                {
+                    if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
+                        masterExpirationTimer += 2;
+                    else if (masterExpirationTimer > 0)
+                        masterExpirationTimer--;
+
+                    if (masterExpirationTimer > 150)
+                    {
+                        DontCollide = true;
+                        Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
+                    }
+                }
+                else
+                {
+                    masterExpirationTimer--;
+
+                    if (masterExpirationTimer <= 0)
+                        DontCollide = false;
+                }
+            }
         }
     }
 
@@ -145,11 +202,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SafeSetDefaults()
         {
-            npc.width = 100;
-            npc.height = 16;
-            npc.noTileCollide = true;
-            npc.dontCountMe = true;
-            npc.lifeMax = 10;
+            NPC.width = 100;
+            NPC.height = 16;
+            NPC.noTileCollide = true;
+            NPC.dontCountMe = true;
+            NPC.lifeMax = 10;
         }
     }
 
@@ -159,11 +216,11 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
         public override void SafeSetDefaults()
         {
-            npc.width = 100;
-            npc.height = 16;
-            npc.noTileCollide = true;
-            npc.dontCountMe = true;
-            npc.lifeMax = 10;
+            NPC.width = 100;
+            NPC.height = 16;
+            NPC.noTileCollide = true;
+            NPC.dontCountMe = true;
+            NPC.lifeMax = 10;
         }
     }
 }

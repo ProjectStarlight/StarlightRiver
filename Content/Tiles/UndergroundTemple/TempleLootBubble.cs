@@ -10,11 +10,7 @@ namespace StarlightRiver.Tiles.Temple
 {
 	class TempleLootBubble : LootBubble
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.UndergroundTempleTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
         public override List<Loot> GoldLootPool
         {
@@ -25,9 +21,9 @@ namespace StarlightRiver.Tiles.Temple
             };
         }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
-            minPick = int.MaxValue;
+            MinPick = int.MaxValue;
             QuickBlock.QuickSetFurniture(this, 2, 2, DustType<Content.Dusts.BlueStamina>(), SoundID.Drown, false, new Color(151, 151, 151));
         }
     }
@@ -36,7 +32,7 @@ namespace StarlightRiver.Tiles.Temple
     {
         public override string Texture => "StarlightRiver/Assets/Tiles/Bubble";
 
-        public TestBubble() : base("Bubble", "Debug item", TileType<TempleLootBubble>(), 5, AssetDirectory.UndergroundTempleTile) { }
+        public TestBubble() : base("Bubble", "Debug Item", "TempleLootBubble", 5, AssetDirectory.UndergroundTempleTile) { }
     }
 
 }

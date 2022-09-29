@@ -8,10 +8,5 @@ namespace StarlightRiver.Content.Items.Misc
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public ShockAbsorber() : base("Shock Absorber", "Dropping from great heights creates a shockwave\nNullifies fall damage") { }
-
-        public override bool Autoload(ref string name)
-        {
-            return base.Autoload(ref name);
-        }
     }
 }

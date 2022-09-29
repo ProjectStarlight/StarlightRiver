@@ -4,6 +4,7 @@ using StarlightRiver.Codex;
 using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -22,10 +23,10 @@ namespace StarlightRiver.Content.GUI
         {
             CodexHandler mp = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 
-            Texture2D tex = mp.CodexState == 1 ? GetTexture("StarlightRiver/Assets/GUI/Book1Closed") : GetTexture("StarlightRiver/Assets/GUI/Book2Closed");
+            Texture2D tex = mp.CodexState == 1 ? Request<Texture2D>("StarlightRiver/Assets/GUI/Book1Closed").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/Book2Closed").Value;
 
             string str = "New Entry: " + Text;
-            float stringWidth = Main.fontMouseText.MeasureString(str).X;
+            float stringWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(str).X;
             float xOff = stringWidth;
 
             Vector2 pos = Timer > 60 ? new Vector2(20, 140) : new Vector2(-xOff * 2 + 20 + (xOff * Timer / 60f) * 2, 140);
@@ -33,8 +34,8 @@ namespace StarlightRiver.Content.GUI
             if (Timer > 350) alpha = ((360 - Timer) / 10f);
 
             Rectangle target = new Rectangle((int)(pos.X - 40 - 50), (int)(pos.Y - 25), (int)(stringWidth + 140), 40);
-            var bgTex = Main.magicPixel;
-            var edgeTex = GetTexture(AssetDirectory.GUI + "CodexPopupEdge");
+            var bgTex = TextureAssets.MagicPixel.Value;
+            var edgeTex = Request<Texture2D>(AssetDirectory.GUI + "CodexPopupEdge").Value;
 
             spriteBatch.Draw(bgTex, target, null, new Color(20, 20, 35) * alpha * 0.5f);
             spriteBatch.Draw(edgeTex, target.TopRight(), null, new Color(20, 20, 35) * alpha * 0.5f);

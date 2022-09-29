@@ -30,20 +30,28 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			item.width = 30;
-			item.height = 28;
-			item.rare = 3;
-			item.value = Item.buyPrice(0, 4, 0, 0);
-			item.defense = 4;
-			item.accessory = true;
+			Item.width = 30;
+			Item.height = 28;
+			Item.rare = 3;
+			Item.value = Item.buyPrice(0, 4, 0, 0);
+			Item.defense = 4;
+			Item.accessory = true;
 		}
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+			ArmorPlatingPlayer modPlayer = Player.GetModPlayer<ArmorPlatingPlayer>();
 			modPlayer.active = true;
 			if (modPlayer.Shield)
-				player.endurance += 0.3f;
+				Player.endurance += 0.3f;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -58,7 +66,6 @@ namespace StarlightRiver.Content.Items.Breacher
 		public int flickerTime = 0;
 
 		public bool Shield => shieldTimer > 0;
-
 
 		public override void ResetEffects()
 		{
@@ -82,17 +89,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
         {
 			if (active && !Shield)
 				damageCounter += 100;
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
         }
-
 	}
-	public class ReactivePlatingHelper : ILoadable
-	{
 
+	public class ReactivePlatingHelper : IOrderedLoadable
+	{
 		public float Priority => 1.05f; 
 
 		public void Load()
@@ -100,20 +107,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawPlayer += Main_DrawPlayer;
+			StarlightPlayer.PostDrawEvent += DrawOverlay;
+		}
+
+		private void DrawOverlay(Player player, SpriteBatch spriteBatch)
+		{
+			ArmorPlatingPlayer modPlayer = player.GetModPlayer<ArmorPlatingPlayer>();
+
+			if (modPlayer.Shield)
+				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, player);
 		}
 
 		public void Unload() { }
-
-		private static void Main_DrawPlayer(On.Terraria.Main.orig_DrawPlayer orig, Main self, Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow)
-		{
-			ArmorPlatingPlayer modPlayer = drawPlayer.GetModPlayer<ArmorPlatingPlayer>();
-
-			orig(self, drawPlayer, Position, rotation, rotationOrigin, shadow);
-
-			if (modPlayer.Shield)
-				DrawPlayerTarget(modPlayer.flickerTime, modPlayer.shieldTimer, drawPlayer);
-		}
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
         {

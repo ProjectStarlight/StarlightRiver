@@ -11,21 +11,14 @@ namespace StarlightRiver.Content.Buffs
         private readonly bool Debuff;
         private readonly bool Summon;
 
-        public bool Inflicted(Player player) => player.active && player.HasBuff(Type);
+        public bool Inflicted(Player Player) => Player.active && Player.HasBuff(Type);
 
-        public bool Inflicted(NPC npc)
+        public bool Inflicted(NPC NPC)
         {
-            if(ModContent.GetModBuff(Type) != null && npc.buffImmune.Length > Type)
-                return npc.active && npc.HasBuff(Type);
+            if(ModContent.GetModBuff(Type) != null && NPC.buffImmune.Length > Type)
+                return NPC.active && NPC.HasBuff(Type);
 
             return false;
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            var path = AssetDirectory.Buffs + name;
-            texture = ModContent.TextureExists(path) ? path : AssetDirectory.Debug;
-            return true;
         }
 
         public virtual void SafeSetDetafults() { }
@@ -37,7 +30,7 @@ namespace StarlightRiver.Content.Buffs
             Summon = summon;
         }
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             DisplayName.SetDefault(ThisName);
             Description.SetDefault(ThisTooltip);

@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -26,25 +28,25 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetDefaults()
         {
-            item.width = 32;
-            item.height = 32;
-            item.useTime = 40;
-            item.useAnimation = 40;
-            item.useStyle = ItemUseStyleID.HoldingOut;
-            Item.staff[item.type] = true;
-            item.noMelee = true;
-            item.autoReuse = false;
-            item.shoot = ProjectileType<SorcerwrenchProjectile>();
-            item.shootSpeed = 1;
-            item.channel = true;
-            item.value = Item.buyPrice(1, 0, 0, 0);
-            item.rare = ItemRarityID.Orange;
+            Item.width = 32;
+            Item.height = 32;
+            Item.useTime = 40;
+            Item.useAnimation = 40;
+            Item.useStyle = ItemUseStyleID.Shoot;
+            Item.staff[Item.type] = true;
+            Item.noMelee = true;
+            Item.autoReuse = false;
+            Item.shoot = ProjectileType<SorcerwrenchProjectile>();
+            Item.shootSpeed = 1;
+            Item.channel = true;
+            Item.value = Item.buyPrice(1, 0, 0, 0);
+            Item.rare = ItemRarityID.Orange;
         }
 
-        public override bool Shoot(Player player, ref Vector2 position, ref float speedX, ref float speedY, ref int type, ref int damage, ref float knockBack)
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             position = Main.MouseWorld;
-            proj = Projectile.NewProjectileDirect(position, Vector2.Zero, type, damage, knockBack, player.whoAmI);
+            proj = Projectile.NewProjectileDirect(source, position, Vector2.Zero, type, damage, knockback, player.whoAmI);
             return false;
         }
     }
@@ -53,10 +55,10 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.MiscItem + "Sorcerwrench";
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
-            On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana;
-            return base.Autoload(ref name);
+            //On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //TODO: Find where vanilla draws resource bars now
+            
         }
 
         private const int DESTRUCTIONTIME = 100;
@@ -85,15 +87,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 
 
-        private Player owner => Main.player[projectile.owner];
+        private Player owner => Main.player[Projectile.owner];
 
         public override void SetDefaults()
         {
-            projectile.width = 2;
-            projectile.height = 2;
-            projectile.timeLeft = 150;
-            projectile.penetrate = -1;
-            projectile.tileCollide = false;
+            Projectile.width = 2;
+            Projectile.height = 2;
+            Projectile.timeLeft = 150;
+            Projectile.penetrate = -1;
+            Projectile.tileCollide = false;
         }
 
         public override void AI()
@@ -101,13 +103,13 @@ namespace StarlightRiver.Content.Items.Misc
             if (!initialized)
             {
                 initialized = true;
-                startCorner.X = endCorner.X = (int)Math.Floor(projectile.Center.X / 16) * 16;
-                startCorner.Y = endCorner.Y = (int)Math.Floor(projectile.Center.Y / 16) * 16;
+                startCorner.X = endCorner.X = (int)Math.Floor(Projectile.Center.X / 16) * 16;
+                startCorner.Y = endCorner.Y = (int)Math.Floor(Projectile.Center.Y / 16) * 16;
             }
             if (owner.channel && !released)
             {
-                projectile.timeLeft = DESTRUCTIONTIME;
-                projectile.Center = Main.MouseWorld;
+                Projectile.timeLeft = DESTRUCTIONTIME;
+                Projectile.Center = Main.MouseWorld;
 
                 owner.ChangeDir(Main.MouseWorld.X > owner.position.X ? 1 : -1);
                 Vector2 direction = owner.DirectionTo(Main.MouseWorld);
@@ -200,9 +202,9 @@ namespace StarlightRiver.Content.Items.Misc
                     endCorner.Y = endCornerGoal.Y;
 
                 if (Main.mouseRight)
-                    projectile.active = false;
+                    Projectile.active = false;
             }
-            else if (projectile.timeLeft > 2)
+            else if (Projectile.timeLeft > 2)
             {
                 if (!released)
                 {
@@ -245,7 +247,7 @@ namespace StarlightRiver.Content.Items.Misc
                     }
                 }
 
-                float opacity = (DESTRUCTIONTIME - projectile.timeLeft) / (float)DESTRUCTIONTIME;
+                float opacity = (DESTRUCTIONTIME - Projectile.timeLeft) / (float)DESTRUCTIONTIME;
                 opacity =EaseFunction.EaseQuadIn.Ease(opacity);
                 foreach(Vector2 position in tilesToDestroy)
                 {
@@ -254,7 +256,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
             else
             {
-                projectile.active = false;
+                Projectile.active = false;
 
                 foreach (Vector2 pos in tilesToDestroy.OrderBy(x => x.Y))
                 {
@@ -277,17 +279,17 @@ namespace StarlightRiver.Content.Items.Misc
                     }
 
                     WorldGen.KillTile(i, j, false, false, false);
-                    if (!Main.tile[i, j].active() && Main.netMode != NetmodeID.SinglePlayer)
+                    if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
                     {
-                        NetMessage.SendData(MessageID.TileChange, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
+                        NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, (float)i, (float)j, 0f, 0, 0, 0);
                     }
                 }
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color lightColor)
+        public override bool PreDraw(ref Color lightColor)
         {
-            if (projectile.timeLeft < DESTRUCTIONTIME - 2)
+            if (Projectile.timeLeft < DESTRUCTIONTIME - 2)
                 return false;
             int xIncrement = Math.Sign(endCorner.X - startCorner.X) * 2;
             int yIncrement = Math.Sign(endCorner.Y - startCorner.Y) * 2;
@@ -297,11 +299,11 @@ namespace StarlightRiver.Content.Items.Misc
                 for (int j = (int)startCorner.Y; PastIncrement(j, (int)endCorner.Y, yIncrement); j += yIncrement)
                 {
                     if (i == startCorner.X || Math.Abs(i - endCorner.X) < 2 || j == startCorner.Y || Math.Abs(j - endCorner.Y) < 2)
-                        DrawPixel(spriteBatch, Color.Red, new Vector2(i, j));
+                        DrawPixel(Main.spriteBatch, Color.Red, new Vector2(i, j));
                     else
                     {
                         Color shadeColor = Color.LightSalmon;
-                        DrawPixel(spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
+                        DrawPixel(Main.spriteBatch, shadeColor * 0.3f, new Vector2(i, j));
                     }
                 }
             }
@@ -312,7 +314,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private static void DrawPixel(SpriteBatch spriteBatch, Color color, Vector2 worldPos)
         {
-            spriteBatch.Draw(Main.magicPixel, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
+            spriteBatch.Draw(TextureAssets.MagicPixel.Value, worldPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, 0, Vector2.Zero, 2, SpriteEffects.None, 0f);
         }
 
         private static bool PastIncrement(int val, int end, int increment, bool includeEqual = true)
@@ -334,13 +336,26 @@ namespace StarlightRiver.Content.Items.Misc
 
         private static bool CanKillTile(int i, int j)
         {
-            if (Main.tile[i, j] != null && Main.tile[i, j].active())
+            if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
             {
-                if (Main.tileDungeon[(int)Main.tile[i, j].type] || Main.tile[i, j].type == 88 || Main.tile[i, j].type == 21 || Main.tile[i, j].type == 26 || Main.tile[i, j].type == 107 || Main.tile[i, j].type == 108 || Main.tile[i, j].type == 111 || Main.tile[i, j].type == 226 || Main.tile[i, j].type == 237 || Main.tile[i, j].type == 221 || Main.tile[i, j].type == 222 || Main.tile[i, j].type == 223 || Main.tile[i, j].type == 211 || Main.tile[i, j].type == 404)
+                if (Main.tileDungeon[(int)Main.tile[i, j].TileType] || 
+                    Main.tile[i, j].TileType == TileID.Dressers || 
+                    Main.tile[i, j].TileType == TileID.Containers || 
+                    Main.tile[i, j].TileType == TileID.DemonAltar || 
+                    Main.tile[i, j].TileType == TileID.Cobalt ||
+                    Main.tile[i, j].TileType == TileID.Mythril ||
+                    Main.tile[i, j].TileType == TileID.Adamantite ||
+                    Main.tile[i, j].TileType == TileID.LihzahrdBrick ||
+                    Main.tile[i, j].TileType == TileID.LihzahrdAltar ||
+                    Main.tile[i, j].TileType == TileID.Palladium ||
+                    Main.tile[i, j].TileType == TileID.Orichalcum ||
+                    Main.tile[i, j].TileType == TileID.Titanium || 
+                    Main.tile[i, j].TileType == TileID.Chlorophyte ||
+                    Main.tile[i, j].TileType == TileID.DesertFossil)
                 {
                     return false;
                 }
-                if (!Main.hardMode && Main.tile[i, j].type == 58)
+                if (!Main.hardMode && Main.tile[i, j].TileType == TileID.Hellstone)
                 {
                     return false;
                 }
@@ -353,45 +368,47 @@ namespace StarlightRiver.Content.Items.Misc
             return false;
         }
 
+        /* TODO: rework this draw rotten mana
         private void DrawRottenMana(On.Terraria.Main.orig_DrawInterface_Resources_Mana orig)
         {
             orig();
 
-            Player player = Main.LocalPlayer;
+            Player Player = Main.LocalPlayer;
 
-            if (player.HeldItem.type != ModContent.ItemType<Sorcerwrench>())
+            if (Player.HeldItem.type != ModContent.ItemType<Sorcerwrench>())
                 return;
 
-            var item = player.HeldItem.modItem as Sorcerwrench;
-            if (item.proj == null || !item.proj.active)
+            var Item = Player.HeldItem.ModItem as Sorcerwrench;
+            if (Item.proj == null || !Item.proj.active)
                 return;
-            var projectile = item.proj.modProjectile as SorcerwrenchProjectile;
+            var Projectile = Item.proj.ModProjectile as SorcerwrenchProjectile;
 
-            if (projectile == null)
-                return;
-
-            if (projectile.released)
+            if (Projectile == null)
                 return;
 
-            int manaMissing = (player.statManaMax2 - player.statMana) / 20;
+            if (Projectile.released)
+                return;
 
-            for (int i = 1; i < player.statManaMax2 / 20 + 1; i++) //iterate each mana star
+            int manaMissing = (Player.statManaMax2 - Player.statMana) / 20;
+
+            for (int i = 1; i < Player.statManaMax2 / 20 + 1; i++) //iterate each mana star
             {
                 int manaDrawn = i * 20; //the amount of mana drawn by this star and all before it
 
                 float starHeight = MathHelper.Clamp(((Main.player[Main.myPlayer].statMana - (i - 1) * 20) / 20f) / 4f + 0.75f, 0.75f, 1); //height of the current star based on current mana
 
-                if (player.statMana <= i * 20 && player.statMana >= (i - 1) * 20) //pulsing star for the "current" star
+                if (Player.statMana <= i * 20 && Player.statMana >= (i - 1) * 20) //pulsing star for the "current" star
                     starHeight += Main.cursorScale - 1;
 
-                var rottenManaAmount = player.statManaMax2 - projectile.manaUsed; //amount of mana to draw as rotten
+                var rottenManaAmount = Player.statManaMax2 - Projectile.manaUsed; //amount of mana to draw as rotten
+                var manaTex = TextureAssets.Mana.Value;
 
-                if (rottenManaAmount < manaDrawn + manaMissing && i < (player.statManaMax2 / 20 + 1) - manaMissing)
+                if (rottenManaAmount < manaDrawn + manaMissing && i < (Player.statManaMax2 / 20 + 1) - manaMissing)
                 {
                     if (manaDrawn - rottenManaAmount < 20)
                     {
-                        var tex1 = GetTexture(AssetDirectory.GravediggerItem + "RottenMana");
-                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                        var tex1 = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
+                        var pos1 = new Vector2(Main.screenWidth - 25, (30 + manaTex.Height / 2f) + (manaTex.Height - manaTex.Height * starHeight) / 2f + (28 * (i - 1)));
 
                         int off = (int)(rottenManaAmount % 20 / 20f * tex1.Height);
                         var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
@@ -401,17 +418,18 @@ namespace StarlightRiver.Content.Items.Misc
                         continue;
                     }
 
-                    var tex = GetTexture(AssetDirectory.GravediggerItem + "RottenMana");
-                    var pos = new Vector2(Main.screenWidth - 25, (30 + Main.manaTexture.Height / 2f) + (Main.manaTexture.Height - Main.manaTexture.Height * starHeight) / 2f + (28 * (i - 1)));
+                    var tex = Request<Texture2D>(AssetDirectory.GravediggerItem + "RottenMana").Value;
+                    var pos = new Vector2(Main.screenWidth - 25, (30 + manaTex.Height / 2f) + (manaTex.Height - manaTex.Height * starHeight) / 2f + (28 * (i - 1)));
 
                     Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, starHeight, 0, 0);
                 }
             }
         }
+        */
 
         public void DrawOverTiles(SpriteBatch spriteBatch)
         {
-            float opacity = (DESTRUCTIONTIME - projectile.timeLeft) / (float)DESTRUCTIONTIME;
+            float opacity = (DESTRUCTIONTIME - Projectile.timeLeft) / (float)DESTRUCTIONTIME;
             opacity = EaseFunction.EaseQuadIn.Ease(opacity);
 
             Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
@@ -430,11 +448,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
     public class SorcerwrenchDust : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "NeedlerDust";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "NeedlerDust";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -475,11 +489,7 @@ namespace StarlightRiver.Content.Items.Misc
     }
     public class SorcerwrenchSparkle : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Aurora";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Aurora";
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = true;
@@ -487,7 +497,7 @@ namespace StarlightRiver.Content.Items.Misc
             dust.noLight = false;
             dust.frame = new Rectangle(0, 0, 100, 100);
             dust.color = Color.Lerp(Color.White, Color.Salmon, EaseFunction.EaseQuadIn.Ease(Main.rand.NextFloat()));
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -520,18 +530,6 @@ namespace StarlightRiver.Content.Items.Misc
                 dust.active = false;
 
             return false;
-        }
-    }
-
-    public class SorcerwrenchGlobalNPC : GlobalNPC
-    {
-        public override void SetupShop(int type, Chest shop, ref int nextSlot)
-        {
-            if (type == NPCID.Mechanic)
-            {
-                shop.item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
-                nextSlot++;
-            }
         }
     }
 }

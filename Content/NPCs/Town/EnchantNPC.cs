@@ -18,19 +18,19 @@ namespace StarlightRiver.Content.NPCs.Town
 
         public override void SetDefaults()
         {
-            npc.townNPC = true;
-            npc.friendly = true;
-            npc.width = 18;
-            npc.height = 40;
-            npc.aiStyle = -1;
-            npc.damage = 10;
-            npc.defense = 15;
-            npc.lifeMax = 250;
-            npc.HitSound = SoundID.NPCHit1;
-            npc.DeathSound = SoundID.NPCDeath1;
-            npc.knockBackResist = 0.5f;
-            npc.dontTakeDamage = true;
-            npc.dontCountMe = true;
+            NPC.townNPC = true;
+            NPC.friendly = true;
+            NPC.width = 18;
+            NPC.height = 40;
+            NPC.aiStyle = -1;
+            NPC.damage = 10;
+            NPC.defense = 15;
+            NPC.lifeMax = 250;
+            NPC.HitSound = SoundID.NPCHit1;
+            NPC.DeathSound = SoundID.NPCDeath1;
+            NPC.knockBackResist = 0.5f;
+            NPC.dontTakeDamage = true;
+            NPC.dontCountMe = true;
         }
 
         public override string GetChat()
@@ -54,12 +54,9 @@ namespace StarlightRiver.Content.NPCs.Town
 
         private void OpenEnchantUI()
         {
-            EnchantmentMenu.SetActive(npc.Center + new Vector2(0, -300), this);
+            EnchantmentMenu.SetActive(NPC.Center + new Vector2(0, -300), this);
             //ZoomHandler.SetZoomAnimation(2.5f, 60);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTarget = npc.Center + new Vector2(0, -300);
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveTime = 120;
-            Main.LocalPlayer.GetModPlayer<StarlightPlayer>().ScreenMoveHold = true;
-            Main.LocalPlayer.talkNPC = -1;
+            Main.LocalPlayer.SetTalkNPC(-1);
             enchanting = true;
 
             UILoader.GetUIState<RichTextBox>().Visible = false;
@@ -72,11 +69,11 @@ namespace StarlightRiver.Content.NPCs.Town
 
         public override void AI()
         {
-            if (RichTextBox.talking == npc)
+            if (RichTextBox.talking == NPC)
             {
                 SetData();
 
-                if (Main.player[Main.myPlayer].talkNPC != npc.whoAmI)
+                if (Main.player[Main.myPlayer].talkNPC != NPC.whoAmI)
                 {
                     UILoader.GetUIState<RichTextBox>().Visible = false;
                     RichTextBox.SetData(null, "", "");
@@ -84,12 +81,12 @@ namespace StarlightRiver.Content.NPCs.Town
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor) //Temporary solution untill this can be drawn by the structure
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Temporary solution untill this can be drawn by the structure
         {
-            spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.GUI + "EnchantOver"), npc.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
+            spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.GUI + "EnchantOver").Value, NPC.Center + new Vector2(0, -300) - Main.screenPosition, null, Color.White, 0, Vector2.One * 160, 1, 0, 0);
 
             if(!enchanting)
-                spriteBatch.Draw(ModContent.GetTexture(AssetDirectory.GUI + "EnchantSlotClosed"), npc.Center + new Vector2(0, -500) - Main.screenPosition, new Rectangle(0, 0, 34, 34), Color.White, 0, Vector2.One * 17, 1, 0, 0);
+                spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.GUI + "EnchantSlotClosed").Value, NPC.Center + new Vector2(0, -500) - Main.screenPosition, new Rectangle(0, 0, 34, 34), Color.White, 0, Vector2.One * 17, 1, 0, 0);
 
             return true;
         }
@@ -99,27 +96,27 @@ namespace StarlightRiver.Content.NPCs.Town
             switch (textState)
             {
                 case 0:
-                    RichTextBox.SetData(npc, "[PH]Enchantress",
+                    RichTextBox.SetData(NPC, "[PH]Enchantress",
                         "[]Hello hello generic greeting message thing"
                     ); break;
 
                 case 1:
-                    RichTextBox.SetData(npc, "[PH]Enchantress",
+                    RichTextBox.SetData(NPC, "[PH]Enchantress",
                         "[]Generic Chat Text 1"
                     ); break;
 
                 case 2:
-                    RichTextBox.SetData(npc, "[PH]Enchantress",
+                    RichTextBox.SetData(NPC, "[PH]Enchantress",
                         "[]Generic Chat Text 2"
                     ); break;
 
                 case 3:
-                    RichTextBox.SetData(npc, "[PH]Enchantress",
+                    RichTextBox.SetData(NPC, "[PH]Enchantress",
                         "[]Generic Chat Text 3"
                     ); break;
 
                 case 4:
-                    RichTextBox.SetData(npc, "[PH]Enchantress",
+                    RichTextBox.SetData(NPC, "[PH]Enchantress",
                         "[]Generic Chat Text 4"
                     ); break;
             }

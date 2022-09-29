@@ -14,30 +14,29 @@ namespace StarlightRiver.Content.Items.Vitric
     {
         public override bool InstancePerEntity => true;
 
-        public override bool CloneNewInstances => true;
-
-        public override bool NeedsSaving(Item item) => isReplica;
-
         public bool isReplica;
         private bool firstTime = true;
 
-        public override TagCompound Save(Item item)
-        {
-            return new TagCompound
-            {
-                ["isReplica"] = isReplica
-            };
+		public override GlobalItem Clone(Item item, Item itemClone)
+		{
+            return item.TryGetGlobalItem<GlassReplica>(out var gi) ? gi : base.Clone(item, itemClone);
+		}
+
+		public override void SaveData(Item item, TagCompound tag)
+		{
+            if(item.GetGlobalItem<GlassReplica>().isReplica)
+			    tag["isReplica"] = item.GetGlobalItem<GlassReplica>().isReplica;
+		}
+
+		public override void LoadData(Item item, TagCompound tag)
+		{
+            item.GetGlobalItem<GlassReplica>().isReplica = tag.GetBool("isReplica");
+            item.GetGlobalItem<GlassReplica>().firstTime = false;
         }
 
-        public override void Load(Item item, TagCompound tag)
+        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            isReplica = tag.GetBool("isReplica");
-            firstTime = false;
-        }
-
-        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-        {
-            if (isReplica)
+            if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.UIScaleMatrix);
@@ -47,9 +46,9 @@ namespace StarlightRiver.Content.Items.Vitric
             return true;
         }
 
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            if (isReplica)
+            if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
@@ -58,15 +57,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            if (isReplica)
+            if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
-                if (firstTime)
+                if (item.GetGlobalItem<GlassReplica>().firstTime)
                 {
                     spriteBatch.End();
                     spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-                    var tex = ModContent.GetTexture("StarlightRiver/Assets/RiftCrafting/Glow1");
-                    float scale1 = Main.itemTexture[item.type].Size().Length() / tex.Size().Length();
+                    var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow1").Value;
+                    float scale1 = Terraria.GameContent.TextureAssets.Item[item.type].Size().Length() / tex.Size().Length();
                     var color = new Color(180, 240, 255);
 
                     spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.rottime, tex.Size() / 2, 2 * scale1, 0, 0);
@@ -84,7 +83,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void PostDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
         {
-            if (isReplica)
+            if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
                 spriteBatch.End();
                 spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -93,15 +92,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (isReplica)
+            if (item.GetGlobalItem<GlassReplica>().isReplica)
             {
-                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.mod == "Terraria").text = "Replica " + item.Name;
+                tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = "Replica " + item.Name;
             }
         }
 
-        public override bool OnPickup(Item item, Player player)
+        public override bool OnPickup(Item item, Player Player)
         {
-            firstTime = false;
+            item.GetGlobalItem<GlassReplica>().firstTime = false;
             return true;
         }
     }

@@ -8,11 +8,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 {
 	class DisplayCaseFriendly : DisplayCase
     {
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
             Tile tile = Main.tile[i, j];
 
-            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
+            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
 
             if (index == -1)
                 return true;
@@ -37,14 +37,14 @@ namespace StarlightRiver.Content.Tiles.Misc
 		{
             Tile tile = Main.tile[i, j];
 
-            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.frameX / 16, j - tile.frameY / 16);
+            int index = ModContent.GetInstance<DisplayCaseEntity>().Find(i - tile.TileFrameX / 16, j - tile.TileFrameY / 16);
 
             if (index == -1)
                 return;
 
             DisplayCaseEntity entity = (DisplayCaseEntity)TileEntity.ByID[index];
 
-            Item.NewItem(i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
+            Item.NewItem(new EntitySource_TileBreak(i, j), i, j, 1, 1, ModContent.ItemType<DisplayCaseFriendlyItem>());
 
             if(entity.containedItem != null && !entity.containedItem.IsAir)
                 Helpers.Helper.NewItemSpecific(new Vector2(i, j), entity.containedItem.Clone());
@@ -54,6 +54,6 @@ namespace StarlightRiver.Content.Tiles.Misc
 
     class DisplayCaseFriendlyItem : QuickTileItem
     {
-        public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an item for glamorous display", ModContent.TileType<DisplayCaseFriendly>(), 2, "StarlightRiver/Assets/Tiles/Misc/") { }
+        public DisplayCaseFriendlyItem() : base("Display Case", "Can hold an Item for glamorous display", "DisplayCaseFriendly", 2, "StarlightRiver/Assets/Tiles/Misc/") { }
     }
 }

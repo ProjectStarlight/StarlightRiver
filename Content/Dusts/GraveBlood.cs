@@ -7,11 +7,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class GraveBlood : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + name;
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + Name;
         public override void OnSpawn(Dust dust)
         {
             dust.noGravity = false;
@@ -24,7 +20,7 @@ namespace StarlightRiver.Content.Dusts
         {
             dust.position += dust.velocity;
             dust.velocity.Y += 0.15f;
-            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].active() && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].collisionType == 1)
+            if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].TileType])
             {
                 dust.alpha += 10;
                 dust.velocity *= -0.1f;

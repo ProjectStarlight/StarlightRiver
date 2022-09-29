@@ -13,15 +13,11 @@ namespace StarlightRiver.Content.Tiles
 {
 	class VitricBanner : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override int DummyType => ProjectileType<VitricBannerDummy>();
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
@@ -30,8 +26,9 @@ namespace StarlightRiver.Content.Tiles
 
     class VitricBannerItem : QuickTileItem
 	{
-        public VitricBannerItem() : base("Long Flowing Banner", "", TileType<VitricBanner>(), 1, AssetDirectory.VitricTile, false) { }
-	}
+        public VitricBannerItem() : base("Long Flowing Banner", "", "VitricBanner", 1, AssetDirectory.VitricTile, false) { }
+
+    }
 
     internal class VitricBannerDummy : Dummy
     {
@@ -41,7 +38,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override void SafeSetDefaults()
         {
-            Chain = new TriangularBanner(16, false, projectile.Center, 16)
+            Chain = new TriangularBanner(16, false, Projectile.Center, 16)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -52,19 +49,19 @@ namespace StarlightRiver.Content.Tiles
 
         public override void Update()
         {
-            Chain.UpdateChain(projectile.Center);
+            Chain.UpdateChain(Projectile.Center);
             Chain.IterateRope(WindForce);
 
-            projectile.ai[0] += 0.005f;
+            Projectile.ai[0] += 0.005f;
         }
 
         private void WindForce(int index)//wind
         {
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
             float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
-            float cos = (float)System.Math.Cos(projectile.ai[0]);
+            float cos = (float)System.Math.Cos(Projectile.ai[0]);
             float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
@@ -77,7 +74,7 @@ namespace StarlightRiver.Content.Tiles
 
         public override void Kill(int timeLeft)
         {
-            VerletChain.toDraw.Remove(Chain);
+            VerletChainSystem.toDraw.Remove(Chain);
         }
     }
 }

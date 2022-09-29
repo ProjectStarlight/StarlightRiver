@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Helpers;
 using Terraria;
+using Microsoft.Xna.Framework.Graphics;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Codex.Entries
@@ -11,10 +12,10 @@ namespace StarlightRiver.Codex.Entries
             Category = Categories.Biomes;
             Title = "Vitric Desert";
             Body = Helper.WrapString("",
-                500, Main.fontDeathText, 0.8f);
+                500, Terraria.GameContent.FontAssets.DeathText.Value, 0.8f);
             Hint = "Found beneath the underground desert...";
-            Image = GetTexture("StarlightRiver/Assets/Codex/BiomeImageVitric");
-            Icon = GetTexture("StarlightRiver/Assets/Codex/BiomeIconVitric");
+            Image = Request<Texture2D>("StarlightRiver/Assets/Codex/BiomeImageVitric").Value;
+            Icon = Request<Texture2D>("StarlightRiver/Assets/Codex/BiomeIconVitric").Value;
         }
     }
 }

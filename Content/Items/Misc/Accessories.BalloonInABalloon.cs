@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.WorldGeneration;
 using StarlightRiver.Core;
 using StarlightRiver.NPCs;
 using Terraria;
@@ -16,8 +15,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.value = Item.sellPrice(0, 2, 0, 0);
-            item.rare = ItemRarityID.LightRed;
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
         }
 
         public override void SafeUpdateEquip(Player player)
@@ -35,24 +34,17 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.Silk, 15);
             recipe.AddTile(TileID.TinkerersWorkbench);
+            recipe.Register();
 
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
-
-            recipe = new ModRecipe(mod);
+            recipe = CreateRecipe();
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
             recipe.AddTile(TileID.TinkerersWorkbench);
-
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

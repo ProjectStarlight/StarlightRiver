@@ -10,11 +10,7 @@ namespace StarlightRiver.Content.Dusts
     {
         //private readonly int time = 0;
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "PlayerFollowOrange";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "PlayerFollowOrange";
 
         public override void OnSpawn(Dust dust)
         {

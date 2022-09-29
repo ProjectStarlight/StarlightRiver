@@ -11,13 +11,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class VitricDecor1x1 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 2;
@@ -28,13 +24,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor1x2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
             TileObjectData.newTile.RandomStyleRange = 1;
@@ -45,13 +37,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor2x1 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.RandomStyleRange = 7;
@@ -62,13 +50,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
     class VitricDecor2x2 : ModTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
             TileObjectData.newTile.RandomStyleRange = 4;

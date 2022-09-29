@@ -10,6 +10,7 @@ using Terraria.UI;
 using Terraria.ID;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -46,8 +47,8 @@ namespace StarlightRiver.Content.GUI
 
             Recalculate();
 
-            var player = Main.LocalPlayer;
-			var mp = player.GetModPlayer<ShieldPlayer>();
+            var Player = Main.LocalPlayer;
+			var mp = Player.GetModPlayer<BarrierPlayer>();
 
 			base.Draw(spriteBatch);
 		}
@@ -57,19 +58,19 @@ namespace StarlightRiver.Content.GUI
     {
         public override void Draw(SpriteBatch spriteBatch)
         {
-            var player = Main.LocalPlayer;
-            var mp = player.GetModPlayer<ShieldPlayer>();
+            var Player = Main.LocalPlayer;
+            var mp = Player.GetModPlayer<BarrierPlayer>();
             var Item = mp.barrierDyeItem;
 
-            Texture2D tex = Main.inventoryBack8Texture; 
-            Texture2D texSlot = ModContent.GetTexture("StarlightRiver/Assets/GUI/BarrierDyeSlot");
+            Texture2D tex = TextureAssets.InventoryBack8.Value;
+            Texture2D texSlot = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BarrierDyeSlot").Value;
 
             spriteBatch.Draw(tex, GetDimensions().Center(), null, Color.White * 0.8f, 0, tex.Size() / 2, 0.85f, 0, 0);
             spriteBatch.Draw(texSlot, GetDimensions().Center(), null, Color.White * 0.4f, 0, texSlot.Size() / 2, 0.85f, 0, 0);
 
             if (!Item.IsAir)
             {
-                Texture2D tex2 = ModContent.GetTexture(Item.modItem.Texture);
+                Texture2D tex2 = ModContent.Request<Texture2D>(Item.ModItem.Texture).Value;
                 spriteBatch.Draw(tex2, GetDimensions().Center(), null, Color.White, 0, tex2.Size() / 2, 0.85f, 0, 0);
             }
 
@@ -97,8 +98,8 @@ namespace StarlightRiver.Content.GUI
         public override void Click(UIMouseEvent evt)
         {
             Main.isMouseLeftConsumedByUI = true;
-            var player = Main.LocalPlayer;
-            var mp = player.GetModPlayer<ShieldPlayer>();
+            var Player = Main.LocalPlayer;
+            var mp = Player.GetModPlayer<BarrierPlayer>();
             var Item = mp.barrierDyeItem;
 
             if (Item.type == ModContent.ItemType<BaseBarrierDye>())
@@ -111,37 +112,37 @@ namespace StarlightRiver.Content.GUI
 
                 if (!Item.IsAir && invSlot != -1)
                 {
-                    Main.LocalPlayer.GetItem(Main.myPlayer, Item.Clone());
+                    Main.LocalPlayer.GetItem(Main.myPlayer, Item.Clone(), GetItemSettings.InventoryUIToInventorySettings);
                     Item.TurnToAir();
                 }
 
                 return;
             }
 
-            if (Main.mouseItem.IsAir && !Item.IsAir) //if the cursor is empty and there is something in the slot, take the item out
+            if (Main.mouseItem.IsAir && !Item.IsAir) //if the cursor is empty and there is something in the slot, take the Item out
             {
                 Main.mouseItem = Item.Clone();
                 mp.barrierDyeItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+                mp.RechargeAnimationTimer = 0;
             }
 
-            if (player.HeldItem.modItem is BarrierDye && Item.IsAir) //if the slot is empty and the cursor has an item, put it in the slot
+            if (Player.HeldItem.ModItem is BarrierDye && Item.IsAir) //if the slot is empty and the cursor has an Item, put it in the slot
             {
-                mp.barrierDyeItem = player.HeldItem.Clone();
-                player.HeldItem.TurnToAir();
+                mp.barrierDyeItem = Player.HeldItem.Clone();
+                Player.HeldItem.TurnToAir();
                 Main.mouseItem.TurnToAir();
-                Main.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+                mp.RechargeAnimationTimer = 0;
             }
 
-            if (player.HeldItem.modItem is BarrierDye && !Item.IsAir) //swap or stack
+            if (Player.HeldItem.ModItem is BarrierDye && !Item.IsAir) //swap or stack
             {
                 var temp = Item;
-                mp.barrierDyeItem = player.HeldItem;
+                mp.barrierDyeItem = Player.HeldItem;
                 Main.mouseItem = temp;
-                Main.PlaySound(SoundID.Grab);
-                mp.rechargeAnimation = 0;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
+                mp.RechargeAnimationTimer = 0;
             }
         }
 

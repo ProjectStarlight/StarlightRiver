@@ -8,11 +8,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class LavaSpark : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "StarlightRiver/Assets/Keys/GlowSoft";
-            return true;
-        }
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowSoft";
 
         public override void OnSpawn(Dust dust)
         {
@@ -21,7 +17,7 @@ namespace StarlightRiver.Content.Dusts
             dust.frame = new Rectangle(0, 0, 64, 64);
             dust.fadeIn = 0;
 
-            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.GetEffect("Effects/GlowingDust")), "GlowingDustPass");
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
             dust.shader.UseColor(Color.Transparent);
         }
 

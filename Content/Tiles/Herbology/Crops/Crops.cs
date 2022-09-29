@@ -4,8 +4,10 @@ using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
@@ -13,7 +15,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Herbology
 {
-    //todo finish this (hover item, etc) and abstract it for other crops
+    //todo finish this (hover Item, etc) and abstract it for other crops
     public abstract class Crop : ModTile
     {
         protected readonly int Height;
@@ -22,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         protected readonly int FrameCount;
         protected readonly int DustType;
-        protected readonly int SoundType;
+        protected readonly SoundStyle SoundType;
         protected readonly string DropType;
 
         protected readonly string MapName;
@@ -38,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public int FrameHeight;
         public int LastFrame;
 
-        public Crop(string dropType, string mapName, string texturePath, int frameCount, int height = 3, int dustType = DustID.Grass, int soundType = SoundID.Grass, Color mapColor = default, AnchorData topAnchorOverride = default, AnchorData bottomAnchorOverride = default, int[] extraGroundTypes = null, string[] extraGroundNames = null, bool customGroundOnly = false)
+        public Crop(string dropType, string mapName, string texturePath, int frameCount, int height = 3, int dustType = DustID.Grass, SoundStyle? soundType = null, Color mapColor = default, AnchorData topAnchorOverride = default, AnchorData bottomAnchorOverride = default, int[] extraGroundTypes = null, string[] extraGroundNames = null, bool customGroundOnly = false)
         {
             DropType = dropType;
 
@@ -47,7 +49,7 @@ namespace StarlightRiver.Content.Tiles.Herbology
             FrameCount = frameCount;
             Height = height;
             DustType = dustType;
-            SoundType = soundType;
+            SoundType = soundType ?? SoundID.Grass;
 
             MapName = mapName;
             MapColor = mapColor;
@@ -60,15 +62,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
             CustomGroundOnly = customGroundOnly;
         }
 
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            if (!string.IsNullOrEmpty(TexturePath))
-                texture = TexturePath + name;
-
-            return base.Autoload(ref name, ref texture);
-        }
-
-        public override void SetDefaults()
+        public override string Texture => TexturePath + Name;
+        
+        public override void SetStaticDefaults()
         {
             Main.tileNoFail[Type] = true;
             //TileObjectData.newTile.DrawYOffset = 2;
@@ -80,9 +76,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
             List<int> valid = CustomGroundOnly ? 
                 new List<int>() : 
                 new List<int>() { 
-                    TileType<Soil>(), TileType<Trellis>(), TileType<GardenPot>(),
+                    //TileType<Soil>(), TileType<Trellis>(), TileType<GardenPot>(),
                     TileID.Dirt, TileID.Sand, TileID.Mud, TileID.Grass,
-                    TileID.HallowedGrass, TileID.CorruptGrass, TileID.FleshGrass, TileID.JungleGrass 
+                    TileID.HallowedGrass, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.JungleGrass 
                 };
 
             if (ExtraGroundTypes != null)
@@ -90,13 +86,13 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
             if(ExtraGroundNames != null)
                 foreach (string name in ExtraGroundNames)
-                    valid.Add(mod.TileType(name));
+                    valid.Add(Type);
 
             QuickBlock.QuickSetFurniture(this, 1, Height, DustType, SoundType, false, 
                 MapColor == default ? new Color(200, 255, 220) : MapColor,
                 false, false, MapName, anchor, TopAnchorOverride, valid.ToArray());
 
-            drop = mod.ItemType(DropType);
+            //ItemDrop = Mod.Find<ModItem>(DropType).Type; TODO: What the fuck was this doing before and why does it crash now?
 
             FrameHeight = 16 * Height;
             LastFrame = (FrameCount - 1) * FrameHeight;
@@ -108,26 +104,26 @@ namespace StarlightRiver.Content.Tiles.Herbology
         public override bool Drop(int i, int j)
         {
             Tile thisTile = Main.tile[i, j];
-            if (thisTile.frameY == ((Height - 1) * 18))
-                Item.NewItem(i * 16, j * 16, 0, 0, drop, (thisTile.frameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
+            if (thisTile.TileFrameY == ((Height - 1) * 18))
+                Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 0, 0, ItemDrop, (thisTile.TileFrameX >= LastFrame ? Main.rand.Next(2, 4) : 1));
             return false;
         }
 
         public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
         {
-            if (Main.tile[i, j].frameY == 36)
+            if (Main.tile[i, j].TileFrameY == 36)
             {
-                Texture2D tex;
-                if (Main.canDrawColorTile(i, j))
-                    tex = Main.tileAltTexture[Type, Main.tile[i, j].color()];
-                else
-                    tex = Main.tileTexture[Type];
+                Texture2D tex = TextureAssets.Tile[Type].Value;
+                //if (Main.canDrawColorTile(i, j))
+                //    tex = Main.tileAltTexture[Type, Main.tile[i, j].TileColor];
+                //else
+                //    tex = TextureAssets.Tile[Type].Value;
 
                 SpriteEffects effect = i % 2 == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-                float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeed) * 0.07f), 0.12f);
+                float scale = Math.Min(0.01f + (Math.Abs(Main.windSpeedCurrent) * 0.07f), 0.12f);//not sure if windSpeedCurrent is the correct replacement
                 spriteBatch.Draw(tex, 
                     (new Vector2(i + 11.5f, j + 10) * 16) + new Vector2(tex.Width / 2, FrameHeight + 3) - Main.screenPosition, 
-                    new Rectangle(0, Main.tile[i, j].frameX + 1, 32, 48), Lighting.GetColor(i, j), 
+                    new Rectangle(0, Main.tile[i, j].TileFrameX + 1, 32, 48), Lighting.GetColor(i, j), 
                     ((float)Math.Sin(Main.GameUpdateCount / 30f + (i * 0.8333f) + (j * 2.3333f)) + (float)Math.Sin(Main.GameUpdateCount / 23.3333)) * scale, //0.07f, 
                     new Vector2(16, 48), 1f, effect, default);
             }
@@ -136,14 +132,14 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void MouseOver(int i, int j)
         {
-            int tile = Main.tile[i, j].frameY / 18;
+            int tile = Main.tile[i, j].TileFrameY / 18;
             int off = Math.Abs(tile - (Height - 1));
 
-            if (Main.tile[i, j + off].frameX >= LastFrame)
+            if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
                 Main.LocalPlayer.noThrow = 2;
-                Main.LocalPlayer.showItemIcon = true;
-                Main.LocalPlayer.showItemIcon2 = drop;
+                Main.LocalPlayer.cursorItemIconEnabled = true;
+                Main.LocalPlayer.cursorItemIconID = ItemDrop;
             }
         }
 
@@ -154,15 +150,15 @@ namespace StarlightRiver.Content.Tiles.Herbology
 
         public override void RandomUpdate(int i, int j)
         {
-            if (Main.tile[i, j].frameY == 0)
+            if (Main.tile[i, j].TileFrameY == 0)
             {
                 int bottomY = j + (Height - 1);
                 Tile bottomTile = Main.tile[i, bottomY];
-                if (bottomTile.type == Type && bottomTile.frameY == ((Height - 1) * 18) && bottomTile.frameX < LastFrame)
+                if (bottomTile.TileType == Type && bottomTile.TileFrameY == ((Height - 1) * 18) && bottomTile.TileFrameX < LastFrame)
                 {
                     if (Main.rand.Next(1, 101) <= GrowthPercentChance(i, bottomY))
                     {
-                        bottomTile.frameX += (short)(16 * Height);
+                        bottomTile.TileFrameX += (short)(16 * Height);
                         NetMessage.SendTileSquare(-1, i, j, 1, TileChangeType.None);
                     }
                 }
@@ -174,18 +170,18 @@ namespace StarlightRiver.Content.Tiles.Herbology
             return 100 / Height;
         }
 
-        public override bool NewRightClick(int i, int j)
+        public override bool RightClick(int i, int j)
         {
-            int tile = Main.tile[i, j].frameY / 18;
+            int tile = Main.tile[i, j].TileFrameY / 18;
             int off = Math.Abs(tile - 2);
 
-            if (Main.tile[i, j + off].frameX >= LastFrame)
+            if (Main.tile[i, j + off].TileFrameX >= LastFrame)
             {
-                Main.tile[i, j + off].frameX -= (short)FrameHeight;
-                Item.NewItem(new Vector2(i, j) * 16, drop, Main.rand.Next(1, 3));
+                Main.tile[i, j + off].TileFrameX -= (short)FrameHeight;
+                Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemDrop, Main.rand.Next(1, 3));
                 return true;
             }
-            return base.NewRightClick(i, j);
+            return base.RightClick(i, j);
         }
     }
 
@@ -197,9 +193,9 @@ namespace StarlightRiver.Content.Tiles.Herbology
         {
             Tile thisTile = Main.tile[i, j];
             Tile aboveTile = Main.tile[i, j - 1];
-            //Main.NewText(aboveTile.liquid <= 128 ? (((thisTile.liquid - (aboveTile.liquid * 2)) / 255f) * 80) + 10 : 0);
-            if (aboveTile.liquid < 127)//the growth chance gets higher as the water level does, but it quickly drops off if the second block has any water
-                return (int)((((thisTile.liquid - (aboveTile.liquid * 2)) / 255f) * 60) + 8); //68 max //last number is (min chance), second to last number is (max chance) minus (min chance)
+            //Main.NewText(aboveTile .LiquidAmount <= 128 ? (((thisTile .LiquidAmount - (aboveTile .LiquidAmount * 2)) / 255f) * 80) + 10 : 0);
+            if (aboveTile .LiquidAmount < 127)//the growth chance gets higher as the water level does, but it quickly drops off if the second block has any water
+                return (int)((((thisTile .LiquidAmount - (aboveTile .LiquidAmount * 2)) / 255f) * 60) + 8); //68 max //last number is (min chance), second to last number is (max chance) minus (min chance)
 
             return 0;
         }

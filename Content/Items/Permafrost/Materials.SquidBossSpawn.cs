@@ -16,8 +16,35 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override void SetDefaults()
         {
-            item.rare = ItemRarityID.Green;
-            item.maxStack = 20;
+            Item.rare = ItemRarityID.Green;
+            Item.maxStack = 20;
+        }
+
+        public override void AddRecipes()
+        {
+            CreateRecipe().
+                AddRecipeGroup("StarlightRiver:Fish", 5).
+                AddIngredient(ItemID.CrimtaneOre, 4).
+                AddTile(TileID.DemonAltar).
+                Register();
+
+            CreateRecipe().
+                AddRecipeGroup("StarlightRiver:Fish", 5).
+                AddIngredient(ItemID.DemoniteOre, 4).
+                AddTile(TileID.DemonAltar).
+                Register();
+
+            CreateRecipe().
+                AddRecipeGroup("StarlightRiver:Fish", 5).
+                AddIngredient(ItemID.CrimtaneBar).
+                AddTile(TileID.DemonAltar).
+                Register();
+
+            CreateRecipe().
+                AddRecipeGroup("StarlightRiver:Fish", 5).
+                AddIngredient(ItemID.DemoniteBar).
+                AddTile(TileID.DemonAltar).
+                Register();
         }
     }
 }

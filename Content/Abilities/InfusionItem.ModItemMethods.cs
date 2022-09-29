@@ -14,17 +14,17 @@ namespace StarlightRiver.Content.Abilities
         public override string Texture => "StarlightRiver/Assets/Invisible";
         public virtual string FrameTexture => AssetDirectory.Debug;
 
-        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
-            Draw(spriteBatch, position + GetTexture(Texture).Size() / 2 * scale, 1, true);
+            Draw(spriteBatch, position + Request<Texture2D>(Texture).Value.Size() / 2 * scale, 1, true);
             return false;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity, bool glow)
         {
-            Texture2D outlineTex = GetTexture(FrameTexture);
+            Texture2D outlineTex = Request<Texture2D>(FrameTexture).Value;
             spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, 1, 0, 0);
-            Texture2D mainTex = GetTexture(Texture);
+            Texture2D mainTex = Request<Texture2D>(Texture).Value;
             spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, 1, 0, 0);
         }
 
@@ -40,20 +40,20 @@ namespace StarlightRiver.Content.Abilities
             }
 
             float rot = Main.rand.NextFloat((float)Math.PI * 2);
-            Dust d = Dust.NewDustPerfect(item.Center + Vector2.One.RotatedBy(rot) * 16, 264, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
+            Dust d = Dust.NewDustPerfect(Item.Center + Vector2.One.RotatedBy(rot) * 16, 264, Vector2.One.RotatedBy(rot) * -1.25f, 0, color, 0.8f);
             d.noGravity = true;
             d.noLight = true;
         }
 
         public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
         {
-            Draw(spriteBatch, item.Center - Main.screenPosition, 1, true);
+            Draw(spriteBatch, Item.Center - Main.screenPosition, 1, true);
             return false;
         }
 
-        public override bool OnPickup(Player player)
+        public override bool OnPickup(Player Player)
         {
-            Helper.UnlockEntry<Codex.Entries.InfusionEntry>(player);
+            Helper.UnlockCodexEntry<Codex.Entries.InfusionEntry>(Player);
             return true;
         }
 
@@ -62,15 +62,15 @@ namespace StarlightRiver.Content.Abilities
             return Main.LocalPlayer.GetHandler().CanSetInfusion(this);
         }
 
-        public override void RightClick(Player player)
+        public override void RightClick(Player Player)
         {
-            var mp = player.GetHandler();
+            var mp = Player.GetHandler();
 
             for (int i = 0; i < mp.InfusionLimit; i++)
                 if (mp.GetInfusion(i) == null || i == mp.InfusionLimit - 1)
                 {
-                    mp.SetInfusion(item.Clone().modItem as InfusionItem, i);
-                    item.TurnToAir();
+                    mp.SetInfusion(Item.Clone().ModItem as InfusionItem, i);
+                    Item.TurnToAir();
                     return;
                 }
         }

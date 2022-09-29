@@ -4,6 +4,8 @@ using StarlightRiver.Core;
 using System;
 using System.IO;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
@@ -12,35 +14,45 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC
     {
-        public ref float ActionState => ref npc.ai[0];
-        public ref float ActionTimer => ref npc.ai[1];
-		public ref float GlobalTimer => ref npc.ai[2];
-        public ref float TurnTimer => ref npc.ai[3];
+        public ref float ActionState => ref NPC.ai[0];
+        public ref float ActionTimer => ref NPC.ai[1];
+		public ref float GlobalTimer => ref NPC.ai[2];
+        public ref float TurnTimer => ref NPC.ai[3];
 
         public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
-            mod.AddGore("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore", new MagmiteGore());
-            return true;
+            //GoreLoader.AddGoreFromTexture<MagmiteGore>(StarlightRiver.Instance, "StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
         }
 
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Small Magmite");
+            Main.npcCatchable[Type] = true;
         }
 
         public override void SetDefaults()
         {
-            npc.width = 24;
-            npc.height = 24;
-            npc.damage = 0;
-            npc.defense = 0;
-            npc.lifeMax = 25;
-            npc.aiStyle = -1;
-            npc.lavaImmune = true;
+            NPC.catchItem = ItemType<MagmitePassiveItem>();
+            NPC.width = 24;
+            NPC.height = 24;
+            NPC.damage = 0;
+            NPC.defense = 0;
+            NPC.lifeMax = 25;
+            NPC.aiStyle = -1;
+            NPC.lavaImmune = true;
 
             ActionState = -1;
+        }
+
+        public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+        {
+            bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+            {
+                Bestiary.SLRSpawnConditions.VitricDesert,
+                new FlavorTextBestiaryInfoElement("[PH] Entry")
+            });
         }
 
         public override Color? GetAlpha(Color drawColor)
@@ -50,98 +62,101 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
         public override void SendExtraAI(BinaryWriter writer)
         {
-            writer.WritePackedVector2(npc.velocity);
+            writer.WritePackedVector2(NPC.velocity);
         }
 
         public override void ReceiveExtraAI(BinaryReader reader)
         {
-            npc.velocity = reader.ReadPackedVector2();
+            NPC.velocity = reader.ReadPackedVector2();
         }
 
         public override void AI()
         {
-            var x = (int)(npc.Center.X / 16) + npc.direction; //check 1 tile infront of la cretura
-            var y = (int)(npc.Center.Y / 16);
+            var x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
+            var y = (int)(NPC.Center.Y / 16);
             var tile = Framing.GetTileSafely(x, y);
 			var tileUp = Framing.GetTileSafely(x, y - 1);
-            var tileClose = Framing.GetTileSafely(x - npc.direction, y - 1);
-            var tileFar = Framing.GetTileSafely(x + npc.direction * 2, y - 1);
+            var tileClose = Framing.GetTileSafely(x - NPC.direction, y - 1);
+            var tileFar = Framing.GetTileSafely(x + NPC.direction * 2, y - 1);
             var tileUnder = Framing.GetTileSafely(x, y + 1);
 
             ActionTimer++;
             GlobalTimer++;
 
             if (Main.rand.Next(10) == 0)
-                Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+                Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
             if(ActionState == -1)
 			{
-                if (tile.liquid > 0)
-                    npc.velocity.Y = -4;
+                if (tile .LiquidAmount > 0)
+                    NPC.velocity.Y = -4;
                 else
                 {
-                    npc.velocity.X += Main.rand.NextBool() ? 5 : -5;
-                    npc.velocity.Y = -10;
+                    NPC.velocity.X += Main.rand.NextBool() ? 5 : -5;
+                    NPC.velocity.Y = -10;
                     ActionState = 0;
                     if (Main.netMode == NetmodeID.Server)
-                        npc.netUpdate = true;
+                        NPC.netUpdate = true;
                 }
 			}
 
             if (ActionState == 0)
             {
-                if (npc.velocity.Y == 0 && npc.velocity.X == 0 && tile.slope() == 0 && !tile.halfBrick() && tile.collisionType == 1 && tileUp.collisionType == 0 && tileClose.collisionType == 0) //climb up small cliffs
+                if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && 
+                    tile.BlockType == BlockType.Solid &&
+                    (!tileUp.HasTile || (!Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType])) &&
+                    (!tileClose.HasTile || (!Main.tileSolid[tileClose.TileType] && !Main.tileSolidTop[tileClose.TileType]))) //climb up small cliffs
                 {
                     ActionState = 1;
-                    npc.velocity *= 0;
+                    NPC.velocity *= 0;
                     ActionTimer = 0;
                     return;
                 }
 
-                else if(npc.velocity.X == 0 && tile.collisionType != 0 && tileUp.collisionType == 0)
+                else if(NPC.velocity.X == 0 && tile.HasTile && (!tileUp.HasTile || (!Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType])))
 				{
-                    npc.velocity.Y -= 2;
+                    NPC.velocity.Y -= 2;
                 }
 
-                if (npc.velocity.X == 0)
+                if (NPC.velocity.X == 0)
                     TurnTimer++;
                 else
                     TurnTimer = 0;
 
                 if (TurnTimer > 180)
                 {
-					npc.velocity.X = npc.direction * -1;
-                    npc.target = -1;
+					NPC.velocity.X = NPC.direction * -1;
+                    NPC.target = -1;
                     TurnTimer = 0;
                 }
 
                 if(ActionTimer % 60 == 0)
-                    npc.TargetClosest();
+                    NPC.TargetClosest();
 
-                if(npc.target >= 0)
-                    npc.velocity.X += 0.05f * (Main.player[npc.target].Center.X > npc.Center.X ? 1 : -1);
+                if(NPC.target >= 0)
+                    NPC.velocity.X += 0.05f * (Main.player[NPC.target].Center.X > NPC.Center.X ? 1 : -1);
 
-                npc.velocity.X = Math.Min(npc.velocity.X, 1.5f);
-                npc.velocity.X = Math.Max(npc.velocity.X, -1.5f);
+                NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f);
+                NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f);
 
-                npc.direction = npc.velocity.X > 0 ? 1 : -1;
-                npc.spriteDirection = npc.velocity.X > 0 ? 1 : -1;
+                NPC.direction = NPC.velocity.X > 0 ? 1 : -1;
+                NPC.spriteDirection = NPC.velocity.X > 0 ? 1 : -1;
 
-                if(tileFar.collisionType == 1 && npc.velocity.Y == 0) //jump up big cliffs
-                    npc.velocity.Y -= 8;
+                if(tileFar.BlockType == BlockType.Solid && NPC.velocity.Y == 0) //jump up big cliffs
+                    NPC.velocity.Y -= 8;
 
-                if(tileUnder.collisionType == 0 && npc.velocity.Y == 0) //hop off edges
-                    npc.velocity.Y -= 4;
+                if((!tileUnder.HasTile || (!Main.tileSolid[tileUnder.TileType] && !Main.tileSolidTop[tileUnder.TileType])) && NPC.velocity.Y == 0) //hop off edges
+                    NPC.velocity.Y -= 4;
 
-                if (npc.velocity.Y != 0)
+                if (NPC.velocity.Y != 0)
                 {
-                    npc.frame.X = 0;
-                    npc.frame.Y = 0;
+                    NPC.frame.X = 0;
+                    NPC.frame.Y = 0;
                 }
                 else
                 {
-                    npc.frame.X = 42;
-                    npc.frame.Y = (int)((ActionTimer / 5) % 5) * 40;
+                    NPC.frame.X = 42;
+                    NPC.frame.Y = (int)((ActionTimer / 5) % 5) * 40;
                 }
             }
 
@@ -151,53 +166,55 @@ namespace StarlightRiver.Content.NPCs.Vitric
                 {
                     ActionState = 0;
                     ActionTimer = 0;
-                    npc.position.Y -= 16;
-                    npc.position.X += 26 * npc.direction;
+                    NPC.position.Y -= 16;
+                    NPC.position.X += 26 * NPC.direction;
                 }
 
-                npc.frame.X = 84;
-                npc.frame.Y = (int)((ActionTimer / 60f) * 9) * 40;
+                NPC.frame.X = 84;
+                NPC.frame.Y = (int)((ActionTimer / 60f) * 9) * 40;
             }
 
-            npc.frame.Width = 42;
-            npc.frame.Height = 40;
+            NPC.frame.Width = 42;
+            NPC.frame.Height = 40;
         }
 
         public override void HitEffect(int hitDirection, double damage)
         {
-            if (npc.life <= 0 && Main.netMode != NetmodeID.Server)
+            if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
             {
                 for (int k = 0; k < 30; k++)
-                    Gore.NewGoreDirect(npc.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), ModGore.GetGoreSlot("StarlightRiver/Assets/NPCs/Vitric/MagmiteGore"), Main.rand.NextFloat(0.5f, 0.8f));
+                    Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
-                Main.PlaySound(SoundID.DD2_GoblinHurt, npc.Center);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, NPC.Center);
             }
         }
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            var pos = npc.Center - Main.screenPosition + new Vector2(0, -8);
+            var pos = NPC.Center - screenPos + new Vector2(0, -8);
 
             if (ActionState == 1)
             {
-                pos += new Vector2(8 * npc.spriteDirection, -4);
+                pos += new Vector2(8 * NPC.spriteDirection, -4);
 
-                if (npc.spriteDirection == -1)
+                if (NPC.spriteDirection == -1)
                     pos.X += 4;
             }
 
             int originX = 18;
-            if (npc.spriteDirection == -1)
+            if (NPC.spriteDirection == -1)
                 originX = 30;
 
-            spriteBatch.Draw(GetTexture(Texture), pos, npc.frame, Color.White, 0, new Vector2(originX, 20), 1, npc.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+            spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White, 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
             return false;
         }
 	}
 
     internal class MagmiteGore : ModGore
     {
-        public override void OnSpawn(Gore gore)
+		public override string Texture => AssetDirectory.VitricNpc + "MagmiteGore";
+
+        public override void OnSpawn(Gore gore, IEntitySource source)
         {
             gore.timeLeft = 180;
             gore.sticky = true;
@@ -231,13 +248,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
         }
     }
 
+    internal class MagmitePassiveItem : QuickNPCItem
+    {
+        public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
+    }
+    /*
     internal class MagmiteBanner : ModBanner
     {
-        public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
+    public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
     }
 
     internal class MagmiteBannerItem : QuickBannerItem
     {
         public MagmiteBannerItem() : base("MagmiteBanner", "Small Magmite", AssetDirectory.VitricNpc) { }
-    }
+    }*/
 }

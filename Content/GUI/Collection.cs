@@ -36,6 +36,8 @@ namespace StarlightRiver.Content.GUI
             if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || ShouldReset)
             {
                 RemoveAllChildren();
+                abilityIconPositions.Clear();
+
                 var abilities = Ability.GetAbilityInstances();
 
                 for (int k = 0; k < abilities.Length; k++)
@@ -74,7 +76,7 @@ namespace StarlightRiver.Content.GUI
                 Main.LocalPlayer.mouseInterface = true;
 
             Vector2 pos = GetDimensions().Center() - Vector2.One;
-            Texture2D tex = !Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? GetTexture("StarlightRiver/Assets/GUI/blank") : GetTexture(ability.Texture);
+            Texture2D tex = !Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? Request<Texture2D>("StarlightRiver/Assets/GUI/blank").Value : Request<Texture2D>(ability.Texture).Value;
 
             spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 
@@ -82,7 +84,7 @@ namespace StarlightRiver.Content.GUI
             {
                 if (Ability is Dash)
                 {
-                    Texture2D dustex = ModContent.GetTexture("StarlightRiver/Assets/GUI/Fire");
+                    Texture2D dustex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Fire").Value;
 
                     for (int k = 0; k < 3; k++)
                     {
@@ -94,7 +96,7 @@ namespace StarlightRiver.Content.GUI
 
                 if (Ability is Wisp)
                 {
-                    Texture2D dustex = ModContent.GetTexture("StarlightRiver/Assets/GUI/Fire");
+                    Texture2D dustex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Fire").Value;
 
                     Vector2 duspos = pos + new Vector2((float)Math.Cos(LegendWorld.rottime) * 2, (float)Math.Sin(LegendWorld.rottime)) * 8f;
                     Collection.dust.Add(new ExpertDust(dustex, duspos, Vector2.Zero, new Color(255, 255, 150), 1.8f, 30));

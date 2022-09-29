@@ -11,39 +11,35 @@ namespace StarlightRiver.Content.Items.Potions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculation Potion");
-			Tooltip.SetDefault("+30% DoT resistance");
+			Tooltip.SetDefault("+30% Inoculation");
 		}
 
 		public override void SetDefaults()
 		{
-			item.width = 18;
-			item.height = 30;
-			item.maxStack = 30;
-			item.useStyle = Terraria.ID.ItemUseStyleID.EatingUsing;
-			item.consumable = true;
-			item.buffType = ModContent.BuffType<InoculationPotionBuff>();
-			item.buffTime = 180 * 60;
-			item.UseSound = Terraria.ID.SoundID.Item3;
+			Item.width = 18;
+			Item.height = 30;
+			Item.maxStack = 30;
+			Item.useStyle = Terraria.ID.ItemUseStyleID.EatFood;
+			Item.consumable = true;
+			Item.buffType = ModContent.BuffType<InoculationPotionBuff>();
+			Item.buffTime = 180 * 60;
+			Item.UseSound = Terraria.ID.SoundID.Item3;
 		}
 	}
 
 	class InoculationPotionBuff : ModBuff
 	{
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = AssetDirectory.PotionsItem + name;
-			return base.Autoload(ref name, ref texture);
-		}
+		public override string Texture => AssetDirectory.PotionsItem + Name;
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Inoculated");
-			Description.SetDefault("+30% to DoT Resistance");
+			Description.SetDefault("+30% Inoculation");
 		}
 
-		public override void Update(Player player, ref int buffIndex)
+		public override void Update(Player Player, ref int buffIndex)
 		{
-			player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
+			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.3f;
 		}
 	}
 }

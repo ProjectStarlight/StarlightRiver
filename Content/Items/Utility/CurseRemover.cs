@@ -15,30 +15,30 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scroll of Undoing");
-			Tooltip.SetDefault("Place over an equipped cursed item to destroy it\n'There's no turning back, most of the time'");
+			Tooltip.SetDefault("Place over an equipped cursed Item to destroy it\n'There's no turning back, most of the time'");
 		}
 
 		public override void SetDefaults()
 		{
-			item.width = 32;
-			item.height = 32;
-			item.maxStack = 1;
-			item.rare = ItemRarityID.LightRed;
-			item.accessory = true;
+			Item.width = 32;
+			Item.height = 32;
+			Item.maxStack = 1;
+			Item.rare = ItemRarityID.LightRed;
+			Item.accessory = true;
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
-			tooltips.Remove(tooltips.FirstOrDefault(n => n.mod == "Terraria" && n.Name == "Equipable"));
+			tooltips.Remove(tooltips.FirstOrDefault(n => n.Mod == "Terraria" && n.Name == "Equipable"));
 		}
 
-		public override bool CanEquipAccessory(Player player, int slot)
+		public override bool CanEquipAccessory(Player Player, int slot, bool modded)
 		{
-			if (player.armor[slot].modItem is CursedAccessory && slot <= 7 + player.extraAccessorySlots)
+			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
 			{
-				(player.armor[slot].modItem as CursedAccessory).GoingBoom = true;
+				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
 
-				item.TurnToAir();
+				Item.TurnToAir();
 			}
 
 			return false;

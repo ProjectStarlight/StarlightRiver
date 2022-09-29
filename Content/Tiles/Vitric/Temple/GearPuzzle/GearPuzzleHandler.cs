@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
-	class GearPuzzleHandler : ModWorld
+	class GearPuzzleHandler : ModSystem
 	{
 		public static int engagedObjectives;
 		public static bool solved;
@@ -30,16 +30,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			get => TileEntity.ByPosition.ContainsKey(PuzzleOriginLocation) ? TileEntity.ByPosition[PuzzleOriginLocation] as GearTileEntity : null;
 		}
 
-		public override TagCompound Save()
+		public override void SaveWorldData(TagCompound tag)
 		{
-			return new TagCompound()
-			{
-				["puzzleOriginLocation"] = puzzleOriginLocation,
-				["solved"] = solved
-			};
+			tag["puzzleOriginLocation"] = puzzleOriginLocation;
+			tag["solved"] = solved;
 		}
 
-		public override void Load(TagCompound tag)
+		public override void LoadWorldData(TagCompound tag)
 		{
 			puzzleOriginLocation = tag.Get<Vector2>("puzzleOriginLocation");
 			solved = tag.GetBool("solved");

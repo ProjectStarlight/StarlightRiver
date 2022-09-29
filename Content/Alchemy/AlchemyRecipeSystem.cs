@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Alchemy
         public static List<AlchemyRecipe> recipeList;
 
         /// <summary>
-        /// cache Types of all the alchemy ingredients in use, indexed by itemId, 
+        /// cache Types of all the alchemy ingredients in use, indexed by ItemId, 
         /// done this way since we want to instantiate new instances b/c there can be multiple cauldrons and we don't want to use reflection every time an ingredient needs to be created
         /// </summary>
         public static Dictionary<int, Type> allIngredientMap;
@@ -29,8 +29,8 @@ namespace StarlightRiver.Content.Alchemy
             allIngredientMap = new Dictionary<int, Type>();
             recipeList = new List<AlchemyRecipe>();
             //reflection to discover and cache AlchemyIngredient override types
-            Mod mod = StarlightRiver.Instance;
-            foreach (Type type in mod.Code.GetTypes().Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(AlchemyIngredient)) && t != typeof(GenericAlchemyIngredient)))
+            Mod Mod = StarlightRiver.Instance;
+            foreach (Type type in Mod.Code.GetTypes().Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(AlchemyIngredient)) && t != typeof(GenericAlchemyIngredient)))
             {
                 AlchemyIngredient tempIngredient = (AlchemyIngredient)Activator.CreateInstance(type);
                 allIngredientMap.Add(tempIngredient.getItemId(), type);
@@ -65,23 +65,23 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// Creates an instance of AlchemyIngredient based on provided item and puts the item itself into the ingredient object
+        /// Creates an instance of AlchemyIngredient based on provided Item and puts the Item itself into the ingredient object
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="Item"></param>
         /// <returns></returns>
-        public static AlchemyIngredient instantiateIngredient(Item item)
+        public static AlchemyIngredient instantiateIngredient(Item Item)
         {
             Type ingredientClassType;
-            bool inMap = allIngredientMap.TryGetValue(item.type, out ingredientClassType);
+            bool inMap = allIngredientMap.TryGetValue(Item.type, out ingredientClassType);
 
             AlchemyIngredient instantiatedIngredient ;
 
             if (inMap)
                 instantiatedIngredient = ((AlchemyIngredient)Activator.CreateInstance(ingredientClassType));
             else
-                instantiatedIngredient = new GenericAlchemyIngredient(item.type);
+                instantiatedIngredient = new GenericAlchemyIngredient(Item.type);
 
-            instantiatedIngredient.putIngredient(item);
+            instantiatedIngredient.putIngredient(Item);
             return instantiatedIngredient;
         }
     }

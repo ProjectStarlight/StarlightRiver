@@ -13,6 +13,11 @@ float3 uLightSource;
 float2 uImageSize0;
 float2 uImageSize1;
 
+float4 uShaderSpecificData;
+float2 uTargetPosition;
+float4 uLegacyArmorSourceRect;
+float2 uLegacyArmorSheetSize;
+
 float hue2rgb(float p, float q, float t){
             if(t < 0) t += 1;
             if(t > 1) t -= 1;

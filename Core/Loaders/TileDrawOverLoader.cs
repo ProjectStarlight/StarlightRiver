@@ -8,7 +8,7 @@ using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Core.Loaders
 {
-    class TileDrawOverLoader : ILoadable
+    class TileDrawOverLoader : IOrderedLoadable
     {
         public float Priority { get => 1.1f; }
 
@@ -32,9 +32,16 @@ namespace StarlightRiver.Core.Loaders
 
         public static void ResizeTarget()
         {
-            projTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-            tileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            projTarget?.Dispose();
+            tileTarget?.Dispose();
+
+            Main.QueueMainThreadAction(() =>
+            {
+                projTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+                tileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+            });
         }
+
         private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
         {
             orig(self);
@@ -66,7 +73,7 @@ namespace StarlightRiver.Core.Loaders
 
         private void DrawToTarget()
         {
-            if (Main.instance.tileTarget == null || Main.instance.tileTarget.IsDisposed)
+            if (Main.gameMenu || Main.instance.tileTarget == null || Main.instance.tileTarget.IsDisposed)
                 return;
 
             GraphicsDevice gD = Main.graphics.GraphicsDevice;
@@ -100,6 +107,7 @@ namespace StarlightRiver.Core.Loaders
 
             gD.SetRenderTarget(projTarget);
             gD.Clear(Color.Transparent);
+
             spriteBatch.Begin(
                 SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default,
                 RasterizerState.CullNone, null,
@@ -108,7 +116,7 @@ namespace StarlightRiver.Core.Loaders
             for (int i = 0; i < Main.projectile.Length; i++)
             {
                 Projectile proj = Main.projectile[i];
-                if (proj.active && proj.modProjectile is IDrawOverTiles iface)
+                if (proj.active && proj.ModProjectile is IDrawOverTiles iface)
                 {
                     iface.DrawOverTiles(spriteBatch);
                 }
@@ -121,7 +129,7 @@ namespace StarlightRiver.Core.Loaders
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null);
             spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
-            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTilePos - Main.screenPosition - translation, Color.White);
+            spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition - translation , Color.White);
             spriteBatch.End();
 
             gD.SetRenderTargets(bindings);
@@ -134,15 +142,18 @@ namespace StarlightRiver.Core.Loaders
             if (tileTarget == null || projTarget == null)
                 return;
 
+            Effect effect = Filters.Scene["OverTileShader"].GetShader().Shader;
+
+            if (effect is null)
+                return;
+
+            effect.Parameters["TileTarget"].SetValue(tileTarget);
+
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-            //Main.spriteBatch.Draw(tileTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
-
-            Effect effect = Filters.Scene["OverTileShader"].GetShader().Shader;
-            effect.Parameters["TileTarget"].SetValue(tileTarget);
             effect.CurrentTechnique.Passes[0].Apply();
-
             Main.spriteBatch.Draw(projTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
             Main.spriteBatch.End();
         }
     }

@@ -13,42 +13,44 @@ namespace StarlightRiver.Content.Items.Misc
 
         public DisinfectantKit() : base("Disinfectant Kit", "Combined effects of the Disinfectant Wipes and Sanitizer Spray\n10% increased critical strike chance when a debuff is active") { }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.OnHitNPCEvent += OnHitNPCAccessory;
             StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
-
-            return true;
         }
 
-        private void OnHit(Player player, bool crit)
+		public override void Unload()
+		{
+            StarlightPlayer.OnHitNPCEvent -= OnHitNPCAccessory;
+            StarlightPlayer.OnHitNPCWithProjEvent -= OnHitNPCWithProjAccessory;
+        }
+
+		private void OnHit(Player Player, bool crit)
         {
-            if (Equipped(player) && crit)
+            if (Equipped(Player) && crit)
             {
                 if (Main.rand.NextFloat() < 0.1f)
                 {
-                    DisinfectantWipes.ReduceDebuffDurations(player);
+                    DisinfectantWipes.ReduceDebuffDurations(Player);
                 }
                 if (Main.rand.NextFloat() < 0.25f)
                 {
-                    SanitizerSpray.TransferRandomDebuffToNearbyEnemies(player);
+                    SanitizerSpray.TransferRandomDebuffToNearbyEnemies(Player);
                 }
             }
         }
 
-        private void OnHitNPCAccessory(Player player, Item item, NPC target, int damage, float knockback, bool crit)
-            => OnHit(player, crit);
-        private void OnHitNPCWithProjAccessory(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-            => OnHit(player, crit);
+        private void OnHitNPCAccessory(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
+            => OnHit(Player, crit);
+        private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+            => OnHit(Player, crit);
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
             for (int i = 0; i < Player.MaxBuffs; i++)
             {
-                if (Helper.IsValidDebuff(player, i))
+                if (Helper.IsValidDebuff(Player, i))
                 {
-                    player.BoostAllDamage(0, 10);
-
                     return;
                 }
             }
@@ -56,16 +58,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AddRecipes()
         {
-            ModRecipe recipe = new ModRecipe(mod);
+            Recipe recipe = CreateRecipe();
 
             recipe.AddIngredient(ModContent.ItemType<DisinfectantWipes>());
             recipe.AddIngredient(ModContent.ItemType<SanitizerSpray>());
 
             recipe.AddTile(TileID.TinkerersWorkbench);
-
-            recipe.SetResult(this);
-
-            recipe.AddRecipe();
+            recipe.Register();
         }
     }
 }

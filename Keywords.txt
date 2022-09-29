@@ -1,0 +1,12 @@
+Shredded | Inflicted enemies have their defense decreased by 2 and take 2 damage-over-time per stack, maxing at 5 stacks. | 90 | 20 | 20
+Vulnerability | Increases the amount of damage a target takes by their Vulnerability | 150 | 30 | 30
+Exposure | Multiplies the amount of damage a target takes by their Exposure | 175 | 35 | 35
+Focused | The enemy in which this is inflicted on has double the chance to be critically striked, however you cannot critically strike any other enemy besides the Focused enemy. | 85 | 220 | 55
+Haunted | Inflicted enemies take 1 damage-per-second per haunted stack, maxing at 20 stacks. When an enemy has 20 Haunted stacks, they will cause haunted apparitions to exorcise from them, getting rid of all their Haunted stacks. | 180 | 0 | 255
+Volatile | Inflicted enemies take 7% increased damage for every stack of Volatile, however inflicted enemies also deal 3% more damage for every stack of Volatile. Enemies cannot have more than five stacks of Volatile. | 220 | 205 | 140
+Grazes | Happens when an enemies projectile barely misses you. Grazes have a cooldown of two seconds at default. | 135 | 235 | 255
+Barrier | Provides damage reduction while active. When you resist damage this way, the amount you would have taken is subtracted from your barrier. your barrier recovers after a brief period of not taking damage. | 100 | 255 | 255
+Stamina | Allows you to use abilities. Each ability has a set stamina cost which may be modified via infusions. | 255 | 200 | 155
+Cursed | This item comes with a crippling downside, and cannot be removed normally once equipped. A scroll of undoing can destroy the item, removing its effects and freeing the slot but deleting it forever. | 200 | 100 | 255
+Inoculation | Multiplicitavely reduces damage-over-time taken from all sources. | 170 | 255 | 150
+Debug | Not intended for use in normal gameplay, and should only be obtainable via cheats or inventory editors. Please submit a bug report at https://github.com/ProjectStarlight/StarlightRiver/issues if you believe you recieved this item in error. | 255 | 0 | 0

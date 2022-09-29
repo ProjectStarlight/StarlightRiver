@@ -14,18 +14,18 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.Orange;
+            Item.rare = ItemRarityID.Orange;
         }
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-            AbilityHandler mp = player.GetHandler();
+            AbilityHandler mp = Player.GetHandler();
             mp.StaminaMaxBonus += 1;
         }
 
-		public override void UpdateAccessory(Player player, bool hideVisual)
+		public override void UpdateAccessory(Player Player, bool hideVisual)
         {
-            if(!GUI.Stam.specialVesselTextures.Contains(Texture) && Main.myPlayer == player.whoAmI)
+            if(!GUI.Stam.specialVesselTextures.Contains(Texture) && Main.myPlayer == Player.whoAmI)
                 GUI.Stam.specialVesselTextures.Add(Texture);
         }
     }

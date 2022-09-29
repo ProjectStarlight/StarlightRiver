@@ -19,22 +19,22 @@ namespace StarlightRiver.Content.ArmorEnchantment
             return true;
         }
 
-        public override void UpdateSet(Player player)
+        public override void UpdateSet(Player Player)
         {
-            player.setBonus = "Acts as a second button to test the UI";
+            Player.setBonus = "Acts as a second button to test the UI";
         }
 
-        public override void DrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override void DrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
 
         }
 
-        public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+        public override bool PreDrawInInventory(Item Item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
         {
             spriteBatch.End();
             spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
-            var tex = Main.itemTexture[item.type];
+            var tex = Terraria.GameContent.TextureAssets.Item[Item.type].Value;
 
             for (int k = 0; k < 3; k++)
             {

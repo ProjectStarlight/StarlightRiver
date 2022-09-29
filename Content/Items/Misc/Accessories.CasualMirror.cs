@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System;
@@ -12,17 +13,17 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public CasualMirror() : base(ModContent.GetTexture(AssetDirectory.MiscItem + "CasualMirror")) { }
+		public CasualMirror() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Casual Mirror");
-			Tooltip.SetDefault("Regeneration and damage over time are swapped \nThis includes natural regeneration");
+			Tooltip.SetDefault("Regenerate life when you would take damage-over-time.\nCursed : take damage-over-time when you would regenerate life.\n This includes natural regeneration");
 		}
 
-		public override void SafeUpdateEquip(Player player)
+		public override void SafeUpdateEquip(Player Player)
 		{
-			player.GetModPlayer<CasualMirrorPlayer>().equipped = true;
+			Player.GetModPlayer<CasualMirrorPlayer>().equipped = true;
 		}
 	}
 
@@ -40,14 +41,14 @@ namespace StarlightRiver.Content.Items.Misc
 			if (equipped)
 			{
 				regen *= -1f;
-				player.lifeRegen *= -1;
+				Player.lifeRegen *= -1;
 			}
 		}
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (equipped && hitDirection == 0 && damageSource.SourceOtherIndex == 8)
 			{
-				damageSource = PlayerDeathReason.ByCustomReason(player.name + " didn't read the tooltip");
+				damageSource = PlayerDeathReason.ByCustomReason(Player.name + " didn't read the tooltip");
 			}
 			return true;
 		}

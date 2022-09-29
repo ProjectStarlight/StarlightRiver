@@ -53,7 +53,7 @@ namespace StarlightRiver.Configs
         public bool ReflectionsOn = true;
 
         [Label("Reflect Players")]
-        [Tooltip("This will Enable/Disable reflecting players.\n low performance impact.")]
+        [Tooltip("This will Enable/Disable reflecting Players.\n low performance impact.")]
         [DefaultValue(true)]
         public bool PlayerReflectionsOn = true;
 

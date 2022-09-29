@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using StarlightRiver.NPCs.TownUpgrade;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.GUI
         public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
         private readonly UIList quests = new UIList();
-        private readonly UIList itemList = new UIList();
+        private readonly UIList ItemList = new UIList();
         private readonly UIScrollbar questScroll = new UIScrollbar();
         private readonly SubmitButton submitButton = new SubmitButton();
 
@@ -33,8 +34,8 @@ namespace StarlightRiver.Content.GUI
             questScroll.SetView(0, 300);
             quests.SetScrollbar(questScroll);
 
-            AddElement(itemList, 5, 75, 0.5f, 0.3f, 200, 200, this);
-            itemList.ListPadding = 0;
+            AddElement(ItemList, 5, 75, 0.5f, 0.3f, 200, 200, this);
+            ItemList.ListPadding = 0;
 
             AddElement(submitButton, 0, 310, 0.5f, 0.3f, 100, 28, this);
         }
@@ -42,10 +43,10 @@ namespace StarlightRiver.Content.GUI
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 pos = new Vector2(Main.screenWidth / 2 + 10, Main.screenHeight * 0.3f);
-            Texture2D panel = GetTexture("StarlightRiver/Assets/GUI/TownQuestPanel");
+            Texture2D panel = Request<Texture2D>("StarlightRiver/Assets/GUI/TownQuestPanel").Value;
 
             spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
-            if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Main.fontDeathText, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+            if (activeQuest != null) Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Terraria.GameContent.FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
             Recalculate();
             base.Draw(spriteBatch);
@@ -68,7 +69,7 @@ namespace StarlightRiver.Content.GUI
 
         public void PopulateItems()
         {
-            itemList.Clear();
+            ItemList.Clear();
 
             int offY = 0;
             foreach (Loot loot in activeQuest.Requirements)
@@ -78,7 +79,7 @@ namespace StarlightRiver.Content.GUI
                 element.Left.Set(16, 0);
                 element.Width.Set(32, 0);
                 element.Height.Set(32, 0);
-                itemList.Add(element);
+                ItemList.Add(element);
                 offY += 15;
             }
         }
@@ -109,15 +110,15 @@ namespace StarlightRiver.Content.GUI
     {
         readonly TownUpgrade quest;
 
-        public TownQuestItem(TownUpgrade itemQuest) => quest = itemQuest;
+        public TownQuestItem(TownUpgrade ItemQuest) => quest = ItemQuest;
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             TownQuestList parent = Parent.Parent.Parent as TownQuestList;
             Vector2 pos = GetDimensions().ToRectangle().Center();
 
-            Texture2D back = GetTexture("StarlightRiver/Assets/GUI/TownQuestBack");
-            Texture2D check = GetTexture("StarlightRiver/Assets/GUI/QuestCheck");
+            Texture2D back = Request<Texture2D>("StarlightRiver/Assets/GUI/TownQuestBack").Value;
+            Texture2D check = Request<Texture2D>("StarlightRiver/Assets/GUI/QuestCheck").Value;
 
             spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : IsMouseHovering ? 0.7f : 0.5f), 0, back.Size() / 2, 1, 0, 0);
             Utils.DrawBorderString(spriteBatch, quest._questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             TownQuestList parent = Parent.Parent.Parent as TownQuestList;
             parent.activeQuest = quest;
@@ -144,7 +145,7 @@ namespace StarlightRiver.Content.GUI
             if (Quest != null && !Quest.Unlocked)
             {
                 Vector2 pos = GetDimensions().ToRectangle().Center();
-                Texture2D back = GetTexture("StarlightRiver/Assets/GUI/NPCButton");
+                Texture2D back = Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButton").Value;
 
                 spriteBatch.Draw(back, pos, back.Frame(), Color.White * (IsMouseHovering ? 1 : 0.7f), 0, back.Size() / 2, 1, 0, 0);
                 Utils.DrawBorderString(spriteBatch, "Submit", pos, Color.White, 0.7f, 0.5f, 0.4f);
@@ -153,16 +154,16 @@ namespace StarlightRiver.Content.GUI
 
         public override void Click(UIMouseEvent evt)
         {
-            Main.PlaySound(SoundID.MenuTick);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
             if (Quest == null || Quest.Unlocked) return;
             foreach (Loot loot in Quest.Requirements) if (!Helper.HasItem(Main.LocalPlayer, loot.Type, loot.Count)) return;
 
             foreach (Loot loot in Quest.Requirements) Helper.TryTakeItem(Main.LocalPlayer, loot.Type, loot.Count);
 
-            StarlightWorld.TownUpgrades[Quest._npcName] = !StarlightWorld.TownUpgrades[Quest._npcName];
+            StarlightWorld.TownUpgrades[Quest._NPCName] = !StarlightWorld.TownUpgrades[Quest._NPCName];
 
-            Main.PlaySound(SoundID.Item82);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82);
         }
     }
 
@@ -178,13 +179,13 @@ namespace StarlightRiver.Content.GUI
             type = typ;
             count = cnt;
 
-            Item item = new Item();
-            item.SetDefaults(typ);
+            Item Item = new Item();
+            Item.SetDefaults(typ);
 
-            if (type <= ItemID.Count) icon = Main.itemTexture[type];
-            else icon = GetTexture(item.modItem.Texture);
+            if (type <= ItemID.Count) icon = TextureAssets.Item[type].Value;
+            else icon = Request<Texture2D>(Item.ModItem.Texture).Value;
 
-            name = item.Name;
+            name = Item.Name;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

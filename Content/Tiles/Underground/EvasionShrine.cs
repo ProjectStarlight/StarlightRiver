@@ -18,13 +18,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public override int DummyType => ModContent.ProjectileType<EvasionShrineDummy>();
 
-		public override bool Autoload(ref string name, ref string texture)
-		{
-			texture = "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
-			return true;
-		}
+		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/EvasionShrine";
 
-		public override void SetDefaults()
+		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
@@ -33,40 +29,40 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = Framing.GetTileSafely(i, j);
 
-			if (tile.frameX == 0 && tile.frameY == 0)
+			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
 				var dummy = Dummy(i, j);
 
 				if (dummy is null)
 					return;
 
-				if (((EvasionShrineDummy)dummy.modProjectile).State == 0 && tile.frameX > 36)
-					tile.frameX -= 3 * 18;
+				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
+					tile.TileFrameX -= 3 * 18;
 			}
 		}
 
-		public override bool NewRightClick(int i, int j)
+		public override bool RightClick(int i, int j)
 		{
 			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 
-			int x = i - tile.frameX / 16;
-			int y = j - tile.frameY / 16;
+			int x = i - tile.TileFrameX / 16;
+			int y = j - tile.TileFrameY / 16;
 
 			var dummy = Dummy(x, y);
 
-			if ((dummy.modProjectile as EvasionShrineDummy).State == 0)
+			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
 				for (int x1 = 0; x1 < 3; x1++)
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.frameX / 18;
-						int realY = y1 + j - tile.frameY / 18;
+						int realX = x1 + i - tile.TileFrameX / 18;
+						int realY = y1 + j - tile.TileFrameY / 18;
 
-						Framing.GetTileSafely(realX, realY).frameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
 
-				(dummy.modProjectile as EvasionShrineDummy).State = 1;
-				(dummy.modProjectile as EvasionShrineDummy).lives = 4;
+				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
+				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
 				return true;
 			}
 
@@ -80,8 +76,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public int lives;
 		public List<int> attackOrder;
 
-		public ref float Timer => ref projectile.ai[0];
-		public ref float State => ref projectile.ai[1];
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float State => ref Projectile.ai[1];
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
@@ -91,18 +87,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
 
-			Lighting.AddLight(projectile.Center + new Vector2(240, 0), color);
-			Lighting.AddLight(projectile.Center + new Vector2(-240, 0), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(240, 0), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(-240, 0), color);
 
-			Lighting.AddLight(projectile.Center + new Vector2(240, -50), color);
-			Lighting.AddLight(projectile.Center + new Vector2(-240, -50), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(240, -50), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(-240, -50), color);
 
-			Lighting.AddLight(projectile.Center + new Vector2(240, -100), color);
-			Lighting.AddLight(projectile.Center + new Vector2(-240, -100), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(240, -100), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(-240, -100), color);
 
-			Lighting.AddLight(projectile.Center + new Vector2(0, -230), color);
+			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == 0 && Parent.frameX > 3 * 18)
+			if (State == 0 && Parent.TileFrameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
 					for (int y = 0; y < 6; y++)
@@ -110,7 +106,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).frameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
 					}
 
 				Timer = 0;
@@ -118,8 +114,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State != 0)
 			{
-				(mod as StarlightRiver).useIntenseMusic = true;
-				Dust.NewDustPerfect(projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
+				(Mod as StarlightRiver).useIntenseMusic = true;
+				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
 
 				if (State > 0)
 				{
@@ -147,7 +143,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if (State == -1 || lives <= 0 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, projectile.Center) < 500))) //"fail" conditions, no living players in radius or already failing
+			if (State == -1 || lives <= 0 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500))) //"fail" conditions, no living Players in radius or already failing
 			{
 				State = -1;
 
@@ -187,16 +183,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
-			int i = Projectile.NewProjectile(start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].modProjectile as SawbladeSmall);
+			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].ModProjectile as SawbladeSmall);
 			Main.projectile[i].timeLeft = time;
 			mp.parent = this;
 		}
 
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].modProjectile as Dart);
+			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].ModProjectile as Dart);
 			mp.endPoint = end;
 			mp.midPoint = mid;
 			mp.duration = duration;
@@ -205,8 +201,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
-			int i = Projectile.NewProjectile(start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
-			var mp = (Main.projectile[i].modProjectile as Spear);
+			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
+			var mp = (Main.projectile[i].ModProjectile as Spear);
 			mp.endPoint = end;
 			mp.timeToRise = riseTime;
 			mp.timeToRetract = retractTime;
@@ -236,21 +232,21 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			if (State != 0)
 			{
-				var tex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall");
+				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				if (State > 0)
 				{
-					var fireTex = ModContent.GetTexture("StarlightRiver/Assets/Tiles/Underground/BrazierFlame");
+					var fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
 
-					Vector2 leftPos = projectile.Center - Main.screenPosition + new Vector2(-248, -220);
-					Vector2 leftMidPos = projectile.Center - Main.screenPosition + new Vector2(-120, -140);
-					Vector2 rightMidPos = projectile.Center - Main.screenPosition + new Vector2(120, -140);
-					Vector2 rightPos = projectile.Center - Main.screenPosition + new Vector2(248, -220);
+					Vector2 leftPos = Projectile.Center - Main.screenPosition + new Vector2(-248, -220);
+					Vector2 leftMidPos = Projectile.Center - Main.screenPosition + new Vector2(-120, -140);
+					Vector2 rightMidPos = Projectile.Center - Main.screenPosition + new Vector2(120, -140);
+					Vector2 rightPos = Projectile.Center - Main.screenPosition + new Vector2(248, -220);
 
 					if (State > maxAttacks)
 					{
@@ -258,10 +254,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 						{
 							float progress = Math.Min(1, (Timer - 300) / 240f);
 
-							leftPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-248, -220), Vector2.Zero, progress);
-							leftMidPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-120, -140), Vector2.Zero, progress);
-							rightMidPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(120, -140), Vector2.Zero, progress);
-							rightPos = projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(248, -220), Vector2.Zero, progress);
+							leftPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-248, -220), Vector2.Zero, progress);
+							leftMidPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(-120, -140), Vector2.Zero, progress);
+							rightMidPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(120, -140), Vector2.Zero, progress);
+							rightPos = Projectile.Center - Main.screenPosition + Vector2.SmoothStep(new Vector2(248, -220), Vector2.Zero, progress);
 						}
 					}
 

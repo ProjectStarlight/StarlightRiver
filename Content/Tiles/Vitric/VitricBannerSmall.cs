@@ -11,15 +11,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class VitricBannerSmall : DummyTile
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.VitricTile + name;
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.VitricTile + Name;
 
         public override int DummyType => ProjectileType<VitricBannerSmallDummy>();
 
-        public override void SetDefaults()
+        public override void SetStaticDefaults()
         {
             this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
         }
@@ -33,7 +29,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void SafeSetDefaults()
         {
-            Chain = new VerletChain(8, false, projectile.Center, 8)
+            Chain = new VerletChain(8, false, Projectile.Center, 8)
             {
                 constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
                 drag = 2f,//This number defaults to 1, Is very sensitive
@@ -44,19 +40,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
         public override void Update()
         {
-            Chain.UpdateChain(projectile.Center);
+            Chain.UpdateChain(Projectile.Center);
 
             Chain.IterateRope(WindForce);
-            projectile.ai[0] += 0.005f;
+            Projectile.ai[0] += 0.005f;
         }
 
         private void WindForce(int index)//wind
         {
-            int offset = (int)(projectile.position.X / 16 + projectile.position.Y / 16);
+            int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
             float sin = (float)Math.Sin(StarlightWorld.rottime + offset - index / 3f);
 
-            float cos = (float)Math.Cos(projectile.ai[0]);
+            float cos = (float)Math.Cos(Projectile.ai[0]);
             float sin2 = (float)Math.Sin(StarlightWorld.rottime + offset + cos);
 
             Vector2 pos = new Vector2(Chain.ropeSegments[index].posNow.X + 0.2f + sin2 * 0.2f, Chain.ropeSegments[index].posNow.Y + sin * 0.3f);
@@ -67,12 +63,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
             Chain.ropeSegments[index].color = color;
         }
 
-        public override void Kill(int timeLeft) => 
-            VerletChain.toDraw.Remove(Chain);
+        public override void Kill(int timeLeft) =>
+            VerletChainSystem.toDraw.Remove(Chain);
     }
 
     class VitricBannerSmallItem : QuickTileItem
 	{
-        public VitricBannerSmallItem() : base("Short Flowing Banner", "", TileType<VitricBannerSmall>(), 2, AssetDirectory.VitricTile, false) { }
-	}
+        public VitricBannerSmallItem() : base("Short Flowing Banner", "", "VitricBannerSmall", 2, AssetDirectory.VitricTile, false) { }
+
+    }
 }

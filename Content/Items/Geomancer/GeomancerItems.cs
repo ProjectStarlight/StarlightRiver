@@ -33,17 +33,17 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         public override void SetDefaults()
         {
-            item.width = 24;
-            item.height = 24;
-            item.maxStack = 1;
+            Item.width = 24;
+            Item.height = 24;
+            Item.maxStack = 1;
         }
 
-        public override bool ItemSpace(Player player) => true;
-        public override bool OnPickup(Player player)
+        public override bool ItemSpace(Player Player) => true;
+        public override bool OnPickup(Player Player)
         {
-            SetBonus(player);
-            Main.PlaySound(SoundID.Grab, (int)player.position.X, (int)player.position.Y);
-            player.GetModPlayer<GeomancerPlayer>().timer = 1200;
+            SetBonus(Player);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab, Player.position);
+            Player.GetModPlayer<GeomancerPlayer>().timer = 1200;
             return false;
         }
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
         protected virtual void SetName() { }
 
-        protected virtual void SetBonus(Player player) { }
+        protected virtual void SetBonus(Player Player) { }
     }
 
     public class GeoDiamond : GeoGem
@@ -59,12 +59,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f;
         protected override void SetName() => DisplayName.SetDefault("Diamond");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.DiamondStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoDiamondProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoDiamondProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.DiamondStored = true;
                 modPlayer.storedGem = StoredGem.Diamond;
                 modPlayer.ActivationCounter = 1f;
@@ -77,12 +77,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f * 2;
         protected override void SetName() => DisplayName.SetDefault("Ruby");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.RubyStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoRubyProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoRubyProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.RubyStored = true;
                 modPlayer.storedGem = StoredGem.Ruby;
                 modPlayer.ActivationCounter = 1f;
@@ -95,16 +95,16 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f * 3;
         protected override void SetName() => DisplayName.SetDefault("Emerald");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            int healAmount = (int)MathHelper.Min(player.statLifeMax2 - player.statLife, 20);
-            player.HealEffect(20);
-            player.statLife += healAmount;
+            int healAmount = (int)MathHelper.Min(Player.statLifeMax2 - Player.statLife, 20);
+            Player.HealEffect(20);
+            Player.statLife += healAmount;
 
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.EmeraldStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoEmeraldProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoEmeraldProj>(), 0, 0, Player.whoAmI, rotation); 
                 modPlayer.EmeraldStored = true;
                 modPlayer.storedGem = StoredGem.Emerald;
                 modPlayer.ActivationCounter = 1f;
@@ -117,16 +117,16 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f * 4;
         protected override void SetName() => DisplayName.SetDefault("Sapphire");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            int healAmount = (int)MathHelper.Min(player.statManaMax2 - player.statMana, 200);
-            player.ManaEffect(healAmount);
-            player.statMana += healAmount;
+            int healAmount = (int)MathHelper.Min(Player.statManaMax2 - Player.statMana, 200);
+            Player.ManaEffect(healAmount);
+            Player.statMana += healAmount;
 
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.SapphireStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoSapphireProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoSapphireProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.SapphireStored = true;
                 modPlayer.storedGem = StoredGem.Sapphire;
                 modPlayer.ActivationCounter = 1f;
@@ -139,12 +139,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f * 5;
         protected override void SetName() => DisplayName.SetDefault("Topaz");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.TopazStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoTopazProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.TopazStored = true;
                 modPlayer.storedGem = StoredGem.Topaz;
                 modPlayer.ActivationCounter = 1f;
@@ -157,12 +157,12 @@ namespace StarlightRiver.Content.Items.Geomancer
         const float rotation = 1.046f * 6;
         protected override void SetName() => DisplayName.SetDefault("Amethyst");
 
-        protected override void SetBonus(Player player)
+        protected override void SetBonus(Player Player)
         {
-            GeomancerPlayer modPlayer = player.GetModPlayer<GeomancerPlayer>();
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
             if (!modPlayer.AmethystStored && modPlayer.storedGem != StoredGem.All)
             {
-                Projectile.NewProjectile(player.Center, Vector2.Zero, ModContent.ProjectileType<GeoAmethystProj>(), 0, 0, player.whoAmI, rotation);
+                Projectile.NewProjectile(null, Player.Center, Vector2.Zero, ModContent.ProjectileType<GeoAmethystProj>(), 0, 0, Player.whoAmI, rotation);
                 modPlayer.AmethystStored = true;
                 modPlayer.storedGem = StoredGem.Amethyst;
                 modPlayer.ActivationCounter = 1f;

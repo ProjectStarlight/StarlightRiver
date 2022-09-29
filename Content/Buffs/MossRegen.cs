@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using StarlightRiver.Core;
+using Terraria;
 
 namespace StarlightRiver.Content.Buffs
 {
@@ -6,9 +7,11 @@ namespace StarlightRiver.Content.Buffs
     {
         public MossRegen() : base("Mending Moss", "Regenerating life quickly!", false) { }
 
-        public override void Update(Player player, ref int buffIndex)
+        public override string Texture => AssetDirectory.Buffs + "MossRegen";
+
+        public override void Update(Player Player, ref int buffIndex)
         {
-            player.lifeRegen += 10;
+            Player.lifeRegen += 10;
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Alchemy
 {
@@ -38,12 +39,12 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// creats an output by a clone of provided item for potential exact matching
+        /// creats an output by a clone of provided Item for potential exact matching
         /// </summary>
-        /// <param name="item"></param>
-        public void addOutputByItem(Item item)
+        /// <param name="Item"></param>
+        public void addOutputByItem(Item Item)
         {
-            outputItemList.Add(item.Clone());
+            outputItemList.Add(Item.Clone());
         }
 
         public void addIngredientById(int requiredIngredientId, int inputCount = 1)
@@ -55,12 +56,12 @@ namespace StarlightRiver.Content.Alchemy
         }
 
         /// <summary>
-        /// creates an ingredient by a clone of provided item for potential exact matching
+        /// creates an ingredient by a clone of provided Item for potential exact matching
         /// </summary>
-        /// <param name="item"></param>
-        public void addIngredientByItem(Item item)
+        /// <param name="Item"></param>
+        public void addIngredientByItem(Item Item)
         {
-            requiredIngredientsMap.Add(item.type, item.Clone());
+            requiredIngredientsMap.Add(Item.type, Item.Clone());
         }
 
         public void addRequiredModifier(int requiredModifierTileId)
@@ -91,13 +92,13 @@ namespace StarlightRiver.Content.Alchemy
         /// <returns></returns>
         public virtual bool updateAlmostReady(AlchemyWrapper wrapper)
         {
-            //TODO: maybe default to some kind of way to indicate to the player they are on the right track but missing quantity / certain items
+            //TODO: maybe default to some kind of way to indicate to the Player they are on the right track but missing quantity / certain Items
             return false;
         }
 
         /// <summary>
-        /// Runs when player has initiated crafting this recipe with all ingredients added. return true to skip individual ingredient code from running.
-        /// responsible for spawning in items and visuals.
+        /// Runs when Player has initiated crafting this recipe with all ingredients added. return true to skip individual ingredient code from running.
+        /// responsible for spawning in Items and visuals.
         /// executes on client and server. return true to stop individual ingredient code from running.
         /// by default consumes ingredients and spawns output instantly
         /// </summary>
@@ -106,7 +107,7 @@ namespace StarlightRiver.Content.Alchemy
         {
             foreach(Item eachOutputItem in outputItemList)
             {
-                Item.NewItem(wrapper.cauldronRect, eachOutputItem.type, eachOutputItem.stack * wrapper.currentBatchSize);
+                Item.NewItem(new EntitySource_WorldEvent(), wrapper.cauldronRect, eachOutputItem.type, eachOutputItem.stack * wrapper.currentBatchSize);
             }
             foreach (AlchemyIngredient eachIngredient in currentingredients)
             {
@@ -122,20 +123,20 @@ namespace StarlightRiver.Content.Alchemy
 
 
         /// <summary>
-        /// returns true if an item is part of this recipe, false otherwise.
-        /// by default only checks item Id, override for stricter checking (like weapon modifier, ensuring minimum amount at insertion time, fields on the item, etc). 
-        /// ignores minimum amounts by default under the assumption that player can add the rest at a later step
+        /// returns true if an Item is part of this recipe, false otherwise.
+        /// by default only checks Item Id, override for stricter checking (like weapon modifier, ensuring minimum amount at insertion time, fields on the Item, etc). 
+        /// ignores minimum amounts by default under the assumption that Player can add the rest at a later step
         /// </summary>
         /// <returns></returns>
-        public virtual bool checkItem(Item item)
+        public virtual bool checkItem(Item Item)
         {
-            return requiredIngredientsMap.ContainsKey(item.type);
+            return requiredIngredientsMap.ContainsKey(Item.type);
         }
 
         /// <summary>
         /// returns a number for the amount of times this ingredient can be batched in the recipe 0 if invalid/insufficient.
         /// Used for ensuring the ingredient is valid and in proper stack size right before initializing the craft.
-        /// By default only checks id and stack. override if needs stricter checking (like weapon modifier, maximums, split item stacks etc.).
+        /// By default only checks id and stack. override if needs stricter checking (like weapon modifier, maximums, split Item stacks etc.).
         /// </summary>
         /// <param name="ingredient"></param>
         /// <returns></returns>

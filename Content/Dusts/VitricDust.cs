@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core;
 using Terraria;
@@ -8,11 +9,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class GlassAttracted : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Glass";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "Glass";
 
         public override void OnSpawn(Dust dust)
         {
@@ -53,25 +50,17 @@ namespace StarlightRiver.Content.Dusts
 
     public class GlassAttractedGlow : GlassAttracted
 	{
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "GlassWhite";
-            return true;
-        }
+        public override string Texture => AssetDirectory.Dust + "GlassWhite";
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			return VitricSummonOrb.MoltenGlow(dust.fadeIn * 3);
+			return Helpers.Helper.MoltenVitricGlow(dust.fadeIn * 3);
         }
 	}
 
     public class GlassGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Glass";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Glass";
 
         public override void OnSpawn(Dust dust)
         {
@@ -93,11 +82,7 @@ namespace StarlightRiver.Content.Dusts
 
     public class GlassNoGravity : ModDust
     {
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = AssetDirectory.Dust + "Glass";
-            return base.Autoload(ref name, ref texture);
-        }
+        public override string Texture => AssetDirectory.Dust + "Glass";
 
         public override void OnSpawn(Dust dust)
         {

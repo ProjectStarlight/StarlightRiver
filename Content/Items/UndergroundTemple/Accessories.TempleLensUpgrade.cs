@@ -16,79 +16,75 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
         public override void SafeSetDefaults()
         {
-            item.rare = ItemRarityID.Orange;
+            Item.rare = ItemRarityID.Orange;
         }
 
-        public override void SafeUpdateEquip(Player player)
+        public override void SafeUpdateEquip(Player Player)
         {
-            player.meleeCrit += 4;
-            player.rangedCrit += 4;
-            player.magicCrit += 4;
+            Player.GetCritChance(DamageClass.Generic) += 4;
 
-            player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f;
+            Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f;
         }
 
-        public override bool Autoload(ref string name)
+        public override void Load()
         {
             StarlightPlayer.ModifyHitNPCEvent += ModifyHurtLens;
             StarlightProjectile.ModifyHitNPCEvent += ModifyProjectileLens;
-            return true;
         }
 
-        private void ModifyHurtLens(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+        private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
         {
-            if (Equipped(player) && crit)
+            if (Equipped(Player) && crit)
                 target.AddBuff(BuffType<Exposed>(), 120);
         }
 
-        private void ModifyProjectileLens(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        private void ModifyProjectileLens(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
-            if (Equipped(Main.player[projectile.owner]) && crit)
+            if (Equipped(Main.player[Projectile.owner]) && crit)
                 target.AddBuff(BuffType<Exposed>(), 120);
         }
 
 		public override void AddRecipes()
 		{
-            var r = new ModRecipe(mod);
-            r.AddIngredient(ItemType<TempleLens>());
-            r.AddIngredient(ItemType<Moonstone.MoonstoneBar>(), 5);
-            r.AddTile(TileID.Anvils);
-            r.SetResult(this);
-            r.AddRecipe();
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ItemType<TempleLens>());
+            recipe.AddIngredient(ItemType<Moonstone.MoonstoneBarItem>(), 5);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
 	}
 
     class Exposed : SmartBuff
     {
+        public override string Texture => AssetDirectory.Debug;
+
         public Exposed() : base("Exposed", "How do you have this its NPC only", true) { }
 
-		public override bool Autoload(ref string name, ref string texture)
+		public override void Load()
 		{
             StarlightNPC.ModifyHitByItemEvent += ExtraDamage;
             StarlightNPC.ModifyHitByProjectileEvent += ExtraDamageProjectile;
-
-            return base.Autoload(ref name, ref texture);
 		}
 
-		private void ExtraDamageProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ExtraDamageProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if(Inflicted(npc) && !crit)
+			if(Inflicted(NPC) && !crit)
 			{
                 damage = (int)(damage * 1.2f);
-                npc.DelBuff(npc.FindBuffIndex(Type));
+                NPC.DelBuff(NPC.FindBuffIndex(Type));
 			}
 		}
 
-		private void ExtraDamage(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		private void ExtraDamage(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-            if (Inflicted(npc) && !crit)
+            if (Inflicted(NPC) && !crit)
             {
                 damage = (int)(damage * 1.2f);
-                npc.DelBuff(npc.FindBuffIndex(Type));
+                NPC.DelBuff(NPC.FindBuffIndex(Type));
             }
         }
 
-		public override void Update(NPC npc, ref int buffIndex)
+		public override void Update(NPC NPC, ref int buffIndex)
 		{
 			//spawn dust and do a spelunker-esque glow maybe?
 		}

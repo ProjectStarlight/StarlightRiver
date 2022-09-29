@@ -26,9 +26,9 @@ namespace StarlightRiver.Content.CustomHooks
 
             Maps = new Map();
 
-            Mod mod = ModContent.GetInstance<StarlightRiver>();
+            Mod Mod = ModContent.GetInstance<StarlightRiver>();
 
-            foreach (Type t in mod.Code.GetTypes())
+            foreach (Type t in Mod.Code.GetTypes())
             {
                 if (t.IsSubclassOf(typeof(MapPass)))
                 {
@@ -37,5 +37,10 @@ namespace StarlightRiver.Content.CustomHooks
                 }
             }
         }
-    }
+
+		public override void Unload()
+		{
+            Maps = null;
+		}
+	}
 }

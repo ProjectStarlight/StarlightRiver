@@ -13,42 +13,42 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public bool Broken = false;
 
-        public override void SetDefaults()
-        {
-            item.damage = 35;
-            item.melee = true;
-            item.width = 36;
-            item.height = 38;
-            item.useTime = 18;
-            item.useAnimation = 18;
-            item.useStyle = ItemUseStyleID.SwingThrow;
-            item.knockBack = 7.5f;
-            item.value = 1000;
-            item.rare = ItemRarityID.Green;
-            item.UseSound = SoundID.Item1;
-            item.autoReuse = false;
-            item.useTurn = true;
-        }
-
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Ancient Vitric Blade");
             Tooltip.SetDefault("Shatters into enchanted glass shards \nUnable to be used while shattered");
         }
 
-		public override bool? CanHitNPC(Player player, NPC target)
+        public override void SetDefaults()
+        {
+            Item.damage = 35;
+            Item.DamageType = DamageClass.Melee;
+            Item.width = 36;
+            Item.height = 38;
+            Item.useTime = 18;
+            Item.useAnimation = 18;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.knockBack = 7.5f;
+            Item.value = 1000;
+            Item.rare = ItemRarityID.Green;
+            Item.UseSound = SoundID.Item1;
+            Item.autoReuse = false;
+            Item.useTurn = true;
+        }
+
+		public override bool? CanHitNPC(Player Player, NPC target)
 		{
             return !Broken;
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
         {
-            if (!Broken)
+            if (!Broken)//Projectile.GetSource_FromThis()
             {
-                Main.PlaySound(SoundID.Item107);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center) * -32, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
-                Projectile.NewProjectile(target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, mod.ProjectileType("VitricSwordProjectile"), 24, 0, player.whoAmI);
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center) * -32, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(0.3) * -16, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
+                Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center).RotatedBy(-0.25) * -24, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
 
                 for (int k = 0; k <= 20; k++)
                 {
@@ -58,16 +58,18 @@ namespace StarlightRiver.Content.Items.Vitric
                     int dus = Dust.NewDust(Vector2.Lerp(player.Center, target.Center, 0.4f), 16, 16, ModContent.DustType<Dusts.GlassAttracted>(), (Vector2.Normalize(player.Center - target.Center) * vel).X, (Vector2.Normalize(player.Center - target.Center) * vel).Y);
                     Main.dust[dus].customData = player;
                 }
+
                 Broken = true;
             }
         }
 
-        public override bool CanUseItem(Player player)
+        public override bool CanUseItem(Player Player)
         {
-            if (Main.projectile.Any(projectile => projectile.type == mod.ProjectileType("VitricSwordProjectile") && projectile.owner == player.whoAmI && projectile.active))
+            if (Main.projectile.Any(Projectile => Projectile.type == ModContent.ProjectileType<VitricSwordProjectile>() && Projectile.owner == Player.whoAmI && Projectile.active))
                 return false;
             else
                 Broken = false;
+
             return true;
         }
     }
@@ -78,14 +80,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            projectile.width = 12;
-            projectile.height = 18;
-            projectile.friendly = true;
-            projectile.penetrate = -1;
-            projectile.timeLeft = 120;
-            projectile.tileCollide = false;
-            projectile.ignoreWater = false;
-            projectile.melee = true;
+            Projectile.width = 12;
+            Projectile.height = 18;
+            Projectile.friendly = true;
+            Projectile.penetrate = -1;
+            Projectile.timeLeft = 120;
+            Projectile.tileCollide = false;
+            Projectile.ignoreWater = false;
+            Projectile.DamageType = DamageClass.Melee;
         }
 
         public override void SetStaticDefaults()
@@ -95,7 +97,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            Main.PlaySound(SoundID.Item27);
+            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
         }
 
         private float f = 1;
@@ -103,15 +105,15 @@ namespace StarlightRiver.Content.Items.Vitric
         public override void AI()
         {
             f += 0.1f;
-            Player player = Main.player[projectile.owner];
-            projectile.position += Vector2.Normalize(player.Center - projectile.Center) * f;
-            projectile.velocity *= 0.94f;
-            projectile.rotation = (player.Center - projectile.Center).Length() * 0.1f;
+            Player Player = Main.player[Projectile.owner];
+            Projectile.position += Vector2.Normalize(Player.Center - Projectile.Center) * f;
+            Projectile.velocity *= 0.94f;
+            Projectile.rotation = (Player.Center - Projectile.Center).Length() * 0.1f;
 
-            if ((player.Center - projectile.Center).Length() <= 32 && projectile.timeLeft < 110)
+            if ((Player.Center - Projectile.Center).Length() <= 32 && Projectile.timeLeft < 110)
             {
-                projectile.timeLeft = 0;
-                Main.PlaySound(SoundID.Item101);
+                Projectile.timeLeft = 0;
+                Terraria.Audio.SoundEngine.PlaySound(SoundID.Item101);
             }
         }
     }
