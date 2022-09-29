@@ -51,16 +51,173 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class LightsaberProj_Red : LightsaberProj
 	{
-		protected override Vector3 BladeColor => Color.Red.ToVector3();
-	}
+		protected override Vector3 BladeColor => Color.DarkRed.ToVector3() * 1.3f;
+
+		bool releasedRight = false;
+
+		int pullTimer = 0;
+
+		NPC pullTarget;
+
+		private bool targetNoGrav = false;
+
+		private Vector2 pullDirection = Vector2.Zero;
+
+		private int pauseTime = 0;
+
+		private Vector2 launchVector = Vector2.Zero;
+		protected override void RightClickBehavior()
+        {
+			Projectile.velocity = Vector2.Zero;
+			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			owner.heldProj = Projectile.whoAmI;
+			if (!releasedRight && Main.mouseRight)
+			{
+				Projectile.timeLeft = 30;
+				hide = true;
+				canHit = false;
+				if (pullTimer == 0)
+					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
+
+				if (pullTarget != default)
+				{
+					if (pullTimer == 0)
+					{
+						targetNoGrav = pullTarget.noGravity;
+						pullTarget.noGravity = true;
+					}
+					pullDirection = owner.DirectionTo(pullTarget.Center);
+					pullTarget.velocity = -pullDirection * EaseFunction.EaseQuinticIn.Ease(MathHelper.Clamp(pullTimer / 150f, 0, 1)) * 12;
+					Projectile.rotation = pullDirection.ToRotation();
+
+					if (pullTarget.Distance(owner.Center) < 5)
+						releasedRight = true;
+
+					Vector2 dustVel = pullDirection.RotatedByRandom(0.8f) * Main.rand.NextFloat();
+					Dust.NewDustPerfect(pullTarget.Center - (dustVel * 45), ModContent.DustType<Dusts.Glow>(), dustVel * 3, 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.25f, 0.45f));
+				}
+				else
+					Projectile.rotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+				pullTimer++;
+			}
+			else
+			{
+				if (pullTarget != default)
+                {
+					pullTarget.noGravity = targetNoGrav;
+                }
+
+				if (!releasedRight)
+				{
+					float rot = Projectile.rotation;
+					if (owner.direction == 1)
+						facingRight = true;
+					else
+						facingRight = false;
+
+					midRotation = rot;
+					canHit = true;
+					releasedRight = true;
+					hide = false;
+
+					anchorPoint = Vector2.Zero;
+					endRotation = rot - (2f * owner.direction);
+
+					oldRotation = new List<float>();
+					oldPositionDrawing = new List<Vector2>();
+					oldSquish = new List<float>();
+					oldPositionCollision = new List<Vector2>();
+
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
+
+					startRotation = endRotation;
+					startSquish = 0.4f;
+					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
+					startMidRotation = midRotation;
+					endSquish = 0.3f;
+					endRotation = rot + (3f * owner.direction);
+					attackDuration = 125;
+					Projectile.ai[0] += 30f / attackDuration;
+				}
+
+				if (Projectile.ai[0] < 1)
+				{
+					Projectile.timeLeft = 50;
+					if (pauseTime-- <= 0)
+						Projectile.ai[0] += 1f / attackDuration;
+					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - (1f / attackDuration))) * 2;
+				}
+				else
+				{
+					rotVel = 0f;
+					if (Main.mouseLeft)
+					{
+						Projectile.ai[0] = 0;
+						return;
+					}
+				}
+
+				float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
+
+				/*if (Main.netMode != NetmodeID.Server)
+				{
+					if (trailCounter % 5 == 0 || (progress > 0.1f && progress < 0.9f))
+					{
+						ManageCaches();
+						ManageTrail();
+					}
+				}*/
+
+				Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
+
+				Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
+				midRotation = MathHelper.Lerp(startMidRotation, endMidRotation, progress);
+				squish = MathHelper.Lerp(startSquish, endSquish, progress) + (0.35f * (float)Math.Sin(3.14f * progress));
+				anchorPoint = Projectile.Center - Main.screenPosition;
+
+				owner.ChangeDir(facingRight ? 1 : -1);
+
+				owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+				owner.itemAnimation = owner.itemTime = 5;
+
+				if (owner.direction != 1)
+					Projectile.rotation += 0.78f;
+
+				updatePoints = pauseTime <= 0;
+
+				if (pullTarget != null && pullTarget.active)
+				{
+					if (pauseTime > 0)
+					{
+						pullTarget.velocity = Vector2.Zero;
+					}
+					else if (pauseTime == 0)
+                    {
+						pullTarget.velocity = launchVector * 8 * pullTarget.knockBackResist;
+                    }
+				}
+			}
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            if (target == pullTarget)
+            {
+				launchVector = pullTarget.DirectionTo(Main.MouseWorld);
+				damage = (int)(damage * 2.5f);
+				target.velocity = Vector2.Zero;
+				pauseTime = 40;
+            }
+        }
+    }
 
 	public class LightsaberProj_White : LightsaberProj
 	{
-		protected override Vector3 BladeColor => Color.White.ToVector3();
+		protected override Vector3 BladeColor => new Color(200, 200, 255).ToVector3();
     }
 
 	public class LightsaberProj_Yellow : LightsaberProj
 	{
-		protected override Vector3 BladeColor => Color.Yellow.ToVector3();
+		protected override Vector3 BladeColor => Color.Yellow.ToVector3() * 0.8f;
 	}
 }

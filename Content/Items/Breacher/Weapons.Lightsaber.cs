@@ -3,7 +3,6 @@
 //Better Collision
 //Fix bug with screen position while it'd thrown
 //Better thrown hit cooldown
-//All 6 rightclicks (sigh)
 //Better sound effects
 //Obtainment
 //Balance
@@ -14,6 +13,18 @@
 //Description
 //Less spritebatch restarts
 
+//TODO on red rightclick:
+//Make it not turn around if you have no enemy selected
+
+//TODO on white rightclick:
+
+//TODO on blue rightclick:
+
+//TODO on greenrightclick:
+
+//TODO on purple rightclick:
+
+//TODO on yellow rightclick:
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -46,8 +57,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			Mod.AddContent(new Lightsaber("Blue", "Right click to parry oncoming projectiles \n'May the force be with you'", ItemID.BluePhaseblade));
 			Mod.AddContent(new Lightsaber("Green", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'", ItemID.GreenPhaseblade));
 			Mod.AddContent(new Lightsaber("Purple", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'", ItemID.PurplePhaseblade));
-			Mod.AddContent(new Lightsaber("White", "Right click to dash towards the blade while it'd thrown out\n'I Am No Jedi.'", ItemID.WhitePhaseblade));
-			Mod.AddContent(new Lightsaber("Yellow", "Right click to pull out a second blade\n'Never tell me the odds'", ItemID.YellowPhaseblade));
+			Mod.AddContent(new Lightsaber("White", "Right click to dash towards the blade while it's thrown out\n'I am no Jedi.'", ItemID.WhitePhaseblade));
+			Mod.AddContent(new Lightsaber("Yellow", "Right click to pull out a second blade\n'I've got a bad feeling about this'", ItemID.YellowPhaseblade));
 		}
 
 		public void Unload() { }
@@ -111,6 +122,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.value = Item.sellPrice(0, 0, 20, 0);
             Item.rare = ItemRarityID.Blue;
         }
+
+        public override bool AltFunctionUse(Player player)
+        {
+			return true;
+        }
+
+        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+        {
+			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+			(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
+			return false;
+        }
     }
 
 	enum CurrentAttack : int
@@ -126,7 +149,10 @@ namespace StarlightRiver.Content.Items.Breacher
 	{
 		public override string Texture => AssetDirectory.BreacherItem + "LightsaberProj";
 
+
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
+
+		protected bool updatePoints = true;
 
 		protected Vector2 oldScreenPos = Vector2.Zero;
 
@@ -138,6 +164,10 @@ namespace StarlightRiver.Content.Items.Breacher
 		protected bool thrown = false;
 
 		protected Vector2 thrownDirection = Vector2.Zero;
+
+		public bool rightClicked = false;
+		protected bool hide = true;
+		protected bool canHit = false;
 
 		protected bool initialized = false;
 
@@ -203,11 +233,24 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void AI()
 		{
-			Lighting.AddLight(Projectile.Center, BladeColor * 4.6f);
-			if (thrown)
-				ThrownBehavior();
+			if (!hide)
+				Lighting.AddLight(Projectile.Center, BladeColor * 4.6f);
+			if (rightClicked)
+			{
+				RightClickBehavior();
+			}
 			else
-				HeldBehavior();
+			{
+				hide = false;
+				canHit = true;
+				if (thrown)
+					ThrownBehavior();
+				else
+					HeldBehavior();
+			}
+
+			if (!updatePoints)
+				return;
 
 			oldSquish.Add(squish);
 			oldRotation.Add(Projectile.rotation);
@@ -256,7 +299,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (hit.Contains(target))
+			if (hit.Contains(target) || !canHit)
 				return false;
 			return base.CanHitNPC(target);
 		}
@@ -275,6 +318,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override bool PreDraw(ref Color lightColor)
         {
+			if (hide)
+				return false;
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
@@ -496,6 +541,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (owner.direction != 1)
 				Projectile.rotation += 0.78f;
+		}
+		protected virtual void RightClickBehavior()
+		{
+
 		}
 	}
 }
