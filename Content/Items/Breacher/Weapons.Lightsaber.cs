@@ -3,8 +3,7 @@
 //Better Collision
 //Fix bug with screen position while it'd thrown
 //Better thrown hit cooldown
-//Fill in gaps on afterimage
-//Parrying
+//All 6 rightclicks (sigh)
 //Better sound effects
 //Obtainment
 //Balance
@@ -12,9 +11,8 @@
 //Rarity
 //Make it look good when swinging to the left
 //Less spritebatch restarts
-//Make all 6 lightsaber types
-//Lighting
 //Description
+//Less spritebatch restarts
 
 
 using Microsoft.Xna.Framework;
@@ -36,14 +34,59 @@ using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
-	public class Lightsaber_Blue : ModItem
+	public class LightsaberLoader : IOrderedLoadable
+    {
+		public float Priority => 1;
+
+		public void Load()
+		{
+			var Mod = StarlightRiver.Instance;
+
+			Mod.AddContent(new Lightsaber("Red", "Right click to pull in enemies, release to slash them for high damage \n'There is no escape'", ItemID.RedPhaseblade));
+			Mod.AddContent(new Lightsaber("Blue", "Right click to parry oncoming projectiles \n'May the force be with you'", ItemID.BluePhaseblade));
+			Mod.AddContent(new Lightsaber("Green", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'", ItemID.GreenPhaseblade));
+			Mod.AddContent(new Lightsaber("Purple", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'", ItemID.PurplePhaseblade));
+			Mod.AddContent(new Lightsaber("White", "Right click to dash towards the blade while it'd thrown out\n'I Am No Jedi.'", ItemID.WhitePhaseblade));
+			Mod.AddContent(new Lightsaber("Yellow", "Right click to pull out a second blade\n'Never tell me the odds'", ItemID.YellowPhaseblade));
+		}
+
+		public void Unload() { }
+	}
+
+	[Autoload(false)]
+	public class Lightsaber : ModItem
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
+		protected override bool CloneNewInstances => true;
+
+		public override string Name => newName;
+
+		public string ProjType;
+
+		public string Description;
+
+		public string ItemName;
+
+		public int IngrediantID;
+
+		public string newName;
+
+		public Lightsaber() { }
+
+		public Lightsaber(string colorName, string description, int ingrediantID)
+        {
+			newName = colorName + "Lightsaber";
+			ItemName = colorName + " Lightsaber";
+			ProjType = "LightsaberProj_" + colorName;
+			Description = description;
+			IngrediantID = ingrediantID;
+        }
+
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Lightsaber");
-			Tooltip.SetDefault("[ph]");
+			DisplayName.SetDefault(ItemName);
+			Tooltip.SetDefault("Left click to slash and throw \n" + Description);
 		}
 
 		public override void SetDefaults()
@@ -61,13 +104,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.crit = 9;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
-			Item.shoot = ProjectileType<LightsaberProj_Blue>();
+			Item.shoot = Mod.Find<ModProjectile>(ProjType).Type;
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.autoReuse = false;
 			Item.value = Item.sellPrice(0, 0, 20, 0);
-			Item.rare = ItemRarityID.Blue;
-		}
+            Item.rare = ItemRarityID.Blue;
+        }
     }
 
 	enum CurrentAttack : int
@@ -79,59 +122,60 @@ namespace StarlightRiver.Content.Items.Breacher
 		Throw = 4,
 		Reset = 5
 	}
-
-	public class LightsaberProj_Blue : ModProjectile
+	public abstract class LightsaberProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
+		public override string Texture => AssetDirectory.BreacherItem + "LightsaberProj";
 
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
 
-		private Vector2 oldScreenPos = Vector2.Zero;
+		protected Vector2 oldScreenPos = Vector2.Zero;
 
-		private Vector2 anchorPoint = Vector2.Zero;
+		protected Vector2 anchorPoint = Vector2.Zero;
 
-		private int afterImageLength = 16;
+		protected int afterImageLength = 16;
 
-		private int throwTimer = 0;
-		private bool thrown = false;
+		protected int throwTimer = 0;
+		protected bool thrown = false;
 
-		private Vector2 thrownDirection = Vector2.Zero;
+		protected Vector2 thrownDirection = Vector2.Zero;
 
-		private bool initialized = false;
+		protected bool initialized = false;
 
-		private int attackDuration = 0;
+		protected int attackDuration = 0;
 
-		private float startRotation = 0f;
+		protected float startRotation = 0f;
 
-		private float midRotation = 0f;
-		private float endMidRotation = 0f;
-		private float startMidRotation = 0f;
+		protected float midRotation = 0f;
+		protected float endMidRotation = 0f;
+		protected float startMidRotation = 0f;
 
-		private float endRotation = 0f;
+		protected float endRotation = 0f;
 
-		private bool facingRight;
+		protected bool facingRight;
 
-		private float squish = 1;
+		protected float squish = 1;
 
-		private float startSquish = 1;
+		protected float startSquish = 1;
 
-		private float endSquish = 1;
+		protected float endSquish = 1;
 
-		private float rotVel = 0f;
+		protected float rotVel = 0f;
 
-		private int growCounter = 0;
+		protected int growCounter = 0;
 
-		private List<float> oldRotation = new List<float>();
-		private List<Vector2> oldPositionDrawing = new List<Vector2>();
-		private List<float> oldSquish = new List<float>();
+		protected List<float> oldRotation = new List<float>();
+		protected List<Vector2> oldPositionDrawing = new List<Vector2>();
+		protected List<float> oldSquish = new List<float>();
 
-		private List<Vector2> oldPositionCollision = new List<Vector2>();
+		protected List<Vector2> oldPositionCollision = new List<Vector2>();
 
-		private List<NPC> hit = new List<NPC>();
+		protected List<NPC> hit = new List<NPC>();
 
-		private ref float nonEasedProgress => ref Projectile.ai[0];
+		protected ref float nonEasedProgress => ref Projectile.ai[0];
 
-		Player owner => Main.player[Projectile.owner];
+		protected Player owner => Main.player[Projectile.owner];
+
+		protected virtual Vector3 BladeColor => Color.Green.ToVector3();
 
 		private bool FirstTickOfSwing
 		{
@@ -159,7 +203,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void AI()
 		{
-			Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3() * 1.6f);
+			Lighting.AddLight(Projectile.Center, BladeColor * 4.6f);
 			if (thrown)
 				ThrownBehavior();
 			else
@@ -185,6 +229,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				{
 					oldPositionCollision[i] += Projectile.velocity;
 					oldPositionDrawing[i] += Projectile.velocity;
+					oldSquish[i] = squish;
 				}
             }
 			if (thrown && throwTimer % Projectile.extraUpdates == Projectile.extraUpdates - 1)
@@ -195,11 +240,6 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 			oldScreenPos = Main.screenPosition;
-		}
-
-        public override void PostAI()
-        {
-			return;
 		}
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -224,7 +264,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Projectile.penetrate++;
 			hit.Add(target);
-			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			//Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			Core.Systems.CameraSystem.Shake += 2;
 		}
 
@@ -240,7 +280,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
 
-			Vector2 scaleVec = new Vector2(1, squish) * 4;
+			Vector2 scaleVec;
             Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
             effect.Parameters["color"].SetValue(Color.White.ToVector4());
 			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
@@ -250,7 +290,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				effect.Parameters["rotation"].SetValue(oldRotation[i] - midRotation);
 
 				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.125f, 0.00125f));
+				effect.Parameters["color"].SetValue(new Vector4(BladeColor * 40, 0) * MathHelper.Max(rotVel * 0.125f, 0.00125f));
 				effect.Parameters["pommelToOriginPercent"].SetValue(-0.305f);
 				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
@@ -258,7 +298,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 
 				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
+				effect.Parameters["color"].SetValue(new Vector4(BladeColor * 40, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
 				effect.Parameters["pommelToOriginPercent"].SetValue(0.1f);
 				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
@@ -311,6 +351,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ThrownBehavior()
         {
+			rotVel = 0.04f;
 			squish = MathHelper.Lerp(squish, 0.6f - (Projectile.velocity.Length() * 0.08f), 0.1f);
 			anchorPoint = Projectile.Center - Main.screenPosition;
 			Projectile.timeLeft = 50;
@@ -365,8 +406,8 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				startRotation = endRotation;
 				startSquish = 0.4f;
-				endMidRotation = rot + Main.rand.NextFloat(-0.25f, 0.25f);
-				startMidRotation = rot + Main.rand.NextFloat(-0.25f, 0.25f);
+				endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
+				startMidRotation = midRotation;
 
 				switch (currentAttack)
 				{
