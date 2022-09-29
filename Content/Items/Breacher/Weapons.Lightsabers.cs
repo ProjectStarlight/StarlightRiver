@@ -1,7 +1,9 @@
 ﻿//TODO:
 //Clean up code
 //Better Collision
-//Throwing
+//Fix bug with screen position while it'd thrown
+//Better thrown hit cooldown
+//Fill in gaps on afterimage
 //Parrying
 //Better sound effects
 //Obtainment
@@ -12,7 +14,6 @@
 //Less spritebatch restarts
 //Make all 6 lightsaber types
 //Lighting
-//Make the bloom not disappear during the throw
 //Description
 
 
@@ -85,6 +86,17 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
 
+		private Vector2 oldScreenPos = Vector2.Zero;
+
+		private Vector2 anchorPoint = Vector2.Zero;
+
+		private int afterImageLength = 16;
+
+		private int throwTimer = 0;
+		private bool thrown = false;
+
+		private Vector2 thrownDirection = Vector2.Zero;
+
 		private bool initialized = false;
 
 		private int attackDuration = 0;
@@ -110,12 +122,14 @@ namespace StarlightRiver.Content.Items.Breacher
 		private int growCounter = 0;
 
 		private List<float> oldRotation = new List<float>();
-		private List<Vector2> oldPosition = new List<Vector2>();
+		private List<Vector2> oldPositionDrawing = new List<Vector2>();
 		private List<float> oldSquish = new List<float>();
 
 		private List<Vector2> oldPositionCollision = new List<Vector2>();
 
 		private List<NPC> hit = new List<NPC>();
+
+		private ref float nonEasedProgress => ref Projectile.ai[0];
 
 		Player owner => Main.player[Projectile.owner];
 
@@ -137,15 +151,187 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.tileCollide = false;
-			Projectile.Size = new Vector2(42, 42);
+			Projectile.Size = new Vector2(150, 150);
 			Projectile.penetrate = 1;
 			Projectile.ownerHitCheck = true;
-			Projectile.extraUpdates = 4;
+			Projectile.extraUpdates = 5;
 		}
 
 		public override void AI()
 		{
 			Lighting.AddLight(Projectile.Center, Color.Blue.ToVector3() * 1.6f);
+			if (thrown)
+				ThrownBehavior();
+			else
+				HeldBehavior();
+
+			oldSquish.Add(squish);
+			oldRotation.Add(Projectile.rotation);
+			oldPositionDrawing.Add(anchorPoint);
+			oldPositionCollision.Add(Projectile.Center);
+
+			if (oldRotation.Count > afterImageLength)
+				oldRotation.RemoveAt(0);
+			if (oldPositionDrawing.Count > afterImageLength)
+				oldPositionDrawing.RemoveAt(0);
+			if (oldSquish.Count > afterImageLength)
+				oldSquish.RemoveAt(0);
+			if (oldPositionCollision.Count > afterImageLength)
+				oldPositionCollision.RemoveAt(0);
+
+			if (thrown)
+			{ 
+				for (int i = 0; i < oldPositionDrawing.Count; i++)
+				{
+					oldPositionCollision[i] += Projectile.velocity;
+					oldPositionDrawing[i] += Projectile.velocity;
+				}
+            }
+			if (thrown && throwTimer % Projectile.extraUpdates == Projectile.extraUpdates - 1)
+			{ 
+				for (int i = 0; i < oldPositionDrawing.Count; i++)
+				{
+					oldPositionDrawing[i] += (oldScreenPos - Main.screenPosition);
+				}
+			}
+			oldScreenPos = Main.screenPosition;
+		}
+
+        public override void PostAI()
+        {
+			return;
+		}
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			float collisionPoint = 0f;
+
+			for (int i = 0; i < oldPositionCollision.Count; i++) 
+			{
+				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), oldPositionCollision[i], GetCollisionPoint(i) + oldPositionCollision[i], 40, ref collisionPoint))
+					return true;
+			}
+			return false;
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			if (hit.Contains(target))
+				return false;
+			return base.CanHitNPC(target);
+		}
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			Projectile.penetrate++;
+			hit.Add(target);
+			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			Core.Systems.CameraSystem.Shake += 2;
+		}
+
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			hitDirection = Math.Sign(target.Center.X - owner.Center.X);
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
+
+			Vector2 scaleVec = new Vector2(1, squish) * 4;
+            Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
+            effect.Parameters["color"].SetValue(Color.White.ToVector4());
+			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
+			for (int i = 0; i < oldPositionDrawing.Count; i++) //disgusting amount of spritebatch restarts but I can't figure out another way to do it
+			{
+				scaleVec = new Vector2(1, oldSquish[i]) * 4;
+				effect.Parameters["rotation"].SetValue(oldRotation[i] - midRotation);
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.125f, 0.00125f));
+				effect.Parameters["pommelToOriginPercent"].SetValue(-0.305f);
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Draw(glowTex, oldPositionDrawing[i], null, Color.White, midRotation, (glowTex.Size() / 2f), scaleVec, SpriteEffects.None, 0f);
+
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
+				effect.Parameters["pommelToOriginPercent"].SetValue(0.1f);
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Draw(smallGlowTex, oldPositionDrawing[i], null, Color.White, midRotation, smallGlowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+
+				Main.spriteBatch.End();
+				effect.Parameters["color"].SetValue(Color.White.ToVector4());
+				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+				Main.spriteBatch.Draw(whiteTex, oldPositionDrawing[i], null, Color.White, midRotation, whiteTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+			}
+			scaleVec = new Vector2(1, squish) * 4;
+			Main.spriteBatch.End();
+
+			effect.Parameters["color"].SetValue(lightColor.ToVector4());
+			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
+
+			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, midRotation, tex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+            return false;
+        }
+
+		private Vector2 GetCollisionPoint(int i)
+        {
+			float angleShift = oldRotation[i] - midRotation;
+
+			//Get the coordinates of the angle shift.
+			Vector2 anglePoint = angleShift.ToRotationVector2();
+
+			//Squish the angle point's coordinate
+			anglePoint.X *= 1;
+			anglePoint.Y *= oldSquish[i];
+
+			//And back into an angle
+			angleShift = anglePoint.ToRotation();
+
+			return ((angleShift + midRotation).ToRotationVector2() * 80);
+		}
+
+		private float EaseProgress(float input)
+		{
+			if (currentAttack == CurrentAttack.Throw)
+				return EaseFunction.EaseQuadInOut.Ease(input);
+			return EaseFunction.EaseCubicInOut.Ease(input);
+		}
+
+		private void ThrownBehavior()
+        {
+			squish = MathHelper.Lerp(squish, 0.6f - (Projectile.velocity.Length() * 0.08f), 0.1f);
+			anchorPoint = Projectile.Center - Main.screenPosition;
+			Projectile.timeLeft = 50;
+			throwTimer++;
+			nonEasedProgress = (float)Math.Cos(throwTimer * 0.01f);
+			float progress = EaseFunction.EaseQuadOut.Ease(Math.Abs(nonEasedProgress)) * Math.Sign(Math.Cos(throwTimer * 0.01f));
+			bool goingBack = Math.Sign(progress) == -1;
+			if (goingBack)
+				thrownDirection = owner.DirectionTo(Projectile.Center);
+			Projectile.velocity = (progress) * 5 * thrownDirection;
+			midRotation = Projectile.velocity.ToRotation();
+
+			Projectile.extraUpdates = 8;
+			Projectile.rotation += 0.06f;
+
+			if (Projectile.Distance(owner.Center) < 20 && goingBack)
+				Projectile.active = false;
+        }
+
+		private void HeldBehavior()
+        {
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.heldProj = Projectile.whoAmI;
@@ -161,11 +347,12 @@ namespace StarlightRiver.Content.Items.Breacher
 				float rot = owner.DirectionTo(Main.MouseWorld).ToRotation();
 				if (!initialized)
 				{
+					anchorPoint = Vector2.Zero;
 					initialized = true;
 					endRotation = rot - (1f * owner.direction);
 
 					oldRotation = new List<float>();
-					oldPosition = new List<Vector2>();
+					oldPositionDrawing = new List<Vector2>();
 					oldSquish = new List<float>();
 					oldPositionCollision = new List<Vector2>();
 				}
@@ -174,7 +361,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					currentAttack = (CurrentAttack)((int)currentAttack + 1);
 				}
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f,0.1f)}, owner.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
 
 				startRotation = endRotation;
 				startSquish = 0.4f;
@@ -186,26 +373,26 @@ namespace StarlightRiver.Content.Items.Breacher
 					case CurrentAttack.Slash1:
 						endSquish = 0.3f;
 						endRotation = rot + (3f * owner.direction);
-						attackDuration = 100;
+						attackDuration = 125;
 						break;
 					case CurrentAttack.Slash2:
 						endSquish = 0.2f;
-						attackDuration = 120;
+						attackDuration = 129;
 						endRotation = rot - (2f * owner.direction);
 						break;
 					case CurrentAttack.Slash3:
 						endSquish = 0.45f;
 						endRotation = rot + (3f * owner.direction);
-						attackDuration = 100;
+						attackDuration = 125;
 						break;
 					case CurrentAttack.Slash4:
 						endSquish = 0.15f;
 						endRotation = rot - (3f * owner.direction);
-						attackDuration = 100;
+						attackDuration = 125;
 						break;
 					case CurrentAttack.Throw:
 						endSquish = 0.6f;
-						attackDuration = 200;
+						attackDuration = 250;
 						endRotation = rot + (10f * owner.direction);
 						break;
 					case CurrentAttack.Reset:
@@ -248,16 +435,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
 			midRotation = MathHelper.Lerp(startMidRotation, endMidRotation, progress);
 			squish = MathHelper.Lerp(startSquish, endSquish, progress) + (0.35f * (float)Math.Sin(3.14f * progress));
-
+			anchorPoint = Projectile.Center - Main.screenPosition;
 			float wrappedRotation = MathHelper.WrapAngle(Projectile.rotation);
 
 			float throwingAngle = MathHelper.WrapAngle(owner.DirectionTo(Main.MouseWorld).ToRotation());
-
-			/*if (currentAttack == CurrentAttack.Throw && Math.Abs(wrappedRotation - throwingAngle) < 0.2f && Projectile.ai[0] > 0.4f)
+			if (currentAttack == CurrentAttack.Throw && Math.Abs(wrappedRotation - throwingAngle) < 0.2f && Projectile.ai[0] > 0.4f)
 			{
-				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, owner.DirectionTo(Main.MouseWorld) * 12, ModContent.ProjectileType<Misc.FryingPanThrownProj>(), Projectile.damage, Projectile.knockBack, owner.whoAmI).rotation = Projectile.rotation + 0.78f;
-				Projectile.active = false;
-			}*/
+				oldScreenPos = Main.screenPosition;
+				thrown = true;
+				thrownDirection = owner.DirectionTo(Main.MouseWorld);
+				Projectile.velocity = thrownDirection * 1;
+				afterImageLength = 50;
+			}
 
 			owner.ChangeDir(facingRight ? 1 : -1);
 
@@ -266,128 +455,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (owner.direction != 1)
 				Projectile.rotation += 0.78f;
-
-			oldSquish.Add(squish);
-			oldRotation.Add(Projectile.rotation);
-			oldPosition.Add(Projectile.Center - Main.screenPosition);
-			oldPositionCollision.Add(Projectile.Center);
-
-			if (oldRotation.Count > 16)
-				oldRotation.RemoveAt(0);
-			if (oldPosition.Count > 16)
-				oldPosition.RemoveAt(0);
-			if (oldSquish.Count > 16)
-				oldSquish.RemoveAt(0);
-			if (oldPositionCollision.Count > 16)
-				oldPositionCollision.RemoveAt(0);
-
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			float collisionPoint = 0f;
-
-			for (int i = 0; i < oldPositionCollision.Count; i++) 
-			{
-				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), oldPositionCollision[i], GetCollisionPoint(i) + oldPositionCollision[i], 40, ref collisionPoint))
-					return true;
-			}
-			return false;
-		}
-
-		public override bool? CanHitNPC(NPC target)
-		{
-			if (hit.Contains(target))
-				return false;
-			return base.CanHitNPC(target);
-		}
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{
-			Projectile.penetrate++;
-			hit.Add(target);
-			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			hitDirection = Math.Sign(target.Center.X - owner.Center.X);
-        }
-
-        public override bool PreDraw(ref Color lightColor)
-        {
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
-
-			Vector2 scaleVec = new Vector2(1, squish) * 4;
-            Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
-            effect.Parameters["pommelToOriginPercent"].SetValue(0.0f);
-            effect.Parameters["color"].SetValue(Color.White.ToVector4());
-			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
-			for (int i = 0; i < oldPosition.Count; i++) //disgusting amount of spritebatch restarts but I can't figure out another way to do it
-			{
-				scaleVec = new Vector2(1, oldSquish[i]) * 4;
-				effect.Parameters["rotation"].SetValue(oldRotation[i] - midRotation);
-
-				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.125f, 0.00125f));
-				effect.Parameters["pommelToOriginPercent"].SetValue(-0.305f);
-				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
-
-				Main.spriteBatch.Draw(glowTex, oldPosition[i], null, Color.White, midRotation, (glowTex.Size() / 2f), scaleVec, SpriteEffects.None, 0f);
-
-
-				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(new Vector4(0, 10f, 25f, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
-				effect.Parameters["pommelToOriginPercent"].SetValue(0.0f);
-				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
-
-				Main.spriteBatch.Draw(smallGlowTex, oldPosition[i], null, Color.White, midRotation, smallGlowTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
-
-				Main.spriteBatch.End();
-				effect.Parameters["color"].SetValue(Color.White.ToVector4());
-				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
-
-				Main.spriteBatch.Draw(whiteTex, oldPosition[i], null, Color.White, midRotation, whiteTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
-			}
-			scaleVec = new Vector2(1, squish) * 4;
-			Main.spriteBatch.End();
-
-			effect.Parameters["color"].SetValue(lightColor.ToVector4());
-			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
-
-			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
-
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, midRotation, tex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
-
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            return false;
-        }
-
-		private Vector2 GetCollisionPoint(int i)
-        {
-			float angleShift = oldRotation[i] - midRotation;
-
-			//Get the coordinates of the angle shift.
-			Vector2 anglePoint = angleShift.ToRotationVector2();
-
-			//Squish the angle point's coordinate
-			anglePoint.X *= 1;
-			anglePoint.Y *= oldSquish[i];
-
-			//And back into an angle
-			angleShift = anglePoint.ToRotation();
-
-			return ((angleShift + midRotation).ToRotationVector2() * 80);
-		}
-
-		private float EaseProgress(float input)
-		{
-			if (currentAttack == CurrentAttack.Throw)
-				return EaseFunction.EaseQuadInOut.Ease(input);
-			return EaseFunction.EaseCubicInOut.Ease(input);
 		}
 	}
 }
