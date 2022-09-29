@@ -148,14 +148,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - (1f / attackDuration))) * 2;
 				}
 				else
-				{
 					rotVel = 0f;
-					if (Main.mouseLeft)
-					{
-						Projectile.ai[0] = 0;
-						return;
-					}
-				}
 
 				float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
 
