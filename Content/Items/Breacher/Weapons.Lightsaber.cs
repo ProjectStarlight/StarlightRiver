@@ -14,17 +14,24 @@
 //Less spritebatch restarts
 
 //TODO on red rightclick:
-//Make it not turn around if you have no enemy selected
 
 //TODO on white rightclick:
+//Everything
 
 //TODO on blue rightclick:
+//Everything
 
 //TODO on greenrightclick:
+//Everything
 
 //TODO on purple rightclick:
+//Everything
 
 //TODO on yellow rightclick:
+//Make the player not able to clip through walls
+//Sound effects
+//Make the player have dashlines
+//Make the player not freeze for a second
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -111,7 +118,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.reuseDelay = 20;
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.knockBack = 6.5f;
+			Item.knockBack = 2.5f;
 			Item.crit = 9;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
@@ -247,6 +254,8 @@ namespace StarlightRiver.Content.Items.Breacher
 					ThrownBehavior();
 				else
 					HeldBehavior();
+
+				SafeLeftClickBehavior();
 			}
 
 			if (!updatePoints)
@@ -542,9 +551,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (owner.direction != 1)
 				Projectile.rotation += 0.78f;
 		}
-		protected virtual void RightClickBehavior()
-		{
+		protected virtual void RightClickBehavior() { }
 
-		}
+		protected virtual void SafeLeftClickBehavior() { }
 	}
 }
