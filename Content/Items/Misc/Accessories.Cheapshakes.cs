@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Player.maxRunSpeed = Player.maxRunSpeed * 2;
                 if (Math.Abs(Player.velocity.X) > 3f)
-                    Player.runAcceleration = Player.runAcceleration * 0.25f;
+                    Player.runAcceleration *= 0.25f;
             }
         }
 
