@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
 
 					startRotation = endRotation;
-					startSquish = 0.4f;
+					startSquish = endSquish;
 					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
 					startMidRotation = midRotation;
 					endSquish = 0.3f;
