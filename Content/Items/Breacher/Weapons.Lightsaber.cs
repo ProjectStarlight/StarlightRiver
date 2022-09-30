@@ -4,13 +4,8 @@
 //Fix bug with screen position while it'd thrown
 //Better thrown hit cooldown
 //Better sound effects
-//Obtainment
 //Balance
-//Sellprice
-//Rarity
 //Make it look good when swinging to the left
-//Less spritebatch restarts
-//Description
 //Less spritebatch restarts
 
 //TODO on red rightclick:
@@ -53,97 +48,100 @@ using static Terraria.ModLoader.ModContent;
 using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Breacher
-{
-	public class LightsaberLoader : IOrderedLoadable
-    {
-		public float Priority => 1;
-
-		public void Load()
-		{
-			var Mod = StarlightRiver.Instance;
-
-			Mod.AddContent(new Lightsaber("Red", "Right click to pull in enemies, release to slash them for high damage \n'There is no escape'", ItemID.RedPhaseblade));
-			Mod.AddContent(new Lightsaber("Blue", "Right click to parry oncoming projectiles \n'May the force be with you'", ItemID.BluePhaseblade));
-			Mod.AddContent(new Lightsaber("Green", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'", ItemID.GreenPhaseblade));
-			Mod.AddContent(new Lightsaber("Purple", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'", ItemID.PurplePhaseblade));
-			Mod.AddContent(new Lightsaber("White", "Right click to dash towards the blade while it's thrown out\n'I am no Jedi.'", ItemID.WhitePhaseblade));
-			Mod.AddContent(new Lightsaber("Yellow", "Right click to pull out a second blade\n'I've got a bad feeling about this'", ItemID.YellowPhaseblade));
-		}
-
-		public void Unload() { }
-	}
-
-	[Autoload(false)]
-	public class Lightsaber : ModItem
+{ 
+	public class Lightsabers : GlobalItem
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
+		public static int[] phaseblades = new int[]
+		{
+			ItemID.RedPhaseblade,
+			ItemID.WhitePhaseblade,
+			ItemID.PurplePhaseblade,
+			ItemID.YellowPhaseblade,
+			ItemID.BluePhaseblade,
+			ItemID.GreenPhaseblade
+		};
 
-		protected override bool CloneNewInstances => true;
-
-		public override string Name => newName;
-
-		public string ProjType;
-
-		public string Description;
-
-		public string ItemName;
-
-		public int IngrediantID;
-
-		public string newName;
-
-		public Lightsaber() { }
-
-		public Lightsaber(string colorName, string description, int ingrediantID)
+        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-			newName = colorName + "Lightsaber";
-			ItemName = colorName + " Lightsaber";
-			ProjType = "LightsaberProj_" + colorName;
-			Description = description;
-			IngrediantID = ingrediantID;
+			switch (item.type)
+			{
+				case ItemID.RedPhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull in enemies, release to slash them for high damage \n'There is no escape'"));
+					break;
+				case ItemID.WhitePhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to dash towards the blade while it's thrown out\n'I am no Jedi.'"));
+					break;
+				case ItemID.PurplePhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'"));
+					break;
+				case ItemID.YellowPhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull out a second blade\n'I've got a bad feeling about this'"));
+					break;
+				case ItemID.BluePhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to parry oncoming projectiles \n'May the force be with you'"));
+					break;
+				case ItemID.GreenPhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'"));
+					break;
+			}
         }
 
-		public override void SetStaticDefaults()
+        public override void SetDefaults(Item item)
+        {
+            switch (item.type)
+            {
+				case ItemID.RedPhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Red>();
+					break;
+				case ItemID.WhitePhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_White>();
+					break;
+				case ItemID.PurplePhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Purple>();
+					break;
+				case ItemID.YellowPhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Yellow>();
+					break;
+				case ItemID.BluePhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Blue>();
+					break;
+				case ItemID.GreenPhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Green>();
+					break;
+			}
+
+			if (phaseblades.Contains(item.type))
+            {
+				item.noUseGraphic = true;
+				item.noMelee = true;
+				item.autoReuse = false;
+				item.useTime = 12;
+				item.useAnimation = 12;
+				item.reuseDelay = 20;
+				item.channel = true;
+				item.useStyle = ItemUseStyleID.Shoot;
+				item.knockBack = 2.5f;
+				item.shootSpeed = 14f;
+			}
+        }
+		public override bool AltFunctionUse(Item item, Player player)
 		{
-			DisplayName.SetDefault(ItemName);
-			Tooltip.SetDefault("Left click to slash and throw \n" + Description);
+			if (phaseblades.Contains(item.type))
+				return true;
+			return base.AltFunctionUse(item, player);
 		}
 
-		public override void SetDefaults()
+		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Item.damage = 22;
-			Item.DamageType = DamageClass.Melee;
-			Item.width = 36;
-			Item.height = 44;
-			Item.useTime = 12;
-			Item.useAnimation = 12;
-			Item.reuseDelay = 20;
-			Item.channel = true;
-			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.knockBack = 2.5f;
-			Item.crit = 9;
-			Item.shootSpeed = 14f;
-			Item.autoReuse = false;
-			Item.shoot = Mod.Find<ModProjectile>(ProjType).Type;
-			Item.noUseGraphic = true;
-			Item.noMelee = true;
-			Item.autoReuse = false;
-			Item.value = Item.sellPrice(0, 0, 20, 0);
-            Item.rare = ItemRarityID.Blue;
-        }
-
-        public override bool AltFunctionUse(Player player)
-        {
-			return true;
-        }
-
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
-			(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
-			return false;
-        }
-    }
+			if (phaseblades.Contains(item.type))
+			{
+				Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+				(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
+				return false;
+			}
+			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+		}
+	}
 
 	enum CurrentAttack : int
 	{
