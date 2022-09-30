@@ -382,89 +382,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
             if (!returning && collided) //wheel has touched the ground and is not returning, it will now travel along blocks like blazing wheel
             {
-                if (speedTimer < 65) //speed timer to give the speed easing
-                    speedTimer++;
-
-                if (resetDelay > 0) //delay of the wheel being able to reset its movement
-                    resetDelay--;
-
-                if (Projectile.tileCollide) //the projectile just collided with the tile, give the moveDirection the opposite of the owners direction
-                    moveDirection = new Vector2(-owner.direction, 1);
-
-                Projectile.tileCollide = false;
-
-                if (Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 750f && !switched) //projectile is too far away from player, switch the direction
-                {
-                    speedTimer = 0;
-                    switched = true;
-                    moveDirection.X = Projectile.Center.X < owner.Center.X ? 1 : -1;
-                }
-                
-                newVelocity = Collide();
-                if (Math.Abs(newVelocity.X) < 0.5f)
-                    collideX = true;
-                else
-                    collideX = false;
-                if (Math.Abs(newVelocity.Y) < 0.5f)
-                    collideY = true;
-                else
-                    collideY = false;
-
-                if (Projectile.ai[1] == 0f)
-                {
-                    Projectile.rotation += (float)(moveDirection.X * moveDirection.Y) * 0.75f;
-                    if (collideY)
-                        Projectile.ai[0] = 2f;
-
-                    if (!collideY && Projectile.ai[0] == 2f)
-                    {
-                        moveDirection.X = -moveDirection.X;
-                        Projectile.ai[1] = 1f;
-                        Projectile.ai[0] = 1f;
-                    }
-                    if (collideX)
-                    {
-                        moveDirection.Y = -moveDirection.Y;
-                        Projectile.ai[1] = 1f;
-                    }
-                }
-                else
-                {
-                    Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.45f;
-                    if (collideX)
-                        Projectile.ai[0] = 2f;
-
-                    if (!collideX && Projectile.ai[0] == 2f)
-                    {
-                        moveDirection.Y = -moveDirection.Y;
-                        Projectile.ai[1] = 0f;
-                        Projectile.ai[0] = 1f;
-                    }
-                    if (collideY)
-                    {
-                        moveDirection.X = -moveDirection.X;
-                        Projectile.ai[1] = 0f;
-                    }
-                }
-                Projectile.velocity = speed * moveDirection;
-                Projectile.velocity = Collide(); // set the velo based of Collision.NoSlopeCollision() and speed + movedirection.
-                if (Projectile.Center.Y < owner.Center.Y - 200 && resetDelay <= 0) //if the wheel is too far above the player it resets its movement
-                {
-                    if (!switched)
-                        switched = true;
-                    else
-                    {
-                        collided = false;
-                        Projectile.tileCollide = true;
-                    }
-
-                    resetDelay = 120;
-                }
-
-                Vector2 pos = Projectile.direction == 1 ? Projectile.BottomLeft : Projectile.BottomRight;
-                Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 25f, 0), ModContent.DustType<Dusts.GlowFastDecelerate>(), (Vector2.UnitX * Projectile.direction) + Vector2.UnitY * Main.rand.NextFloat(), 0, new Color(255, 160, 50), Main.rand.NextFloat(0.3f, 0.5f));
-                
-                Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 45f, 45), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.UnitX * -Projectile.direction) + Vector2.UnitY * -Main.rand.NextFloat(1f, 2f), 0, new Color(255, 160, 50), 2.3f);
+                SlidingAI();
             }
             else if (!collided) // the wheel is effected by gravity once it is fired, before it has touched the ground.
             {
@@ -592,6 +510,93 @@ namespace StarlightRiver.Content.Items.Dungeon
         protected virtual Vector2 Collide()
         {
             return Collision.noSlopeCollision(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height, true, true);
+        }
+
+        private void SlidingAI()
+        {
+            if (speedTimer < 65) //speed timer to give the speed easing
+                speedTimer++;
+
+            if (resetDelay > 0) //delay of the wheel being able to reset its movement
+                resetDelay--;
+
+            if (Projectile.tileCollide) //the projectile just collided with the tile, give the moveDirection the opposite of the owners direction
+                moveDirection = new Vector2(-owner.direction, 1);
+
+            Projectile.tileCollide = false;
+
+            if (Projectile.Distance(((ThousandthDegreeProjectile)parentProj.ModProjectile).wheelPos) > 750f && !switched) //projectile is too far away from player, switch the direction
+            {
+                speedTimer = 0;
+                switched = true;
+                moveDirection.X = Projectile.Center.X < owner.Center.X ? 1 : -1;
+            }
+
+            newVelocity = Collide();
+            if (Math.Abs(newVelocity.X) < 0.5f)
+                collideX = true;
+            else
+                collideX = false;
+            if (Math.Abs(newVelocity.Y) < 0.5f)
+                collideY = true;
+            else
+                collideY = false;
+
+            if (Projectile.ai[1] == 0f)
+            {
+                Projectile.rotation += (float)(moveDirection.X * moveDirection.Y) * 0.75f;
+                if (collideY)
+                    Projectile.ai[0] = 2f;
+
+                if (!collideY && Projectile.ai[0] == 2f)
+                {
+                    moveDirection.X = -moveDirection.X;
+                    Projectile.ai[1] = 1f;
+                    Projectile.ai[0] = 1f;
+                }
+                if (collideX)
+                {
+                    moveDirection.Y = -moveDirection.Y;
+                    Projectile.ai[1] = 1f;
+                }
+            }
+            else
+            {
+                Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.45f;
+                if (collideX)
+                    Projectile.ai[0] = 2f;
+
+                if (!collideX && Projectile.ai[0] == 2f)
+                {
+                    moveDirection.Y = -moveDirection.Y;
+                    Projectile.ai[1] = 0f;
+                    Projectile.ai[0] = 1f;
+                }
+                if (collideY)
+                {
+                    moveDirection.X = -moveDirection.X;
+                    Projectile.ai[1] = 0f;
+                }
+            }
+            Projectile.velocity = speed * moveDirection;
+            Projectile.velocity = Collide(); // set the velo based of Collision.NoSlopeCollision() and speed + movedirection.
+            if (Projectile.Center.Y < owner.Center.Y - 200 && resetDelay <= 0) //if the wheel is too far above the player it resets its movement
+            {
+                if (!switched)
+                    switched = true;
+                else
+                {
+                    collided = false;
+                    Projectile.tileCollide = true;
+                }
+
+                resetDelay = 120;
+            }
+
+            Vector2 pos = Projectile.direction == 1 ? Projectile.BottomLeft : Projectile.BottomRight;
+            Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 25f, 0), ModContent.DustType<Dusts.GlowFastDecelerate>(), (Vector2.UnitX * Projectile.direction) + Vector2.UnitY * Main.rand.NextFloat(), 0, new Color(255, 160, 50), Main.rand.NextFloat(0.3f, 0.5f));
+
+            Dust.NewDustPerfect(pos + new Vector2(Projectile.direction * 45f, 45), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.UnitX * -Projectile.direction) + Vector2.UnitY * -Main.rand.NextFloat(1f, 2f), 0, new Color(255, 160, 50), 2.3f);
         }
 
         private void VanillaBoomerangAI() //this is bad vanilla code but I tried to make it as readable as I could
