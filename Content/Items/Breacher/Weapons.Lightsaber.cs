@@ -495,7 +495,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						Projectile.active = false;
 						break;
 				}
-				Projectile.ai[0] += 30f / attackDuration;
+				//Projectile.ai[0] += 30f / attackDuration;
 			}
 
 			if (Projectile.ai[0] < 1)
