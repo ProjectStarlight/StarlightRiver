@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					endSquish = 0.3f;
 					endRotation = rot + (3f * owner.direction);
 					attackDuration = 125;
-					Projectile.ai[0] += 30f / attackDuration;
+					//Projectile.ai[0] += 30f / attackDuration;
 				}
 
 				if (Projectile.ai[0] < 1)
