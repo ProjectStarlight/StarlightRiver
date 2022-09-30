@@ -29,6 +29,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Overgrown Living Wood");
 		}
+
 		public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 		{
 			frameXOffset = GetFrame(i, j) * 288; //width of texture divided by 2, the amount of "frames" for the tile
