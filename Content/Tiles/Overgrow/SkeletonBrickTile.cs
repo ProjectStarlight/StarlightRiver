@@ -14,20 +14,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
     public class SkeletonBrickTile : ModTile
     {
         public override string Texture => AssetDirectory.OvergrowTile + Name;
+
         public override void SetStaticDefaults()
         {
-            Main.tileSolid[Type] = true;
+			this.QuickSet(50, DustID.Bone, SoundID.Tink, new Color(55, 55, 35), ModContent.ItemType<SkeletonBrickItem>(), false, false, "Skeleton Brick");
 			Main.tileBrick[Type] = true;
-            HitSound = SoundID.Tink;
-            Main.tileBlockLight[Type] = true;
-            AddMapEntry(new Color(55, 55, 35));
-
-            ItemDrop = ModContent.ItemType<SkeletonBrickItem>();
-
-			DustType = DustID.Bone;
-
-            ModTranslation name = CreateMapEntryName();
-            name.SetDefault("Skeleton Brick");
         }
 		public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 		{
