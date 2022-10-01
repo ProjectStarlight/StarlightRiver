@@ -47,6 +47,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.timeLeft = 200;
 			afterImageLength = 30;
 			Projectile.rotation += 0.06f * owner.direction;
+			rotVel = 0.02f;
 			midRotation = owner.velocity.ToRotation();
 			squish = 0.7f;
 			hide = false;
@@ -58,7 +59,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			owner.heldProj = Projectile.whoAmI;
 
 			if (!owner.GetModPlayer<LightsaberPlayer>().jumping)
+			{
+				Core.Systems.CameraSystem.Shake += 10;
+				for (int i = 0; i < 30; i++)
+					Dust.NewDustPerfect(owner.Bottom, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1.95f, 2.35f));
 				Projectile.active = false;
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_GreenExplosion>(), Projectile.damage * 2, 0, owner.whoAmI);
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Bottom, Vector2.Normalize(owner.GetModPlayer<LightsaberPlayer>().jumpVelocity) * 1.2f, ModContent.ProjectileType<Vitric.IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(60, 90), owner.GetModPlayer<LightsaberPlayer>().jumpVelocity.ToRotation());
+				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).outerColor = new Color(BladeColor.X, BladeColor.Y, BladeColor.Z);
+				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).ringWidth = 40;
+				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).timeLeftStart = 40;
+				proj.timeLeft = 40;
+			}
 		}
     }
 
@@ -311,11 +323,39 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
+	public class LightsaberProj_GreenExplosion : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		private Player owner => Main.player[Projectile.owner];
+
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Lightsaber");
+
+		public override void SetDefaults()
+		{
+			Projectile.width = Projectile.height = 170;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.aiStyle = -1;
+			Projectile.friendly = true;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 10;
+			Projectile.tileCollide = false;
+			Projectile.hide = true;
+		}
+
+		public override void AI()
+		{
+			Projectile.Center = owner.Center;
+		}
+	}
+
 	public class LightsaberPlayer : ModPlayer
     {
 		public bool dashing = false;
 
 		public bool jumping = false;
+		public Vector2 jumpVelocity = Vector2.Zero;
 
 		public float storedBodyRotation = 0f;
 
@@ -348,6 +388,10 @@ namespace StarlightRiver.Content.Items.Breacher
 				Player.fullRotation = 0;
 				jumping = false;
 			}
+			else
+            {
+				jumpVelocity = Player.velocity;
+            }
         }
     }
 }

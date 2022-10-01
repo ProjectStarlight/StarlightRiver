@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
+		public Color outerColor = Color.Orange;
+		public int ringWidth = 28;
+
 		private List<Vector2> cache;
 
 		private Trail trail;
@@ -80,12 +83,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => ringWidth * (1 - Progress), factor =>
 			{
-				return Color.Orange;
+				return outerColor;
 			});
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor =>
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => ringWidth * 0.36f * (1 - Progress), factor =>
 			{
 				return Color.White;
 			});
