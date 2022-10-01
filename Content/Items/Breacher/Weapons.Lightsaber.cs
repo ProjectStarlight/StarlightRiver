@@ -1,12 +1,12 @@
 ﻿//TODO:
 //Clean up code
 //Better Collision
-//Fix bug with screen position while it'd thrown
-//Better thrown hit cooldown
+//Fix bug with screen position while it's thrown
 //Better sound effects
 //Balance
 //Make it look good when swinging to the left
 //Less spritebatch restarts
+//Switch yellow and white
 
 //TODO on red rightclick:
 
@@ -169,6 +169,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		protected int throwTimer = 0;
 		protected bool thrown = false;
+		private bool turnedAround = false;
 
 		protected Vector2 thrownDirection = Vector2.Zero;
 
@@ -194,7 +195,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		protected float startSquish = 0.4f;
 
-		protected float endSquish = 1;
+		protected float endSquish = 0.4f;
 
 		protected float rotVel = 0f;
 
@@ -414,7 +415,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			float progress = EaseFunction.EaseQuadOut.Ease(Math.Abs(nonEasedProgress)) * Math.Sign(Math.Cos(throwTimer * 0.01f));
 			bool goingBack = Math.Sign(progress) == -1;
 			if (goingBack)
-				thrownDirection = owner.DirectionTo(Projectile.Center);
+			{
+				if (!turnedAround)
+                {
+                    turnedAround = true;
+					hit = new List<NPC>();
+                }
+                thrownDirection = owner.DirectionTo(Projectile.Center);
+			}
 			Projectile.velocity = (progress) * 5 * thrownDirection;
 			midRotation = Projectile.velocity.ToRotation();
 
@@ -536,6 +544,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			float throwingAngle = MathHelper.WrapAngle(owner.DirectionTo(Main.MouseWorld).ToRotation());
 			if (currentAttack == CurrentAttack.Throw && Math.Abs(wrappedRotation - throwingAngle) < 0.2f && Projectile.ai[0] > 0.4f)
 			{
+				hit = new List<NPC>();
 				oldScreenPos = Main.screenPosition;
 				thrown = true;
 				thrownDirection = owner.DirectionTo(Main.MouseWorld);
