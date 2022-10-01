@@ -25,6 +25,7 @@ sampler2D distortSampler = sampler_state
 
 float2 size;
 float time;
+float opacity;
 
 float4 Main(float2 uv : TEXCOORD) : COLOR
 {
@@ -46,7 +47,7 @@ float4 Main(float2 uv : TEXCOORD) : COLOR
     
     color.a *= 0.25 + noise0 * noise1;
     
-    return color;
+    return color * opacity;
 }
 
 technique SpriteDrawing
