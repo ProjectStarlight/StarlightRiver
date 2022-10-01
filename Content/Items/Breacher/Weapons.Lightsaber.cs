@@ -21,6 +21,7 @@
 //TODO on green rightclick:
 //Make it slow the player down when you land
 //Fix janky trail when flipping
+//Better AOE visuals
 //Fix hand just sticking out when attack is done
 //Make it disable mounts
 
@@ -580,13 +581,37 @@ namespace StarlightRiver.Content.Items.Breacher
 		protected virtual void SafeLeftClickBehavior() { }
 	}
 	public class LightsaberGlow : Dusts.Glow
-    {
-        public override bool Update(Dust dust)
-        {
+	{
+		public override bool Update(Dust dust)
+		{
 			dust.scale *= 0.95f;
 			dust.velocity *= 0.98f;
 			dust.color *= 1.05f;
 			return base.Update(dust);
-        }
-    }
+		}
+	}
+
+	public class LightsaberLight : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return dust.color;
+		}
+
+		public override bool Update(Dust dust)
+		{
+			dust.scale *= 0.96f;
+			if (dust.scale < 0.05f)
+				dust.active = false;
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2);
+			return false;
+		}
+	}
 }

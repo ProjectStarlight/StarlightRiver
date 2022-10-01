@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			squish = 0.7f;
 			hide = false;
 			canHit = true;
-			anchorPoint = Projectile.Center - Main.screenPosition;
+			anchorPoint = owner.Center - Main.screenPosition;
 			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
@@ -64,7 +64,9 @@ namespace StarlightRiver.Content.Items.Breacher
 				for (int i = 0; i < 30; i++)
 					Dust.NewDustPerfect(owner.Bottom, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1.95f, 2.35f));
 				Projectile.active = false;
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_GreenExplosion>(), Projectile.damage * 2, 0, owner.whoAmI);
+				Tile tile = Main.tile[((owner.Bottom / 16) + new Vector2(0, 1)).ToPoint()];
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI,0, 10);
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * -1, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI, tile.TileType, -10);
 				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Bottom, Vector2.Normalize(owner.GetModPlayer<LightsaberPlayer>().jumpVelocity) * 1.2f, ModContent.ProjectileType<Vitric.IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(60, 90), owner.GetModPlayer<LightsaberPlayer>().jumpVelocity.ToRotation());
 				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).outerColor = new Color(BladeColor.X, BladeColor.Y, BladeColor.Z);
 				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).ringWidth = 40;
@@ -323,30 +325,93 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	public class LightsaberProj_GreenExplosion : ModProjectile
+	class Lightsaber_GreenShockwave : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
-		private Player owner => Main.player[Projectile.owner];
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Shockwave");
+		private int TileType => (int)Projectile.ai[0];
+		private int ShockwavesLeft => (int)Projectile.ai[1];//Positive and Negitive
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Lightsaber");
+		private bool createdLight = false;
 
 		public override void SetDefaults()
 		{
-			Projectile.width = Projectile.height = 170;
+			base.SetDefaults();
 			Projectile.hostile = false;
-			Projectile.DamageType = DamageClass.Melee;
-			Projectile.aiStyle = -1;
 			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.timeLeft = 1060;
+			Projectile.tileCollide = true;
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.idStaticNPCHitCooldown = 20;
+			Projectile.usesIDStaticNPCImmunity = true;
+			Projectile.extraUpdates = 5;
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = 10;
-			Projectile.tileCollide = false;
-			Projectile.hide = true;
 		}
 
 		public override void AI()
 		{
-			Projectile.Center = owner.Center;
+			if (Projectile.timeLeft > 1000)
+			{
+				if (Projectile.timeLeft < 1002 && Projectile.timeLeft > 80)
+					Projectile.Kill();
+
+				Projectile.velocity.Y = 4f;
+			}
+			else
+			{
+				Projectile.velocity.Y = Projectile.timeLeft <= 10 ? 1f : -1f;
+
+				if (Projectile.timeLeft == 19 && Math.Abs(ShockwavesLeft) > 0)
+				{
+					Projectile proj = Projectile.NewProjectileDirect(Projectile.InheritSource(Projectile), new Vector2((int)Projectile.Center.X / 16 * 16 + 16 * Math.Sign(ShockwavesLeft)
+					, (int)Projectile.Center.Y / 16 * 16 - 32),
+					Vector2.Zero, Projectile.type, Projectile.damage, 0, Main.myPlayer, TileType, Projectile.ai[1] - Math.Sign(ShockwavesLeft));
+					proj.extraUpdates = (int)(Math.Abs(ShockwavesLeft) / 3f);
+				}
+
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (Projectile.timeLeft < 21)
+				Main.spriteBatch.Draw(TextureAssets.Tile[TileType].Value, Projectile.position - Main.screenPosition, new Rectangle(18, 0, 16, 16), lightColor);
+
+			return false;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (Projectile.timeLeft > 800)
+			{
+				Point16 point = new Point16((int)((Projectile.Center.X + Projectile.width / 3f * Projectile.spriteDirection) / 16), Math.Min(Main.maxTilesY, (int)(Projectile.Center.Y / 16) + 1));
+				Tile tile = Framing.GetTileSafely(point.X, point.Y);
+
+				if (!createdLight)
+                {
+					createdLight = true;
+					Dust.NewDustPerfect(point.ToVector2() * 16, ModContent.DustType<LightsaberLight>(), Vector2.Zero, 0, Color.Green, 1);
+                }
+				if (tile != null && WorldGen.InWorld(point.X, point.Y, 1) && tile.HasTile && Main.tileSolid[tile.TileType])
+				{
+					Projectile.timeLeft = 20;
+					Projectile.ai[0] = tile.TileType;
+					Projectile.tileCollide = false;
+					Projectile.position.Y += 16;
+
+					for (float num315 = 0.50f; num315 < 3; num315 += 0.25f)
+					{
+						float angle = MathHelper.ToRadians(-Main.rand.Next(70, 130));
+						Vector2 vecangle = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * num315 * 2f;
+						int dustID = Dust.NewDust(new Vector2(Projectile.position.X, Projectile.position.Y), Projectile.width, (int)(Projectile.height / 2f), ModContent.DustType<LightsaberGlow>(), 0f, 0f, 50, Color.Green, Main.rand.NextFloat(0.45f,0.95f));
+						Main.dust[dustID].velocity = vecangle;
+					}
+				}
+			}
+			return false;
 		}
 	}
 
