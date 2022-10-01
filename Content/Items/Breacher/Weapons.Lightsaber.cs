@@ -17,8 +17,11 @@
 //TODO on blue rightclick:
 //Everything
 
-//TODO on greenrightclick:
-//Everything
+//TODO on green rightclick:
+//Make it slow the player down when you land
+//AOE impact
+//Fix janky trail when flipping
+//Fix hand just sticking out when attack is done
 
 //TODO on purple rightclick:
 //Everything
