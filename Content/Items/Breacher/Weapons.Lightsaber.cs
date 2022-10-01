@@ -302,7 +302,17 @@ namespace StarlightRiver.Content.Items.Breacher
 			for (int i = 0; i < oldPositionCollision.Count; i++) 
 			{
 				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), oldPositionCollision[i], GetCollisionPoint(i) + oldPositionCollision[i], 40, ref collisionPoint))
+				{
+					Vector2 dustPos = oldPositionCollision[i] + (Vector2.Normalize(GetCollisionPoint(i)) * collisionPoint);
+					Vector2 dustVel = Vector2.Normalize(GetCollisionPoint(i)).RotatedBy(1.57f).RotatedByRandom(0.3f);
+					for (int j = 0; j < 11; j++)
+					{
+						float speed = Main.rand.NextFloat();
+						int dir = Main.rand.NextBool() ? 1 : -1;
+						Dust.NewDustPerfect(dustPos, ModContent.DustType<LightsaberGlow>(), dustVel * dir * speed * 5, default, new Color(BladeColor.X * 2, BladeColor.Y * 2, BladeColor.Z * 2), MathHelper.Lerp(0.95f,0.55f, speed));
+					}
 					return true;
+				}
 			}
 			return false;
 		}
@@ -564,4 +574,14 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		protected virtual void SafeLeftClickBehavior() { }
 	}
+	public class LightsaberGlow : Dusts.Glow
+    {
+        public override bool Update(Dust dust)
+        {
+			dust.scale *= 0.95f;
+			dust.velocity *= 0.98f;
+			dust.color *= 1.05f;
+			return base.Update(dust);
+        }
+    }
 }
