@@ -8,6 +8,7 @@
 //Less spritebatch restarts
 //Switch yellow and white
 //Make them configurable
+//Move ignition impact ring to it's own generic projectile class
 
 //TODO on red rightclick:
 
@@ -19,9 +20,9 @@
 
 //TODO on green rightclick:
 //Make it slow the player down when you land
-//AOE impact
 //Fix janky trail when flipping
 //Fix hand just sticking out when attack is done
+//Make it disable mounts
 
 //TODO on purple rightclick:
 //Everything
