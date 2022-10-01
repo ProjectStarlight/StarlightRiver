@@ -25,7 +25,42 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class LightsaberProj_Green : LightsaberProj
 	{
 		protected override Vector3 BladeColor => Color.Green.ToVector3();
-	}
+
+		bool jumped = false;
+
+		private int soundTimer = 0;
+        protected override void RightClickBehavior()
+        {
+			if (!jumped)
+            {
+				jumped = true;
+				owner.velocity = owner.DirectionTo(Main.MouseWorld) * 20;
+				owner.GetModPlayer<LightsaberPlayer>().jumping = true;
+            }
+
+			if (soundTimer++ % 100 == 0)
+			{
+				hit = new List<NPC>();
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
+			}
+			owner.itemTime = owner.itemAnimation = 2;
+			Projectile.timeLeft = 200;
+			afterImageLength = 30;
+			Projectile.rotation += 0.06f * owner.direction;
+			midRotation = owner.velocity.ToRotation();
+			squish = 0.7f;
+			hide = false;
+			canHit = true;
+			anchorPoint = Projectile.Center - Main.screenPosition;
+			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			Projectile.velocity = Vector2.Zero;
+			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			owner.heldProj = Projectile.whoAmI;
+
+			if (!owner.GetModPlayer<LightsaberPlayer>().jumping)
+				Projectile.active = false;
+		}
+    }
 
 	public class LightsaberProj_Purple : LightsaberProj
 	{
@@ -280,6 +315,10 @@ namespace StarlightRiver.Content.Items.Breacher
     {
 		public bool dashing = false;
 
+		public bool jumping = false;
+
+		public float storedBodyRotation = 0f;
+
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
         {
 			if (dashing)
@@ -289,14 +328,26 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void PreUpdate()
         {
-            if (dashing)
+            if (dashing || jumping)
 				Player.maxFallSpeed = 2000f;
 		}
 
         public override void PostUpdate()
         {
+			if (jumping)
+            {
+				storedBodyRotation += 0.3f * Player.direction;
+				Player.fullRotation = storedBodyRotation;
+				Player.fullRotationOrigin = Player.Size / 2;
+			}
 			if (Player.velocity.X == 0 || Player.velocity.Y == 0)
 				dashing = false;
+			if (Player.velocity.Y == 0)
+            {
+				storedBodyRotation = 0;
+				Player.fullRotation = 0;
+				jumping = false;
+			}
         }
     }
 }
