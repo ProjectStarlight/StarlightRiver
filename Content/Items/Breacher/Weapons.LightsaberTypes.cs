@@ -1,21 +1,4 @@
-﻿//TODO:
-//Clean up code
-//Better Collision
-//Fix bug with screen position while it'd thrown
-//Better thrown hit cooldown
-//All 6 rightclicks (sigh)
-//Better sound effects
-//Obtainment
-//Balance
-//Sellprice
-//Rarity
-//Make it look good when swinging to the left
-//Less spritebatch restarts
-//Description
-//Less spritebatch restarts
-
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core;
@@ -136,7 +119,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					startMidRotation = midRotation;
 					endSquish = 0.3f;
 					endRotation = rot + (3f * owner.direction);
-					attackDuration = 125;
+					attackDuration = 65;
 					//Projectile.ai[0] += 30f / attackDuration;
 				}
 
@@ -196,6 +179,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             if (target == pullTarget)
             {
+				Core.Systems.CameraSystem.Shake += 5;
 				launchVector = pullTarget.DirectionTo(Main.MouseWorld);
 				damage = (int)(damage * 2.5f);
 				target.velocity = Vector2.Zero;
