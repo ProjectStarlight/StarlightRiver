@@ -7,6 +7,7 @@
 //Make it look good when swinging to the left
 //Less spritebatch restarts
 //Switch yellow and white
+//Make them configurable
 
 //TODO on red rightclick:
 
