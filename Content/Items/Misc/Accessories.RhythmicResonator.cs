@@ -75,8 +75,9 @@ namespace StarlightRiver.Content.Items.Misc
                         }
                 }
 
-                modPlayer.RhythmTimer = (int)((Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f))) * (Item.useTime < 30 ? 1.15f : 1.1f));
-                modPlayer.MaxRhythmTimer = (int)((Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f))) * (Item.useTime < 30 ? 1.15f : 1.1f));
+                float speed = Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f));
+                modPlayer.RhythmTimer = (int)(speed * (Item.useTime < 30 ? 1.2f : 1.15f));
+                modPlayer.MaxRhythmTimer = (int)(speed * (Item.useTime < 30 ? 1.2f : 1.15f));
             }
             return null;
         }
