@@ -61,8 +61,9 @@ namespace StarlightRiver.Content.Items.Misc
             var modPlayer = Player.GetModPlayer<RhythmicResonatorModPlayer>();
             if (Equipped(Player))
             {
-                if (modPlayer.RhythmTimer > 0 && modPlayer.RhythmTimer < 5) // five frame window
+                if ((modPlayer.RhythmTimer > -2 && modPlayer.RhythmTimer < 3) || modPlayer.bufferedInput) // five frame window plus buffer
                 {
+                    modPlayer.bufferedInput = false;
                     modPlayer.flashTimer = 20;
                     modPlayer.RhythmStacks++;
                     modPlayer.ResetTimer = Utils.Clamp((int)((Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f))) * 2f), 30, 180); //set the reset timer for the stacks to triple the items use time, clamped at 3 seconds
@@ -75,9 +76,9 @@ namespace StarlightRiver.Content.Items.Misc
                         }
                 }
 
-                float speed = Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f));
-                modPlayer.RhythmTimer = (int)(speed * (Item.useTime < 30 ? 1.2f : 1.15f));
-                modPlayer.MaxRhythmTimer = (int)(speed * (Item.useTime < 30 ? 1.2f : 1.15f));
+                float speed = CombinedHooks.TotalUseTime(Item.useTime, Player, Item) + 1; //one tick of leeway
+                modPlayer.RhythmTimer = (int)speed;
+                modPlayer.MaxRhythmTimer = (int)speed;
             }
             return null;
         }
@@ -91,6 +92,7 @@ namespace StarlightRiver.Content.Items.Misc
         public int RhythmStacks;
         public int ResetTimer;
         public int flashTimer; // also for UI
+        public bool bufferedInput;
 
         public override void ResetEffects()
         {
@@ -102,8 +104,10 @@ namespace StarlightRiver.Content.Items.Misc
             else
                 RhythmStacks = 0;
 
-            if (RhythmTimer > 0)
+            if (RhythmTimer > -2) 
                 RhythmTimer--;
+            else
+                bufferedInput = false;
 
             if (flashTimer > 0)
                 flashTimer--;
@@ -125,6 +129,13 @@ namespace StarlightRiver.Content.Items.Misc
                 damage = (int)(damage * (1f + (0.05f * RhythmStacks)));
                 knockback = knockback * (1f + (0.1f * RhythmStacks));
             }
+        }
+
+        public override void PreUpdate()
+        {
+            if (equipped)
+                if (Main.mouseLeft && Main.mouseLeftRelease && RhythmTimer > -2 && RhythmTimer < 3)
+                    bufferedInput = true;
         }
     }
 
