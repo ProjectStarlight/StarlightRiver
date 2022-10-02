@@ -168,12 +168,12 @@ namespace StarlightRiver.Content.Items.Misc
                 float alpha = MathHelper.Lerp(0f, 1f, progress * 2);
 
                 int start = Utils.Clamp(modPlayer.MaxRhythmTimer * 3, 30, 90);
-                Vector2 offset = Vector2.Lerp(new Vector2(-start, 3), new Vector2(6, 3), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
+                Vector2 offset = Vector2.Lerp(new Vector2(-start, 2), new Vector2(6, 2), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
                 Main.spriteBatch.Draw(texSmallOutline, mouse + (Vector2.One * 9) + offset - Main.screenPosition, null, border * alpha, 0f, texOutline.Size() / 2f, Main.cursorScale, SpriteEffects.None, 0f);
 
                 Main.spriteBatch.Draw(texSmall, mouse + (Vector2.One * 9) + offset - Main.screenPosition, null, inside * alpha, 0f, tex.Size() / 2f, Main.cursorScale, SpriteEffects.None, 0f);
 
-                offset = Vector2.Lerp(new Vector2(start + 46, 3), new Vector2(42, 3), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
+                offset = Vector2.Lerp(new Vector2(start + 46, 2), new Vector2(42, 2), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
                 Main.spriteBatch.Draw(texSmallOutline, mouse + (Vector2.One * 9) + offset - Main.screenPosition, null, border * alpha, 0f, texOutline.Size() / 2f, Main.cursorScale, SpriteEffects.FlipHorizontally, 0f);
 
                 Main.spriteBatch.Draw(texSmall, mouse + (Vector2.One * 9) + offset - Main.screenPosition, null, inside * alpha, 0f, tex.Size() / 2f, Main.cursorScale, SpriteEffects.FlipHorizontally, 0f);
