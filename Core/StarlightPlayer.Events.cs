@@ -23,6 +23,7 @@ namespace StarlightRiver.Core
             }
             return base.CanUseItem(item);
         }
+
         //for on-hit effects that require more specific effects, Projectiles
         public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);
         public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
