@@ -31,6 +31,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		protected override void RightClickBehavior()
 		{
+			Projectile.extraUpdates = 9;
 			Projectile.velocity = Vector2.Zero;
 			hide = false;
 			canHit = false;
@@ -39,7 +40,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (!initialized)
             {
 				initialized = true;
-				startRotation = endRotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+				startRotation = endRotation = owner.DirectionTo(Main.MouseWorld).ToRotation() + (2f * owner.direction);
 				startSquish = endSquish = 0.3f;
 			}
 			if (initializationTimer++ < 50)
@@ -64,8 +65,8 @@ namespace StarlightRiver.Content.Items.Breacher
 					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
 					startMidRotation = midRotation;
 					endSquish = 0.3f;
-					endRotation = rot + ((1.9f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
-					attackDuration = 45;
+					endRotation = rot + ((2f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
+					attackDuration = 90;
 					Projectile.ai[0] = 0;
 
 					initializationTimer = 60;
@@ -122,8 +123,8 @@ namespace StarlightRiver.Content.Items.Breacher
 							endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
 							startMidRotation = midRotation;
 							endSquish = 0.3f;
-							endRotation = rot + ((1.9f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
-							attackDuration = 45;
+							endRotation = rot + ((2f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
+							attackDuration = 90;
 							Projectile.ai[0] = 0;
 							parried = true;
 						}
@@ -521,7 +522,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.width = 16;
 			Projectile.height = 16;
             Projectile.penetrate = 1;
-			Projectile.extraUpdates = 2;
+			Projectile.extraUpdates = 1;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -547,7 +548,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
         {
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value; spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.6f) * 1.5f, SpriteEffects.None, 0f);
 			for (int i = 0; i < 5; i++)
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.6f), SpriteEffects.None, 0f);
 			for (int k = 0; k < 9; k++)

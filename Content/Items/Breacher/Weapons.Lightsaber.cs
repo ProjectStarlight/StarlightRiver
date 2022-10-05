@@ -19,9 +19,8 @@
 //TODO on blue rightclick:
 //Make lasers have dust
 //Sound effects
-//Make it successfully delete the projectile
 //Destruction dust
-//Make it behave correctly if facing right
+//Make it have less boilerplate
 
 //TODO on green rightclick:
 //Fix hand just sticking out when attack is done
