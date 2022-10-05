@@ -19,7 +19,147 @@ namespace StarlightRiver.Content.Items.Breacher
 {
 	public class LightsaberProj_Blue : LightsaberProj
 	{
-		protected override Vector3 BladeColor => new Vector3(0, 0.1f, 0.255f);
+        protected override Vector3 BladeColor => new Vector3(0, 0.1f, 0.255f);
+
+		bool rightClicking = false;
+
+		int initializationTimer = 0;
+
+		bool parried = false;
+
+		int parries = 0;
+
+		protected override void RightClickBehavior()
+		{
+			Projectile.velocity = Vector2.Zero;
+			hide = false;
+			canHit = false;
+			afterImageLength = 20;
+
+			if (!initialized)
+            {
+				initialized = true;
+				startRotation = endRotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+				startSquish = endSquish = 0.3f;
+			}
+			if (initializationTimer++ < 50)
+			{
+				if (owner.DirectionTo(Main.MouseWorld).X > 0)
+					facingRight = true;
+				else
+					facingRight = false;
+				rightClicking = true;
+				Projectile.timeLeft = 200;
+				Vector2 hitboxCenter = owner.Center + (owner.DirectionTo(Main.MouseWorld) * 40);
+				var hitbox = new Rectangle((int)hitboxCenter.X, (int)hitboxCenter.Y, 0, 0);
+				hitbox.Inflate(40, 40);
+
+				Projectile deflection = Main.projectile.Where(n => n.active && n.hostile && n.Hitbox.Intersects(hitbox)).FirstOrDefault();
+
+				if (deflection != default)
+				{
+					float rot = owner.DirectionTo(Main.MouseWorld).ToRotation();
+					startRotation = endRotation;
+					startSquish = endSquish;
+					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
+					startMidRotation = midRotation;
+					endSquish = 0.3f;
+					endRotation = rot + ((1.9f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
+					attackDuration = 45;
+					Projectile.ai[0] = 0;
+
+					initializationTimer = 60;
+					parried = true;
+					deflection.penetrate--;
+					if (deflection.penetrate == 0)
+						deflection.active = false;
+
+					Vector2 laserVel = deflection.DirectionTo(Main.MouseWorld);
+					if (deflection.GetGlobalProjectile<LightsaberGProj>().parent != default)
+						laserVel = deflection.DirectionTo(deflection.GetGlobalProjectile<LightsaberGProj>().parent.Center);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), deflection.Center, laserVel * 15, ModContent.ProjectileType<Lightsaber_BlueLaser>(), Projectile.damage, 0, owner.whoAmI);
+				}
+			}
+
+			else if (parried)
+            {
+				if (Projectile.ai[0] < 1)
+				{
+					Projectile.timeLeft = 400;
+					Projectile.ai[0] += 1f / attackDuration;
+					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - (1f / attackDuration))) * 2;
+				}
+
+				if (rightClicking && !Main.mouseRight)
+					rightClicking = false;
+
+				if (!rightClicking && Main.mouseRight)
+                {
+					Vector2 hitboxCenter = owner.Center + (owner.DirectionTo(Main.MouseWorld) * 40);
+					Rectangle hitbox = new Rectangle((int)hitboxCenter.X, (int)hitboxCenter.Y, 0, 0);
+					hitbox.Inflate(40, 40);
+					Projectile deflection = Main.projectile.Where(n => n.active && n.hostile && n.Hitbox.Intersects(hitbox)).FirstOrDefault();
+					if (deflection != default)
+                    {
+						deflection.penetrate--;
+						if (deflection.penetrate == 0)
+							deflection.active = false;
+
+						Vector2 laserVel = deflection.DirectionTo(Main.MouseWorld);
+						if (deflection.GetGlobalProjectile<LightsaberGProj>().parent != default)
+							laserVel = deflection.DirectionTo(deflection.GetGlobalProjectile<LightsaberGProj>().parent.Center);
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), deflection.Center, laserVel * 15, ModContent.ProjectileType<Lightsaber_BlueLaser>(), Projectile.damage, 0, owner.whoAmI);
+						if (Projectile.ai[0] >= 1)
+						{
+							if (owner.DirectionTo(Main.MouseWorld).X > 0)
+								facingRight = true;
+							else
+								facingRight = false;
+
+							float rot = owner.DirectionTo(Main.MouseWorld).ToRotation();
+							startRotation = endRotation;
+							startSquish = endSquish;
+							endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
+							startMidRotation = midRotation;
+							endSquish = 0.3f;
+							endRotation = rot + ((1.9f * owner.direction) * (((parries++ % 2) == 1) ? 1 : -1));
+							attackDuration = 45;
+							Projectile.ai[0] = 0;
+							parried = true;
+						}
+						else
+							parried = false;
+					}
+
+					rightClicking = true;
+                }
+			}
+			else
+            {
+				endRotation = startRotation;
+				endSquish = startSquish;
+				rotVel = 0;
+            }
+
+			float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
+
+			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
+
+			Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
+			midRotation = MathHelper.Lerp(startMidRotation, endMidRotation, progress);
+			squish = MathHelper.Lerp(startSquish, endSquish, progress) + (0.35f * (float)Math.Sin(3.14f * progress));
+			anchorPoint = Projectile.Center - Main.screenPosition;
+
+			owner.ChangeDir(facingRight ? 1 : -1);
+
+			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			owner.itemAnimation = owner.itemTime = 2;
+
+			if (owner.direction != 1)
+				Projectile.rotation += 0.78f;
+
+			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+		}
 	}
 
 	public class LightsaberProj_Green : LightsaberProj
@@ -67,11 +207,12 @@ namespace StarlightRiver.Content.Items.Breacher
 				Tile tile = Main.tile[((owner.Bottom / 16) + new Vector2(0, 1)).ToPoint()];
 				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI,0, 10);
 				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * -1, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI, tile.TileType, -10);
-				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Bottom, Vector2.Normalize(owner.GetModPlayer<LightsaberPlayer>().jumpVelocity) * 1.2f, ModContent.ProjectileType<Vitric.IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(60, 90), owner.GetModPlayer<LightsaberPlayer>().jumpVelocity.ToRotation());
-				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).outerColor = new Color(BladeColor.X, BladeColor.Y, BladeColor.Z);
-				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).ringWidth = 40;
-				(proj.ModProjectile as Vitric.IgnitionGauntletsImpactRing).timeLeftStart = 40;
-				proj.timeLeft = 40;
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Bottom, Vector2.Zero, ModContent.ProjectileType<LightsaberImpactRing>(), 0, 0, owner.whoAmI, 160, 1.57f);
+				(proj.ModProjectile as LightsaberImpactRing).outerColor = new Color(BladeColor.X, BladeColor.Y, BladeColor.Z);
+				(proj.ModProjectile as LightsaberImpactRing).ringWidth = 40;
+				(proj.ModProjectile as LightsaberImpactRing).timeLeftStart = 50;
+				(proj.ModProjectile as LightsaberImpactRing).additive = true;
+				proj.timeLeft = 50;
 			}
 		}
     }
@@ -325,7 +466,96 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	class Lightsaber_GreenShockwave : ModProjectile
+	class Lightsaber_BlueLensFlare : ModProjectile, IDrawAdditive
+    {
+		public override string Texture => AssetDirectory.Keys + "Glow";
+
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Laser");
+
+		public override void SetDefaults()
+		{
+			Projectile.hostile = false;
+			Projectile.friendly = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.timeLeft = 60;
+			Projectile.tileCollide = false;
+			Projectile.width = 16;
+			Projectile.height = 16;
+			Projectile.penetrate = -1;
+			Projectile.extraUpdates = 4;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			float scale = MathHelper.Min(1 - (60 - Projectile.timeLeft) / 60f, 1);
+			for (int k = 0; k < 9; k++)
+			{
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), 0, tex.Size() / 2, Projectile.scale * scale * 0.7f, SpriteEffects.None, 0f);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2, Projectile.scale * scale * 0.5f, SpriteEffects.None, 0f);
+			}
+		}
+
+	}
+
+	class Lightsaber_BlueLaser : ModProjectile, IDrawAdditive
+    {
+		public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
+
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Laser");
+
+		private bool initialized = false;
+
+		public override void SetDefaults()
+		{
+			Projectile.hostile = false;
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.timeLeft = 1060;
+			Projectile.tileCollide = true;
+			Projectile.width = 16;
+			Projectile.height = 16;
+            Projectile.penetrate = 1;
+			Projectile.extraUpdates = 2;
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+			return false;
+        }
+
+        public override void AI()
+        {
+			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			
+			if (!initialized)
+            {
+				initialized = true;
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<Lightsaber_BlueLensFlare>(), 0, 0, Projectile.owner);
+            }
+        }
+
+        public override void Kill(int timeLeft)
+        {
+
+        }
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+        {
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			for (int i = 0; i < 5; i++)
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.6f), SpriteEffects.None, 0f);
+			for (int k = 0; k < 9; k++)
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.9f * new Vector2(1, 0.6f), SpriteEffects.None, 0f);
+		}
+    }
+
+    class Lightsaber_GreenShockwave : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -337,14 +567,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override void SetDefaults()
 		{
-			base.SetDefaults();
 			Projectile.hostile = false;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Melee;
 			Projectile.timeLeft = 1060;
 			Projectile.tileCollide = true;
-			Projectile.width = 16;
-			Projectile.height = 16;
+			Projectile.width = 12;
+			Projectile.height = 12;
 			Projectile.idStaticNPCHitCooldown = 20;
 			Projectile.usesIDStaticNPCImmunity = true;
 			Projectile.extraUpdates = 5;
@@ -414,6 +643,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			return false;
 		}
 	}
+
+	public class LightsaberGProj : GlobalProjectile
+    {
+		public override bool InstancePerEntity => true;
+
+        public Entity parent = default;
+        public override void OnSpawn(Projectile projectile, IEntitySource source)
+        {
+			if (source is EntitySource_Parent spawnSource)
+				parent = spawnSource.Entity;
+        }
+    }
 
 	public class LightsaberPlayer : ModPlayer
     {

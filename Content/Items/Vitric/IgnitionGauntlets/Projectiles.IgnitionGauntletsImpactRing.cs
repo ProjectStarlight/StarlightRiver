@@ -37,7 +37,12 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			DisplayName.SetDefault("Ignition Gauntlets");
 		}
 
-		public override void AI()
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+			behindNPCsAndTiles.Add(index);
+		}
+
+        public override void AI()
 		{
 			Projectile.velocity *= 0.95f;
 
@@ -101,8 +106,13 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 			effect.Parameters["alpha"].SetValue(1);
 
+			BlendState oldState = Main.graphics.GraphicsDevice.BlendState;
+			if (additive)
+				Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
 			trail?.Render(effect);
 			trail2?.Render(effect);
+
+			Main.graphics.GraphicsDevice.BlendState = oldState;
 		}
 	}
 }
