@@ -41,8 +41,7 @@
 //Adjust color
 
 //TODO on orange rightclick:
-//Make the leftclick
-//Everything else
+//Better description
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -72,7 +71,8 @@ namespace StarlightRiver.Content.Items.Breacher
 			ItemID.PurplePhaseblade,
 			ItemID.YellowPhaseblade,
 			ItemID.BluePhaseblade,
-			ItemID.GreenPhaseblade
+			ItemID.GreenPhaseblade,
+			ItemID.OrangePhaseblade
 		};
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
@@ -96,6 +96,9 @@ namespace StarlightRiver.Content.Items.Breacher
 					break;
 				case ItemID.GreenPhaseblade:
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to flip in the air, spinning the blade \n'Do or do not. There is no try'"));
+					break;
+				case ItemID.OrangePhaseblade:
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click throw to the cursor \nHold right click to leave it there\n'[Insert star wars quote]'"));
 					break;
 			}
         }
@@ -122,6 +125,9 @@ namespace StarlightRiver.Content.Items.Breacher
 				case ItemID.GreenPhaseblade:
 					item.shoot = ModContent.ProjectileType<LightsaberProj_Green>();
 					break;
+				case ItemID.OrangePhaseblade:
+					item.shoot = ModContent.ProjectileType<LightsaberProj_Orange>();
+					break;
 			}
 
 			if (phaseblades.Contains(item.type))
@@ -139,7 +145,7 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 		public override bool AltFunctionUse(Item item, Player player)
 		{
-			if (phaseblades.Contains(item.type) && item.type != ItemID.YellowPhaseblade)
+			if (phaseblades.Contains(item.type) && item.type != ItemID.YellowPhaseblade && item.type != ItemID.OrangePhaseblade)
 				return true;
 			return base.AltFunctionUse(item, player);
 		}
@@ -186,7 +192,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		protected int throwTimer = 0;
 		protected bool thrown = false;
-		private bool turnedAround = false;
+		protected bool turnedAround = false;
 
 		protected Vector2 thrownDirection = Vector2.Zero;
 
@@ -432,7 +438,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			return EaseFunction.EaseCubicInOut.Ease(input);
 		}
 
-		protected void ThrownBehavior()
+		protected virtual void ThrownBehavior()
         {
 			rotVel = 0.04f;
 			squish = MathHelper.Lerp(squish, 0.6f - (Projectile.velocity.Length() * 0.08f), 0.1f);
@@ -462,7 +468,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				Projectile.active = false;
         }
 
-		protected void HeldBehavior()
+		protected virtual void HeldBehavior()
         {
 			Projectile.velocity = Vector2.Zero;
 			if (frontHand)
