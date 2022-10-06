@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Projectile.extraUpdates = 9;
 			Projectile.velocity = Vector2.Zero;
+			owner.heldProj = Projectile.whoAmI;
 			hide = false;
 			canHit = false;
 			afterImageLength = 20;
@@ -73,12 +74,14 @@ namespace StarlightRiver.Content.Items.Breacher
 					parried = true;
 					deflection.penetrate--;
 					if (deflection.penetrate == 0)
+					{
 						deflection.active = false;
 
-					Vector2 laserVel = deflection.DirectionTo(Main.MouseWorld);
-					if (deflection.GetGlobalProjectile<LightsaberGProj>().parent != default)
-						laserVel = deflection.DirectionTo(deflection.GetGlobalProjectile<LightsaberGProj>().parent.Center);
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), deflection.Center, laserVel * 15, ModContent.ProjectileType<Lightsaber_BlueLaser>(), Projectile.damage, 0, owner.whoAmI);
+						Vector2 laserVel = deflection.DirectionTo(Main.MouseWorld);
+						if (deflection.GetGlobalProjectile<LightsaberGProj>().parent != default)
+							laserVel = deflection.DirectionTo(deflection.GetGlobalProjectile<LightsaberGProj>().parent.Center);
+						Projectile.NewProjectile(Projectile.GetSource_FromThis(), deflection.Center, laserVel * 15, ModContent.ProjectileType<Lightsaber_BlueLaser>(), Projectile.damage, 0, owner.whoAmI);
+					}
 				}
 			}
 
@@ -128,19 +131,15 @@ namespace StarlightRiver.Content.Items.Breacher
 							Projectile.ai[0] = 0;
 							parried = true;
 						}
-						else
-							parried = false;
 					}
+					else
+						parried = false;
 
 					rightClicking = true;
                 }
 			}
 			else
-            {
-				endRotation = startRotation;
-				endSquish = startSquish;
 				rotVel = 0;
-            }
 
 			float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
 
@@ -382,6 +381,30 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class LightsaberProj_White : LightsaberProj
 	{
 		protected override Vector3 BladeColor => new Color(200, 200, 255).ToVector3();
+
+		private bool spawnedSecond = false;
+
+        protected override void RightClickBehavior()
+        {
+			owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 1200;
+			if (nonEasedProgress > 0.5f && !spawnedSecond)
+			{
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_White>(), Projectile.damage, Projectile.knockBack, owner.whoAmI);
+				(proj.ModProjectile as LightsaberProj_White).frontHand = false;
+				(proj.ModProjectile as LightsaberProj_White).spawnedSecond = true;
+				(proj.ModProjectile as LightsaberProj_White).rightClicked = true;
+				spawnedSecond = true;
+			}
+			hide = false;
+			canHit = true;
+			if (thrown)
+				ThrownBehavior();
+			else
+				HeldBehavior();
+
+			if (Projectile.ai[0] >= 1 && Main.mouseRight)
+				Projectile.ai[0] = 0;
+		}
     }
 
 	public class LightsaberProj_Yellow : LightsaberProj
@@ -468,7 +491,7 @@ namespace StarlightRiver.Content.Items.Breacher
 	}
 
 	class Lightsaber_BlueLensFlare : ModProjectile, IDrawAdditive
-    {
+	{
 		public override string Texture => AssetDirectory.Keys + "Glow";
 
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Laser");
@@ -532,6 +555,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override void AI()
         {
+			Lighting.AddLight(Projectile.Center, new Vector3(0, 0.1f, 0.255f));
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 			
 			if (!initialized)
@@ -550,9 +574,12 @@ namespace StarlightRiver.Content.Items.Breacher
         {
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value; spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.6f) * 1.5f, SpriteEffects.None, 0f);
 			for (int i = 0; i < 5; i++)
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.6f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * new Vector2(1, 0.9f), SpriteEffects.None, 0f);
 			for (int k = 0; k < 9; k++)
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.9f * new Vector2(1, 0.6f), SpriteEffects.None, 0f);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.9f * new Vector2(1, 0.9f), SpriteEffects.None, 0f);
+
+			for (int l = 0; l < 2; l++)
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(0, 0.1f, 0.255f), Projectile.rotation, tex.Size() / 2, Projectile.scale * 2f * new Vector2(1, 0.9f), SpriteEffects.None, 0f);
 		}
     }
 
@@ -659,12 +686,19 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class LightsaberPlayer : ModPlayer
     {
+		public int whiteCooldown = -1;
 		public bool dashing = false;
 
 		public bool jumping = false;
 		public Vector2 jumpVelocity = Vector2.Zero;
 
 		public float storedBodyRotation = 0f;
+
+        public override void ResetEffects()
+        {
+			if (whiteCooldown > 1 || Player.itemAnimation == 0)
+				whiteCooldown--;
+        }
 
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
         {
@@ -677,6 +711,13 @@ namespace StarlightRiver.Content.Items.Breacher
         {
             if (dashing || jumping)
 				Player.maxFallSpeed = 2000f;
+
+			if (whiteCooldown == 0)
+            {
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Player.Center);
+				Dust dust = Dust.NewDustPerfect(Player.Center, ModContent.DustType<LightsaberStar>(), Vector2.Zero, 0, new Color(200, 200, 255, 0), 0.3f);
+				dust.customData = Player.whoAmI;
+			}
 		}
 
         public override void PostUpdate()
@@ -696,9 +737,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				jumping = false;
 			}
 			else
-            {
 				jumpVelocity = Player.velocity;
-            }
         }
     }
 }
