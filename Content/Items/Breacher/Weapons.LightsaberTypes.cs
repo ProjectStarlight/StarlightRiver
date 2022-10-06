@@ -281,9 +281,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.velocity = Vector2.Zero;
 			lightningOrigin = owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
 			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
-			Projectile.rotation = (owner.direction == 1 ? 3.4f : 1.2f) + (0.1f * owner.velocity.X);
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, owner.direction) + new Vector2(owner.direction * 15, -7 - owner.direction);
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, owner.direction);
+
+			float rotationOffset = Math.Sign(owner.velocity.X) * EaseFunction.EaseQuadIn.Ease(MathHelper.Min(Math.Abs(owner.velocity.X * 0.1f), 0.65f));
+			Projectile.rotation = (owner.direction == 1 ? 3.4f : 1.2f) + rotationOffset;
+			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, owner.direction + rotationOffset) + new Vector2(owner.direction * 15, -2 - owner.direction);
+			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, owner.direction + rotationOffset);
 			owner.heldProj = Projectile.whoAmI;
 			squish = 0.7f;
 			zapTarget = Main.npc.Where(x => x.active && !x.townNPC && x.Distance(owner.Center) < 300).OrderBy(x => x.Distance(owner.Center)).FirstOrDefault();
