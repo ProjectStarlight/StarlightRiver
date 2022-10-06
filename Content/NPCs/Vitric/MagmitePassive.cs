@@ -29,10 +29,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Small Magmite");
+            Main.npcCatchable[Type] = true;
         }
 
         public override void SetDefaults()
         {
+            NPC.catchItem = ItemType<MagmitePassiveItem>();
             NPC.width = 24;
             NPC.height = 24;
             NPC.damage = 0;
@@ -246,10 +248,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
         }
     }
 
+    internal class MagmitePassiveItem : QuickNPCItem
+    {
+        public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
+    }
     /*
     internal class MagmiteBanner : ModBanner
     {
-        public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
+    public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
     }
 
     internal class MagmiteBannerItem : QuickBannerItem

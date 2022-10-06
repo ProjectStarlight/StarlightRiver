@@ -97,6 +97,13 @@ namespace StarlightRiver.Core
             return true;
         }
 
+        public delegate void ModifyItemLootDelegate(Item item, ItemLoot itemLoot);
+        public static event ModifyItemLootDelegate ModifyItemLootEvent;
+        public override void ModifyItemLoot(Item item, ItemLoot itemLoot)
+        {
+            ModifyItemLootEvent?.Invoke(item, itemLoot);
+        }
+
         public override void Unload()
 		{
             GetHealLifeEvent = null;
@@ -107,6 +114,7 @@ namespace StarlightRiver.Core
             CanUseItemEvent = null;
             CanEquipAccessoryEvent = null;
             CanAccessoryBeEquippedWithEvent = null;
+            ModifyItemLootEvent = null;
 		}
 	}
 }
