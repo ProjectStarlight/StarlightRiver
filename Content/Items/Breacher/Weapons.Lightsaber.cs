@@ -3,13 +3,8 @@
 //Better Collision
 //Fix bug with screen position while it's thrown
 //Better sound effects
-//Balance
-//Make it look good when swinging to the left
 //Less spritebatch restarts
-//Switch yellow and white
 //Make them configurable
-//Move ignition impact ring to it's own generic projectile class
-//implement orange phaseblade
 //Merge boilerplate code in lightsabertypes for swinging
 //Make the lightsaber held on the handle
 //Separate and move files
@@ -29,18 +24,18 @@
 //Sound effects
 //Destruction dust
 //Make it have less boilerplate
-//Make it more consistant
 
 //TODO on green rightclick:
 //Make it disable mounts
 
 //TODO on purple rightclick:
-//Everything
+//Make it not geek out with gfxoffset
+//Lighting
+//Dust
 
 //TODO on yellow rightclick:
 //Make the player not able to clip through walls
 //Sound effects
-//Make the player have dashlines
 //Make the player not freeze for a second
 //Garauntee it's impossible for the player to get stuck dashing
 //Adjust color
@@ -91,7 +86,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull out a second blade\n'I am no Jedi.'"));
 					break;
 				case ItemID.PurplePhaseblade:
-					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'"));
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to launch force lightning \n'The senate will decide your fate'"));
 					break;
 				case ItemID.YellowPhaseblade:
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to dash towards the blade while it's thrown out\n'I've got a bad feeling about this'"));
@@ -345,6 +340,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				return false;
 			return base.CanHitNPC(target);
 		}
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Projectile.penetrate++;
