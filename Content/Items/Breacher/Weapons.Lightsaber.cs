@@ -31,7 +31,6 @@
 //TODO on purple rightclick:
 //Make it not geek out with gfxoffset
 //Lighting
-//Dust
 
 //TODO on yellow rightclick:
 //Make the player not able to clip through walls

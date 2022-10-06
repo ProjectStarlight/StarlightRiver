@@ -559,7 +559,11 @@ namespace StarlightRiver.Content.Items.Breacher
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
         {
 			if (rightClicked)
+			{
 				knockback = 0;
+				for (int i = 0; i < 5; i++)
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(2,2), 0, Color.Purple, Main.rand.NextFloat(0.45f, 0.85f));
+			}
             base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
         }
 
