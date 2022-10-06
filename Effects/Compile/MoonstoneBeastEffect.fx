@@ -26,13 +26,15 @@ sampler2D distortSampler = sampler_state
 float2 size;
 float time;
 float opacity;
+float2 noiseSampleSize;
+float noisePower;
 
 float4 Main(float2 uv : TEXCOORD) : COLOR
 {
-    float noise0 = tex2D(distortSampler, uv / 8.0 + time * 0.05).r;
-    float noise1 = tex2D(distortSampler, uv / 8.0 - time * 0.1).r;
+    float noise0 = tex2D(distortSampler, uv / size * noiseSampleSize + time * 0.05).r;
+    float noise1 = tex2D(distortSampler, uv / size * noiseSampleSize - time * 0.1).r;
     
-    uv += noise0 * 0.025 + noise1 * 0.025;
+    uv += (noise0 * 0.025 + noise1 * 0.025) / size * noisePower;
     
     float4 color = tex2D(baseSampler, uv);
         color.a *= 2.5

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Physics;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
 	internal class Dreambeast : ModNPC
 	{
-		public VerletChain[] chains = new VerletChain[5];
+		public VerletChain[] chains = new VerletChain[8];
 
 		public Vector2 homePos;
 		public int flashTime;
@@ -43,6 +45,30 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.immortal = true;
 		}
 
+		public override ModNPC Clone(NPC newEntity)
+		{
+			var clone = base.Clone(newEntity);
+			(clone as Dreambeast).chains = chains;
+			return clone;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			for (int k = 0; k < chains.Length; k++)
+			{
+				var chain = chains[k];
+
+				if (chain is null)
+					chains[k] = new VerletChain(20 + 2 * k, true, NPC.Center, 5, false)
+					{
+						constraintRepetitions = 5,//defaults to 2, raising this lowers stretching at the cost of performance
+						drag = 1.2f,//This number defaults to 1, Is very sensitive
+						forceGravity = new Vector2(0f, 0.8f),//gravity x/y
+						scale = 0.6f
+					};
+			}
+		}
+
 		public override void AI()
 		{
 			Timer++;
@@ -56,17 +82,17 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (flashTime < 30 && Phase != 0)
 				flashTime++;
-
-			/*
+	
 			for (int k = 0; k < chains.Length; k++)
 			{
 				var chain = chains[k];
+				chain?.UpdateChain(NPC.Center);
 
-				if (chain is null)
-					chain = new VerletChain(50, false, NPC.Center, 5, false);
-
-				chain.UpdateChain(NPC.Center);
-			}*/
+				for (int i = 0; i < chain.ropeSegments.Count; i++) 
+				{
+					chain.ropeSegments[i].posNow += Vector2.UnitX * (float)Math.Sin(Main.GameUpdateCount * 0.02f + k + (i / 4f)) * i / 10f;
+				}
+			}
 
 			if (Phase == 0)
 				PassiveBehavior();
@@ -101,6 +127,28 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		}
 
 		/// <summary>
+		/// Teleports the beast, as well as all of his chains' points. 
+		/// </summary>
+		/// <param name="target">The position to teleport to</param>
+		private void Teleport(Vector2 target)
+		{
+			Vector2 diff = target - NPC.Center;
+			NPC.Center = target;
+
+			//We need to do this so the chains dont snap back like a rubber band
+			foreach(var chain in chains)
+			{
+				chain.startPoint += diff;
+
+				foreach(var segment in chain.ropeSegments)
+				{
+					segment.posOld += diff;
+					segment.posNow += diff;
+				}
+			}
+		}
+
+		/// <summary>
 		/// What the NPC will be doing while its not actively attacking anyone.
 		/// </summary>
 		private void PassiveBehavior()
@@ -128,7 +176,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					AttackTimer = 0;
 					RandomTime = Main.rand.Next(120, 240);
 
-					NPC.Center = homePos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 400);
+					Teleport(homePos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 400));
 				}
 			}
 		}
@@ -155,7 +203,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						return;
 					}
 
-					NPC.Center = Target.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 300);
+					Teleport(Target.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 300));
 					Phase = 2;
 				}
 			}
@@ -198,6 +246,21 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Phase = 1;
 		}
 
+		public void DrawToMetaballs(SpriteBatch spriteBatch)
+		{
+			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
+
+			spriteBatch.Draw(tex, (NPC.Center - Main.screenPosition) / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.5f, 0, 0);
+
+			foreach (var chain in chains)
+			{
+				foreach (var segment in chain.ropeSegments)
+				{
+					spriteBatch.Draw(tex, segment.posScreen / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.05f, 0, 0);
+				}
+			}
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
@@ -215,8 +278,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 			}
 
-			spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 1, 0, 0);
-
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
@@ -228,6 +289,56 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 				spriteBatch.Draw(flashTex, NPC.Center - Main.screenPosition, null, color, 0, flashTex.Size() / 2, flashTime, 0, 0);
 			}
+
+			return false;
+		}
+	}
+
+	internal class DreamBeastActor : MetaballActor
+	{
+		public NPC activeBeast;
+
+		public override bool Active => NPC.AnyNPCs(ModContent.NPCType<Dreambeast>());
+
+		public override Color outlineColor => new Color(220, 200, 255) * (activeBeast?.Opacity ?? 0);
+
+		public override void DrawShapes(SpriteBatch spriteBatch)
+		{
+			for(int k = 0; k < Main.maxNPCs; k++)
+			{
+				var npc = Main.npc[k];
+
+				if (npc.ModNPC is Dreambeast)
+					(npc.ModNPC as Dreambeast).DrawToMetaballs(spriteBatch);
+			}
+		}
+
+		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
+		{
+			activeBeast = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Dreambeast>()); //TODO: proper find for onscreen beast
+
+			if (activeBeast is null)
+				return false;
+
+			if (!Main.LocalPlayer.HasBuff(ModContent.BuffType<Buffs.Overcharge>()))
+			{
+				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
+				effect.Parameters["baseTexture"].SetValue(target);
+				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
+				effect.Parameters["size"].SetValue(target.Size());
+				effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.005f);
+				effect.Parameters["opacity"].SetValue(activeBeast.Opacity);
+				effect.Parameters["noiseSampleSize"].SetValue(new Vector2(800, 800));
+				effect.Parameters["noisePower"].SetValue(100f);
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			}
+
+			spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
