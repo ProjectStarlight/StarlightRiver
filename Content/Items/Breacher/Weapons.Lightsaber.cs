@@ -12,18 +12,26 @@
 //implement orange phaseblade
 //Merge boilerplate code in lightsabertypes for swinging
 //Make the lightsaber held on the handle
+//Separate and move files
+//Nerf
+//Screenshake limit
+
+//TODO on red lightsaber:
+//Range limit
 
 //TODO on white rightclick:
-//Everything
+//Make the lightsabers throw in a synergized way
+//Move check from shoot to canuseitem
+//Sound effects
 
 //TODO on blue rightclick:
 //Make lasers have dust
 //Sound effects
 //Destruction dust
 //Make it have less boilerplate
+//Make it more consistant
 
 //TODO on green rightclick:
-//Fix hand just sticking out when attack is done
 //Make it disable mounts
 
 //TODO on purple rightclick:
@@ -36,6 +44,10 @@
 //Make the player not freeze for a second
 //Garauntee it's impossible for the player to get stuck dashing
 //Adjust color
+
+//TODO on orange rightclick:
+//Make the leftclick
+//Everything else
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -76,13 +88,13 @@ namespace StarlightRiver.Content.Items.Breacher
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull in enemies, release to slash them for high damage \n'There is no escape'"));
 					break;
 				case ItemID.WhitePhaseblade:
-					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to dash towards the blade while it's thrown out\n'I am no Jedi.'"));
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull out a second blade\n'I am no Jedi.'"));
 					break;
 				case ItemID.PurplePhaseblade:
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to spin the blade around you rapidly \n'The senate will decide your fate'"));
 					break;
 				case ItemID.YellowPhaseblade:
-					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to pull out a second blade\n'I've got a bad feeling about this'"));
+					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to dash towards the blade while it's thrown out\n'I've got a bad feeling about this'"));
 					break;
 				case ItemID.BluePhaseblade:
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click to parry oncoming projectiles \n'May the force be with you'"));
@@ -124,7 +136,6 @@ namespace StarlightRiver.Content.Items.Breacher
 				item.autoReuse = false;
 				item.useTime = 12;
 				item.useAnimation = 12;
-				item.reuseDelay = 20;
 				item.channel = true;
 				item.useStyle = ItemUseStyleID.Shoot;
 				item.knockBack = 2.5f;
@@ -133,13 +144,16 @@ namespace StarlightRiver.Content.Items.Breacher
         }
 		public override bool AltFunctionUse(Item item, Player player)
 		{
-			if (phaseblades.Contains(item.type))
+			if (phaseblades.Contains(item.type) && item.type != ItemID.YellowPhaseblade)
 				return true;
 			return base.AltFunctionUse(item, player);
 		}
 
 		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
+			if (item.type == ItemID.WhitePhaseblade && player.GetModPlayer<LightsaberPlayer>().whiteCooldown > 0 && player.altFunctionUse == 2)
+				return false;
+
 			if (phaseblades.Contains(item.type))
 			{
 				Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -166,6 +180,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
 
+		protected bool frontHand = true;
 		protected bool updatePoints = true;
 
 		protected Vector2 oldScreenPos = Vector2.Zero;
@@ -421,12 +436,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			return EaseFunction.EaseCubicInOut.Ease(input);
 		}
 
-		private void ThrownBehavior()
+		protected void ThrownBehavior()
         {
 			rotVel = 0.04f;
 			squish = MathHelper.Lerp(squish, 0.6f - (Projectile.velocity.Length() * 0.08f), 0.1f);
 			anchorPoint = Projectile.Center - Main.screenPosition;
 			Projectile.timeLeft = 50;
+			owner.itemTime = owner.itemAnimation = 2;
 			throwTimer++;
 			nonEasedProgress = (float)Math.Cos(throwTimer * 0.01f);
 			float progress = EaseFunction.EaseQuadOut.Ease(Math.Abs(nonEasedProgress)) * Math.Sign(Math.Cos(throwTimer * 0.01f));
@@ -450,10 +466,13 @@ namespace StarlightRiver.Content.Items.Breacher
 				Projectile.active = false;
         }
 
-		private void HeldBehavior()
+		protected void HeldBehavior()
         {
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			if (frontHand)
+				Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			else
+				Projectile.Center = owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.heldProj = Projectile.whoAmI;
 
 			if (FirstTickOfSwing)
@@ -465,6 +484,9 @@ namespace StarlightRiver.Content.Items.Breacher
 					facingRight = false;
 
 				float rot = owner.DirectionTo(Main.MouseWorld).ToRotation();
+
+				if (!frontHand)
+					rot += 0.5f * (facingRight ? 1 : -1);
 				if (!initialized)
 				{
 					anchorPoint = Vector2.Zero;
@@ -571,7 +593,10 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			owner.ChangeDir(facingRight ? 1 : -1);
 
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			if (frontHand)
+				owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			else
+				owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.itemAnimation = owner.itemTime = 5;
 
 			if (owner.direction != 1)
@@ -625,6 +650,39 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (dust.scale < 0.05f)
 				dust.active = false;
 			Lighting.AddLight(dust.position, dust.color.ToVector3() * dust.scale * 2);
+			return false;
+		}
+	}
+
+	public class LightsaberStar : ModDust
+	{
+		public override string Texture => "StarlightRiver/Assets/Keys/GlowStar";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.noGravity = true;
+			dust.frame = new Rectangle(0, 0, 74, 74);
+			dust.noLight = true;
+		}
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return dust.color * (1 - (dust.alpha / 255f));
+		}
+
+		public override bool Update(Dust dust)
+		{
+			Player owner = Main.player[(int)dust.customData];
+
+			dust.position = owner.position + new Vector2(9 * owner.direction, 19);
+
+			dust.alpha += 10;
+
+			if (!dust.noLight)
+				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.2f);
+
+			if (dust.alpha > 255)
+				dust.active = false;
 			return false;
 		}
 	}
