@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Haunting Breastplate");
-            Tooltip.SetDefault("5% increased magic damage\n15% increased DoT resistance");
+            Tooltip.SetDefault("5% increased magic damage\n+15% Inoculation");
         }
 
         public override void SetDefaults()

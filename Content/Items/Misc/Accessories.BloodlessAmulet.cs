@@ -48,9 +48,9 @@ namespace StarlightRiver.Content.Items.Misc
 				"\nUnaffected by damage over time" +
 				"\nBarrier absorbs ALL damage" +
 				"\nYou can survive without life"+
-				"\nYou cannot have life" +
-				"\nSlightly reduced barrier recharge" +
-				"\nHealing grants a decaying damage boost instead of life" +
+				"\nCursed : You cannot have life" +
+				"\n Slightly reduced barrier recharge" +
+				"\n Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 

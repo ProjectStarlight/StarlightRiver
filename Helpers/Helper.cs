@@ -39,6 +39,15 @@ namespace StarlightRiver.Helpers
         /// </summary>
         public static Vector2 TwoValueMax(this Vector2 vector, Vector2 vector2) => new Vector2(Math.Max(vector.X, vector2.X), Math.Max(vector.Y, vector2.Y));
         public static Player Owner(this Projectile proj) => Main.player[proj.owner];
+        /// <summary>
+        /// Seperates all flags stored in a enum out into an array
+        /// </summary>
+        public static IEnumerable<Enum> GetFlags(this Enum input)
+        {
+            foreach (Enum value in Enum.GetValues(input.GetType()))
+                if (input.HasFlag(value))
+                    yield return value;
+        }
         public static Vector2 TileAdj => (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) ? Vector2.Zero : Vector2.One * 12;
         public static Vector2 ScreenSize => new Vector2(Main.screenWidth, Main.screenHeight);
 
@@ -317,7 +326,7 @@ namespace StarlightRiver.Helpers
                     line = str;
                 }
             }
-            return output;
+            return output.Substring(1);
         }
 
 		public static List<T> RandomizeList<T>(List<T> input)

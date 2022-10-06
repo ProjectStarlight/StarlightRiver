@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
         public override Vector2? HoldoutOffset()
         {
-            return new Vector2(-10, 0);
+            return new Vector2(2, 0);
         }
 
         public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
@@ -72,6 +72,14 @@ namespace StarlightRiver.Content.Items.Breacher
 
             Helper.PlayPitched("Guns/FlareFire", 0.6f, Main.rand.NextFloat(-0.1f, 0.1f), position);
             return true;
+        }
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 12);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
         }
     }
 
