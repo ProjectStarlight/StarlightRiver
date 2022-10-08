@@ -18,6 +18,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
+		public ref float Timer => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
+
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
 
 		public override void SetDefaults()
@@ -31,11 +35,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.hide = true;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
-
-		public override void OnSpawn(IEntitySource source) => Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+		public override void OnSpawn(IEntitySource source)
+		{
+			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
+		}
 
 		public override void AI()
 		{
@@ -48,6 +51,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.rotation = MathHelper.ToRadians(MathHelper.Lerp(-60, 10, stabLerp)) * Parent.direction - MathHelper.Pi;
 
 			Vector2 handPos;
+
 			if (Projectile.velocity.Y != 0)
 				handPos = new Vector2(30, -50);
 			else
@@ -63,7 +67,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.Kill();
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => projHitbox.Intersects(targetHitbox) && Timer > 100;
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return projHitbox.Intersects(targetHitbox) && Timer > 100;
+		}
 
 		public override void Kill(int timeLeft)
 		{
@@ -73,7 +80,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Dust.NewDustPerfect(Vector2.Lerp(Projectile.Center, Projectile.Center + new Vector2(0, 130).RotatedBy(Projectile.rotation), Main.rand.NextFloat()), DustType<Dusts.GlassGravity>());
 		}
 
-		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			behindNPCsAndTiles.Add(index);
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -94,18 +104,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float scaleOut = Projectile.scale * Utils.GetLerpValue(80, 70, Timer, true);
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, smallFrame, hotFade, Projectile.rotation, spearOrigin, scaleOut, 0, 0);
 
-
-
 			return false;
 		}
 	}
 
 	class LavaLob : ModProjectile
 	{
-		public const int crackTime = 850;
-		public const float explosionRadius = 300f;
+		public const int CRACK_TIME = 850;
+		public const float EXPLOSION_RADIUS = 300f;
+
+		private float speed;
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
 
 		public override void SetStaticDefaults()
 		{
@@ -125,12 +137,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.shouldFallThrough = false;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		private List<Vector2> tellPoints;
-
-		private float speed;
-
 		public override void AI()
 		{
 			Timer++;
@@ -143,11 +149,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.velocity.Y += 0.6f;
 				if (Main.rand.NextBool(8))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1f);
-
 			}
 			else
 			{
 				Projectile.velocity = Vector2.Zero;
+
 				if (Main.rand.NextBool(3))
 				{
 					Vector2 magVel = -Vector2.UnitY.RotatedBy(Projectile.ai[1]).RotatedByRandom(0.2f) * Main.rand.NextFloat(10f, 15f) * Utils.GetLerpValue(-50, 0, Timer, true);
@@ -155,6 +161,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					magma.noGravity = false;
 				}
 			}
+
 			if (Timer == 0)
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
@@ -162,11 +169,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter > 4)
 			{
 				Projectile.frame++;
 				Projectile.frameCounter = 0;
 			}
+
 			if (Projectile.frame > 2)
 				Projectile.frame = 0;
 
@@ -195,7 +204,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < 40;
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Projectile.Distance(targetHitbox.Center.ToVector2()) < 40;
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -220,6 +232,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					float trailScale = Projectile.scale * MathHelper.Lerp(0.3f, 2f, fade) * 0.5f * scale;
 					Main.EntitySpriteDraw(bloom.Value, Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition, null, bloomFade * fade * 0.2f, Projectile.oldRot[i], bloom.Size() * 0.5f, trailScale * new Vector2(1f, 0.8f), 0, 0);
 				}
+
 				Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade * 0.8f, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.66f, 0.5f), 0, 0);
 			}
 

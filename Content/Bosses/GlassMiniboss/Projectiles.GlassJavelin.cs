@@ -26,7 +26,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.shouldFallThrough = false;
 		}
 
-		public override void OnSpawn(IEntitySource source) => Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
+		public override void OnSpawn(IEntitySource source)
+		{
+			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, Main.rand.NextFloat(0.33f), Projectile.Center);
+		}
 
 		public override void AI()
 		{
@@ -54,7 +57,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Glassweaver.GlowDustOrange, 0.6f);
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < 32;
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Projectile.Distance(targetHitbox.Center.ToVector2()) < 32;
+		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{

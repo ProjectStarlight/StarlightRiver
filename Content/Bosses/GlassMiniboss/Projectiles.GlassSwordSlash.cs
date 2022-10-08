@@ -13,7 +13,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassSword : ModProjectile
 	{
+		private readonly int[] slashTime = new int[] { 70, 125, 160 };
+
+		private Vector2 gripPos;
+		public int Variant;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
 		public override void SetStaticDefaults()
 		{
@@ -33,20 +42,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.manualDirectionChange = true;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		public ref float Variant => ref Projectile.localAI[0];
-
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
-
-		private Vector2 gripPos;
-
-		private int[] slashTime = new int[] { 70, 125, 160 };
-
 		public override void OnSpawn(IEntitySource source)
 		{
 			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
-			slashTime = new int[] { 70, 125, 160 };
 		}
 
 		public override void AI()
@@ -70,6 +68,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case 0:
 					swordOff = new Vector2(38, 15);
 					swordTargetRot = 4f;
+
 					if (Timer > slashTime[0])
 					{
 						swordOff = new Vector2(32, -55);
@@ -77,6 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					}
 					else
 						Projectile.direction = -1;
+
 					if (Timer > slashTime[1])
 						swordOff = new Vector2(34, 25);
 					if (Timer > slashTime[2])
@@ -95,6 +95,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					swordOff = new Vector2(-24, 15);
 					swordTargetRot = 4.2f;
 					Projectile.direction = 1;
+
 					if (Timer > slashTime[0])
 						swordOff = new Vector2(24, 5);
 					if (Timer > slashTime[1])
@@ -109,12 +110,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					if (Timer > slashTime[2] + rotateOff)
 						swordTargetRot = -0.44f;
 
-
 					break;
 
 				case 2:
 					swordOff = new Vector2(-36, 5);
 					swordTargetRot = 4.4f;
+
 					if (Timer > slashTime[0])
 						swordOff = new Vector2(-36, 20);
 					if (Timer > slashTime[1])
@@ -131,6 +132,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					break;
 			}
+
 			swordOff.X *= Parent.direction;
 			//swordTargetRot *= Parent.direction;
 
@@ -147,18 +149,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			int extraTime = 27;
+
 			if (Variant == 1)
 				extraTime = 22;
+
 			if (Timer > extraTime + slashTime[(int)Variant])
 				Projectile.Kill();
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Timer > slashTime[(int)Variant] && projHitbox.Intersects(targetHitbox);
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Timer > slashTime[(int)Variant] && projHitbox.Intersects(targetHitbox);
+		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Math.Abs(Parent.velocity.X) > 0 && Timer < slashTime[2])
 				Parent.velocity.X = -oldVelocity.X;
+
 			return false;
 		}
 
