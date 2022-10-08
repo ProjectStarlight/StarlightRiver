@@ -1,81 +1,73 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
-using ReLogic.Content;
 using StarlightRiver.Core;
-using System;
 using System.Linq;
-using System.Collections.Generic;
 using Terraria;
-using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using Terraria.DataStructures;
-using Terraria.Utilities;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-    class GlassweaverDoor : ModProjectile
-    {
-        public override string Texture => AssetDirectory.Glassweaver + Name;
+	class GlassweaverDoor : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-        private float closeTimer;
+		private float closeTimer;
 
-        private bool opening = false;
-        private bool closed = false;
+		private bool opening = false;
+		private bool closed = false;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = 32;
-            Projectile.height = 160;
-            Projectile.hostile = false;
-            Projectile.tileCollide = false;
-            Projectile.aiStyle = -1;
-            Projectile.penetrate = -1;
-        }
+		public override void SetDefaults()
+		{
+			Projectile.width = 32;
+			Projectile.height = 160;
+			Projectile.hostile = false;
+			Projectile.tileCollide = false;
+			Projectile.aiStyle = -1;
+			Projectile.penetrate = -1;
+		}
 
-        public override void AI()
-        {
-            var parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
+		public override void AI()
+		{
+			var parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
 
-            if (parent != default && !opening)
-            {
-                if (closeTimer < 1)
-                    closeTimer += 0.025f;
-                else if (!closed)
-                {
-                    closed = true;
-                    Core.Systems.CameraSystem.Shake += 9;
-                    Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
+			if (parent != default && !opening)
+			{
+				if (closeTimer < 1)
+					closeTimer += 0.025f;
+				else if (!closed)
+				{
+					closed = true;
+					Core.Systems.CameraSystem.Shake += 9;
+					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
 
-                    Vector2 dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
-                    for (int i = 0; i < 15; i++)
-                        Dust.NewDustPerfect(dustPos + new Vector2(Main.rand.Next(-8, 8), 0), DustID.Copper, Main.rand.NextVector2Circular(3, 3), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
-                }
-            }
-            else
-            {
-                opening = true;
-                closeTimer -= 0.025f;
-            }
+					Vector2 dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
+					for (int i = 0; i < 15; i++)
+						Dust.NewDustPerfect(dustPos + new Vector2(Main.rand.Next(-8, 8), 0), DustID.Copper, Main.rand.NextVector2Circular(3, 3), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
+				}
+			}
+			else
+			{
+				opening = true;
+				closeTimer -= 0.025f;
+			}
 
-            Projectile.timeLeft = 2;
+			Projectile.timeLeft = 2;
 
-            if (closeTimer < 0)
-                Projectile.active = false;
-        }
+			if (closeTimer < 0)
+				Projectile.active = false;
+		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-            int height = (int)(tex.Height * closeTimer);
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			int height = (int)(tex.Height * closeTimer);
 
-            Rectangle frame = new Rectangle(0, 0, tex.Width, height);
-            Vector2 origin = new Vector2(tex.Width / 2, 0);
+			Rectangle frame = new Rectangle(0, 0, tex.Width, height);
+			Vector2 origin = new Vector2(tex.Width / 2, 0);
 
-            Main.spriteBatch.Draw(tex, (Projectile.Center - new Vector2(0, height)) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
-            return false;
-        }
-    }
+			Main.spriteBatch.Draw(tex, (Projectile.Center - new Vector2(0, height)) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
 }
