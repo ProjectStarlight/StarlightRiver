@@ -157,6 +157,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				if (Timer < crackTime)
 					Timer = crackTime;
+
 				if (Projectile.localAI[1] == 0 && Timer < crackTime + 100)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
@@ -167,19 +168,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 		}
 
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox) => Projectile.Distance(targetHitbox.Center.ToVector2()) < Projectile.width;
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Projectile.Distance(targetHitbox.Center.ToVector2()) < Projectile.width;
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			//Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");
-			//float glowScale = Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
-			//Color glowFade = Color.OrangeRed * glowScale * Utils.GetLerpValue(250, 80, Timer, true);
-			//glowFade.A = 0;
-			//Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, glowFade, Projectile.rotation, bloom.Size() * 0.5f, Projectile.scale * glowScale, SpriteEffects.None, 0);
-
-			//if (Timer > explosionTime - 70)
-			//    DrawExplosionTell();
-
 			if (Timer < crackTime + 100)
 				DrawBubble(ref lightColor);
 
@@ -264,11 +259,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					tellFade.A = 0;
 					Main.EntitySpriteDraw(tell.Value, Projectile.Center - Main.screenPosition, null, tellFade, rotation, tell.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.4f, tellLength), SpriteEffects.None, 0);
 				}
-
-				for (int i = 0; i < 8; i++)
-				{
-
-				}
 			}
 		}
 
@@ -276,6 +266,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			float fade = Utils.GetLerpValue(20, 250, Timer, true) * Utils.GetLerpValue(crackTime + 105, crackTime + 90, Timer, true);
 			Asset<Texture2D> dark = Request<Texture2D>(AssetDirectory.MiscTextures + "GradientBlack");
+
 			for (int i = 0; i < 8; i++)
 			{
 				float rotation = MathHelper.TwoPi / 8 * i;
@@ -287,6 +278,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 	class GlassBubbleFragment : ModProjectile
 	{
+		public int variant;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Shard");
@@ -301,8 +294,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.tileCollide = true;
 		}
 
-		public int variant;
-
 		public override void OnSpawn(IEntitySource source)
 		{
 			variant = Main.rand.Next(3);
@@ -312,6 +303,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Projectile.velocity.Length() > 0.1f)
 				Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver2;
+
 			Projectile.localAI[0]++;
 
 			if (Projectile.tileCollide == true)

@@ -10,10 +10,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		//public override string TownNPCName() => "";
-
 		public override void SetStaticDefaults() => DisplayName.SetDefault("Glassweaver");
-
 
 		public override void SetDefaults()
 		{
