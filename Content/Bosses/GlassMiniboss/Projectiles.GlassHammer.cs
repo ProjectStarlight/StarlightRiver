@@ -307,7 +307,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int i = 0; i < maxSpikes; i++)
 				{
 					float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
-					float height = -totalHeight * lerp * (float)Math.Sqrt(Core.EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(RAISE_TIME - 10 + (10f * lerp), RAISE_TIME + 30 + (7f * lerp), Timer, true)));
+					float height = -totalHeight * lerp * (float)Math.Sqrt(EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(RAISE_TIME - 10 + (10f * lerp), RAISE_TIME + 30 + (7f * lerp), Timer, true)));
 					float width = baseWidth * (1.1f - lerp);
 
 					points[i] = Projectile.Bottom + ((new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(RAISE_TIME + 200, RAISE_TIME + 150, Timer, true))) * 80f)) * Projectile.scale);
