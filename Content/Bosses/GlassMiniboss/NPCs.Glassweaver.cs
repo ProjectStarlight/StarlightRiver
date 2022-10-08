@@ -312,15 +312,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             if (AttackTimer > 40 && AttackTimer < 240)
                             {
                                 //using a lerp wouldn't look well with the animation, so a little bit of clunk
-                                if (AttackTimer < slashTime[2] + 30)
+                                if (AttackTimer < slashTimes[2] + 30)
                                 {
                                     frame.X = 142;
 
-                                    if (AttackTimer > slashTime[2])
+                                    if (AttackTimer > slashTimes[2])
                                         frame.Y = frameHeight * 3;
-                                    else if (AttackTimer > slashTime[1])
+                                    else if (AttackTimer > slashTimes[1])
                                         frame.Y = frameHeight * 2;
-                                    else if (AttackTimer > slashTime[0])
+                                    else if (AttackTimer > slashTimes[0])
                                         frame.Y = frameHeight;
                                 }
                             }
@@ -344,13 +344,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
                         case (int)AttackTypes.JavelinRain:
 
-                            if (AttackTimer < javelinTime - javelinSpawn + 10)
+                            if (AttackTimer < javelinTime - JAVELIN_SPAWN_TIME + 10)
                                 frame.Y = frameHeight * 3;
                             break;
 
                         case (int)AttackTypes.GlassRaise:
 
-                            float hammerTimer = AttackTimer - hammerSpawn + 5;
+                            float hammerTimer = AttackTimer - HAMMER_SPAWN_TIME + 5;
 
                             if (hammerTimer <= hammerTime + 55 && AttackTimer > 50)
                             {
@@ -379,9 +379,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
                             {
                                 if (AttackTimer < 270)
                                     frame.Y = frameHeight * 4;
-                                else if (AttackTimer < bubbleRecoil - 60)
+                                else if (AttackTimer < BUBBLE_RECOIL_TIME - 60)
                                     frame.Y = frameHeight;
-                                else if (AttackTimer < bubbleRecoil + 10)
+                                else if (AttackTimer < BUBBLE_RECOIL_TIME + 10)
                                     frame.Y = frameHeight * 5;
                             }
 
