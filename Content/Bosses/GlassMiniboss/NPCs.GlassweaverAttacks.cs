@@ -42,11 +42,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         private void TryEndFight()
         {
             if (NPC.life <= 1)
-                Phase = (int)PhaseEnum.DeathEffects;
+                Phase = (int)Phases.DeathEffects;
 
             NPC.TargetClosest();
             if (Target.dead || !Target.active || Target == null)
-                Phase = (int)PhaseEnum.DespawnEffects;
+                Phase = (int)Phases.DespawnEffects;
         }
 
         //according to the targets position,
@@ -110,9 +110,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             float progress = Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true);
             if (!spin)
-                AttackType = (int)AttackEnum.Jump;
+                attackType = (int)AttackTypes.Jump;
             else
-                AttackType = (int)AttackEnum.SpinJump;
+                attackType = (int)AttackTypes.SpinJump;
 
             if (AttackTimer <= timeStart)
             {
@@ -143,7 +143,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void TripleSlash()
         {
-            AttackType = (int)AttackEnum.TripleSlash;
+            attackType = (int)AttackTypes.TripleSlash;
 
             if (AttackTimer == 1)
             {
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void MagmaSpear()
         {
-            AttackType = (int)AttackEnum.MagmaSpear;
+            attackType = (int)AttackTypes.MagmaSpear;
             int lobCount = 5;
 
             if (Main.masterMode)
@@ -257,7 +257,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void Whirlwind()
         {
-            AttackType = (int)AttackEnum.Whirlwind;
+            attackType = (int)AttackTypes.Whirlwind;
 
             //if (AttackTimer == 1)
             //{
@@ -298,7 +298,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void JavelinRain()
         {
-            AttackType = (int)AttackEnum.JavelinRain;
+            attackType = (int)AttackTypes.JavelinRain;
 
             int spearCount = 10;
             int betweenSpearTime = 5;
@@ -352,7 +352,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void GlassRaise()
         {
-            AttackType = (int)AttackEnum.GlassRaise;
+            attackType = (int)AttackTypes.GlassRaise;
             hammerTime = 80;
 
             if (AttackTimer == 1)
@@ -400,7 +400,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
         //spikes out from center instead of side
         private void GlassRaiseAlt()
         {
-            AttackType = (int)AttackEnum.GlassRaise;
+            attackType = (int)AttackTypes.GlassRaise;
             hammerTime = 110;
 
             if (AttackTimer == 1)
@@ -453,7 +453,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void BigBrightBubble()
         {
-            AttackType = (int)AttackEnum.BigBrightBubble;
+            attackType = (int)AttackTypes.BigBrightBubble;
 
             if (AttackTimer == 1)
             {

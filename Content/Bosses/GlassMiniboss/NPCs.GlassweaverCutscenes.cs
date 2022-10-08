@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
             if (AttackTimer > 410)
             {
-                Phase = (int)PhaseEnum.DirectPhase;
+                Phase = (int)Phases.DirectPhase;
                 ResetAttack();
                 NPC.dontTakeDamage = false;
                 AttackPhase = -1;

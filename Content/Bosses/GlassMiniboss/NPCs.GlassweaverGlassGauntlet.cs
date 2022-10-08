@@ -263,7 +263,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
         private void GlassGauntlet_End()
         {
-            Phase = (int)PhaseEnum.ReturnToForeground;
+            Phase = (int)Phases.ReturnToForeground;
             ResetAttack(); 
         }
     }
