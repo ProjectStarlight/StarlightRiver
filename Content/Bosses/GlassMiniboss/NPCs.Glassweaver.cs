@@ -14,8 +14,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	public partial class Glassweaver : ModNPC
 	{
-		public static readonly Color GlowDustOrange = new Color(6255, 108, 0);
-		public static readonly Color GlassColor = new Color(60, 170, 205);
+		public static readonly Color GlowDustOrange = new(6255, 108, 0);
+		public static readonly Color GlassColor = new(60, 170, 205);
 
 		public bool attackVariant = false;
 		public bool disableJumpSound = false;
@@ -23,7 +23,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		float attackType;
 		public Vector2 arenaPos;
 
-		private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		private SpriteEffects GetSpriteEffects()
+		{
+			return NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		}
 
 		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
@@ -63,7 +66,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 			NPCID.Sets.BossBestiaryPriority.Add(Type);
 
-			NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
 			{
 
 			};
@@ -74,9 +77,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
 
-		public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects) => spriteEffects = GetSpriteEffects();
+		public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
+		{
+			spriteEffects = GetSpriteEffects();
+		}
 
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false; //no contact damage!
+		}
 
 		public override void SetDefaults()
 		{
@@ -201,11 +210,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						case 1: Whirlwind(); break;
 
-						case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
+						case 2:
+							if (attackVariant)
+								MagmaSpear();
+							else
+								JavelinRain(); break;
 
 						case 3: BigBrightBubble(); break;
 
-						case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+						case 4:
+							if (attackVariant)
+								GlassRaise();
+							else
+								GlassRaiseAlt(); break;
 
 						case 5: JavelinRain(); break;
 
@@ -224,7 +241,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			disableJumpSound = false;
 		}
 
-		public override bool? CanFallThroughPlatforms() => Target.Bottom.Y > NPC.Top.Y;
+		public override bool? CanFallThroughPlatforms()
+		{
+			return Target.Bottom.Y > NPC.Top.Y;
+		}
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
@@ -269,7 +289,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Vector2 drawPos = new Vector2(0, -35) - screenPos;
 
 			Color baseColor = drawColor;
-			Color glowColor = new Color(255, 255, 255, 128);
+			var glowColor = new Color(255, 255, 255, 128);
 
 			//gravity frame
 			if (NPC.velocity.Y > 0)
@@ -338,7 +358,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						case (int)AttackTypes.Whirlwind:
 
-
 							break;
 
 						case (int)AttackTypes.JavelinRain:
@@ -360,16 +379,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 								if (hammerTimer <= hammerTime * 0.87f)
 								{
 									frame.Y = 0;
-									bool secFrame = (hammerTimer >= hammerTime * 0.33f) && (hammerTimer < hammerTime * 0.66f);
+									bool secFrame = hammerTimer >= hammerTime * 0.33f && hammerTimer < hammerTime * 0.66f;
 									if (secFrame)
 										frame.Y = frameHeight;
 								}
 								else
 								{
 									float swingTime = Utils.GetLerpValue(hammerTime * 0.87f, hammerTime * 0.98f, hammerTimer, true);
-									frame.Y = frameHeight + (frameHeight * (int)(1f + (swingTime * 2f)));
+									frame.Y = frameHeight + frameHeight * (int)(1f + swingTime * 2f);
 								}
 							}
+
 							break;
 
 						case (int)AttackTypes.BigBrightBubble:

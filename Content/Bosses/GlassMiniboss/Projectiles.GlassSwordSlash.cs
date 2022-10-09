@@ -75,7 +75,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						Projectile.direction = -1;
 					}
 					else
+					{
 						Projectile.direction = -1;
+					}
 
 					if (Timer > slashTime[1])
 						swordOff = new Vector2(34, 25);
@@ -139,7 +141,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			gripPos = Parent.Center + swordOff.RotatedBy(Parent.rotation);
 			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, swordTargetRot, 0.1f) + Parent.rotation;
 
-			if (Timer > slashTime[(int)Variant] && Math.Abs(Projectile.rotation - swordTargetRot) > 0.05f)
+			if (Timer > slashTime[Variant] && Math.Abs(Projectile.rotation - swordTargetRot) > 0.05f)
 				Dust.NewDustPerfect(gripPos + new Vector2(0, -80).RotatedBy(Projectile.rotation * Parent.direction), DustType<Dusts.Cinder>(), Parent.velocity * 0.2f, 0, Glassweaver.GlassColor, 0.7f);
 
 			if (Timer < 60)
@@ -153,13 +155,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Variant == 1)
 				extraTime = 22;
 
-			if (Timer > extraTime + slashTime[(int)Variant])
+			if (Timer > extraTime + slashTime[Variant])
 				Projectile.Kill();
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Timer > slashTime[(int)Variant] && projHitbox.Intersects(targetHitbox);
+			return Timer > slashTime[Variant] && projHitbox.Intersects(targetHitbox);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -183,7 +185,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(50, 70, Timer, true));
 
-			Color fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(100, 60, Timer, true));
+			var fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(100, 60, Timer, true));
 			Main.EntitySpriteDraw(sword.Value, gripPos - Main.screenPosition, frame, fadeIn, rot, origin, scaleIn, dir, 0);
 
 			Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(75, 60, Timer, true);
@@ -193,13 +195,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Rectangle slashFill = slash.Frame(1, 2, 0, 0);
 			Rectangle slashLine = slash.Frame(1, 2, 0, 1);
 
-			Color slashColor = Glassweaver.GlassColor * Utils.GetLerpValue(slashTime[(int)Variant] - 8, slashTime[(int)Variant] + 1, Timer, true) * Utils.GetLerpValue(slashTime[(int)Variant] + 10, slashTime[(int)Variant] + 4, Timer, true);
+			Color slashColor = Glassweaver.GlassColor * Utils.GetLerpValue(slashTime[Variant] - 8, slashTime[Variant] + 1, Timer, true) * Utils.GetLerpValue(slashTime[Variant] + 10, slashTime[Variant] + 4, Timer, true);
 			slashColor.A = 0;
 
-			Vector2 slashScale = new Vector2(1.2f, 1.5f) + new Vector2(Utils.GetLerpValue(slashTime[(int)Variant] - 7, slashTime[(int)Variant] + 10, Timer, true));
+			Vector2 slashScale = new Vector2(1.2f, 1.5f) + new Vector2(Utils.GetLerpValue(slashTime[Variant] - 7, slashTime[Variant] + 10, Timer, true));
 
-			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashFill, slashColor * 0.9f, (MathHelper.Pi / 3f * Parent.direction) + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale, 0, 0);
-			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor * 1.25f, (MathHelper.Pi / 3f * Parent.direction) + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
+			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashFill, slashColor * 0.9f, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale, 0, 0);
+			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor * 1.25f, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
 
 			return false;
 		}

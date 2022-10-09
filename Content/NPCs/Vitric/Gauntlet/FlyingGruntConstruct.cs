@@ -54,7 +54,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private Player target => Main.player[NPC.target];
 
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Flying Grunt Construct");
@@ -160,7 +159,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 
 			SpriteEffects effects = SpriteEffects.None;
-			Vector2 origin = new Vector2(frameWidth / 2.5f, (frameHeight * 0.4f));
+			var origin = new Vector2(frameWidth / 2.5f, frameHeight * 0.4f);
 
 			if (xFrame == 2)
 				origin.Y -= 1;
@@ -174,14 +173,17 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				origin.X = frameWidth - origin.X;
 			}
 
-			Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
+			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 			spriteBatch.Draw(mainTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
 
 			if (drawGlowTex)
 				spriteBatch.Draw(glowTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
 		}
 
-		public override void HitEffect(int hitDirection, double damage) => attacking = true;
+		public override void HitEffect(int hitDirection, double damage)
+		{
+			attacking = true;
+		}
 
 		public override void OnKill()
 		{
@@ -258,6 +260,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					if (frameCounter > 4)
 					{
 						frameCounter = 0;
+
 						if (yFrame < 11)
 							yFrame++;
 						else
@@ -288,7 +291,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void PairedBehavior()
 		{
-			Vector2 potentialPos = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
+			var potentialPos = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
 
 			if (GoToPos(movementTarget, oldPosition) && potentialPos.Distance(NPC.Center) > 60)
 			{
@@ -378,6 +381,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							return false;
 						}
 					}
+
 					return true;
 				}
 
@@ -387,7 +391,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					if (!pelterComboCharging) //go to combo spot
 					{
-						Vector2 posToGoTo = new Vector2(MathHelper.Lerp(target.Center.X, pelterPartner.Center.X, 0.7f), pelterPartner.Center.Y - 300);
+						var posToGoTo = new Vector2(MathHelper.Lerp(target.Center.X, pelterPartner.Center.X, 0.7f), pelterPartner.Center.Y - 300);
 
 						if (GoToPos(posToGoTo, oldPosition))
 						{
@@ -430,7 +434,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						yFrame %= 6;
 					}
 
-					var potentialArrow = Main.projectile.Where(p =>
+					Projectile potentialArrow = Main.projectile.Where(p =>
 					p.active &&
 					p.type == ProjectileType<PelterConstructArrow>() &&
 					p.Distance(arrowPos) < 20).OrderBy(p => p.Distance(NPC.Center + new Vector2(NPC.spriteDirection * 20, 0))).FirstOrDefault();
@@ -445,9 +449,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 						for (float i = -1; i < 1.1f; i += 1)
 						{
-							var arrowVel = arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20;
-							var damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
-							Projectile proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
+							Vector2 arrowVel = arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20;
+							int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
+							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
 
 							for (int k = 0; k < 15; k++)
 							{
@@ -460,6 +464,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				return true;
 			}
+
 			return false;
 		}
 
@@ -469,8 +474,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
-			float distance = (sin * 3) + 4;
+			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
+			float distance = sin * 3 + 4;
 
 			for (int i = 0; i < 8; i++)
 			{

@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(200, 200);
 				Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(4f);
-				Dust swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: Glassweaver.GlowDustOrange, Scale: Main.rand.NextFloat(1f, 2f));
+				var swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: Glassweaver.GlowDustOrange, Scale: Main.rand.NextFloat(1f, 2f));
 				swirl.customData = Projectile.Center;
 
 				Projectile.velocity = Vector2.Zero;
@@ -63,7 +63,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Projectile.ai[1] == 1)
 			{
 				if (Timer < crackTime - 30)
+				{
 					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Parent.GetTargetData().Center) * 5f, 0.004f);
+				}
 				else
 				{
 					if (Timer <= crackTime + 20)
@@ -78,7 +80,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassExplode", 1.1f, 0f, Projectile.Center);
 			}
 			else if (Timer > 360)
+			{
 				Timer = 360;
+			}
 
 			if (Timer > crackTime + 100)
 				Explode();
@@ -86,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.rotation += Projectile.velocity.X * 0.05f;
 			Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
 
-			Color lightColor = Color.Lerp(Glassweaver.GlassColor, Glassweaver.GlowDustOrange, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
+			var lightColor = Color.Lerp(Glassweaver.GlassColor, Glassweaver.GlowDustOrange, Utils.GetLerpValue(crackTime, crackTime + 40, Timer, true));
 
 			if (Main.rand.NextBool(5) && Timer > 150)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(40, 40), DustType<Dusts.Cinder>(), Vector2.Zero, 0, lightColor, 0.7f);
@@ -234,9 +238,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Asset<Texture2D> shineTex = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
 
 			float colLerp = Utils.GetLerpValue(150, 190, Timer, true) * Utils.GetLerpValue(crackTime + 120, crackTime, Timer, true);
-			Color shine = Color.Lerp(Color.PaleGoldenrod, Glassweaver.GlassColor * 0.3f, colLerp);
+			var shine = Color.Lerp(Color.PaleGoldenrod, Glassweaver.GlassColor * 0.3f, colLerp);
 			shine.A = 0;
-			Color bloom = Color.Lerp(Color.OrangeRed, Glassweaver.GlassColor * 0.14f, colLerp);
+			var bloom = Color.Lerp(Color.OrangeRed, Glassweaver.GlassColor * 0.14f, colLerp);
 			bloom.A = 0;
 			float disappear = Utils.GetLerpValue(crackTime + 80, crackTime - 10, Timer, true);
 			float appear = 0.2f + Utils.GetLerpValue(40, 110, Timer, true) * 0.78f;
@@ -282,7 +286,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Glass Shard");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Glass Shard");
+		}
 
 		public override void SetDefaults()
 		{
@@ -312,7 +319,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					Projectile.velocity *= 1.09f;
 			}
 			else
+			{
 				Projectile.velocity *= 0.2f;
+			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -344,7 +353,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, fragFrame, lightColor, Projectile.rotation, fragFrame.Size() * 0.5f, Projectile.scale, 0, 0);
 
-			Color hotFade = new Color(255, 255, 255, 128);
+			var hotFade = new Color(255, 255, 255, 128);
 			Main.EntitySpriteDraw(fragment.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, hotFrame.Size() * 0.5f, Projectile.scale, 0, 0);
 
 			Asset<Texture2D> fragGlow = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha");

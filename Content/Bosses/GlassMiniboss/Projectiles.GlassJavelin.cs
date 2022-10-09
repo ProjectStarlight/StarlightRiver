@@ -41,17 +41,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.rotation = MathHelper.WrapAngle(Projectile.rotation);
 			}
 			else if (Projectile.velocity.Length() > 0.5f)
+			{
 				Projectile.rotation = MathHelper.Lerp(Projectile.rotation, Projectile.velocity.ToRotation() + MathHelper.PiOver2, 0.12f);
+			}
 
 			if (Projectile.tileCollide == true)
 			{
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.166f);
 				//acceleration
 				if (Projectile.timeLeft < 80)
-					Projectile.velocity *= 0.96f + (Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f);
+					Projectile.velocity *= 0.96f + Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f;
 			}
 			else
+			{
 				Projectile.velocity *= 0.2f;
+			}
 
 			if (Projectile.timeLeft > 60 && Main.rand.NextBool(4))
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Glassweaver.GlowDustOrange, 0.6f);
@@ -84,7 +88,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			//normal spear
 			float scale = Utils.GetLerpValue(100, 80, Projectile.timeLeft, true) * Projectile.scale;
-			Color light = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(0, 80, Projectile.timeLeft, true) * 0.8f);
+			var light = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(0, 80, Projectile.timeLeft, true) * 0.8f);
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, glassFrame, light, Projectile.rotation, spearOrigin, scale, SpriteEffects.None, 0);
 
 			//hot overlay

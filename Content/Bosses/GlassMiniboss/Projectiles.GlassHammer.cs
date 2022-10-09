@@ -21,7 +21,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public ref float TotalTime => ref Projectile.ai[1];
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Woven Hammer");
+		}
 
 		public override void SetDefaults()
 		{
@@ -60,29 +63,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), MathHelper.ToRadians(10), dropLerp)
 				- MathHelper.Lerp(MathHelper.ToRadians(40), 0, liftLerp)
 				+ MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(17), swingAccel);
-
-			Vector2 handleOffset;
 			int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
-
-			switch (handleFrame)
+			Vector2 handleOffset = handleFrame switch
 			{
-				default:
-					handleOffset = new Vector2(-55, 2);
-					break;
-				case 1:
-					handleOffset = new Vector2(25, -5);
-					break;
-				case 2:
-					handleOffset = new Vector2(32, -7);
-					break;
-				case 3:
-					handleOffset = new Vector2(35, 2);
-					break;
-			}
-
+				1 => new Vector2(25, -5),
+				2 => new Vector2(32, -7),
+				3 => new Vector2(35, 2),
+				_ => new Vector2(-55, 2),
+			};
 			handleOffset.X *= Parent.direction;
 
-			Projectile.rotation = (chargeRot * -Parent.direction) + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
+			Projectile.rotation = chargeRot * -Parent.direction + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
 			origin = Parent.Center + handleOffset;
 			Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, Projectile.localAI[0], true));
 
@@ -97,7 +88,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (Main.rand.NextBool(2))
 					{
-						Dust glow = Dust.NewDustDirect(Projectile.Bottom - new Vector2(8, 4), 16, 4, DustType<Dusts.Cinder>(), Main.rand.Next(-1, 1), -4, newColor: Glassweaver.GlowDustOrange);
+						var glow = Dust.NewDustDirect(Projectile.Bottom - new Vector2(8, 4), 16, 4, DustType<Dusts.Cinder>(), Main.rand.Next(-1, 1), -4, newColor: Glassweaver.GlowDustOrange);
 						glow.noGravity = false;
 					}
 				}
@@ -105,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Projectile.localAI[0] > TotalTime * 0.5f)
 			{
-				Vector2 alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
+				var alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
 				Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), origin.DirectionTo(alongHammer).RotatedByRandom(0.5f) * 2f, 0, Glassweaver.GlowDustOrange, 0.8f);
 			}
 		}
@@ -170,7 +161,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public ref float WhoAmI => ref Projectile.ai[1];
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Raised Glass Structure");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Raised Glass Structure");
+		}
 
 		public override void SetDefaults()
 		{
@@ -210,7 +204,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Timer == RAISE_TIME - 59)
 			{
-				Projectile.height = (int)((MathHelper.Lerp(240, 150, WhoAmI)) * Projectile.scale);
+				Projectile.height = (int)(MathHelper.Lerp(240, 150, WhoAmI) * Projectile.scale);
 
 				Projectile.rotation += WhoAmI * Projectile.direction * 0.1f;
 
@@ -279,7 +273,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			bool properTime = Timer > RAISE_TIME + 8 && Timer < RAISE_TIME + 100;
 
-			var realHitbox = projHitbox;
+			Rectangle realHitbox = projHitbox;
 			realHitbox.Height = (int)((Timer - RAISE_TIME) / 100f * projHitbox.Height);
 			realHitbox.Y = projHitbox.Y + projHitbox.Height - realHitbox.Height;
 			bool inSpike = realHitbox.Intersects(targetHitbox);
@@ -307,10 +301,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int i = 0; i < maxSpikes; i++)
 				{
 					float lerp = Utils.GetLerpValue(2.5f, maxSpikes, i, true);
-					float height = -totalHeight * lerp * (float)Math.Sqrt(EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(RAISE_TIME - 10 + (10f * lerp), RAISE_TIME + 30 + (7f * lerp), Timer, true)));
+					float height = -totalHeight * lerp * (float)Math.Sqrt(EaseFunction.EaseCircularOut.Ease(Utils.GetLerpValue(RAISE_TIME - 10 + 10f * lerp, RAISE_TIME + 30 + 7f * lerp, Timer, true)));
 					float width = baseWidth * (1.1f - lerp);
 
-					points[i] = Projectile.Bottom + ((new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(RAISE_TIME + 200, RAISE_TIME + 150, Timer, true))) * 80f)) * Projectile.scale);
+					points[i] = Projectile.Bottom + (new Vector2(offsets[i] * width, 0) + new Vector2(0, height).RotatedBy(Projectile.rotation) - new Vector2(0, (1f - Helpers.Helper.BezierEase(Utils.GetLerpValue(RAISE_TIME + 200, RAISE_TIME + 150, Timer, true))) * 80f)) * Projectile.scale;
 					int j = maxSpikes - i - 1;
 					float rotation = Projectile.rotation + offsets[j] * (0.4f + (float)Math.Pow(lerp, 2) * 0.4f);
 
@@ -347,7 +341,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Rectangle hotFrame = growth.Frame(5, 2, size, 1);
 			Vector2 origin = frame.Size() * new Vector2(0.5f, 0.77f);
 
-			Color lightColor = Color.Lerp(Lighting.GetColor((int)position.X / 16, (int)position.Y / 16), Color.White, (1f - progress) * 0.8f);
+			var lightColor = Color.Lerp(Lighting.GetColor((int)position.X / 16, (int)position.Y / 16), Color.White, (1f - progress) * 0.8f);
 			float scaleW = Utils.GetLerpValue(-0.05f, 0.05f, progress, true) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.9f, progress, true));
 			float scaleH = Helpers.Helper.SwoopEase(Utils.GetLerpValue(0, 0.1f, progress, true)) * Helpers.Helper.BezierEase(Utils.GetLerpValue(1, 0.92f, progress, true));
 			Vector2 scale = Projectile.scale * new Vector2(scaleW, scaleH);

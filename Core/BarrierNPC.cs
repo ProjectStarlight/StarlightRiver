@@ -27,19 +27,19 @@ namespace StarlightRiver.Core
 
 		public override bool InstancePerEntity => true;
 
-        public override void ResetEffects(NPC npc)
-        {
+		public override void ResetEffects(NPC npc)
+		{
 			if (MaxBarrier != 0)
 				LastNonZeroMaxBarrier = MaxBarrier;
-        }
+		}
 
-        public override void AI(NPC npc)
-        {
-            if (!NPCBarrierGlow.anyEnemiesWithBarrier && Barrier > 0)
+		public override void AI(NPC npc)
+		{
+			if (!NPCBarrierGlow.anyEnemiesWithBarrier && Barrier > 0)
 				NPCBarrierGlow.anyEnemiesWithBarrier = true;
 		}
 
-        public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
+		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Barrier > 0)
 			{
@@ -86,7 +86,7 @@ namespace StarlightRiver.Core
 
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)
 		{
-			if (Barrier > MostBarrier) 
+			if (Barrier > MostBarrier)
 				MostBarrier = Barrier;
 
 			if (MaxBarrier > MostBarrier)
@@ -112,22 +112,6 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			if (Barrier > 0 && RechargeRate < 0) //If recharge rate is negative, the NPC loses barrier over time.
-			{
-				int rechargeRateWhole = RechargeRate / 60;
-
-				Barrier += Math.Min(rechargeRateWhole, Barrier);
-
-				if (RechargeRate % 60 != 0)
-				{
-					int rechargeSubDelay = 60 / (Math.Abs(RechargeRate) % 60);
-
-					if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier > 0)
-						Barrier--;
-				}
-			}
-
-
 			if (Barrier > MaxBarrier && !DontDrainOvercharge)
 			{
 				int drainRateWhole = OverchargeDrainRate / 60;
@@ -148,13 +132,13 @@ namespace StarlightRiver.Core
 		{
 			if (Barrier > 0)
 			{
-				var bright = Lighting.Brightness((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
+				float bright = Lighting.Brightness((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16);
 
 				Main.instance.DrawHealthBar((int)position.X, (int)position.Y, NPC.life, NPC.lifeMax, bright, scale);
 
-				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
+				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-				var factor = Math.Min(Barrier / (float)LastNonZeroMaxBarrier, 1);
+				float factor = Math.Min(Barrier / (float)LastNonZeroMaxBarrier, 1);
 
 				var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 				var target = new Rectangle((int)(position.X - Main.screenPosition.X), (int)(position.Y - Main.screenPosition.Y), (int)(factor * tex.Width * scale), (int)(tex.Height * scale));
@@ -163,7 +147,7 @@ namespace StarlightRiver.Core
 
 				if (Barrier < LastNonZeroMaxBarrier)
 				{
-					var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
+					Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
 					var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
 					var targetLine = new Rectangle((int)(position.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(position.Y - Main.screenPosition.Y), (int)(2 * scale), (int)(tex.Height * scale));

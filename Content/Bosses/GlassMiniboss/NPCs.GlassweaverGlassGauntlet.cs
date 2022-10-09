@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private int Supporter => NPCType<SupporterConstruct>();
 		private int Juggernaut => NPCType<JuggernautConstruct>();
 
-		private int PlayerDirection => (int)Math.Sign(Target.Center.X - NPC.Center.X);
+		private int PlayerDirection => Math.Sign(Target.Center.X - NPC.Center.X);
 
 		private void SpawnEnemy(Vector2 pos, int type, bool onFloor = true)
 		{
@@ -248,7 +248,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer > 160)
 				CheckGauntletWave();
 		}
-
 
 		private void EndGauntlet()
 		{

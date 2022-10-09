@@ -17,7 +17,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Spinning Blades");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Spinning Blades");
+		}
 
 		public override void SetDefaults()
 		{

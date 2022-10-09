@@ -29,19 +29,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void AI()
 		{
-			var parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
+			NPC parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
 
 			if (parent != default && !opening)
 			{
 				if (closeTimer < 1)
+				{
 					closeTimer += 0.025f;
+				}
 				else if (!closed)
 				{
 					closed = true;
 					Core.Systems.CameraSystem.Shake += 9;
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
 
-					Vector2 dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
+					var dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);
 					for (int i = 0; i < 15; i++)
 						Dust.NewDustPerfect(dustPos + new Vector2(Main.rand.Next(-8, 8), 0), DustID.Copper, Main.rand.NextVector2Circular(3, 3), 0, default, Main.rand.NextFloat(0.85f, 1.15f));
 				}
@@ -63,10 +65,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			int height = (int)(tex.Height * closeTimer);
 
-			Rectangle frame = new Rectangle(0, 0, tex.Width, height);
-			Vector2 origin = new Vector2(tex.Width / 2, 0);
+			var frame = new Rectangle(0, 0, tex.Width, height);
+			var origin = new Vector2(tex.Width / 2, 0);
 
-			Main.spriteBatch.Draw(tex, (Projectile.Center - new Vector2(0, height)) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - new Vector2(0, height) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}

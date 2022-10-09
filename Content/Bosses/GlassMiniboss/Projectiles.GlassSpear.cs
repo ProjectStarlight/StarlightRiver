@@ -22,7 +22,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
-		public override void SetStaticDefaults() => DisplayName.SetDefault("Woven Hammer");
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Woven Hammer");
+		}
 
 		public override void SetDefaults()
 		{
@@ -95,7 +98,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(10, 50, Timer, true));
 
-			Color fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(150, 0, Timer, true));
+			var fadeIn = Color.Lerp(lightColor, Color.White, Utils.GetLerpValue(150, 0, Timer, true));
 			Main.EntitySpriteDraw(spear.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, spearOrigin, scaleIn, 0, 0);
 
 			Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(70, 55, Timer, true);
@@ -147,6 +150,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer > -1)
 			{
 				Projectile.velocity.Y += 0.6f;
+
 				if (Main.rand.NextBool(8))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1f);
 			}
@@ -157,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (Main.rand.NextBool(3))
 				{
 					Vector2 magVel = -Vector2.UnitY.RotatedBy(Projectile.ai[1]).RotatedByRandom(0.2f) * Main.rand.NextFloat(10f, 15f) * Utils.GetLerpValue(-50, 0, Timer, true);
-					Dust magma = Dust.NewDustPerfect(Projectile.Bottom + Main.rand.NextVector2Circular(10, 2), DustType<Dusts.Cinder>(), magVel, 0, Glassweaver.GlowDustOrange, 1.5f);
+					var magma = Dust.NewDustPerfect(Projectile.Bottom + Main.rand.NextVector2Circular(10, 2), DustType<Dusts.Cinder>(), magVel, 0, Glassweaver.GlowDustOrange, 1.5f);
 					magma.noGravity = false;
 				}
 			}
@@ -217,7 +221,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				Asset<Texture2D> glob = Request<Texture2D>(Texture);
 				Rectangle frame = glob.Frame(1, 3, 0, Projectile.frame);
-				Vector2 origin = new Vector2(frame.Height * 0.5f);
+				var origin = new Vector2(frame.Height * 0.5f);
 
 				Asset<Texture2D> bloom = Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleBloom");
 				Color bloomFade = Color.OrangeRed;
@@ -228,9 +232,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				//bloom
 				for (int i = 0; i < ProjectileID.Sets.TrailCacheLength[Type]; i++)
 				{
-					float fade = 1f - ((float)i / ProjectileID.Sets.TrailCacheLength[Type]);
+					float fade = 1f - (float)i / ProjectileID.Sets.TrailCacheLength[Type];
 					float trailScale = Projectile.scale * MathHelper.Lerp(0.3f, 2f, fade) * 0.5f * scale;
-					Main.EntitySpriteDraw(bloom.Value, Projectile.oldPos[i] + (Projectile.Size * 0.5f) - Main.screenPosition, null, bloomFade * fade * 0.2f, Projectile.oldRot[i], bloom.Size() * 0.5f, trailScale * new Vector2(1f, 0.8f), 0, 0);
+					Main.EntitySpriteDraw(bloom.Value, Projectile.oldPos[i] + Projectile.Size * 0.5f - Main.screenPosition, null, bloomFade * fade * 0.2f, Projectile.oldRot[i], bloom.Size() * 0.5f, trailScale * new Vector2(1f, 0.8f), 0, 0);
 				}
 
 				Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade * 0.8f, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.66f, 0.5f), 0, 0);
