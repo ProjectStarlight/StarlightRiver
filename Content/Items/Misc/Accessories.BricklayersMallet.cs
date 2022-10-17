@@ -25,13 +25,13 @@ namespace StarlightRiver.Content.Items.Misc
             Player.blockRange *= 2;
             if (Main.myPlayer == Player.whoAmI)
             {
-                Player.tileRangeX *= 2;
-                Player.tileRangeY *= 2;
-
-                bool outsideXRange = Main.MouseWorld.X < Player.Center.X ? Math.Abs(Player.Left.X - Main.MouseWorld.X) > 80f : Math.Abs(Player.Right.X - Main.MouseWorld.X) > 80f;
-                bool outsideYRange = Main.MouseWorld.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - Main.MouseWorld.Y) > 48f : Math.Abs(Player.Top.Y - Main.MouseWorld.Y) > 48f;
+                bool outsideXRange = Main.MouseWorld.X < Player.Center.X ? Math.Abs(Player.Left.X - Main.MouseWorld.X) > 80f + (Player.tileRangeX * 16f) : Math.Abs(Player.Right.X - Main.MouseWorld.X) > 80f + (Player.tileRangeX * 16f);
+                bool outsideYRange = Main.MouseWorld.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - Main.MouseWorld.Y) > 48f + (Player.tileRangeY * 16f) : Math.Abs(Player.Top.Y - Main.MouseWorld.Y) > 48f + (Player.tileRangeY * 16f);
                 if (outsideXRange || outsideYRange)
                     Player.pickSpeed *= 1.5f;
+
+                Player.tileRangeX *= 2;
+                Player.tileRangeY *= 2;
             }
         }
     }
