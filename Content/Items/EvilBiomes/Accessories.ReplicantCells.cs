@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.EvilBiomes
 {
@@ -21,7 +14,7 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 		{
 			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.15f;
 
-			if(Player.lifeRegenTime % 5 == 0) 
+			if (Player.lifeRegenTime % 5 == 0)
 				Player.lifeRegenTime++;
 		}
 	}

@@ -38,7 +38,7 @@ namespace StarlightRiver.Helpers
 			NPC toReturn = null;
 			float cacheDistance = int.MaxValue;
 
-			for(int k = 0; k < Main.maxNPCs; k++)
+			for (int k = 0; k < Main.maxNPCs; k++)
 			{
 				NPC check = Main.npc[k];
 				float distance = Vector2.Distance(NPC.Center, check.Center);
@@ -54,9 +54,9 @@ namespace StarlightRiver.Helpers
 		}
 
 		public static void Frame(this NPC NPC, int x, int y)
-        {
+		{
 			NPC.frame.X = x;
 			NPC.frame.Y = y;
-        }
+		}
 	}
 }

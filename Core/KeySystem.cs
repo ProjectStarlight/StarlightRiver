@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Content.Keys;
+using System.Collections.Generic;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using StarlightRiver.Keys;
 
 namespace StarlightRiver.Core
 {
 	internal class KeySystem : ModSystem
 	{
-		public static List<Key> Keys = new List<Key>();
+		public static List<Key> Keys = new();
 
-		public static List<Key> KeyInventory = new List<Key>();
+		public static List<Key> KeyInventory = new();
 
 		public override void PostUpdateWorld()
 		{
@@ -20,9 +20,9 @@ namespace StarlightRiver.Core
 		}
 
 		public override void SaveWorldData(TagCompound tag)
-        {
+		{
 
-        }
+		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
@@ -35,7 +35,7 @@ namespace StarlightRiver.Core
 		public override void Unload()
 		{
 			Keys = null;
-			KeyInventory = null;	
+			KeyInventory = null;
 		}
 	}
 }

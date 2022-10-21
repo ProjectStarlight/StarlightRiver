@@ -42,7 +42,10 @@ namespace StarlightRiver.Content.Items.Potions
 			Item.useAnimation = 15;
 		}
 
-		public override bool CanUseItem(Player Player) => !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
+		public override bool CanUseItem(Player Player)
+		{
+			return !Player.HasBuff(ModContent.BuffType<NoShieldPot>()) && !Player.HasBuff(BuffID.PotionSickness);
+		}
 
 		public override bool? UseItem(Player player)
 		{
@@ -57,7 +60,7 @@ namespace StarlightRiver.Content.Items.Potions
 		}
 	}
 
-	public class LesserBarrierPotion  : BarrierPotion
+	public class LesserBarrierPotion : BarrierPotion
 	{
 		public LesserBarrierPotion() : base(40, 180, "Lesser") { }
 
@@ -112,7 +115,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 	public class NoShieldPot : SmartBuff
 	{
-		public NoShieldPot() : base("Barrier Sickness", "Cannot consume more barrier potions", true ) { }
+		public NoShieldPot() : base("Barrier Sickness", "Cannot consume more barrier potions", true) { }
 
 		public override string Texture => AssetDirectory.PotionsItem + Name;
 	}

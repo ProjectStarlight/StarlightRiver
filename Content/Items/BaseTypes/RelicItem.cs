@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
@@ -12,14 +11,14 @@ using Terraria.Utilities;
 namespace StarlightRiver.Content.Items.BaseTypes
 {
 	class RelicItem : GlobalItem
-    {
-        public bool isRelic = false;
+	{
+		public bool isRelic = false;
 
-        public bool doubled = false;
+		public bool doubled = false;
 
 		private int tooltipSparkleCounter = 0;
 
-        public override bool InstancePerEntity => true;
+		public override bool InstancePerEntity => true;
 
 		private static ParticleSystem.Update UpdateRelic => UpdateRelicBody;
 
@@ -30,12 +29,18 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public ParticleSystem RelicTooltipParticleSystem = default;
 
-		public Color RelicColor(int offset) => Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
-		public Color RelicColorBad(int offset) => Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)(Math.Sin(Main.GameUpdateCount / 20f + offset)) / 2f);
+		public Color RelicColor(int offset)
+		{
+			return Color.Lerp(Color.Yellow, Color.LimeGreen, 0.5f + (float)Math.Sin(Main.GameUpdateCount / 20f + offset) / 2f);
+		}
 
+		public Color RelicColorBad(int offset)
+		{
+			return Color.Lerp(Color.Yellow, Color.OrangeRed, 0.5f + (float)Math.Sin(Main.GameUpdateCount / 20f + offset) / 2f);
+		}
 
-        public override void UpdateInventory(Item item, Player player)
-        {
+		public override void UpdateInventory(Item item, Player player)
+		{
 			if (isRelic)
 			{
 				if (RelicParticleSystem == default)
@@ -64,15 +69,15 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			float backScale = 0.75f;
 
-			Vector2 pos = new Vector2(position.X + (frame.Width * (0.5f * (1 + (float)Math.Sin(sin)))), position.Y + (frame.Height * Main.rand.NextFloat(0.8f, 1f)));
+			var pos = new Vector2(position.X + frame.Width * (0.5f * (1 + (float)Math.Sin(sin))), position.Y + frame.Height * Main.rand.NextFloat(0.8f, 1f));
 			Vector2 frontPos = pos - new Vector2(80 * particleScale, 80 * particleScale);
 			Vector2 backPos = pos - new Vector2(80 * particleScale * backScale, 80 * particleScale * backScale);
 
 			float colorLerper = Main.rand.NextFloat(0.2f);
-			Color color = Color.Lerp(Color.Gold, Color.White, colorLerper);
+			var color = Color.Lerp(Color.Gold, Color.White, colorLerper);
 			color.A = 0;
 
-			Color colorBehind = Color.Lerp(Color.Orange, Color.White, colorLerper);
+			var colorBehind = Color.Lerp(Color.Orange, Color.White, colorLerper);
 			colorBehind.A = 0;
 
 			int fadeTime = Main.rand.Next(100, 130);
@@ -87,24 +92,23 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			return base.PreDrawInInventory(item, spriteBatch, position, frame, drawColor, ItemColor, origin, scale);
 		}
 
-
-        public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
-        {
+		public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+		{
 			if (!isRelic || line.Name != "ItemName")
 				return base.PreDrawTooltipLine(item, line, ref yOffset);
 
 			float scale = Main.UIScale;
-			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + ((line.Font.MeasureString(line.Text) - new Vector2(14,14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat()));
+			Vector2 position = new Vector2(line.OriginalX + 7, line.OriginalY + 7) + (line.Font.MeasureString(line.Text) - new Vector2(14, 14)) * scale * new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
 
 			if (tooltipSparkleCounter++ % 14 == 0)
-				RelicTooltipParticleSystem?.AddParticle(new Particle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f,1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14)));
+				RelicTooltipParticleSystem?.AddParticle(new Particle(position, Vector2.Zero, 0, Main.UIScale * Main.rand.NextFloat(0.85f, 1.15f), Color.White, 20, Vector2.Zero, new Rectangle(0, 0, 14, 14)));
 
 			RelicTooltipParticleSystem?.DrawParticles(Main.spriteBatch);
 
 			return base.PreDrawTooltipLine(item, line, ref yOffset);
 		}
 
-        public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
+		public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
 			if (!isRelic)
 				return;
@@ -114,62 +118,67 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-			return item.TryGetGlobalItem<RelicItem>(out var gi) ? gi : base.Clone(item, itemClone);
+			return item.TryGetGlobalItem<RelicItem>(out RelicItem gi) ? gi : base.Clone(item, itemClone);
 		}
 
 		public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
-        {
-            if (item.GetGlobalItem<RelicItem>().isRelic)
-            {
-                if (pre == -3)
-                    return false;
+		{
+			if (item.GetGlobalItem<RelicItem>().isRelic)
+			{
+				if (pre == -3)
+					return false;
 
-                if (pre == -1)
-                    return true;
-            }
+				if (pre == -1)
+					return true;
+			}
 
-            return base.PrefixChance(item, pre, rand);
-        }
+			return base.PrefixChance(item, pre, rand);
+		}
 
-        public override int ChoosePrefix(Item item, UnifiedRandom rand)
-        {
-            if (item.GetGlobalItem<RelicItem>().isRelic)
-            {
-                int result = base.ChoosePrefix(item, rand);
-                return result != 0 ? result : ChoosePrefix(item, rand);
-            }
+		public override int ChoosePrefix(Item item, UnifiedRandom rand)
+		{
+			if (item.GetGlobalItem<RelicItem>().isRelic)
+			{
+				int result = base.ChoosePrefix(item, rand);
+				return result != 0 ? result : ChoosePrefix(item, rand);
+			}
 
-            return base.ChoosePrefix(item, rand);
-        }
+			return base.ChoosePrefix(item, rand);
+		}
 
-        public override void UpdateAccessory(Item item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
-        {
+		public override void UpdateAccessory(Item item, Player Player, bool hideVisual) //re-add vanilla prefixes to double power. This is bad, but its not IL atleast :)
+		{
 			if (!item.GetGlobalItem<RelicItem>().isRelic)
-			{ 
+			{
 				base.UpdateAccessory(item, Player, hideVisual);
 				return;
-				}
+			}
 
 			if (item.prefix == 62)
 			{
 				Player.statDefense++;
 			}
+
 			if (item.prefix == 63)
 			{
 				Player.statDefense += 2;
 			}
+
 			if (item.prefix == 64)
 			{
 				Player.statDefense += 3;
 			}
+
 			if (item.prefix == 65)
 			{
 				Player.statDefense += 4;
 			}
+
 			if (item.prefix == 66)
 			{
 				Player.statManaMax2 += 20;
 			}
+
 			if (item.prefix == 67)
 			{
 				Player.GetCritChance(DamageClass.Melee) += 2;
@@ -177,6 +186,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Player.GetCritChance(DamageClass.Magic) += 2;
 				Player.GetCritChance(DamageClass.Throwing) += 2;
 			}
+
 			if (item.prefix == 68)
 			{
 				Player.GetCritChance(DamageClass.Melee) += 4;
@@ -184,69 +194,81 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Player.GetCritChance(DamageClass.Magic) += 4;
 				Player.GetCritChance(DamageClass.Throwing) += 4;
 			}
+
 			if (item.prefix == 69)
 			{
-				Player.GetDamage(DamageClass.Generic) += 0.01f; 
+				Player.GetDamage(DamageClass.Generic) += 0.01f;
 			}
+
 			if (item.prefix == 70)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.02f;
 			}
+
 			if (item.prefix == 71)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.03f;
 			}
+
 			if (item.prefix == 72)
 			{
 				Player.GetDamage(DamageClass.Generic) += 0.04f;
 			}
+
 			if (item.prefix == 73)
 			{
 				Player.moveSpeed += 0.01f;
 			}
+
 			if (item.prefix == 74)
 			{
 				Player.moveSpeed += 0.02f;
 			}
+
 			if (item.prefix == 75)
 			{
 				Player.moveSpeed += 0.03f;
 			}
+
 			if (item.prefix == 76)
 			{
 				Player.moveSpeed += 0.04f;
 			}
+
 			if (item.prefix == 77)
 			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.01f;
 			}
+
 			if (item.prefix == 78)
 			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.02f;
 			}
+
 			if (item.prefix == 79)
 			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.03f;
 			}
+
 			if (item.prefix == 80)
 			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.04f;
 			}
 		}
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-        {
-            if (item.GetGlobalItem<RelicItem>().isRelic)
-            {
-                for(int k = 0; k < tooltips.Count; k++)
-                {
-                    var line = tooltips[k];
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
+			if (item.GetGlobalItem<RelicItem>().isRelic)
+			{
+				for (int k = 0; k < tooltips.Count; k++)
+				{
+					TooltipLine line = tooltips[k];
 
-                    if (line.Name == "ItemName")
-                    {
-                        line.Text = line.Text.Insert(0, "Twice ");
-                        line.OverrideColor = RelicColor(k);
-                    }
+					if (line.Name == "ItemName")
+					{
+						line.Text = line.Text.Insert(0, "Twice ");
+						line.OverrideColor = RelicColor(k);
+					}
 
 					if (line.IsModifier)
 					{
@@ -256,22 +278,23 @@ namespace StarlightRiver.Content.Items.BaseTypes
 							line.Text = DoubleIntValues(line.Text);
 					}
 
-                    if (line.IsModifierBad)
-                        line.OverrideColor = RelicColorBad(k);
-                }
+					if (line.IsModifierBad)
+						line.OverrideColor = RelicColorBad(k);
+				}
 
-                var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged");
-                newLine.OverrideColor = new Color(255, 180, 100);
-                tooltips.Add(newLine);
-            }
-        }
+				var newLine = new TooltipLine(Mod, "relicLine", "Cannot be reforged")
+				{
+					OverrideColor = new Color(255, 180, 100)
+				};
+				tooltips.Add(newLine);
+			}
+		}
 
 		public string DoubleIntValues(string input)
-        {
+		{
 			for (int k = 0; k < input.Length; k++)
 			{
-				int result = 0;
-				if (int.TryParse(input[k].ToString(), out result))
+				if (int.TryParse(input[k].ToString(), out int result))
 				{
 					input = input.Remove(k, 1);
 					input = input.Insert(k, (result * 2).ToString());
@@ -279,16 +302,16 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 
 			return input;
-        }
+		}
 
-        public override void SaveData(Item item, TagCompound tag)
-        {
-			if(item.GetGlobalItem<RelicItem>().isRelic)
+		public override void SaveData(Item item, TagCompound tag)
+		{
+			if (item.GetGlobalItem<RelicItem>().isRelic)
 				tag["isRelic"] = true;
 		}
 
-        public override void LoadData(Item item, TagCompound tag)
-        {
+		public override void LoadData(Item item, TagCompound tag)
+		{
 			if (tag.ContainsKey("isRelic"))
 				item.GetGlobalItem<RelicItem>().isRelic = tag.GetBool("isRelic");
 		}

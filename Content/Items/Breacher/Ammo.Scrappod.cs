@@ -1,208 +1,204 @@
-﻿using StarlightRiver.Core;
-using Terraria.ModLoader;
-using Terraria;
-using Terraria.ID;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using System;
-using StarlightRiver.Core.Systems;
-using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Terraria.GameContent;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
-    public class ScrappodItem : ModItem
-    {
-        public override string Texture => AssetDirectory.BreacherItem + Name;
+	public class ScrappodItem : ModItem
+	{
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Scrap Pod");
-            Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor\nIs only able to shatter after a short period of time");
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Scrap Pod");
+			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor\nIs only able to shatter after a short period of time");
+		}
 
-        public override void SetDefaults()
-        {
-            Item.width = Item.height = 10;
+		public override void SetDefaults()
+		{
+			Item.width = Item.height = 10;
 
-            Item.value = Item.sellPrice(copper: 10);
-            Item.rare = ItemRarityID.Orange;
+			Item.value = Item.sellPrice(copper: 10);
+			Item.rare = ItemRarityID.Orange;
 
-            Item.maxStack = 999;
-            Item.damage = 8;
-            Item.knockBack = 1.5f;
+			Item.maxStack = 999;
+			Item.damage = 8;
+			Item.knockBack = 1.5f;
 
-            Item.ammo = AmmoID.Bullet;
-            Item.consumable = true;
+			Item.ammo = AmmoID.Bullet;
+			Item.consumable = true;
 
-            Item.DamageType = DamageClass.Ranged;
-            Item.shoot = ModContent.ProjectileType<ScrappodProjectile>();
-            Item.shootSpeed = 3.5f;
-        }
-    }
-    
-    internal class ScrappodProjectile : ModProjectile
-    {
-        private bool HasTouchedMouse;
+			Item.DamageType = DamageClass.Ranged;
+			Item.shoot = ModContent.ProjectileType<ScrappodProjectile>();
+			Item.shootSpeed = 3.5f;
+		}
+	}
 
-        private bool initialized = false;
+	internal class ScrappodProjectile : ModProjectile
+	{
+		private bool HasTouchedMouse;
 
-        private float distanceToExplode = 130;
-        public override string Texture => AssetDirectory.BreacherItem + Name;
+		private bool initialized = false;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Scrappod");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
-        }
+		private float distanceToExplode = 130;
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = Projectile.height = 8;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Scrappod");
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 6;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
+		}
 
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.friendly = true;
+		public override void SetDefaults()
+		{
+			Projectile.width = Projectile.height = 8;
 
-            Projectile.timeLeft = 240;
-            Projectile.penetrate = 1;
-            distanceToExplode = Main.rand.Next(145, 175);
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.friendly = true;
 
-            Projectile.aiStyle = 1;
-            AIType = ProjectileID.Bullet;
-        }
+			Projectile.timeLeft = 240;
+			Projectile.penetrate = 1;
+			distanceToExplode = Main.rand.Next(145, 175);
 
-        public override void AI()
-        {
-            if (!initialized)
-            {
-                initialized = true;
-                if (Projectile.Distance(Main.MouseWorld) > distanceToExplode)
-                    distanceToExplode = Projectile.Distance(Main.MouseWorld) * Main.rand.NextFloat(0.9f,1.1f);
-            }
+			Projectile.aiStyle = 1;
+			AIType = ProjectileID.Bullet;
+		}
 
-            Projectile.rotation = Projectile.velocity.ToRotation();
+		public override void AI()
+		{
+			if (!initialized)
+			{
+				initialized = true;
+				if (Projectile.Distance(Main.MouseWorld) > distanceToExplode)
+					distanceToExplode = Projectile.Distance(Main.MouseWorld) * Main.rand.NextFloat(0.9f, 1.1f);
+			}
 
-            Projectile.velocity *= 1.025f;
+			Projectile.rotation = Projectile.velocity.ToRotation();
 
-            if (distanceToExplode < 0)
-                HasTouchedMouse = true;
+			Projectile.velocity *= 1.025f;
 
-            if (Main.myPlayer == Projectile.owner && Projectile.timeLeft < 230 && HasTouchedMouse) //only explodes into scrap after a certain amount of time to prevent "shotgunning"
-                ExplodeIntoScrap();
+			if (distanceToExplode < 0)
+				HasTouchedMouse = true;
 
-            distanceToExplode -= Projectile.velocity.Length();
-        }
+			if (Main.myPlayer == Projectile.owner && Projectile.timeLeft < 230 && HasTouchedMouse) //only explodes into scrap after a certain amount of time to prevent "shotgunning"
+				ExplodeIntoScrap();
 
-        public override void Kill(int timeLeft)
-        {
-            for (int i = 0; i < 5; i++)
-            {
-                //for some reason the BuzzSpark dust spawns super offset 
-                Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), (Projectile.velocity * 0.75f).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
+			distanceToExplode -= Projectile.velocity.Length();
+		}
 
-                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), (Projectile.velocity * Main.rand.NextFloat(0.5f, 0.6f)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
-            }
-        }
+		public override void Kill(int timeLeft)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+				//for some reason the BuzzSpark dust spawns super offset 
+				Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), (Projectile.velocity * 0.75f).RotatedByRandom(MathHelper.ToRadians(10f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
 
-        public override bool PreDraw(ref Color lightColor)
-        {
-            SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), (Projectile.velocity * Main.rand.NextFloat(0.5f, 0.6f)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
+			}
+		}
 
-            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+		public override bool PreDraw(ref Color lightColor)
+		{
+			SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-            int startY = frameHeight * Projectile.frame;
+			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
-            Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+			int startY = frameHeight * Projectile.frame;
 
-            Vector2 origin = sourceRectangle.Size() / 2f;
+			var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
 
-            float offsetX = -10f;
-            origin.X = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX);
+			Vector2 origin = sourceRectangle.Size() / 2f;
 
-            Color drawColor = Projectile.GetAlpha(lightColor);
+			float offsetX = -10f;
+			origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
 
-            for (int k = 0; k < Projectile.oldPos.Length; k++)
-            {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + new Vector2(0f, Projectile.gfxOffY);
-                Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
-                Main.EntitySpriteDraw(texture, drawPos, sourceRectangle, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
-            }
+			Color drawColor = Projectile.GetAlpha(lightColor);
 
-            Main.EntitySpriteDraw(texture,
-                Projectile.position - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-                sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+			for (int k = 0; k < Projectile.oldPos.Length; k++)
+			{
+				Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY);
+				Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+				Main.EntitySpriteDraw(texture, drawPos, sourceRectangle, color, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+			}
 
-            return false;
-        }
+			Main.EntitySpriteDraw(texture,
+				Projectile.position - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+				sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 
-        public void ExplodeIntoScrap()
-        {
-            for (int i = 0; i < 3; i++)
-            {              
-                if (Main.myPlayer == Projectile.owner)
-                {
-                    Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f);
-                    Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
-                }                  
-            }
-            //maybe better sound here
-            Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
-            Projectile.Kill();
-        }
-    }
+			return false;
+		}
 
-    internal class ScrappodScrapnel : ModProjectile
-    {
-        public override string Texture => AssetDirectory.BreacherItem + Name;
+		public void ExplodeIntoScrap()
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				if (Main.myPlayer == Projectile.owner)
+				{
+					Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(-10f, 10f))) * Main.rand.NextFloat(0.8f, 1.1f);
+					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ModContent.ProjectileType<ScrappodScrapnel>(), (int)(Projectile.damage * 0.66f), 1f, Projectile.owner);
+				}
+			}
+			//maybe better sound here
+			Helper.PlayPitched("Guns/Scrapshot", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			Projectile.Kill();
+		}
+	}
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Scrapnel");
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            Main.projFrames[Projectile.type] = 3;
-        }
+	internal class ScrappodScrapnel : ModProjectile
+	{
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = Projectile.height = 8;
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Scrapnel");
+			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 5;
+			ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+			Main.projFrames[Projectile.type] = 3;
+		}
 
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.friendly = true;
+		public override void SetDefaults()
+		{
+			Projectile.width = Projectile.height = 8;
 
-            Projectile.timeLeft = 240;
-            Projectile.penetrate = 1;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.friendly = true;
 
-            Projectile.frame = Main.rand.Next(3);
-        }
+			Projectile.timeLeft = 240;
+			Projectile.penetrate = 1;
 
-        public override void AI()
-        {
-            Projectile.rotation += 0.25f * Projectile.direction;
-            Projectile.localAI[0]++;
-            if (Projectile.localAI[0] > 20)
-                Projectile.velocity.Y += 0.94f;
+			Projectile.frame = Main.rand.Next(3);
+		}
 
-            if (Projectile.velocity.Y > 16f)
-                Projectile.velocity.Y = 16f;
-        }
+		public override void AI()
+		{
+			Projectile.rotation += 0.25f * Projectile.direction;
+			Projectile.localAI[0]++;
+			if (Projectile.localAI[0] > 20)
+				Projectile.velocity.Y += 0.94f;
 
-        public override void Kill(int timeLeft)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2 vel = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(Main.rand.NextFloat(-15f, 15f))) * Main.rand.NextFloat(-0.25f, -0.35f);
+			if (Projectile.velocity.Y > 16f)
+				Projectile.velocity.Y = 16f;
+		}
 
-                Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), vel, 0, new Color(255, 255, 60) * 0.8f, 0.95f);
+		public override void Kill(int timeLeft)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				Vector2 vel = Projectile.velocity.RotatedByRandom(MathHelper.ToRadians(Main.rand.NextFloat(-15f, 15f))) * Main.rand.NextFloat(-0.25f, -0.35f);
 
-                Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), vel * 1.2f, 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.4f));
-            }
-            SoundEngine.PlaySound(SoundID.NPCHit4.WithPitchOffset(Main.rand.NextFloat(-0.1f, 0.1f)).WithVolumeScale(0.5f), Projectile.position);
-        }
-    }
+				Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f), ModContent.DustType<Dusts.BuzzSpark>(), vel, 0, new Color(255, 255, 60) * 0.8f, 0.95f);
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), vel * 1.2f, 0, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.4f));
+			}
+
+			SoundEngine.PlaySound(SoundID.NPCHit4.WithPitchOffset(Main.rand.NextFloat(-0.1f, 0.1f)).WithVolumeScale(0.5f), Projectile.position);
+		}
+	}
 }

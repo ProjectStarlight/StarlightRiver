@@ -1,18 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using NetEasy;
-using StarlightRiver.Codex.Entries;
+using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
 using Terraria;
 using Terraria.DataStructures;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
-using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core
 {
@@ -41,13 +37,13 @@ namespace StarlightRiver.Core
 			get
 			{
 				if (barrierDyeItem is null || barrierDyeItem.IsAir)
-                {
-					Item Item = new Item();
+				{
+					var Item = new Item();
 					Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
 					barrierDyeItem = Item;
 				}
 
-				return (barrierDyeItem.ModItem as BarrierDye);
+				return barrierDyeItem.ModItem as BarrierDye;
 			}
 		}
 		public override void Load()
@@ -55,12 +51,11 @@ namespace StarlightRiver.Core
 			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
 			StarlightPlayer.PreDrawEvent += PreDrawBarrierFX;
 
-			
 		}
 
 		private void PostDrawBarrierFX(Player Player, SpriteBatch spriteBatch)
 		{
-			if(!Main.gameMenu)
+			if (!Main.gameMenu)
 				Player.GetModPlayer<BarrierPlayer>().dye?.PostDrawEffects(spriteBatch, Player);
 		}
 
@@ -127,8 +122,10 @@ namespace StarlightRiver.Core
 						RechargeAnimationTimer += 0.05f;
 				}
 			}
-			else 
+			else
+			{
 				RechargeAnimationTimer = 0;
+			}
 
 			if (MaxBarrier > 0)
 				TimeSinceLastHit++;
@@ -186,17 +183,17 @@ namespace StarlightRiver.Core
 
 		public override void clientClone(ModPlayer clientClone)
 		{
-			BarrierPlayer clone = clientClone as BarrierPlayer;
+			var clone = clientClone as BarrierPlayer;
 			// Here we would make a backup clone of values that are only correct on the local Players Player instance.
 			clone.barrierDyeItem = barrierDyeItem;
 		}
 
 		public override void SendClientChanges(ModPlayer clientPlayer)
-        {
-			BarrierPlayer clone = clientPlayer as BarrierPlayer;
+		{
+			var clone = clientPlayer as BarrierPlayer;
 			if (sendUpdatePacket || clone?.barrierDyeItem?.type != barrierDyeItem?.type)
-            {
-				ShieldPacket packet = new ShieldPacket(this);
+			{
+				var packet = new ShieldPacket(this);
 				packet.Send(-1, Player.whoAmI, false);
 			}
 		}
@@ -233,7 +230,7 @@ namespace StarlightRiver.Core
 
 			if (dye is null)
 			{
-				Item Item = new Item();
+				var Item = new Item();
 				Item.SetDefaults(ModContent.ItemType<BaseBarrierDye>());
 				barrierDyeItem = Item;
 			}
@@ -263,14 +260,14 @@ namespace StarlightRiver.Core
 			BarrierPlayer Player = Main.player[whoAmI].GetModPlayer<BarrierPlayer>();
 
 			Player.Barrier = shield;
-			
+
 			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
-            {
-				Item Item = new Item();
+			{
+				var Item = new Item();
 				Item.SetDefaults(dyeType);
 				Player.barrierDyeItem = Item;
 				Player.RechargeAnimationTimer = 0;
-            }
+			}
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server)
 			{
@@ -279,5 +276,4 @@ namespace StarlightRiver.Core
 			}
 		}
 	}
-
 }

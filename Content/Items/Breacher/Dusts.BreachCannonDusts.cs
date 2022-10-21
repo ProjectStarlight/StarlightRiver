@@ -2,20 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
 using Terraria;
-using Terraria.Enums;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -30,13 +17,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			int a = 1; //nessecary for data setting reasons I think?
 		}
 		public override bool Update(Dust dust)
-        {
+		{
 			dust.scale *= 0.85f;
 			return base.Update(dust);
-        }
+		}
 	}
 	class BreachImpactSpark : Dusts.BuzzSpark
-    {
+	{
 		public override void OnSpawn(Dust dust)
 		{
 			dust.fadeIn = 0;

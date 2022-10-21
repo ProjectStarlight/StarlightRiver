@@ -1,9 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 {
@@ -17,7 +12,10 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 			this.parent = parent;
 		}
 
-		protected int Clamp(float input) => (int)MathHelper.Clamp(input, 0, 5);
+		protected int Clamp(float input)
+		{
+			return (int)MathHelper.Clamp(input, 0, 5);
+		}
 
 		public virtual void SetupBoard()
 		{

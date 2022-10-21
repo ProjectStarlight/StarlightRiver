@@ -1,14 +1,14 @@
-﻿using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
-    public class PerfectlyGenericArtifactItem : ModItem
-    {
-        public override string Texture => AssetDirectory.Archaeology + "PerfectlyGenericArtifact";
+	public class PerfectlyGenericArtifactItem : ModItem
+	{
+		public override string Texture => AssetDirectory.Archaeology + "PerfectlyGenericArtifact";
 
 		public override void SetStaticDefaults()
 		{
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		}
 
 		public override void Update(Player player, ref int buffIndex)
-		{ 
+		{
 			player.buffTime[buffIndex] = 18000;
 
 			int projType = ModContent.ProjectileType<PerfectlyGenericPet>();
@@ -75,12 +75,12 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		}
 
 		public override void SetDefaults()
-        {
-            Projectile.CloneDefaults(ProjectileID.ZephyrFish); // Copy the stats of the Zephyr Fish
+		{
+			Projectile.CloneDefaults(ProjectileID.ZephyrFish); // Copy the stats of the Zephyr Fish
 			AIType = ProjectileID.ZephyrFish;
-        }
+		}
 
-        public override bool PreAI()
+		public override bool PreAI()
 		{
 			Player player = Main.player[Projectile.owner];
 			player.zephyrfish = false; // Relic from aiType

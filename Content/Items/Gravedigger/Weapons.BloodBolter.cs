@@ -1,20 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
+using System;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -46,12 +39,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.shootSpeed = 12f;
 			Item.autoReuse = true;
 			Item.noUseGraphic = true;
-            Item.useAmmo = AmmoID.Arrow;
+			Item.useAmmo = AmmoID.Arrow;
 			Item.UseSound = SoundID.Item5;
-        }
+		}
 
-        public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
 			Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<BloodBolterHeldProj>(), 0, 0, player.whoAmI, velocity.ToRotation());
 
 			if (type == ProjectileID.WoodenArrowFriendly)
@@ -60,9 +53,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				type = ModContent.ProjectileType<BloodBolt>();
 			}
 
-			Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback,player.whoAmI);
+			Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
 			return false;
-        }
+		}
 
 		public override void AddRecipes()
 		{
@@ -130,9 +123,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
-			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+			var frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 
-			Vector2 origin = new Vector2(10, frameHeight * 0.5f);
+			var origin = new Vector2(10, frameHeight * 0.5f);
 			float rotation = Projectile.rotation;
 			SpriteEffects effects = SpriteEffects.None;
 
@@ -166,20 +159,20 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.penetrate = 1;
 			Projectile.timeLeft = 60;
 			Projectile.tileCollide = true;
-            Projectile.ignoreWater = false;
-        }
+			Projectile.ignoreWater = false;
+		}
 
-        public override void AI()
-        {
+		public override void AI()
+		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
 			if (!Projectile.friendly)
-				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2, 2) + (Projectile.velocity / 2), 0, default, 1.25f);
-        }
+				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2, 2) + Projectile.velocity / 2, 0, default, 1.25f);
+		}
 
-        public override bool PreDraw(ref Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
-			var spriteBatch = Main.spriteBatch;
+			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
@@ -197,16 +190,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			goreDestroyerNPC.destroyGore = true;
 		}
 
-        public override void Kill(int timeLeft)
-        {
+		public override void Kill(int timeLeft)
+		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
-            for (int i = 0; i < 12; i++)
-            {
+			for (int i = 0; i < 12; i++)
+			{
 				Vector2 dir = Vector2.Normalize(-Projectile.velocity).RotatedByRandom(0.8f);
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8, 8), DustID.Blood, dir * Main.rand.NextFloat(7), 0, default, 1.25f);
-            }
-        }
-    }
+			}
+		}
+	}
 
 	internal class BloodBolterExplosion : ModProjectile
 	{
@@ -214,9 +207,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public float radiusMult = 1f;
 
-		public float Progress => 1 - (Projectile.timeLeft / 10f);
+		public float Progress => 1 - Projectile.timeLeft / 10f;
 
-		private float Radius => 150 * (float)(Math.Sqrt(Progress)) * radiusMult;
+		private float Radius => 150 * (float)Math.Sqrt(Progress) * radiusMult;
 
 		public override void SetDefaults()
 		{
@@ -234,7 +227,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			DisplayName.SetDefault("Blood Bolter");
 		}
 
-		public override bool PreDraw(ref Color lightColor) => false;
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
@@ -276,7 +272,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				deathCounter++;
 
-				if (!bolt.active || ((npc.collideX || npc.collideY) && deathCounter > 2))
+				if (!bolt.active || (npc.collideX || npc.collideY) && deathCounter > 2)
 				{
 					bolt.active = false;
 					npc.Kill();
@@ -312,15 +308,17 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					bolt.friendly = false;
 					bolt.penetrate++;
 				}
+
 				return false;
 			}
+
 			return base.CheckDead(npc);
 		}
 
 		private static void SpawnBlood(NPC npc, Projectile projectile)
 		{
 			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			Core.Systems.CameraSystem.Shake += 8;
+			CameraSystem.Shake += 8;
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
 
 			for (int i = 0; i < 16; i++)

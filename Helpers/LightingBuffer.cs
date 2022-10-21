@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Configs;
+using StarlightRiver.Content.Configs;
 using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
@@ -9,291 +9,294 @@ using static StarlightRiver.Helpers.DrawHelper;
 namespace StarlightRiver.Helpers
 {
 	public class LightingBuffer
-    {
-        const int PADDING = 20;
-        static float factor => Main.screenHeight / (float)Main.screenWidth;
+	{
+		const int PADDING = 20;
+		static float factor => Main.screenHeight / (float)Main.screenWidth;
 
-        public static bool GettingColors = false;
+		public static bool GettingColors = false;
 
-        public VertexBuffer lightingQuadBuffer;
+		public VertexBuffer lightingQuadBuffer;
 
-        public RenderTarget2D ScreenLightingTexture;
-        public RenderTarget2D TileLightingTexture;
-        public RenderTarget2D TileLightingTempTexture;
-        public Vector2 TileLightingCenter;
+		public RenderTarget2D ScreenLightingTexture;
+		public RenderTarget2D TileLightingTexture;
+		public RenderTarget2D TileLightingTempTexture;
+		public Vector2 TileLightingCenter;
 
-        private int refreshTimer;
+		private int refreshTimer;
 
-        static int XMax => Main.screenWidth / 16 + PADDING * 2;
-        static int YMax => (int)(Main.screenHeight / 16 + (PADDING * 2 * factor));
+		static int XMax => Main.screenWidth / 16 + PADDING * 2;
+		static int YMax => (int)(Main.screenHeight / 16 + PADDING * 2 * factor);
 
-        private GraphicsConfig config => ModContent.GetInstance<GraphicsConfig>();
+		private GraphicsConfig config => ModContent.GetInstance<GraphicsConfig>();
 
-        private void SetupLightingQuadBuffer()
-        {
-            lightingQuadBuffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+		private void SetupLightingQuadBuffer()
+		{
+			lightingQuadBuffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
 
-            VertexPositionColorTexture[] verticies = new VertexPositionColorTexture[6];
+			var verticies = new VertexPositionColorTexture[6];
 
-            verticies[0] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
-            verticies[1] = new VertexPositionColorTexture(new Vector3(1, -1, 0), Color.White, new Vector2(1, 1));
-            verticies[2] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
+			verticies[0] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
+			verticies[1] = new VertexPositionColorTexture(new Vector3(1, -1, 0), Color.White, new Vector2(1, 1));
+			verticies[2] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
 
-            verticies[3] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
-            verticies[4] = new VertexPositionColorTexture(new Vector3(-1, 1, 0), Color.White, new Vector2(0, 0));
-            verticies[5] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
+			verticies[3] = new VertexPositionColorTexture(new Vector3(-1, -1, 0), Color.White, new Vector2(0, 1));
+			verticies[4] = new VertexPositionColorTexture(new Vector3(-1, 1, 0), Color.White, new Vector2(0, 0));
+			verticies[5] = new VertexPositionColorTexture(new Vector3(1, 1, 0), Color.White, new Vector2(1, 0));
 
-            lightingQuadBuffer.SetData(verticies);
-        }
+			lightingQuadBuffer.SetData(verticies);
+		}
 
-        public LightingBuffer()
-        {
-            ResizeBuffers(Main.screenWidth, Main.screenHeight);
-        }
+		public LightingBuffer()
+		{
+			ResizeBuffers(Main.screenWidth, Main.screenHeight);
+		}
 
-        public void ResizeBuffers(int width, int height)
-        {
-            Main.QueueMainThreadAction(() =>
-            {
-                float factor = height / (float)width;
-                ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + (PADDING * 2 * factor)), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+		public void ResizeBuffers(int width, int height)
+		{
+			Main.QueueMainThreadAction(() =>
+			{
+				float factor = height / (float)width;
+				ScreenLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+				TileLightingTexture = new RenderTarget2D(Main.instance.GraphicsDevice, width / 16 + PADDING * 2, (int)(height / 16 + PADDING * 2 * factor), false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-                if (TileLightingTempTexture != null)
-                    TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-            });
-        }
+				if (TileLightingTempTexture != null)
+					TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+			});
+		}
 
-        private void PopulateTileTexture(Vector2 start)
-        {
-            GettingColors = true;
-            Color[] tileLightingBuffer = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
+		private void PopulateTileTexture(Vector2 start)
+		{
+			GettingColors = true;
+			var tileLightingBuffer = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
 
-            for (int x = 0; x < TileLightingTexture.Width; x++)
-            {
-                for (int y = 0; y < TileLightingTexture.Height; y++)
-                {
-                    int index = y * TileLightingTexture.Width + x;
-                    if (tileLightingBuffer.Length > index) 
-                        tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
-                }
-            }
-            TileLightingTexture.SetData(tileLightingBuffer);
-            TileLightingCenter = start;
-            GettingColors = false;
-        }
+			for (int x = 0; x < TileLightingTexture.Width; x++)
+			{
+				for (int y = 0; y < TileLightingTexture.Height; y++)
+				{
+					int index = y * TileLightingTexture.Width + x;
+					if (tileLightingBuffer.Length > index)
+						tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+				}
+			}
 
-        private void PopulateTileTextureScrolling(Vector2 start, int yToStart, int yToEnd)
-        {
-            GettingColors = true;
-            Color[] tileLightingBuffer = new Color[TileLightingTempTexture.Width * (yToEnd - yToStart)];
+			TileLightingTexture.SetData(tileLightingBuffer);
+			TileLightingCenter = start;
+			GettingColors = false;
+		}
 
-            for (int x = 0; x < TileLightingTempTexture.Width; x++)
-                for (int y = yToStart; y < yToEnd; y++)
-                {
-                    int index = (y - yToStart) * TileLightingTempTexture.Width + x;
-                    if (tileLightingBuffer.Length > index) tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
-                }
+		private void PopulateTileTextureScrolling(Vector2 start, int yToStart, int yToEnd)
+		{
+			GettingColors = true;
+			var tileLightingBuffer = new Color[TileLightingTempTexture.Width * (yToEnd - yToStart)];
 
-            if (tileLightingBuffer is null || tileLightingBuffer.Length == 0)
-                return;
+			for (int x = 0; x < TileLightingTempTexture.Width; x++)
+			{
+				for (int y = yToStart; y < yToEnd; y++)
+				{
+					int index = (y - yToStart) * TileLightingTempTexture.Width + x;
+					if (tileLightingBuffer.Length > index)
+						tileLightingBuffer[index] = Lighting.GetColor((int)start.X / 16 + x, (int)start.Y / 16 + y);
+				}
+			}
 
-            TileLightingTempTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTempTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTempTexture.Width * (yToEnd - yToStart));
+			if (tileLightingBuffer is null || tileLightingBuffer.Length == 0)
+				return;
 
-            if(refreshTimer % config.LightingPollRate == 0)
-                TileLightingCenter = start;
+			TileLightingTempTexture.SetData(0, new Rectangle(0, yToStart, TileLightingTempTexture.Width, yToEnd - yToStart), tileLightingBuffer, 0, TileLightingTempTexture.Width * (yToEnd - yToStart));
 
-            GettingColors = false;
-        }
+			if (refreshTimer % config.LightingPollRate == 0)
+				TileLightingCenter = start;
 
-        public void PopulateScreenTexture()
-        {
-            if (TileLightingTexture is null) 
-                return;
+			GettingColors = false;
+		}
 
-            GraphicsDevice graphics = Main.instance.GraphicsDevice;
+		public void PopulateScreenTexture()
+		{
+			if (TileLightingTexture is null)
+				return;
 
-            graphics.SetRenderTarget(ScreenLightingTexture);
+			GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
-            graphics.Clear(Color.Black);
-            RenderLightingQuad();
+			graphics.SetRenderTarget(ScreenLightingTexture);
 
-            graphics.SetRenderTarget(null);
-        }
+			graphics.Clear(Color.Black);
+			RenderLightingQuad();
 
-        private void RenderLightingQuad()
-        {
-            if (Main.dedServ) 
-                return;
+			graphics.SetRenderTarget(null);
+		}
 
-            if (lightingQuadBuffer == null)
-                SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
+		private void RenderLightingQuad()
+		{
+			if (Main.dedServ)
+				return;
 
-            Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
+			if (lightingQuadBuffer == null)
+				SetupLightingQuadBuffer(); //a bit hacky, but if we do this on load we can end up with black textures for full screen users, and full screen does not fire set display mode events
 
-            if (upscaleEffect is null)
-                return;
+			Effect upscaleEffect = Filters.Scene["LightShader"].GetShader().Shader;
 
-            GraphicsDevice graphics = Main.instance.GraphicsDevice;
-            
-            graphics.SetVertexBuffer(lightingQuadBuffer);
-            graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
+			if (upscaleEffect is null)
+				return;
 
-            Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
-            
-            upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-            upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
-            upscaleEffect.Parameters["offset"].SetValue(offset);
-            upscaleEffect.Parameters["sampleTexture"].SetValue(TileLightingTexture);
+			GraphicsDevice graphics = Main.instance.GraphicsDevice;
 
-            foreach (EffectPass pass in upscaleEffect.CurrentTechnique.Passes)
-            {
-                pass.Apply();
-                graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-            }
-        }
+			graphics.SetVertexBuffer(lightingQuadBuffer);
+			graphics.RasterizerState = new RasterizerState() { CullMode = CullMode.None };
 
-        public void DebugDraw()
-        {
-            if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
-            {
-                refreshTimer++;
+			Vector2 offset = (Main.screenPosition - TileLightingCenter) / new Vector2(Main.screenWidth, Main.screenHeight);
 
-                if (config.ScrollingLightingPoll)
-                {
-                    if (TileLightingTempTexture is null)
-                        TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+			upscaleEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			upscaleEffect.Parameters["fullBufferSize"].SetValue(TileLightingTexture.Size() * 16);
+			upscaleEffect.Parameters["offset"].SetValue(offset);
+			upscaleEffect.Parameters["sampleTexture"].SetValue(TileLightingTexture);
 
-                    int progress = refreshTimer % config.LightingPollRate;
-                    PopulateTileTextureScrolling((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
+			foreach (EffectPass pass in upscaleEffect.CurrentTechnique.Passes)
+			{
+				pass.Apply();
+				graphics.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+			}
+		}
 
-                    if (refreshTimer % config.LightingPollRate == 0)
-                    {
-                        Color[] colorData = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
-                        TileLightingTempTexture.GetData(colorData);
-                        TileLightingTexture.SetData(colorData);
-                    }
-                }
-                else
-                {
-                    //Trust me this check is somehow needed even tho the config shouldn't allow this to happen :p
-                    if (config.LightingPollRate != 0)
-                    {
-                        if (refreshTimer % config.LightingPollRate == 0)
-                            PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
-                    }
-                }
+		public void DebugDraw()
+		{
+			if (ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
+			{
+				refreshTimer++;
 
-                PopulateScreenTexture();
-            }
-        }
-    }
+				if (config.ScrollingLightingPoll)
+				{
+					if (TileLightingTempTexture is null)
+						TileLightingTempTexture = new RenderTarget2D(Main.instance.GraphicsDevice, XMax, YMax, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
-    public static class LightingBufferRenderer
-    {
-        private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
+					int progress = refreshTimer % config.LightingPollRate;
+					PopulateTileTextureScrolling((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16, (int)(progress / (float)config.LightingPollRate * TileLightingTexture.Height), (int)((progress + 1) / (float)config.LightingPollRate * TileLightingTexture.Height));
 
-        private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
-        private static readonly VertexPositionColorTexture[] verticiesColor = new VertexPositionColorTexture[12];
+					if (refreshTimer % config.LightingPollRate == 0)
+					{
+						var colorData = new Color[TileLightingTexture.Width * TileLightingTexture.Height];
+						TileLightingTempTexture.GetData(colorData);
+						TileLightingTexture.SetData(colorData);
+					}
+				}
+				else
+				{
+					//Trust me this check is somehow needed even tho the config shouldn't allow this to happen :p
+					if (config.LightingPollRate != 0)
+					{
+						if (refreshTimer % config.LightingPollRate == 0)
+							PopulateTileTexture((Main.screenPosition / 16).ToPoint16().ToVector2() * 16 - Vector2.One * PADDING * 16);
+					}
+				}
 
-        private static readonly VertexBuffer buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
-        private static readonly VertexBuffer bufferColor = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 12, BufferUsage.WriteOnly);
+				PopulateScreenTexture();
+			}
+		}
+	}
 
-        public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default) //Scale is important here instead of just modifying the pos rectangle to change where the texture samples from the lighting buffer, otherwise it would sample from the base points
-        {
-            //TODO: Include an origin that the point scales from
-            if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
-                return;
+	public static class LightingBufferRenderer
+	{
+		private static readonly Effect ApplyEffect = Main.dedServ ? null : Filters.Scene["LightApply"].GetShader().Shader;
 
-            if (color == default)
-                color = Color.White;
+		private static readonly VertexPositionTexture[] verticies = new VertexPositionTexture[6];
+		private static readonly VertexPositionColorTexture[] verticiesColor = new VertexPositionColorTexture[12];
 
-            if (scale == default)
-                scale = Vector2.One;
+		private static readonly VertexBuffer buffer = new(Main.instance.GraphicsDevice, typeof(VertexPositionTexture), 6, BufferUsage.WriteOnly);
+		private static readonly VertexBuffer bufferColor = new(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 12, BufferUsage.WriteOnly);
 
-            Matrix zoom =  //Main.GameViewMatrix.ZoomMatrix;
-            new Matrix
-            (
-                Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-                0, Main.GameViewMatrix.Zoom.X, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-            );
+		public static void DrawWithLighting(Rectangle pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default) //Scale is important here instead of just modifying the pos rectangle to change where the texture samples from the lighting buffer, otherwise it would sample from the base points
+		{
+			//TODO: Include an origin that the point scales from
+			if (Main.dedServ || !Helper.OnScreen(new Rectangle(pos.X, pos.Y, tex.Width, tex.Height)))
+				return;
 
+			if (color == default)
+				color = Color.White;
 
-            if (!ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
-            {
-                Rectangle scaledPos = new Rectangle((int)(pos.X * scale.X), (int)(pos.Y * scale.Y), (int)(pos.Width * scale.X), (int)(pos.Height * scale.Y));
-                Rectangle checkZone = Rectangle.Intersect(scaledPos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
-                Color topLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
-                Color topRightColor = Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
-                Color bottomLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color);
-                Color bottomRightColor = Lighting.GetColor(((checkZone.X + checkZone.Width) + (int)Main.screenPosition.X) / 16, ((checkZone.Y + checkZone.Height) + (int)Main.screenPosition.Y) / 16, color);
-                Color centerColor = Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color);
+			if (scale == default)
+				scale = Vector2.One;
 
-                verticiesColor[0] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0),
-                    topLeftColor, source.TopLeft() / tex.Size());
-                verticiesColor[1] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0),
-                    topRightColor, source.TopRight() / tex.Size());
-                verticiesColor[2] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
-                    centerColor, source.Center() / tex.Size());
+			var zoom =  //Main.GameViewMatrix.ZoomMatrix;
+			new Matrix
+			(
+				Main.GameViewMatrix.Zoom.X, 0, 0, 0,
+				0, Main.GameViewMatrix.Zoom.X, 0, 0,
+				0, 0, 1, 0,
+				0, 0, 0, 1
+			);
 
-                verticiesColor[3] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0),
-                   topRightColor, source.TopRight() / tex.Size());
-                verticiesColor[4] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0),
-                    bottomRightColor, source.BottomRight() / tex.Size());
-                verticiesColor[5] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
-                    centerColor, source.Center() / tex.Size());
+			if (!ModContent.GetInstance<GraphicsConfig>().HighQualityLighting)
+			{
+				var scaledPos = new Rectangle((int)(pos.X * scale.X), (int)(pos.Y * scale.Y), (int)(pos.Width * scale.X), (int)(pos.Height * scale.Y));
+				var checkZone = Rectangle.Intersect(scaledPos, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight));
+				Color topLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
+				Color topRightColor = Lighting.GetColor((checkZone.X + checkZone.Width + (int)Main.screenPosition.X) / 16, (checkZone.Y + (int)Main.screenPosition.Y) / 16, color);
+				Color bottomLeftColor = Lighting.GetColor((checkZone.X + (int)Main.screenPosition.X) / 16, (checkZone.Y + checkZone.Height + (int)Main.screenPosition.Y) / 16, color);
+				Color bottomRightColor = Lighting.GetColor((checkZone.X + checkZone.Width + (int)Main.screenPosition.X) / 16, (checkZone.Y + checkZone.Height + (int)Main.screenPosition.Y) / 16, color);
+				Color centerColor = Lighting.GetColor((checkZone.Center.X + (int)Main.screenPosition.X) / 16, (checkZone.Center.Y + (int)Main.screenPosition.Y) / 16, color);
 
-                verticiesColor[6] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
-                    centerColor, source.Center() / tex.Size());
-                verticiesColor[7] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0),
-                    bottomRightColor, source.BottomRight() / tex.Size());
-                verticiesColor[8] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0),
-                    bottomLeftColor, source.BottomLeft() / tex.Size());
+				verticiesColor[0] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0),
+					topLeftColor, source.TopLeft() / tex.Size());
+				verticiesColor[1] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0),
+					topRightColor, source.TopRight() / tex.Size());
+				verticiesColor[2] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
+					centerColor, source.Center() / tex.Size());
 
-                verticiesColor[9] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0),
-                    topLeftColor, source.TopLeft() / tex.Size());
-                verticiesColor[10] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
-                    centerColor, source.Center() / tex.Size());
-                verticiesColor[11] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0),
-                    bottomLeftColor, source.BottomLeft() / tex.Size());
+				verticiesColor[3] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0),
+				   topRightColor, source.TopRight() / tex.Size());
+				verticiesColor[4] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0),
+					bottomRightColor, source.BottomRight() / tex.Size());
+				verticiesColor[5] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
+					centerColor, source.Center() / tex.Size());
 
-                basicEffect.TextureEnabled = true;
-                basicEffect.VertexColorEnabled = true;
-                basicEffect.Texture = tex;
-                basicEffect.View = zoom;
-                basicEffect.Alpha = color.A / 255f;//you could also mult every color (after getLighting) by this
+				verticiesColor[6] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
+					centerColor, source.Center() / tex.Size());
+				verticiesColor[7] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0),
+					bottomRightColor, source.BottomRight() / tex.Size());
+				verticiesColor[8] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0),
+					bottomLeftColor, source.BottomLeft() / tex.Size());
 
-                bufferColor.SetData(verticiesColor);
-                Main.instance.GraphicsDevice.SetVertexBuffer(bufferColor);
+				verticiesColor[9] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0),
+					topLeftColor, source.TopLeft() / tex.Size());
+				verticiesColor[10] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.Center() * scale), 0),
+					centerColor, source.Center() / tex.Size());
+				verticiesColor[11] = new VertexPositionColorTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0),
+					bottomLeftColor, source.BottomLeft() / tex.Size());
 
-                foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 4);
-                }
-            }
-            else
-            {
-                ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
-                ApplyEffect.Parameters["texSize"].SetValue(tex.Size() * scale);
-                ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
-                ApplyEffect.Parameters["zoom"].SetValue(zoom);
-                ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
+				basicEffect.TextureEnabled = true;
+				basicEffect.VertexColorEnabled = true;
+				basicEffect.Texture = tex;
+				basicEffect.View = zoom;
+				basicEffect.Alpha = color.A / 255f;//you could also mult every color (after getLighting) by this
 
-                ApplyEffect.Parameters["targetTexture"].SetValue(tex);
-                ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+				bufferColor.SetData(verticiesColor);
+				Main.instance.GraphicsDevice.SetVertexBuffer(bufferColor);
 
-                verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0), source.TopLeft() / tex.Size());
-                verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
-                verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
+				foreach (EffectPass pass in basicEffect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 4);
+				}
+			}
+			else
+			{
+				ApplyEffect.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+				ApplyEffect.Parameters["texSize"].SetValue(tex.Size() * scale);
+				ApplyEffect.Parameters["offset"].SetValue((pos.TopLeft() - source.TopLeft()) / new Vector2(Main.screenWidth, Main.screenHeight));
+				ApplyEffect.Parameters["zoom"].SetValue(zoom);
+				ApplyEffect.Parameters["drawColor"].SetValue(color.ToVector4());
 
-                verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
-                verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0), source.BottomRight() / tex.Size());
-                verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
+				ApplyEffect.Parameters["targetTexture"].SetValue(tex);
+				ApplyEffect.Parameters["sampleTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
 
-                /*verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
+				verticies[0] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopLeft() * scale), 0), source.TopLeft() / tex.Size());
+				verticies[1] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
+				verticies[2] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
+
+				verticies[3] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.TopRight() * scale), 0), source.TopRight() / tex.Size());
+				verticies[4] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomRight() * scale), 0), source.BottomRight() / tex.Size());
+				verticies[5] = new VertexPositionTexture(new Vector3(ConvertVec2(pos.BottomLeft() * scale), 0), source.BottomLeft() / tex.Size());
+
+				/*verticies[0] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size());
                   verticies[1] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y), 0), source.TopLeft() / tex.Size() + Vector2.UnitX * source.Width / tex.Width);
                   verticies[2] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);
 
@@ -301,26 +304,30 @@ namespace StarlightRiver.Helpers
                   verticies[4] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X + source.Width), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.BottomRight() / tex.Size());
                   verticies[5] = new VertexPositionTexture(new Vector3(DrawHelper.ConvertX(pos.X + source.X), DrawHelper.ConvertY(pos.Y + source.Y + source.Height), 0), source.TopLeft() / tex.Size() + Vector2.UnitY * source.Height / tex.Height);*/
 
-                buffer.SetData(verticies);
+				buffer.SetData(verticies);
 
-                Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
+				Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
 
-                Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+				Main.instance.GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
-                foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
-                    Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
-                }
-            }
+				foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+				{
+					pass.Apply();
+					Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+				}
+			}
 
-            Main.instance.GraphicsDevice.SetVertexBuffer(null);
-        }
+			Main.instance.GraphicsDevice.SetVertexBuffer(null);
+		}
 
-        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default) =>
-            DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color, scale);
+		public static void DrawWithLighting(Vector2 pos, Texture2D tex, Rectangle source, Color color = default, Vector2 scale = default)
+		{
+			DrawWithLighting(new Rectangle((int)pos.X, (int)pos.Y, source.Width, source.Height), tex, source, color, scale);
+		}
 
-        public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default, Vector2 scale = default) =>
-            DrawWithLighting(pos, tex, tex.Frame(), color, scale);
-    }
+		public static void DrawWithLighting(Vector2 pos, Texture2D tex, Color color = default, Vector2 scale = default)
+		{
+			DrawWithLighting(pos, tex, tex.Frame(), color, scale);
+		}
+	}
 }

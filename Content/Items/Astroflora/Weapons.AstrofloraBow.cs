@@ -5,371 +5,371 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
-using Terraria.DataStructures;
-using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
 	public class AstrofloraBow : ModItem
-    {
-        public override string Texture => AssetDirectory.Astroflora + "AstrofloraBow";
+	{
+		public override string Texture => AssetDirectory.Astroflora + "AstrofloraBow";
 
-        private List<NPC> locks;
+		private List<NPC> locks;
 
-        private const int maxLocks = 3;
+		private const int maxLocks = 3;
 
-        private const string SoundPath = $"{nameof(StarlightRiver)}/Sounds/Custom/Astroflora/";
+		private const string SoundPath = $"{nameof(StarlightRiver)}/Sounds/Custom/Astroflora/";
 
-        public bool CursorShouldBeRed { get; private set; }
+		public bool CursorShouldBeRed { get; private set; }
 
-        private int counter;
+		private int counter;
 
-        public override void SetStaticDefaults()
-        {
-            Tooltip.SetDefault("TBA");
-        }
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("TBA");
+		}
 
-        public override void SetDefaults()
-        {
-            // Balance requiered on all stats (I have no idea what point in progression this is).
-            Item.damage = 200;
-            Item.DamageType = DamageClass.Ranged;
+		public override void SetDefaults()
+		{
+			// Balance requiered on all stats (I have no idea what point in progression this is).
+			Item.damage = 200;
+			Item.DamageType = DamageClass.Ranged;
 
-            Item.useTime = 30;
-            Item.useAnimation = 30;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
 
-            Item.shootSpeed = 1;
-            Item.shoot = ProjectileID.PurificationPowder; // Dummy since Shoot hook changes the result.
-            Item.useAmmo = AmmoID.Arrow;
+			Item.shootSpeed = 1;
+			Item.shoot = ProjectileID.PurificationPowder; // Dummy since Shoot hook changes the result.
+			Item.useAmmo = AmmoID.Arrow;
 
-            Item.noMelee = true;
+			Item.noMelee = true;
 
-            Item.useStyle = ItemUseStyleID.Shoot;
-            Item.UseSound = SoundID.Item5;
+			Item.useStyle = ItemUseStyleID.Shoot;
+			Item.UseSound = SoundID.Item5;
 
-            Item.rare = ItemRarityID.Blue;
-            Item.value = Item.sellPrice(0, 1, 0, 0);
-        }
+			Item.rare = ItemRarityID.Blue;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
+		}
 
+		public override void HoldItem(Player Player)
+		{
+			if (CursorShouldBeRed && --counter <= 0)
+			{
+				counter = 0;
+				CursorShouldBeRed = false;
+			}
 
+			locks ??= new List<NPC>();
 
-        public override void HoldItem(Player Player)
-        {
-            if (CursorShouldBeRed && --counter <= 0)
-            {
-                counter = 0;
-                CursorShouldBeRed = false;
-            }
+			for (int i = 0; i < Main.maxNPCs; i++)
+			{
+				NPC NPC = Main.npc[i];
 
-            locks = locks ?? new List<NPC>();
+				if (locks.Contains(NPC) && (!NPC.CanBeChasedBy() || NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked))
+				{
+					locks.Remove(NPC);
+				}
 
-            for (int i = 0; i < Main.maxNPCs; i++)
-            {
-                NPC NPC = Main.npc[i];
+				Rectangle generousHitbox = NPC.Hitbox;
+				generousHitbox.Inflate(NPC.Hitbox.Width / 3, NPC.Hitbox.Height / 3);
 
-                if (locks.Contains(NPC) && (!NPC.CanBeChasedBy() || (NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked)))
-                {
-                    locks.Remove(NPC);
-                }
+				if (NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked && locks.Count < maxLocks && !locks.Contains(NPC) && generousHitbox.Contains(Main.MouseWorld.ToPoint()))
+				{
+					Say("Target Locked!", Player);
 
-                Rectangle generousHitbox = NPC.Hitbox;
-                generousHitbox.Inflate(NPC.Hitbox.Width / 3, NPC.Hitbox.Height / 3);
+					locks.Add(NPC);
 
-                if (NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked && locks.Count < maxLocks && !locks.Contains(NPC) && generousHitbox.Contains(Main.MouseWorld.ToPoint()))
-                {
-                    Say("Target Locked!", Player);
+					NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = true;
 
-                    locks.Add(NPC);
+					// TODO: Play some kind of lock-on sound effect?
+				}
+			}
+		}
 
-                    NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = true;
+		private void Say(string text, Player Player)
+		{
+			// Main.fontCombatText[0] is just the variant used when dramatic == false.
+			Vector2 textSize = FontAssets.CombatText[0].Value.MeasureString(text);
 
-                    // TODO: Play some kind of lock-on sound effect?
-                }
-            }
-        }
+			var textRectangle = new Rectangle((int)Player.MountedCenter.X, (int)(Player.MountedCenter.Y + Player.height), (int)textSize.X, (int)textSize.Y);
 
-        private void Say(string text, Player Player)
-        {
-            // Main.fontCombatText[0] is just the variant used when dramatic == false.
-            Vector2 textSize = FontAssets.CombatText[0].Value.MeasureString(text);
+			CombatText.NewText(textRectangle, Main.cursorColor, text);
+		}
 
-            Rectangle textRectangle = new Rectangle((int)Player.MountedCenter.X, (int)(Player.MountedCenter.Y + Player.height), (int)textSize.X, (int)textSize.Y);
+		public override bool CanUseItem(Player Player)
+		{
+			locks ??= new List<NPC>();
 
-            CombatText.NewText(textRectangle, Main.cursorColor, text);
-        }
+			if (locks.Count > 0)
+			{
+				return true;
+			}
+			else
+			{
+				CameraSystem.Shake = 5;
 
-        public override bool CanUseItem(Player Player)
-        {
-            locks = locks ?? new List<NPC>();
+				SoundEngine.PlaySound(new SoundStyle($"{SoundPath}Failure"), Player.Center);
 
-            if (locks.Count > 0)
-            {
-                return true;
-            }
-            else
-            {
-                Core.Systems.CameraSystem.Shake = 5;
+				Say("No Locks!", Player);
 
-                SoundEngine.PlaySound(new SoundStyle($"{SoundPath}Failure"), Player.Center);
+				CursorShouldBeRed = true;
+				counter = 30;
 
-                Say("No Locks!", Player);
+				return false;
+			}
+		}
 
-                CursorShouldBeRed = true;
-                counter = 30;
+		public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			for (int i = 0; i < maxLocks; i++)
+			{
+				int index;
 
-                return false;
-            }
-        }
+				if (locks.Count == 0)
+				{
+					index = -1;
+				}
+				else
+				{
+					// Dictates which lock the Projectile will go for. If three locks, it's one for each, else any excess Projectiles target a random lock.
+					index = i > locks.Count - 1 ? Main.rand.Next(locks).whoAmI : locks[i].whoAmI;
+				}
 
-        public override bool Shoot(Player Player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-        {
-            for (int i = 0; i < maxLocks; i++)
-            {
-                int index;
+				Vector2 shotOffset = Vector2.Normalize(velocity) * 32;
 
-                if (locks.Count == 0)
-                {
-                    index = -1;
-                }
-                else
-                {
-                    // Dictates which lock the Projectile will go for. If three locks, it's one for each, else any excess Projectiles target a random lock.
-                    index = i > locks.Count - 1 ? Main.rand.Next(locks).whoAmI : locks[i].whoAmI;
-                }
+				Projectile.NewProjectile(source, position + shotOffset, velocity.RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockback, Player.whoAmI, index);
+			}
 
-                Vector2 shotOffset = Vector2.Normalize(velocity) * 32;
+			locks.Clear();
 
-                Projectile.NewProjectile(source, position + shotOffset, velocity.RotatedBy((i - 1) * (MathHelper.PiOver4 / 2)) * 24, ModContent.ProjectileType<AstrofloraBolt>(), damage, knockback, Player.whoAmI, index);
-            }
+			return false;
+		}
+	}
 
-            locks.Clear();
+	public class AstrofloraBolt : ModProjectile, IDrawPrimitive
+	{
+		private const int oldPositionCacheLength = 120;
 
-            return false;
-        }
-    }
+		private const int trailMaxWidth = 8;
 
-    public class AstrofloraBolt : ModProjectile, IDrawPrimitive
-    {
-        private const int oldPositionCacheLength = 120;
+		public override string Texture => AssetDirectory.Invisible;
 
-        private const int trailMaxWidth = 8;
+		private Trail trail;
 
-        public override string Texture => AssetDirectory.Invisible;
+		private List<Vector2> cache;
 
-        private Trail trail;
+		private int TargetNPCIndex
+		{
+			get => (int)Projectile.ai[0];
+			set => Projectile.ai[0] = value;
+		}
 
-        private List<Vector2> cache;
+		private bool HitATarget
+		{
+			get => (int)Projectile.ai[1] == 1;
+			set => Projectile.ai[1] = value ? 1 : 0;
+		}
 
-        private int TargetNPCIndex
-        {
-            get => (int)Projectile.ai[0];
-            set => Projectile.ai[0] = value;
-        }
+		public override void SetStaticDefaults()
+		{
+			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
+		}
 
-        private bool HitATarget
-        {
-            get => (int)Projectile.ai[1] == 1;
-            set => Projectile.ai[1] = value ? 1 : 0;
-        }
+		public override void SetDefaults()
+		{
+			Projectile.width = 16;
+			Projectile.height = 16;
 
-        public override void SetStaticDefaults()
-        {
-            ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
-        }
+			Projectile.damage = 100;
+			Projectile.knockBack = 8;
 
-        public override void SetDefaults()
-        {
-            Projectile.width = 16;
-            Projectile.height = 16;
+			Projectile.friendly = true;
 
-            Projectile.damage = 100;
-            Projectile.knockBack = 8;
+			Projectile.timeLeft = 300;
 
-            Projectile.friendly = true;
+			Projectile.tileCollide = false;
 
-            Projectile.timeLeft = 300;
+			Projectile.penetrate = -1;
+		}
 
-            Projectile.tileCollide = false;
+		public override void AI()
+		{
+			// Sync its target.
+			Projectile.netUpdate = true;
 
-            Projectile.penetrate = -1;
-        }
+			ManageCaches();
 
-        public override void AI()
-        {
-            // Sync its target.
-            Projectile.netUpdate = true;
+			ManageTrail();
 
-            ManageCaches();
+			if (Projectile.timeLeft < 30)
+			{
+				Projectile.alpha += 8;
+			}
 
-            ManageTrail();
+			if (!HitATarget)
+			{
+				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.1f, 10);
 
-            if (Projectile.timeLeft < 30)
-            {
-                Projectile.alpha += 8;
-            }
+				if (TargetNPCIndex == -1)
+				{
+					return;
+				}
 
-            if (!HitATarget)
-            {
-                Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.1f, 10);
+				NPC target = Main.npc[TargetNPCIndex];
 
-                if (TargetNPCIndex == -1)
-                {
-                    return;
-                }
+				if (!target.CanBeChasedBy())
+				{
+					// Stop homing if the target NPC is no longer a valid target.
+					TargetNPCIndex = -1;
 
-                NPC target = Main.npc[TargetNPCIndex];
+					return;
+				}
 
-                if (!target.CanBeChasedBy())
-                {
-                    // Stop homing if the target NPC is no longer a valid target.
-                    TargetNPCIndex = -1;
+				Homing(target);
+			}
+		}
 
-                    return;
-                }
+		private void Homing(NPC target)
+		{
+			Vector2 move = target.Center - Projectile.Center;
 
-                Homing(target);
-            }
-        }
+			AdjustMagnitude(ref move);
 
-        private void Homing(NPC target)
-        {
-            Vector2 move = target.Center - Projectile.Center;
+			Projectile.velocity = (10 * Projectile.velocity + move) / 11f;
 
-            AdjustMagnitude(ref move);
+			AdjustMagnitude(ref Projectile.velocity);
+		}
 
-            Projectile.velocity = (10 * Projectile.velocity + move) / 11f;
+		private void AdjustMagnitude(ref Vector2 vector)
+		{
+			float adjustment = 24;
 
-            AdjustMagnitude(ref Projectile.velocity);
-        }
+			float magnitude = vector.Length();
 
-        private void AdjustMagnitude(ref Vector2 vector)
-        {
-            float adjustment = 24;
+			if (magnitude > adjustment)
+			{
+				vector *= adjustment / magnitude;
+			}
+		}
 
-            float magnitude = vector.Length();
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
 
-            if (magnitude > adjustment)
-            {
-                vector *= adjustment / magnitude;
-            }
-        }
+				for (int i = 0; i < oldPositionCacheLength; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
+			}
 
-        private void ManageCaches()
-        {
-            if (cache == null)
-            {
-                cache = new List<Vector2>();
+			cache.Add(Projectile.Center);
 
-                for (int i = 0; i < oldPositionCacheLength; i++)
-                {
-                    cache.Add(Projectile.Center);
-                }
-            }
+			while (cache.Count > oldPositionCacheLength)
+			{
+				cache.RemoveAt(0);
+			}
+		}
 
-            cache.Add(Projectile.Center);
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
+			{
+				// 1 = full opacity, 0 = transparent.
+				float normalisedAlpha = 1 - Projectile.alpha / 255f;
 
-            while (cache.Count > oldPositionCacheLength)
-            {
-                cache.RemoveAt(0);
-            }
-        }
+				// Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
+				return new Color(31, 250, 131) * normalisedAlpha * factor.X;
+			});
 
-        private void ManageTrail()
-        {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, oldPositionCacheLength, new TriangularTip(trailMaxWidth * 4), factor => factor * trailMaxWidth, factor =>
-            {
-                // 1 = full opacity, 0 = transparent.
-                float normalisedAlpha = 1 - (Projectile.alpha / 255f);
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
+		}
 
-                // Scales opacity with the Projectile alpha as well as the distance from the beginning of the trail.
-                return new Color(31, 250, 131) * normalisedAlpha * factor.X;
-            });
+		public void DrawPrimitives()
+		{
+			Effect effect = Filters.Scene["Primitives"].GetShader().Shader;
 
-            trail.Positions = cache.ToArray();
-            trail.NextPosition = Projectile.Center + Projectile.velocity;
-        }
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-        public void DrawPrimitives()
-        {
-            Effect effect = Filters.Scene["Primitives"].GetShader().Shader;
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 
-            Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-            Matrix view = Main.GameViewMatrix.ZoomMatrix;
-            Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			trail?.Render(effect);
+		}
 
-            effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+		public override bool? CanHitNPC(NPC target)
+		{
+			return TargetNPCIndex != -1 && !HitATarget && Main.npc[TargetNPCIndex] == target;
+		}
 
-            trail?.Render(effect);
-        }
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			target.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
 
-        public override bool? CanHitNPC(NPC target)
-            => TargetNPCIndex != -1 && !HitATarget && Main.npc[TargetNPCIndex] == target;
+			Projectile.timeLeft = 30;
 
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) 
-        {
-            target.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
+			HitATarget = true;
 
-            Projectile.timeLeft = 30;
+			// This is hacky, but it lets the Projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
+			Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
+		}
 
-            HitATarget = true;
+		public override void Kill(int timeLeft)
+		{
+			trail?.Dispose();
 
-            // This is hacky, but it lets the Projectile keep its rotation without having to make an extra variable to cache it after it hits a target and "stops".
-            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.Zero) * 0.0001f;
-        } 
+			if (TargetNPCIndex > -1)
+			{
+				NPC NPC = Main.npc[TargetNPCIndex];
 
-        public override void Kill(int timeLeft)
-        {
-            trail?.Dispose();
+				if (NPC.active)
+				{
+					NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
+				}
+			}
+		}
+	}
 
-            if (TargetNPCIndex > -1)
-            {
-                NPC NPC = Main.npc[TargetNPCIndex];
+	public class AstrofloraLocksGlobalNPC : GlobalNPC
+	{
+		public override bool InstancePerEntity => true;
 
-                if (NPC.active)
-                {
-                    NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
-                }
-            }
-        }
-    }
+		public const int MaxLockDuration = 5 * 60; // 5 seconds, subject to change (1 second feels a bit short).
 
-    public class AstrofloraLocksGlobalNPC : GlobalNPC 
-    {
-        public override bool InstancePerEntity => true;
+		public bool Locked
+		{
+			get => locked;
+			set
+			{
+				if (value)
+				{
+					remainingLockDuration = MaxLockDuration;
+				}
 
-        public const int MaxLockDuration = 5 * 60; // 5 seconds, subject to change (1 second feels a bit short).
+				locked = value;
+			}
+		}
 
-        public bool Locked
-        {
-            get => locked;
-            set
-            {
-                if (value)
-                {
-                    remainingLockDuration = MaxLockDuration;
-                }
+		private bool locked;
 
-                locked = value;
-            }
-        }
+		public int remainingLockDuration;
 
-        private bool locked;
+		public override bool PreAI(NPC NPC)
+		{
+			if (--remainingLockDuration <= 0)
+			{
+				Locked = false;
+				remainingLockDuration = 0;
+			}
 
-        public int remainingLockDuration;
-
-        public override bool PreAI(NPC NPC)
-        {
-            if (--remainingLockDuration <= 0)
-            {
-                Locked = false;
-                remainingLockDuration = 0;
-            }
-
-            return base.PreAI(NPC);
-        }
-    }
+			return base.PreAI(NPC);
+		}
+	}
 }

@@ -1,10 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 
 namespace StarlightRiver.Content.Items.Permafrost
@@ -17,7 +12,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			
+
 		}
 	}
 }

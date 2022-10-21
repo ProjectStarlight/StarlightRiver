@@ -1,12 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Graphics;
-using StarlightRiver.Core;
+﻿using ReLogic.Graphics;
 using System;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.GameContent.UI.ResourceSets;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace StarlightRiver.Content.GUI
@@ -22,8 +16,8 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			var Player = Main.LocalPlayer;
-			var sp = Player.GetModPlayer<BarrierPlayer>();
+			Player Player = Main.LocalPlayer;
+			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
 
 			if ((sp.Barrier > 0 || sp.MaxBarrier > 0) && Main.ResourceSetsManager.ActiveSetKeyName == "Default") //Text, only present on classic UI
 			{
@@ -42,11 +36,11 @@ namespace StarlightRiver.Content.GUI
 
 				Vector2 vector = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 
-				var shieldText = $"  {sp.Barrier}/{sp.MaxBarrier}";
+				string shieldText = $"  {sp.Barrier}/{sp.MaxBarrier}";
 				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
 				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
-				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)) );
+				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)));
 			}
 
 			if (sp.Barrier > 0)
@@ -56,9 +50,9 @@ namespace StarlightRiver.Content.GUI
 				int partialHeartMax = fullHeartsToDraw < 20 ? sp.Barrier % 20 : 0;
 				float shieldPerHeart = sp.MaxBarrier > vanillaHearts * 20 ? sp.MaxBarrier / (float)vanillaHearts : 20;
 
-				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
-				var texOver = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
-				var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
+				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
+				Texture2D texOver = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
+				Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartLine").Value;
 
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
@@ -68,16 +62,16 @@ namespace StarlightRiver.Content.GUI
 					{
 						pos = new Vector2(Main.screenWidth - 72 - k * 12, 24f);
 
-						var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBar").Value;
-						var texOverBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBarOver").Value;
-						var texLineBar = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+						Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBar").Value;
+						Texture2D texOverBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBarOver").Value;
+						Texture2D texLineBar = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 
 						int width2 = 0;
 
 						if (sp.Barrier >= (k + 1) * shieldPerHeart)
 							width2 = texBar.Width;
 						else if (sp.Barrier > k * shieldPerHeart)
-							width2 = (int)((sp.Barrier % shieldPerHeart) / shieldPerHeart * texBar.Width);
+							width2 = (int)(sp.Barrier % shieldPerHeart / shieldPerHeart * texBar.Width);
 
 						if (width2 > 0 && k < 20)
 						{
@@ -112,7 +106,7 @@ namespace StarlightRiver.Content.GUI
 					if (sp.Barrier >= (k + 1) * shieldPerHeart)
 						width = tex.Width;
 					else if (sp.Barrier > k * shieldPerHeart)
-						width = (int)((sp.Barrier % shieldPerHeart) / shieldPerHeart * tex.Width);
+						width = (int)(sp.Barrier % shieldPerHeart / shieldPerHeart * tex.Width);
 
 					if (width > 0 && k < 20)
 					{

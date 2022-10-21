@@ -1,16 +1,7 @@
-﻿using StarlightRiver.Core;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.ModLoader;
-using Terraria.ID;
 using Terraria;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -64,9 +55,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void DartBurst(int timer)
 		{
-			if(timer == 0)
-			for (float k = 0; k <= 6.28f; k += 1.57f)
-				SpawnDart(Projectile.Center, Projectile.Center + Vector2.One.RotatedBy(k) * 200, Projectile.Center + Vector2.UnitX.RotatedBy(k) * 400, 120);
+			if (timer == 0)
+			{
+				for (float k = 0; k <= 6.28f; k += 1.57f)
+					SpawnDart(Projectile.Center, Projectile.Center + Vector2.One.RotatedBy(k) * 200, Projectile.Center + Vector2.UnitX.RotatedBy(k) * 400, 120);
+			}
 
 			if (timer == 140)
 				EndAttack();
@@ -75,8 +68,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 		private void DartBurst2(int timer)
 		{
 			if (timer == 0)
+			{
 				for (float k = 0; k <= 6.28f; k += 1.57f)
 					SpawnDart(Projectile.Center, Projectile.Center + Vector2.One.RotatedBy(k + 0.6f) * 200, Projectile.Center + Vector2.UnitX.RotatedBy(k + 0.6f) * 400, 120);
+			}
 
 			if (timer == 140)
 				EndAttack();
@@ -156,7 +151,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void MiddleSqueeze(int timer)
 		{
-			if(timer <= 80)
+			if (timer <= 80)
 			{
 				for (int k = -400; k < 300; k += 60)
 				{
@@ -173,7 +168,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if(timer >= 100 && timer % 40 == 0 && timer < 530) 
+			if (timer >= 100 && timer % 40 == 0 && timer < 530)
 				SpawnBlade(Projectile.Center + new Vector2(40 * (Main.rand.NextBool() ? 1 : -1), -400), Vector2.UnitY * 11, 90);
 
 			if (timer >= 640)
@@ -182,7 +177,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void ShooFromMiddle(int timer)
 		{
-			if(timer == 0)
+			if (timer == 0)
 			{
 				SpawnBlade(Projectile.Center + new Vector2(40, 300), Vector2.UnitY * -6, 180);
 				SpawnBlade(Projectile.Center + new Vector2(-40, 300), Vector2.UnitY * -6, 180);
@@ -215,7 +210,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SideSqueeze(int timer)
 		{
-			for(int k = -200; k <= 200; k += 50)
+			for (int k = -200; k <= 200; k += 50)
 			{
 				if (timer == (k + 200) / 10)
 				{
@@ -226,10 +221,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (timer > 60 && timer % 40 == 0 && timer <= 500)
 			{
-				int direction = (Main.rand.NextBool() ? 400 : Main.rand.NextBool() ? 320 : 240);
+				int direction = Main.rand.NextBool() ? 400 : Main.rand.NextBool() ? 320 : 240;
 				SpawnBlade(Projectile.Center + new Vector2(direction, 300), Vector2.UnitY * -4, 160);
 
-				direction = (Main.rand.NextBool() ? 400 : Main.rand.NextBool() ? 320 : 240);
+				direction = Main.rand.NextBool() ? 400 : Main.rand.NextBool() ? 320 : 240;
 				SpawnBlade(Projectile.Center + new Vector2(-direction, 300), Vector2.UnitY * -4, 160);
 			}
 
@@ -281,7 +276,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private void SquareSpears(int timer)
 		{
-			if(timer == 0)
+			if (timer == 0)
 				free = Main.rand.Next(4);
 
 			if (timer % 240 == 0 && timer < 720)
@@ -289,30 +284,38 @@ namespace StarlightRiver.Content.Tiles.Underground
 				free++;
 
 				if (free % 4 != 0)
+				{
 					for (int k = 0; k < 50; k += 5)
 					{
 						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
 						SpawnSpear(Projectile.Center + new Vector2(-380 + k * 8, -200 - yOff), Projectile.Center + new Vector2(-380 + k * 8, -60), 160 - k, 30, 30, 30);
 					}
+				}
 
 				if (free % 4 != 1)
+				{
 					for (int k = 0; k < 50; k += 5)
 					{
 						int yOff = (int)((float)Math.Sin(k / 100f * 3.14f) * 270);
 						SpawnSpear(Projectile.Center + new Vector2(380 - k * 8, -200 - yOff), Projectile.Center + new Vector2(380 - k * 8, -60), 160 - k, 30, 30, 30);
 					}
+				}
 
 				if (free % 4 != 2)
+				{
 					for (int k = 0; k < 50; k += 5)
 					{
 						SpawnSpear(Projectile.Center + new Vector2(-380 + k * 8, 300), Projectile.Center + new Vector2(-380 + k * 8, 40), 160 - k, 30, 30, 30);
 					}
+				}
 
 				if (free % 4 != 3)
+				{
 					for (int k = 0; k < 50; k += 5)
 					{
 						SpawnSpear(Projectile.Center + new Vector2(380 - k * 8, 300), Projectile.Center + new Vector2(380 - k * 8, 40), 160 - k, 30, 30, 30);
 					}
+				}
 			}
 
 			if (timer >= 720)

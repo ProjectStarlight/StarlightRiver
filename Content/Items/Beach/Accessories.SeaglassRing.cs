@@ -2,9 +2,9 @@
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Beach
 {
@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			var mp = Player.GetModPlayer<BarrierPlayer>();
+			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
 			mp.RechargeDelay -= 30;
 			mp.MaxBarrier += 10;
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Beach
 
 			if (Main.rand.Next(40) == 0)
 			{
-				Vector2 pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 				if (Main.rand.NextBool())
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.CrystalSparkle>(), Vector2.Zero);
 				else
@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Beach
 		public override void CatchFish(FishingAttempt attempt, ref int itemDrop, ref int npcSpawn, ref AdvancedPopupRequest sonar, ref Vector2 sonarPosition)
 		{
 			if (attempt.rare && Main.rand.NextBool(15) && Player.ZoneBeach)
-			{ 
+			{
 				itemDrop = ModContent.ItemType<SeaglassRing>();
 			}
 		}

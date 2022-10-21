@@ -1,20 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletLaunch : ModProjectile
 	{
@@ -67,9 +60,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.rotation = owner.fullRotation;
 			if (!modPlayer.launching)
-			{
 				Projectile.Kill();
-			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -107,7 +98,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					effect.Parameters["color"].SetValue(Color.White.ToVector4());
 					effect.CurrentTechnique.Passes[0].Apply();
 
-					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, Projectile.Center + (Projectile.rotation - 1.57f).ToRotationVector2() * 30 - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 
 					Main.spriteBatch.End();
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
@@ -119,14 +110,14 @@ namespace StarlightRiver.Content.Items.Vitric
 					effect.Parameters["color"].SetValue(Color.White.ToVector4());
 					effect.CurrentTechnique.Passes[0].Apply();
 
-					Main.spriteBatch.Draw(tex, Projectile.Center + ((Projectile.rotation - 1.57f).ToRotationVector2() * 30) - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(tex, Projectile.Center + (Projectile.rotation - 1.57f).ToRotationVector2() * 30 - Main.screenPosition, null, color, Projectile.rotation - 1.57f, new Vector2(250, 64), new Vector2(0.4f, 0.4f), SpriteEffects.None, 0f);
 
 					Main.spriteBatch.End();
 
 					Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
-					Vector2 handOffset = new Vector2(-10 * player.direction, -16);
+					var handOffset = new Vector2(-10 * player.direction, -16);
 					handOffset = handOffset.RotatedBy(player.fullRotation);
-					Main.spriteBatch.Draw(starTex, (player.Center + handOffset) - Main.screenPosition, null, new Color(255, 255, 255, 0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), (float)Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + (0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f)), SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(starTex, player.Center + handOffset - Main.screenPosition, null, new Color(255, 255, 255, 0) * MathHelper.Min(1, player.GetModPlayer<IgnitionPlayer>().loadedCharge / 15f), Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + 0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f), SpriteEffects.None, 0f);
 					Main.spriteBatch.End();
 				}
 			}

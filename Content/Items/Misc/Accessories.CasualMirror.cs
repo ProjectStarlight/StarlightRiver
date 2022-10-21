@@ -1,11 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
-using System;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -50,6 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				damageSource = PlayerDeathReason.ByCustomReason(Player.name + " didn't read the tooltip");
 			}
+
 			return true;
 		}
 	}

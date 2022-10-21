@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Rooms
+﻿namespace StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon.Rooms
 {
 	internal class Simple3x3 : DungeonRoom
 	{

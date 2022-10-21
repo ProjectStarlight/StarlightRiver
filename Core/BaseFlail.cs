@@ -23,7 +23,10 @@ namespace StarlightRiver.Core
 
 		public virtual void SafeSetDefaults() { }
 
-		public override bool CanUseItem(Player Player) => Player.ownedProjectileCounts[Item.shoot] == 0;
+		public override bool CanUseItem(Player Player)
+		{
+			return Player.ownedProjectileCounts[Item.shoot] == 0;
+		}
 	}
 
 	public abstract class BaseFlailProj : ModProjectile
@@ -105,7 +108,7 @@ namespace StarlightRiver.Core
 
 				ChargeTime = MathHelper.Clamp(Timer / 60, MaxChargeTime / 6, MaxChargeTime);
 
-				float radians = MathHelper.ToRadians(degreespertick * Timer * (1 + ChargeTime/MaxChargeTime)) * Owner.direction;
+				float radians = MathHelper.ToRadians(degreespertick * Timer * (1 + ChargeTime / MaxChargeTime)) * Owner.direction;
 				float distfromPlayer = spinningdistance * ((float)Math.Abs(Math.Cos(radians) / 5) + 0.8f); //use a cosine function based on the amount of rotation the flail has gone through to create an ellipse-like pattern
 				Vector2 spinningoffset = new Vector2(distfromPlayer, 0).RotatedBy(radians);
 				Projectile.Center = Owner.MountedCenter + spinningoffset;
@@ -126,7 +129,7 @@ namespace StarlightRiver.Core
 			if (released && !falling) //basic flail launch, returns after a while
 			{
 				Projectile.tileCollide = true;
-				if(++Timer == 1 && Owner.whoAmI == Main.myPlayer)
+				if (++Timer == 1 && Owner.whoAmI == Main.myPlayer)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item19, Projectile.Center);
 					Projectile.Center = Owner.MountedCenter;
@@ -148,16 +151,17 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			if(falling) //falling towards ground, returns after hitting ground
+			if (falling) //falling towards ground, returns after hitting ground
 			{
-				if(strucktile || ++Timer >= 180)
+				if (strucktile || ++Timer >= 180)
+				{
 					Return(launchspeed, Owner);
-
+				}
 				else
 				{
 					FallingExtras(Owner);
 					Projectile.tileCollide = true;
-					if(Projectile.velocity.Y < 16f)
+					if (Projectile.velocity.Y < 16f)
 						Projectile.velocity.Y += 0.5f;
 
 					Projectile.velocity.X *= 0.98f;
@@ -174,8 +178,8 @@ namespace StarlightRiver.Core
 			ReturnExtras(Owner);
 		}
 
-        #region extra hooks
-        public virtual void SpinExtras(Player Player) { }
+		#region extra hooks
+		public virtual void SpinExtras(Player Player) { }
 
 		public virtual void NotSpinningExtras(Player Player) { }
 
@@ -194,7 +198,7 @@ namespace StarlightRiver.Core
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if(ChargeTime > 0)
+			if (ChargeTime > 0)
 				damage = (int)(damage * MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime));
 		}
 
@@ -205,6 +209,7 @@ namespace StarlightRiver.Core
 				strucktile = true;
 				FallingTileCollide(oldVelocity);
 			}
+
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 			Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
 			Projectile.velocity = new Vector2((Projectile.velocity.X != Projectile.oldVelocity.X) ?
@@ -216,7 +221,7 @@ namespace StarlightRiver.Core
 
 			return false;
 		}
-        public override bool PreDrawExtras()
+		public override bool PreDrawExtras()
 		{
 			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture + "_chain").Value;
 			Player Owner = Main.player[Projectile.owner];
@@ -224,9 +229,9 @@ namespace StarlightRiver.Core
 
 			for (int i = 0; i < timestodrawchain; i++)
 			{
-				Vector2 chaindrawpos = Vector2.Lerp(Owner.MountedCenter, Projectile.Center, (i / (float)timestodrawchain));
+				var chaindrawpos = Vector2.Lerp(Owner.MountedCenter, Projectile.Center, i / (float)timestodrawchain);
 				float scaleratio = Projectile.Distance(Owner.MountedCenter) / ChainTexture.Width / timestodrawchain;
-				Vector2 chainscale = new Vector2(scaleratio, 1);
+				var chainscale = new Vector2(scaleratio, 1);
 				Color lightColor = Lighting.GetColor((int)chaindrawpos.X / 16, (int)chaindrawpos.Y / 16);
 				Main.spriteBatch.Draw(ChainTexture, chaindrawpos - Main.screenPosition, null, lightColor, Projectile.AngleFrom(Owner.MountedCenter), new Vector2(0, ChainTexture.Height / 2), chainscale, SpriteEffects.None, 0);
 			}

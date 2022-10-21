@@ -1,20 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
-using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -96,16 +86,12 @@ namespace StarlightRiver.Content.Items.Misc
 		private Trail trail;
 		private List<Vector2> cache;
 
-		private List<float> oldRotation = new List<float>();
-		private List<Vector2> oldPosition = new List<Vector2>();
+		private List<float> oldRotation = new();
+		private List<Vector2> oldPosition = new();
 
-		private List<NPC> hit = new List<NPC>();
+		private List<NPC> hit = new();
 
-		private bool FirstTickOfSwing
-		{
-			get => Projectile.ai[0] == 0;
-		}
-
+		private bool FirstTickOfSwing => Projectile.ai[0] == 0;
 
 		public override void SetStaticDefaults()
 		{
@@ -136,6 +122,7 @@ namespace StarlightRiver.Content.Items.Misc
 				spinOffset.X *= (float)Math.Cos(zRotation);
 				Projectile.Center = owner.Center + spinOffset;
 			}
+
 			owner.heldProj = Projectile.whoAmI;
 
 			if (FirstTickOfSwing)
@@ -150,7 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (!initialized)
 				{
 					initialized = true;
-					endRotation = rot - (1f * owner.direction);
+					endRotation = rot - 1f * owner.direction;
 
 					oldRotation = new List<float>();
 					oldPosition = new List<Vector2>();
@@ -171,30 +158,31 @@ namespace StarlightRiver.Content.Items.Misc
 				switch (currentAttack)
 				{
 					case CurrentAttack.Down:
-						endRotation = rot + (2f * owner.direction);
+						endRotation = rot + 2f * owner.direction;
 						attackDuration = 120;
 						break;
 					case CurrentAttack.FirstUp:
-						endRotation = rot - (2f * owner.direction);
+						endRotation = rot - 2f * owner.direction;
 						attackDuration = 120;
 						break;
 					case CurrentAttack.Spin:
 						attackDuration = 140;
-						endRotation = rot + (2f * owner.direction);
+						endRotation = rot + 2f * owner.direction;
 						break;
 					case CurrentAttack.SecondUp:
-						endRotation = rot - (2f * owner.direction);
+						endRotation = rot - 2f * owner.direction;
 						attackDuration = 120;
 						break;
 					case CurrentAttack.Crit:
 						attackDuration = 180;
-						endRotation = rot + (10f * owner.direction);
+						endRotation = rot + 10f * owner.direction;
 						Projectile.ai[0] -= 15f / attackDuration;
 						break;
 					case CurrentAttack.Reset:
 						Projectile.active = false;
 						break;
 				}
+
 				Projectile.ai[0] += 30f / attackDuration;
 			}
 
@@ -202,7 +190,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Projectile.timeLeft = 50;
 				Projectile.ai[0] += 1f / attackDuration;
-				rotVel = Math.Abs(EaseProgress(Projectile.ai[0]) - EaseProgress(Projectile.ai[0] - (1f / attackDuration))) * 2;
+				rotVel = Math.Abs(EaseProgress(Projectile.ai[0]) - EaseProgress(Projectile.ai[0] - 1f / attackDuration)) * 2;
 			}
 			else
 			{
@@ -223,7 +211,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = EaseProgress(Projectile.ai[0]);
 
-			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
+			Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + rotVel * 4), 1.3f);
 
 			Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
 
@@ -267,30 +255,30 @@ namespace StarlightRiver.Content.Items.Misc
 			if (rotVel < 0.005f)
 				return false;
 			float collisionPoint = 0f;
-			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + (42 * Projectile.rotation.ToRotationVector2()), 20, ref collisionPoint))
+			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + 42 * Projectile.rotation.ToRotationVector2(), 20, ref collisionPoint))
 				return true;
 			return false;
 		}
 
-        public override bool? CanHitNPC(NPC target)
-        {
+		public override bool? CanHitNPC(NPC target)
+		{
 			if (hit.Contains(target))
 				return false;
-            return base.CanHitNPC(target);
-        }
-        public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
+			return base.CanHitNPC(target);
+		}
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
 			hit.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
-			Core.Systems.CameraSystem.Shake += 2;
+			CameraSystem.Shake += 2;
 		}
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
 			hitDirection = Math.Sign(target.Center.X - owner.Center.X);
-        }
+		}
 
-        public override bool PreDraw(ref Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			//DrawTrail(Main.spriteBatch);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -303,7 +291,7 @@ namespace StarlightRiver.Content.Items.Misc
 				effects = facingRight ? SpriteEffects.FlipHorizontally : SpriteEffects.FlipVertically;
 			}*/
 
-			Vector2 origin = new Vector2(0, tex.Height);
+			var origin = new Vector2(0, tex.Height);
 
 			Vector2 scaleVec = Vector2.One;
 			/*if (flip)
@@ -322,7 +310,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 16; k > 0; k--)
 			{
 
-				float progress = 1 - (float)(((float)(16 - k) / (float)16));
+				float progress = 1 - (float)((16 - k) / (float)16);
 				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.1f;
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, oldRotation[k] + 0.78f, origin, Projectile.scale * scaleVec, effects, 0f);
@@ -358,7 +346,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 off = (Projectile.rotation + rotVel).ToRotationVector2() * 35;
 			off.X *= (float)Math.Cos(zRotation);
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 12, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 12, factor =>
 			{
 				Color trailColor = Color.DarkGray * MathHelper.Min(rotVel * 18, 0.75f);
 				return trailColor;
@@ -373,9 +361,9 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
@@ -387,21 +375,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private float EaseProgress(float input)
 		{
-			switch (currentAttack)
+			return currentAttack switch
 			{
-				case CurrentAttack.Down:
-					return EaseFunction.EaseCircularInOut.Ease(input);
-				case CurrentAttack.FirstUp:
-					return EaseFunction.EaseCircularInOut.Ease(input);
-				case CurrentAttack.Spin:
-					return EaseFunction.EaseCircularInOut.Ease(input);
-				case CurrentAttack.SecondUp:
-					return EaseFunction.EaseCircularInOut.Ease(input);
-				case CurrentAttack.Crit:
-					return EaseFunction.EaseQuadInOut.Ease(input);
-				default:
-					return input;
-			}
+				CurrentAttack.Down => EaseFunction.EaseCircularInOut.Ease(input),
+				CurrentAttack.FirstUp => EaseFunction.EaseCircularInOut.Ease(input),
+				CurrentAttack.Spin => EaseFunction.EaseCircularInOut.Ease(input),
+				CurrentAttack.SecondUp => EaseFunction.EaseCircularInOut.Ease(input),
+				CurrentAttack.Crit => EaseFunction.EaseQuadInOut.Ease(input),
+				_ => input,
+			};
 		}
 	}
 
@@ -411,8 +393,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Player owner => Main.player[Projectile.owner];
 
-		private List<float> oldRotation = new List<float>();
-		private List<Vector2> oldPosition = new List<Vector2>();
+		private List<float> oldRotation = new();
+		private List<Vector2> oldPosition = new();
 		private bool initialized = false;
 
 		public override void SetDefaults()
@@ -435,6 +417,7 @@ namespace StarlightRiver.Content.Items.Misc
 				oldPosition = new List<Vector2>();
 				initialized = true;
 			}
+
 			owner.itemTime = owner.itemAnimation = 5;
 			owner.itemRotation = owner.DirectionTo(Projectile.Center).ToRotation();
 			owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation - ((Projectile.Center.X > owner.Center.X) ? 0 : MathHelper.Pi));
@@ -459,7 +442,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int k = 8; k > 0; k--)
 			{
 
-				float progress = 1 - (float)(((float)(8 - k) / (float)8));
+				float progress = 1 - (float)((8 - k) / (float)8);
 				Color color = lightColor * EaseFunction.EaseQuarticOut.Ease(progress) * 0.2f;
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], origin, Projectile.scale, effects, 0f);
@@ -476,23 +459,24 @@ namespace StarlightRiver.Content.Items.Misc
 			Dust.NewDustPerfect(target.Center - new Vector2(46, 23), ModContent.DustType<FryingPanBonk>(), dir);*/
 		}
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
 			Bonk(Projectile.Center);
 			return base.OnTileCollide(oldVelocity);
-        }
+		}
 
-        private void Bonk(Vector2 position)
-        {
+		private void Bonk(Vector2 position)
+		{
 			Projectile.friendly = false;
 			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
 
-			Core.Systems.CameraSystem.Shake += 10;
+			CameraSystem.Shake += 10;
 			for (int j = 0; j < 17; j++)
 			{
 				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-				Dust.NewDustPerfect((position + (direction * 20) + new Vector2(0, 40)), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+				Dust.NewDustPerfect(position + direction * 20 + new Vector2(0, 40), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
 			}
+
 			Vector2 dir = -Vector2.UnitY.RotatedByRandom(0.3f) * 6;
 			Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, dir, ModContent.ProjectileType<FryingPanBonk>(), 0, 0, owner.whoAmI);
 		}
@@ -529,8 +513,8 @@ namespace StarlightRiver.Content.Items.Misc
 			bgRotation += 0.002f;
 		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
+		public override bool PreDraw(ref Color lightColor)
+		{
 			float colorMult = Math.Min(1, Math.Min((90 - Projectile.alpha) / 15f, Projectile.alpha / 15f));
 			Color bgColor = Color.White * colorMult;
 			Texture2D bgTex = ModContent.Request<Texture2D>(Texture + "_BG").Value;
@@ -542,5 +526,5 @@ namespace StarlightRiver.Content.Items.Misc
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, bgColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
-    }
+	}
 }

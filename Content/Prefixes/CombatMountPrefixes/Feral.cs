@@ -1,10 +1,9 @@
-﻿using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
-using StarlightRiver.Core.Systems.CombatMountSystem;
-using System.Collections.Generic;
 
-namespace StarlightRiver.Prefixes.CombatMountPrefixes
+namespace StarlightRiver.Content.Prefixes.CombatMountPrefixes
 {
 	public class Feral : CombatMountPrefix
 	{
@@ -16,14 +15,18 @@ namespace StarlightRiver.Prefixes.CombatMountPrefixes
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
-			TooltipLine newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip", "+35% Attack Speed");
-			newline.IsModifier = true;
+			var newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip", "+35% Attack Speed")
+			{
+				IsModifier = true
+			};
 
 			tooltips.Add(newline);
 
-			newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip2", "-50% Secondary Cooldown Recovery");
-			newline.IsModifier = true;
-			newline.IsModifierBad = true;
+			newline = new TooltipLine(StarlightRiver.Instance, "PrefixTip2", "-50% Secondary Cooldown Recovery")
+			{
+				IsModifier = true,
+				IsModifierBad = true
+			};
 
 			tooltips.Add(newline);
 		}

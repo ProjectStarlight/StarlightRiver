@@ -38,7 +38,10 @@ namespace StarlightRiver.Content.Items.Misc
 					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 10);
 				}
 			}
-			else orig(self, healAmount, broadcast);
+			else
+			{
+				orig(self, healAmount, broadcast);
+			}
 		}
 
 		public override void SetStaticDefaults()
@@ -47,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("+100 Maximum Barrier" +
 				"\nUnaffected by damage over time" +
 				"\nBarrier absorbs ALL damage" +
-				"\nYou can survive without life"+
+				"\nYou can survive without life" +
 				"\nCursed : You cannot have life" +
 				"\n Slightly reduced barrier recharge" +
 				"\n Healing grants a decaying damage boost instead of life" +
@@ -58,7 +61,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Player.GetDamage(DamageClass.Generic) += rage / 2000f;
 
-			if(rage > 0)
+			if (rage > 0)
 				rage--;
 
 			if (rage > 800)

@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Timer++;
 
-			if(Timer % 240 <= 30)
+			if (Timer % 240 <= 30)
 				NPC.frame = new Rectangle(0, NPC.height * (int)(Timer % 240 / 30f * 8), NPC.width, NPC.height);
 			else
 				NPC.frame = new Rectangle(0, 0, NPC.width, NPC.height);
@@ -48,8 +48,9 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					Main.projectile.Any(n => n.active && n.friendly && Vector2.Distance(n.Center, NPC.Center) < 360) ||
 					NearLight()
 					)
-
+				{
 					State = (int)States.Fleeing;
+				}
 			}
 
 			if (State == 1)
@@ -62,8 +63,9 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public bool NearLight()
 		{
-			for(int x = -5; x < 5; x++)
-				for(int y =  -5; y < 5; y++)
+			for (int x = -5; x < 5; x++)
+			{
+				for (int y = -5; y < 5; y++)
 				{
 					int xPos = (int)(NPC.Center.X / 16) + x;
 					int yPos = (int)(NPC.Center.Y / 16) + y;
@@ -71,25 +73,26 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					if (Lighting.Brightness(xPos, yPos) > 0.15f)
 						return true;
 				}
+			}
 
 			return false;
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			var tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
-			var spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
+			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
+			Vector2 spawnPoint = new Vector2(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) * 16;
 
-			return spawnInfo.Player.ZoneCorrupt && 
-				tile.WallType == WallID.EbonstoneUnsafe && 
-				tile .LiquidAmount == 0 &&
+			return spawnInfo.Player.ZoneCorrupt &&
+				tile.WallType == WallID.EbonstoneUnsafe &&
+				tile.LiquidAmount == 0 &&
 				Lighting.Brightness(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY) <= 0.1f &&
 				!Main.npc.Any(n => n.type == NPCType<Stalker>() && Vector2.Distance(n.Center, spawnPoint) < 320) ? 1 : 0;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = Request<Texture2D>(Texture).Value;
+			Texture2D tex = Request<Texture2D>(Texture).Value;
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
 
 			return false;

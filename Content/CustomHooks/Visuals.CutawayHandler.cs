@@ -1,17 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	public class CutawayHandler : HookGroup
 	{
-		public static List<Cutaway> cutaways = new List<Cutaway>();
+		public static List<Cutaway> cutaways = new();
 		private static bool inside => cutaways.Any(n => n.fadeTime < 0.95f);
 
 		public static RenderTarget2D cutawayTarget;
@@ -28,10 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			On.Terraria.Main.CheckMonoliths += DrawCutawayTarget;
 
-			Main.QueueMainThreadAction(() =>
-			{
-				cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-			});
+			Main.QueueMainThreadAction(() => cutawayTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents));
 		}
 
 		public override void Unload()
@@ -68,15 +61,15 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (inside)
 			{
-				var activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
+				Cutaway activeCutaway = cutaways.FirstOrDefault(n => n.fadeTime < 0.95f);
 
-				var effect = Filters.Scene["Negative"].GetShader().Shader;
+				Effect effect = Filters.Scene["Negative"].GetShader().Shader;
 
 				if (effect is null)
 					return;
 
 				effect.Parameters["sampleTexture"].SetValue(cutawayTarget);
-				effect.Parameters["uColor"].SetValue((Color.Black).ToVector3());
+				effect.Parameters["uColor"].SetValue(Color.Black.ToVector3());
 				effect.Parameters["opacity"].SetValue(1 - activeCutaway.fadeTime);
 
 				Main.spriteBatch.End();
@@ -96,7 +89,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.SetRenderTarget(cutawayTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			for(int k = 0; k < cutaways.Count; k++)
+			for (int k = 0; k < cutaways.Count; k++)
 			{
 				if (cutaways[k].fadeTime < 0.95f)
 				{

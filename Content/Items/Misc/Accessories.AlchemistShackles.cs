@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
-using System;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
-using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -38,13 +35,15 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
-        {
+		{
 			if (self.GetModPlayer<AlchemistShacklesPlayer>().equipped && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
 			{
 				orig(self, type, time1 + 900, quiet, foodHack);
 			}
 			else
+			{
 				orig(self, type, time1, quiet, foodHack);
+			}
 		}
 	}
 	class AlchemistShacklesPlayer : ModPlayer
@@ -57,23 +56,23 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 	class AlchemistShackleGItem : GlobalItem
-    {
-        public override void GetHealLife(Item Item, Player Player, bool quickHeal, ref int healValue)
-        {
-			float mult = 2 - ((float)Player.statLife / (float)Player.statLifeMax2);
-            if (Player.GetModPlayer<AlchemistShacklesPlayer>().equipped)
-            {
-				healValue = (int)(healValue * mult);
-            }
-        }
-
-        public override void GetHealMana(Item Item, Player Player, bool quickHeal, ref int healValue)
-        {
-			float mult = 2 - ((float)Player.statMana / (float)Player.statManaMax2);
+	{
+		public override void GetHealLife(Item Item, Player Player, bool quickHeal, ref int healValue)
+		{
+			float mult = 2 - Player.statLife / (float)Player.statLifeMax2;
 			if (Player.GetModPlayer<AlchemistShacklesPlayer>().equipped)
 			{
 				healValue = (int)(healValue * mult);
 			}
 		}
-    }
+
+		public override void GetHealMana(Item Item, Player Player, bool quickHeal, ref int healValue)
+		{
+			float mult = 2 - Player.statMana / (float)Player.statManaMax2;
+			if (Player.GetModPlayer<AlchemistShacklesPlayer>().equipped)
+			{
+				healValue = (int)(healValue * mult);
+			}
+		}
+	}
 }

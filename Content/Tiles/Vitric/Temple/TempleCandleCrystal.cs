@@ -1,17 +1,9 @@
-﻿using StarlightRiver.Core;
+﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using StarlightRiver.Core.Loaders;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.ObjectData;
 using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple

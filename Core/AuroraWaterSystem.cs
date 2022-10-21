@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -80,22 +78,24 @@ namespace StarlightRiver.Core
 			Main.graphics.GraphicsDevice.SetRenderTarget(auroraTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			for (int i = -2 + (int)(Main.screenPosition.X) / 16; i <= 2 + (int)(Main.screenPosition.X + Main.screenWidth) / 16; i++)
-				for (int j = -2 + (int)(Main.screenPosition.Y) / 16; j <= 2 + (int)(Main.screenPosition.Y + Main.screenHeight) / 16; j++)
+			for (int i = -2 + (int)Main.screenPosition.X / 16; i <= 2 + (int)(Main.screenPosition.X + Main.screenWidth) / 16; i++)
+			{
+				for (int j = -2 + (int)Main.screenPosition.Y / 16; j <= 2 + (int)(Main.screenPosition.Y + Main.screenHeight) / 16; j++)
 				{
 					if (WorldGen.InWorld(i, j))
 					{
 						Tile tile = Framing.GetTileSafely(i, j);
-						ref var tileData = ref tile.Get<AuroraWaterData>();
+						ref AuroraWaterData tileData = ref tile.Get<AuroraWaterData>();
 
 						if (tileData.HasAuroraWater)
 						{
-							Rectangle target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
+							var target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
 							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
 							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White * 0.5f);
 						}
 					}
 				}
+			}
 
 			Main.spriteBatch.End();
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
@@ -108,26 +108,28 @@ namespace StarlightRiver.Core
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
 			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			{
 				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 				{
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j), 
+					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
 						new Rectangle(
-							(int)((Main.screenPosition.X) % tex2.Width - Main.GameUpdateCount * 0.55f),
-							(int)((Main.screenPosition.Y) % tex2.Height + Main.GameUpdateCount * 0.3f),
+							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
+							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
 							tex2.Width,
 							tex2.Height
-							), 
+							),
 						Color.White * 0.7f, default, default, 1, 0, 0);
 
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j), 
+					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
 						new Rectangle(
-							(int)((Main.screenPosition.X) % tex2.Width + Main.GameUpdateCount * 0.75f),
-							(int)((Main.screenPosition.Y) % tex2.Height - Main.GameUpdateCount * 0.4f),
+							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
+							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
 							tex2.Width,
 							tex2.Height
-							), 
+							),
 						Color.White);
 				}
+			}
 
 			Main.spriteBatch.End();
 			Main.graphics.GraphicsDevice.SetRenderTarget(null);
@@ -135,7 +137,7 @@ namespace StarlightRiver.Core
 
 		public override void PostDrawTiles()
 		{
-			var shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
+			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
 
 			if (shader is null)
 				return;
@@ -154,8 +156,8 @@ namespace StarlightRiver.Core
 
 		public static void PlaceAuroraWater(int i, int j)
 		{
-			var tile = Framing.GetTileSafely(i, j);
-			ref var tileData = ref tile.Get<AuroraWaterData>();
+			Tile tile = Framing.GetTileSafely(i, j);
+			ref AuroraWaterData tileData = ref tile.Get<AuroraWaterData>();
 
 			tileData.HasAuroraWater = true;
 			FrameAuroraTile(i, j);
@@ -168,8 +170,8 @@ namespace StarlightRiver.Core
 
 		public static void RemoveAuroraWater(int i, int j)
 		{
-			var tile = Framing.GetTileSafely(i, j);
-			ref var tileData = ref tile.Get<AuroraWaterData>();
+			Tile tile = Framing.GetTileSafely(i, j);
+			ref AuroraWaterData tileData = ref tile.Get<AuroraWaterData>();
 
 			tileData.HasAuroraWater = false;
 			tileData.AuroraWaterFrameX = 0;
@@ -181,17 +183,17 @@ namespace StarlightRiver.Core
 			FrameAuroraTile(i, j + 1);
 		}
 
-		private static void FrameAuroraTile(int i, int j) 
+		private static void FrameAuroraTile(int i, int j)
 		{
-			ref var data = ref Framing.GetTileSafely(i, j).Get<AuroraWaterData>();
+			ref AuroraWaterData data = ref Framing.GetTileSafely(i, j).Get<AuroraWaterData>();
 
 			if (!data.HasAuroraWater)
 				return;
 
-			var u = Framing.GetTileSafely(i, j - 1).Get<AuroraWaterData>().HasAuroraWater;
-			var l = Framing.GetTileSafely(i - 1, j).Get<AuroraWaterData>().HasAuroraWater;
-			var d = Framing.GetTileSafely(i, j + 1).Get<AuroraWaterData>().HasAuroraWater;
-			var r = Framing.GetTileSafely(i + 1, j).Get<AuroraWaterData>().HasAuroraWater;
+			bool u = Framing.GetTileSafely(i, j - 1).Get<AuroraWaterData>().HasAuroraWater;
+			bool l = Framing.GetTileSafely(i - 1, j).Get<AuroraWaterData>().HasAuroraWater;
+			bool d = Framing.GetTileSafely(i, j + 1).Get<AuroraWaterData>().HasAuroraWater;
+			bool r = Framing.GetTileSafely(i + 1, j).Get<AuroraWaterData>().HasAuroraWater;
 
 			if (u && l && d && r)
 				SetFrameData(ref data, 3, 2);
@@ -218,7 +220,6 @@ namespace StarlightRiver.Core
 				SetFrameData(ref data, 3, 0);
 			else if (l && r)
 				SetFrameData(ref data, 3, 1);
-
 
 			else if (u)
 				SetFrameData(ref data, 2, 0);

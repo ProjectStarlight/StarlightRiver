@@ -1,20 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
+﻿using Terraria;
 using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.UI.Chat;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -81,14 +67,14 @@ namespace StarlightRiver.Core
 	}
 
 	public class GoreDestroyerNPC : GlobalNPC
-    {
+	{
 		public override bool InstancePerEntity => true;
 
 		public bool destroyGore = false;
 
-        public override void ResetEffects(NPC npc)
-        {
+		public override void ResetEffects(NPC npc)
+		{
 			destroyGore = false;
-        }
-    }
+		}
+	}
 }

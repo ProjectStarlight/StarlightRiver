@@ -1,20 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Dungeon;
-using StarlightRiver.Helpers;
 using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.CustomHooks;
-using Terraria.Graphics.Effects;
+using StarlightRiver.Core;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -22,7 +12,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 	{
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
-		private List<int> manaConsumed = new List<int>();
+		private List<int> manaConsumed = new();
 
 		private int currentMana = -1;
 		public override void SetStaticDefaults()
@@ -44,14 +34,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 		}
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
-        {
-            Player.GetModPlayer<BarrierPlayer>().MaxBarrier = (int)MathHelper.Max(0, Player.GetModPlayer<BarrierPlayer>().MaxBarrier - 10);
+		{
+			Player.GetModPlayer<BarrierPlayer>().MaxBarrier = (int)MathHelper.Max(0, Player.GetModPlayer<BarrierPlayer>().MaxBarrier - 10);
 
 			if (currentMana != Player.statMana || Player.itemTime >= 2)
 			{
 				if (currentMana > Player.statMana)
 					manaConsumed.Add(currentMana - Player.statMana);
-				else if (Player.itemTime >= 2) 
+				else if (Player.itemTime >= 2)
 					manaConsumed.Add(0);
 				currentMana = Player.statMana;
 			}
@@ -62,17 +52,17 @@ namespace StarlightRiver.Content.Items.Dungeon
 			int manaConsumedTotal = 0;
 			foreach (int i in manaConsumed)
 				manaConsumedTotal += i;
-			float manaBonus = 1 + (Player.GetModPlayer<BarrierPlayer>().Barrier * 0.01f);
+			float manaBonus = 1 + Player.GetModPlayer<BarrierPlayer>().Barrier * 0.01f;
 
 			/*if (manaBonus > 1)
 				Main.NewText(manaBonus.ToString());*/
 			Player.manaRegen = (int)(Player.manaRegen * manaBonus);
 
-			Player.GetModPlayer<BarrierPlayer>().RechargeRate = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeRate * 1 + (manaConsumedTotal * 0.025f));
-			Player.GetModPlayer<BarrierPlayer>().RechargeDelay = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeDelay / (1 + (manaConsumedTotal * 0.025f)));
+			Player.GetModPlayer<BarrierPlayer>().RechargeRate = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeRate * 1 + manaConsumedTotal * 0.025f);
+			Player.GetModPlayer<BarrierPlayer>().RechargeDelay = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeDelay / (1 + manaConsumedTotal * 0.025f));
 		}
 
-        public override void AddRecipes()
+		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<SandstoneChunk>(), 4);

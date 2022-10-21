@@ -1,18 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Core;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -54,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float curvatureMult = 0.7f;
 
 			Vector2 direction = Vector2.Normalize(velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f))) * 7;
-			Projectile proj = Projectile.NewProjectileDirect(source, position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockback, player.whoAmI);
+			var proj = Projectile.NewProjectileDirect(source, position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockback, player.whoAmI);
 			if (proj.ModProjectile is GunchuckProj modProj)
 			{
 				modProj.Flip = combo % 2 == 0;
@@ -79,12 +74,15 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 		}
 
-		public override float UseTimeMultiplier(Player Player) => base.UseTimeMultiplier(Player) * Player.GetTotalAttackSpeed(DamageClass.Melee); //Scale with melee speed buffs, like whips
+		public override float UseTimeMultiplier(Player Player)
+		{
+			return base.UseTimeMultiplier(Player) * Player.GetTotalAttackSpeed(DamageClass.Melee); //Scale with melee speed buffs, like whips
+		}
 	}
 
 	public class GunchuckProj : ModProjectile
-    {
-        public override string Texture => AssetDirectory.MiscItem + Name;
+	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public const float THROW_RANGE = 120; //Peak distance from Player when thrown out, in pixels
 
@@ -138,7 +136,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float progress = Timer / SwingTime;
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
 			if (progress > FireTime && !shot)
-            {
+			{
 				Texture2D projTexture = TextureAssets.Projectile[Projectile.type].Value;
 
 				Vector2 projBottom = Projectile.Center - new Vector2(projTexture.Width / 2, 0).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.75f;
@@ -149,28 +147,28 @@ namespace StarlightRiver.Content.Items.Misc
 				_chainMidA = Owner.MountedCenter + GetSwingPosition(progress).RotatedBy(angleOffset) * Curvature;
 				_chainMidB = Owner.MountedCenter + GetSwingPosition(progress).RotatedBy(angleOffset / 2) * Curvature * 2.5f;
 
-				BezierCurve curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, projBottom });
+				var curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, projBottom });
 
 				int numPoints = 10; //Should make dynamic based on curve length, but I'm not sure how to smoothly do that while using a bezier curve
 				Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
 
-				newRotation = (projBottom - chainPositions[chainPositions.Length - 2]).ToRotation();
+				newRotation = (projBottom - chainPositions[^2]).ToRotation();
 
 				shot = true;
 				Vector2 direction = newRotation.ToRotationVector2();
 				for (int i = 0; i < 5; i++)
-                {
-					Projectile.NewProjectile(Projectile.InheritSource(Projectile),Projectile.Center + (direction * 25), direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
-                }
-				
+				{
+					Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + direction * 25, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+				}
+
 				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
 
 				float spread = 0.4f;
 				for (int k = 0; k < 15; k++)
 				{
-					var dustDirection = direction.RotatedByRandom(spread);
+					Vector2 dustDirection = direction.RotatedByRandom(spread);
 
-					Dust.NewDustPerfect(Projectile.Center + (direction * 25), ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
+					Dust.NewDustPerfect(Projectile.Center + direction * 25, ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
 			}
 
@@ -194,7 +192,6 @@ namespace StarlightRiver.Content.Items.Misc
 			float progress = ++Timer / SwingTime; //How far the Projectile is through its swing
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
 
-
 			Projectile.Center = position + GetSwingPosition(progress);
 			Projectile.direction = Projectile.spriteDirection = -Owner.direction * (Flip ? -1 : 1);
 
@@ -202,7 +199,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.Kill();
 		}
 
-        public override bool PreDraw(ref Color lightColor)
+		public override bool PreDraw(ref Color lightColor)
 		{
 			if (Projectile.timeLeft > 2)
 				return false;
@@ -214,16 +211,15 @@ namespace StarlightRiver.Content.Items.Misc
 			DrawChainCurve(Main.spriteBatch, projBottom, out Vector2[] chainPositions);
 
 			//Adjust rotation to face from the last point in the bezier curve
-			newRotation = (projBottom - chainPositions[chainPositions.Length - 2]).ToRotation();
+			newRotation = (projBottom - chainPositions[^2]).ToRotation();
 
 			//Draw from bottom center of texture
-			Vector2 origin = new Vector2(0, projTexture.Height / 2);
+			var origin = new Vector2(0, projTexture.Height / 2);
 			SpriteEffects flip = (Projectile.spriteDirection < 0) ? SpriteEffects.FlipVertically : SpriteEffects.None;
 
 			lightColor = Lighting.GetColor((int)(Projectile.Center.X / 16f), (int)(Projectile.Center.Y / 16f));
 
 			Main.EntitySpriteDraw(projTexture, projBottom - Main.screenPosition, null, lightColor, newRotation, origin, Projectile.scale, flip, 0);
-
 
 			CurrentBase = projBottom + (newRotation - 1.57f).ToRotationVector2() * (projTexture.Height / 2);
 
@@ -239,7 +235,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = Timer / SwingTime;
 
-				progress = EaseFunction.EaseQuadOut.Ease(progress);
+			progress = EaseFunction.EaseQuadOut.Ease(progress);
 
 			float angleMaxDeviation = MathHelper.Pi * 0.85f;
 			float angleOffset = Owner.direction * (Flip ? -1 : 1) * MathHelper.Lerp(angleMaxDeviation, -angleMaxDeviation / 4, progress);
@@ -247,7 +243,7 @@ namespace StarlightRiver.Content.Items.Misc
 			_chainMidA = Owner.MountedCenter + GetSwingPosition(progress).RotatedBy(angleOffset) * Curvature;
 			_chainMidB = Owner.MountedCenter + GetSwingPosition(progress).RotatedBy(angleOffset / 2) * Curvature * 2.5f;
 
-			BezierCurve curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, projBottom });
+			var curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, projBottom });
 
 			int numPoints = 10; //Should make dynamic based on curve length, but I'm not sure how to smoothly do that while using a bezier curve
 			chainPositions = curve.GetPoints(numPoints).ToArray();
@@ -260,16 +256,16 @@ namespace StarlightRiver.Content.Items.Misc
 				float rotation = (chainPositions[i] - chainPositions[i - 1]).ToRotation() - MathHelper.PiOver2; //Calculate rotation based on direction from last point
 				float yScale = Vector2.Distance(chainPositions[i], chainPositions[i - 1]) / chainTex.Height; //Calculate how much to squash/stretch for smooth chain based on distance between points
 
-				Vector2 scale = new Vector2(1, yScale); // Stretch/Squash chain segment
+				var scale = new Vector2(1, yScale); // Stretch/Squash chain segment
 				Color chainLightColor = Lighting.GetColor((int)position.X / 16, (int)position.Y / 16); //Lighting of the position of the chain segment
-				Vector2 origin = new Vector2(chainTex.Width / 2, chainTex.Height); //Draw from center bottom of texture
+				var origin = new Vector2(chainTex.Width / 2, chainTex.Height); //Draw from center bottom of texture
 				spriteBatch.Draw(chainTex, position - Main.screenPosition, null, chainLightColor, rotation, origin, scale, SpriteEffects.None, 0);
 			}
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			BezierCurve curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, Projectile.Center });
+			var curve = new BezierCurve(new Vector2[] { Owner.MountedCenter, _chainMidA, _chainMidB, Projectile.Center });
 
 			int numPoints = 32;
 			Vector2[] chainPositions = curve.GetPoints(numPoints).ToArray();
@@ -281,6 +277,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), position, previousPosition, 6, ref collisionPoint))
 					return true;
 			}
+
 			return base.Colliding(projHitbox, targetHitbox);
 		}
 	}

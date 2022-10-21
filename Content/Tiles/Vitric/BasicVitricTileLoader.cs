@@ -7,8 +7,8 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Tiles.Vitric
 {
 	class BasicVitricTileLoader : SimpleTileLoader
-    {
-        public override string AssetRoot => AssetDirectory.VitricTile;
+	{
+		public override string AssetRoot => AssetDirectory.VitricTile;
 
 		public override float Priority => 2.03f;
 
@@ -92,20 +92,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			  );
 
 			LoadTile(
-                "VitricSandPlain",
-                "Soft Sand",
-                new TileLoadData(
-                    minPick: 0,
-                    dustType: 32,
-                    hitSound: SoundID.Dig,
-                    mapColor: new Color(192, 145, 110)
-                )
-              );
+				"VitricSandPlain",
+				"Soft Sand",
+				new TileLoadData(
+					minPick: 0,
+					dustType: 32,
+					hitSound: SoundID.Dig,
+					mapColor: new Color(192, 145, 110)
+				)
+			  );
 		}
 
-        public override void PostLoad()
-        {
-            AddMerge("VitricSoftSand", "VitricSand");
+		public override void PostLoad()
+		{
+			AddMerge("VitricSoftSand", "VitricSand");
 			AddMerge("VitricSoftSand", "VitricSandPlain");
 			AddMerge("VitricSoftSand", "VitricSand");
 
@@ -114,20 +114,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			AddHardenedSand("VitricSand");
 
-			var sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
-                TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
-                TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
+			int[] sands = new int[] { TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand,
+				TileID.Sandstone, TileID.CorruptSandstone, TileID.CrimsonSandstone, TileID.HallowSandstone,
+				TileID.HardenedSand, TileID.CorruptHardenedSand, TileID.CrimsonHardenedSand, TileID.HallowHardenedSand };
 
 			AddMerge("VitricSandPlain", sands);
 
-            AddMerge("VitricSoftSand", sands);
+			AddMerge("VitricSoftSand", sands);
 
-            AddMerge("VitricSand", sands);
+			AddMerge("VitricSand", sands);
 
-            AddMerge("AncientSandstone", "AncientSandstoneTile");
+			AddMerge("AncientSandstone", "AncientSandstoneTile");
 			AddMerge("AncientSandstone", "VitricSoftSand");
 			AddMerge("AncientSandstone", "VitricSandPlain");
 			AddMerge("AncientSandstone", "VitricSand");
 		}
-    }
+	}
 }

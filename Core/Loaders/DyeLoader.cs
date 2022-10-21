@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.UI;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Geomancer;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
+using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
 	class DyeLoader : IOrderedLoadable
-    {
+	{
 
-        public void Load()
-        {
-            GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor"].GetShader().Shader), "BasicPass"));
-            GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye2>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor2"].GetShader().Shader), "BasicPass"));
-        }
-        public void Unload()
-        {
+		public void Load()
+		{
+			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor"].GetShader().Shader), "BasicPass"));
+			GameShaders.Armor.BindShader(ModContent.ItemType<RainbowCycleDye2>(), new ArmorShaderData(new Ref<Effect>(Filters.Scene["RainbowArmor2"].GetShader().Shader), "BasicPass"));
+		}
+		public void Unload()
+		{
 
-        }
-        public float Priority => 1.2f;
-    }
+		}
+		public float Priority => 1.2f;
+	}
 }

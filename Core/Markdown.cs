@@ -8,255 +8,264 @@ using Terraria;
 namespace StarlightRiver.Core
 {
 	static class Markdown
-    {
-        public static float GetHeight(string message, float scale, int wrapWidth)
-        {
-            List<string> messages;
-            List<string> mods;
+	{
+		public static float GetHeight(string message, float scale, int wrapWidth)
+		{
 
-            SplitMessage(WrapMarkdownText(message, wrapWidth), out messages, out mods);
-            return (1 + messages.Count(n => n == "\n")) * Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
-        }
+			SplitMessage(WrapMarkdownText(message, wrapWidth), out List<string> messages, out List<string> mods);
+			return (1 + messages.Count(n => n == "\n")) * Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
+		}
 
-        public static float GetWidth(string message, float scale)
-        {
-            return Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(NeuterString(message)).X * scale;
-        }
+		public static float GetWidth(string message, float scale)
+		{
+			return Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(NeuterString(message)).X * scale;
+		}
 
-        public static void DrawMessage(SpriteBatch sb, Vector2 pos, string message, float scale, int wrapWidth = 0)
-        {
+		public static void DrawMessage(SpriteBatch sb, Vector2 pos, string message, float scale, int wrapWidth = 0)
+		{
 			SplitMessage(wrapWidth > 0 ? WrapMarkdownText(message, wrapWidth) : message, out List<string> messages, out List<string> mods);
 
 			float xOff = 0;
-            float yOff = 0;
-            for (int k = 0; k < messages.Count; k++)
-            {
-                if (messages[k] == "\n") //special case for linebreak because im layzeee
-                {
-                    yOff += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
-                    xOff = 0;
-                    continue;
-                }
+			float yOff = 0;
+			for (int k = 0; k < messages.Count; k++)
+			{
+				if (messages[k] == "\n") //special case for linebreak because im layzeee
+				{
+					yOff += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
+					xOff = 0;
+					continue;
+				}
 
-                DrawSubstring(sb, pos + new Vector2(xOff, yOff), scale, messages[k], mods[k]);
+				DrawSubstring(sb, pos + new Vector2(xOff, yOff), scale, messages[k], mods[k]);
 
-                var measure = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(messages[k]) * scale;
-                xOff += measure.X;
-            }
-        }
+				Vector2 measure = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(messages[k]) * scale;
+				xOff += measure.X;
+			}
+		}
 
-        private static void DrawSubstring(SpriteBatch sb, Vector2 pos, float scale, string message, string Mod)
-        {
-            ParseModifier(Mod, out Color color, out Vector2 offset, out Vector3 modScale);
-            //sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, message, pos + offset, color, 0, Vector2.Zero, scale, 0, 0);
-            Utils.DrawBorderString(sb, message, pos + offset, color, scale * modScale.X, modScale.Y, modScale.Z);
-        }
+		private static void DrawSubstring(SpriteBatch sb, Vector2 pos, float scale, string message, string Mod)
+		{
+			ParseModifier(Mod, out Color color, out Vector2 offset, out Vector3 modScale);
+			//sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, message, pos + offset, color, 0, Vector2.Zero, scale, 0, 0);
+			Utils.DrawBorderString(sb, message, pos + offset, color, scale * modScale.X, modScale.Y, modScale.Z);
+		}
 
-        private static void SplitMessage(string message, out List<string> messages, out List<string> mods)
-        {
-            List<string> outputMessages = new List<string>();
-            List<string> modifierMessages = new List<string>();
+		private static void SplitMessage(string message, out List<string> messages, out List<string> mods)
+		{
+			var outputMessages = new List<string>();
+			var modifierMessages = new List<string>();
 
-            string writeTo = "";
+			string writeTo = "";
 
-            for (int k = 0; k < message.Length; k++)
-            {
-                var c = message[k];
+			for (int k = 0; k < message.Length; k++)
+			{
+				char c = message[k];
 
-                if (k > 0 && c == '[')
-                {
-                    //writeTo = tempModifier;
-                    outputMessages.Add(writeTo);
-                    writeTo = "";
-                    writeTo += c;
-                }
+				if (k > 0 && c == '[')
+				{
+					//writeTo = tempModifier;
+					outputMessages.Add(writeTo);
+					writeTo = "";
+					writeTo += c;
+				}
 
-                else if (c == ']')
-                {
-                    writeTo += c;
-                    modifierMessages.Add(writeTo);
-                    writeTo = "";
-                }
+				else if (c == ']')
+				{
+					writeTo += c;
+					modifierMessages.Add(writeTo);
+					writeTo = "";
+				}
 
-                else writeTo += c;
-            }
-            outputMessages.Add(writeTo);
+				else
+				{
+					writeTo += c;
+				}
+			}
 
-            messages = outputMessages;
-            mods = modifierMessages;
-        }
+			outputMessages.Add(writeTo);
 
-        private static void ParseModifier(string Mod, out Color color, out Vector2 offset, out Vector3 scale)
-        {
-            color = Color.White;
-            offset = Vector2.Zero;
-            scale = Vector3.UnitX;
+			messages = outputMessages;
+			mods = modifierMessages;
+		}
 
-            Mod = Mod.Replace("[", "");
-            Mod = Mod.Replace("]", "");
+		private static void ParseModifier(string Mod, out Color color, out Vector2 offset, out Vector3 scale)
+		{
+			color = Color.White;
+			offset = Vector2.Zero;
+			scale = Vector3.UnitX;
 
-            if (Mod == "") return;
+			Mod = Mod.Replace("[", "");
+			Mod = Mod.Replace("]", "");
 
-            string[] mods = Mod.Split('<');
+			if (Mod == "")
+				return;
 
-            for (int k = 0; k < mods.Length; k++)
-            {
-                var subMod = mods[k].Replace(">", "");
-                if (subMod == "") continue;
-                var parts = subMod.Split(':');
+			string[] mods = Mod.Split('<');
 
-                string modName = parts[0];
-                string param = parts[1];
+			for (int k = 0; k < mods.Length; k++)
+			{
+				string subMod = mods[k].Replace(">", "");
+				if (subMod == "")
+					continue;
+				string[] parts = subMod.Split(':');
 
-                if (modName == "color") color = ParseAsColor(param);
-                if (modName == "offset") offset = ParseAsOffset(param);
-                if (modName == "scale") scale = ParseAsScale(param);
-            }
-        }
+				string modName = parts[0];
+				string param = parts[1];
 
-        private static Color ParseAsColor(string param)
-        {
-            string[] vars = param.Split(',');
-            return new Color(int.Parse(vars[0]), int.Parse(vars[1]), int.Parse(vars[2]));
-        }
+				if (modName == "color")
+					color = ParseAsColor(param);
+				if (modName == "offset")
+					offset = ParseAsOffset(param);
+				if (modName == "scale")
+					scale = ParseAsScale(param);
+			}
+		}
 
-        private static Vector2 ParseAsOffset(string param)
-        {
-            string[] vars = param.Split(',');
-            return new Vector2(float.Parse(vars[0]), float.Parse(vars[1]));
-        }
+		private static Color ParseAsColor(string param)
+		{
+			string[] vars = param.Split(',');
+			return new Color(int.Parse(vars[0]), int.Parse(vars[1]), int.Parse(vars[2]));
+		}
 
-        private static Vector3 ParseAsScale(string param)
-        {
-            string[] vars = param.Split(',');
-            return new Vector3(float.Parse(vars[0]), float.Parse(vars[1]), float.Parse(vars[1]));
-        }
+		private static Vector2 ParseAsOffset(string param)
+		{
+			string[] vars = param.Split(',');
+			return new Vector2(float.Parse(vars[0]), float.Parse(vars[1]));
+		}
 
-        public static string MakeVibratingText(string message, Color color)
-        {
-            string output = "";
-            for (int k = 0; k < message.Length; k++)
-            {
-                output += SetCharMarkdown(message[k], color, new Vector2(Main.rand.Next(-2, 2), Main.rand.Next(-2, 2)), new Vector3(Main.rand.NextFloat(0.8f, 1), 0, 0));
-            }
-            return output;
-        }
+		private static Vector3 ParseAsScale(string param)
+		{
+			string[] vars = param.Split(',');
+			return new Vector3(float.Parse(vars[0]), float.Parse(vars[1]), float.Parse(vars[1]));
+		}
 
-        public static string MakeSuaveText(string message)
-        {
-            string output = "";
-            for (int k = 0; k < message.Length; k++)
-            {
-                float sin = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k) * 0.5f;
-                float sin2 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f) * 0.5f;
-                float sin3 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f * 2) * 0.5f;
-                Color color = new Color(sin, sin2, sin3);
-                Vector2 off = new Vector2(0, 12 + (float)(Math.Sin(StarlightWorld.rottime * 2 + k / 2f) * 4));
+		public static string MakeVibratingText(string message, Color color)
+		{
+			string output = "";
+			for (int k = 0; k < message.Length; k++)
+			{
+				output += SetCharMarkdown(message[k], color, new Vector2(Main.rand.Next(-2, 2), Main.rand.Next(-2, 2)), new Vector3(Main.rand.NextFloat(0.8f, 1), 0, 0));
+			}
 
-                float sin4 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k * 0.25f) * 0.2f;
-                Vector3 scale = new Vector3(sin4, 0.5f, 0.5f);
+			return output;
+		}
 
-                output += SetCharMarkdown(message[k], color, off, scale);
-            }
-            return output;
-        }
+		public static string MakeSuaveText(string message)
+		{
+			string output = "";
+			for (int k = 0; k < message.Length; k++)
+			{
+				float sin = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k) * 0.5f;
+				float sin2 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f) * 0.5f;
+				float sin3 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f * 2) * 0.5f;
+				var color = new Color(sin, sin2, sin3);
+				var off = new Vector2(0, 12 + (float)(Math.Sin(StarlightWorld.rottime * 2 + k / 2f) * 4));
 
-        public static string SetCharMarkdown(char character, Color color, Vector2 offset, Vector3 scale)
-        {
-            return
-                    "[<offset:" + offset.X + "," + offset.Y + ">" +
-                    "<color:" + color.R + "," + color.G + "," + color.B + ">" +
-                    "<scale:" + scale.X + "," + scale.Y + "," + scale.Z + ">]" +
-                    character;
-        }
+				float sin4 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k * 0.25f) * 0.2f;
+				var scale = new Vector3(sin4, 0.5f, 0.5f);
 
-        public static string NeuterString(string text)
-        {
-            string output = "";
-            string[] parts = text.Replace("]", "[").Split('[');
+				output += SetCharMarkdown(message[k], color, off, scale);
+			}
 
-            for (int k = 0; k < parts.Length; k += 2)
-            {
-                output += parts[k];
-            }
+			return output;
+		}
 
-            return output;
-        }
+		public static string SetCharMarkdown(char character, Color color, Vector2 offset, Vector3 scale)
+		{
+			return
+					"[<offset:" + offset.X + "," + offset.Y + ">" +
+					"<color:" + color.R + "," + color.G + "," + color.B + ">" +
+					"<scale:" + scale.X + "," + scale.Y + "," + scale.Z + ">]" +
+					character;
+		}
 
-        public static string WrapMarkdownText(string text, int width) //this is kinda cancer, sorry folks
-        {
-            string output = "";
-            string lastMod = "";
-            string[] parts = text.Replace("]", "[").Split('[');
-            float totalWidth = 0;
+		public static string NeuterString(string text)
+		{
+			string output = "";
+			string[] parts = text.Replace("]", "[").Split('[');
 
-            float singleCharWidthCache = 0;
-            int singleCharIndexCache = 0;
-            bool singleCharBroken = false;
+			for (int k = 0; k < parts.Length; k += 2)
+			{
+				output += parts[k];
+			}
 
-            for (int k = 1; k < parts.Length; k++)
-            {
-                var segment = parts[k];
+			return output;
+		}
 
-                if (k % 2 == 1) //modifier
-                {
-                    output += '[' + segment + ']';
-                    lastMod = '[' + segment + ']';
-                }
-                else //text
-                {
-                    string[] words = segment.Split(' ');
+		public static string WrapMarkdownText(string text, int width) //this is kinda cancer, sorry folks
+		{
+			string output = "";
+			string lastMod = "";
+			string[] parts = text.Replace("]", "[").Split('[');
+			float totalWidth = 0;
 
-                    if (words.Length == 1 && words[0].Length == 1) //special case for single characters
-                    {
-                        if (singleCharIndexCache == 0)
-                        {
-                            singleCharIndexCache = output.Length;
-                            singleCharWidthCache = 0;
-                        }
+			float singleCharWidthCache = 0;
+			int singleCharIndexCache = 0;
+			bool singleCharBroken = false;
 
-                        float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[0]).X;
-                        singleCharWidthCache += w;
+			for (int k = 1; k < parts.Length; k++)
+			{
+				string segment = parts[k];
 
-                        if (totalWidth + singleCharWidthCache + w > width && !singleCharBroken)
-                        {
-                            output = output.Insert(singleCharIndexCache, "[]\n" + lastMod);
-                            singleCharBroken = true;
-                        }
+				if (k % 2 == 1) //modifier
+				{
+					output += '[' + segment + ']';
+					lastMod = '[' + segment + ']';
+				}
+				else //text
+				{
+					string[] words = segment.Split(' ');
 
-                        output += words[0];
-                        continue;
-                    }
-                    else if (singleCharIndexCache != 0) //done reading single characters! reset for next time
-                    {
-                        if (singleCharBroken)
-                            totalWidth = singleCharWidthCache;
-                        else
-                            totalWidth += singleCharWidthCache;
+					if (words.Length == 1 && words[0].Length == 1) //special case for single characters
+					{
+						if (singleCharIndexCache == 0)
+						{
+							singleCharIndexCache = output.Length;
+							singleCharWidthCache = 0;
+						}
 
-                        singleCharIndexCache = 0;
-                        singleCharWidthCache = 0;
-                        singleCharBroken = false;
-                    }
+						float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[0]).X;
+						singleCharWidthCache += w;
 
-                    for (int n = 0; n < words.Length; n++)
-                    {
-                        float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
-                        if (totalWidth + w > width)
-                        {
-                            totalWidth = w;
-                            output += "[]\n" + lastMod + words[n] + ' ';
-                        }
-                        else
-                        {
-                            output += words[n] + ' ';
-                            totalWidth += w;
-                        }
-                    }
-                }
-            }
+						if (totalWidth + singleCharWidthCache + w > width && !singleCharBroken)
+						{
+							output = output.Insert(singleCharIndexCache, "[]\n" + lastMod);
+							singleCharBroken = true;
+						}
 
-            return output;
-        }
-    }
+						output += words[0];
+						continue;
+					}
+					else if (singleCharIndexCache != 0) //done reading single characters! reset for next time
+					{
+						if (singleCharBroken)
+							totalWidth = singleCharWidthCache;
+						else
+							totalWidth += singleCharWidthCache;
+
+						singleCharIndexCache = 0;
+						singleCharWidthCache = 0;
+						singleCharBroken = false;
+					}
+
+					for (int n = 0; n < words.Length; n++)
+					{
+						float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
+						if (totalWidth + w > width)
+						{
+							totalWidth = w;
+							output += "[]\n" + lastMod + words[n] + ' ';
+						}
+						else
+						{
+							output += words[n] + ' ';
+							totalWidth += w;
+						}
+					}
+				}
+			}
+
+			return output;
+		}
+	}
 }

@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public TypedRoomBuilder(float weight)
 		{
 			this.weight = weight;
-		}	
+		}
 
 		public DungeonRoom MakeRoom(int x, int y)
 		{
@@ -111,7 +111,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// The conditions for an attempt to generate your dungeon to be valid. For example, having a minimum amount of rooms.
 		/// </summary>
 		/// <returns>If the generation should re-try building a template with a different random seed</returns>
-		public virtual bool IsDungeonValid() => true;
+		public virtual bool IsDungeonValid()
+		{
+			return true;
+		}
 
 		/// <summary>
 		/// The condition for which the dungeon builder should consider a section invalid if any tiles within it match the conditions. 
@@ -122,7 +125,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <param name="x">X coordinate of the tile in the world</param>
 		/// <param name="y">Y coordinate of the tile in the world</param>
 		/// <returns>If the given tile should result in banning the section</returns>
-		public virtual bool TileBlacklistCondition(Tile tile, int x, int y) => false;
+		public virtual bool TileBlacklistCondition(Tile tile, int x, int y)
+		{
+			return false;
+		}
 
 		/// <summary>
 		/// Allows you to attempt to overwrite the room to be generated when a room is picked. If you return default or your returned
@@ -130,7 +136,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// generate! If you're attempting to generate an essential room, make sure you check for it in validate!
 		/// </summary>
 		/// <returns></returns>
-		public virtual IRoomBuildable PickRoom() => default;
+		public virtual IRoomBuildable PickRoom()
+		{
+			return default;
+		}
 
 		/// <summary>
 		/// How your dungeon should generate the actual tiles of hallway sections.
@@ -143,43 +152,57 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public virtual void FillHallway(Point16 pos, bool connectUp, bool connectRight, bool connectDown, bool connectLeft)
 		{
 			for (int x = 0; x < SectionSize; x++)
+			{
 				for (int y = 0; y < SectionSize; y++)
 					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.GrayBrick, false, true);
+			}
 
 			for (int x = 0; x < SectionSize; x++)
+			{
 				for (int y = 0; y < SectionSize; y++)
 					WorldGen.PlaceWall(pos.X + x, pos.Y + y, Terraria.ID.WallID.StoneSlab);
+			}
 
 			for (int x = 2; x < SectionSize - 2; x++)
+			{
 				for (int y = 2; y < SectionSize - 2; y++)
 					WorldGen.KillTile(pos.X + x, pos.Y + y);
+			}
 
 			if (connectUp)
 			{
 				for (int x = 2; x < SectionSize - 2; x++)
+				{
 					for (int y = 0; y < 2; y++)
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+				}
 			}
 
 			if (connectRight)
 			{
 				for (int x = SectionSize - 2; x < SectionSize; x++)
+				{
 					for (int y = 2; y < SectionSize - 2; y++)
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+				}
 			}
 
 			if (connectDown)
 			{
 				for (int x = 2; x < SectionSize - 2; x++)
+				{
 					for (int y = SectionSize - 2; y < SectionSize; y++)
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+				}
 			}
 
 			if (connectLeft)
 			{
 				for (int x = 0; x < 2; x++)
+				{
 					for (int y = 2; y < SectionSize - 2; y++)
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+				}
 			}
 		}
 
@@ -232,11 +255,12 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			int baseY = startPointInWorld.Y + y * SectionSize;
 
 			for (int tileX = 0; tileX < SectionSize; tileX++)
-				for(int tileY = 0; tileY < SectionSize; tileY++)
+			{
+				for (int tileY = 0; tileY < SectionSize; tileY++)
 				{
 					int finalX = baseX + tileX;
 					int finalY = baseY + tileY;
-					var tile = Framing.GetTileSafely(finalX, finalY);
+					Tile tile = Framing.GetTileSafely(finalX, finalY);
 
 					if (TileBlacklistCondition(tile, finalX, finalY))
 					{
@@ -244,6 +268,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 						return false;
 					}
 				}
+			}
 
 			return true;
 		}
@@ -278,15 +303,17 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <returns>if the room is valid or not</returns>
 		private bool IsRoomValid(DungeonRoom toValidate)
 		{
-			for(int x = 0; x < toValidate.SecWidth; x++)
-				for(int y = 0; y < toValidate.SecHeight; y++)
+			for (int x = 0; x < toValidate.SecWidth; x++)
+			{
+				for (int y = 0; y < toValidate.SecHeight; y++)
 				{
-					if (toValidate.Layout[x,y] == secType.none)
+					if (toValidate.Layout[x, y] == secType.none)
 						continue;
 
 					if (!IsSectionValid(toValidate.topLeft.X + x, toValidate.topLeft.Y + y))
 						return false;
 				}
+			}
 
 			return true;
 		}
@@ -301,7 +328,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		private bool TryAttachRoom(ref DungeonRoom toValidate, int x, int y)
 		{
 			toValidate.topLeft = new Point16(x, y);
-			var doors = Helpers.Helper.RandomizeList(toValidate.GetDoorOffsets());
+			List<Point16> doors = Helpers.Helper.RandomizeList(toValidate.GetDoorOffsets());
 
 			foreach (Point16 doorPos in doors)
 			{
@@ -324,8 +351,8 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <returns></returns>
 		private bool TryMakeRandomRoom(int x, int y)
 		{
-			var builder = PickRoom(); //We first attempt to generate the room that's chosen by the PickRoom hook
-			var room = builder?.MakeRoom(x, y);
+			IRoomBuildable builder = PickRoom(); //We first attempt to generate the room that's chosen by the PickRoom hook
+			DungeonRoom room = builder?.MakeRoom(x, y);
 
 			if (room != null && TryAttachRoom(ref room, x, y))
 			{
@@ -357,10 +384,12 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			rooms.Add(room);
 
 			for (int xOff = 0; xOff < room.SecWidth; xOff++)
+			{
 				for (int yOff = 0; yOff < room.SecHeight; yOff++)
 				{
 					dungeon[room.topLeft.X + xOff, room.topLeft.Y + yOff] = room.Layout[xOff, yOff];
 				}
+			}
 		}
 
 		/// <summary>
@@ -404,9 +433,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <param name="hallway"></param>
 		private void AddHallway(List<Point16> hallway)
 		{
-			for(int k = 1; k < hallway.Count - 1; k++)
+			for (int k = 1; k < hallway.Count - 1; k++)
 			{
-				var hall = hallway[k];
+				Point16 hall = hallway[k];
 				dungeon[hall.X, hall.Y] = secType.hall;
 				hallSections.Add(hall);
 			}
@@ -420,7 +449,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		{
 			for (int k = 1; k < hallway.Count - 1; k++)
 			{
-				var hall = hallway[k];
+				Point16 hall = hallway[k];
 				dungeon[hall.X, hall.Y] = secType.none;
 				hallSections.Remove(hall);
 			}
@@ -432,16 +461,16 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <returns></returns>
 		private Point16 MakeRandomDirectionalPoint16()
 		{
-			var rand = WorldGen.genRand.Next(4);
+			int rand = WorldGen.genRand.Next(4);
 
-			switch (rand)
+			return rand switch
 			{
-				case 0: return new Point16(0, 1);
-				case 1: return new Point16(0, -1);
-				case 2: return new Point16(1, 0);
-				case 3: return new Point16(-1, 0);
-				default: return new Point16(1, 0);
-			}
+				0 => new Point16(0, 1),
+				1 => new Point16(0, -1),
+				2 => new Point16(1, 0),
+				3 => new Point16(-1, 0),
+				_ => new Point16(1, 0),
+			};
 		}
 
 		/// <summary>
@@ -456,17 +485,19 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			if (remainingRooms <= 0)
 				return;
 
-			List<Point16> hall = new List<Point16>();
+			var hall = new List<Point16>();
 			if (TryMakeHallway(start.X, start.Y, ref hall, HallwaySize))
 			{
 				if (TryMakeRandomRoom(hall.Last().X, hall.Last().Y))
 				{
-					var lastRoom = rooms.Last();
+					DungeonRoom lastRoom = rooms.Last();
 					foreach (Point16 door in lastRoom.GetDoorOffsets())
 						GenerateLimb(door + lastRoom.topLeft, remainingRooms - 1);
 				}
 				else
+				{
 					RemoveHallway(hall);
+				}
 			}
 		}
 

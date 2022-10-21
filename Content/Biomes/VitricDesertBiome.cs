@@ -1,16 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Codex.Entries;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
+﻿using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Waters;
+using StarlightRiver.Helpers;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -68,7 +59,7 @@ namespace StarlightRiver.Content.Biomes
 		public override void OnEnter(Player player)
 		{
 			Helper.UnlockCodexEntry<VitricEntry>(player);
-		}	
+		}
 	}
 
 	public class VitricDesertBackground : ModSceneEffect

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -15,7 +15,7 @@ namespace StarlightRiver.Core
 
 		public static NPC CreateItem<T>(Vector2 pos) where T : InworldItem
 		{
-			Item Item = new Item();
+			var Item = new Item();
 			Item.SetDefaults(ModContent.ItemType<T>());
 			var inworldItem = Item.ModItem as InworldItem;
 
@@ -33,7 +33,7 @@ namespace StarlightRiver.Core
 
 			if (Player.HeldItem.type != Item.type)
 				inWorldNPC?.Release(true);
-		}	
+		}
 	}
 
 	public abstract class InworldItemNPC : ModNPC
@@ -50,7 +50,10 @@ namespace StarlightRiver.Core
 
 		protected virtual void PutDownNatural(Player Player) { }
 
-		public virtual bool CanPickup(Player Player) => false;
+		public virtual bool CanPickup(Player Player)
+		{
+			return false;
+		}
 
 		public void Release(bool natural)
 		{

@@ -1,15 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Terraria;
-using StarlightRiver.Content.Items.Gravedigger;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -112,17 +106,19 @@ namespace StarlightRiver.Core
 
 				if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
 				{
-					var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+					Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
 
 					pos = new Vector2(Main.screenWidth - 60 - vanillaHearts * 12 + k * 12, 24f);
 
 					int width2 = 0;
 
 					if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation >= (k + 1) * lifePerHeart)
+					{
 						width2 = texBar.Width;
+					}
 					else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > k * lifePerHeart)
 					{
-						width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart) / lifePerHeart * texBar.Width);
+						width2 = (int)(Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart / lifePerHeart * texBar.Width);
 					}
 
 					var source2 = new Rectangle(0, 0, width2, texBar.Height);
@@ -154,14 +150,14 @@ namespace StarlightRiver.Core
 						pos += new Vector2(240, -28);
 				}
 
-				var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLife").Value;
-				var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLifeLine").Value;
+				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLife").Value;
+				Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLifeLine").Value;
 				int width = 0;
 
 				if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation >= (k + 1) * lifePerHeart)
 					width = tex.Width;
 				else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation > k * lifePerHeart)
-					width = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart) / lifePerHeart * tex.Width);
+					width = (int)(Player.GetModPlayer<ResourceReservationPlayer>().ReservedLifeAnimation % lifePerHeart / lifePerHeart * tex.Width);
 
 				if (width > 0 && k < 20)
 				{
@@ -184,19 +180,19 @@ namespace StarlightRiver.Core
 			{
 				int manaDrawn = i * 20; //the amount of mana drawn by this star and all before it
 
-				float starHeight = MathHelper.Clamp(((player.statMana - (i - 1) * 20) / 20f) / 4f + 0.75f, 0.75f, 1); //height of the current star based on current mana
+				float starHeight = MathHelper.Clamp((player.statMana - (i - 1) * 20) / 20f / 4f + 0.75f, 0.75f, 1); //height of the current star based on current mana
 
 				if (player.statMana <= i * 20 && player.statMana >= (i - 1) * 20) //pulsing star for the "current" star
 					starHeight += Main.cursorScale - 1;
 
-				var reservedManaAmount = player.statManaMax2 - player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation; //amount of mana to draw as rotten
+				int reservedManaAmount = player.statManaMax2 - player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation; //amount of mana to draw as rotten
 
 				if (reservedManaAmount < manaDrawn)
 				{
 					if (manaDrawn - reservedManaAmount < 20)
 					{
-						var tex1 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
-						var pos1 = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
+						Texture2D tex1 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
+						var pos1 = new Vector2(Main.screenWidth - 25, 30 + TextureAssets.Mana.Height() / 2f + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + 28 * (i - 1));
 
 						int off = (int)(reservedManaAmount % 20 / 20f * tex1.Height);
 						var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
@@ -206,8 +202,8 @@ namespace StarlightRiver.Core
 						continue;
 					}
 
-					var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
-					var pos = new Vector2(Main.screenWidth - 25, (30 + TextureAssets.Mana.Height() / 2f) + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + (28 * (i - 1)));
+					Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
+					var pos = new Vector2(Main.screenWidth - 25, 30 + TextureAssets.Mana.Height() / 2f + (TextureAssets.Mana.Height() - TextureAssets.Mana.Height() * starHeight) / 2f + 28 * (i - 1));
 
 					Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, 1, 0, 0);
 				}
@@ -224,14 +220,14 @@ namespace StarlightRiver.Core
 
 				float starHeight = 24; //height of the current star based on current mana
 
-				var reservedManaAmount = player.statManaMax2 - player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation; //amount of mana to draw as rotten
+				int reservedManaAmount = player.statManaMax2 - player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation; //amount of mana to draw as rotten
 
 				if (reservedManaAmount < manaDrawn)
 				{
 					if (manaDrawn - reservedManaAmount < 20)
 					{
-						var tex1 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
-						var pos1 = new Vector2(Main.screenWidth - 25, 38 + (22 * (i - 1)));
+						Texture2D tex1 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
+						var pos1 = new Vector2(Main.screenWidth - 25, 38 + 22 * (i - 1));
 
 						int off = (int)(reservedManaAmount % 20 / 20f * tex1.Height);
 						var source = new Rectangle(0, off, tex1.Width, tex1.Height - off);
@@ -241,8 +237,8 @@ namespace StarlightRiver.Core
 						continue;
 					}
 
-					var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
-					var pos = new Vector2(Main.screenWidth - 25, 38 + (22 * (i - 1)));
+					Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedMana").Value;
+					var pos = new Vector2(Main.screenWidth - 25, 38 + 22 * (i - 1));
 
 					Main.spriteBatch.Draw(tex, pos, null, Color.White, 0f, tex.Size() / 2, 1, 0, 0);
 				}
@@ -260,17 +256,19 @@ namespace StarlightRiver.Core
 			{
 				Vector2 pos = Vector2.Zero;
 
-				var texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
+				Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedBar").Value;
 
 				pos = new Vector2(Main.screenWidth - 70 - vanillaStars * 12 + k * 12, 48f);
 
 				int width2 = 0;
 
 				if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation >= (k + 1) * 20)
+				{
 					width2 = texBar.Width;
+				}
 				else if (Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation > k * 20)
 				{
-					width2 = (int)((Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation % 20) / 20f * texBar.Width);
+					width2 = (int)(Player.GetModPlayer<ResourceReservationPlayer>().ReservedManaAnimation % 20 / 20f * texBar.Width);
 				}
 
 				var source2 = new Rectangle(0, 0, width2, texBar.Height);

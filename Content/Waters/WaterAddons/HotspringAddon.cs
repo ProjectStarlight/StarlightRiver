@@ -1,12 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 using Terraria.Graphics.Effects;
 
@@ -28,7 +22,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			/*Main.spriteBatch.Begin();
 			Main.spriteBatch.Draw(HotspringMapTarget.hotspringShineTarget, Microsoft.Xna.Framework.Vector2.Zero, Microsoft.Xna.Framework.Color.White);
 			Main.spriteBatch.End();*/
-			var effect = Filters.Scene["HotspringWater"].GetShader().Shader;
+			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
 
 			//var a = Vector2.Normalize(Helpers.Helper.ScreenSize);
 			//effect.Parameters["offset"].SetValue(Main.screenPosition - HotspringMapTarget.oldScreenPos);
@@ -38,7 +32,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 
 		public override void SpritebatchChangeBack()
 		{
-			var effect = Filters.Scene["HotspringWater"].GetShader().Shader;
+			Effect effect = Filters.Scene["HotspringWater"].GetShader().Shader;
 
 			//the multiply by 1.3 and 1.5 seem to fix the jittering when moving, seems to be tied to the 2 magic numbers in Visuals.HotspringMapTarget.cs
 			//effect.Parameters["offset"].SetValue(Main.screenPosition - HotspringMapTarget.oldScreenPos);

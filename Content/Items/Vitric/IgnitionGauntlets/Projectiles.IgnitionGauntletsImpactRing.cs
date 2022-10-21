@@ -1,20 +1,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletsImpactRing : ModProjectile, IDrawPrimitive
 	{
@@ -26,7 +21,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private Trail trail2;
 
 		public int timeLeftStart = 10;
-		private float Progress => 1 - (Projectile.timeLeft / (float)timeLeftStart);
+		private float Progress => 1 - Projectile.timeLeft / (float)timeLeftStart;
 
 		private float Radius => Projectile.ai[0] * (float)Math.Sqrt(Math.Sqrt(Progress));
 
@@ -56,7 +51,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override bool PreDraw(ref Color lightColor) => false;
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
 
 		private void ManageCaches()
 		{
@@ -64,8 +62,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			float radius = Radius;
 			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
 			{
-				double rad = (i / 32f) * 6.28f;
-				Vector2 offset = new Vector2((float)Math.Sin(rad) * 0.4f, (float)Math.Cos(rad));
+				double rad = i / 32f * 6.28f;
+				var offset = new Vector2((float)Math.Sin(rad) * 0.4f, (float)Math.Cos(rad));
 				offset *= radius;
 				offset = offset.RotatedBy(Projectile.ai[1]);
 				cache.Add(Projectile.Center + offset);
@@ -80,17 +78,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor =>
-			{
-				return Color.Orange;
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor => Color.Orange);
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor =>
-			{
-				return Color.White;
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => Color.White);
 			float nextplace = 33f / 32f;
-			Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
+			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
 
 			trail.Positions = cache.ToArray();
@@ -104,9 +96,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);

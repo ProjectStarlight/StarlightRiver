@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
-using System;
 using Terraria;
 using Terraria.ModLoader;
 
@@ -15,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;			
+			StatusTrackingNPC.buffCompareEffects += ChaliceEffects;
 		}
 
 		public override void Unload()
@@ -37,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 		class PlexusChaliceBuff : ModBuff
 		{
 
-            public override string Texture => AssetDirectory.PotionsItem + Name;
+			public override string Texture => AssetDirectory.PotionsItem + Name;
 
 			public override void SetStaticDefaults()
 			{

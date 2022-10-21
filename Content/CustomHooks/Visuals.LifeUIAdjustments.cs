@@ -1,25 +1,22 @@
 ﻿using MonoMod.Cil;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class LifeUIAdjustments : HookGroup
 	{
-		public override SafetyLevel Safety => SafetyLevel.Questionable; //Adjusts a few measurements for the vanilla health UI
-
+		//Adjusts a few measurements for the vanilla health UI
 		public override void Load()
 		{
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText; 
+			IL.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText;
 		}
 
 		private void ShiftText(ILContext il)
 		{
-			ILCursor c = new ILCursor(il);
+			var c = new ILCursor(il);
 
 			for (int k = 0; k < 2; k++)
 			{
@@ -32,7 +29,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private int stringConcatDelegate(int arg)
 		{
 			Player Player = Main.LocalPlayer;
-			var sp = Player.GetModPlayer<BarrierPlayer>();
+			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
 
 			if (sp.Barrier <= 0 && sp.MaxBarrier <= 0)
 				return arg;

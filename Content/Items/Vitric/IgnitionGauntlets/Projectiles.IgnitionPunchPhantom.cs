@@ -1,20 +1,11 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionPunchPhantom : ModProjectile
 	{
@@ -48,7 +39,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Projectile.velocity = Vector2.Zero;
 			Vector2 direction = Projectile.DirectionTo(Main.MouseWorld);
-			Projectile.Center = owner.Center + (direction * 20);
+			Projectile.Center = owner.Center + direction * 20;
 
 			Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
 			float extend = (float)Math.Sin(Projectile.timeLeft / 2f);

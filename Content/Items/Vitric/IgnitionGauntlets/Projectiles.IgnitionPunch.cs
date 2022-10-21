@@ -1,20 +1,13 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionPunch : ModProjectile
 	{
@@ -27,8 +20,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private bool fading = false;
 
-		private List<float> oldRotation = new List<float>();
-		private List<Vector2> oldPosition = new List<Vector2>();
+		private List<float> oldRotation = new();
+		private List<Vector2> oldPosition = new();
 
 		private bool initialized = false;
 
@@ -61,8 +54,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				oldPosition = new List<Vector2>();
 				initialized = true;
 				Vector2 direction = owner.DirectionTo(Main.MouseWorld);
-				posToBe = owner.Center + (direction * 200);
+				posToBe = owner.Center + direction * 200;
 			}
+
 			if (Projectile.extraUpdates != 0)
 			{
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(posToBe) * 7, 0.25f);
@@ -71,9 +65,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				oldPosition.Add(Projectile.Center);
 			}
 
-			if (oldRotation.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
+			if (oldRotation.Count > (Projectile.extraUpdates == 2 ? 16 : 0))
 				oldRotation.RemoveAt(0);
-			if (oldPosition.Count > ((Projectile.extraUpdates == 2) ? 16 : 0))
+			if (oldPosition.Count > (Projectile.extraUpdates == 2 ? 16 : 0))
 				oldPosition.RemoveAt(0);
 
 			/*if (Projectile.timeLeft == 2 && Projectile.extraUpdates != 0)
@@ -96,7 +90,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Vector2 direction = target.DirectionTo(owner.Center);
 			owner.velocity += direction * pushback * 0.15f;
 
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
+			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
 			for (int i = 0; i < 7; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
@@ -123,7 +117,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			for (int k = 15; k > 0; k--)
 			{
 
-				float progress = 1 - (float)(((float)(Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length));
+				float progress = 1 - (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 				Color color = Color.White * EaseFunction.EaseQuarticOut.Ease(progress) * EaseFunction.EaseQuarticOut.Ease(fade) * 0.2f;
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * 0.8f * progress, SpriteEffects.None, 0f);

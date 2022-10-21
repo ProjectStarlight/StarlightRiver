@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public static float lightingStoredSize = 1;
 
 		//this is super hacky
-		public override SafetyLevel Safety => SafetyLevel.Severe;
+		
 
 		public override void Load()
 		{

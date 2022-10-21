@@ -1,14 +1,12 @@
-﻿using StarlightRiver.Content.Abilities;
-using Terraria;
-using Terraria.ModLoader;
-using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System.Collections.Generic;
+using Terraria;
 
-namespace StarlightRiver.Prefixes.CombatMountPrefixes
+namespace StarlightRiver.Content.Prefixes.CombatMountPrefixes
 {
 	public abstract class CombatMountPrefix : CustomTooltipPrefix
 	{
-		public static List<int> combatMountPrefixTypes = new List<int>();
+		public static List<int> combatMountPrefixTypes = new();
 
 		/// <summary>
 		/// Modify the mount's stats here. The other apply methods wont do anything to the mount itself.

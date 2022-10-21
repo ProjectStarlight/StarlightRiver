@@ -1,121 +1,113 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.GameInput;
-using Terraria.ModLoader;
+﻿using System;
 using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class ImprovedTeamRadar : HookGroup
-    {
-        public override void Load()
-        {
-            //Here we have an interesting problem. This functionality is perfectly doable with a detour. Though when done this way, requires you to re-iterate through all Players
-            //and re-calculate the position of their text and if they should display for the client. You could avoid this using an IL delegate injection, but that would be less
-            //safe than the method swap. Due to the fact that this will need to be ported at some point im going with the safer and more portable option of using a detour.
-            //at some point in the future we may want to change this if the delegate injection figures to be a significant performance gain and is relatively safe.
+	class ImprovedTeamRadar : HookGroup
+	{
+		public override void Load()
+		{
+			//Here we have an interesting problem. This functionality is perfectly doable with a detour. Though when done this way, requires you to re-iterate through all Players
+			//and re-calculate the position of their text and if they should display for the client. You could avoid this using an IL delegate injection, but that would be less
+			//safe than the method swap. Due to the fact that this will need to be ported at some point im going with the safer and more portable option of using a detour.
+			//at some point in the future we may want to change this if the delegate injection figures to be a significant performance gain and is relatively safe.
 
-        //    On.Terraria.Main.DrawInterface_20_MultiPlayerPlayerNames += DrawNewInfo; TODO: find out what this is replaced by
-            On.Terraria.Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
-            On.Terraria.Main.DrawInterface_39_MouseOver += drawShieldHoverText;
-        }
+			//    On.Terraria.Main.DrawInterface_20_MultiPlayerPlayerNames += DrawNewInfo; TODO: find out what this is replaced by
+			On.Terraria.Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
+			On.Terraria.Main.DrawInterface_39_MouseOver += drawShieldHoverText;
+		}
 
-        private void DrawShieldForPlayers(On.Terraria.Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
-        {
-            orig(self);
+		private void DrawShieldForPlayers(On.Terraria.Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
+		{
+			orig(self);
 
-            for (int k = 0; k < Main.maxPlayers; k++)
-            {
-                var Player = Main.player[k];
+			for (int k = 0; k < Main.maxPlayers; k++)
+			{
+				Player Player = Main.player[k];
 
-                if (Player != null && Player.active)
-                {
-                    var mp = Player.GetModPlayer<BarrierPlayer>();
+				if (Player != null && Player.active)
+				{
+					BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
-                    if (k != Main.myPlayer && Player.active && !Player.ghost && !Player.dead && Player.statLife != Player.statLifeMax2)
-                    {
-                        var offset = Main.HealthBarDrawSettings == 1 ? 10 : -20;
+					if (k != Main.myPlayer && Player.active && !Player.ghost && !Player.dead && Player.statLife != Player.statLifeMax2)
+					{
+						int offset = Main.HealthBarDrawSettings == 1 ? 10 : -20;
 
-                        var tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
+						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-                        var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY);
-                        var factor = Math.Min(mp.Barrier / (float)mp.MaxBarrier, 1);
+						var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY);
+						float factor = Math.Min(mp.Barrier / (float)mp.MaxBarrier, 1);
 
-                        var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
-                        var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(factor * tex.Width), tex.Height);
+						var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
+						var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(factor * tex.Width), tex.Height);
 
-                        Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 1.5f);
+						Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 1.5f);
 
-                        if (mp.Barrier < mp.MaxBarrier && mp.Barrier > 0)
-                        {
-                            var texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
+						if (mp.Barrier < mp.MaxBarrier && mp.Barrier > 0)
+						{
+							Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
-                            var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
-                            var targetLine = new Rectangle((int)(pos.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(pos.Y - Main.screenPosition.Y), 2, tex.Height);
+							var sourceLine = new Rectangle((int)(tex.Width * factor), 0, 2, tex.Height);
+							var targetLine = new Rectangle((int)(pos.X - Main.screenPosition.X) + (int)(tex.Width * factor), (int)(pos.Y - Main.screenPosition.Y), 2, tex.Height);
 
-                            Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 2);
-                        }
-                    }
-                }
-            }
-        }
+							Main.spriteBatch.Draw(texLine, targetLine, sourceLine, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 2);
+						}
+					}
+				}
+			}
+		}
 
-        private void drawShieldHoverText(On.Terraria.Main.orig_DrawInterface_39_MouseOver orig, Main self)
-        {
-            bool alreadyHovered = Main.mouseText;
+		private void drawShieldHoverText(On.Terraria.Main.orig_DrawInterface_39_MouseOver orig, Main self)
+		{
+			bool alreadyHovered = Main.mouseText;
 
-            orig(self);
+			orig(self);
 
-            if (Main.blockMouse || Main.LocalPlayer.mouseInterface || alreadyHovered)
-                return;
+			if (Main.blockMouse || Main.LocalPlayer.mouseInterface || alreadyHovered)
+				return;
 
-            Rectangle rectangle = new Rectangle((int)((float)Main.mouseX + Main.screenPosition.X), (int)((float)Main.mouseY + Main.screenPosition.Y), 1, 1);
-            if (Main.player[Main.myPlayer].gravDir == -1f)
-            {
-                rectangle.Y = (int)Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
-            }
+			var rectangle = new Rectangle((int)(Main.mouseX + Main.screenPosition.X), (int)(Main.mouseY + Main.screenPosition.Y), 1, 1);
+			if (Main.player[Main.myPlayer].gravDir == -1f)
+			{
+				rectangle.Y = (int)Main.screenPosition.Y + Main.screenHeight - Main.mouseY;
+			}
 
-            for (int PlayerIndex = 0; PlayerIndex < 255; PlayerIndex++)
-            {
-                if (!Main.player[PlayerIndex].active || Main.myPlayer == PlayerIndex || Main.player[PlayerIndex].dead)
-                {
-                    continue;
-                }
-                Rectangle value2 = new Rectangle((int)((double)Main.player[PlayerIndex].position.X + (double)Main.player[PlayerIndex].width * 0.5 - 16.0), (int)(Main.player[PlayerIndex].position.Y + (float)Main.player[PlayerIndex].height - 48f), 32, 48);
-                if (rectangle.Intersects(value2))
-                {
-                    var Player = Main.player[PlayerIndex];
-                    var mp = Player.GetModPlayer<Core.BarrierPlayer>();
-                    string textString = "[c/64c8ff:" + mp.Barrier + "/" + mp.MaxBarrier +"]";
+			for (int PlayerIndex = 0; PlayerIndex < 255; PlayerIndex++)
+			{
+				if (!Main.player[PlayerIndex].active || Main.myPlayer == PlayerIndex || Main.player[PlayerIndex].dead)
+				{
+					continue;
+				}
 
-                    string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
+				var value2 = new Rectangle((int)(Main.player[PlayerIndex].position.X + Main.player[PlayerIndex].width * 0.5 - 16.0), (int)(Main.player[PlayerIndex].position.Y + Main.player[PlayerIndex].height - 48f), 32, 48);
+				if (rectangle.Intersects(value2))
+				{
+					Player Player = Main.player[PlayerIndex];
+					BarrierPlayer mp = Player.GetModPlayer<Core.BarrierPlayer>();
+					string textString = "[c/64c8ff:" + mp.Barrier + "/" + mp.MaxBarrier + "]";
 
-                    var vanillaText = ChatManager.ParseMessage(vanillaString, Color.White).ToArray();
-                    Vector2 vanillaTextPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, vanillaText, Vector2.One);
-                    
+					string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
 
+					TextSnippet[] vanillaText = ChatManager.ParseMessage(vanillaString, Color.White).ToArray();
+					Vector2 vanillaTextPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, vanillaText, Vector2.One);
 
-                    var text = ChatManager.ParseMessage(textString, Color.White).ToArray();
-                    Vector2 textPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, text, Vector2.One);
-                    //textPosition.X += vanillaTextPosition.X / 2;
-                   //textPosition.Y += vanillaTextPosition.Y;
+					TextSnippet[] text = ChatManager.ParseMessage(textString, Color.White).ToArray();
+					Vector2 textPosition = ChatManager.GetStringSize(Terraria.GameContent.FontAssets.MouseText.Value, text, Vector2.One);
+					//textPosition.X += vanillaTextPosition.X / 2;
+					//textPosition.Y += vanillaTextPosition.Y;
 
-                    var pos = Main.MouseScreen + new Vector2(12f + vanillaTextPosition.X / 2 - textPosition.X /2, vanillaTextPosition.Y);
-                    if (pos.Y > (float)(Main.screenHeight - 30))
-                        pos.Y = (float)(Main.screenHeight - 30);
-                    if (pos.X > (float)(Main.screenWidth - textPosition.X))
-                        pos.X = (float)(Main.screenWidth - textPosition.X);
+					Vector2 pos = Main.MouseScreen + new Vector2(12f + vanillaTextPosition.X / 2 - textPosition.X / 2, vanillaTextPosition.Y);
+					if (pos.Y > Main.screenHeight - 30)
+						pos.Y = Main.screenHeight - 30;
+					if (pos.X > (float)(Main.screenWidth - textPosition.X))
+						pos.X = Main.screenWidth - textPosition.X;
 
-                    int hoveredSnippet;
-                    ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, text, pos, 0f, Vector2.Zero, Vector2.One, out hoveredSnippet);
-                }
-            }
-        }
+					ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, Terraria.GameContent.FontAssets.MouseText.Value, text, pos, 0f, Vector2.Zero, Vector2.One, out int hoveredSnippet);
+				}
+			}
+		}
 
-        /* TODO: replace this with new detour
+		/* TODO: replace this with new detour
         private void DrawNewInfo(On.Terraria.Main.orig_DrawInterface_20_MultiPlayerPlayerNames orig)
         {
             orig();
@@ -195,5 +187,5 @@ namespace StarlightRiver.Content.CustomHooks
             }
         }
         */
-    }
+	}
 }

@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Core;
+using System;
 using Terraria;
 using Terraria.ID;
-using System;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			Item.width = 40;
 			Item.height = 40;
-			Item.value = Item.sellPrice(silver:50);
+			Item.value = Item.sellPrice(silver: 50);
 			Item.rare = ItemRarityID.Orange;
 			Item.maxStack = 30;
 			Item.autoReuse = true;

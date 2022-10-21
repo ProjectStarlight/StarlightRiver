@@ -1,98 +1,105 @@
 ﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Prefixes;
+using StarlightRiver.Content.Prefixes;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.Utilities;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
 	internal partial class StarlightItem : GlobalItem
-    {
-        public Rectangle meleeHitbox;
-        public string prefixLine = "";
+	{
+		public Rectangle meleeHitbox;
+		public string prefixLine = "";
 
-        //Prefix handlers
+		//Prefix handlers
 
-        public override bool InstancePerEntity => true;
+		public override bool InstancePerEntity => true;
 
-        public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox) => meleeHitbox = hitbox;
+		public override void UseItemHitbox(Item Item, Player Player, ref Rectangle hitbox, ref bool noHitbox)
+		{
+			meleeHitbox = hitbox;
+		}
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-            return item.TryGetGlobalItem<StarlightItem>(out var gi) ? gi : this;
+			return item.TryGetGlobalItem<StarlightItem>(out StarlightItem gi) ? gi : this;
 		}
 
 		public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
-        {
-            var prefix = PrefixLoader.GetPrefix(Item.prefix);
+		{
+			ModPrefix prefix = PrefixLoader.GetPrefix(Item.prefix);
 
-            if (prefix is CustomTooltipPrefix)
-                (prefix as CustomTooltipPrefix).Update(Item, Player);
+			if (prefix is CustomTooltipPrefix)
+				(prefix as CustomTooltipPrefix).Update(Item, Player);
 
-            base.UpdateAccessory(Item, Player, hideVisual);
-        }
+			base.UpdateAccessory(Item, Player, hideVisual);
+		}
 
-        public override int ChoosePrefix(Item Item, UnifiedRandom rand)
-        {
-            //resetting for custom prefix stuff
-            prefixLine = "";
+		public override int ChoosePrefix(Item Item, UnifiedRandom rand)
+		{
+			//resetting for custom prefix stuff
+			prefixLine = "";
 
-            return -1;
-        }
+			return -1;
+		}
 
-        public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
-        {
-            if (PrefixLoader.GetPrefix(Item.prefix) is CustomTooltipPrefix)
-            {
-                var critLine = tooltips.Find(n => n.Name == "Knockback");
-                int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
-
-                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "CustomPrefix", prefixLine);
-                line.IsModifier = true;
-                line.IsModifierBad = false;
-                tooltips.Insert(index + 1, line);
-            }
-
-            //Crit display. Same as ammo, maybe move this later?
-            if(Item.damage > 0 && Item.crit > -4)
+		public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
+		{
+			if (PrefixLoader.GetPrefix(Item.prefix) is CustomTooltipPrefix)
 			{
-                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "CritDamage", "");
+				TooltipLine critLine = tooltips.Find(n => n.Name == "Knockback");
+				int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
 
-                var critLine = tooltips.Find(n => n.Name == "Damage");
+				var line = new TooltipLine(StarlightRiver.Instance, "CustomPrefix", prefixLine)
+				{
+					IsModifier = true,
+					IsModifierBad = false
+				};
+				tooltips.Insert(index + 1, line);
+			}
 
-                if (critLine != null)
-                {
-                    int index = tooltips.IndexOf(critLine);
+			//Crit display. Same as ammo, maybe move this later?
+			if (Item.damage > 0 && Item.crit > -4)
+			{
+				var line = new TooltipLine(StarlightRiver.Instance, "CritDamage", "");
 
-                    var mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
+				TooltipLine critLine = tooltips.Find(n => n.Name == "Damage");
 
-                    float mult = 2;
-                    if (Item.DamageType.Type == DamageClass.Melee.Type) mult += mp.MeleeCritMult;
-                    if (Item.DamageType.Type == DamageClass.Ranged.Type) mult += mp.RangedCritMult;
-                    if (Item.DamageType.Type == DamageClass.Magic.Type) mult += mp.MagicCritMult;
-                    mult += mp.AllCritMult;
+				if (critLine != null)
+				{
+					int index = tooltips.IndexOf(critLine);
 
-                    line.Text = $"{(int)(Item.damage * mult)} critical strike damage";
-                    line.OverrideColor = new Color(255, 200, 100);
-                    tooltips.Insert(index + 1, line);
-                }
-            }
+					CritMultiPlayer mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
-            //Ammo display, maybe move this later? TODO?
+					float mult = 2;
+					if (Item.DamageType.Type == DamageClass.Melee.Type)
+						mult += mp.MeleeCritMult;
+					if (Item.DamageType.Type == DamageClass.Ranged.Type)
+						mult += mp.RangedCritMult;
+					if (Item.DamageType.Type == DamageClass.Magic.Type)
+						mult += mp.MagicCritMult;
+					mult += mp.AllCritMult;
 
-            if(Item.useAmmo != 0)
-            {
-                TooltipLine line = new TooltipLine(StarlightRiver.Instance, "AmmoInfo", "Uses:");
+					line.Text = $"{(int)(Item.damage * mult)} critical strike damage";
+					line.OverrideColor = new Color(255, 200, 100);
+					tooltips.Insert(index + 1, line);
+				}
+			}
 
-                var critLine = tooltips.Find(n => n.Name == "Knockback");
-                int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
+			//Ammo display, maybe move this later? TODO?
 
-                line.Text += $"[i:{ Item.useAmmo}]";
+			if (Item.useAmmo != 0)
+			{
+				var line = new TooltipLine(StarlightRiver.Instance, "AmmoInfo", "Uses:");
 
-                tooltips.Insert(index + 1, line);
-            }
-        }
-    }
+				TooltipLine critLine = tooltips.Find(n => n.Name == "Knockback");
+				int index = critLine is null ? tooltips.Count - 1 : tooltips.IndexOf(critLine);
+
+				line.Text += $"[i:{Item.useAmmo}]";
+
+				tooltips.Insert(index + 1, line);
+			}
+		}
+	}
 }

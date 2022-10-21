@@ -5,11 +5,14 @@ using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
-    public class PirateChestArtifactItem : ModItem
-    {
-        public override string Texture => AssetDirectory.Archaeology + "PirateChestArtifact";
+	public class PirateChestArtifactItem : ModItem
+	{
+		public override string Texture => AssetDirectory.Archaeology + "PirateChestArtifact";
 
-		public override bool CanRightClick() => true;
+		public override bool CanRightClick()
+		{
+			return true;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -30,7 +33,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void RightClick(Player player)
 		{
 			int bar = (WorldGen.gold == TileID.Gold) ? ItemID.PlatinumBar : ItemID.GoldBar;
-			Item.NewItem(Item.GetSource_DropAsItem(), player.Hitbox, bar, Main.rand.Next(5,11));
+			Item.NewItem(Item.GetSource_DropAsItem(), player.Hitbox, bar, Main.rand.Next(5, 11));
 
 			int[] gems = new int[]
 			{

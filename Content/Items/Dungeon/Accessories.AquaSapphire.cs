@@ -1,15 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.CustomHooks;
-using Terraria.Graphics.Effects;
+﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.WorldGeneration.DungeonGen
@@ -22,7 +19,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		}
 
 		public Point16 topLeft;
-		public Point16 topLeftTile => new (topLeft.X * SectionSize, topLeft.Y * SectionSize);
+		public Point16 topLeftTile => new(topLeft.X * SectionSize, topLeft.Y * SectionSize);
 
 		public int SecWidth => Layout.GetLength(0);
 		public int SecHeight => Layout.GetLength(1);
@@ -58,12 +55,14 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		{
 			List<Point16> output = new();
 
-			for(int x = 0; x < SecWidth; x++)
-				for(int y = 0; y < SecHeight; y++)
+			for (int x = 0; x < SecWidth; x++)
+			{
+				for (int y = 0; y < SecHeight; y++)
 				{
 					if (Layout[x, y] == secType.door)
 						output.Add(new Point16(x, y));
 				}
+			}
 
 			return output;
 		}
@@ -85,7 +84,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public void FillRoom(Point16 dungeonPos)
 		{
 			// Attempts to generate as a structure, if this fails, it falls back to generating as a multistructure.
-			var isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
+			bool? isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
 
 			if (isMulti == true)
 				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
@@ -107,8 +106,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			var output = new secType[input.GetLength(1), input.GetLength(0)];
 
 			for (int x = 0; x < input.GetLength(0); x++)
+			{
 				for (int y = 0; y < input.GetLength(1); y++)
 					output[y, x] = input[x, y];
+			}
 
 			return output;
 		}

@@ -1,19 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.CustomHooks;
-using Terraria.Graphics.Effects;
+using StarlightRiver.Core;
+using System;
 using Terraria;
+using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -80,7 +74,9 @@ namespace StarlightRiver.Content.Items.Breacher
 				flickerTime++;
 			}
 			else
+			{
 				flickerTime = 0;
+			}
 
 			if (damageCounter >= 200)
 			{
@@ -90,17 +86,17 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
-        {
+		{
 			if (active && !Shield)
 				damageCounter += 100;
 
 			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
-        }
+		}
 	}
 
 	public class ReactivePlatingHelper : IOrderedLoadable
 	{
-		public float Priority => 1.05f; 
+		public float Priority => 1.05f;
 
 		public void Load()
 		{
@@ -121,7 +117,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public void Unload() { }
 
 		private static void DrawPlayerTarget(int flickerTime, int shieldTimer, Player drawPlayer)
-        {
+		{
 			if (!PlayerTarget.canUseTarget)
 				return;
 
@@ -134,7 +130,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Effect effect = Filters.Scene["BreacherScan"].GetShader().Shader;
 			effect.Parameters["uImageSize0"].SetValue(new Vector2(PlayerTarget.sheetSquareX, PlayerTarget.sheetSquareY));
-			effect.Parameters["alpha"].SetValue((float)Math.Pow((float)shieldTimer / 200f, 0.25f));
+			effect.Parameters["alpha"].SetValue((float)Math.Pow(shieldTimer / 200f, 0.25f));
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -142,11 +138,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (flickerTime > 0 && flickerTime < 16)
 			{
 				float flickerTime2 = (float)(flickerTime / 20f);
-				float whiteness = 1.5f - (((flickerTime2 * flickerTime2) / 2) + (2f * flickerTime2));
+				float whiteness = 1.5f - (flickerTime2 * flickerTime2 / 2 + 2f * flickerTime2);
 				effect.Parameters["whiteness"].SetValue(whiteness);
 			}
 			else
+			{
 				effect.Parameters["whiteness"].SetValue(0);
+			}
 
 			Color color = Color.Cyan;
 			effect.Parameters["red"].SetValue(color.ToVector4());

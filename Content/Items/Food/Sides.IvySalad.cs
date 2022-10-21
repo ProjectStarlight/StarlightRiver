@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
+﻿using StarlightRiver.Core;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -11,7 +8,10 @@ namespace StarlightRiver.Content.Items.Food
 	{
 		public IvySalad() : base("10% chance to poision with all hits", 60, IngredientType.Side) { }
 
-		public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
+		}
 
 		public override void Load()
 		{
@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Food
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ChanceToPoisionProjectile;
 		}
 
-		private void ChanceToPoisionProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) 
+		private void ChanceToPoisionProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
 				target.AddBuff(BuffID.Poisoned, 30);
