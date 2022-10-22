@@ -19,13 +19,11 @@ using System.Linq;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
-    public abstract class BaseSoilProjectile : ModProjectile, IDrawPrimitive
+    public abstract class BaseSoilProjectile : ModProjectile
     {
         public bool Gravity = true;
 
         public bool DrawTrail = true;
-
-        public bool DrawWhite = false;
 
         public Color TrailColor = Color.White;
 
@@ -36,7 +34,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public ref float Time => ref Projectile.ai[1];
 
-        public sealed override string Texture => AssetDirectory.MiscItem + "Soilgun";
+        public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
 
         public sealed override void SetStaticDefaults()
         {
@@ -80,16 +78,16 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             }
         }
 
-        //pretty much just override this for custom draw, only used for vitric soil
         public override bool PreDraw(ref Color lightColor)
         {
+            DrawPrimitives();
+
             //this predraw code is kinda bad examplemod boilerplate but it works
-            Main.instance.LoadItem((int)AmmoType);
             SpriteEffects spriteEffects = SpriteEffects.None;
             if (Projectile.spriteDirection == -1)
                 spriteEffects = SpriteEffects.FlipHorizontally;
 
-            Texture2D texture = TextureAssets.Item[(int)AmmoType].Value;
+            Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
 
             int frameHeight = texture.Height / Main.projFrames[Projectile.type];
             int startY = frameHeight * Projectile.frame;
@@ -106,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             Main.EntitySpriteDraw(texture,
                 Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-                sourceRectangle, DrawWhite ? Color.White : drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+                sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 
             return false;
         }
@@ -138,13 +136,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             });
 
             trail.Positions = cache.ToArray();
-            trail.NextPosition = Projectile.position + Projectile.velocity;
+            trail.NextPosition = Projectile.Center + Projectile.velocity;
         }
         public void DrawPrimitives()
         {
             if (!DrawTrail)
                 return;
-
+            Main.spriteBatch.End();
             Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
             Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
@@ -161,11 +159,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
 
             trail?.Render(effect);
+            Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
         }
     }
 
     public class SoilgunDirtSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.DirtBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(30, 19, 12);
@@ -199,6 +199,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunSandSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.SandBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(58, 49, 18);
@@ -232,6 +233,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunCrimsandSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(39, 17, 14);
@@ -272,6 +274,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunEbonsandSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(26, 18, 31);
@@ -312,12 +315,15 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunPearlsandSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.PearlsandBlock;
+
         private bool foundTarget;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(87, 77, 106);
-            DrawWhite = true;
         }
+
+        public override Color? GetAlpha(Color lightColor) => Color.White;
 
         public override void SafeAI()
         {
@@ -344,7 +350,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 if (Main.rand.NextBool(2))
                     Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MoonstoneShimmer>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(0.1f, 0.2f), 25, new Color(0.3f, 0.2f, 0.3f, 0f), Main.rand.NextFloat(0.2f, 0.3f)).fadeIn = 90f;
             }
-
         }
 
         public override void Kill(int timeLeft)
@@ -363,6 +368,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunVitricSandSoil : BaseSoilProjectile
     {
+        public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(87, 129, 140);
@@ -405,6 +411,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunSlushSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(27, 40, 51);
@@ -459,6 +466,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunSiltSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(22, 24, 32);
@@ -498,6 +506,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class SoilgunMudSoil : BaseSoilProjectile
     {
+        public override string Texture => "Terraria/Images/Item_" + ItemID.MudBlock;
         public override void SafeSetDefaults()
         {
             TrailColor = new Color(30, 21, 24);

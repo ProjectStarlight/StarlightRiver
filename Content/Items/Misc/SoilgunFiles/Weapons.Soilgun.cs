@@ -91,34 +91,34 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
-            if (!Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()))
-                return;
-
-            if (ValidSoils.Contains(item.type))
+            if (Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<Earthduster>()))
             {
-                TooltipLine tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun");
-                tooltips.Add(tooltip);
-                tooltip.OverrideColor = new Color(202, 148, 115);
-                if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
+                if (ValidSoils.Contains(item.type))
                 {
-                    TooltipLine infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
-                    tooltips.Add(infoTooltip);
-                    infoTooltip.OverrideColor = new Color(202, 148, 115);
-                    return;
+                    TooltipLine tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun and Earthduster");
+                    tooltips.Add(tooltip);
+                    tooltip.OverrideColor = new Color(202, 148, 115);
+                    if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
+                    {
+                        TooltipLine infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
+                        tooltips.Add(infoTooltip);
+                        infoTooltip.OverrideColor = new Color(202, 148, 115);
+                        return;
+                    }
+                    switch (item.type)
+                    {
+                        case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of sand that split into many grains of sand upon death"); break;
+                        case ItemID.CrimsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
+                        case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
+                        case ItemID.PearlsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of Pearlsand that home in on enemies"); break;
+                        case ItemID.DirtBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of dirt"); break;
+                        case ItemID.SiltBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
+                        case ItemID.SlushBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
+                        case ItemID.MudBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of mud that bounce off tiles and enemies"); break;
+                    }
+                    tooltips.Add(infoTooltip2);
+                    infoTooltip2.OverrideColor = new Color(202, 148, 115);
                 }
-                switch (item.type)
-                {
-                    case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of sand that split into many grains of sand upon death"); break;
-                    case ItemID.CrimsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Crimsand that steal life from hit enemies"); break;
-                    case ItemID.EbonsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun it will fire out blocks of Ebonsand that apply stacks of Haunted to enemies"); break;
-                    case ItemID.PearlsandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of Pearlsand that home in on enemies"); break;
-                    case ItemID.DirtBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of dirt"); break;
-                    case ItemID.SiltBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of silt, that spawn coins upon hitting enemies"); break;
-                    case ItemID.SlushBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
-                    case ItemID.MudBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of mud that bounce off tiles and enemies"); break;
-                }
-                tooltips.Add(infoTooltip2);
-                infoTooltip2.OverrideColor = new Color(202, 148, 115);
             }
         }
     }
@@ -402,7 +402,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public void ShootSoils(Vector2 position)
         {
-            if (Main.myPlayer != Projectile.owner || !CanShoot)
+            if (!CanShoot)
                 return;
 
             Item heldItem = owner.HeldItem;
@@ -415,10 +415,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
-            for (int i = 0; i < 4 + Main.rand.Next(3); i++)
-            {
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(18))) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI, SoilAmmoID);
-            }
+            if (Main.myPlayer == Projectile.owner)
+                for (int i = 0; i < 4 + Main.rand.Next(3); i++)
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(18))) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI);
+                }
+
             for (int i = 0; i < 15; i++)
             {
                 Vector2 dustVelocity = shootVelocity.RotatedByRandom(MathHelper.ToRadians(8)) * Main.rand.NextFloat(0.25f, 0.45f);
