@@ -93,7 +93,15 @@ namespace StarlightRiver.Content.Items.Misc
 
         public int shots;
 
+        public float rotTimer;
+
         public bool charged;
+
+        public bool draw; //only draw two ticks after spawning
+
+        public bool reloading;
+
+        public Vector2 mouse;
 
         public ref float ShootDelay => ref Projectile.ai[0];
 
@@ -127,19 +135,22 @@ namespace StarlightRiver.Content.Items.Misc
         {
             Vector2 armPos = owner.RotatedRelativePoint(owner.MountedCenter, true);
             armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 20f;
-
+            armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * owner.direction;
             Vector2 barrelPos = armPos + (Projectile.velocity * 25f);
 
             if (MaxShootDelay == 0f)
                 MaxShootDelay = CombinedHooks.TotalUseTime(owner.HeldItem.useTime, owner, owner.HeldItem);
 
-            if (!CanHold)
+            if (rotTimer > 0)
+                rotTimer--;
+
+            if (!CanHold && !reloading)
             {
                 Projectile.Kill();
                 return;
             }
 
-            if (shots < MAXSHOTS)
+            if (shots < MAXSHOTS && !reloading)
             {
                 ShootDelay++;
 
@@ -147,6 +158,7 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     if (ShootDelay > 2)
                     {
+                        draw = true;
                         for (int i = 0; i < 3; i++)
                         {
                             float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
@@ -159,14 +171,14 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     if (ShootDelay == MAXCHARGEDELAY)
                     {
-                        Helper.PlayPitched("Effects/Bleep", 1f, -0.15f, Projectile.Center);
+                        SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.5f}, owner.Center);
                         if (Main.myPlayer == Projectile.owner)
                         {
                             Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, owner.whoAmI, 15f);
 
-                            (proj.ModProjectile as EarthdusterRing).trailColorOutline = new Color(81, 47, 27);
+                            (proj.ModProjectile as EarthdusterRing).trailColorOutline = GetRingColor();
 
-                            (proj.ModProjectile as EarthdusterRing).trailColor = new Color(105, 67, 44);
+                            (proj.ModProjectile as EarthdusterRing).trailColor = GetRingInsideColor();
                         }
                     }
                 }
@@ -179,26 +191,64 @@ namespace StarlightRiver.Content.Items.Misc
                     shots++;
                     ShootDelay = 0;
                 }
+
+                if (draw)
+                {
+                    Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * owner.direction).RotatedBy(Projectile.rotation);
+                    if (Main.rand.NextBool(20))
+                        Dust.NewDustDirect(dirtPos, 20, 5, DustID.Dirt).alpha = 50;
+                }
             }
             else
             {
-                Projectile.Kill();
+                if (!reloading)
+                {
+                    if (Main.myPlayer == Projectile.owner)
+                        mouse = owner.DirectionTo(Main.MouseWorld);
+
+                    ShootDelay = 0;
+                    reloading = true;
+                }
+
+                if (++ShootDelay < 60)
+                {
+                    float progress = EaseBuilder.EaseCircularInOut.Ease(ShootDelay / 60f);
+                    Projectile.velocity = Vector2.One.RotatedBy(mouse.ToRotation() + MathHelper.ToRadians(MathHelper.Lerp(0f, 360f, progress)) - MathHelper.PiOver4);
+
+                    shots = (int)MathHelper.Lerp(MAXSHOTS, 0, progress);
+                }
+                else if (ShootDelay < 70)
+                {
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(0f, 5f, (ShootDelay - 60) / 10f);
+                }
+                else if (ShootDelay < 80)
+                {
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(5f, -5f, (ShootDelay - 70) / 10f);
+                }
+                else
+                {
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * -5f;
+                    if (ShootDelay > 90)
+                        Projectile.Kill();
+                }
             }
 
-            owner.ChangeDir(Projectile.direction);
+            if (!reloading)
+                owner.ChangeDir(Projectile.direction);
+
             owner.heldProj = Projectile.whoAmI;
             owner.itemTime = 2;
             owner.itemAnimation = 2;
 
             Projectile.timeLeft = 2;
-            Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+            Projectile.rotation = Utils.ToRotation(Projectile.velocity) - (Projectile.direction == -1 ? -MathHelper.ToRadians(rotTimer) : MathHelper.ToRadians(rotTimer));
             owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
 
             Projectile.position = armPos - Projectile.Size * 0.5f;
 
             Projectile.spriteDirection = Projectile.direction;
 
-            if (Main.myPlayer == Projectile.owner)
+            if (Main.myPlayer == Projectile.owner && !reloading)
             {
                 float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
 
@@ -215,14 +265,35 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool PreDraw(ref Color lightColor)
         {
+            if (!draw)
+                return false;
+
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D dirtTex = ModContent.Request<Texture2D>(Texture + "_Dirt").Value;
 
-            Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Projectile.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
+            Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
             Main.spriteBatch.Draw(dirtTex, (Projectile.Center + offset) - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
             return false;
+        }
+
+        public Color GetRingColor()
+        {
+            switch (SoilType) //switch cant use non constants without this wacko work around
+            {
+                case var dirt when dirt == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(81, 47, 27);
+            }
+            return Color.White;
+        }
+
+        public Color GetRingInsideColor()
+        {
+            switch (SoilType) //switch cant use non constants without this wacko work around
+            {
+                case var dirt when dirt == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(105, 67, 44);
+            }
+            return Color.White;
         }
 
         public void ShootSoils(Vector2 position)
@@ -249,8 +320,22 @@ namespace StarlightRiver.Content.Items.Misc
             if (Main.myPlayer == Projectile.owner)
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(5))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, owner.whoAmI);
 
+            for (float k = 0; k < 50; k++)
+            {
+                float rads = 6.28f * (k / 50f);
+                float x = (float)Math.Cos(rads) * 50;
+                float y = (float)Math.Sin(rads) * 25;
+
+                Dust.NewDustPerfect(position, DustID.Dirt, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
+            }
+
             shots++;
             SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
+
+            CameraSystem.Shake += 1;
+
+            rotTimer += 8;
+
             if (owner.HeldItem.ModItem is Earthduster earthduster)
             {
                 int type = earthduster.currentAmmoStruct.projectileID; // this code is still bad
