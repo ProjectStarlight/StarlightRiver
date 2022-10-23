@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.damage = 25;
             Item.width = 70;
             Item.height = 40;
-            Item.useAnimation = Item.useTime = 8;
+            Item.useAnimation = Item.useTime = 5;
             Item.shoot = ProjectileID.PurificationPowder;
             Item.useStyle = ItemUseStyleID.Shoot;
             Item.rare = ItemRarityID.Orange;
@@ -115,6 +115,12 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override bool? CanDamage() => false;
 
+        public override void Load()
+        {
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore1");
+            GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore2");
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Earthduster");
@@ -137,6 +143,8 @@ namespace StarlightRiver.Content.Items.Misc
             armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 20f;
             armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * owner.direction;
             Vector2 barrelPos = armPos + (Projectile.velocity * 25f);
+
+            Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * owner.direction).RotatedBy(Projectile.rotation);
 
             if (MaxShootDelay == 0f)
                 MaxShootDelay = CombinedHooks.TotalUseTime(owner.HeldItem.useTime, owner, owner.HeldItem);
@@ -194,7 +202,6 @@ namespace StarlightRiver.Content.Items.Misc
 
                 if (draw)
                 {
-                    Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * owner.direction).RotatedBy(Projectile.rotation);
                     if (Main.rand.NextBool(20))
                         Dust.NewDustDirect(dirtPos, 20, 5, DustID.Dirt).alpha = 50;
                 }
@@ -216,19 +223,33 @@ namespace StarlightRiver.Content.Items.Misc
                     Projectile.velocity = Vector2.One.RotatedBy(mouse.ToRotation() + MathHelper.ToRadians(MathHelper.Lerp(0f, 360f, progress)) - MathHelper.PiOver4);
 
                     shots = (int)MathHelper.Lerp(MAXSHOTS, 0, progress);
+
+                    if (ShootDelay == 30)
+                    {
+                        Vector2 pos = armPos + new Vector2(40, 40f * owner.direction).RotatedBy(Projectile.rotation);
+                        Gore.NewGorePerfect(Projectile.GetSource_FromAI(), pos, Projectile.velocity.RotatedByRandom(0.3f) * 5f, Mod.Find<ModGore>(Name + "_Gore" + Main.rand.Next(1, 3)).Type).timeLeft = 180;
+                    }
+
+                }
+                else if (ShootDelay < 65)
+                {
+                    if (ShootDelay == 60)
+                        Helper.PlayPitched("Guns/PlinkLever", 1f, 1f, owner.Center);
+
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(0f, 3f, (ShootDelay - 60) / 5f);
                 }
                 else if (ShootDelay < 70)
                 {
-                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(0f, 5f, (ShootDelay - 60) / 10f);
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 3f;
                 }
-                else if (ShootDelay < 80)
+                else if (ShootDelay < 75)
                 {
-                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(5f, -5f, (ShootDelay - 70) / 10f);
+                    armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(3f, -5f, (ShootDelay - 70) / 5f);
                 }
                 else
                 {
                     armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * -5f;
-                    if (ShootDelay > 90)
+                    if (ShootDelay > 85)
                         Projectile.Kill();
                 }
             }
@@ -270,11 +291,21 @@ namespace StarlightRiver.Content.Items.Misc
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D dirtTex = ModContent.Request<Texture2D>(Texture + "_Dirt").Value;
+            Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+            Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
             Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
             Main.spriteBatch.Draw(dirtTex, (Projectile.Center + offset) - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+
+            Color color = Color.Lerp(Color.Transparent, new Color(81, 47, 27, 0), shots / (float)MAXSHOTS);
+            if (reloading)
+                color = Color.Lerp(new Color(81, 47, 27, 0), Color.Transparent, ShootDelay / 90f);
+
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+
+            Main.spriteBatch.Draw(bloomTex, Projectile.Center + (Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f) - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
             return false;
         }
 
@@ -318,7 +349,7 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
             if (Main.myPlayer == Projectile.owner)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(5))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, owner.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, owner.whoAmI);
 
             for (float k = 0; k < 50; k++)
             {
@@ -329,12 +360,17 @@ namespace StarlightRiver.Content.Items.Misc
                 Dust.NewDustPerfect(position, DustID.Dirt, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
             }
 
+            Vector2 ejectPos = position + new Vector2(-35, -5 * owner.direction).RotatedBy(Projectile.rotation);
+            for (int i = 0; i < 3; i++)
+            {
+                Dust.NewDustPerfect(ejectPos, DustID.Dirt, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
+            }
             shots++;
             SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
 
             CameraSystem.Shake += 1;
 
-            rotTimer += 8;
+            rotTimer += MaxShootDelay;
 
             if (owner.HeldItem.ModItem is Earthduster earthduster)
             {
