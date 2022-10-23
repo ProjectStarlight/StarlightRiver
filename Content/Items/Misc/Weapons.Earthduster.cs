@@ -158,6 +158,9 @@ namespace StarlightRiver.Content.Items.Misc
                 return;
             }
 
+            if ((owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID != SoilType)
+                SoilType = (owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID;
+
             if (shots < MAXSHOTS && !reloading)
             {
                 ShootDelay++;
@@ -171,7 +174,7 @@ namespace StarlightRiver.Content.Items.Misc
                         {
                             float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
                             Vector2 pos = barrelPos + Main.rand.NextVector2CircularEdge(lerper * 0.5f, lerper).RotatedBy(Projectile.rotation);
-                            Dust.NewDustPerfect(pos, DustID.Dirt, pos.DirectionTo(barrelPos)).noGravity = true;
+                            Dust.NewDustPerfect(pos, GetDustType(), pos.DirectionTo(barrelPos)).noGravity = true;
                         }
                     }
                 }
@@ -299,9 +302,13 @@ namespace StarlightRiver.Content.Items.Misc
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-            Color color = Color.Lerp(Color.Transparent, new Color(81, 47, 27, 0), shots / (float)MAXSHOTS);
+            Color color = Color.Lerp(Color.Transparent, GetRingInsideColor(), shots / (float)MAXSHOTS);
             if (reloading)
-                color = Color.Lerp(new Color(81, 47, 27, 0), Color.Transparent, ShootDelay / 90f);
+                color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
+
+            color.A = 0;
+
+            color *= 0.5f;
 
             Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
@@ -313,18 +320,51 @@ namespace StarlightRiver.Content.Items.Misc
         {
             switch (SoilType) //switch cant use non constants without this wacko work around
             {
-                case var dirt when dirt == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(81, 47, 27);
-            }
+                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(81, 47, 27);
+                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return new Color(139, 131, 59);
+                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return new Color(56, 17, 14);
+                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return new Color(62, 45, 75);
+                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return new Color(87, 77, 106);
+                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return new Color(49, 51, 61);
+                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return new Color(27, 40, 51);
+                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return new Color(73, 57, 63);
+                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return new Color(87, 129, 140);
+            }   
             return Color.White;
         }
 
         public Color GetRingInsideColor()
         {
-            switch (SoilType) //switch cant use non constants without this wacko work around
+            switch (SoilType) 
             {
-                case var dirt when dirt == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(105, 67, 44);
+                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(105, 67, 44);
+                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return new Color(212, 192, 100);
+                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return new Color(135, 43, 34);
+                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return new Color(119, 106, 138);
+                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return new Color(246, 235, 228);
+                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return new Color(106, 107, 118);
+                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return new Color(164, 182, 180);
+                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return new Color(111, 83, 89);
+                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return new Color(171, 230, 167);
             }
             return Color.White;
+        }
+
+        public int GetDustType()
+        {
+            switch (SoilType)
+            {
+                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return DustID.Dirt;
+                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return DustID.Sand;
+                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return DustID.CrimsonPlants;
+                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return DustID.Ebonwood;
+                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return DustID.Pearlsand;
+                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return DustID.Silt;
+                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return DustID.Slush;
+                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return DustID.Mud;
+                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return ModContent.DustType<VitricSandDust>();
+            }
+            return DustID.Dirt;
         }
 
         public void ShootSoils(Vector2 position)
@@ -357,13 +397,13 @@ namespace StarlightRiver.Content.Items.Misc
                 float x = (float)Math.Cos(rads) * 50;
                 float y = (float)Math.Sin(rads) * 25;
 
-                Dust.NewDustPerfect(position, DustID.Dirt, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
+                Dust.NewDustPerfect(position, GetDustType(), new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
             }
 
             Vector2 ejectPos = position + new Vector2(-35, -5 * owner.direction).RotatedBy(Projectile.rotation);
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDustPerfect(ejectPos, DustID.Dirt, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
+                Dust.NewDustPerfect(ejectPos, GetDustType(), (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
             }
             shots++;
             SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
