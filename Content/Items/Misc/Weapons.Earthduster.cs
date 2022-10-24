@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void SetStaticDefaults()
         {
-            Tooltip.SetDefault("Hold <left> to fire a rapid stream of soil\nCan use many different types of soils");
+            Tooltip.SetDefault("Hold <left> to fire a rapid stream of soil\nCan use many different types of soils\n33% chance to not consume ammo");
         }
 
         public override void SafeSetDefaults()
@@ -93,6 +93,8 @@ namespace StarlightRiver.Content.Items.Misc
 
         public int shots;
 
+        public int initialShots;
+
         public float rotTimer;
 
         public bool charged;
@@ -100,6 +102,8 @@ namespace StarlightRiver.Content.Items.Misc
         public bool draw; //only draw two ticks after spawning
 
         public bool reloading;
+
+        public bool forceReload;
 
         public Vector2 mouse;
 
@@ -152,16 +156,13 @@ namespace StarlightRiver.Content.Items.Misc
             if (rotTimer > 0)
                 rotTimer--;
 
-            if (!CanHold && !reloading)
-            {
-                Projectile.Kill();
-                return;
-            }
+            if (!CanHold && !reloading && !forceReload)
+                forceReload = true;
 
             if ((owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID != SoilType)
                 SoilType = (owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID;
 
-            if (shots < MAXSHOTS && !reloading)
+            if (shots < MAXSHOTS && !reloading && !forceReload)
             {
                 ShootDelay++;
 
@@ -216,6 +217,7 @@ namespace StarlightRiver.Content.Items.Misc
                     if (Main.myPlayer == Projectile.owner)
                         mouse = owner.DirectionTo(Main.MouseWorld);
 
+                    initialShots = shots;
                     ShootDelay = 0;
                     reloading = true;
                 }
@@ -225,7 +227,7 @@ namespace StarlightRiver.Content.Items.Misc
                     float progress = EaseBuilder.EaseCircularInOut.Ease(ShootDelay / 60f);
                     Projectile.velocity = Vector2.One.RotatedBy(mouse.ToRotation() + MathHelper.ToRadians(MathHelper.Lerp(0f, 360f, progress)) - MathHelper.PiOver4);
 
-                    shots = (int)MathHelper.Lerp(MAXSHOTS, 0, progress);
+                    shots = (int)MathHelper.Lerp(initialShots, 0, progress);
 
                     if (ShootDelay == 30)
                     {
@@ -303,8 +305,8 @@ namespace StarlightRiver.Content.Items.Misc
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
             Color color = Color.Lerp(Color.Transparent, GetRingInsideColor(), shots / (float)MAXSHOTS);
-            if (reloading)
-                color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
+            //if (reloading)
+                //color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 
             color.A = 0;
 
@@ -430,6 +432,8 @@ namespace StarlightRiver.Content.Items.Misc
                 if (type == 85 && owner.itemAnimation < owner.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
                 if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && owner.itemAnimation < owner.itemAnimationMax - 5)
+                    dontConsumeAmmo = true;
+                if (Main.rand.NextFloat() < 0.33f) //33% chance to not consume ammo
                     dontConsumeAmmo = true;
 
                 if (!dontConsumeAmmo)
