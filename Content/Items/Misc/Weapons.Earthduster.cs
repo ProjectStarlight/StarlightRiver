@@ -448,6 +448,9 @@ namespace StarlightRiver.Content.Items.Misc
                         earthduster.ammoItem.TurnToAir();
                 }
             }
+
+            if (!Framing.GetTileSafely((int)(owner.Bottom.X / 16), (int)(owner.Bottom.Y / 16)).HasTile)
+                owner.velocity -= Projectile.velocity * 0.75f; //might be too much idk
         }
     }
     public class EarthdusterRing : ModProjectile, IDrawPrimitive
