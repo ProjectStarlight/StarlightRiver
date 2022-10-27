@@ -80,6 +80,55 @@ namespace StarlightRiver.Core
         }
     }
 
+    public abstract class QuickNPCItem : ModItem
+    {
+        private readonly string ItemName;
+        private readonly string ItemTooltip;
+        private readonly int Maxstack;
+        private readonly int Value;
+        private readonly int Rare;
+        private readonly int npcID;
+        private readonly string TexturePath;
+        private readonly bool PathHasName;
+
+        protected QuickNPCItem(string name, string tooltip, int value, int rare, int NPCType, string texturePath = null, bool pathHasName = false, int maxstack = 999)
+        {
+            ItemName = name;
+            ItemTooltip = tooltip;
+            Maxstack = maxstack;
+            Value = value;
+            Rare = rare;
+            TexturePath = texturePath;
+            PathHasName = pathHasName;
+            npcID = NPCType;
+        }
+
+        public override string Texture => string.IsNullOrEmpty(TexturePath) ? base.Texture : TexturePath + (PathHasName ? string.Empty : Name);
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault(ItemName);
+            Tooltip.SetDefault(ItemTooltip);
+        }
+
+        public override void SetDefaults()
+        {
+            Item.consumable = true;
+
+            Item.noUseGraphic = true;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.useTurn = true;
+            Item.useTime = Item.useAnimation = 15;
+            Item.makeNPC = npcID;
+
+            Item.width = 20;
+            Item.height = 20;
+            Item.maxStack = Maxstack;
+            Item.value = Value;
+            Item.rare = Rare;
+        }
+    }
+
     public abstract class QuickMaterial : ModItem
     {
         private readonly string Matname;

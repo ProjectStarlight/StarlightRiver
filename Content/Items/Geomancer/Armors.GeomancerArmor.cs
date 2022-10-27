@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Content.Dusts;
 using System;
 using System.Linq;
@@ -100,15 +101,8 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 16);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
+            recipe.AddIngredient(ModContent.ItemType<ExoticGeodeArtifactItem>(), 2);
             recipe.AddTile(TileID.Anvils);
-            recipe.Register();
-
-            recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 16);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 6);
-            recipe.AddTile(TileID.Loom);
             recipe.Register();
         }
     }
@@ -163,15 +157,8 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 20);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
+            recipe.AddIngredient(ModContent.ItemType<ExoticGeodeArtifactItem>(), 3);
             recipe.AddTile(TileID.Anvils);
-            recipe.Register();
-
-            recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 20);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 8);
-            recipe.AddTile(TileID.Loom);
             recipe.Register();
         }
     }
@@ -207,15 +194,8 @@ namespace StarlightRiver.Content.Items.Geomancer
         public override void AddRecipes()
         {
             Recipe recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 14);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
+            recipe.AddIngredient(ModContent.ItemType<ExoticGeodeArtifactItem>(), 2);
             recipe.AddTile(TileID.Anvils);
-            recipe.Register();
-
-            recipe = CreateRecipe();
-            recipe.AddIngredient(ItemID.Silk, 14);
-            recipe.AddRecipeGroup("StarlightRiver:Gems", 5);
-            recipe.AddTile(TileID.Loom);
             recipe.Register();
         }
     }

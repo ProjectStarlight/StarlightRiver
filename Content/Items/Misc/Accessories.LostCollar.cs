@@ -4,6 +4,8 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
 using System;
 using Terraria;
+using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -22,12 +24,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load() //TODO: Make cursedaccessory.Load not hide this
 		{
-			StatusTrackingNPC.buffCompareEffects += CollarEffects;			
+			StatusTrackingNPC.buffCompareEffects += CollarEffects;
+            StarlightNPC.OnKillEvent += AddLostCollarToZoologistLoot;
 		}
 
-		public override void Unload()
+        public override void Unload()
 		{
 			StatusTrackingNPC.buffCompareEffects -= CollarEffects;
+			StarlightNPC.OnKillEvent -= AddLostCollarToZoologistLoot; 
 		}
 
 		private void CollarEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
@@ -39,6 +43,22 @@ namespace StarlightRiver.Content.Items.Misc
 					if ((oldTypes[k] != newTypes[k] || newTimes[k] > oldTimes[k]) && Main.debuff[player.buffType[k]])
 						player.AddBuff(newTypes[k], newTimes[k]);
 				}
+			}
+		}
+
+		private void AddLostCollarToZoologistLoot(NPC NPC)
+		{
+			if (NPC.type == NPCID.BestiaryGirl)
+            {
+				int playerIndex = NPC.lastInteraction;
+				if (!Main.player[playerIndex].active || Main.player[playerIndex].dead)
+				{
+					playerIndex = NPC.FindClosestPlayer();
+				}
+				Player player = Main.player[playerIndex];
+
+				if (!player.HasItem(Type))
+					Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), Type, 1);
 			}
 		}
 
