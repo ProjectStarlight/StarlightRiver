@@ -1,3 +1,4 @@
+Sweltered | Deals 20 damage-over-time | 255 | 100 | 35
 Shredded | Inflicted enemies have their defense decreased by 2 and take 2 damage-over-time per stack, maxing at 5 stacks. | 90 | 20 | 20
 Vulnerability | Increases the amount of damage a target takes by their Vulnerability | 150 | 30 | 30
 Exposure | Multiplies the amount of damage a target takes by their Exposure | 175 | 35 | 35
