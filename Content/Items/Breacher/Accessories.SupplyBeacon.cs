@@ -13,18 +13,18 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class SupplyBeacon : ModItem
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Supply Beacon");
 			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to buff either damage, regeneration, or defense \n10 second cooldown");
-
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 30;
 			Item.height = 28;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.buyPrice(0, 4, 0, 0);
 			Item.accessory = true;
 		}
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			active = false;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
 		{
 			if (cooldown <= 0 && active)
 			{
@@ -74,6 +74,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 		}
+
 		public override void PreUpdate()
 		{
 			cooldown--;
@@ -96,10 +97,9 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + direction * 800 + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
 		}
 	}
+
 	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
-
 		private bool landed = false;
 		private bool ableToLand = false;
 
@@ -109,6 +109,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		private Trail trail2;
 
 		private float startupCounter = 0f;
+
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
 		private int state => (int)Projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
 
@@ -141,9 +143,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					ManageCaches();
 
 				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].HasTile)
-				{
 					ableToLand = true;
-				}
 
 				if (ableToLand)
 					Projectile.tileCollide = true;
@@ -151,6 +151,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			else
 			{
 				Projectile.velocity.Y += 0.3f;
+
 				if (startupCounter < 1)
 					startupCounter += 0.02f;
 
@@ -166,6 +167,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
 			Vector2 position = Projectile.Center - Main.screenPosition;
+
 			if (landed)
 			{
 				Texture2D displayTex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
@@ -280,7 +282,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-
 			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
@@ -308,6 +309,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail2?.Render(effect);
 		}
 	}
+
 	class SupplyBeaconDefense : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Debug;
@@ -371,6 +373,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Player.GetDamage(DamageClass.Summon) += 0.2f;
 		}
 	}
+
 	public class SupplyBeaconDefenseDust : ModDust
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
@@ -396,7 +399,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { }
+	public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { } //What are these here for?
 
 	public class SupplyBeaconAttackDust : SupplyBeaconDefenseDust { }
 }

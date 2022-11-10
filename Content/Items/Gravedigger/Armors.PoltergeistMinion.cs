@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.IO;
-using Terraria;
 using Terraria.GameContent;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
@@ -76,7 +71,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				int sleepTimer = helm.sleepTimer;
 				int index = helm.minions.IndexOf(Projectile);
-				float progress = helm.Timer * 0.02f + index / (float)helm.minions.Count * 6.28f;
+				float progress = helm.timer * 0.02f + index / (float)helm.minions.Count * 6.28f;
 
 				Projectile.timeLeft = 2;
 				targetPos = owner.Center + new Vector2(0, -100 + (float)Math.Sin(progress * 3.4f) * 20) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);

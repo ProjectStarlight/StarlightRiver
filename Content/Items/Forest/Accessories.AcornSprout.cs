@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -72,10 +68,6 @@ namespace StarlightRiver.Content.Items.Forest
 
 				float progress = 1 - (Projectile.timeLeft - 2) / 60f;
 				Projectile.Center = Vector2.Lerp(savedPos, target.Center, progress) + new Vector2(0, (4 * progress - 4 * (float)Math.Pow(progress, 2)) * -520);
-			}
-			else
-			{
-
 			}
 
 			Projectile.rotation += 0.1f;

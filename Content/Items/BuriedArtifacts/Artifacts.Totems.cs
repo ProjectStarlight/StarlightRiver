@@ -1,8 +1,5 @@
-﻿using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
 {

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.SpaceEvent;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -195,7 +196,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Trail trail;
 		private Trail trail2;
 
-		private List<NPC> hitTargets = new();
+		private readonly List<NPC> hitTargets = new();
 		private NPC target = default;
 
 		private Vector2 startPoint = Vector2.Zero;
@@ -209,20 +210,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the Player
 		private float oldRotation = 0f;
 
-		private float charge => Projectile.ai[0];
+		private float Charge => Projectile.ai[0];
 
-		private float chargeSqrt => (float)Math.Sqrt(charge);
+		private float ChargeSqrt => (float)Math.Sqrt(Charge);
 
-		private int reach => (int)charge * 5 + 100;
+		private int Reach => (int)Charge * 5 + 100;
 
-		private int power => (int)(chargeSqrt * 3) + 10;
+		private int Power => (int)(ChargeSqrt * 3) + 10;
 
 		private Player Player => Main.player[Projectile.owner];
 
-		private float fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 25f) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 25f) : 1;
 
-		private bool miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
-		private bool branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
+		private bool Miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
+		private bool Branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
 
 		public override void SetDefaults()
 		{
@@ -251,14 +252,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 				startPoint = Projectile.Center;
 				ManageCaches();
 				initialized = true;
-				if (!branch && !miniature)
+				if (!Branch && !Miniature)
 				{
-					Projectile.timeLeft = (int)(Math.Sqrt(chargeSqrt) * 20) + 45;
+					Projectile.timeLeft = (int)(Math.Sqrt(ChargeSqrt) * 20) + 45;
 					mousePos = Main.MouseWorld;
-					Projectile.penetrate = 4 + (int)(charge / 10);
+					Projectile.penetrate = 4 + (int)(Charge / 10);
 				}
 
-				if (charge < 10 && !(branch || miniature))
+				if (Charge < 10 && !(Branch || Miniature))
 					followPlayer = true;
 
 				oldRotation = (Main.MouseWorld - Player.Center).ToRotation();
@@ -272,20 +273,20 @@ namespace StarlightRiver.Content.Items.Dungeon
 				ManageTrails();
 			}
 
-			if (Projectile.timeLeft > 36 && !miniature)
-				Player.itemTime = Player.itemAnimation = (int)(chargeSqrt + 1) * 3;
+			if (Projectile.timeLeft > 36 && !Miniature)
+				Player.itemTime = Player.itemAnimation = (int)(ChargeSqrt + 1) * 3;
 
 			foreach (Vector2 point in cache)
 			{
-				Lighting.AddLight(point, baseColor.ToVector3() * (float)Math.Sqrt(chargeSqrt) * 0.3f * fade);
+				Lighting.AddLight(point, baseColor.ToVector3() * (float)Math.Sqrt(ChargeSqrt) * 0.3f * Fade);
 			}
 
 			for (int k = 1; k < cache2.Count; k++)
 			{
-				if (Main.rand.Next(40 * (Projectile.extraUpdates + 1)) == 0)
+				if (Main.rand.NextBool(40 * (Projectile.extraUpdates + 1)))
 				{
 					Vector2 prevPos = k == 1 ? startPoint : cache2[k - 1];
-					Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<CloudstrikeGlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (power / 30f), 0.5f);
+					Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<CloudstrikeGlowLine>(), Vector2.Normalize(cache2[k] - prevPos) * Main.rand.NextFloat(-3, -2), 0, baseColor * (Power / 30f), 0.5f);
 				}
 			}
 
@@ -302,9 +303,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			CalculateVelocity();
 
-			if (Main.rand.NextBool((int)charge + 50) && !(branch || miniature)) //damaging, large branches
+			if (Main.rand.NextBool((int)Charge + 50) && !(Branch || Miniature)) //damaging, large branches
 			{
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, charge, 1);
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)), ModContent.ProjectileType<CloudstrikeShot>(), Projectile.damage, Projectile.knockBack, Player.whoAmI, Charge, 1);
 				proj.timeLeft = (int)((Projectile.timeLeft - 25) * 0.75f) + 25;
 
 				var modProj = proj.ModProjectile as CloudstrikeShot;
@@ -312,7 +313,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				modProj.followPlayer = followPlayer;
 			}
 
-			if (Main.rand.NextBool(10 + (int)Math.Sqrt(Cloudstrike.MAXCHARGE + 2 - charge)) && !(branch || miniature)) //small, non damaging branches
+			if (Main.rand.NextBool(10 + (int)Math.Sqrt(Cloudstrike.MAXCHARGE + 2 - Charge)) && !(Branch || Miniature)) //small, non damaging branches
 			{
 				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, Player.whoAmI, 1, 1);
 				proj.timeLeft = Math.Min(Main.rand.Next(40, 70), Projectile.timeLeft);
@@ -331,13 +332,13 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			hitTargets.Add(target);
-			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Vector2.Zero, 0, default, (float)Math.Pow(chargeSqrt, 0.3f));
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Vector2.Zero, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f));
 
 			for (int i = 0; i < 20; i++)
-				Dust.NewDustPerfect(target.Center + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 6, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
+				Dust.NewDustPerfect(target.Center + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 6, 0, new Color(100, 150, 200) * (Power / 30f), 0.5f);
 
 			for (int j = 0; j < 6; j++)
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 3, 0, default, (float)Math.Pow(chargeSqrt, 0.3f) * 0.3f);
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 3, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f) * 0.3f);
 
 			Projectile.localNPCImmunity[target.whoAmI] = 2;
 			target.immune[Projectile.owner] = 2;
@@ -384,27 +385,27 @@ namespace StarlightRiver.Content.Items.Dungeon
 				if (i > cache.Count - 3 || dir == Vector2.Zero)
 					cache2.Add(point);
 				else
-					cache2.Add(point + dir * Main.rand.NextFloat(5) * (float)Math.Sqrt(chargeSqrt));
+					cache2.Add(point + dir * Main.rand.NextFloat(5) * (float)Math.Sqrt(ChargeSqrt));
 			}
 		}
 
 		private void ManageTrails()
 		{
-			int sparkMult = miniature ? 6 : 1;
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(chargeSqrt, 0.7f), factor =>
+			int sparkMult = Miniature ? 6 : 1;
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * Main.rand.NextFloat(0.75f, 1.25f) * 16 * (float)Math.Pow(ChargeSqrt, 0.7f), factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
 
-				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+				return new Color(160, 220, 255) * Fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
 			});
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + oldVel;
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(chargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress;
+				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * Fade * progress;
 			});
 
 			trail2.Positions = cache2.ToArray();
@@ -458,19 +459,19 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (point1 == Vector2.Zero)
 				return;
 
-			if (branch)
+			if (Branch)
 				return;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 
-			Color color = new Color(200, 230, 255) * fade;
-			for (int i = 0; i < chargeSqrt; i++)
-				sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 2, chargeSqrt / (float)Math.Sqrt(Cloudstrike.MAXCHARGE)) * ((branch || miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
+			Color color = new Color(200, 230, 255) * Fade;
+			for (int i = 0; i < ChargeSqrt; i++)
+				sb.Draw(tex, startPoint - Main.screenPosition, null, color, 0, tex.Size() / 2, (float)MathHelper.Lerp(1, 2, ChargeSqrt / (float)Math.Sqrt(Cloudstrike.MAXCHARGE)) * ((Branch || Miniature) ? 0.25f : 0.5f), SpriteEffects.None, 0f);
 		}
 
 		private void CalculateTarget()
 		{
-			NPC temptarget = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && !hitTargets.Contains(x) && x.Distance(Projectile.Center) < reach).OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
+			NPC temptarget = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && !hitTargets.Contains(x) && x.Distance(Projectile.Center) < Reach).OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (temptarget != default && Main.rand.NextBool((int)Math.Sqrt(temptarget.Distance(Projectile.Center)) + 1))
 				target = temptarget;
@@ -491,7 +492,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 			else
 			{
-				if (branch || miniature)
+				if (Branch || Miniature)
 				{
 					if (Main.rand.NextBool(4))
 						mousePos = Projectile.Center + Projectile.velocity.RotatedBy(Main.rand.NextFloat(-0.7f, 0.7f)) * 30;
@@ -520,7 +521,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				rotToBe = Vector2.Normalize(dir).RotatedBy(curve);
 			}
 
-			if (miniature)
+			if (Miniature)
 			{
 				Vector2 dir2 = Player.Center + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
 				distance = dir2.Length();
@@ -530,7 +531,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			float rotDifference = ((rotToBe.ToRotation() - Projectile.velocity.ToRotation()) % 6.28f + 9.42f) % 6.28f - 3.14f;
 
 			float lerper = MathHelper.Lerp(0.55f, 0.35f, MathHelper.Min(1, distance / 300f));
-			if (miniature)
+			if (Miniature)
 				lerper /= 3;
 			float rot = MathHelper.Lerp(Projectile.velocity.ToRotation(), Projectile.velocity.ToRotation() + rotDifference, lerper);
 			Projectile.velocity = rot.ToRotationVector2() * velocityMult;
@@ -670,6 +671,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (dust.fadeIn > 60)
 				dust.active = false;
+
 			return false;
 		}
 	}

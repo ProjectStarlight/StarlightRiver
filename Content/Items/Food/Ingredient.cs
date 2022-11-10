@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Utility;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {

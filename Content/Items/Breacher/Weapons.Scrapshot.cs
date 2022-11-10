@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -44,7 +40,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.noMelee = true;
 			Item.useAmmo = AmmoID.Bullet;
 			Item.DamageType = DamageClass.Ranged;
-			Item.shoot = 0;
+			Item.shoot = ProjectileID.None;
 			Item.shootSpeed = 17;
 		}
 
@@ -70,7 +66,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				Item.noUseGraphic = false;
 
 				if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer != Player.whoAmI && (hook == null || !hook.Projectile.active || hook.Projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.Projectile.owner != Player.whoAmI))
-					findHook(Player);
+					FindHook(Player);
 
 				return hook is null || hook != null && (!hook.Projectile.active || hook.Projectile.type != ModContent.ProjectileType<ScrapshotHook>() || hook.isHooked && !hook.struck);
 			}
@@ -201,7 +197,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		/// we are using the precondition that only 1 scrapshot hook can exist for a Player in order to find and assign the hook in multiPlayer
 		/// </summary>
 		/// <returns></returns>
-		private void findHook(Player Player)
+		private void FindHook(Player Player)
 		{
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
@@ -244,7 +240,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.penetrate = -1;
 		}
 
-		private void findIfHit()
+		private void FindIfHit()
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
@@ -281,7 +277,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (!isHooked && !Retracting && Main.myPlayer != Projectile.owner)
 			{
 				Projectile.friendly = true; //otherwise it will stop just short of actually intersecting the hitbox
-				findIfHit(); //since onhit hooks are client side only, all other clients will manually check for collisions
+				FindIfHit(); //since onhit hooks are client side only, all other clients will manually check for collisions
 			}
 
 			if (isHooked && !struck)

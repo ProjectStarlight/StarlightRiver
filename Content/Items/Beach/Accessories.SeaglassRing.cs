@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Beach
 {
@@ -39,10 +35,10 @@ namespace StarlightRiver.Content.Items.Beach
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.Next(20) == 0)
-				Dust.NewDust(new Vector2(i, j) * 16, 16, 16, 15, 0, 0, 0, default, 0.5f);
+			if (Main.rand.NextBool(20))
+				Dust.NewDust(new Vector2(i, j) * 16, 16, 16, DustID.MagicMirror, 0, 0, 0, default, 0.5f);
 
-			if (Main.rand.Next(40) == 0)
+			if (Main.rand.NextBool(40))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 				if (Main.rand.NextBool())

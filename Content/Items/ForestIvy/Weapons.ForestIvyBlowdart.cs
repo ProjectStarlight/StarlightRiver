@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Brewing;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Brewing;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.ForestIvy
 {
@@ -33,9 +29,8 @@ namespace StarlightRiver.Content.Items.ForestIvy
 			Item.UseSound = SoundID.Item63;
 
 			Item.shootSpeed = 12.5f; // 1.5 more than vanilla blowpipe
-#pragma warning disable ChangeMagicNumberToID
-			Item.shoot = 10;
-#pragma warning restore ChangeMagicNumberToID
+
+			Item.shoot = ProjectileID.PurificationPowder;
 
 			Item.noMelee = true;
 			Item.DamageType = DamageClass.Ranged;

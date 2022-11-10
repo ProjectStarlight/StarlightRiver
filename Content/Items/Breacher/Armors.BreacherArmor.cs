@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.height = 28;
 			Item.value = 8000;
 			Item.defense = 5;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		public override void UpdateEquip(Player Player)
@@ -62,7 +63,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.height = 20;
 			Item.value = 6000;
 			Item.defense = 6;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		public override void UpdateEquip(Player Player)
@@ -109,7 +110,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.height = 20;
 			Item.value = 4000;
 			Item.defense = 5;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		public override void UpdateEquip(Player Player)

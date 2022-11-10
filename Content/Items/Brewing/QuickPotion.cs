@@ -1,28 +1,7 @@
-﻿using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Brewing
 {
-	public class Bottle : ModItem
-	{
-		public override string Texture => "StarlightRiver/Assets/Items/Brewing/Bottle";
-
-		public override void SetStaticDefaults()
-		{
-			Tooltip.SetDefault("A bottle made of thick vitric glass");
-			DisplayName.SetDefault("Vitric Bottle");
-		}
-
-		public override void SetDefaults()
-		{
-			Item.width = 16;
-			Item.height = 16;
-			Item.maxStack = 250;
-			Item.rare = ItemRarityID.Green;
-		}
-	}
-
 	public abstract class QuickPotion : ModItem
 	{
 		private readonly string ItemName;

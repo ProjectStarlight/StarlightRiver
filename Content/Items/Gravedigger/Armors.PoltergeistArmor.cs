@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Gravedigger
@@ -13,7 +9,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 	public class PoltergeistHead : ModItem
 	{
 		public List<Projectile> minions = new();
-		public int Timer;
+		public int timer;
 		public int sleepTimer;
 
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
@@ -64,7 +60,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			minions.RemoveAll(n => !n.active || n.type != ProjectileType<PoltergeistMinion>());
 
-			Timer++;
+			timer++;
 
 			for (int k = 0; k < minions.Count; k++)
 			{
@@ -102,7 +98,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					return;
 				}
 
-				if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot > 0 && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
+				if (item.DamageType.Type == DamageClass.Magic.Type && item.mana > 0 && !item.channel && item.shoot != ProjectileID.None && mp.TryReserveMana((int)(item.mana * (60f / item.useTime) * 2))) //addition
 				{
 					int i = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ProjectileType<PoltergeistMinion>(), 0, 0, player.whoAmI);
 					Projectile proj = Main.projectile[i];

@@ -1,22 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BuriedArtifacts;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BuriedArtifacts;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
 	[AutoloadEquip(EquipType.Head)]
 	public class GeomancerHood : ModItem, IArmorLayerDrawable
 	{
-		public override string Texture => AssetDirectory.GeomancerItem + Name;
-
 		internal static Item dummyItem = new();
+
+		public override string Texture => AssetDirectory.GeomancerItem + Name;
 
 		public override void Load()
 		{
@@ -40,7 +35,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.height = 28;
 			Item.value = 8000;
 			Item.defense = 5;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		public override void UpdateEquip(Player Player)
@@ -80,7 +75,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public void DrawArmorLayer(PlayerDrawSet info)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == 0)
+			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[10].type == ItemID.None)
 			{
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerHood_Head_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.headRotation);
 			}
@@ -112,7 +107,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.height = 20;
 			Item.value = 6000;
 			Item.defense = 6;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		/*public override void UpdateEquip(Player Player)
@@ -138,7 +133,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public void DrawArmorLayer(PlayerDrawSet info)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[11].type == 0)
+			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[11].type == ItemID.None)
 			{
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Gems").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerRobe_Body_Rims").Value, info, info.drawPlayer.bodyFrame, info.drawPlayer.bodyRotation);
@@ -171,14 +166,14 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Item.height = 20;
 			Item.value = 4000;
 			Item.defense = 5;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 		}
 
 		public void DrawArmorLayer(PlayerDrawSet info)
 		{
 			GeomancerPlayer modPlayer = info.drawPlayer.GetModPlayer<GeomancerPlayer>();
 
-			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[12].type == 0)
+			if (modPlayer.SetBonusActive && modPlayer.storedGem != StoredGem.None && info.drawPlayer.armor[12].type == ItemID.None)
 				GeomancerDrawer.Draw(ModContent.Request<Texture2D>(AssetDirectory.GeomancerItem + "GeomancerPants_Legs_Gems").Value, info, info.drawPlayer.legFrame, info.drawPlayer.bodyRotation);
 		}
 

@@ -1,14 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -336,15 +332,18 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public Vector2 moveDirection;
 		public Vector2 newVelocity = Vector2.Zero;
-		public float speed => MathHelper.Lerp(3f, 10f, speedTimer / 65f);
+
 		public int speedTimer;
 
 		bool collideX = false;
 		bool collideY = false;
 		bool collided;
 
-		public Player owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.DungeonItem + Name;
+
+		public float Speed => MathHelper.Lerp(3f, 10f, speedTimer / 65f);
+
+		public Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -474,6 +473,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			return false;
 		}
+
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			target.AddBuff(BuffID.OnFire, 240);
@@ -500,6 +500,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				dust3.noGravity = true;
 			}
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (!returning)
@@ -522,7 +523,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				resetDelay--;
 
 			if (Projectile.tileCollide) //the projectile just collided with the tile, give the moveDirection the opposite of the owners direction
-				moveDirection = new Vector2(-owner.direction, 1);
+				moveDirection = new Vector2(-Owner.direction, 1);
 
 			Projectile.tileCollide = false;
 
@@ -530,7 +531,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			{
 				speedTimer = 0;
 				switched = true;
-				moveDirection.X = Projectile.Center.X < owner.Center.X ? 1 : -1;
+				moveDirection.X = Projectile.Center.X < Owner.Center.X ? 1 : -1;
 			}
 
 			newVelocity = Collide();
@@ -538,6 +539,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				collideX = true;
 			else
 				collideX = false;
+
 			if (Math.Abs(newVelocity.Y) < 0.5f)
 				collideY = true;
 			else
@@ -582,9 +584,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 				}
 			}
 
-			Projectile.velocity = speed * moveDirection;
+			Projectile.velocity = Speed * moveDirection;
 			Projectile.velocity = Collide(); // set the velo based of Collision.NoSlopeCollision() and speed + movedirection.
-			if (Projectile.Center.Y < owner.Center.Y - 200 && resetDelay <= 0) //if the wheel is too far above the player it resets its movement
+			if (Projectile.Center.Y < Owner.Center.Y - 200 && resetDelay <= 0) //if the wheel is too far above the player it resets its movement
 			{
 				if (!switched)
 				{

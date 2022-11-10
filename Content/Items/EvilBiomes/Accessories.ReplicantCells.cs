@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
 
 namespace StarlightRiver.Content.Items.EvilBiomes
 {

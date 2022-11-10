@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Tiles.Forest;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -9,9 +8,7 @@ namespace StarlightRiver.Content.Items.Brewing
 	{
 		public override string Texture => "StarlightRiver/Assets/Items/Brewing/PotionForest";
 
-		public PotionForest() : base("Forest Tonic", "Provides regenration and immunity to poision", 1800, BuffType<Buffs.ForestTonic>(), 2)
-		{
-		}
+		public PotionForest() : base("Forest Tonic", "Provides regenration and immunity to poision", 1800, BuffType<Buffs.ForestTonic>(), 2) { }
 
 		public override void AddRecipes()
 		{

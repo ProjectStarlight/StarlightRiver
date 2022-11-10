@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.GameContent;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -55,10 +50,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 				releaseCounter += 0.01f;
 				extraSpin += Math.Min(releaseCounter, 0.15f);
 				released = true;
+
 				if (releaseCounter > 0.5f)
-				{
 					offsetLerper -= 0.015f;
-				}
 
 				if (offsetLerper <= 0)
 				{
@@ -178,6 +172,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			}
 		}
 	}
+
 	public class GeoSapphireProj : GeoProj
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "GeoSapphire";
@@ -204,6 +199,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			}
 		}
 	}
+
 	public class GeoEmeraldProj : GeoProj
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + "GeoEmerald";

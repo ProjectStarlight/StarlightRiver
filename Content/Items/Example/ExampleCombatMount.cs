@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Example
 {

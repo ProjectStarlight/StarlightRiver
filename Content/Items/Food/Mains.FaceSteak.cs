@@ -1,8 +1,5 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.GameContent.ItemDropRules;
+﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
 {

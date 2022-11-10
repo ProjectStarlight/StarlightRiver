@@ -1,16 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -70,9 +66,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				NPC NPC = Main.npc[i];
 
 				if (locks.Contains(NPC) && (!NPC.CanBeChasedBy() || NPC.CanBeChasedBy() && !NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked))
-				{
 					locks.Remove(NPC);
-				}
 
 				Rectangle generousHitbox = NPC.Hitbox;
 				generousHitbox.Inflate(NPC.Hitbox.Width / 3, NPC.Hitbox.Height / 3);
@@ -130,14 +124,9 @@ namespace StarlightRiver.Content.Items.Astroflora
 				int index;
 
 				if (locks.Count == 0)
-				{
 					index = -1;
-				}
 				else
-				{
-					// Dictates which lock the Projectile will go for. If three locks, it's one for each, else any excess Projectiles target a random lock.
 					index = i > locks.Count - 1 ? Main.rand.Next(locks).whoAmI : locks[i].whoAmI;
-				}
 
 				Vector2 shotOffset = Vector2.Normalize(velocity) * 32;
 
@@ -206,18 +195,14 @@ namespace StarlightRiver.Content.Items.Astroflora
 			ManageTrail();
 
 			if (Projectile.timeLeft < 30)
-			{
 				Projectile.alpha += 8;
-			}
 
 			if (!HitATarget)
 			{
 				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.1f, 10);
 
 				if (TargetNPCIndex == -1)
-				{
 					return;
-				}
 
 				NPC target = Main.npc[TargetNPCIndex];
 
@@ -251,9 +236,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			float magnitude = vector.Length();
 
 			if (magnitude > adjustment)
-			{
 				vector *= adjustment / magnitude;
-			}
 		}
 
 		private void ManageCaches()
@@ -330,9 +313,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				NPC NPC = Main.npc[TargetNPCIndex];
 
 				if (NPC.active)
-				{
 					NPC.GetGlobalNPC<AstrofloraLocksGlobalNPC>().Locked = false;
-				}
 			}
 		}
 	}
@@ -349,9 +330,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			set
 			{
 				if (value)
-				{
 					remainingLockDuration = MaxLockDuration;
-				}
 
 				locked = value;
 			}

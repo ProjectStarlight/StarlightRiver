@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -206,6 +202,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			{
 				if (target.Hitbox.Intersects(Projectile.Hitbox) && target.CanBeChasedBy(this))
 					target.AddBuff(BuffID.Poisoned, 30);
+
 				return false;
 			}
 			else if (Projectile.ai[1] < chargetime)

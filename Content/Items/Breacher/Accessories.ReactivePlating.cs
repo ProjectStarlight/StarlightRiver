@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.CustomHooks;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -15,18 +10,18 @@ namespace StarlightRiver.Content.Items.Breacher
 	public class ReactivePlating : ModItem
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Reactive Plating");
 			Tooltip.SetDefault("Gain brief damage resistance after taking several hits\n'The shielding activates, but only after... repeated triggers.'");
-
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 30;
 			Item.height = 28;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.buyPrice(0, 4, 0, 0);
 			Item.defense = 4;
 			Item.accessory = true;
@@ -43,7 +38,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 10);
+			recipe.AddIngredient(ModContent.ItemType<SpaceEvent.Astroscrap>(), 10);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -56,7 +51,6 @@ namespace StarlightRiver.Content.Items.Breacher
 		private int damageCounter;
 
 		public int shieldTimer = 0;
-
 		public int flickerTime = 0;
 
 		public bool Shield => shieldTimer > 0;

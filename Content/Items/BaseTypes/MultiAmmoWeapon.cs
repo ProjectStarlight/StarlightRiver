@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System.Collections.Generic;
-using Terraria;
+﻿using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.Items.BaseTypes
@@ -121,12 +116,14 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		}
 
 		public virtual bool SafeCanUseItem(Player player) { return true; }
+
 		public sealed override bool CanUseItem(Player player)
 		{
 			return base.CanUseItem(player) && SafeCanUseItem(player) && hasAmmo;
 		}
 
 		public virtual void SafeModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) { }
+
 		public sealed override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
 			SafeModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
@@ -141,6 +138,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		}
 
 		public virtual bool? SafeUseItem(Player player) { return null; }
+
 		public sealed override bool? UseItem(Player player)
 		{
 			SafeUseItem(player);
@@ -182,6 +180,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		}
 
 		public virtual void SafeModifyTooltips(List<TooltipLine> tooltips) { }
+
 		public sealed override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			SafeModifyTooltips(tooltips);

@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {

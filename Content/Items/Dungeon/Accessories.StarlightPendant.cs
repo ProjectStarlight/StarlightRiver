@@ -1,27 +1,23 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Vitric;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
 	public class StarlightPendant : ModItem
 	{
+		private int currentMana = -1;
+
+		private readonly List<int> manaConsumed = new();
+
 		public override string Texture => AssetDirectory.DungeonItem + Name;
 
-		private List<int> manaConsumed = new();
-
-		private int currentMana = -1;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starlight Pendant");
 			Tooltip.SetDefault("Barrier boosts mana regen by 1% per point of currently active barrier \n" +
 				"Consuming mana boosts barrier regen by 1% per 4 points of mana consumed in the past 5 seconds \n" +
 				"-10 barrier");
-
 		}
 
 		public override void SetDefaults()

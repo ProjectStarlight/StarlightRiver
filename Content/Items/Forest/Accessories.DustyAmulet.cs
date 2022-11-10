@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Forest

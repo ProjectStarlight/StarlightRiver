@@ -1,13 +1,6 @@
-﻿
-using Microsoft.Xna.Framework;
-
-using StarlightRiver.Core;
-using System.Linq;
-
-using Terraria;
+﻿using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Breacher
 {

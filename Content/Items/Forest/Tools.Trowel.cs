@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -34,11 +29,8 @@ namespace StarlightRiver.Content.Items.Forest
 
 		private Point16 FindNextTile(Player Player)
 		{
-			if (Math.Abs(Player.tileTargetX - Player.Center.X / 16) > Player.tileRangeX ||
-				Math.Abs(Player.tileTargetY - Player.Center.Y / 16) > Player.tileRangeY)
-			{
+			if (Math.Abs(Player.tileTargetX - Player.Center.X / 16) > Player.tileRangeX || Math.Abs(Player.tileTargetY - Player.Center.Y / 16) > Player.tileRangeY)
 				return default;
-			}
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 			int direction = Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.LeftShift) ? -1 : 1;
@@ -64,7 +56,6 @@ namespace StarlightRiver.Content.Items.Forest
 
 				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
-
 				else if (nextTile.TileType != tile.TileType)
 					return default;
 			}

@@ -1,16 +1,10 @@
-﻿
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -34,8 +28,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class BreachCannonSentry : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
-
 		public Vector2 tileOrigin = Vector2.Zero;
 
 		private List<Vector2> cache;
@@ -58,6 +50,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		public Vector2 superLaserEndpoint;
 
 		private float superLaserSizeMult = 0;
+
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
 		//0 = right
 		//1 = bottom

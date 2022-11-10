@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 
@@ -155,29 +150,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 
 			if (item.prefix == 62)
-			{
 				Player.statDefense++;
-			}
 
 			if (item.prefix == 63)
-			{
 				Player.statDefense += 2;
-			}
 
 			if (item.prefix == 64)
-			{
 				Player.statDefense += 3;
-			}
 
 			if (item.prefix == 65)
-			{
 				Player.statDefense += 4;
-			}
 
 			if (item.prefix == 66)
-			{
 				Player.statManaMax2 += 20;
-			}
 
 			if (item.prefix == 67)
 			{
@@ -196,64 +181,40 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			}
 
 			if (item.prefix == 69)
-			{
 				Player.GetDamage(DamageClass.Generic) += 0.01f;
-			}
 
 			if (item.prefix == 70)
-			{
 				Player.GetDamage(DamageClass.Generic) += 0.02f;
-			}
 
 			if (item.prefix == 71)
-			{
 				Player.GetDamage(DamageClass.Generic) += 0.03f;
-			}
 
 			if (item.prefix == 72)
-			{
 				Player.GetDamage(DamageClass.Generic) += 0.04f;
-			}
 
 			if (item.prefix == 73)
-			{
 				Player.moveSpeed += 0.01f;
-			}
 
 			if (item.prefix == 74)
-			{
 				Player.moveSpeed += 0.02f;
-			}
 
 			if (item.prefix == 75)
-			{
 				Player.moveSpeed += 0.03f;
-			}
 
 			if (item.prefix == 76)
-			{
 				Player.moveSpeed += 0.04f;
-			}
 
 			if (item.prefix == 77)
-			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.01f;
-			}
 
 			if (item.prefix == 78)
-			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.02f;
-			}
 
 			if (item.prefix == 79)
-			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.03f;
-			}
 
 			if (item.prefix == 80)
-			{
 				Player.GetAttackSpeed(DamageClass.Melee) += 0.04f;
-			}
 		}
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Items.Brewing
+﻿namespace StarlightRiver.Content.Items.Brewing
 {
 	public class Ivy : QuickMaterial
 	{

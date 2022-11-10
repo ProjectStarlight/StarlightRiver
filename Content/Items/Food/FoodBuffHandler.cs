@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Food
@@ -11,10 +9,6 @@ namespace StarlightRiver.Content.Items.Food
 		public List<Item> Consumed { get; set; } = new List<Item>(); //all of the ingredients in the food the Player ate
 		public float Multiplier { get; set; } = 1; //the multipler that should be applied to those ingredients
 		public float oldMult = 1;
-
-		//public override void PostUpdateBuffs()
-		//{
-		//}
 
 		public override void ResetEffects()
 		{

@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-
-namespace StarlightRiver.Content.Items.BuriedArtifacts
+﻿namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
 	public class DesertArtifact1Item : QuickMaterial
 	{
