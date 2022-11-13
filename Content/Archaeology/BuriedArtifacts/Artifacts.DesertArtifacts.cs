@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 
 		public override Vector2 Size => new Vector2(36, 50);
 
-		public override float SpawnChance => 0.1f;
+		public override float SpawnChance => 0.5f;
 
 		public override int ItemType => ModContent.ItemType<ArchaeologistsWhip>();
 	}
