@@ -20,6 +20,9 @@ namespace StarlightRiver.Core
 		protected float _flyTime;
 		protected Color _stringColor;
 		protected int _handleOffset;
+		protected int xFrames = 1;
+		protected int yFrames = 5;
+		protected int xFrame = 0;
 
 		public BaseWhip(string name, int segments = 20, float rangeMultiplier = 1f, Color? stringColor = null, int handleOffset = 2)
 		{
@@ -168,7 +171,7 @@ namespace StarlightRiver.Core
 
 			//whip
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
-			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
+			Rectangle whipFrame = texture.Frame(xFrames, yFrames, xFrame, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
 			for (int i = 0; i < points.Count - 1; i++)
@@ -178,7 +181,7 @@ namespace StarlightRiver.Core
 				if (i == 0)
 					origin.Y += _handleOffset;
 				else if (i == points.Count - 2)
-					whipFrame.Y = height * 4;
+					whipFrame.Y = height * (yFrames - 1);
 				else
 				{
 					whipFrame.Y = height * SegmentVariant(i);

@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using CsvHelper.TypeConversion;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using StarlightRiver.Content.Items.Geomancer;
 using StarlightRiver.Core;
 using System;
@@ -35,7 +37,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
     {
         public override string Texture => AssetDirectory.ArtifactItem + Name;
 
-        public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97)) { }
+		protected bool empowered => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<ArchaeologistsBuff>());
+
+        public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97)) { xFrames = 1; yFrames = 5; }
 
         public override int SegmentVariant(int segment)
         {
@@ -45,15 +49,14 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
                 default:
                     variant = 1;
                     break;
-                case 5:
                 case 6:
-                case 7:
-                case 8:
-                    variant = 2;
+				case 7:
+				case 8:
+				case 9:
+					variant = 2;
                     break;
-                case 9:
                 case 10:
-                case 11:
+				case 11:
                 case 12:
                 case 13:
                     variant = 3;
@@ -62,9 +65,52 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
             return variant;
         }
 
-        public override bool ShouldDrawSegment(int segment) => true;// segment % 2 == 0;
+		public override void ArcAI()
+		{
+			xFrame = 0;
+		}
 
-        public override Color? GetAlpha(Color lightColor) 
+		public override bool ShouldDrawSegment(int segment) => true;// segment % 2 == 0;
+
+		public override void DrawBehindWhip(ref Color lightColor)
+		{
+			if (!empowered)
+				return;
+
+			List<Vector2> points = new List<Vector2>();
+			points.Clear();
+			SetPoints(points);
+			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture + "_Glow");
+			Rectangle whipFrame = texture.Frame(xFrames, yFrames, xFrame, 0);
+			int height = whipFrame.Height;
+			Vector2 firstPoint = points[0];
+			for (int i = 0; i < points.Count - 1; i++)
+			{
+				Vector2 origin = whipFrame.Size() * 0.5f;
+				bool draw = true;
+				if (i == 0)
+					origin.Y += _handleOffset;
+				else if (i == points.Count - 2)
+					whipFrame.Y = height * (yFrames - 1);
+				else
+				{
+					whipFrame.Y = height * SegmentVariant(i);
+					draw = ShouldDrawSegment(i);
+				}
+
+				Vector2 difference = points[i + 1] - points[i];
+				if (draw)
+				{
+					Color alpha = Color.Gold;
+					alpha.A = 0;
+					float rotation = difference.ToRotation() - MathHelper.PiOver2;
+					Main.EntitySpriteDraw(texture.Value, points[i] - Main.screenPosition, whipFrame, alpha * 0.5f, rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+				}
+				firstPoint += difference;
+			}
+		}
+
+		public override Color? GetAlpha(Color lightColor) 
         {
             Color minLight = lightColor;
             Color minColor = new Color(10, 25, 33);
@@ -87,9 +133,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			ModContent.ItemType<AWhip_Necklace>(),
 			};
 
-			if (Main.rand.NextBool(5))
+			if (Main.rand.NextBool(9))
 			{
-				if (Main.rand.NextBool(60))
+				if (Main.rand.NextBool(100))
 					Item.NewItem(target.GetSource_Loot(), target.Hitbox, ModContent.ItemType<AWhip_Cloud>());
 				else
 					Item.NewItem(target.GetSource_Loot(), target.Hitbox, treasure[Main.rand.Next(treasure.Length)]);
@@ -121,6 +167,15 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			if (Main.rand.NextBool(60))
 				Dust.NewDustPerfect(Item.Center + Main.rand.NextVector2Circular(8, 8), ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>(), Vector2.Zero);
+		}
+
+		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
+		{
+			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Color drawColor = Color.Gold;
+			drawColor.A = 0;
+			spriteBatch.Draw(glowTex, Item.Center - Main.screenPosition, null, drawColor, 0, glowTex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+			return base.PreDrawInWorld(spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);
 		}
 
 		public override bool OnPickup(Player Player)
