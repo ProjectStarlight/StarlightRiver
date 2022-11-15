@@ -67,8 +67,9 @@ namespace StarlightRiver.Core
         public const string SlimeItem =             Assets + "Items/Slime/";
         public const string StarwoodItem =          Assets + "Items/Starwood/";
         public const string PalestoneItem =         Assets + "Items/Palestone/";
-        public const string AstrofloraItem =        Assets + "Items/Astroflora/";
-        public const string IvyItem =               Assets + "Items/ForestIvy/";
+		public const string AstrofloraItem =		Assets + "Items/Astroflora/";
+		public const string SnowItem =				Assets + "Items/Snow/";
+		public const string IvyItem =               Assets + "Items/ForestIvy/";
         public const string MiscItem =              Assets + "Items/Misc/";
         public const string MiscTile =              Assets + "Tiles/Misc/";
         public const string BreacherItem =          Assets + "Items/Breacher/";
