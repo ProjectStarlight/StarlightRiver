@@ -35,6 +35,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void ProjectileCritExplosion(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
         {
+			if (!Equipped(player))
+				return;
+
             if (proj.CountsAsClass(DamageClass.Melee) && crit)
             {
                 Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
@@ -44,7 +47,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         private void CritExplosion(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
         {
-            if (Item.CountsAsClass(DamageClass.Melee) && crit)
+			if (!Equipped(player))
+				return;
+
+			if (Item.CountsAsClass(DamageClass.Melee) && crit)
             {
                 Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
                 Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damage * 1.25f), knockback * 0.25f, player.whoAmI);
