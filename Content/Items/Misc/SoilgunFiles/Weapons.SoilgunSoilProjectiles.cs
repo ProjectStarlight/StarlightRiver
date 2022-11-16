@@ -21,11 +21,15 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
     public abstract class BaseSoilProjectile : ModProjectile
     {
+        public int dustID;
+
         public bool Gravity = true;
 
         public bool DrawTrail = true;
 
         public Color TrailColor = Color.White;
+        public Color RingOutsideColor = Color.White;
+        public Color RingInsideColor = Color.White;
 
         private List<Vector2> cache;
         private Trail trail;
@@ -35,6 +39,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public ref float Time => ref Projectile.ai[1];
 
         public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
+
+        protected BaseSoilProjectile(Color trailColor, Color ringOutsideColor, Color ringInsideColor, int dustID) 
+        {
+            TrailColor = trailColor;
+            RingOutsideColor = ringOutsideColor;
+            RingInsideColor = ringInsideColor;
+            this.dustID = dustID;
+        }
 
         public sealed override void SetStaticDefaults()
         {
@@ -166,10 +178,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunDirtSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.DirtBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(30, 19, 12);
-        }
+        public SoilgunDirtSoil() : base(new Color(30, 19, 12), new Color(81, 47, 27), new Color(105, 67, 44), DustID.Dirt) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(10))
@@ -200,11 +209,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunSandSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.SandBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(58, 49, 18);
-        }
-
+        public SoilgunSandSoil() : base(new Color(58, 49, 18), new Color(139, 131, 59), new Color(212, 192, 100), DustID.Sand) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(8))
@@ -234,11 +239,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunCrimsandSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.CrimsandBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(39, 17, 14);
-        }
-
+        public SoilgunCrimsandSoil() : base(new Color(39, 17, 14), new Color(56, 17, 14), new Color(135, 43, 34), DustID.CrimsonPlants) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(10))
@@ -275,11 +276,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunEbonsandSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.EbonsandBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(26, 18, 31);
-        }
-
+        public SoilgunEbonsandSoil() : base(new Color(26, 18, 31), new Color(62, 45, 75), new Color(119, 106, 138), DustID.Ebonwood) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(8))
@@ -318,11 +315,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public override string Texture => "Terraria/Images/Item_" + ItemID.PearlsandBlock;
 
         private bool foundTarget;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(87, 77, 106);
-        }
-
+        public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(87, 77, 106), new Color(246, 235, 228), DustID.Pearlsand) { }
         public override Color? GetAlpha(Color lightColor) => Color.White;
 
         public override void SafeAI()
@@ -369,10 +362,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunVitricSandSoil : BaseSoilProjectile
     {
         public override string Texture => AssetDirectory.VitricTile + "VitricSandItem";
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(87, 129, 140);
-        }
+
+        public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(87, 129, 140), new Color(171, 230, 167), ModContent.DustType<VitricSandDust>()) { }
+
         //yeah this is copied from vitric bullet they kinda similar tho
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
@@ -412,11 +404,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunSlushSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.SlushBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(27, 40, 51);
-        }
-
+        public SoilgunSlushSoil() : base(new Color(27, 40, 51), new Color(27, 40, 51), new Color(164, 182, 180), DustID.Slush) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(8))
@@ -467,11 +455,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
     public class SoilgunSiltSoil : BaseSoilProjectile
     {
         public override string Texture => "Terraria/Images/Item_" + ItemID.SiltBlock;
-        public override void SafeSetDefaults()
-        {
-            TrailColor = new Color(22, 24, 32);
-        }
-
+        public SoilgunSiltSoil() : base(new Color(22, 24, 32), new Color(49, 51, 61), new Color(106, 107, 118), DustID.Silt) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(8))
@@ -509,12 +493,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public override string Texture => "Terraria/Images/Item_" + ItemID.MudBlock;
         public override void SafeSetDefaults()
         {
-            TrailColor = new Color(30, 21, 24);
             Projectile.penetrate = 3;
             Projectile.usesLocalNPCImmunity = true; //without local immunity this was by far the worse ammo, about 3x less dps than just dirt. high hit cooldown to compensate though.
             Projectile.localNPCHitCooldown = 20;
         }
-
+        public SoilgunMudSoil() : base(new Color(30, 21, 24), new Color(73, 57, 63), new Color(111, 83, 89), DustID.Mud) { }
         public override void SafeAI()
         {
             if (Main.rand.NextBool(4))

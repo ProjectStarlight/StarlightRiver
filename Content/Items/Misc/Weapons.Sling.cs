@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Items.Misc
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             Projectile.NewProjectileDirect(source, player.Center, Vector2.Zero, ModContent.ProjectileType<SlingHeldProjectile>(), damage, knockback, player.whoAmI,
-                currentAmmoStruct.projectileID, Item.shootSpeed + currentAmmoStruct.ShootSpeed);
+                currentAmmoStruct.projectileID, Item.shootSpeed + currentAmmoStruct.shootSpeed);
             return false;
         }
 

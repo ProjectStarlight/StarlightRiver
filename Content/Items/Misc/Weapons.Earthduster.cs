@@ -30,8 +30,6 @@ namespace StarlightRiver.Content.Items.Misc
             new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
         };
 
-        public override bool CanConsumeAmmo(Item ammo, Player player) => false;
-        public override bool SafeCanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<EarthdusterHoldout>()] <= 0;
         public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
@@ -63,6 +61,16 @@ namespace StarlightRiver.Content.Items.Misc
             if (proj.ModProjectile is EarthdusterHoldout earthduster)
                 earthduster.SoilType = type;
             return false;
+        }
+
+        public override bool CanConsumeAmmo(Item ammo, Player player)
+        {
+            return false;
+        }
+
+        public override bool SafeCanUseItem(Player player)
+        {
+            return player.ownedProjectileCounts[ModContent.ProjectileType<EarthdusterHoldout>()] <= 0;
         }
 
         public override void AddRecipes()
@@ -111,9 +119,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public ref float MaxShootDelay => ref Projectile.ai[1];
 
-        public Player owner => Main.player[Projectile.owner];
+        public Player Owner => Main.player[Projectile.owner];
 
-        public bool CanHold => owner.channel && !owner.CCed && !owner.noItems;
+        public Earthduster Holdout => Owner.HeldItem.ModItem as Earthduster;
+
+        public Projectile GhostProj = new Projectile();
+
+        public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -143,15 +155,18 @@ namespace StarlightRiver.Content.Items.Misc
 
         public override void AI()
         {
-            Vector2 armPos = owner.RotatedRelativePoint(owner.MountedCenter, true);
+            Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
             armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 20f;
-            armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * owner.direction;
+            armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
             Vector2 barrelPos = armPos + (Projectile.velocity * 25f);
 
-            Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * owner.direction).RotatedBy(Projectile.rotation);
+            Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * Owner.direction).RotatedBy(Projectile.rotation);
 
             if (MaxShootDelay == 0f)
-                MaxShootDelay = CombinedHooks.TotalUseTime(owner.HeldItem.useTime, owner, owner.HeldItem);
+            {
+                GhostProj.SetDefaults(Holdout.currentAmmoStruct.projectileID);
+                MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
+            }
 
             if (rotTimer > 0)
                 rotTimer--;
@@ -159,8 +174,11 @@ namespace StarlightRiver.Content.Items.Misc
             if (!CanHold && !reloading && !forceReload)
                 forceReload = true;
 
-            if ((owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID != SoilType)
-                SoilType = (owner.HeldItem.ModItem as Earthduster).currentAmmoStruct.projectileID;
+            if (Holdout != null && Holdout.currentAmmoStruct.projectileID != SoilType)
+            {
+                GhostProj.SetDefaults(Holdout.currentAmmoStruct.projectileID);
+                SoilType = Holdout.currentAmmoStruct.projectileID;
+            }
 
             if (shots < MAXSHOTS && !reloading && !forceReload)
             {
@@ -175,7 +193,8 @@ namespace StarlightRiver.Content.Items.Misc
                         {
                             float lerper = MathHelper.Lerp(50f, 1f, ShootDelay / MAXCHARGEDELAY);
                             Vector2 pos = barrelPos + Main.rand.NextVector2CircularEdge(lerper * 0.5f, lerper).RotatedBy(Projectile.rotation);
-                            Dust.NewDustPerfect(pos, GetDustType(), pos.DirectionTo(barrelPos)).noGravity = true;
+                            int dustID = (GhostProj.ModProjectile as BaseSoilProjectile).dustID;
+                            Dust.NewDustPerfect(pos, dustID, pos.DirectionTo(barrelPos)).noGravity = true;
                         }
                     }
                 }
@@ -183,14 +202,15 @@ namespace StarlightRiver.Content.Items.Misc
                 {
                     if (ShootDelay == MAXCHARGEDELAY)
                     {
-                        SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.5f}, owner.Center);
+                        SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.5f}, Owner.Center);
                         if (Main.myPlayer == Projectile.owner)
                         {
-                            Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, owner.whoAmI, 15f);
+                            Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), armPos, Projectile.velocity * 1.5f, ModContent.ProjectileType<EarthdusterRing>(), 0, 0f, Owner.whoAmI, 15f);
 
-                            (proj.ModProjectile as EarthdusterRing).trailColorOutline = GetRingColor();
+                            
+                            (proj.ModProjectile as EarthdusterRing).trailColorOutline = (GhostProj.ModProjectile as BaseSoilProjectile).RingOutsideColor;
 
-                            (proj.ModProjectile as EarthdusterRing).trailColor = GetRingInsideColor();
+                            (proj.ModProjectile as EarthdusterRing).trailColor = (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor;
                         }
                     }
                 }
@@ -215,7 +235,7 @@ namespace StarlightRiver.Content.Items.Misc
                 if (!reloading)
                 {
                     if (Main.myPlayer == Projectile.owner)
-                        mouse = owner.DirectionTo(Main.MouseWorld);
+                        mouse = Owner.DirectionTo(Main.MouseWorld);
 
                     initialShots = shots;
                     ShootDelay = 0;
@@ -231,7 +251,7 @@ namespace StarlightRiver.Content.Items.Misc
 
                     if (ShootDelay == 30)
                     {
-                        Vector2 pos = armPos + new Vector2(40, 40f * owner.direction).RotatedBy(Projectile.rotation);
+                        Vector2 pos = armPos + new Vector2(40, 40f * Owner.direction).RotatedBy(Projectile.rotation);
                         Gore.NewGorePerfect(Projectile.GetSource_FromAI(), pos, Projectile.velocity.RotatedByRandom(0.3f) * 5f, Mod.Find<ModGore>(Name + "_Gore" + Main.rand.Next(1, 3)).Type).timeLeft = 180;
                     }
 
@@ -239,7 +259,7 @@ namespace StarlightRiver.Content.Items.Misc
                 else if (ShootDelay < 65)
                 {
                     if (ShootDelay == 60)
-                        Helper.PlayPitched("Guns/PlinkLever", 1f, 1f, owner.Center);
+                        Helper.PlayPitched("Guns/PlinkLever", 1f, 1f, Owner.Center);
 
                     armPos -= Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * MathHelper.Lerp(0f, 3f, (ShootDelay - 60) / 5f);
                 }
@@ -260,15 +280,15 @@ namespace StarlightRiver.Content.Items.Misc
             }
 
             if (!reloading)
-                owner.ChangeDir(Projectile.direction);
+                Owner.ChangeDir(Projectile.direction);
 
-            owner.heldProj = Projectile.whoAmI;
-            owner.itemTime = 2;
-            owner.itemAnimation = 2;
+            Owner.heldProj = Projectile.whoAmI;
+            Owner.itemTime = 2;
+            Owner.itemAnimation = 2;
 
             Projectile.timeLeft = 2;
             Projectile.rotation = Utils.ToRotation(Projectile.velocity) - (Projectile.direction == -1 ? -MathHelper.ToRadians(rotTimer) : MathHelper.ToRadians(rotTimer));
-            owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+            Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
 
             Projectile.position = armPos - Projectile.Size * 0.5f;
 
@@ -280,7 +300,7 @@ namespace StarlightRiver.Content.Items.Misc
 
                 Vector2 oldVelocity = Projectile.velocity;
 
-                Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4);
+                Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4);
                 if (Projectile.velocity != oldVelocity)
                 {
                     Projectile.netSpam = 0;
@@ -293,18 +313,19 @@ namespace StarlightRiver.Content.Items.Misc
         {
             if (!draw)
                 return false;
-
+            
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
             Texture2D dirtTex = ModContent.Request<Texture2D>(Texture + "_Dirt").Value;
             Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
             Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
-            Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
-            Main.spriteBatch.Draw(dirtTex, (Projectile.Center + offset) - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
+            Main.spriteBatch.Draw(dirtTex, (Projectile.Center + offset) - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-            Color color = Color.Lerp(Color.Transparent, GetRingInsideColor(), shots / (float)MAXSHOTS);
+
+            Color color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
             //if (reloading)
                 //color = Color.Lerp(GetRingInsideColor(), Color.Transparent, ShootDelay / 90f);
 
@@ -312,61 +333,10 @@ namespace StarlightRiver.Content.Items.Misc
 
             color *= 0.5f;
 
-            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-            Main.spriteBatch.Draw(bloomTex, Projectile.Center + (Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f) - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Main.spriteBatch.Draw(bloomTex, Projectile.Center + (Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f) - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
             return false;
-        }
-
-        public Color GetRingColor()
-        {
-            switch (SoilType) //switch cant use non constants without this wacko work around
-            {
-                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(81, 47, 27);
-                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return new Color(139, 131, 59);
-                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return new Color(56, 17, 14);
-                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return new Color(62, 45, 75);
-                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return new Color(87, 77, 106);
-                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return new Color(49, 51, 61);
-                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return new Color(27, 40, 51);
-                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return new Color(73, 57, 63);
-                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return new Color(87, 129, 140);
-            }   
-            return Color.White;
-        }
-
-        public Color GetRingInsideColor()
-        {
-            switch (SoilType) 
-            {
-                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return new Color(105, 67, 44);
-                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return new Color(212, 192, 100);
-                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return new Color(135, 43, 34);
-                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return new Color(119, 106, 138);
-                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return new Color(246, 235, 228);
-                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return new Color(106, 107, 118);
-                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return new Color(164, 182, 180);
-                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return new Color(111, 83, 89);
-                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return new Color(171, 230, 167);
-            }
-            return Color.White;
-        }
-
-        public int GetDustType()
-        {
-            switch (SoilType)
-            {
-                case var type when type == ModContent.ProjectileType<SoilgunDirtSoil>(): return DustID.Dirt;
-                case var type when type == ModContent.ProjectileType<SoilgunSandSoil>(): return DustID.Sand;
-                case var type when type == ModContent.ProjectileType<SoilgunCrimsandSoil>(): return DustID.CrimsonPlants;
-                case var type when type == ModContent.ProjectileType<SoilgunEbonsandSoil>(): return DustID.Ebonwood;
-                case var type when type == ModContent.ProjectileType<SoilgunPearlsandSoil>(): return DustID.Pearlsand;
-                case var type when type == ModContent.ProjectileType<SoilgunSiltSoil>(): return DustID.Silt;
-                case var type when type == ModContent.ProjectileType<SoilgunSlushSoil>(): return DustID.Slush;
-                case var type when type == ModContent.ProjectileType<SoilgunMudSoil>(): return DustID.Mud;
-                case var type when type == ModContent.ProjectileType<SoilgunVitricSandSoil>(): return ModContent.DustType<VitricSandDust>();
-            }
-            return DustID.Dirt;
         }
 
         public void ShootSoils(Vector2 position)
@@ -374,9 +344,9 @@ namespace StarlightRiver.Content.Items.Misc
             if (Main.myPlayer != Projectile.owner)
                 return;
 
-            Item heldItem = owner.HeldItem;
+            Item heldItem = Owner.HeldItem;
 
-            if (owner.HeldItem.ModItem is Earthduster gun && gun.ammoItem is null)
+            if (Holdout != null && Holdout.ammoItem is null)
             {
                 Projectile.Kill();
                 return;
@@ -386,12 +356,12 @@ namespace StarlightRiver.Content.Items.Misc
 
             float shootSpeed = heldItem.shootSpeed;
 
-            float knockBack = owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
+            float knockBack = Owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
 
             Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
             if (Main.myPlayer == Projectile.owner)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, owner.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
 
             for (float k = 0; k < 50; k++)
             {
@@ -399,13 +369,13 @@ namespace StarlightRiver.Content.Items.Misc
                 float x = (float)Math.Cos(rads) * 50;
                 float y = (float)Math.Sin(rads) * 25;
 
-                Dust.NewDustPerfect(position, GetDustType(), new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
+                Dust.NewDustPerfect(position, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
             }
 
-            Vector2 ejectPos = position + new Vector2(-35, -5 * owner.direction).RotatedBy(Projectile.rotation);
+            Vector2 ejectPos = position + new Vector2(-35, -5 * Owner.direction).RotatedBy(Projectile.rotation);
             for (int i = 0; i < 3; i++)
             {
-                Dust.NewDustPerfect(ejectPos, GetDustType(), (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
+                Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
             }
             shots++;
             SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
@@ -414,43 +384,43 @@ namespace StarlightRiver.Content.Items.Misc
 
             rotTimer += MaxShootDelay;
 
-            if (owner.HeldItem.ModItem is Earthduster earthduster)
+            if (Holdout != null)
             {
-                int type = earthduster.currentAmmoStruct.projectileID; // this code is still bad
+                int type = Holdout.currentAmmoStruct.projectileID; // this code is still bad
                 bool dontConsumeAmmo = false;
 
-                if (owner.magicQuiver && earthduster.ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
+                if (Owner.magicQuiver && Holdout.ammoItem.ammo == AmmoID.Arrow && Main.rand.NextBool(5))
                     dontConsumeAmmo = true;
-                if (owner.ammoBox && Main.rand.NextBool(5))
+                if (Owner.ammoBox && Main.rand.NextBool(5))
                     dontConsumeAmmo = true;
-                if (owner.ammoPotion && Main.rand.NextBool(5))
+                if (Owner.ammoPotion && Main.rand.NextBool(5))
                     dontConsumeAmmo = true;
-                if (owner.ammoCost80 && Main.rand.NextBool(5))
+                if (Owner.ammoCost80 && Main.rand.NextBool(5))
                     dontConsumeAmmo = true;
-                if (owner.ammoCost75 && Main.rand.NextBool(4))
+                if (Owner.ammoCost75 && Main.rand.NextBool(4))
                     dontConsumeAmmo = true;
-                if (type == 85 && owner.itemAnimation < owner.itemAnimationMax - 6)
+                if (type == 85 && Owner.itemAnimation < Owner.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
-                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && owner.itemAnimation < owner.itemAnimationMax - 5)
+                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
                     dontConsumeAmmo = true;
                 if (Main.rand.NextFloat() < 0.33f) //33% chance to not consume ammo
                     dontConsumeAmmo = true;
 
                 if (!dontConsumeAmmo)
                 {
-                    if (earthduster.ammoItem.ModItem != null)
-                        earthduster.ammoItem.ModItem.OnConsumedAsAmmo(owner.HeldItem, owner);
+                    if (Holdout.ammoItem.ModItem != null)
+                        Holdout.ammoItem.ModItem.OnConsumedAsAmmo(Owner.HeldItem, Owner);
 
-                    earthduster.OnConsumeAmmo(earthduster.ammoItem, owner);
+                    Holdout.OnConsumeAmmo(Holdout.ammoItem, Owner);
 
-                    earthduster.ammoItem.stack--;
-                    if (earthduster.ammoItem.stack <= 0)
-                        earthduster.ammoItem.TurnToAir();
+                    Holdout.ammoItem.stack--;
+                    if (Holdout.ammoItem.stack <= 0)
+                        Holdout.ammoItem.TurnToAir();
                 }
             }
 
-            if (!Framing.GetTileSafely((int)(owner.Bottom.X / 16), (int)(owner.Bottom.Y / 16)).HasTile)
-                owner.velocity -= Projectile.velocity * 0.75f; //might be too much idk
+            if (!Framing.GetTileSafely((int)(Owner.Bottom.X / 16), (int)(Owner.Bottom.Y / 16)).HasTile)
+                Owner.velocity -= Projectile.velocity * 0.75f; //might be too much idk
         }
     }
     public class EarthdusterRing : ModProjectile, IDrawPrimitive

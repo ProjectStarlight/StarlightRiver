@@ -124,10 +124,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
             SafeModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
             float speed = velocity.Length();
             velocity.Normalize();
-            velocity *= speed + currentAmmoStruct.ShootSpeed;
+            velocity *= speed + currentAmmoStruct.shootSpeed;
 
-            damage += currentAmmoStruct.Damage;
-            knockback += currentAmmoStruct.KnockBack;
+            damage += currentAmmoStruct.damage;
+            knockback += currentAmmoStruct.knockBack;
 
             type = currentAmmoStruct.projectileID;
         }
@@ -191,20 +191,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
     public struct AmmoStruct // contains everything needed for the ammo, ID, projectile, etc
     {
-        public int Damage;
-        public float ShootSpeed;
-        public float KnockBack;
+        public int damage;
+        public float shootSpeed;
+        public float knockBack;
         
         public int projectileID;
         public int ammoID;
-
         public AmmoStruct(int ammoid, int projectileid, int damage = 0, float shootspeed = 0f, float knockback = 0f)
         {
             ammoID = ammoid;
             projectileID = projectileid;
-            Damage = damage;
-            ShootSpeed = shootspeed;
-            KnockBack = knockback;
+            this.damage = damage;
+            shootSpeed = shootspeed;
+            knockBack = knockback;
         }
     }
 }
