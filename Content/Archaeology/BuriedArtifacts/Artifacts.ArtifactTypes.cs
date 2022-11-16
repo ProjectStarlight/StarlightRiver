@@ -20,6 +20,8 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts //using empty class
     public abstract class DesertArtifact : Artifact { }
 
     public abstract class UndergroundArtifact : Artifact { }
+
+	public abstract class SnowArtifact : Artifact { }
     
     public abstract class JungleArtifact : Artifact 
     {
