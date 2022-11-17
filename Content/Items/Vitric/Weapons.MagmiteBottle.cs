@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
         public override void SetDefaults()
         {
-            Item.damage = 120;
+            Item.damage = 50;
             Item.DamageType = DamageClass.Ranged;
             Item.width = 36;
             Item.height = 38;
@@ -39,6 +39,7 @@ namespace StarlightRiver.Content.Items.Vitric
             Item.shoot = ModContent.ProjectileType<MagmiteBottleProjectile>();
             Item.shootSpeed = 8.5f;
             Item.consumable = true;
+			Item.maxStack = 999;
         }
 
         public override void AddRecipes()
