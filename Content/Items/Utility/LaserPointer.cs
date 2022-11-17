@@ -11,6 +11,7 @@ using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria.DataStructures;
+using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -65,7 +66,8 @@ namespace StarlightRiver.Content.Items.Utility
 			Item.useTime = 5;
 			Item.useAnimation = 5;
 			Item.channel = true;
-            Item.shoot = ModContent.ProjectileType<LaserPointerProjectile>();
+			Item.noUseGraphic = true;
+			Item.shoot = ModContent.ProjectileType<LaserPointerProjectile>();
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -123,6 +125,9 @@ namespace StarlightRiver.Content.Items.Utility
             Projectile.Center = Owner.Center;
             LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
             Owner.heldProj = Projectile.whoAmI;
+			Owner.itemAnimation = Owner.itemTime = 2;
+			Owner.ChangeDir(Math.Sign((Main.MouseWorld - Owner.Center).X));
+			Owner.itemRotation = MathHelper.WrapAngle(LaserRotation - ((Owner.direction == 1) ? 0 : MathHelper.Pi));
 
             if(Owner.channel)
                 Projectile.timeLeft = 2;
