@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Misc
             Item.knockBack = 2.5f;
             Item.autoReuse = true;
 
-            Item.UseSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/GlassMinibossSword");
+            Item.UseSound = SoundID.Item18;
 
             Item.shoot = ProjectileType<MonkSpadeProjectile>();
             Item.shootSpeed = 1;
