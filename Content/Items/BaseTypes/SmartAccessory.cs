@@ -52,20 +52,31 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		}
 
 		/// <summary>
-		/// Gets the instance of this accessory thats equipped in a player's normal slots or that is being simulated by other accessories.
+		/// Gets the instance of the accessory thats equipped in a player's normal slots or that is being simulated by other accessories.
 		/// </summary>
-		/// <param name="Player">The player to get the equipped instance from.</param>
+		/// <param name="player">The player to get the equipped instance from.</param>
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
-		public SmartAccessory GetEquippedInstance(Player Player)
+		public SmartAccessory GetEquippedInstance(Player player)
 		{
-			for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
+			return GetEquippedInstance(player, Item.type);
+		}
+
+		/// <summary>
+		/// Gets the instance of an equipped accessory based on it's type in a given player's normal slots, or being simulated by other accessories.
+		/// </summary>
+		/// <param name="player">The player to get the equipped instance from.</param>
+		/// <param name="type">The type of accessory to look for, this should be the ID of an item extending SmartAccessory</param>
+		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
+		public static SmartAccessory GetEquippedInstance(Player player, int type)
+		{
+			for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
 			{
-				if (Player.armor[k].type == Item.type)
-					return Player.armor[k].ModItem as SmartAccessory;
+				if (player.armor[k].type == type)
+					return player.armor[k].ModItem as SmartAccessory;
 			}
 
-			AccessorySimulationPlayer mp = Player.GetModPlayer<AccessorySimulationPlayer>();
-			return mp.simulatedAccessories.FirstOrDefault(n => n.type == Item.type)?.ModItem as SmartAccessory;
+			AccessorySimulationPlayer mp = player.GetModPlayer<AccessorySimulationPlayer>();
+			return mp.simulatedAccessories.FirstOrDefault(n => n.type == type)?.ModItem as SmartAccessory;
 		}
 
 		/// <summary>

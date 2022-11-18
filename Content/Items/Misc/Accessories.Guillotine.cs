@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -62,6 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void Execute(NPC NPC, int owner)
 		{
 			int flesh = 1;
+
 			if (Helpers.Helper.IsFleshy(NPC))
 				flesh = 0;
 

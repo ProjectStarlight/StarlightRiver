@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
@@ -24,8 +20,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			dust.velocity.Y += 0.15f;
 			dust.rotation += 0.1f;
 			dust.scale *= 0.98f;
+
 			if (dust.scale <= 0.2)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -57,6 +55,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			if (dust.scale <= 0.2f)
 				dust.active = false;
+
 			return false;
 		}
 	}

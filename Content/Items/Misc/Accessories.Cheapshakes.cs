@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -42,6 +39,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Equipped(Player))
 			{
 				Player.maxRunSpeed *= 2;
+
 				if (Math.Abs(Player.velocity.X) > 3f)
 					Player.runAcceleration *= 0.25f;
 			}

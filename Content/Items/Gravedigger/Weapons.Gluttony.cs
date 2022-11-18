@@ -1,17 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -62,8 +57,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class GluttonyHandle : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.GravediggerItem + Name;
-
 		public Vector2 direction = Vector2.Zero;
 
 		public List<NPC> targets = new();
@@ -95,6 +88,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		const int STARTRAD = 5;
 		const int ENDRAD = 100;
 		const float SQUISH = 0.35f;
+
+		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -148,7 +143,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(dustRot) * 300 * prog + new Vector2(0, 48), ModContent.DustType<Dusts.GlowLine>(), Vector2.UnitX.RotatedBy(dustRot) * Main.rand.NextFloat(-9.5f, -8f), 0, new Color(255, 40, 80) * 0.8f, 0.8f);
 				}
 			}
-
 			else if (timer > 80)
 			{
 				timer = 79;
@@ -167,7 +161,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			SuckEnemies(Player);
 			ManageCaches();
 			ManageTrails();
-
 		}
 
 		private void ManageCaches()
@@ -228,6 +221,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				return new Color(255, 80 - (byte)(factor.X * 70), 80 + (byte)(rotProg * 20)) * rotProg;
 			});
+
 			localTrail.Positions = localCache.ToArray();
 			localTrail.NextPosition = Projectile.Center + direction * RANGE;
 		}
@@ -271,11 +265,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 					foreach (NPC NPC2 in targets)
 					{
-						if (NPC2.active)
-						{
-							if (NPC2 == NPC)
-								targetted = true;
-						}
+						if (NPC2.active && NPC2 == NPC)
+							targetted = true;
 					}
 
 					if (!targetted)
@@ -362,13 +353,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class GluttonyGhoul : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.GravediggerItem + Name;
+		const int TRAILLENGTH = 25;
 
 		private List<Vector2> cache;
 
 		private Trail trail;
 
-		const int TRAILLENGTH = 25;
+		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -468,9 +459,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (!NPC.friendly)
 			{
 				if (NPC.lifeRegen > 0)
-				{
 					NPC.lifeRegen = 0;
-				}
 
 				NPC.lifeRegen -= GluttonyHandle.DPS;
 			}

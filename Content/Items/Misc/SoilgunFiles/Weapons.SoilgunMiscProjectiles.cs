@@ -1,17 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
@@ -63,16 +58,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			if (Projectile.frame == 0)
 			{
 				Projectile.velocity.Y += 0.5f;
+
 				if (Projectile.velocity.Y > 16f)
-				{
 					Projectile.velocity.Y = 16f;
-				}
 			}
 
 			if (Projectile.frame == 1)
-			{
 				Projectile.position.Y += 0.02f;
-			}
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -117,10 +109,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				{
 					player.HealEffect((int)LifeStealAmount, false);
 					player.statLife += (int)LifeStealAmount;
+
 					if (player.statLife > player.statLifeMax2)
-					{
 						player.statLife = player.statLifeMax2;
-					}
 
 					NetMessage.SendData(MessageID.SpiritHeal, -1, -1, null, Projectile.owner, (float)LifeStealAmount, 0f, 0f, 0, 0, 0);
 				}
@@ -132,9 +123,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Projectile.velocity = (Projectile.velocity * 20f + velo * homingSpeed) / 21f;
 
 			if (!player.active)
-			{
 				Projectile.Kill();
-			}
 
 			if (Main.rand.NextBool(5))
 			{
@@ -175,6 +164,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.position + Projectile.velocity;
 		}
+
 		public void DrawPrimitives()
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
@@ -227,10 +217,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-			{
 				return true;
-			}
 
 			return false;
 		}
@@ -239,8 +228,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	internal class SoilgunIcicleProj : ModProjectile
 	{
 		public Vector2 pos;
+
 		public ref float TargetWhoAmI => ref Projectile.ai[0];
 		public override string Texture => AssetDirectory.MiscItem + "SoilgunIcicles";
+
 		public override bool? CanDamage()
 		{
 			return false;
@@ -253,6 +244,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore3");
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore4");
 		}
+
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Projectile.type] = 4;
@@ -273,6 +265,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void AI()
 		{
 			NPC npc = Main.npc[(int)TargetWhoAmI];
+
 			if (Projectile.localAI[0] == 0f)
 			{
 				pos = new Vector2(Main.rand.Next(-npc.width / 2, npc.width / 2), Main.rand.Next(-npc.height / 2, npc.height / 2));
@@ -280,6 +273,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 
 			Projectile.Center = npc.Center + pos;
+
 			if (Projectile.timeLeft < 50)
 				Projectile.alpha += 5;
 
@@ -294,6 +288,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			NPC npc = Main.npc[(int)TargetWhoAmI];
 			SoilgunGlobalNPC globalNPC = npc.GetGlobalNPC<SoilgunGlobalNPC>();
+
 			if (Projectile.ai[1] == 1f)
 			{
 				for (int i = 0; i < 5; i++)
@@ -321,12 +316,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public bool foundTarget;
 
 		public bool HasCharged;
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override bool? CanDamage()
 		{
 			return Projectile.timeLeft < 90;
 		}
-
-		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -343,6 +339,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Projectile.friendly = true;
 			Projectile.frame = Main.rand.Next(4);
 			Projectile.timeLeft = 120;
+
 			if (Projectile.frame < 2)
 				Projectile.penetrate = 2;
 			else
@@ -353,9 +350,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			NPC npc = Projectile.FindTargetWithinRange(450f);
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
 			if (npc != null && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1) && !npc.dontTakeDamage && !npc.immortal && !foundTarget && Projectile.timeLeft < 90)
 			{
 				foundTarget = true;
+
 				if (!HasCharged)
 				{
 					const int Repeats = 35;
@@ -373,9 +372,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 
 			if (!foundTarget)
-			{
 				Projectile.velocity.Y += 0.07f;
-			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -386,6 +383,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ChooseDustType(), 0f, 0f).scale = Main.rand.NextFloat(0.8f, 1.1f);
 			}
 		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Main.instance.LoadProjectile(Projectile.type);
@@ -491,6 +489,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			Helper.PlayPitched("ShadowDeath", 1f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 			const int Repeats = 45;
+
 			for (int i = 0; i < Repeats; ++i)
 			{
 				float angle2 = 6.2831855f * i / Repeats;
@@ -632,6 +631,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Main.npc[enemyID].GetGlobalNPC<SoilgunGlobalNPC>().ShardAmount--;
 
 			SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
+
 			if (exploding)
 			{
 				if (Main.myPlayer == Projectile.owner)
@@ -676,6 +676,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
 				frameRect, drawColor, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
+
 			if (exploding)
 			{
 				texture = (Texture2D)ModContent.Request<Texture2D>(Texture + "_Orange");
@@ -686,6 +687,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			return false;
 		}
+
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.WritePackedVector2(offset);

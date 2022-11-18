@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
@@ -10,6 +9,13 @@ namespace StarlightRiver.Core
 		public override void GetHealLife(Item Item, Player Player, bool quickHeal, ref int healValue)
 		{
 			GetHealLifeEvent?.Invoke(Item, Player, quickHeal, ref healValue);
+		}
+
+		public delegate void GetHealManaDelegate(Item item, Player player, bool quickHeal, ref int healValue);
+		public static event GetHealManaDelegate GetHealManaEvent;
+		public override void GetHealMana(Item item, Player player, bool quickHeal, ref int healValue)
+		{
+			base.GetHealMana(item, player, quickHeal, ref healValue);
 		}
 
 		public delegate void ModifyWeaponDamageDelegate(Item Item, Player Player, ref StatModifier statModifier);
@@ -31,6 +37,24 @@ namespace StarlightRiver.Core
 		public override void PickAmmo(Item weapon, Item ammo, Player Player, ref int type, ref float speed, ref StatModifier damage, ref float knockback)
 		{
 			PickAmmoEvent?.Invoke(weapon, ammo, Player, ref type, ref speed, ref damage, ref knockback);
+		}
+
+		public delegate bool ShootDelegate(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback);
+		public static event ShootDelegate ShootEvent;
+		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			if (ShootEvent != null)
+			{
+				bool result = true;
+				foreach (ShootDelegate del in ShootEvent.GetInvocationList())
+				{
+					result &= del(item, player, source, position, velocity, type, damage, knockback);
+				}
+
+				return result;
+			}
+
+			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
 		}
 
 		public delegate bool OnPickupDelegate(Item Item, Player Player);

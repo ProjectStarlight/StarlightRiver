@@ -1,16 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Potions;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class PandorasShield : SmartAccessory
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public PandorasShield() : base("Pandora's Shield", "Grazes grant a portion of the projectiles' damage as barrier") { }
 
 		public override void SafeSetDefaults()
@@ -18,6 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.sellPrice(gold: 1);
 		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			GrazePlayer gp = Player.GetModPlayer<GrazePlayer>();

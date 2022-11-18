@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -94,6 +89,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (dropHeart && NPC.life <= 0)
 				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
 		}
+
 		public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
 		{
 			if (dropHeart && NPC.life <= 0)
@@ -103,12 +99,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class BloodAmuletBolt : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.Assets + "Invisible";
+		const int TRAILLENGTH = 25;
 
 		private List<Vector2> cache;
 		private Trail trail;
 
-		const int TRAILLENGTH = 25;
+		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public float fade => Math.Min(1, Projectile.timeLeft / 15f);
 
@@ -141,10 +137,9 @@ namespace StarlightRiver.Content.Items.Misc
 			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
 			Projectile.friendly = false;
+
 			if (Projectile.timeLeft > 15)
-			{
 				Projectile.timeLeft = 15;
-			}
 		}
 
 		private void Movement()

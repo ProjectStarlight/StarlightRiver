@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.SteampunkSet;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -13,18 +9,20 @@ namespace StarlightRiver.Content.Items.Misc
 	[AutoloadEquip(EquipType.Shoes)]
 	public class PulseBoots : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-		public PulseBoots() : base("Pulse Boots", "Grants a directionally boosted double jump") { }
-
 		private bool doubleJumped = false;
 		private bool releaseJump = false;
 		private const int maxSpeed = 15;
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		public PulseBoots() : base("Pulse Boots", "Grants a directionally boosted double jump") { }
 
 		public override void SafeUpdateEquip(Player Player)
 		{
 			void jumpSide(int side)
 			{
 				float velSide = Player.velocity.X * side;
+
 				if (velSide > 0 && velSide < maxSpeed)
 					Player.velocity.X += (maxSpeed * side - Player.velocity.X) / 2;
 				else if (velSide < 0)
@@ -36,6 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (!Player.controlJump && Player.velocity.Y != 0)
 				releaseJump = true;
+
 			if (Player.controlJump && Player.velocity.Y != 0 && releaseJump && !doubleJumped)
 			{
 				doubleJumped = true;
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 5);
+			recipe.AddIngredient(ItemType<AncientGear>(), 5);
 			recipe.AddIngredient(ItemID.RocketBoots);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();

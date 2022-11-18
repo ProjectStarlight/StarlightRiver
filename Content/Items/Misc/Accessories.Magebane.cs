@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -39,6 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.ManaEffect(manaAmount);
 
 				Player.statMana += manaAmount;
+
 				if (Player.statMana > Player.statManaMax2)
 					Player.statMana = Player.statManaMax2;
 

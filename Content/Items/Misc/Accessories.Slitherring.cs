@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -18,42 +13,29 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Slitherring() : base("Slitherring", "Whips have a chance to shoot out a smaller, snake whip") { }
 
+		public override void Load()
+		{
+			StarlightItem.ShootEvent += ShootSnake;
+		}
+
 		public override void SafeSetDefaults()
 		{
 			Item.value = Item.sellPrice(0, 0, 40, 0);
 			Item.rare = ItemRarityID.Orange;
 		}
 
-		public override void SafeUpdateEquip(Player Player)
+		private bool ShootSnake(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			Player.GetModPlayer<SlitherringPlayer>().equipped = true;
-		}
-	}
-
-	public class SlitherringPlayer : ModPlayer
-	{
-		public bool equipped = false;
-
-		public override void ResetEffects()
-		{
-			equipped = false;
-		}
-	}
-
-	public class SlitherringGItem : GlobalItem
-	{
-
-		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-		{
-			if (player.GetModPlayer<SlitherringPlayer>().equipped && ProjectileID.Sets.IsAWhip[type] && Main.rand.NextBool())
+			if (Equipped(player) && ProjectileID.Sets.IsAWhip[type] && Main.rand.NextBool())
 			{
 				var proj = Projectile.NewProjectileDirect(source, position, velocity * 0.75f, ModContent.ProjectileType<SlitherringWhip>(), (int)(damage * 0.5f), knockback, player.whoAmI, -1);
 				proj.originalDamage = damage / 2;
 			}
 
-			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+			return true;
 		}
 	}
+
 	public class SlitherringWhip : BaseWhip
 	{
 		public override string Texture => AssetDirectory.MiscItem + "SlitherringWhip";
@@ -73,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool ShouldDrawSegment(int segment)
 		{
-			return true;// segment % 2 == 0;
+			return true;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

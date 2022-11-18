@@ -1,9 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -30,14 +27,10 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Equipped(Player) && crit)
 			{
 				if (Main.rand.NextFloat() < 0.1f)
-				{
 					DisinfectantWipes.ReduceDebuffDurations(Player);
-				}
 
 				if (Main.rand.NextFloat() < 0.25f)
-				{
 					SanitizerSpray.TransferRandomDebuffToNearbyEnemies(Player);
-				}
 			}
 		}
 
@@ -56,9 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < Player.MaxBuffs; i++)
 			{
 				if (Helper.IsValidDebuff(Player, i))
-				{
 					return;
-				}
 			}
 		}
 

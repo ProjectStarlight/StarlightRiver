@@ -1,18 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class ImpulseThruster : SmartAccessory
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		private bool releaseJump = false;
 
 		public ImpulseThruster() : base("Impulse Thruster", "Converts all wingtime into a burst of energy") { }
 
@@ -27,6 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Player.controlJump && Player.wingTime > 0)
 			{
 				var dir = new Vector2(0, -1);
+
 				if (Player.controlDown)
 					dir.Y = 1;
 				if (Player.controlUp)
@@ -60,12 +55,6 @@ namespace StarlightRiver.Content.Items.Misc
 				dir *= mult;
 				Player.velocity = dir;
 				Player.wingTime = 0;
-				releaseJump = true;
-			}
-
-			if ((Player.velocity.Y == 0 || Player.grappling[0] > -1) && !Player.controlJump)
-			{
-				releaseJump = false;
 			}
 		}
 	}
@@ -96,7 +85,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			Projectile.scale *= 0.98f;
-			if (Main.rand.Next(2) == 0)
+
+			if (Main.rand.NextBool(2))
 			{
 				var dust = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<ImpulseThrusterDustTwo>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
 				dust.scale = 0.6f * Projectile.scale;
@@ -108,6 +98,7 @@ namespace StarlightRiver.Content.Items.Misc
 	public class ImpulseThrusterDustOne : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;
@@ -120,21 +111,13 @@ namespace StarlightRiver.Content.Items.Misc
 			var gray = new Color(25, 25, 25);
 			Color ret;
 			if (dust.alpha < 60)
-			{
 				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 60f);
-			}
 			else if (dust.alpha < 140)
-			{
 				ret = Color.Lerp(Color.Orange, Color.OrangeRed, (dust.alpha - 60) / 80f);
-			}
 			else if (dust.alpha < 200)
-			{
 				ret = Color.Lerp(Color.OrangeRed, gray, (dust.alpha - 140) / 80f);
-			}
 			else
-			{
 				ret = gray;
-			}
 
 			return ret * ((255 - dust.alpha) / 255f);
 		}
@@ -145,6 +128,7 @@ namespace StarlightRiver.Content.Items.Misc
 				dust.velocity *= 0.92f;
 			else
 				dust.velocity *= 0.96f;
+
 			if (dust.alpha > 100)
 			{
 				dust.scale += 0.01f;
@@ -158,6 +142,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			dust.position += dust.velocity;
+
 			if (dust.alpha >= 255)
 				dust.active = false;
 

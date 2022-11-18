@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.Misc
 {

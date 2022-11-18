@@ -1,22 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
-	// This entire thing needs balancing, hopefully this code is better than before and hopefully all issues are fixed
-
 	public class Soilgun : MultiAmmoWeapon
 	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override List<AmmoStruct> ValidAmmos => new()
 		{
 			new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
@@ -29,6 +24,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
 			new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
 		};
+
 		public override bool CanConsumeAmmo(Item ammo, Player player)
 		{
 			return false;
@@ -38,8 +34,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			return player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
 		}
-
-		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -67,8 +61,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			var proj = Projectile.NewProjectileDirect(source, position, velocity, ModContent.ProjectileType<SoilgunHoldout>(), damage, knockback, player.whoAmI, 0, type);
+
 			if (proj.ModProjectile is SoilgunHoldout soilGun)
-				soilGun.SoilAmmoID = currentAmmoStruct.ammoID;
+				soilGun.soilAmmoID = currentAmmoStruct.ammoID;
+
 			return false;
 		}
 
@@ -85,11 +81,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 	class SoilgunGlobalItem : GlobalItem
 	{
+		public TooltipLine infoTooltip2;
+
 		public override bool InstancePerEntity => true;
 
-		public TooltipLine infoTooltip2;
 		public List<int> ValidSoils => new() { ItemID.SandBlock, ItemID.EbonsandBlock, ItemID.PearlsandBlock, ItemID.CrimsandBlock, ItemID.DirtBlock, ItemID.SiltBlock,
 			ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
+
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
 			if (!Main.LocalPlayer.HasItem(ModContent.ItemType<Soilgun>()))
@@ -100,6 +98,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				var tooltip = new TooltipLine(Mod, "SoilgunAmmoTooltip", "This item can be used as ammo for the Soilgun");
 				tooltips.Add(tooltip);
 				tooltip.OverrideColor = new Color(202, 148, 115);
+
 				if (item.type == Mod.Find<ModItem>("VitricSandItem").Type)
 				{
 					var infoTooltip = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun, it will fire out blocks of glassy sand, that cause crystals to grow out of enemies\nFor each crystal an enemy has, they take 2 damage per second, plus a base damage of 4, up to a maximum of 10 crystals\nIf an enemy has had 10 crystals on them for more than 4 seconds, all crystals become charged, exploding shorty after");
@@ -276,13 +275,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	class SoilgunHoldout : ModProjectile
 	{
 
-		public bool CanShoot = true;
+		public bool canShoot = true;
 
-		public int MaxCharge;
+		public int maxCharge;
 
-		public int DrawWhiteTimer = 30;
+		public int drawWhiteTimer = 30;
 
-		public int SoilAmmoID;
+		public int soilAmmoID;
 
 		public ref float CurrentCharge => ref Projectile.ai[0];
 
@@ -323,25 +322,21 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			Vector2 barrelPos = armPos + Projectile.velocity * Projectile.width * 0.5f;
 			barrelPos.Y -= 8;
 
-			if (MaxCharge == 0f)
-				MaxCharge = owner.HeldItem.useAnimation;
+			if (maxCharge == 0f)
+				maxCharge = owner.HeldItem.useAnimation;
 
-			if (CurrentCharge >= MaxCharge)
-				DrawWhiteTimer--;
+			if (CurrentCharge >= maxCharge)
+				drawWhiteTimer--;
 
 			if (!CanHold)
 			{
-				if (CurrentCharge >= MaxCharge)
-				{
+				if (CurrentCharge >= maxCharge)
 					ShootSoils(barrelPos);
-				}
 				else
-				{
 					Projectile.Kill();
-				}
 			}
 
-			if (CurrentCharge == MaxCharge)
+			if (CurrentCharge == maxCharge)
 			{
 				//maybe better sound here
 				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.position);
@@ -356,7 +351,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			owner.itemTime = 2;
 			owner.itemAnimation = 2;
 
-			if (CanShoot)
+			if (canShoot)
 			{
 				Projectile.timeLeft = 2;
 				Projectile.rotation = Utils.ToRotation(Projectile.velocity);
@@ -377,6 +372,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				Vector2 oldVelocity = Projectile.velocity;
 
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, owner.DirectionTo(Main.MouseWorld), interpolant);
+
 				if (Projectile.velocity != oldVelocity)
 				{
 					Projectile.netSpam = 0;
@@ -393,6 +389,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				var dust = Dust.NewDustDirect(barrelPos, 2, 8, ChooseChargeDust(), 0f, 0f);
 				dust.scale = Main.rand.NextFloat(0.8f, 1.2f);
 				dust.noGravity = false;
+
 				if (Main.rand.NextBool(5))
 					Dust.NewDustDirect(barrelPos, 2, 8, ModContent.DustType<Dusts.Sand>(), 0, 0, 125, default, 0.5f);
 			}
@@ -400,12 +397,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public override void PostDraw(Color lightColor)
 		{
-			if (CurrentCharge >= MaxCharge && DrawWhiteTimer > 0)
+			if (CurrentCharge >= maxCharge && drawWhiteTimer > 0)
 			{
 				Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_White").Value;
 				SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-				float progress = 1 - DrawWhiteTimer / 30f;
+				float progress = 1 - drawWhiteTimer / 30f;
 				var drawColor = Color.Lerp(Color.White, Color.Transparent, progress);
 
 				Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, drawColor, Projectile.rotation, texture.Size() / 2, 1f, spriteEffects, 0);
@@ -414,7 +411,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public void ShootSoils(Vector2 position)
 		{
-			if (Main.myPlayer != Projectile.owner || !CanShoot)
+			if (Main.myPlayer != Projectile.owner || !canShoot)
 				return;
 
 			Item heldItem = owner.HeldItem;
@@ -429,7 +426,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			for (int i = 0; i < 4 + Main.rand.Next(3); i++)
 			{
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(18)) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI, SoilAmmoID);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(18)) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI, soilAmmoID);
 			}
 
 			for (int i = 0; i < 15; i++)
@@ -458,6 +455,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 			Projectile.timeLeft = 30;
 			SoundEngine.PlaySound(SoundID.Item61, Projectile.position);
+
 			if (owner.HeldItem.ModItem is Soilgun soilGun)
 			{
 				int type = soilGun.currentAmmoStruct.projectileID; // this code is still bad
@@ -491,18 +489,17 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				}
 			}
 
-			CanShoot = false;
+			canShoot = false;
 		}
 
 		public int ChooseChargeDust()
 		{
 			int VitricSand = Mod.Find<ModItem>("VitricSandItem").Type;
-			if (SoilAmmoID == VitricSand)
-			{
-				return ModContent.DustType<VitricSandDust>();
-			}
 
-			return SoilAmmoID switch
+			if (soilAmmoID == VitricSand)
+				return ModContent.DustType<VitricSandDust>();
+
+			return soilAmmoID switch
 			{
 				ItemID.SandBlock => DustID.Sand,
 				ItemID.CrimsandBlock => DustID.CrimsonPlants,

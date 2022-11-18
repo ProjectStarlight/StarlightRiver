@@ -44,6 +44,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (player.wingTime > 0)
 				{
 					shotTimer++;
+
 					if (shotTimer % 6 == 0)
 						FireShort(player);
 				}
@@ -58,6 +59,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
 				CameraSystem.Shake += 2;
+
 				for (int i = 0; i < 6; i++)
 					Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.5f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
 

@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -48,10 +44,9 @@ namespace StarlightRiver.Content.Items.Misc
 			if (NPC.type == NPCID.BestiaryGirl)
 			{
 				int playerIndex = NPC.lastInteraction;
+
 				if (!Main.player[playerIndex].active || Main.player[playerIndex].dead)
-				{
 					playerIndex = NPC.FindClosestPlayer();
-				}
 
 				Player player = Main.player[playerIndex];
 

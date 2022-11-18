@@ -1,13 +1,9 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -35,7 +31,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.value = Item.sellPrice(0, 0, 20, 0);
 			Item.crit = 7;
 			Item.rare = ItemRarityID.Green;
-			Item.shoot = 7;
+			Item.shoot = ProjectileID.VilethornBase;
 			Item.shootSpeed = 12f;
 			Item.autoReuse = true;
 			Item.noUseGraphic = true;
@@ -68,7 +64,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	internal class BloodBolterHeldProj : ModProjectile
 	{
-
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		private Player Owner => Main.player[Projectile.owner];
@@ -150,6 +145,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			DisplayName.SetDefault("Blood Bolt");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 12;
@@ -193,6 +189,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void Kill(int timeLeft)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
+
 			for (int i = 0; i < 12; i++)
 			{
 				Vector2 dir = Vector2.Normalize(-Projectile.velocity).RotatedByRandom(0.8f);
@@ -203,9 +200,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	internal class BloodBolterExplosion : ModProjectile
 	{
-		public override string Texture => AssetDirectory.Assets + "Invisible";
-
 		public float radiusMult = 1f;
+
+		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public float Progress => 1 - Projectile.timeLeft / 10f;
 
@@ -247,8 +244,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class BloodBolterGNPC : GlobalNPC
 	{
-		public override bool InstancePerEntity => true;
-
 		public bool hitFromBolter = false;
 
 		public Projectile bolt = default;
@@ -257,6 +252,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public bool markedForDeath = false;
 
 		public int deathCounter = 0;
+
+		public override bool InstancePerEntity => true;
 
 		public override void ResetEffects(NPC npc)
 		{

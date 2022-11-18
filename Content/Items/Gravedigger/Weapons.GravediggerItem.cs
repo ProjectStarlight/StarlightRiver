@@ -1,14 +1,10 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
@@ -330,9 +326,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (target.knockBackResist != 0 && !target.collideY && !target.noGravity && SwingFrame < 2 && target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
-			{
 				damage = (int)(damage * 1.5f);
-			}
 
 			if (SwingFrame < 2)
 			{
@@ -391,7 +385,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 	public class GravediggerSlam : ModProjectile, IDrawOverTiles
 	{
+		float counter = 0;
+
 		public override string Texture => AssetDirectory.GravediggerItem + "GraveDiggerSlam";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grave digger");
@@ -407,13 +404,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.timeLeft = 200;
 			Projectile.rotation = Main.rand.NextFloat(6.28f);
 		}
-		float counter = 0;
+
 		public override void AI()
 		{
 			if (Projectile.timeLeft < 195)
 				Projectile.friendly = false;
 			counter += (float)(Math.PI / 2f) / 200;
 		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			return false;
@@ -426,11 +424,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, TextureAssets.Projectile[Projectile.type].Value.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 		}
 	}
+
 	internal class GravediggerPlayer : ModPlayer
 	{
 		public int SwingDelay = 0;
 		public int SwingFrame = 0;
 		public int Combo = 0;
+
 		public override void ResetEffects()
 		{
 			SwingDelay = Math.Max(SwingDelay - 1, 0);
@@ -455,6 +455,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				NPC.velocity.Y -= 0.1f;
 		}
 	}
+
 	class ShovelQuickFall : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Debug;
@@ -465,12 +466,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			npc.velocity.X *= 0.85f;
 			npc.velocity.Y = 40;
+
 			if (npc.collideY)
 			{
 				npc.velocity.X = 0;
 				Player Player = Main.player[npc.target];
 				npc.DelBuff(buffIndex--);
 				CameraSystem.Shake += 10;
+
 				for (int k = 0; k <= 50; k++)
 				{
 					Dust.NewDustPerfect(npc.Center, ModContent.DustType<Content.Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-10, 10));

@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -23,7 +19,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
 				crit = false;
 				damage = 0;
 			}
@@ -33,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerStruct((int)(damage * 0.33f), 600));
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
 				crit = false;
 				damage = 0;
 			}
@@ -45,13 +41,12 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public struct CorpseflowerStruct
+	public struct CorpseflowerDamageInstance
 	{
 		public int damage;
-
 		public int timer;
 
-		public CorpseflowerStruct(int damage, int timer)
+		public CorpseflowerDamageInstance(int damage, int timer)
 		{
 			this.damage = damage;
 			this.timer = timer;
@@ -62,7 +57,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override bool InstancePerEntity => true;
 
-		public List<CorpseflowerStruct> damageAndTimers = new();
+		public List<CorpseflowerDamageInstance> damageAndTimers = new();
 
 		public override void ResetEffects(NPC npc)
 		{
@@ -70,11 +65,11 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (damageAndTimers[i].timer > 0)
 				{
-					damageAndTimers[i] = new CorpseflowerStruct(damageAndTimers[i].damage, damageAndTimers[i].timer - 1);
+					damageAndTimers[i] = new CorpseflowerDamageInstance(damageAndTimers[i].damage, damageAndTimers[i].timer - 1);
 				}
 				else
 				{
-					damageAndTimers[i] = new CorpseflowerStruct(0, 0);
+					damageAndTimers[i] = new CorpseflowerDamageInstance(0, 0);
 					damageAndTimers.Remove(damageAndTimers[i]);
 				}
 			}
@@ -93,7 +88,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			for (int i = 0; i < damageAndTimers.Count; i++)
 			{
-				CorpseflowerStruct struct_ = damageAndTimers[i];
+				CorpseflowerDamageInstance struct_ = damageAndTimers[i];
 
 				if (struct_.timer > 0 && struct_.damage > 0)
 				{

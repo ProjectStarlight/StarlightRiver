@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.NPCs;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc

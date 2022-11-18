@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using Terraria;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -26,9 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void OnHit(Player Player, bool crit)
 		{
 			if (Equipped(Player) && crit && Main.rand.NextFloat() < 0.1f)
-			{
 				ReduceDebuffDurations(Player);
-			}
 		}
 
 		private void OnHitNPC(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
@@ -46,9 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < Player.MaxBuffs; i++)
 			{
 				if (Helper.IsValidDebuff(Player, i))
-				{
 					Player.buffTime[i] -= 180;
-				}
 			}
 		}
 	}

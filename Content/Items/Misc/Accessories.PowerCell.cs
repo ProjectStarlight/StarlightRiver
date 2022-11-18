@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 
 namespace StarlightRiver.Content.Items.Misc
 {

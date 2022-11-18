@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
@@ -131,6 +126,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.position + Projectile.velocity;
 		}
+
 		public void DrawPrimitives()
 		{
 			if (!DrawTrail)
@@ -161,22 +157,23 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			TrailColor = new Color(30, 19, 12);
 		}
+
 		public override void SafeAI()
 		{
 			if (Main.rand.NextBool(10))
 			{
 				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.25f));
 				dust.noGravity = true;
+
 				if (Main.rand.NextBool(3))
-				{
 					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<SandNoGravity>(), 0f, 0f, 120, default, Main.rand.NextFloat(0.7f, 1.1f));
-				}
 			}
 		}
 
 		public override void Kill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
 			for (int i = 0; i < 15; i++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 15, default, Main.rand.NextFloat(0.8f, 1f));
@@ -277,6 +274,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			{
 				var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Ebonwood, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1.15f));
 				dust.noGravity = true;
+
 				if (Main.rand.NextBool(2))
 				{
 					var dust2 = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Shadowflame, 0f, 0f, 25, default, Main.rand.NextFloat(0.9f, 1.2f));
@@ -307,6 +305,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 	public class SoilgunPearlsandSoil : BaseSoilProjectile
 	{
 		private bool foundTarget;
+
 		public override void SafeSetDefaults()
 		{
 			TrailColor = new Color(87, 77, 106);
@@ -336,6 +335,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			if (Main.rand.NextBool(5))
 			{
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Pearlsand, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1.1f)).noGravity = true;
+
 				if (Main.rand.NextBool(2))
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MoonstoneShimmer>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(0.1f, 0.2f), 25, new Color(0.3f, 0.2f, 0.3f, 0f), Main.rand.NextFloat(0.2f, 0.3f)).fadeIn = 90f;
 			}
@@ -430,6 +430,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
+
 					if (proj.type == ModContent.ProjectileType<SoilgunIcicleProj>() && proj.active && proj.ai[0] == target.whoAmI)
 					{
 						proj.ai[1] = 1f;
@@ -488,6 +489,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void Kill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
 			for (int i = 0; i < 15; i++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Silt, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
@@ -524,6 +526,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			Projectile.penetrate--;
+
 			if (Projectile.penetrate <= 0)
 			{
 				Projectile.Kill();
@@ -535,14 +538,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
 
 				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > float.Epsilon)
-				{
 					Projectile.velocity.X = -oldVelocity.X;
-				}
 
 				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > float.Epsilon)
-				{
 					Projectile.velocity.Y = -oldVelocity.Y;
-				}
 			}
 
 			return false;
@@ -551,6 +550,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public override void Kill(int timeLeft)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.position);
+
 			for (int i = 0; i < 12; i++)
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Mud, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 0.9f));
