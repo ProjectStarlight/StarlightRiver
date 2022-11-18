@@ -29,6 +29,9 @@ namespace StarlightRiver.Content.Items.Forest
 
 		private void SpawnAcorn(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
+			if (!Equipped(player))
+				return;
+
             if (target.life - damage <= 0)
             {
                 if (proj.minion && proj.owner == player.whoAmI && player.MinionAttackTargetNPC == target.whoAmI)

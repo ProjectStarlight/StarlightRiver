@@ -30,9 +30,10 @@ namespace StarlightRiver.Core
             PlaceOceanArtifacts();
             PlaceLavaArtifacts();
             PlaceUndergroundArtifacts();
-            PlaceJungleArtifacts();
+			PlaceJungleArtifacts();
+			PlaceSnowArtifacts();
 
-            (ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
+			(ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
         }
 
         private void PlaceDesertArtifacts()
@@ -51,21 +52,35 @@ namespace StarlightRiver.Core
             PlaceArtifactPool<DesertArtifact>(range, tiles, amount, 999);
         }
 
-        private void PlaceJungleArtifacts()
-        {
-            var tiles = new int[]
-            {
-                  TileID.JungleGrass,
-                  TileID.Mud
-            };
-            Rectangle range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
+		private void PlaceJungleArtifacts()
+		{
+			var tiles = new int[]
+			{
+				  TileID.JungleGrass,
+				  TileID.Mud
+			};
+			Rectangle range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
 
-            int amount = Main.maxTilesX / 12;
+			int amount = Main.maxTilesX / 12;
 
-            PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
-        }
+			PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
+		}
 
-        private void PlaceOceanArtifacts()
+		private void PlaceSnowArtifacts()
+		{
+			var tiles = new int[]
+			{
+				  TileID.SnowBlock,
+				  TileID.IceBlock
+			};
+			Rectangle range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
+
+			int amount = Main.maxTilesX / 40;
+
+			PlaceArtifactPool<SnowArtifact>(range, tiles, amount, 4999);
+		}
+
+		private void PlaceOceanArtifacts()
         {
             var tiles = new int[]
             {

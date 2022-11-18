@@ -13,6 +13,24 @@ using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
+	public class WhipArtifact : DesertArtifact
+	{
+
+		public override string TexturePath => AssetDirectory.ArtifactItem + "ArchaeologistsWhip";
+
+		public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>();
+
+		public override int SparkleRate => 40;
+
+		public override Color BeamColor => Color.Gold;
+
+		public override Vector2 Size => new Vector2(36, 50);
+
+		public override float SpawnChance => 0.5f;
+
+		public override int ItemType => ModContent.ItemType<ArchaeologistsWhip>();
+	}
+
     public abstract class FossilArtifact : DesertArtifact
     { 
         public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>();
