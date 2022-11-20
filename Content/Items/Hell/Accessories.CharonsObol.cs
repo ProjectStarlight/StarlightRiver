@@ -2,13 +2,13 @@
 //Balance
 //Momentum
 //Obtainment
+//Sfx
 //Tooltip
-//Fix gaps between coin trails
-//Work on texture and colors
 //Make coins unable to seek out inactive entities
+//Fix trail geekery
 //Adjust coin damage
-//Adjust coin hitbox
-//Particles
+//Make coins not fullbright after being struck
+//Make them embed in tiles
 using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -89,16 +89,20 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private Player Player => Main.player[Projectile.owner];
 
-		const int TRAILLENGTH = 150;
+		readonly int TRAILLENGTH = 600;
 
 		public List<Vector2> cache;
 		public Trail trail;
+		public Trail trail2;
 
 		public List<Vector2> offsetCache;
 
 		float trailWidth = 4;
 
+		private int pauseTimer;
+
 		public bool disappeared = false;
+		public bool bouncedOff = false;
 
 		public Vector2 A4 => Projectile.Center;
 
@@ -108,6 +112,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public virtual Color trailColor => Color.Gold;
 
+		public virtual int dustType => 1;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Obol");
@@ -116,8 +122,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 24;
-			Projectile.height = 24;
+			Projectile.width = 16;
+			Projectile.height = 16;
 			Projectile.friendly = false;
 			Projectile.DamageType = DamageClass.Magic;
 			Projectile.tileCollide = true;
@@ -134,26 +140,47 @@ namespace StarlightRiver.Content.Items.Hell
 			if (Projectile.frameCounter % 12 == 0)
 				Projectile.frame++;
 			Projectile.frame %= Main.projFrames[Projectile.type];
+
+			if (bouncedOff)
+			{
+				Projectile.friendly = false;
+				Projectile.extraUpdates = 0;
+				Projectile.velocity.Y += 0.25f;
+				Projectile.velocity.X *= 0.99f;
+				return;
+			}
 			if (!Projectile.friendly && !disappeared)
 			{
+				if (Main.rand.NextBool(15))
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 10), dustType, Vector2.Zero);
 				Projectile.velocity.Y += 0.0325f;
 
 				if (Projectile.timeLeft > 670)
 					return;
 
-				var propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && n.Hitbox.Intersects(Projectile.Hitbox)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				Rectangle detectionHitbox = Projectile.Hitbox;
+				detectionHitbox.Inflate(14, 14);
+				var propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && n.Hitbox.Intersects(detectionHitbox)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 				if (propeller != default)
 				{
 					if (propeller.ModProjectile is ObolProj modProj)
 					{
-						propeller.active = false;
+						modProj.bouncedOff = true;
+						propeller.extraUpdates = 0;
+						propeller.velocity = Projectile.velocity * 2;
+						Projectile.Center = propeller.Center;
 						cache = modProj.cache;
-						//trail = modProj.trail;
-						offsetCache = modProj.offsetCache;
 					}
+					else
+						propeller.penetrate--;
+
+					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
+					(proj.ModProjectile as ObolImpact).color = trailColor;
 					ManageCaches();
+
+					Projectile.timeLeft = 3000; 
 					Projectile.friendly = true;
-					var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && n.Distance(Projectile.Center) < 1000).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+					var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && n.Distance(Projectile.Center) < 1000).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 					if (closestCoin != default)
 					{
@@ -171,25 +198,40 @@ namespace StarlightRiver.Content.Items.Hell
 						else
 							Projectile.velocity = propeller.velocity * 0.5f;
 					}
+
+					pauseTimer = 15;
 				}
 			}
 			else 
 			{
-				Projectile.extraUpdates = 6;
+				Projectile.extraUpdates = 50;
 				if (!disappeared)
 				{
 					ManageCaches();
 					if (target != default)
-						Projectile.velocity = Projectile.DirectionTo(target.Center) * 25;
+					{
+						if (pauseTimer-- < 0)
+							Projectile.velocity = Projectile.DirectionTo(target.Center) * 2;
+						else
+							Projectile.velocity = Vector2.Zero;
+					}
+					else if (!disappeared)
+					{
+						Projectile.velocity = Vector2.Zero;
+						Projectile.velocity = Vector2.Zero;
+						disappeared = true;
+						Projectile.friendly = false;
+						Projectile.timeLeft = 3000;
+					}
 				}
 				else
 				{
 					if (trailWidth > 0.3f)
 					{
-						trailWidth *= 0.994f;
+						trailWidth *= 0.998f;
 						if (trailWidth < 3.5f)
 						{
-							trailWidth *= 0.994f;
+							trailWidth *= 0.998f;
 						}
 					}
 					else
@@ -203,11 +245,12 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			if (!disappeared)
 			{
+				ManageCaches();
 				Projectile.penetrate++;
 				Projectile.velocity = Vector2.Zero;
 				disappeared = true;
 				Projectile.friendly = false;
-				Projectile.timeLeft = 300;
+				Projectile.timeLeft = 3000;
 			}
 		}
 
@@ -217,10 +260,11 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				if (Projectile.friendly)
 				{
+					ManageCaches();
 					Projectile.velocity = Vector2.Zero;
 					disappeared = true;
 					Projectile.friendly = false;
-					Projectile.timeLeft = 300;
+					Projectile.timeLeft = 3000;
 				}
 				else
 					return true;
@@ -230,10 +274,22 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			DrawPrimitives();
+			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Color bloomColor = trailColor;
+			bloomColor.A = 0;
+			if (!bouncedOff)
+			{
+				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, bloomColor * 0.08f, 0, bloom.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				DrawPrimitives();
+			}
 			if (disappeared)
 				return false;
-			return true;
+
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
+			Rectangle frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, Color.White * ((255 - Projectile.alpha) / 255f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			return false;
 		}
 
 		private void ManageCaches()
@@ -241,72 +297,128 @@ namespace StarlightRiver.Content.Items.Hell
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
-				offsetCache = new List<Vector2>();
+				//offsetCache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
 				{
 					cache.Add(A4);
-
-					offsetCache.Add(Vector2.Zero);
+					//offsetCache.Add(Vector2.Zero);
 				}
 			}
 
 			cache.Add(A4);
-			offsetCache.Add((Projectile.velocity.ToRotation() + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.02f, 0.02f));
+			//offsetCache.Add((Projectile.velocity.ToRotation() + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.02f, 0.02f));
 
 			while (cache.Count > TRAILLENGTH)
 			{
 				cache.RemoveAt(0);
-				offsetCache.RemoveAt(0);
+				//offsetCache.RemoveAt(0);
 			}
 		}
 
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(4), factor => trailWidth * 3f, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor =>
 			{
 				return trailColor;
 			});
 
-			if (disappeared)
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor =>
 			{
-				for (int i = 0; i < cache.Count; i++)
-				{
-					cache[i] += offsetCache[i];
-				}
-
-			}
+				return Color.White * 0.75f;
+			});
 
 			trail.Positions = cache.ToArray();
+			trail2.Positions = cache.ToArray();
 
 			if (!disappeared)
+			{
 				trail.NextPosition = A4;
+				trail2.NextPosition = A4;
+			}
 		}
 
 		public void DrawPrimitives()
 		{
-			Effect effect = Filters.Scene["RebarTrail"].GetShader().Shader;
+			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarTrailTexture").Value);
-			effect.Parameters["noiseTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "RebarNoiseTexture").Value);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["progress"].SetValue(trailWidth / 4f);
-			effect.Parameters["repeats"].SetValue(18);
-			effect.Parameters["midColor"].SetValue(trailColor.ToVector3());
-
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["alpha"].SetValue(trailWidth / 4f);
 
 			trail?.Render(effect);
+			trail2?.Render(effect);
 		}
 	}
 
-	public class CopperObol : ObolProj { public override Color trailColor => Color.Orange; }
+	internal class ObolImpact : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Assets + "StarTexture";
 
-	public class SilverObol : ObolProj { public override Color trailColor => Color.Silver; }
+		public Color color;
+		Player owner => Main.player[Projectile.owner];
 
-	public class GoldObol : ObolProj { public override Color trailColor => Color.Gold; }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Obol Star");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.friendly = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.tileCollide = false;
+			Projectile.Size = new Vector2(2, 2);
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 270;
+		}
+
+		public override void AI()
+		{
+			if (Projectile.scale < 0.75f)
+				Projectile.alpha += 20;
+			else
+				Projectile.scale *= 0.96f;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+			Color color2 = color * (1 - (Projectile.alpha / 255f));
+			color2.A = 0;
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color2, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.25f, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	public class CopperObol : ObolProj 
+	{ 
+		public override Color trailColor => new Color(255, 139, 65);
+
+		public override int dustType => DustID.CopperCoin;
+
+	}
+
+	public class SilverObol : ObolProj 
+	{ 
+		public override Color trailColor => new Color(210, 221, 222);
+
+		public override int dustType => DustID.SilverCoin;
+	}
+
+	public class GoldObol : ObolProj 
+	{ 
+		public override Color trailColor => new Color(254, 255, 113);
+
+		public override int dustType => DustID.GoldCoin;
+
+
+	}
 
 }
