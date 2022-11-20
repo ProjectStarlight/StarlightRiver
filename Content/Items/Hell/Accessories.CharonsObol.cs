@@ -1,15 +1,7 @@
 ﻿//TODO:
-//Balance
-//Momentum
 //Obtainment
 //Sfx
 //Tooltip
-//Make coins unable to seek out inactive entities
-//Fix trail geekery
-//Adjust coin damage
-//Make coins not fullbright after being struck
-//Make them embed in tiles
-using Humanizer;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
@@ -64,23 +56,31 @@ namespace StarlightRiver.Content.Items.Hell
 
 			if (self.value < 100)
 			{
-				Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<CopperObol>(), 20, 3, closestPlayer.whoAmI);
+				CreateCoin(ModContent.ProjectileType<CopperObol>(), 20, closestPlayer, self);
 				if (self.value > 50)
-					Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<CopperObol>(), 20, 3, closestPlayer.whoAmI);
+					CreateCoin(ModContent.ProjectileType<CopperObol>(), 20, closestPlayer, self);
 			}
 			else if (self.value < 1000)
 			{
-				Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<SilverObol>(), 40, 3, closestPlayer.whoAmI);
+				CreateCoin(ModContent.ProjectileType<SilverObol>(), 30, closestPlayer, self);
 				if (self.value > 500)
-					Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<SilverObol>(), 40, 3, closestPlayer.whoAmI);
+					CreateCoin(ModContent.ProjectileType<SilverObol>(), 30, closestPlayer, self);
+			}
+			else if (self.value < 10000)
+			{
+				CreateCoin(ModContent.ProjectileType<GoldObol>(), 40, closestPlayer, self);
+				if (self.value > 5000)
+					CreateCoin(ModContent.ProjectileType<GoldObol>(), 40, closestPlayer, self);
 			}
 			else
 			{
-				Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<GoldObol>(), 40, 3, closestPlayer.whoAmI);
-				if (self.value > 5000)
-					Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, ModContent.ProjectileType<GoldObol>(), 40, 3, closestPlayer.whoAmI);
+				CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 60, closestPlayer, self);
+				if (self.value > 50000)
+					CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 60, closestPlayer, self);
 			}
 		}
+
+		private void CreateCoin(int type, int damage, Player closestPlayer, NPC self) => Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, type, damage, 3, closestPlayer.whoAmI);
 	}
 	public abstract class ObolProj : ModProjectile
 	{
@@ -103,6 +103,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public bool disappeared = false;
 		public bool bouncedOff = false;
+		public bool embedded = false;
 
 		public Vector2 A4 => Projectile.Center;
 
@@ -136,6 +137,12 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void AI()
 		{
+			if (embedded)
+			{
+				Projectile.alpha += 5;
+				Projectile.velocity = Vector2.Zero;
+				return;
+			}
 			Projectile.frameCounter++;
 			if (Projectile.frameCounter % 12 == 0)
 				Projectile.frame++;
@@ -149,10 +156,12 @@ namespace StarlightRiver.Content.Items.Hell
 				Projectile.velocity.X *= 0.99f;
 				return;
 			}
+
 			if (!Projectile.friendly && !disappeared)
 			{
 				if (Main.rand.NextBool(15))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 10), dustType, Vector2.Zero);
+
 				Projectile.velocity.Y += 0.0325f;
 
 				if (Projectile.timeLeft > 670)
@@ -165,6 +174,7 @@ namespace StarlightRiver.Content.Items.Hell
 				{
 					if (propeller.ModProjectile is ObolProj modProj)
 					{
+						Projectile.damage += propeller.damage / 2;
 						modProj.bouncedOff = true;
 						propeller.extraUpdates = 0;
 						propeller.velocity = Projectile.velocity * 2;
@@ -180,25 +190,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 					Projectile.timeLeft = 3000; 
 					Projectile.friendly = true;
-					var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && n.Distance(Projectile.Center) < 1000).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
-					if (closestCoin != default)
-					{
-						target = closestCoin;
-						Projectile.velocity = Projectile.DirectionTo(closestCoin.Center) * 7;
-					}
-					else
-					{
-						var closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
-						if (closestNPC != default)
-						{
-							target = closestNPC;
-							Projectile.velocity = Projectile.DirectionTo(closestNPC.Center) * 7;
-						}
-						else
-							Projectile.velocity = propeller.velocity * 0.5f;
-					}
-
+					PickTarget();
 					pauseTimer = 15;
 				}
 			}
@@ -210,6 +203,12 @@ namespace StarlightRiver.Content.Items.Hell
 					ManageCaches();
 					if (target != default)
 					{
+						if (!target.active)
+							PickTarget();
+
+						if (target is Projectile proj && proj.ModProjectile is ObolProj modproj && (modproj.disappeared || modproj.bouncedOff || proj.friendly || modproj.embedded))
+							PickTarget();
+
 						if (pauseTimer-- < 0)
 							Projectile.velocity = Projectile.DirectionTo(target.Center) * 2;
 						else
@@ -256,18 +255,21 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (!disappeared)
+			if (!disappeared && !embedded)
 			{
+				Projectile.velocity = Vector2.Zero;
 				if (Projectile.friendly)
 				{
 					ManageCaches();
-					Projectile.velocity = Vector2.Zero;
 					disappeared = true;
 					Projectile.friendly = false;
 					Projectile.timeLeft = 3000;
 				}
 				else
-					return true;
+				{
+					Projectile.timeLeft = 100;
+					embedded = true;
+				}
 			}
 			return false;
 		}
@@ -277,19 +279,44 @@ namespace StarlightRiver.Content.Items.Hell
 			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 			Color bloomColor = trailColor;
 			bloomColor.A = 0;
-			if (!bouncedOff)
+
+			if (!bouncedOff && !embedded)
 			{
 				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, bloomColor * 0.08f, 0, bloom.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 				DrawPrimitives();
 			}
+
 			if (disappeared)
 				return false;
 
+			Color coinColor = bouncedOff ? lightColor : Color.White;
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			Rectangle frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, Color.White * ((255 - Projectile.alpha) / 255f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, coinColor * ((255 - Projectile.alpha) / 255f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
+		}
+
+		private void PickTarget()
+		{
+			var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
+			if (closestCoin != default)
+			{
+				target = closestCoin;
+				Projectile.velocity = Projectile.DirectionTo(closestCoin.Center) * 7;
+			}
+			else
+			{
+				var closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				if (closestNPC != default)
+				{
+					target = closestNPC;
+					Projectile.velocity = Projectile.DirectionTo(closestNPC.Center) * 7;
+				}
+				else
+					Projectile.velocity = Vector2.Zero;
+			}
 		}
 
 		private void ManageCaches()
@@ -297,22 +324,14 @@ namespace StarlightRiver.Content.Items.Hell
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
-				//offsetCache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
-				{
 					cache.Add(A4);
-					//offsetCache.Add(Vector2.Zero);
-				}
 			}
 
 			cache.Add(A4);
-			//offsetCache.Add((Projectile.velocity.ToRotation() + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.02f, 0.02f));
 
 			while (cache.Count > TRAILLENGTH)
-			{
 				cache.RemoveAt(0);
-				//offsetCache.RemoveAt(0);
-			}
 		}
 
 		private void ManageTrail()
@@ -412,13 +431,17 @@ namespace StarlightRiver.Content.Items.Hell
 		public override int dustType => DustID.SilverCoin;
 	}
 
-	public class GoldObol : ObolProj 
-	{ 
+	public class GoldObol : ObolProj
+	{
 		public override Color trailColor => new Color(254, 255, 113);
 
 		public override int dustType => DustID.GoldCoin;
-
-
 	}
 
+	public class PlatinumObol : ObolProj
+	{
+		public override Color trailColor => new Color(253, 181, 249);
+
+		public override int dustType => DustID.PlatinumCoin;
+	}
 }
