@@ -215,14 +215,6 @@ namespace StarlightRiver.Content.Items.Hell
 						else
 							Projectile.velocity = Vector2.Zero;
 					}
-					else if (!disappeared)
-					{
-						Projectile.velocity = Vector2.Zero;
-						Projectile.velocity = Vector2.Zero;
-						disappeared = true;
-						Projectile.friendly = false;
-						Projectile.timeLeft = 3000;
-					}
 				}
 				else
 				{
@@ -318,7 +310,7 @@ namespace StarlightRiver.Content.Items.Hell
 					Projectile.velocity = Projectile.DirectionTo(closestNPC.Center) * 7;
 				}
 				else
-					Projectile.velocity = Vector2.Zero;
+					Projectile.velocity = Main.rand.NextVector2CircularEdge(2f, 2f);
 			}
 		}
 
@@ -373,7 +365,7 @@ namespace StarlightRiver.Content.Items.Hell
 			effect.Parameters["alpha"].SetValue(trailWidth / 4f);
 
 			trail?.Render(effect);
-			trail2?.Render(effect);
+			//trail2?.Render(effect);
 		}
 	}
 
