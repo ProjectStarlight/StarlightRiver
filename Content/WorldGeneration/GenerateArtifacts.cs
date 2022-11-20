@@ -32,6 +32,7 @@ namespace StarlightRiver.Core
             PlaceUndergroundArtifacts();
 			PlaceJungleArtifacts();
 			PlaceSnowArtifacts();
+			PlaceHellArtifacts();
 
 			(ModContent.GetInstance<ArchaeologyMapLayer>()).CalculateDrawables();
         }
@@ -95,23 +96,38 @@ namespace StarlightRiver.Core
             PlaceArtifactPool<OceanArtifact>(rightRange, tiles, 5, 999);
         }
 
-        private void PlaceLavaArtifacts()
-        {
-            var tiles = new int[]
-            {
-                  TileID.Granite,
-                  TileID.Marble,
-                  TileID.Stone
-            };
+		private void PlaceLavaArtifacts()
+		{
+			var tiles = new int[]
+			{
+				  TileID.Granite,
+				  TileID.Marble,
+				  TileID.Stone
+			};
 
-            Rectangle range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 300);
+			Rectangle range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 300);
 
-            int amount = Main.maxTilesX / 800;
+			int amount = Main.maxTilesX / 800;
 
-            PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
-        }
+			PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
+		}
 
-        private void PlaceUndergroundArtifacts()
+		private void PlaceHellArtifacts()
+		{
+			var tiles = new int[]
+			{
+				  TileID.Ash,
+				  TileID.Hellstone
+			};
+
+			Rectangle range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 500);
+
+			int amount = Main.maxTilesX / 400;
+
+			PlaceArtifactPool<HellArtifact>(range, tiles, amount, 999);
+		}
+
+		private void PlaceUndergroundArtifacts()
         {
             var tiles = new int[]
             {

@@ -1,7 +1,6 @@
 ﻿//TODO:
-//Obtainment
 //Sfx
-//Tooltip
+//Screenshake
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
@@ -27,7 +26,7 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Charon's Obol");
-			Tooltip.SetDefault("[PH] update later");
+			Tooltip.SetDefault("Converts all dropped money to reflective coins, which ricochet projectiles off themselves\nCoins lose their power when they contact any surface\n'Money is the root of all evil'");
 		}
 
 		public override void Load()
@@ -184,6 +183,8 @@ namespace StarlightRiver.Content.Items.Hell
 					else
 						propeller.penetrate--;
 
+					Helper.PlayPitched("Impacts/Ricochet", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
 					(proj.ModProjectile as ObolImpact).color = trailColor;
 					ManageCaches();
@@ -282,7 +283,9 @@ namespace StarlightRiver.Content.Items.Hell
 
 			if (!bouncedOff && !embedded)
 			{
-				Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, bloomColor * 0.08f, 0, bloom.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+				if (!disappeared)
+					Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, bloomColor * 0.08f, 0, bloom.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
 				DrawPrimitives();
 			}
 
@@ -411,7 +414,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Color color2 = color * (1 - (Projectile.alpha / 255f));
 			color2.A = 0;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color2, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.25f, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color2, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.25f * new Vector2(1.5f, 1f), SpriteEffects.None, 0f);
 			return false;
 		}
 	}
