@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using System;
+using System.Media;
 
 namespace StarlightRiver.Content.Items.Hell
 {
@@ -188,7 +189,8 @@ namespace StarlightRiver.Content.Items.Hell
 					else
 						propeller.penetrate--;
 
-					Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					//Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.CoinPickup with { Pitch = -0.15f}, Projectile.Center);
 
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
 					(proj.ModProjectile as ObolImpact).color = trailColor;
