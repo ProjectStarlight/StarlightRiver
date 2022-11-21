@@ -104,6 +104,8 @@ namespace StarlightRiver.Content.Items.Hell
 		public bool bouncedOff = false;
 		public bool embedded = false;
 
+		public float Agravity = 0.05f; //The gravity at which it falls after being bounced off of
+
 		public Vector2 A4 => Projectile.Center;
 
 		public Vector2 Top => (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
@@ -151,8 +153,9 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				Projectile.friendly = false;
 				Projectile.extraUpdates = 0;
-				Projectile.velocity.Y += 0.25f;
-				Projectile.velocity.X *= 0.99f;
+
+				Projectile.velocity.Y += Agravity - 0.1f;
+				Agravity += 0.01f;
 				return;
 			}
 
@@ -168,22 +171,24 @@ namespace StarlightRiver.Content.Items.Hell
 
 				Rectangle detectionHitbox = Projectile.Hitbox;
 				detectionHitbox.Inflate(14, 14);
-				var propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && n.Hitbox.Intersects(detectionHitbox)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				var propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && (n.Hitbox.Intersects(Projectile.Hitbox) || (n.ModProjectile is not ObolProj && n.Hitbox.Intersects(detectionHitbox)))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 				if (propeller != default)
 				{
 					if (propeller.ModProjectile is ObolProj modProj)
 					{
 						Projectile.damage += propeller.damage / 2;
 						modProj.bouncedOff = true;
+						propeller.timeLeft = 3000;
 						propeller.extraUpdates = 0;
-						propeller.velocity = Projectile.velocity * 2;
+						propeller.velocity.X = Math.Sign(Projectile.velocity.X);
+						propeller.velocity.Y = -1f;
 						Projectile.Center = propeller.Center;
 						cache = modProj.cache;
 					}
 					else
 						propeller.penetrate--;
 
-					Helper.PlayPitched("Impacts/Ricochet", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+					Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
 					(proj.ModProjectile as ObolImpact).color = trailColor;
@@ -394,9 +399,12 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void AI()
 		{
 			if (Projectile.scale < 0.75f)
-				Projectile.alpha += 20;
+				Projectile.alpha += 60;
 			else
-				Projectile.scale *= 0.96f;
+				Projectile.scale *= 0.93f;
+
+			if (Projectile.alpha > 255)
+				Projectile.active = false;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
