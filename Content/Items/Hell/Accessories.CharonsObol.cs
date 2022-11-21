@@ -251,11 +251,11 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void OnHitNPC(NPC hitTarget, int damage, float knockback, bool crit)
 		{
-			Core.Systems.CameraSystem.Shake += 3;
-			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			Projectile.penetrate++;
 			if (hitTarget == target)
 			{
+				Core.Systems.CameraSystem.Shake += 3;
+				Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ManageCaches();
 				Projectile.velocity = Vector2.Zero;
 				disappeared = true;
@@ -263,9 +263,7 @@ namespace StarlightRiver.Content.Items.Hell
 				Projectile.timeLeft = 3000;
 			}
 			else
-			{
 				alreadyHit.Add(hitTarget);
-			}
 		}
 
 		public override bool? CanHitNPC(NPC hitTarget)
