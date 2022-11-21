@@ -505,6 +505,19 @@ namespace StarlightRiver.Helpers
 
             return Point16.Zero;
         }
-    }
+
+		public static bool ClearPath(Vector2 point1, Vector2 point2)
+		{
+			Vector2 direction = point2 - point1;
+			for (int i = 0; i < direction.Length(); i += 4)
+			{
+				Vector2 toLookAt = point1 + (Vector2.Normalize(direction) * i);
+
+				if ((Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType]))
+					return false;
+			}
+			return true;
+		}
+	}
 }
 

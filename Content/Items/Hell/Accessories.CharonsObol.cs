@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿//TODO:
+//Make it work with lucky coin
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core;
@@ -12,6 +14,7 @@ using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
 using System;
 using System.Media;
+using System.Diagnostics.Contracts;
 
 namespace StarlightRiver.Content.Items.Hell
 {
@@ -53,27 +56,27 @@ namespace StarlightRiver.Content.Items.Hell
 
 			if (self.value < 100)
 			{
-				CreateCoin(ModContent.ProjectileType<CopperObol>(), 20, closestPlayer, self);
+				CreateCoin(ModContent.ProjectileType<CopperObol>(), 100, closestPlayer, self);
 				if (self.value > 50)
-					CreateCoin(ModContent.ProjectileType<CopperObol>(), 20, closestPlayer, self);
+					CreateCoin(ModContent.ProjectileType<CopperObol>(), 100, closestPlayer, self);
 			}
 			else if (self.value < 1000)
 			{
-				CreateCoin(ModContent.ProjectileType<SilverObol>(), 30, closestPlayer, self);
+				CreateCoin(ModContent.ProjectileType<SilverObol>(), 150, closestPlayer, self);
 				if (self.value > 500)
-					CreateCoin(ModContent.ProjectileType<SilverObol>(), 30, closestPlayer, self);
+					CreateCoin(ModContent.ProjectileType<SilverObol>(), 150, closestPlayer, self);
 			}
 			else if (self.value < 10000)
 			{
-				CreateCoin(ModContent.ProjectileType<GoldObol>(), 40, closestPlayer, self);
+				CreateCoin(ModContent.ProjectileType<GoldObol>(), 200, closestPlayer, self);
 				if (self.value > 5000)
-					CreateCoin(ModContent.ProjectileType<GoldObol>(), 40, closestPlayer, self);
+					CreateCoin(ModContent.ProjectileType<GoldObol>(), 200, closestPlayer, self);
 			}
 			else
 			{
-				CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 60, closestPlayer, self);
+				CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 300, closestPlayer, self);
 				if (self.value > 50000)
-					CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 60, closestPlayer, self);
+					CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 300, closestPlayer, self);
 			}
 		}
 
@@ -112,6 +115,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private Entity target = default;
 
+		private List<NPC> alreadyHit = new List<NPC>();
+
 		public virtual Color trailColor => Color.Gold;
 
 		public virtual int dustType => 1;
@@ -124,8 +129,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
+			Projectile.width = 12;
+			Projectile.height = 12;
 			Projectile.friendly = false;
 			Projectile.DamageType = DamageClass.Magic;
 			Projectile.tileCollide = true;
@@ -244,19 +249,30 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC hitTarget, int damage, float knockback, bool crit)
 		{
 			Core.Systems.CameraSystem.Shake += 3;
 			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-			if (!disappeared)
+			Projectile.penetrate++;
+			if (hitTarget == target)
 			{
 				ManageCaches();
-				Projectile.penetrate++;
 				Projectile.velocity = Vector2.Zero;
 				disappeared = true;
 				Projectile.friendly = false;
 				Projectile.timeLeft = 3000;
 			}
+			else
+			{
+				alreadyHit.Add(hitTarget);
+			}
+		}
+
+		public override bool? CanHitNPC(NPC hitTarget)
+		{
+			if (alreadyHit.Contains(hitTarget))
+				return false;
+			return base.CanHitNPC(hitTarget);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -313,7 +329,7 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private void PickTarget()
 		{
-			var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (closestCoin != default)
 			{
@@ -322,7 +338,7 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 			else
 			{
-				var closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				var closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
 				if (closestNPC != default)
 				{
 					target = closestNPC;
