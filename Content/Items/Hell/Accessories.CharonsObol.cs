@@ -101,13 +101,15 @@ namespace StarlightRiver.Content.Items.Hell
 
 		private int pauseTimer;
 
+		public int flashTimer = 0;
+
 		public bool disappeared = false;
 		public bool bouncedOff = false;
 		public bool embedded = false;
 
-		public float Agravity = 0.05f; //The gravity at which it falls after being bounced off of
+		public float jerk = 0.05f;
 
-		public Vector2 A4 => Projectile.Center;
+		public Vector2 Center => Projectile.Center;
 
 		public Vector2 Top => (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
 
@@ -139,15 +141,20 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void AI()
 		{
+			Projectile.rotation = Projectile.velocity.X * 0.2f;
+			flashTimer--;
+
 			if (embedded)
 			{
 				Projectile.alpha += 5;
 				Projectile.velocity = Vector2.Zero;
 				return;
 			}
+
 			Projectile.frameCounter++;
 			if (Projectile.frameCounter % 12 == 0)
 				Projectile.frame++;
+
 			Projectile.frame %= Main.projFrames[Projectile.type];
 
 			if (bouncedOff)
@@ -155,8 +162,8 @@ namespace StarlightRiver.Content.Items.Hell
 				Projectile.friendly = false;
 				Projectile.extraUpdates = 0;
 
-				Projectile.velocity.Y += Agravity - 0.1f;
-				Agravity += 0.01f;
+				Projectile.velocity.Y += jerk - 0.1f;
+				jerk += 0.01f;
 				return;
 			}
 
@@ -179,6 +186,7 @@ namespace StarlightRiver.Content.Items.Hell
 					{
 						Projectile.damage += propeller.damage / 2;
 						modProj.bouncedOff = true;
+						modProj.flashTimer = 15;
 						propeller.timeLeft = 3000;
 						propeller.extraUpdates = 0;
 						propeller.velocity.X = Math.Sign(Projectile.velocity.X);
@@ -189,7 +197,6 @@ namespace StarlightRiver.Content.Items.Hell
 					else
 						propeller.penetrate--;
 
-					//Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.CoinPickup with { Pitch = -0.15f}, Projectile.Center);
 
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
@@ -242,6 +249,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			Core.Systems.CameraSystem.Shake += 3;
+			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 			if (!disappeared)
 			{
 				ManageCaches();
@@ -296,6 +305,12 @@ namespace StarlightRiver.Content.Items.Hell
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			Rectangle frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, coinColor * ((255 - Projectile.alpha) / 255f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
+			if (flashTimer <= 0)
+				return false;
+
+			Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.HellItem + "ObolFlash").Value;
+			Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, frameBox, Color.White * (flashTimer / 15f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
@@ -327,10 +342,10 @@ namespace StarlightRiver.Content.Items.Hell
 			{
 				cache = new List<Vector2>();
 				for (int i = 0; i < TRAILLENGTH; i++)
-					cache.Add(A4);
+					cache.Add(Center);
 			}
 
-			cache.Add(A4);
+			cache.Add(Center);
 
 			while (cache.Count > TRAILLENGTH)
 				cache.RemoveAt(0);
@@ -354,8 +369,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 			if (!disappeared)
 			{
-				trail.NextPosition = A4;
-				trail2.NextPosition = A4;
+				trail.NextPosition = Center;
+				trail2.NextPosition = Center;
 			}
 		}
 
