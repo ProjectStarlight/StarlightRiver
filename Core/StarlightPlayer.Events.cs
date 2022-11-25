@@ -95,7 +95,6 @@ namespace StarlightRiver.Core
             sendHitPacket();
         }
 
-
         /// <summary>
         /// Use this event for Projectile hitting NPCs for situations where a Projectile should be owned by a Player.
         /// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiPlayer.
@@ -115,7 +114,14 @@ namespace StarlightRiver.Core
             NaturalLifeRegenEvent?.Invoke(Player, ref regen);
         }
 
-        public delegate void PostUpdateDelegate(Player player);
+		public delegate void UpdateLifeRegenDelegate(Player player);
+		public static event UpdateLifeRegenDelegate UpdateLifeRegenEvent;
+		public override void UpdateLifeRegen()
+		{
+			UpdateLifeRegenEvent?.Invoke(Player);
+		}
+
+		public delegate void PostUpdateDelegate(Player player);
         public static event PostUpdateDelegate PostUpdateEvent;
 
         public delegate void PostDrawDelegate(Player player, SpriteBatch spriteBatch);
@@ -167,6 +173,7 @@ namespace StarlightRiver.Core
             ModifyHitNPCEvent = null;
             ModifyHitNPCWithProjEvent = null;
             NaturalLifeRegenEvent = null;
+			UpdateLifeRegenEvent = null;
             OnHitByNPCEvent = null;
             OnHitByProjectileEvent = null;
             OnHitNPCEvent = null;
