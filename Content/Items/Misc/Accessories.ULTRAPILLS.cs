@@ -44,6 +44,17 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
 				}
+
+				for (int i = 0; i < 30; i++)
+				{
+					Dust.NewDustPerfect(target.Center, DustID.Blood, Main.rand.NextVector2Circular(5f, 5f), 0, default, 2f).noGravity = true;
+
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GraveBlood>(), Main.rand.NextVector2Circular(5f, 5f));
+
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GraveBlood>(), Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(2f, 8f));
+				}
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f }, target.Center);
 			}
 		}
 
@@ -61,6 +72,17 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
 				}
+
+				for (int i = 0; i < 20; i++)
+				{
+					Dust.NewDustPerfect(target.Center, DustID.Blood, Main.rand.NextVector2Circular(5f, 5f), 0, default, 2f).noGravity = true;
+
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GraveBlood>(), Main.rand.NextVector2Circular(5f, 5f));
+
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GraveBlood>(), Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f));
+				}
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f }, target.Center);
 			}
 		}
 
@@ -114,10 +136,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Projectile.width = Projectile.height = 16;
+			Projectile.width = Projectile.height = 12;
 			Projectile.tileCollide = true;
 
-			Projectile.timeLeft = 120;
+			Projectile.timeLeft = 240;
 			Projectile.hostile = false;
 			Projectile.friendly = false;
 		}
@@ -135,7 +157,7 @@ namespace StarlightRiver.Content.Items.Misc
 			else
 				Projectile.velocity.Y += 0.25f;
 
-			Projectile.velocity.X *= 0.99f;
+			Projectile.velocity.X *= 0.995f;
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
 
@@ -143,6 +165,32 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Owner.Heal(Main.rand.Next(3, 9));
 				Projectile.Kill();
+			}
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			for (float k = 0; k < 6.28f; k += 0.5f)
+			{
+				float x = (float)Math.Cos(k) * 20;
+				float y = (float)Math.Sin(k) * 10;
+
+				Dust dust = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustID.Blood, new Vector2(x, y).RotatedBy(oldVelocity.ToRotation() + MathHelper.PiOver2) * 0.08f, Main.rand.Next(50, 75), default, 1.75f);
+				dust.fadeIn = 1f;
+				dust.noGravity = true;
+			}
+
+			return true;
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f, Pitch = 0.15f, Volume = 0.5f}, Projectile.Center);
+			for (int i = 0; i < 5; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2.5f, 2.5f), 0, default, 1.5f).noGravity = true;
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GraveBlood>(), Main.rand.NextVector2Circular(3f, 3f));
 			}
 		}
 
@@ -184,15 +232,24 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 		public void DrawPrimitives()
 		{
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["pixelationFull"].GetShader().Shader;
+			Effect effect = Terraria.Graphics.Effects.Filters.Scene["pixelTrail"].GetShader().Shader;
 
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
-			effect.Parameters["pixelation"].SetValue(0.1f);
+			effect.Parameters["pixelation"].SetValue(0.05f);
 			effect.Parameters["resolution"].SetValue(1f);
+			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);
+			effect.Parameters["repeats"].SetValue(1);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value);
 
+			trail?.Render(effect);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/ShaderNoiseLooping").Value);
+			effect.Parameters["time"].SetValue(Projectile.timeLeft * 0.005f);
+			effect.Parameters["pixelation"].SetValue(0.35f);
 			trail?.Render(effect);
 		}
 	}
