@@ -164,6 +164,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.Hitbox.Intersects(Owner.Hitbox))
 			{
 				Owner.Heal(Main.rand.Next(3, 9));
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f, Pitch = 0.15f, Volume = 0.5f }, Projectile.Center);
 				Projectile.Kill();
 			}
 		}
@@ -185,7 +186,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Kill(int timeLeft)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f, Pitch = 0.15f, Volume = 0.5f}, Projectile.Center);
 			for (int i = 0; i < 5; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2.5f, 2.5f), 0, default, 1.5f).noGravity = true;
