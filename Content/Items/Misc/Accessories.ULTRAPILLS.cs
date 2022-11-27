@@ -36,14 +36,21 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			if (Main.rand.NextBool(4))
-				player.Heal(1);
+			{
+				float healAmount = damage * 0.1f;
+				player.Heal(Utils.Clamp((int)healAmount, 1, 3));
+			}
 
 			if (target.life <= 0)
 			{
 				for (int i = 0; i < Main.rand.Next(7, 14); i++)
 				{
-					Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
+					Projectile projectile = Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
+					(projectile.ModProjectile as UltrapillBlood).EnemySourceWhoAmI = target.whoAmI;
+
+					player.GetModPlayer<UltrapillPlayer>().HealingAmount[target.whoAmI] = 10;
 				}
+
 
 				for (int i = 0; i < 30; i++)
 				{
@@ -64,13 +71,20 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			if (Main.rand.NextBool(4))
-				player.Heal(1);
+			{
+				float healAmount = damage * 0.1f;
+				player.Heal(Utils.Clamp((int)healAmount, 1, 3));
+			}
+				
 
 			if (target.lifeMax <= 0)
 			{
 				for (int i = 0; i < Main.rand.Next(7, 14); i++)
 				{
-					Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
+					Projectile proj = Projectile.NewProjectileDirect(player.GetSource_OnHit(target), target.Center, Vector2.UnitY.RotatedByRandom(0.5f) * -Main.rand.NextFloat(5f, 10f), ModContent.ProjectileType<UltrapillBlood>(), 0, 0f, player.whoAmI);
+					(proj.ModProjectile as UltrapillBlood).EnemySourceWhoAmI = target.whoAmI;
+
+					player.GetModPlayer<UltrapillPlayer>().HealingAmount[target.whoAmI] = 10;
 				}
 
 				for (int i = 0; i < 20; i++)
@@ -127,10 +141,17 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	class UltrapillPlayer : ModPlayer
+	{
+		public int[] HealingAmount = new int[Main.maxNPCs];
+	}
+
 	class UltrapillBlood : ModProjectile, IDrawPrimitive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
+
+		public int EnemySourceWhoAmI;
 		public Player Owner => Main.player[Projectile.owner];
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -163,7 +184,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Projectile.Hitbox.Intersects(Owner.Hitbox))
 			{
-				Owner.Heal(Main.rand.Next(3, 9));
+				UltrapillPlayer mp = Owner.GetModPlayer<UltrapillPlayer>();
+				int healAmount = mp.HealingAmount[EnemySourceWhoAmI];
+				if (Projectile.timeLeft > 230)
+					healAmount = (int)(healAmount * 0.5f);
+
+				if (healAmount < 1)
+					healAmount = 1;
+
+				Owner.Heal(healAmount);
+				mp.HealingAmount[EnemySourceWhoAmI] = (int)(mp.HealingAmount[EnemySourceWhoAmI] * 0.75f);
+
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f, Pitch = 0.15f, Volume = 0.5f }, Projectile.Center);
 				Projectile.Kill();
 			}
