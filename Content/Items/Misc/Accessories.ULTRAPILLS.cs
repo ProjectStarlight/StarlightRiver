@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("ULTRAPILLS");
-			Tooltip.SetDefault("Cursed: You cannot regenerate health by normal means\nStriking enemies occasionally leeches life\nKilling enemies causes them to explode into blood which heals and provides a substantial boost to movement speed\n'Don't do drugs kids'");
+			Tooltip.SetDefault("Cursed: You cannot regenerate health by normal means\nStriking enemies occasionally leeches life\nKilling enemies causes them to explode into healing blood");
 		}
 	}
 
