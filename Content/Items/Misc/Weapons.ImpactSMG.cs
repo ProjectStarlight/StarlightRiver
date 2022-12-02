@@ -21,6 +21,9 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class ImpactSMG : ModItem
 	{
+		public int reloadDelay;
+		public int maxReloadDelay;
+		public int flashTimer;
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
@@ -45,11 +48,53 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shoot = ModContent.ProjectileType<ImpactSMGHoldout>();
 			Item.shootSpeed = 1f;
 			Item.noUseGraphic = true;
+			Item.useAmmo = AmmoID.Bullet;
 		}
 
-        public override bool CanUseItem(Player Player)
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			return Player.ownedProjectileCounts[ModContent.ProjectileType<ImpactSMGHoldout>()] <= 0;
+			Projectile.NewProjectile(source, position, velocity, Item.shoot, damage, knockback, player.whoAmI);
+			return false;
+		}
+
+		public override bool CanUseItem(Player Player)
+		{
+			return Player.ownedProjectileCounts[ModContent.ProjectileType<ImpactSMGHoldout>()] <= 0 && reloadDelay <= 0;
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			if (reloadDelay > 0)
+			{
+				reloadDelay--;
+				if (reloadDelay == 0)
+				{
+					Helper.PlayPitched("Guns/PlinkLever", 1f, 0.15f, player.Center);
+					flashTimer = 25;
+				}				
+			}
+
+			if (flashTimer > 0)
+				flashTimer--;
+		}
+
+		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			if (reloadDelay > 0)
+			{
+				spriteBatch.Draw(tex, position, null, drawColor * MathHelper.Lerp(1f, 0.5f, reloadDelay / (float)maxReloadDelay), 0f, origin, scale, 0f, 0f);
+				return false;
+			}
+
+			return true;	
+		}
+
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			if (flashTimer > 0)
+				spriteBatch.Draw(tex, position, null, new Color(255, 255, 255, 0) * MathHelper.Lerp(1f, 0f, 1f - flashTimer / 25f), 0f, origin, scale, 0f, 0f);
 		}
 
 		public override void AddRecipes()
@@ -71,6 +116,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public int flashTimer;
 
+		public int throwTimer;
+
+		public bool thrown;
+
 		public bool flashed;
 
 		public bool updateVelo = true;
@@ -79,15 +128,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 
+		public Vector2 mousePos;
+
 		public ref float ShootDelay => ref Projectile.ai[0];
 
 		public ref float MaxShootDelay => ref Projectile.ai[1];
 
 		private Player Owner => Main.player[Projectile.owner];
 
+		public ImpactSMG Holdout => Owner.HeldItem.ModItem as ImpactSMG;
+
 		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
 
-		public override bool? CanDamage() => false;
+		public override bool? CanDamage()
+		{
+			return thrown;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -103,6 +159,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.friendly = true;
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
+
+			Projectile.penetrate = -1;
 		}
 
 		public override void AI()
@@ -113,60 +171,91 @@ namespace StarlightRiver.Content.Items.Misc
 			if (MaxShootDelay == 0f)
 				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 
-			shootDelay++;
-
-			if (shootDelay > 2)
-				draw = true;
-
 			if (flashTimer > 0)
 				flashTimer--;
 
-			if (shootDelay % (int)MaxShootDelay == 0)
-				ShootBullet(armPos);
-
 			if (shots >= 30)
 			{
-				Projectile.Kill();
-				Owner.reuseDelay = 15;
+				if (hitShots >= 20)
+					BoomerangAI();
+				else
+					ExplodingAI();
 			}
-
-			Owner.ChangeDir(Projectile.direction);
-
-			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemTime = 2;
-			Owner.itemAnimation = 2;
-
-			Projectile.timeLeft = 2;
-			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
-			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
-
-			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-
-			Projectile.position = armPos - Projectile.Size * 0.5f;
-
-			Projectile.spriteDirection = Projectile.direction;
-
-			if (Main.myPlayer == Projectile.owner && updateVelo)
+			else
 			{
-				updateVelo = false;
-				float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
+				shootDelay++;
 
-				Vector2 oldVelocity = Projectile.velocity;
+				if (shootDelay > 2)
+					draw = true;
 
-				Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4).RotatedByRandom(0.1f);
-				if (Projectile.velocity != oldVelocity)
+				if (shootDelay % (int)MaxShootDelay == 0)
+					ShootBullet(armPos);
+
+
+				Owner.ChangeDir(Projectile.direction);
+
+				Owner.heldProj = Projectile.whoAmI;
+				Owner.itemTime = 2;
+				Owner.itemAnimation = 2;
+
+				Projectile.timeLeft = 2;
+				Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+				Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+
+				Projectile.position = armPos - Projectile.Size * 0.5f;
+
+				Projectile.spriteDirection = Projectile.direction;
+
+				if (Main.myPlayer == Projectile.owner && updateVelo)
 				{
-					Projectile.netSpam = 0;
-					Projectile.netUpdate = true;
+					updateVelo = false;
+					float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
+
+					Vector2 oldVelocity = Projectile.velocity;
+
+					Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4).RotatedByRandom(0.1f);
+					if (Projectile.velocity != oldVelocity)
+					{
+						Projectile.netSpam = 0;
+						Projectile.netUpdate = true;
+					}
+				}
+
+				if (hitShots >= 20 && !flashed)
+				{
+					SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+					flashTimer = 20;
+					flashed = true;
 				}
 			}
+		}
 
-			if (hitShots >= 20 && !flashed)
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (!draw)
+				return false;
+
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			if (hitShots > 0)
 			{
-				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
-				flashTimer = 20;
-				flashed = true;
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 			}
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+
+			if (flashed)
+			{
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
+			}
+
+			return false;
 		}
 
 		private void ShootBullet(Vector2 armPos)
@@ -187,30 +276,184 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		private void BoomerangAI()
 		{
-			if (!draw)
-				return false;
+			if (Main.myPlayer == Projectile.owner && mousePos == Vector2.Zero)
+				mousePos = Owner.DirectionTo(Main.MouseWorld);
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
+			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
 
-			if (hitShots > 0)
+			if (!thrown)
 			{
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
-			}		
+				throwTimer++;
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+				if (Main.myPlayer == Owner.whoAmI)
+					Owner.ChangeDir(Main.MouseWorld.X < Owner.Center.X ? -1 : 1);
 
-			if (flashed)
+				Owner.heldProj = Projectile.whoAmI;
+				Owner.itemTime = 2;
+				Owner.itemAnimation = 2;
+
+				Projectile.timeLeft = 2;
+				Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+				Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+
+				Projectile.position = armPos - Projectile.Size * 0.5f;
+
+				Projectile.spriteDirection = Owner.direction;
+			}
+
+			if (throwTimer < 20)
 			{
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
-			}		
+				float progress = EaseBuilder.EaseCircularInOut.Ease(throwTimer / 20f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
+			}
+			else if (throwTimer < 30)
+			{
+				float progress = EaseBuilder.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
+			}
+			else
+			{
+				if (!thrown && Main.myPlayer == Owner.whoAmI)
+				{
+					Projectile.friendly = true;
+					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
+					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * 20f;
+					Projectile.timeLeft = 2400;
+					Projectile.ignoreWater = false;
+					Projectile.width = Projectile.height = 32;
+					ShootDelay = 0;
+					thrown = true;
+				}
 
-			return false;
+				if (++ShootDelay >= 25)
+				{
+					Vector2 playerCenter = Owner.Center;
+					Vector2 pos = Projectile.Center;
+
+					float betweenX = Owner.Center.X - pos.X;
+					float betweenY = Owner.Center.Y - pos.Y;
+
+					float distance = (float)Math.Sqrt(betweenX * betweenX + betweenY * betweenY);
+					float speed = 15f;
+					float adjust = 0.95f;
+
+					if (distance > 3000f)
+					{
+						Projectile.Kill();
+					}
+
+					distance = speed / distance;
+					betweenX *= distance;
+					betweenY *= distance;
+
+					if (Projectile.velocity.X < betweenX)
+					{
+						Projectile.velocity.X += adjust;
+						if (Projectile.velocity.X < 0f && betweenX > 0f)
+							Projectile.velocity.X += adjust;
+					}
+					else if (Projectile.velocity.X > betweenX)
+					{
+						Projectile.velocity.X -= adjust;
+						if (Projectile.velocity.X > 0f && betweenX < 0f)
+							Projectile.velocity.X -= adjust;
+					}
+					if (Projectile.velocity.Y < betweenY)
+					{
+						Projectile.velocity.Y += adjust;
+						if (Projectile.velocity.Y < 0f && betweenY > 0f)
+							Projectile.velocity.Y += adjust;
+					}
+					else if (Projectile.velocity.Y > betweenY)
+					{
+						Projectile.velocity.Y -= adjust;
+						if (Projectile.velocity.Y > 0f && betweenY < 0f)
+							Projectile.velocity.Y -= adjust;
+					}
+
+					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
+					{
+						Projectile.Kill();
+					}
+				}
+
+				Projectile.rotation += 0.3f * (Projectile.velocity.Length() * 0.07f) * Projectile.direction;
+			}
+		}
+
+		private void ExplodingAI()
+		{
+			if (Main.myPlayer == Projectile.owner && mousePos == Vector2.Zero)
+				mousePos = Owner.DirectionTo(Main.MouseWorld);
+
+			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
+			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
+
+			if (!thrown)
+			{
+				throwTimer++;
+
+				if (Main.myPlayer == Owner.whoAmI)
+					Owner.ChangeDir(Main.MouseWorld.X < Owner.Center.X ? -1 : 1);
+
+				Owner.heldProj = Projectile.whoAmI;
+				Owner.itemTime = 2;
+				Owner.itemAnimation = 2;
+
+				Projectile.timeLeft = 2;
+				Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+				Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+
+				Projectile.position = armPos - Projectile.Size * 0.5f;
+
+				Projectile.spriteDirection = Owner.direction;
+			}
+
+			if (throwTimer < 20)
+			{
+				float progress = EaseBuilder.EaseCircularInOut.Ease(throwTimer / 20f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
+			}
+			else if (throwTimer < 30)
+			{
+				float progress = EaseBuilder.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
+			}
+			else
+			{
+				if (!thrown && Main.myPlayer == Owner.whoAmI)
+				{
+					Projectile.friendly = true;
+					SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
+					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * 19f;
+					Projectile.timeLeft = 240;
+					Projectile.penetrate = 1;
+					Projectile.tileCollide = true;
+					Projectile.ignoreWater = false;
+					Projectile.width = Projectile.height = 32;
+					thrown = true;
+				}
+
+				Projectile.rotation += 0.25f * (Projectile.velocity.X * 0.05f) * Projectile.direction;
+				Projectile.velocity.Y += 0.35f;
+				if (Projectile.velocity.Y > 0)
+				{
+					if (Projectile.velocity.Y < 13f)
+						Projectile.velocity.Y *= 1.075f;
+					else
+						Projectile.velocity.Y *= 1.045f;
+				}
+
+				if (Projectile.velocity.Y > 20f)
+					Projectile.velocity.Y = 20f;
+			}		
 		}
 	}
 
@@ -224,8 +467,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 12;
-			Projectile.height = 12;
+			Projectile.width = 4;
+			Projectile.height = 4;
 			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.friendly = true;
 
@@ -275,6 +518,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
+			Projectile.friendly = false;
+
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(), 0, new Color(190, 40, 40), 0.25f);
@@ -282,7 +527,9 @@ namespace StarlightRiver.Content.Items.Misc
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.35f) * Main.rand.NextFloat(), 0, new Color(255, 40, 40), 0.3f);
 			}
 
-			return base.OnTileCollide(oldVelocity);
+			Projectile.velocity *= 0f;
+
+			return false;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
