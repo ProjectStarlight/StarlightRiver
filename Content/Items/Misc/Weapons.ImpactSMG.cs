@@ -15,6 +15,7 @@ using Terraria.Graphics.Effects;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.UI.Chat;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -22,25 +23,11 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public int ammo = 10;
-
-		public float damageBoost = 1;
-
-		private int reloadTimer = 0;
-
-		public override void Load()
-		{
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore1");
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore2");
-			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "ImpactSMG_Gore3");
-			StarlightPlayer.PostDrawEvent += PostDrawIcon;
-		}
-
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Impact SMG");
-			Tooltip.SetDefault("Throw the gun when out of ammo \nHitting an enemy with the gun instantly reloads it");
 
+			Tooltip.SetDefault("Fires a burst of high impact bullets\nHitting more than 20 bullets in one burst causes the SMG to inherit boomerang properties, granting a buff to the next burst\nOtherwise, it explodes");
 		}
 
 		public override void SetDefaults()
@@ -49,119 +36,21 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
-			Item.useTime = 4;
-			Item.useAnimation = 4;
+			Item.useTime = 5;
+			Item.useAnimation = 5;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
-			Item.knockBack = 0;
+			Item.knockBack = 2f;
 			Item.rare = ItemRarityID.Blue;
-			Item.shoot = ModContent.ProjectileType<ImpactSMGProj>();
-			Item.shootSpeed = 12f;
-			Item.useAmmo = AmmoID.Bullet;
-			Item.autoReuse = true;
+			Item.shoot = ModContent.ProjectileType<ImpactSMGHoldout>();
+			Item.shootSpeed = 1f;
+			Item.noUseGraphic = true;
 		}
-
-		private void PostDrawIcon(Player Player, SpriteBatch spriteBatch)
-		{
-			if (Player.HeldItem.type == ModContent.ItemType<ImpactSMG>())
-			{
-				var item = Player.HeldItem.ModItem as ImpactSMG;
-
-				Vector2 origin = new Vector2(6, 13);
-
-				int num = (int)((item.damageBoost - 1) / 0.05f);
-				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value,  "x" + num.ToString(), (Player.Center - new Vector2(0,40)) - Main.screenPosition, Color.White, 0f, origin, Vector2.One); 
-			}
-		}
-
-
-		public override void HoldItem(Player player)
-        {
-			if (ammo == -1)
-				reloadTimer++;
-			else
-				reloadTimer = 0;
-
-			if (reloadTimer > 120)
-            {
-				ammo = 15;
-				damageBoost = 1f;
-				reloadTimer = 0;
-            }
-        }
 
         public override bool CanUseItem(Player Player)
 		{
-			if (ammo == -1)
-				return false;
-			if (ammo <= 1)
-			{
-				Item.useTime = 30;
-				Item.useAnimation = 30;
-				if (ammo <= 0)
-				{
-					Item.noUseGraphic = true;
-					Item.useStyle = ItemUseStyleID.Swing;
-				}
-			}
-			else
-			{
-				Item.noUseGraphic = false;
-				Item.useStyle = ItemUseStyleID.Shoot;
-				Item.useTime = 4;
-				Item.useAnimation = 4;
-			}
-			return base.CanUseItem(Player);
+			return Player.ownedProjectileCounts[ModContent.ProjectileType<ImpactSMGHoldout>()] <= 0;
 		}
-
-		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
-		{
-			if (ammo > 0)
-				velocity = velocity.RotatedByRandom(0.3f);
-		}
-		public override Vector2? HoldoutOffset()
-		{
-			return new Vector2(0, 0);
-		}
-
-		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
-		{
-			if (ammo <= 0)
-			{
-				if (ammo == 0)
-				{
-					Projectile.NewProjectile(source, position, velocity * 1.1f, Item.shoot, (int)(damage * damageBoost) * 2, knockback, player.whoAmI);
-					ammo--;
-				}
-				return false;
-			}
-			ammo--;
-			float rot = velocity.ToRotation();
-			float spread = 0.4f;
-
-			Vector2 offset = new Vector2(1, -0.15f * player.direction).RotatedBy(rot);
-
-			for (int k = 0; k < 5; k++)
-			{
-				var direction = offset.RotatedByRandom(spread);
-
-				Dust.NewDustPerfect(position + (offset * 40), ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
-			}
-
-			Helper.PlayPitched("Guns/RifleLight", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), position);
-
-			Projectile proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), position, velocity.RotatedByRandom(spread) * 2, type, (int)(damage * damageBoost), knockback, player.whoAmI);
-			proj.GetGlobalProjectile<CoachGunGlobalProj>().shotFromGun = true;
-
-			Projectile flash = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), position + (offset * 39), Vector2.Zero, ModContent.ProjectileType<CoachGunMuzzleFlash>(), 0, 0, player.whoAmI, rot);
-
-			flash.scale = 0.6f;
-
-			Gore.NewGore(source, player.Center + (offset * 10), new Vector2(player.direction * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
-
-			return false;
-		}
-
 
 		public override void AddRecipes()
 		{
@@ -172,14 +61,34 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 		}
 	}
-	public class ImpactSMGProj : ModProjectile
+	public class ImpactSMGHoldout : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem +"ImpactSMG";
+		public int shootDelay;
 
-		private List<Vector2> cache;
-		private Trail trail;
+		public int shots;
 
-		private Player owner => Main.player[Projectile.owner];
+		public int hitShots;
+
+		public int flashTimer;
+
+		public bool flashed;
+
+		public bool updateVelo = true;
+
+		public bool draw; //only draw two ticks after spawning
+
+		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
+
+		public ref float ShootDelay => ref Projectile.ai[0];
+
+		public ref float MaxShootDelay => ref Projectile.ai[1];
+
+		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
+
+		public override bool? CanDamage() => false;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Impact SMG");
@@ -187,65 +96,198 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
-
-			Projectile.aiStyle = 2;
-
-			Projectile.friendly = true;
-			Projectile.hostile = false;
 			Projectile.DamageType = DamageClass.Ranged;
+
+			Projectile.width = 52;
+			Projectile.height = 34;
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
 		}
 
-        public override bool OnTileCollide(Vector2 oldVelocity)
-        {
-			for (int i = 1; i < 4; i++)
-				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(5,5), Mod.Find<ModGore>("ImpactSMG_Gore" + i.ToString()).Type, 1f);
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), 0, 0, owner.whoAmI);
-			proj.rotation = oldVelocity.ToRotation() - 1.57f;
-			return true;
-        }
-
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-        {
-			if (Collision.CheckAABBvAABBCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projHitbox.TopLeft() - new Vector2(8, 8), projHitbox.Size() + new Vector2(16, 16)))
-				return true;
-			return false;
-        }
-
-        public override void AI()
+		public override void AI()
 		{
-			ManageCaches();
-			ManageTrail();
+			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
+			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
+
+			if (MaxShootDelay == 0f)
+				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
+
+			shootDelay++;
+
+			if (shootDelay > 2)
+				draw = true;
+
+			if (flashTimer > 0)
+				flashTimer--;
+
+			if (shootDelay % (int)MaxShootDelay == 0)
+				ShootBullet(armPos);
+
+			if (shots >= 30)
+			{
+				Projectile.Kill();
+				Owner.reuseDelay = 15;
+			}
+
+			Owner.ChangeDir(Projectile.direction);
+
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+
+			Projectile.timeLeft = 2;
+			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+
+			Projectile.position = armPos - Projectile.Size * 0.5f;
+
+			Projectile.spriteDirection = Projectile.direction;
+
+			if (Main.myPlayer == Projectile.owner && updateVelo)
+			{
+				updateVelo = false;
+				float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
+
+				Vector2 oldVelocity = Projectile.velocity;
+
+				Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4).RotatedByRandom(0.1f);
+				if (Projectile.velocity != oldVelocity)
+				{
+					Projectile.netSpam = 0;
+					Projectile.netUpdate = true;
+				}
+			}
+
+			if (hitShots >= 20 && !flashed)
+			{
+				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+				flashTimer = 20;
+				flashed = true;
+			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-        {
-			Core.Systems.CameraSystem.Shake += 3;
+		private void ShootBullet(Vector2 armPos)
+		{
+			shots++;
 
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
-			proj.extraUpdates = 0;
-			for (int i = 0; i < 7; i++)
+			Vector2 pos = armPos + Projectile.rotation.ToRotationVector2() * 20f + Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
+			Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * 20f, ModContent.ProjectileType<ImpactSMGShot>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+			updateVelo = true;
+
+			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+
+			for (int i = 0; i < 3; i++)
 			{
-				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
-			}
+				Dust.NewDustPerfect(pos, ModContent.DustType<GlowFastDecelerate>(), Projectile.rotation.ToRotationVector2().RotatedByRandom(0.25f) * 5f, 0, new Color(190, 40, 40), 0.25f);
 
-			if (owner.HeldItem.type == ModContent.ItemType<ImpactSMG>())
-            {
-				owner.itemTime = owner.itemAnimation = 0;
-				var mp = owner.HeldItem.ModItem as ImpactSMG;
-				mp.ammo = 15;
-				if (mp.damageBoost < 1.25f)
-					mp.damageBoost += 0.05f;
+				Dust.NewDustPerfect(pos, ModContent.DustType<GlowFastDecelerate>(), Projectile.rotation.ToRotationVector2().RotatedByRandom(0.35f) * 7f, 0, new Color(255, 40, 40), 0.3f);
 			}
-        }
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			DrawTrail(Main.spriteBatch);
+			if (!draw)
+				return false;
 
-			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
-			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			if (hitShots > 0)
+			{
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			}		
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+
+			if (flashed)
+			{
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
+			}		
+
+			return false;
+		}
+	}
+
+	public class ImpactSMGShot : ModProjectile
+	{
+		private List<Vector2> cache;
+		private Trail trail;
+		private Trail trail2;
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 12;
+			Projectile.height = 12;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.friendly = true;
+
+			Projectile.timeLeft = 240;
+			Projectile.extraUpdates = 4;
+
+			Projectile.penetrate = 2;
+
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 10;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Impact SMG Shot");
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity *= 0.96f;
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			Projectile.friendly = false;
+
+			Player player = Main.player[Projectile.owner];
+
+			if (player.heldProj != -1 && Main.projectile[player.heldProj].ModProjectile is ImpactSMGHoldout smg)
+				smg.hitShots++;
+
+			for (int i = 0; i < 2; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(), 0, new Color(190, 40, 40), 0.25f);
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.35f) * Main.rand.NextFloat(), 0, new Color(255, 40, 40), 0.3f);
+			}
+
+			Projectile.velocity *= 0f;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(), 0, new Color(190, 40, 40), 0.25f);
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.35f) * Main.rand.NextFloat(), 0, new Color(255, 40, 40), 0.3f);
+			}
+
+			return base.OnTileCollide(oldVelocity);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			DrawPrimitives();
 			return false;
 		}
 
@@ -266,75 +308,42 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				cache.RemoveAt(0);
 			}
-
 		}
 
 		private void ManageTrail()
 		{
-
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 10, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 3.5f, factor =>
 			{
-				return Color.Lerp(Color.DarkGray, Color.White, 1 - factor.X).MultiplyRGB(Lighting.GetColor((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)) * 0.5f * factor.X;
+				return new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 180f);
 			});
 
 			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + Projectile.velocity;
+			trail.NextPosition = Projectile.Center;
+
+			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 6f, factor =>
+			{
+				return new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 180f);
+			});
+
+			trail2.Positions = cache.ToArray();
+			trail2.NextPosition = Projectile.Center;
 		}
 
-		private void DrawTrail(SpriteBatch spriteBatch)
+		public void DrawPrimitives()
 		{
-			spriteBatch.End();
-			Effect effect = Filters.Scene["CoachBombTrail"].GetShader().Shader;
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
 			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
+			effect.Parameters["repeats"].SetValue(1f);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 
+			trail2?.Render(effect);
 			trail?.Render(effect);
-
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
-
-	internal class ImpactSMGExplosion : ModProjectile
-	{
-
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Impact SMG");
-			Main.projFrames[Projectile.type] = 10;
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile.friendly = false;
-			Projectile.tileCollide = false;
-			Projectile.Size = new Vector2(32, 32);
-			Projectile.penetrate = -1;
-		}
-		public override void AI()
-		{
-			Projectile.frameCounter++;
-			if (Projectile.frameCounter % 3 == 0)
-				Projectile.frame++;
-			if (Projectile.frame >= Main.projFrames[Projectile.type])
-				Projectile.active = false;
-		}
-
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
-			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(tex.Width * 0.5f, frameHeight * 0.75f), Projectile.scale, SpriteEffects.None, 0f);
-			return false;
-		}
-	}
-
 }
