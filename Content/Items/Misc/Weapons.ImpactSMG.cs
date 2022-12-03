@@ -49,6 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shoot = ModContent.ProjectileType<ImpactSMGHoldout>();
 			Item.shootSpeed = 1f;
 			Item.noUseGraphic = true;
+			Item.channel = true;
 			Item.useAmmo = AmmoID.Bullet;
 		}
 
@@ -113,13 +114,19 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public int shots;
 
-		public int hitShots;
+		public int heat;
 
 		public int flashTimer;
 
 		public int throwTimer;
 
+		public int throwDirection;
+
+		public bool reloading;
+
 		public bool thrown;
+
+		public bool throwing;
 
 		public bool flashed;
 
@@ -127,13 +134,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool draw; //only draw two ticks after spawning
 
+		public bool drawMag = true;
+
 		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 
-		public bool empowered => hitShots >= 20;
+		public bool overheated => shots >= 30;
 
-		public bool exploding => hitShots <= 20 && Projectile.timeLeft <= 45 && thrown;
+		public bool exploding => shots >= 30 && Projectile.timeLeft <= 45 && thrown;
 
 		public Vector2 mousePos;
+
+		public Vector2 mouseWorld;
 
 		public ref float ShootDelay => ref Projectile.ai[0];
 
@@ -143,11 +154,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public ImpactSMG Holdout => Owner.HeldItem.ModItem as ImpactSMG;
 
-		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public override bool? CanDamage()
+		public override bool? CanDamage() => thrown;
+
+		public override void Load()
 		{
-			return thrown;
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Shell");
+
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Magazine");
 		}
 
 		public override void SetStaticDefaults()
@@ -179,14 +194,16 @@ namespace StarlightRiver.Content.Items.Misc
 			if (flashTimer > 0)
 				flashTimer--;
 
-			if (shots >= 30)
+			if (!CanHold && shots > 10)
 			{
-				if (empowered)
-					BoomerangAI();
-				else
+				if (overheated)
 					ExplodingAI();
+				else
+					BoomerangAI();
+
+				throwing = true;
 			}
-			else
+			else if (!throwing)
 			{
 				shootDelay++;
 
@@ -228,7 +245,7 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 				}
 
-				if (empowered && !flashed)
+				if (overheated && !flashed)
 				{
 					SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 					flashTimer = 20;
@@ -239,7 +256,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
-			if (!empowered && !exploding)
+			if (overheated && !exploding)
 			{
 				Helper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				Projectile.timeLeft = 45;
@@ -268,7 +285,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (empowered)
+			if (!overheated)
 			{
 
 			}
@@ -284,7 +301,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Kill(int timeLeft)
 		{
-			if (empowered)
+			if (!overheated)
 			{
 
 			}
@@ -325,23 +342,60 @@ namespace StarlightRiver.Content.Items.Misc
 				return false;
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Texture2D whiteTex = ModContent.Request<Texture2D>(Texture + "_White").Value;
-			Texture2D flareTex = ModContent.Request<Texture2D>(Texture + "Flare").Value;
+			Texture2D magTex = ModContent.Request<Texture2D>(Texture + "_Magazine").Value;
+			Texture2D magGlowTex = ModContent.Request<Texture2D>(Texture + "_Magazine_Glow").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "ImpactSMG_Glow").Value;
+			Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "ImpactSMG_White").Value;
+			Texture2D flareTex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "ImpactSMGFlare").Value;
 			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+			Texture2D glowMap = ModContent.Request<Texture2D>(Texture + "_GlowMap").Value;
+			Texture2D bloomMap = ModContent.Request<Texture2D>(Texture + "_BloomMap").Value;
 
-			if (hitShots > 0)
+			Vector2 magPos = Projectile.Center + new Vector2(8, 8 * Projectile.direction).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			if (throwing)
+				magPos = Projectile.Center + new Vector2(8, 8 * (Main.MouseWorld.X < Owner.Center.X ? -1 : 1)).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			if (thrown)
+				magPos = Projectile.Center + new Vector2(8, 8 * throwDirection).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			if (reloading)
+				magPos = Projectile.Center + new Vector2(8, 8 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			if (reloading && shootDelay > 55 && shootDelay < 70)
+				magPos = Projectile.Center + Vector2.Lerp(new Vector2(18, 18 * Projectile.direction), new Vector2(8, 8 * Projectile.direction), EaseBuilder.EaseCircularInOut.Ease((shootDelay - 55) / 15f)).RotatedBy(Projectile.rotation) - Main.screenPosition;
+
+			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f;
+
+			if (shots > 0)
 			{
-				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), hitShots / 30f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), shots / 30f), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), shots / 30f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
+				if (drawMag)
+					Main.spriteBatch.Draw(magGlowTex, magPos, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), shots / 30f), Projectile.rotation, magGlowTex.Size() / 2f, Projectile.scale, flip, 0f);
 			}
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, flip, 0f);
+			if (drawMag)
+				Main.spriteBatch.Draw(magTex, magPos, null, lightColor, Projectile.rotation, magTex.Size() / 2f, Projectile.scale, flip, 0f);
 
-			if (flashed)
+			if (shots > 0)
 			{
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+				Main.spriteBatch.Draw(glowMap, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(255, 0, 0, 0), shots / 30f) * 0.5f, Projectile.rotation, glowMap.Size() / 2f, Projectile.scale, flip, 0f);
+				Main.spriteBatch.Draw(glowMap, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(185, 50, 50, 0), shots / 30f) * 0.5f, Projectile.rotation, glowMap.Size() / 2f, Projectile.scale, flip, 0f);
+
+				Main.spriteBatch.Draw(bloomMap, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(255, 0, 0, 0), shots / 30f) * 0.5f, Projectile.rotation, bloomMap.Size() / 2f, Projectile.scale, flip, 0f);
+				Main.spriteBatch.Draw(bloomMap, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(185, 50, 50, 0), shots / 30f) * 0.5f, Projectile.rotation, bloomMap.Size() / 2f, Projectile.scale, flip, 0f);
+				//Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(255, 100, 50, 0), shots / 30f) * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, 0.35f, 0f, 0f);
+				//Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), shots / 30f) * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, 0.35f, 0f, 0f);
+			}
+
+			if (flashed)	
+			{
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
+				if (drawMag)
+					Main.spriteBatch.Draw(magGlowTex, magPos, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, magGlowTex.Size() / 2f, Projectile.scale, flip, 0f);
 			}
 
 			if (exploding)
@@ -359,7 +413,7 @@ namespace StarlightRiver.Content.Items.Misc
 				else
 					overlayColor = Color.Lerp(new Color(255, 50, 50, 0) * 0.5f, Color.White, (progress - 0.5f) * 2);
 
-				Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, null, overlayColor, Projectile.rotation, whiteTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0);
+				Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, null, overlayColor, Projectile.rotation, whiteTex.Size() / 2f, Projectile.scale, flip, 0);
 
 				progress *= progress;
 				Color glowColor;
@@ -369,11 +423,12 @@ namespace StarlightRiver.Content.Items.Misc
 					glowColor = Color.Lerp(new Color(255, 50, 50, 0), new Color(180, 50, 50, 0), (progress - 0.5f) * 2);
 				glowColor.A = 0;
 
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.75f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Projectile.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f, 0);
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.75f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0);
+				if (drawMag)
+					Main.spriteBatch.Draw(magGlowTex, magPos, null, glowColor * 0.75f, Projectile.rotation, magGlowTex.Size() / 2f, Projectile.scale, flip, 0f);
 
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, glowColor, 0f, bloomTex.Size() / 2f, 0.55f, 0, 0);
-			}
-				
+			}			
 
 			return false;
 		}
@@ -384,9 +439,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Vector2 pos = armPos + Projectile.rotation.ToRotationVector2() * 20f + Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
 
+			Owner.PickAmmo(Owner.HeldItem, out int projID, out float shootSpeed, out int damage, out float knockBack, out int ammoID);
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 30f), ModContent.ProjectileType<ImpactSMGShot>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
-			
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
+			Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), -Projectile.rotation.ToRotationVector2() * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMGHoldout_Shell").Type).timeLeft = 1;
+
 			updateVelo = true;
 
 			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
@@ -439,7 +497,7 @@ namespace StarlightRiver.Content.Items.Misc
 				float progress = EaseBuilder.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
-			else
+			else if (!reloading)
 			{
 				if (!thrown && Main.myPlayer == Owner.whoAmI)
 				{
@@ -449,12 +507,15 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.timeLeft = 2400;
 					Projectile.ignoreWater = false;
 					Projectile.width = Projectile.height = 32;
+					throwDirection = Projectile.direction;
 					ShootDelay = 0;
 					thrown = true;
 				}
 
 				if (++ShootDelay >= 25)
 				{
+					Owner.heldProj = Projectile.whoAmI;
+
 					Vector2 playerCenter = Owner.Center;
 					Vector2 pos = Projectile.Center;
 
@@ -501,12 +562,78 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
 					{
-						Projectile.Kill();
+						draw = false;
+						reloading = true;
+						shootDelay = 0;
 					}
 				}
 
 				Projectile.rotation += 0.3f * (Projectile.velocity.Length() * 0.07f) * Projectile.direction;
 			}
+			else
+				DoReload();
+		}
+
+		private void DoReload()
+		{
+			if (Main.myPlayer == Projectile.owner && mouseWorld == Vector2.Zero)
+			{
+				mouseWorld = Main.MouseWorld;
+				mousePos = Owner.DirectionTo(Main.MouseWorld);
+			}
+
+			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
+			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
+
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
+
+			Projectile.timeLeft = 2;
+			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
+			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+
+			if (shootDelay > 2)
+			{
+				draw = true;
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
+			}
+
+			Projectile.position = armPos - Projectile.Size * 0.5f;
+
+			Projectile.spriteDirection = mouseWorld.X < Owner.Center.X ? -1 : 1;
+				
+			shootDelay++;
+
+			if (shootDelay < 30)
+			{
+				float progress = EaseBuilder.EaseCircularOut.Ease(shootDelay / 30f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, 3f, progress) * Owner.direction - MathHelper.PiOver4);
+			}
+			else if (shootDelay < 45)
+			{
+				float progress = EaseBuilder.EaseCircularInOut.Ease((shootDelay - 30) / 15f);
+				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(3f, -0.25f, progress) * Owner.direction - MathHelper.PiOver4);
+
+				if (shootDelay == 40)
+				{
+					drawMag = false;
+					Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(8, 8 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), Projectile.velocity * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMGHoldout_Magazine").Type);
+				}
+			}
+			else if (shootDelay < 70 && shootDelay > 55)
+				drawMag = true;
+			else if (shootDelay == 70)
+			{
+				for (int i = 0; i < 15; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(8, 8 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), ModContent.DustType<GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 2.5f), 0, new Color(255, 50, 50), 0.35f);
+				}
+
+				Helper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
+			}
+			else if (shootDelay >= 80)
+				Projectile.Kill();			
 		}
 
 		private void ExplodingAI()
@@ -561,6 +688,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.tileCollide = true;
 					Projectile.ignoreWater = false;
 					Projectile.width = Projectile.height = 32;
+					throwDirection = Projectile.direction;
 					thrown = true;
 				}
 
@@ -639,11 +767,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Projectile.friendly = false;
-
-			Player player = Main.player[Projectile.owner];
-
-			if (player.heldProj != -1 && Main.projectile[player.heldProj].ModProjectile is ImpactSMGHoldout smg)
-				smg.hitShots++;
 
 			for (int i = 0; i < 2; i++)
 			{
