@@ -22,16 +22,13 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class ImpactSMG : ModItem
 	{
-		public int reloadDelay;
-		public int maxReloadDelay;
-		public int flashTimer;
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Impact SMG");
 
-			Tooltip.SetDefault("Fires a burst of high impact bullets\nHitting more than 20 bullets in one burst causes the SMG to inherit boomerang properties, granting a buff to the next burst\nOtherwise, it explodes");
+			Tooltip.SetDefault("Hold <left> to rapidly fire high impact bullets, heating over time\nRelease to boomerang the gun\nHitting an enemy while its not overheated grants you a stacking buff to the Impact SMG's damage\nHitting an enemy while its overheated causes it to consume all stacks for a deadly explosion");
 		}
 
 		public override void SetDefaults()
@@ -61,42 +58,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool CanUseItem(Player Player)
 		{
-			return Player.ownedProjectileCounts[ModContent.ProjectileType<ImpactSMGHoldout>()] <= 0 && reloadDelay <= 0;
-		}
-
-		public override void UpdateInventory(Player player)
-		{
-			if (reloadDelay > 0)
-			{
-				reloadDelay--;
-				if (reloadDelay == 0)
-				{
-					Helper.PlayPitched("Guns/PlinkLever", 1f, 0.15f, player.Center);
-					flashTimer = 25;
-				}				
-			}
-
-			if (flashTimer > 0)
-				flashTimer--;
-		}
-
-		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			if (reloadDelay > 0)
-			{
-				spriteBatch.Draw(tex, position, null, drawColor * MathHelper.Lerp(1f, 0.5f, reloadDelay / (float)maxReloadDelay), 0f, origin, scale, 0f, 0f);
-				return false;
-			}
-
-			return true;	
-		}
-
-		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			if (flashTimer > 0)
-				spriteBatch.Draw(tex, position, null, new Color(255, 255, 255, 0) * MathHelper.Lerp(1f, 0f, 1f - flashTimer / 25f), 0f, origin, scale, 0f, 0f);
+			return Player.ownedProjectileCounts[ModContent.ProjectileType<ImpactSMGHoldout>()] <= 0;
 		}
 
 		public override void AddRecipes()
@@ -366,13 +328,20 @@ namespace StarlightRiver.Content.Items.Misc
 				Helper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ShootDelay = 0;
 				Projectile.friendly = false;
-				Projectile.velocity.Y -= 1.5f;
-				Projectile.velocity *= -0.45f;
+				Projectile.velocity *= -0.25f;
+				Projectile.velocity.Y -= 3.5f;
 				exploding = true;
 				Projectile.tileCollide = true;
 			}
 			else if (!overheated && thrown)
 			{
+				for (int i = 0; i < 10; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), Projectile.velocity.RotatedByRandom(0.45f) * Main.rand.NextFloat(0.5f), 0, new Color(190, 50, 50), 0.35f);
+
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), Projectile.velocity.RotatedByRandom(0.55f) * Main.rand.NextFloat(0.5f), 0, new Color(255, 40, 40), 0.4f);
+				}
+
 				if (ShootDelay < 25)
 				{
 					Projectile.velocity.Y -= 1.5f;
@@ -397,6 +366,11 @@ namespace StarlightRiver.Content.Items.Misc
 					if (!Owner.HasBuff<ImpactSMGBuff>())
 					Owner.AddBuff(ModContent.BuffType<ImpactSMGBuff>(), 120);
 					mp.flashTimer = 15;
+
+					for (int i = 0; i < 15; i++)
+					{
+						Dust.NewDustPerfect(Main.GetPlayerArmPosition(Projectile) + Main.rand.NextVector2Circular(10f, 10f), ModContent.DustType<GlowFastDecelerate>(), Vector2.Zero, 0, new Color(255, 50, 50), 0.4f);
+					}
 				}
 				else
 					Owner.GetModPlayer<ImpactSMGPlayer>().stacks = 0;
@@ -492,6 +466,13 @@ namespace StarlightRiver.Content.Items.Misc
 			updateVelo = true;
 
 			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+			if (shots >= 20)
+			{
+				Helper.PlayPitched("Guns/dry_fire", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+
+				if (Main.rand.NextBool(3))
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1f, 5), 0, new Color(100, 55, 50) * 0.5f, Main.rand.NextFloat(0.35f, 0.5f));
+			}
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -608,12 +589,18 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
-					{
 						Projectile.Kill();
-					}
 				}
 
+				Owner.ChangeDir(Projectile.Center.X < Owner.Center.X ? -1 : 1);
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Owner.Center.DirectionTo(Projectile.Center).ToRotation() - MathHelper.PiOver2);
 				Projectile.rotation += 0.3f * (Projectile.velocity.Length() * 0.07f);
+
+				if (Projectile.soundDelay == 0)
+				{
+					Projectile.soundDelay = 8;
+					SoundEngine.PlaySound(SoundID.Item7, Projectile.position);
+				}
 			}
 		}
 
@@ -738,7 +725,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (exploding && !exploded)
 				{
 					Projectile.velocity.Y += 0.1f;
-					Projectile.velocity *= 0.945f;
+					Projectile.velocity *= 0.915f;
 					Projectile.rotation += Projectile.velocity.Length() * 0.075f;
 
 					for (int i = 0; i < 2; i++)
@@ -750,21 +737,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (++explodingTimer >= 45)
 					{
+						ImpactSMGPlayer mp = Owner.GetModPlayer<ImpactSMGPlayer>();
 						Helper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-						CameraSystem.Shake += 10;
+						CameraSystem.Shake += 10 + mp.stacks;
 						//Holdout.reloadDelay = 240;
 						//Holdout.maxReloadDelay = 240;
 
-						for (int i = 0; i < 20; i++)
+						for (int i = 0; i < 20 + (mp.stacks * 3); i++)
 						{
 							Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDustTwo>());
-							dust.velocity = Main.rand.NextVector2Circular(7, 7);
+							dust.velocity = Main.rand.NextVector2Circular(7 + mp.stacks, 7 + mp.stacks);
 							dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
 							dust.alpha = Main.rand.Next(80) + 40;
 							dust.rotation = Main.rand.NextFloat(6.28f);
 
 							Dust dust2 = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDust>());
-							dust2.velocity = Main.rand.NextVector2Circular(7, 7);
+							dust2.velocity = Main.rand.NextVector2Circular(7 + mp.stacks, 7 + mp.stacks);
 							dust2.scale = Main.rand.NextFloat(1.5f, 1.9f);
 							dust2.alpha = 70 + Main.rand.Next(60);
 							dust2.rotation = Main.rand.NextFloat(6.28f);
@@ -775,7 +763,7 @@ namespace StarlightRiver.Content.Items.Misc
 						}
 
 						if (Main.myPlayer == Projectile.owner)
-							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), Projectile.damage * 2, 3f, Projectile.owner, 65);
+							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), (int)(Projectile.damage * (2 + mp.stacks * 0.1f)), 3f, Projectile.owner, 65 + (Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 10));
 
 						exploding = false;
 						exploded = true;
@@ -783,6 +771,7 @@ namespace StarlightRiver.Content.Items.Misc
 						Projectile.velocity = Projectile.DirectionTo(Owner.Center) * 15f;
 						Projectile.velocity.Y += -3f;
 						Projectile.friendly = true;
+						mp.stacks = 0;
 					}
 				}
 				else if (++ShootDelay >= 25)
@@ -838,13 +827,22 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
-					{
 						Projectile.Kill();
-					}
 				}
 
 				if (!exploding)
+				{
+					if (Projectile.soundDelay == 0)
+					{
+						Projectile.soundDelay = 8;
+						SoundEngine.PlaySound(SoundID.Item7, Projectile.position);
+					}
+
 					Projectile.rotation += 0.3f * (Projectile.velocity.Length() * 0.07f);
+				}
+
+				Owner.ChangeDir(Projectile.Center.X < Owner.Center.X ? -1 : 1);
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Owner.Center.DirectionTo(Projectile.Center).ToRotation() - MathHelper.PiOver2);
 
 				if (exploded && explodingTimer > 0)
 					explodingTimer--;
@@ -1012,7 +1010,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.timeLeft = 25;
 
 			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 15;
+			Projectile.localNPCHitCooldown = 25;
 		}
 
 		public override void SetStaticDefaults()
@@ -1043,13 +1041,6 @@ namespace StarlightRiver.Content.Items.Misc
 			line.Normalize();
 			line *= Radius + 20;
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			Player Owner = Main.player[Projectile.owner];
-			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
-				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
 		}
 
 		private void ManageCaches()
