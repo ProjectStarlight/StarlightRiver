@@ -219,6 +219,9 @@ namespace StarlightRiver.Content.Items.Misc
 			if (MaxShootDelay == 0f)
 				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 
+			if (overheated)
+				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem) * 1.2f;
+
 			if (flashTimer > 0)
 				flashTimer--;
 
@@ -459,7 +462,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Owner.PickAmmo(Owner.HeldItem, out int projID, out float shootSpeed, out int damage, out float knockBack, out int ammoID);
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), (int)(Projectile.damage * (overheated ? 1.2f : 1f)), Projectile.knockBack, Projectile.owner);
 
 			Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), -Projectile.rotation.ToRotationVector2() * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMG_Shell").Type).timeLeft = 1;
 
