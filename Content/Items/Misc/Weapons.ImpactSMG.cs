@@ -468,7 +468,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 			if (shots >= 20)
 			{
-				Helper.PlayPitched("Guns/dry_fire", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+				Helper.PlayPitched("Guns/dry_fire", 0.65f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
 
 				if (Main.rand.NextBool(3))
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Smoke>(), Vector2.UnitY * -2 + Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(1f, 5), 0, new Color(100, 55, 50) * 0.5f, Main.rand.NextFloat(0.35f, 0.5f));
