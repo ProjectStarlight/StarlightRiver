@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public CogwheelBuff() : base("Cogwheel", "They see me rollin'", false, true) { }
 
-        public override void SafeSetDetafults()
+        public override void SafeSetDefaults()
         {
 			Main.buffNoTimeDisplay[Type] = true;
         }
