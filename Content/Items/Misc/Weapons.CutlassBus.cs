@@ -1,16 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
+	//TODO: Leaving this because its unfinished
 	public class CutlassBus : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -19,7 +15,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Cutlassbus");
 			Tooltip.SetDefault("egshels update this lol");
-
 		}
 
 		public override void SetDefaults()
@@ -53,6 +48,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 	}
+
 	internal class CutlassBusHeldProj : ModProjectile
 	{
 
@@ -73,6 +69,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Size = new Vector2(32, 32);
 			Projectile.penetrate = -1;
 		}
+
 		public override void AI()
 		{
 			Main.projFrames[Projectile.type] = 10;
@@ -232,8 +229,7 @@ namespace StarlightRiver.Content.Items.Misc
 				target.GetGlobalNPC<CutlassBusGNPC>().targettable = false;
 
 				if (!potentialVictims.Contains(target))
-					;
-				potentialVictims.Add(target);
+					potentialVictims.Add(target);
 
 				float velMult = 1.6f;
 				if (Projectile.velocity.Length() > 10)

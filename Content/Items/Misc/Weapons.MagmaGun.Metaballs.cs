@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.MetaballSystem;
+﻿using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {

@@ -1,8 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 

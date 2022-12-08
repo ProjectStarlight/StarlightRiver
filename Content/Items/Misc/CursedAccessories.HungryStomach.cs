@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -26,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Red;
 		}
 
-		public override void Load() //TODO: Make CursedAccessory.Load not hide this
+		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEquipsEvent += DisableRegen;
 			StarlightPlayer.ModifyHitNPCEvent += LeechStaminaMelee;

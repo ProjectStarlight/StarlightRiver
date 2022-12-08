@@ -1,17 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -19,9 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 	class TwistSword : ModItem
 	{
 		public int charge = 0;
-
 		int timer = 0;
-
 		bool noItemLastFrame = false;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -212,6 +205,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
+		public ref float Rotation => ref Projectile.ai[0];
+		public ref float Spinup => ref Projectile.ai[1];
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 250;
@@ -226,7 +222,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 160;
 			float y = (float)Math.Sin(-rot) * 70;
 			var off = new Vector2(x, y);
@@ -246,24 +242,24 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Player Player = Main.player[Projectile.owner];
 
-			if (Projectile.ai[1] < 400)
-				Projectile.ai[1]++;
+			if (Spinup < 400)
+				Spinup++;
 
-			if (!Player.controlJump && Projectile.ai[1] > 200)
-				Projectile.ai[1] = 200;
+			if (!Player.controlJump && Spinup > 200)
+				Spinup = 200;
 
-			Projectile.ai[0] += 0.4f + Projectile.ai[1] * 0.0025f;
+			Rotation += 0.4f + Spinup * 0.0025f;
 
 			Projectile.Center = Player.Center + new Vector2(0, Player.gfxOffY);
 
 			if (Player.channel && Player.HeldItem.type == ItemType<TwistSword>() && !Player.noItems)
 				Projectile.timeLeft = 2;
 
-			if (Projectile.ai[1] > 200 && Player.velocity.Y > -4)
-				Player.velocity.Y -= 0.0004f * Projectile.ai[1];
+			if (Spinup > 200 && Player.velocity.Y > -4)
+				Player.velocity.Y -= 0.0004f * Spinup;
 
 			//visuals
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 120;
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);
@@ -271,11 +267,11 @@ namespace StarlightRiver.Content.Items.Misc
 			if (rot > 3.14f)
 				Player.heldProj = Projectile.whoAmI;
 
-			if (Main.rand.Next(3) == 0)
-				Dust.NewDustPerfect(Player.Center + off, DustType<Content.Dusts.Glow>(), off * Main.rand.NextFloat(0.01f), 0, new Color(10, 30, 255), Main.rand.NextFloat(0.2f, 0.4f));
+			if (Main.rand.NextBool(3))
+				Dust.NewDustPerfect(Player.Center + off, DustType<Dusts.Glow>(), off * Main.rand.NextFloat(0.01f), 0, new Color(10, 30, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-			if (Main.rand.Next(25) == 0)
-				Dust.NewDustPerfect(Player.Center + off, DustType<Content.Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
+			if (Main.rand.NextBool(25))
+				Dust.NewDustPerfect(Player.Center + off, DustType<Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
 			if (Player.channel && Player.HeldItem.type == ItemType<TwistSword>() && !Player.noItems)
 				Player.UpdateRotation(rot);
@@ -303,7 +299,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);
 
 			target.immune[Projectile.owner] = 10; //same as regular pierce Projectile but explicit for multiPlayer compatibility
@@ -311,23 +307,24 @@ namespace StarlightRiver.Content.Items.Misc
 			target.velocity += away * 8 * target.knockBackResist;
 
 			if (Main.netMode != NetmodeID.Server)
-				onHitEffect(target);
+				OnHitEffect(target);
 		}
 
-		public void onHitEffect(NPC target)
+		public void OnHitEffect(NPC target)
 		{
 			Helper.PlayPitched("Magic/WaterSlash", 0.4f, 0.2f, Projectile.Center);
 			Helper.PlayPitched("Magic/WaterWoosh", 0.3f, 0.6f, Projectile.Center);
 
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);
+
 			for (int k = 0; k < 20; k++)
 				Dust.NewDustPerfect(target.Center, DustType<Dusts.Glow>(), away.RotatedByRandom(0.2f) * Main.rand.NextFloat(4), 0, new Color(50, 110, 255), 0.4f);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 120;
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
@@ -342,7 +339,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageCaches()
 		{
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 120;
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);
@@ -367,7 +364,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			float rot = Projectile.ai[0] % 80 / 80f * 6.28f;
+			float rot = Rotation % 80 / 80f * 6.28f;
 			float x = (float)Math.Cos(-rot) * 120;
 			float y = (float)Math.Sin(-rot) * 40;
 			var off = new Vector2(x, y);

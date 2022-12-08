@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Items.Misc
+﻿namespace StarlightRiver.Content.Items.Misc
 {
 	public class StaminaGel : QuickMaterial
 	{

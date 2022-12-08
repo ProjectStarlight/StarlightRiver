@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Buffs;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -58,8 +53,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		Vector2 savedPos = Vector2.Zero;
 		int blacklistNPC = -1;
-
-		List<Vector2> nodes = new();
+		readonly List<Vector2> nodes = new();
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -120,7 +114,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Vector2 point1 = savedPos;
 			Vector2 point2 = Projectile.Center;
-			int armLength = 30;
 
 			if (point1 == Vector2.Zero || point2 == Vector2.Zero)
 				return;
@@ -138,7 +131,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				sb.Draw(tex, target, null, color, rot, origin, 0, 0);
 
-				if (Main.rand.Next(30) == 0)
+				if (Main.rand.NextBool(30))
 					Dust.NewDustPerfect(prevPos + new Vector2(0, 32), DustType<Dusts.GlowLine>(), Vector2.Normalize(nodes[k] - prevPos) * Main.rand.NextFloat(-6, -4), 0, new Color(100, 150, 200), 0.5f);
 			}
 

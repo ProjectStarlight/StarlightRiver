@@ -1,21 +1,17 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class Gunchucks : ModItem
 	{
+		private int combo;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		private int combo;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gunchucks");
@@ -42,6 +38,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.useAmmo = AmmoID.Bullet;
 			Item.rare = ItemRarityID.Green;
 		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			combo++;
@@ -50,6 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Vector2 direction = Vector2.Normalize(velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f))) * 7;
 			var proj = Projectile.NewProjectileDirect(source, position, direction, ModContent.ProjectileType<GunchuckProj>(), damage, knockback, player.whoAmI);
+
 			if (proj.ModProjectile is GunchuckProj modProj)
 			{
 				modProj.Flip = combo % 2 == 0;
@@ -62,6 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj.whoAmI);
+
 			return false;
 		}
 
@@ -82,9 +81,26 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class GunchuckProj : ModProjectile
 	{
+		public const float THROW_RANGE = 120; //Peak distance from Player when thrown out, in pixels
+
+		public int SwingTime;
+		public float SwingDistance;
+		public float Curvature;
+		public bool Flip;
+		public int Ammo;
+		public float FireTime;
+
+		public Vector2 CurrentBase = Vector2.Zero;
+
+		private bool shot = false;
+		private float newRotation = 0f;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public const float THROW_RANGE = 120; //Peak distance from Player when thrown out, in pixels
+		private Player Owner => Main.player[Projectile.owner];
+
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float AiState => ref Projectile.ai[1];
 
 		public override void SetStaticDefaults()
 		{
@@ -104,23 +120,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.usesLocalNPCImmunity = true;
 		}
 
-		private Player Owner => Main.player[Projectile.owner];
-
-		public int SwingTime;
-		public float SwingDistance;
-		public float Curvature;
-		public bool Flip;
-		public int Ammo;
-		public float FireTime;
-
-		public Vector2 CurrentBase = Vector2.Zero;
-
-		private bool shot = false;
-		private float newRotation = 0f;
-
-		public ref float Timer => ref Projectile.ai[0];
-		public ref float AiState => ref Projectile.ai[1];
-
 		public override void AI()
 		{
 			if (Projectile.timeLeft > 2) //Initialize chain control points on first tick, in case of Projectile hooking in on first tick
@@ -135,6 +134,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = Timer / SwingTime;
 			progress = EaseFunction.EaseQuadOut.Ease(progress);
+
 			if (progress > FireTime && !shot)
 			{
 				Texture2D projTexture = TextureAssets.Projectile[Projectile.type].Value;
@@ -156,18 +156,19 @@ namespace StarlightRiver.Content.Items.Misc
 
 				shot = true;
 				Vector2 direction = newRotation.ToRotationVector2();
+
 				for (int i = 0; i < 5; i++)
 				{
-					Projectile.NewProjectile(Projectile.InheritSource(Projectile), Projectile.Center + direction * 25, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+					Projectile.NewProjectile(Terraria.Entity.InheritSource(Projectile), Projectile.Center + direction * 25, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(15, 20), Ammo, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 				}
 
 				Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, Projectile.Center);
 
 				float spread = 0.4f;
+
 				for (int k = 0; k < 15; k++)
 				{
 					Vector2 dustDirection = direction.RotatedByRandom(spread);
-
 					Dust.NewDustPerfect(Projectile.Center + direction * 25, ModContent.DustType<Dusts.Glow>(), dustDirection * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
 			}

@@ -1,15 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -96,7 +91,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public ref float State => ref Projectile.ai[0];
 
-		public ref float numThrown => ref Projectile.ai[1];
+		public ref float ThrownCount => ref Projectile.ai[1];
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -117,11 +112,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			if (creator is null && Projectile.timeLeft == 149)
-			{
 				Helper.PlayPitched("Magic/ShurikenThrow", 0.7f, 0, Projectile.Center);
-			}
 
-			color = numThrown == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
+			color = ThrownCount == 3 ? new Color(100, 210, 255) : new Color(150, 150, 255);
 
 			Projectile.rotation += 0.05f;
 			Projectile.velocity *= 0.998f;
@@ -130,10 +123,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Main.netMode != NetmodeID.Server)
 			{
-				if (Main.rand.Next(10) == 0)
+				if (Main.rand.NextBool(10))
 					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.Glow>(), Projectile.velocity * -Main.rand.NextFloat(0.6f), 0, color * 0.4f, 0.5f);
 
-				if (Main.rand.Next(30) == 0)
+				if (Main.rand.NextBool(30))
 				{
 					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(8), ModContent.DustType<Dusts.AuroraFast>(), Projectile.velocity * Main.rand.NextFloat(1, 1.5f), 0, color * 0.4f, 0.5f);
 					d.customData = Main.rand.NextFloat(0.8f, 1.1f);
@@ -144,10 +137,10 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			if (Projectile.owner != Main.myPlayer && State == 0)
-				findIfHit();
+				FindIfHit();
 		}
 
-		private void findIfHit()
+		private void FindIfHit()
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
@@ -288,7 +281,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Main.netMode != NetmodeID.Server)
 			{
-				if (Main.rand.Next(15) == 0)
+				if (Main.rand.NextBool(15))
 				{
 					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(30), ModContent.DustType<Dusts.Glow>(), Projectile.velocity * -Main.rand.NextFloat(1), 0, color * 0.8f, 0.3f);
 

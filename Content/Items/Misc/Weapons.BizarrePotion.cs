@@ -1,18 +1,14 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.SteampunkSet;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -28,6 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "BizarrePotionGore4");
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "BizarrePotionGore5");
 		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
@@ -71,18 +68,16 @@ namespace StarlightRiver.Content.Items.Misc
 		Lightning = 2,
 		Poison = 3
 	}
+
 	public class BizarrePotionProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		private List<float> oldRotation = new();
+		private readonly List<float> oldRotation = new();
 
 		private bool initialized = false;
 
 		private NPC dontHit = default; //If the bottle hits an NPC,its resulting projectiles shouldnt hurt the hit NPC
 
 		private LiquidType liquidType;
-
 		private BottleType bottleType;
 
 		private int bounces = 2;
@@ -98,7 +93,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private NPC target;
 
-		private Player owner => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
@@ -136,6 +134,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Vector2 drawPos = Projectile.oldPos[k] + new Vector2(Projectile.width, Projectile.height) / 2;
 				Color color = Color.White * (float)((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) * 0.3f;
+
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(texture, drawPos - Main.screenPosition, frame, color, oldRotation[k], new Vector2(xFrameSize, yFrameSize) / 2, Projectile.scale, SpriteEffects.None, 0f);
 			}
@@ -152,14 +151,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-
 			if (!initialized)
 			{
 				initialized = true;
 				liquidType = (LiquidType)Main.rand.Next(4);
-				//liquidType = LiquidType.Poison;
 				bottleType = (BottleType)Main.rand.Next(4);
-				//bottleType = BottleType.Slide;
 
 				switch (bottleType)
 				{
@@ -180,34 +176,39 @@ namespace StarlightRiver.Content.Items.Misc
 			switch (bottleType)
 			{
 				case BottleType.Regular:
+
 					Projectile.aiStyle = 2;
 					break;
+
 				case BottleType.Launch:
+
 					if (!launched)
-						target = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 1000).OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
+					{
+						target = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 1000)
+							.OrderBy(x => x.Distance(Projectile.Center)).FirstOrDefault();
+					}
+
 					if (target != default && target.active)
 						posToBe = target.Center;
 					else if (posToBe == Vector2.Zero)
 						posToBe = Main.MouseWorld;
 
 					Vector2 direction = Projectile.DirectionTo(posToBe);
+
 					if (!launched)
 					{
 						Projectile.velocity *= 0.96f;
 						rotation = MathHelper.Lerp(rotation, direction.ToRotation() + radiansToSpin, 0.02f);
 						Projectile.rotation = rotation + 1.57f;
 						float difference = Math.Abs(rotation - (direction.ToRotation() + radiansToSpin));
+
 						if (difference < 0.7f || lockedOn)
 						{
 							Projectile.velocity *= 0.8f;
 							if (difference > 0.2f)
-							{
 								rotation += 0.1f * Math.Sign(direction.ToRotation() + radiansToSpin - rotation);
-							}
 							else
-							{
 								rotation = direction.ToRotation() + radiansToSpin;
-							}
 
 							lockedOn = true;
 							launchCounter--;
@@ -229,7 +230,9 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					break;
+
 				case BottleType.Slide:
+
 					if (!sliding)
 					{
 						Projectile.aiStyle = 2;
@@ -242,17 +245,21 @@ namespace StarlightRiver.Content.Items.Misc
 							Projectile.Kill();
 
 						Projectile.rotation = 0f;
+
 						if (Projectile.velocity.Y < 15)
 							Projectile.velocity.Y += 0.1f;
 					}
 
 					break;
+
 				case BottleType.Bounce:
+
 					Projectile.aiStyle = 2;
 					break;
 			}
 
 			oldRotation.Add(Projectile.rotation);
+
 			while (oldRotation.Count > Projectile.oldPos.Length)
 			{
 				oldRotation.RemoveAt(0);
@@ -264,6 +271,7 @@ namespace StarlightRiver.Content.Items.Misc
 			fallThrough = false;
 			return base.TileCollideStyle(ref width, ref height, ref fallThrough, ref hitboxCenterFrac);
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (bottleType == BottleType.Slide)
@@ -297,7 +305,8 @@ namespace StarlightRiver.Content.Items.Misc
 				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("BizarrePotionGore" + i).Type, 1f);
 			}
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107, Projectile.position);
+			SoundEngine.PlaySound(SoundID.Item107, Projectile.position);
+
 			switch (liquidType)
 			{
 				case LiquidType.Fire:
@@ -325,7 +334,8 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(Projectile.Center, 133, Main.rand.NextVector2Circular(3, 3)).noGravity = false;
 
-			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 200);
+			var targets = (List<NPC>)Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 200);
+
 			foreach (NPC target in targets)
 			{
 				if (dontHit == default || target != dontHit)
@@ -339,7 +349,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			CameraSystem.Shake += 8;
 
-			Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 4; i++)
@@ -356,10 +366,11 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
-				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 			}
 
-			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, owner.whoAmI, dontHit == default ? -1 : dontHit.whoAmI);
+			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<JetwelderJumperExplosion>(), Projectile.damage, 0, Owner.whoAmI, dontHit == default ? -1 : dontHit.whoAmI);
+
 			for (int i = 0; i < 2; i++)
 			{
 				Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
@@ -373,7 +384,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void SpawnPoison()
 		{
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BizarrePotionPoisonCloud>(), 0, 0, owner.whoAmI);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BizarrePotionPoisonCloud>(), 0, 0, Owner.whoAmI);
 			for (int i = 0; i < 60; i++)
 			{
 				float lerper = Main.rand.NextFloat();
@@ -392,7 +403,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (float i = rotOffset; i < 6.28f + rotOffset; i += (float)Math.PI * 0.3f)
 			{
 				Vector2 direction = i.ToRotationVector2();
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + direction * 10, direction * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<BizarreIce>(), Projectile.damage / 2, Projectile.knockBack / 2, owner.whoAmI);
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + direction * 10, direction * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<BizarreIce>(), Projectile.damage / 2, Projectile.knockBack / 2, Owner.whoAmI);
 				var mp = proj.ModProjectile as BizarreIce;
 				mp.dontHit = dontHit;
 			}
@@ -427,7 +438,8 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.Assets + "Keys/GlowSoft";
 
-		private float fade => EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 30f);
+		private float Fade => EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / 30f);
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 8;
@@ -444,22 +456,24 @@ namespace StarlightRiver.Content.Items.Misc
 		public void DrawAdditive(SpriteBatch sb)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
 			for (int i = 0; i < 3; i++)
-				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow * fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
+				sb.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Yellow * Fade, 0, tex.Size() / 2, 0.55f, SpriteEffects.None, 0f);
 		}
 	}
+
 	public class BizarreLightning : ModProjectile, IDrawPrimitive
 	{
+		private const float THICKNESS = 2;
+		private const int FADE_TIME = 30;
+
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
-		private NPC target => Main.npc[(int)Projectile.ai[0]];
+		private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
-		private float thickness = 2;
+		private int TrailLength => (int)MathHelper.Clamp((int)(Projectile.ai[1] / 15), 2, 100);
 
-		private int fadeTime = 30;
-
-		private int trailLength => (int)MathHelper.Clamp((int)(Projectile.ai[1] / 15), 2, 100);
-		private float fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / (float)fadeTime) : 1;
+		private float Fade => Projectile.extraUpdates == 0 ? EaseFunction.EaseCubicOut.Ease(Projectile.timeLeft / (float)FADE_TIME) : 1;
 
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
@@ -485,7 +499,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			if (Projectile.extraUpdates > 0)
-				Projectile.velocity = Projectile.DirectionTo(target.Center) * 4;
+				Projectile.velocity = Projectile.DirectionTo(Target.Center) * 4;
 			else
 				Projectile.velocity = Vector2.Zero;
 
@@ -505,7 +519,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				cache = new List<Vector2>();
 
-				for (int i = 0; i < trailLength; i++)
+				for (int i = 0; i < TrailLength; i++)
 				{
 					cache.Add(Projectile.Center);
 				}
@@ -514,7 +528,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.extraUpdates > 0 && Projectile.timeLeft % 5 == 0)
 				cache.Add(Projectile.Center);
 
-			while (cache.Count > trailLength)
+			while (cache.Count > TrailLength)
 			{
 				cache.RemoveAt(0);
 			}
@@ -537,29 +551,30 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, trailLength, new TriangularTip(4), factor => thickness * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * Main.rand.NextFloat(0.75f, 1.25f) * 16, factor =>
 			{
 				if (factor.X > 0.99f)
 					return Color.Transparent;
 
-				return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * fade;
+				return Color.Yellow * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * Fade;
 			});
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, trailLength, new TriangularTip(4), factor => thickness * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * fade;
+				return Color.Lerp(Color.Yellow, Color.White, EaseFunction.EaseCubicIn.Ease(Math.Min(1.2f - progress, 1))) * progress * Fade;
 			});
 
 			trail2.Positions = cache2.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity;
 
-			trail3 ??= new Trail(Main.instance.GraphicsDevice, trailLength, new TriangularTip(4), factor => thickness * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
+			trail3 ??= new Trail(Main.instance.GraphicsDevice, TrailLength, new TriangularTip(4), factor => THICKNESS * 2 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.White * progress * fade;
+				return Color.White * progress * Fade;
 			});
 
 			trail3.Positions = cache2.ToArray();
@@ -588,7 +603,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Projectile.extraUpdates == 0)
 				return false;
-			if (target != hitting)
+			if (Target != hitting)
 				return false;
 			return base.CanHitNPC(hitting);
 		}
@@ -596,7 +611,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Projectile.extraUpdates = 0;
-			Projectile.timeLeft = fadeTime;
+			Projectile.timeLeft = FADE_TIME;
 		}
 	}
 
@@ -630,15 +645,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class BizarreIce : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		private const int FADE_TIME = 40;
 
 		private int scaleCounter;
 
-		private int fadeTime = 40;
-
-		private Player owner => Main.player[Projectile.owner];
-
 		public NPC dontHit;
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
@@ -663,10 +677,10 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			scaleCounter++;
 			Projectile.scale = Math.Min(scaleCounter / 24f, 1);
-			if (Projectile.timeLeft > fadeTime)
+			if (Projectile.timeLeft > FADE_TIME)
 				Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 			else
-				Projectile.alpha = (int)(255 * (1 - (float)Projectile.timeLeft / fadeTime));
+				Projectile.alpha = (int)(255 * (1 - (float)Projectile.timeLeft / FADE_TIME));
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -680,21 +694,26 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Projectile.velocity = Vector2.Zero;
 			Projectile.aiStyle = -1;
-			if (Projectile.timeLeft > fadeTime)
+			if (Projectile.timeLeft > FADE_TIME)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+				SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+
 				for (int i = 0; i < 6; i++)
 					Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
-				Projectile.timeLeft = fadeTime;
+
+				Projectile.timeLeft = FADE_TIME;
 			}
 
 			return false;
 		}
+
 		public override void Kill(int timeLeft)
 		{
 			if (timeLeft == 0)
 				return;
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+
+			SoundEngine.PlaySound(SoundID.Item27, Projectile.position);
+
 			for (int i = 0; i < 6; i++)
 				Dust.NewDustPerfect(Projectile.Center, 67, Main.rand.NextVector2Circular(2, 2)).noLight = true;
 		}
@@ -715,18 +734,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			var gray = new Color(105, 105, 105);
 			Color ret;
+
 			if (dust.alpha < 10)
-			{
 				ret = Color.Lerp(Color.Cyan, Color.LightBlue, dust.alpha / 100f);
-			}
 			else if (dust.alpha < 200)
-			{
 				ret = Color.Lerp(Color.LightBlue, gray, (dust.alpha - 100) / 100f);
-			}
 			else
-			{
 				ret = gray;
-			}
 
 			return ret * ((255 - dust.alpha) / 255f);
 		}
@@ -774,18 +788,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			var gray = new Color(105, 105, 105);
 			Color ret;
+
 			if (dust.alpha < 10)
-			{
 				ret = Color.Lerp(Color.Purple, dust.color, dust.alpha / 100f);
-			}
 			else if (dust.alpha < 200)
-			{
 				ret = Color.Lerp(dust.color, gray, (dust.alpha - 100) / 100f);
-			}
 			else
-			{
 				ret = gray;
-			}
 
 			return ret * ((255 - dust.alpha) / 255f) * 0.15f;
 		}
@@ -799,13 +808,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			dust.alpha += 1;
 			if (dust.alpha > 100)
-			{
 				dust.scale *= 1.001f;
-			}
 			else
-			{
 				dust.scale *= 1.002f;
-			}
 
 			Lighting.AddLight(dust.position, Color.Violet.ToVector3() * ((255 - dust.alpha) / 255f));
 			dust.position += dust.velocity;
@@ -834,15 +839,12 @@ namespace StarlightRiver.Content.Items.Misc
 			if (infected)
 			{
 				if (npc.lifeRegen > 0)
-				{
 					npc.lifeRegen = 0;
-				}
 
 				npc.lifeRegen -= 24;
+
 				if (damage < 3)
-				{
 					damage = 3;
-				}
 			}
 		}
 	}

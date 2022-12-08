@@ -1,23 +1,19 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	class Sorcerwrench : ModItem
 	{
+		public Projectile proj;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Projectile proj;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sorcerwrench");
@@ -52,6 +48,25 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class SorcerwrenchProjectile : ModProjectile, IDrawOverTiles
 	{
+		private const int DESTRUCTION_TIME = 100;
+		private const int MANA_PER_TILE = 2;
+
+		private bool initialized = false;
+
+		private Vector2 startCorner = Vector2.Zero;
+		private Vector2 endCorner = Vector2.Zero;
+		private Vector2 endCornerGoal = Vector2.Zero;
+
+		private float manaUsed;
+
+		private bool released = false;
+
+		private readonly List<Vector2> tilesToDestroy = new();
+
+		private Player Owner => Main.player[Projectile.owner];
+
+		private Vector2 StartCornerTile => startCorner / 16;
+
 		public override string Texture => AssetDirectory.MiscItem + "Sorcerwrench";
 
 		public override void Load()
@@ -59,28 +74,6 @@ namespace StarlightRiver.Content.Items.Misc
 			//On.Terraria.Main.DrawInterface_Resources_Mana += DrawRottenMana; //TODO: Find where vanilla draws resource bars now
 
 		}
-
-		private const int DESTRUCTIONTIME = 100;
-
-		private const int MANAPERTILE = 2;
-
-		private bool initialized = false;
-
-		private Vector2 startCorner = Vector2.Zero;
-
-		private Vector2 startCornerSmall => startCorner / 16;
-
-		private Vector2 endCorner = Vector2.Zero;
-
-		private Vector2 endCornerGoal = Vector2.Zero;
-
-		private float manaUsed;
-
-		private bool released = false;
-
-		private List<Vector2> tilesToDestroy = new();
-
-		private Player owner => Main.player[Projectile.owner];
 
 		public override void SetDefaults()
 		{
@@ -100,20 +93,20 @@ namespace StarlightRiver.Content.Items.Misc
 				startCorner.Y = endCorner.Y = (int)Math.Floor(Projectile.Center.Y / 16) * 16;
 			}
 
-			if (owner.channel && !released)
+			if (Owner.channel && !released)
 			{
-				Projectile.timeLeft = DESTRUCTIONTIME;
+				Projectile.timeLeft = DESTRUCTION_TIME;
 				Projectile.Center = Main.MouseWorld;
 
-				owner.ChangeDir(Main.MouseWorld.X > owner.position.X ? 1 : -1);
-				Vector2 direction = owner.DirectionTo(Main.MouseWorld);
-				owner.itemTime = owner.itemAnimation = 2;
-				owner.itemRotation = direction.ToRotation();
+				Owner.ChangeDir(Main.MouseWorld.X > Owner.position.X ? 1 : -1);
+				Vector2 direction = Owner.DirectionTo(Main.MouseWorld);
+				Owner.itemTime = Owner.itemAnimation = 2;
+				Owner.itemRotation = direction.ToRotation();
 
-				if (owner.direction != 1)
-					owner.itemRotation -= 3.14f;
+				if (Owner.direction != 1)
+					Owner.itemRotation -= 3.14f;
 
-				owner.itemRotation = MathHelper.WrapAngle(owner.itemRotation);
+				Owner.itemRotation = MathHelper.WrapAngle(Owner.itemRotation);
 
 				Vector2 endCornerGoalGoal;
 				endCornerGoalGoal.X = (int)Math.Floor(Main.MouseWorld.X / 16) * 16;
@@ -136,38 +129,36 @@ namespace StarlightRiver.Content.Items.Misc
 					manaUsed = 0;
 
 					int tries = 0;
-					while (selectedTiles * MANAPERTILE < owner.statMana)
+					while (selectedTiles * MANA_PER_TILE < Owner.statMana)
 					{
-						if (manaUsed > owner.statMana)
+						if (manaUsed > Owner.statMana)
 							break;
 						difference += dir2 * 8;
 						if ((int)Math.Abs(difference.X / 16) > xDifferenceInt)
 						{
-							for (int y = (int)startCornerSmall.Y; PastIncrement(y, yDifferenceInt * Math.Sign(dir2.Y) + (int)startCornerSmall.Y, Math.Sign(dir2.Y)); y += Math.Sign(dir2.Y))
+							for (int y = (int)StartCornerTile.Y; PastIncrement(y, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y, Math.Sign(dir2.Y)); y += Math.Sign(dir2.Y))
 							{
-								if (CanKillTile(xDifferenceInt * Math.Sign(dir2.X) + (int)startCornerSmall.X, y))
-								{
-									manaUsed += MANAPERTILE;
-								}
+								if (CanKillTile(xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, y))
+									manaUsed += MANA_PER_TILE;
 							}
 
-							if (manaUsed > owner.statMana)
+							if (manaUsed > Owner.statMana)
 								break;
+
 							xDifferenceInt = (int)Math.Abs(difference.X / 16);
 						}
 
 						if ((int)Math.Abs(difference.Y / 16) > yDifferenceInt)
 						{
-							for (int x = (int)startCornerSmall.X; PastIncrement(x, xDifferenceInt * Math.Sign(dir2.X) + (int)startCornerSmall.X, Math.Sign(dir2.X)); x += Math.Sign(dir2.X))
+							for (int x = (int)StartCornerTile.X; PastIncrement(x, xDifferenceInt * Math.Sign(dir2.X) + (int)StartCornerTile.X, Math.Sign(dir2.X)); x += Math.Sign(dir2.X))
 							{
-								if (CanKillTile(x, yDifferenceInt * Math.Sign(dir2.Y) + (int)startCornerSmall.Y))
-								{
-									manaUsed += MANAPERTILE;
-								}
+								if (CanKillTile(x, yDifferenceInt * Math.Sign(dir2.Y) + (int)StartCornerTile.Y))
+									manaUsed += MANA_PER_TILE;
 							}
 
-							if (manaUsed > owner.statMana)
+							if (manaUsed > Owner.statMana)
 								break;
+
 							yDifferenceInt = (int)Math.Abs(difference.Y / 16);
 						}
 
@@ -175,15 +166,14 @@ namespace StarlightRiver.Content.Items.Misc
 							break;
 
 						endCornerGoal = startCorner + new Vector2(xDifferenceInt * 16 * Math.Sign(dir2.X), yDifferenceInt * 16 * Math.Sign(dir2.Y));
+
 						if (!PastIncrement((int)endCornerGoal.X, (int)endCornerGoalGoal.X, Math.Sign(dir2.X)) || !PastIncrement((int)endCornerGoal.Y, (int)endCornerGoalGoal.Y, Math.Sign(dir2.Y)))
-						{
 							break;
-						}
 
 						tries++;
 						if (tries > 4999)
 						{
-							Main.NewText("Sorcerwrench error: too many tries! Report to developers of Starlight River immediately!");
+							Main.NewText("Sorcerwrench error: too many tries! Report to developers of Starlight River immediately!"); //TODO: Should this really print to a user?
 							break;
 						}
 					}
@@ -193,6 +183,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (Math.Abs(endCorner.X - endCornerGoal.X) < 5)
 					endCorner.X = endCornerGoal.X;
+
 				if (Math.Abs(endCorner.Y - endCornerGoal.Y) < 5)
 					endCorner.Y = endCornerGoal.Y;
 
@@ -203,7 +194,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (!released)
 				{
-					owner.statMana -= (int)manaUsed;
+					Owner.statMana -= (int)manaUsed;
 					released = true;
 					Vector2 startCornerSmall = startCorner / 16;
 					Vector2 endCornerGoalSmall = endCornerGoal / 16;
@@ -234,16 +225,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 							if (!PastIncrement(i, (int)endCornerGoalSmall.X, xIncrement, false) && !PastIncrement(j, (int)endCornerGoalSmall.Y, yIncrement, false))
 								canKillTile = false;
+
 							if (canKillTile)
-							{
 								tilesToDestroy.Add(new Vector2(i, j));
-							}
 						}
 					}
 				}
 
-				float opacity = (DESTRUCTIONTIME - Projectile.timeLeft) / (float)DESTRUCTIONTIME;
+				float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
 				opacity = EaseFunction.EaseQuadIn.Ease(opacity);
+
 				foreach (Vector2 position in tilesToDestroy)
 				{
 					Lighting.AddLight(position * 16, Color.White.ToVector3() * opacity);
@@ -274,17 +265,16 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					WorldGen.KillTile(i, j, false, false, false);
+
 					if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
-					{
 						NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, i, j, 0f, 0, 0, 0);
-					}
 				}
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (Projectile.timeLeft < DESTRUCTIONTIME - 2)
+			if (Projectile.timeLeft < DESTRUCTION_TIME - 2)
 				return false;
 			int xIncrement = Math.Sign(endCorner.X - startCorner.X) * 2;
 			int yIncrement = Math.Sign(endCorner.Y - startCorner.Y) * 2;
@@ -317,6 +307,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (increment == 0)
 				return false;
+
 			if (includeEqual)
 			{
 				if (increment > 0)
@@ -335,7 +326,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Main.tile[i, j] != null && Main.tile[i, j].HasTile)
 			{
-				if (Main.tileDungeon[Main.tile[i, j].TileType] ||
+				if (Main.tileDungeon[Main.tile[i, j].TileType] || //TODO: Do we have a better way to check this than hardcoding? Check tile hardness maybe?
 					Main.tile[i, j].TileType == TileID.Dressers ||
 					Main.tile[i, j].TileType == TileID.Containers ||
 					Main.tile[i, j].TileType == TileID.DemonAltar ||
@@ -354,14 +345,10 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 
 				if (!Main.hardMode && Main.tile[i, j].TileType == TileID.Hellstone)
-				{
 					return false;
-				}
 
 				if (!TileLoader.CanExplode(i, j))
-				{
 					return false;
-				}
 
 				return true;
 			}
@@ -430,7 +417,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void DrawOverTiles(SpriteBatch spriteBatch)
 		{
-			float opacity = (DESTRUCTIONTIME - Projectile.timeLeft) / (float)DESTRUCTIONTIME;
+			float opacity = (DESTRUCTION_TIME - Projectile.timeLeft) / (float)DESTRUCTION_TIME;
 			opacity = EaseFunction.EaseQuadIn.Ease(opacity);
 
 			Color color = Color.Lerp(Color.Salmon, Color.White, opacity) * opacity;
@@ -447,9 +434,11 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 	}
+
 	public class SorcerwrenchDust : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;
@@ -483,15 +472,18 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			dust.position += dust.velocity;
+
 			if (dust.alpha >= 255)
 				dust.active = false;
 
 			return false;
 		}
 	}
+
 	public class SorcerwrenchSparkle : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "Aurora";
+
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;
@@ -529,6 +521,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			dust.position += dust.velocity;
+
 			if (dust.alpha >= 255)
 				dust.active = false;
 

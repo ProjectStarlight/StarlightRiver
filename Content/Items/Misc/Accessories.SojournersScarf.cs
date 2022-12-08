@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -29,9 +26,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void HealthRegenLoss(Player Player, ref float regen)
 		{
 			if (Equipped(Player) && Player.velocity == Vector2.Zero)
-			{
 				regen /= 2;
-			}
 		}
 	}
 }

@@ -15,11 +15,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 	public class DianesPendant : ModItem
 	{
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Diane's Pendant");
 			Tooltip.SetDefault("Something about a crescent idk \n+20 barrier"); //TODO: EGSHELS FIX!!!!!
-
 		}
 
 		public override void SetDefaults()
@@ -37,9 +37,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Player.GetModPlayer<DianePlayer>().Active = true;
 
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)
-			{
 				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), 30, 1.5f, Player.whoAmI);
-			}
 		}
 
 		public override void AddRecipes()
@@ -51,6 +49,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			recipe.Register();
 		}
 	}
+
 	internal class DianePlayer : ModPlayer
 	{
 		public bool Active = false;

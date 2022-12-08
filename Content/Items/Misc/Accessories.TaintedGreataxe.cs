@@ -1,22 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class TaintedGreataxe : CursedAccessory
 	{
-		public int GreatAxeProjectileWhoAmI;
+		public int ProjectileIndex;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public TaintedGreataxe() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "TaintedGreataxe").Value) { }
@@ -31,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if (Main.projectile[GreatAxeProjectileWhoAmI].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player) && greatAxe.stickyAI)
 				{
@@ -54,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ModifyHitNPC(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
-			if (Main.projectile[GreatAxeProjectileWhoAmI].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player) && greatAxe.stickyAI)
 				{
@@ -64,6 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
 							return;
 
 						float initCrit = (Item.crit + player.GetTotalCritChance(DamageClass.Generic)) * 2 / 100;
+
 						if (Main.rand.NextFloat() < initCrit)
 							crit = true;
 					}
@@ -77,14 +74,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPCWithProj(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			if (Main.projectile[GreatAxeProjectileWhoAmI].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player))
 				{
 					if (crit && !greatAxe.Embedding)
 					{
-						NPC npc = Main.npc.Where(n =>
-						n.active && n != target && target.Distance(n.Center) < 400f).OrderBy(n => target.Distance(n.Center)).FirstOrDefault(); //basically this logic is: if there is an enemy close to the target that was just critted, the greataxe will go into them
+						//if there is an enemy close to the target that was just critted, the greataxe will go into them
+						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
 						if (npc != default)
 						{
@@ -103,14 +101,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void OnHitNPC(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-			if (Main.projectile[GreatAxeProjectileWhoAmI].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
 			{
 				if (Equipped(player))
 				{
 					if (crit && !greatAxe.Embedding)
 					{
-						NPC npc = Main.npc.Where(n =>
-						n.active && n != target && target.Distance(n.Center) < 400f).OrderBy(n => target.Distance(n.Center)).FirstOrDefault(); //basically this logic is: if there is an enemy close to the target that was just critted, the greataxe will go into them
+						//if there is an enemy close to the target that was just critted, the greataxe will go into them
+						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
 
 						if (npc != default)
 						{
@@ -129,7 +128,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed\nSummons an Ethereal Greataxe, which embeds itself near enemies who were just critically striked\nThe enemy that the Greataxe embeds itself in becomes Focused\n<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
+			Tooltip.SetDefault("Cursed\n" +
+				"Summons an Ethereal Greataxe, which embeds itself near enemies who were just critically striked\n" +
+				"The enemy that the Greataxe embeds itself in becomes Focused\n" +
+				"<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -138,10 +140,11 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				var proj = Projectile.NewProjectileDirect(Player.GetSource_Accessory(Item), Player.Center, Vector2.One, ModContent.ProjectileType<TaintedGreataxeProjectile>(),
 					(int)Player.GetTotalDamage(DamageClass.Generic).ApplyTo(30), 2f, Player.whoAmI);
-				GreatAxeProjectileWhoAmI = proj.whoAmI;
+
+				ProjectileIndex = proj.whoAmI;
 			}
 
-			Main.projectile[GreatAxeProjectileWhoAmI].timeLeft = 2;
+			Main.projectile[ProjectileIndex].timeLeft = 2;
 		}
 	}
 
@@ -237,10 +240,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (!stickyAI)
 			{
-				var green = new Color(85, 220, 55)
-				{
-					A = 0
-				};
+				var green = new Color(85, 220, 55, 0);
+
 				for (int k = 12; k > 0; k--)
 				{
 					if (k > 0 && k < oldRotation.Count)

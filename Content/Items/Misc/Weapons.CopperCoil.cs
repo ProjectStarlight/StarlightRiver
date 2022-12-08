@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System.Collections.Generic;
-using Terraria;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -72,6 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Projectile.ai[0] >= MiddleOfArc - 1 && Projectile.ai[0] < MiddleOfArc)
 			{
 				int id = Projectile.FindTargetWithLineOfSight();
+
 				if (id >= 0)
 				{
 					NPC target = Main.npc[id];
@@ -90,12 +86,16 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Color minLight = lightColor;
 			var minColor = new Color(10, 25, 33);
+
 			if (minLight.R < minColor.R)
 				minLight.R = minColor.R;
+
 			if (minLight.G < minColor.G)
 				minLight.G = minColor.G;
+
 			if (minLight.B < minColor.B)
 				minLight.B = minColor.B;
+
 			return minLight;
 		}
 	}
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + "CopperCoilWhip";
 
-		private List<Vector2> points = new();
+		private readonly List<Vector2> points = new();
 		private Vector2 startPoint;
 		private bool canHit = true;
 
@@ -132,6 +132,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			NPC target = Main.npc[(int)Projectile.ai[0]];
+
 			if (Projectile.ai[1] == 0)
 			{
 				startPoint = Projectile.Center;
@@ -144,6 +145,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 nextPoint = startPoint;
 			points.Clear();
 			int nodeCount = Main.rand.Next(5, 12) - (int)(1f / startPoint.Distance(target.Center) * 0.2f);
+
 			for (int i = 0; i < nodeCount; i++)
 			{
 				Vector2 velocity = Vector2.UnitX.RotatedBy(Projectile.localAI[0]) * nextPoint.Distance(target.Center) / nodeCount;
@@ -156,7 +158,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 1; i < points.Count - 2; i++)
 				points[i] += Main.rand.NextVector2Circular(30, 20).RotatedBy(points[i + 1].AngleTo(points[i]));
 
-			if (Main.rand.Next(8) == 0)
+			if (Main.rand.NextBool(8))
 			{
 				var d = Dust.NewDustPerfect(Main.rand.Next(points), DustID.Electric, Vector2.Zero, 0, Color.GhostWhite, 0.5f);
 				d.noGravity = true;
@@ -185,6 +187,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (!canHit)
 				return false;
+
 			return base.Colliding(projHitbox, targetHitbox);
 		}
 
@@ -195,6 +198,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float t = Utils.GetLerpValue(0, 80, Projectile.timeLeft, true);
 			var glowColor = Color.Lerp(new Color(120, 230, 255), Color.AliceBlue, 0.5f);
 			glowColor.A = 0;
+
 			for (int i = 0; i < points.Count - 1; i++)
 			{
 				Vector2 difference = points[i + 1] - points[i];

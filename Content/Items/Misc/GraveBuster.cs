@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -15,6 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	class GraveBuster : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gravebuster");
@@ -48,20 +44,21 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 		}
 	}
+
 	public class GraveBusterHeld : ModProjectile
 	{
+		private bool initialized = false;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		Player Owner => Main.player[Projectile.owner];
+
+		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grave Buster");
 		}
-
-		Player owner => Main.player[Projectile.owner];
-
-		private bool initialized = false;
-
-		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
 
 		public override void SetDefaults()
 		{
@@ -80,14 +77,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			owner.heldProj = Projectile.whoAmI;
-			if (owner.itemTime <= 1)
+			Owner.heldProj = Projectile.whoAmI;
+
+			if (Owner.itemTime <= 1)
 			{
 				DestroyGraves();
 				Projectile.active = false;
 			}
 
-			if (Projectile.timeLeft % 6 == 0 && owner.itemTime > 15)
+			if (Projectile.timeLeft % 6 == 0 && Owner.itemTime > 15)
 			{
 				var range = new Vector2(25, 25);
 				Vector2 startPos = Projectile.Center / 16 - range;
@@ -99,6 +97,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						Tile tile = Main.tile[i, j];
 						Tile tile2 = Main.tile[i + 1, j + 1];
+
 						if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 						{
 							Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
@@ -109,7 +108,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			Projectile.Center = owner.Center;
+			Projectile.Center = Owner.Center;
 
 			if (!initialized)
 			{
@@ -121,19 +120,17 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
-			Vector2 position = owner.Center + currentDirection * 4 - Main.screenPosition;
+			Vector2 position = Owner.Center + currentDirection * 4 - Main.screenPosition;
 
-			if (owner.direction == 1)
+			if (Owner.direction == 1)
 			{
 				SpriteEffects effects1 = SpriteEffects.None;
 				Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
 			}
-
 			else
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
 				Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
-
 			}
 
 			return false;
@@ -150,8 +147,8 @@ namespace StarlightRiver.Content.Items.Misc
 				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
 				{
 					Tile tile = Main.tile[i, j];
-
 					Tile tile2 = Main.tile[i + 1, j + 1];
+
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
 						Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
@@ -168,20 +165,18 @@ namespace StarlightRiver.Content.Items.Misc
 					if (tile.TileType == 85 && tile.HasTile)
 					{
 						tile.HasTile = false;
+
 						if (!Main.tile[i, j].HasTile && Main.netMode != NetmodeID.SinglePlayer)
-						{
 							NetMessage.SendData(MessageID.TileManipulation, -1, -1, null, 0, i, j, 0f, 0, 0, 0);
-						}
 					}
 				}
 			}
 		}
 	}
+
 	public class GraveSlash : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.MiscItem + "GraveBuster";
-
-		private readonly int BASETIMELEFT = 25;
+		private const int BASE_TIMELEFT = 25;
 
 		BasicEffect effect;
 
@@ -189,6 +184,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private Trail trail;
 
 		private Vector2 direction = Vector2.Zero;
+
+		public override string Texture => AssetDirectory.MiscItem + "GraveBuster";
 
 		public override void SetStaticDefaults()
 		{
@@ -205,7 +202,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.friendly = false;
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
-			Projectile.timeLeft = BASETIMELEFT - 2;
+			Projectile.timeLeft = BASE_TIMELEFT - 2;
 			Projectile.ignoreWater = true;
 			Projectile.alpha = 255;
 		}
@@ -222,16 +219,18 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (direction == Vector2.Zero)
 				direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * 32 * 0.06f;
+
 			cache = new List<Vector2>();
 
-			float progress = (BASETIMELEFT - Projectile.timeLeft) / (float)BASETIMELEFT;
+			float progress = (BASE_TIMELEFT - Projectile.timeLeft) / (float)BASE_TIMELEFT;
 
 			int widthExtra = (int)(6 * Math.Sin(progress * 3.14f));
 
-			int min = BASETIMELEFT - (20 + widthExtra) - Projectile.timeLeft;
-			int max = BASETIMELEFT + widthExtra - Projectile.timeLeft;
+			int min = BASE_TIMELEFT - (20 + widthExtra) - Projectile.timeLeft;
+			int max = BASE_TIMELEFT + widthExtra - Projectile.timeLeft;
 
 			int average = (min + max) / 2;
+
 			for (int i = min; i < max; i++)
 			{
 				float offset = (float)Math.Pow(Math.Abs(i - average) / (float)(max - min), 2);
@@ -240,7 +239,9 @@ namespace StarlightRiver.Content.Items.Misc
 				cache.Add(Projectile.Center + direction * i);
 			}
 
-			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new TriangularTip((int)(32 * 0.6f)), factor => 10 * (1 - Math.Abs(1 - factor - Projectile.timeLeft / (float)(BASETIMELEFT + 5))) * (Projectile.timeLeft / (float)BASETIMELEFT), factor => Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f)
+			trail = new Trail(Main.instance.GraphicsDevice, 20 + widthExtra * 2, new TriangularTip((int)(32 * 0.6f)),
+				factor => 10 * (1 - Math.Abs(1 - factor - Projectile.timeLeft / (float)(BASE_TIMELEFT + 5))) * (Projectile.timeLeft / (float)BASE_TIMELEFT),
+				factor => Color.Lerp(Color.Red, Color.DarkRed, factor.X) * 0.8f)
 			{
 				Positions = cache.ToArray()
 			};
@@ -271,6 +272,7 @@ namespace StarlightRiver.Content.Items.Misc
 	public class GraveBusterDust : ModDust
 	{
 		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;
@@ -282,18 +284,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			var gray = new Color(25, 25, 25);
 			Color ret;
+
 			if (dust.alpha < 80)
-			{
 				ret = Color.Red;
-			}
 			else if (dust.alpha < 140)
-			{
 				ret = Color.Lerp(Color.Red, gray, (dust.alpha - 80) / 80f);
-			}
 			else
-			{
 				ret = gray;
-			}
 
 			return ret * ((255 - dust.alpha) / 255f);
 		}
@@ -304,6 +301,7 @@ namespace StarlightRiver.Content.Items.Misc
 				dust.velocity *= 0.85f;
 			else
 				dust.velocity *= 0.92f;
+
 			if (dust.alpha > 100)
 			{
 				dust.scale += 0.01f;
@@ -317,6 +315,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			dust.position += dust.velocity;
+
 			if (dust.alpha >= 255)
 				dust.active = false;
 

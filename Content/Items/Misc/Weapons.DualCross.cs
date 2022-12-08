@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -19,6 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 			DisplayName.SetDefault("Double Cross");
 			Tooltip.SetDefault("Shoots your highest two ammo slots at once");
 		}
+
 		public override void SetDefaults()
 		{
 			Item.damage = 14;
@@ -49,19 +45,19 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool CanUseItem(Player Player)
 		{
 			bool canShoot = false;
-			bool flag1 = false;
+			bool foundAmmo = false;
 
 			for (int index = 54; index < 58; ++index)
 			{
 				if (Player.inventory[index].ammo == Item.useAmmo && Player.inventory[index].stack > 0)
 				{
 					canShoot = true;
-					flag1 = true;
+					foundAmmo = true;
 					break;
 				}
 			}
 
-			if (!flag1)
+			if (!foundAmmo)
 			{
 				for (int index = 0; index < 54; ++index)
 				{
@@ -88,7 +84,6 @@ namespace StarlightRiver.Content.Items.Misc
 				player.itemTime = 19;
 				Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, player.whoAmI);
 			}
-
 			else
 			{
 				position -= velocity;
@@ -113,13 +108,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class DualCrossHeld : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
 		private bool initialized = false;
 
-		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		Player owner => Main.player[Projectile.owner];
+		private Vector2 Direction => Projectile.rotation.ToRotationVector2();
+
+		Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -144,12 +139,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			owner.heldProj = Projectile.whoAmI;
+			Owner.heldProj = Projectile.whoAmI;
 
-			if (owner.itemTime <= 1)
+			if (Owner.itemTime <= 1)
 				Projectile.active = false;
 
-			Projectile.Center = owner.Center;
+			Projectile.Center = Owner.Center;
 
 			if (!initialized)
 			{
@@ -161,17 +156,17 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D texture = Terraria.GameContent.TextureAssets.Projectile[Projectile.type].Value;
-			Vector2 position = owner.Center + currentDirection * 15 - Main.screenPosition;
+			Vector2 position = Owner.Center + Direction * 15 - Main.screenPosition;
 
-			if (owner.direction == 1)
+			if (Owner.direction == 1)
 			{
 				SpriteEffects effects1 = SpriteEffects.None;
-				Main.spriteBatch.Draw(texture, position, null, lightColor, currentDirection.ToRotation(), texture.Size() / 2, Projectile.scale, effects1, 0.0f);
+				Main.spriteBatch.Draw(texture, position, null, lightColor, Direction.ToRotation(), texture.Size() / 2, Projectile.scale, effects1, 0.0f);
 			}
 			else
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
-				Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, texture.Size() / 2, Projectile.scale, effects1, 0.0f);
+				Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, Direction.ToRotation() - 3.14f, texture.Size() / 2, Projectile.scale, effects1, 0.0f);
 			}
 
 			return false;
@@ -188,11 +183,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 			int ammosFound = 0;
 
-			for (int index = 54; index < 58; ++index)
+			for (int k = 54; k < 58; ++k)
 			{
-				if (Player.inventory[index].ammo == weapon.useAmmo && Player.inventory[index].stack > 0)
+				if (Player.inventory[k].ammo == weapon.useAmmo && Player.inventory[k].stack > 0)
 				{
-					obj = Player.inventory[index];
+					obj = Player.inventory[k];
 					ret = true;
 					ammosFound++;
 
@@ -232,7 +227,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private static float GetSpeed(Player Player, Item obj, Item weapon, float speed)
+		private static float GetSpeed(Player Player, Item obj, float speed)
 		{
 			if (Player.magicQuiver)
 			{
@@ -254,25 +249,20 @@ namespace StarlightRiver.Content.Items.Misc
 			return speed;
 		}
 
-		private static int GetProjType(Item weapon, Item obj, Player Player, int type)
+		//TODO: Remove? This seems entirely irrelevant to this. Or ideally move these utilities out to some global 'get ammo' helper
+		private static int GetProjType(Item obj, int type)
 		{
-			if (obj.shoot > 0)
+			if (obj.shoot > ProjectileID.None)
 				type = obj.shoot;
 
 			if (type == 42)
 			{
-				if (obj.type == 370)
-				{
+				if (obj.type == ItemID.EbonsandBlock)
 					type = 65;
-				}
-				else if (obj.type == 408)
-				{
+				else if (obj.type == ItemID.PearlsandBlock)
 					type = 68;
-				}
-				else if (obj.type == 1246)
-				{
+				else if (obj.type == ItemID.CrimsandBlock)
 					type = 354;
-				}
 			}
 
 			return type;
@@ -303,8 +293,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			mp.shotsTilSwitch++;
 
-			type = GetProjType(weapon, obj, player, type);
-			type2 = GetProjType(weapon, obj2, player, type2);
+			type = GetProjType(obj, type);
+			type2 = GetProjType(obj2, type2);
 
 			var proj = new Projectile();
 			proj.SetDefaults(type);
@@ -312,25 +302,25 @@ namespace StarlightRiver.Content.Items.Misc
 			var proj2 = new Projectile();
 			proj2.SetDefaults(type2);
 
-			float speed1 = GetSpeed(player, obj, weapon, speed) * (proj.extraUpdates + 1);
-			float speed2 = GetSpeed(player, obj2, weapon, speed) * (proj2.extraUpdates + 1);
+			float speed1 = GetSpeed(player, obj, speed) * (proj.extraUpdates + 1);
+			float speed2 = GetSpeed(player, obj2, speed) * (proj2.extraUpdates + 1);
 			speed = (speed1 + speed2) / 2 / (proj.extraUpdates + 1);
 
 			bool saveAmmo = false;
 
-			if (player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.Next(5) == 0) //Copied from vanilla, as clean as I could get it
+			if (player.magicQuiver && weapon.useAmmo == AmmoID.Arrow && Main.rand.NextBool(5)) //Copied from vanilla, as clean as I could get it
 				saveAmmo = true;
 
-			if (player.ammoBox && Main.rand.Next(5) == 0)
+			if (player.ammoBox && Main.rand.NextBool(5))
 				saveAmmo = true;
 
-			if (player.ammoPotion && Main.rand.Next(5) == 0)
+			if (player.ammoPotion && Main.rand.NextBool(5))
 				saveAmmo = true;
 
-			if (player.ammoCost80 && Main.rand.Next(5) == 0)
+			if (player.ammoCost80 && Main.rand.NextBool(5))
 				saveAmmo = true;
 
-			if (player.ammoCost75 && Main.rand.Next(4) == 0)
+			if (player.ammoCost75 && Main.rand.NextBool(5))
 				saveAmmo = true;
 
 			if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)

@@ -1,21 +1,17 @@
-﻿using StarlightRiver.Core;
-using System.Collections.Generic;
-using Terraria;
+﻿using System.Collections.Generic;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class ShoeSpikesModification : GlobalItem, IPostLoadable
 	{
-		private static List<int> ShoeSpikeAccessories = new();
+		private static readonly List<int> ShoeSpikeAccessories = new();
 
 		public override void ModifyTooltips(Item Item, List<TooltipLine> tooltips)
 		{
 			if (ItemIsDerivativeOfShoeSpikes(Item))
 			{
 				var tooltipLine = new TooltipLine(Mod, "StarlightRiver:ShoeSpikesInfo", "Massively increased acceleration when touching the ground");
-
 				tooltips.Add(tooltipLine);
 			}
 		}
@@ -38,7 +34,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.AddTile(TileID.TinkerersWorkbench);
 		}
 
-		private bool ItemIsDerivativeOfShoeSpikes(Item item)
+		private static bool ItemIsDerivativeOfShoeSpikes(Item item)
 		{
 			if (item.type == ItemID.ShoeSpikes || item.type == ItemID.ClimbingClaws || item.type == ItemID.MasterNinjaGear)
 				return true;

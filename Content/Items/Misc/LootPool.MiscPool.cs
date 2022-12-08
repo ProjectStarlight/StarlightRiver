@@ -1,5 +1,4 @@
 using StarlightRiver.Core.Systems.ChestLootSystem;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {

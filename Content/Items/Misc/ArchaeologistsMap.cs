@@ -1,17 +1,15 @@
 ﻿using StarlightRiver.Content.Archaeology;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	class ArchaeologistsMap : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Archaeologist's Map");
@@ -43,6 +41,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private bool RevealArtifact(Player player)
 		{
 			var artifacts = new List<Artifact>();
+
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 			{
 				if (item.Value is Artifact artifact && !artifact.displayedOnMap && artifact.CanBeRevealed())
@@ -55,6 +54,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Artifact nearestArtifact = artifacts.OrderBy(n => n.WorldPosition.Distance(player.Center)).FirstOrDefault();
 			nearestArtifact.displayedOnMap = true;
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
+
 			return true;
 		}
 	}

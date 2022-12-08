@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -16,6 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 	public class Bladesaw : ModItem
 	{
 		private int swingDirection = 1;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override bool CanUseItem(Player player)
@@ -83,14 +79,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class ShreddedNPC : GlobalNPC
 	{
-		public const int MAXSHREDDEDSTACKS = 5;
+		public const int MAX_SHREDDED_STACKS = 5;
 		public int ShreddedStacks;
 		public int ShreddedTimer;
 
 		public override bool InstancePerEntity => true;
+
 		public override void ResetEffects(NPC npc)
 		{
-			ShreddedStacks = Utils.Clamp(ShreddedStacks, 0, MAXSHREDDEDSTACKS);
+			ShreddedStacks = Utils.Clamp(ShreddedStacks, 0, MAX_SHREDDED_STACKS);
+
 			if (--ShreddedTimer == 1)
 				ShreddedStacks = 0;
 		}
@@ -126,6 +124,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (ShreddedStacks > 0 && Main.rand.NextBool(7 - ShreddedStacks))
 			{
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Blood).scale = 1.4f;
+
 				if (Main.rand.NextBool())
 					Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<Dusts.GraveBlood>()).scale = 1.2f;
 			}
@@ -134,16 +133,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class BladesawSwungBlade : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
-		private List<float> oldRotation = new();
+		private readonly List<float> oldRotation = new();
 
 		private Vector2 direction;
 
 		private bool initialized;
 
 		private float maxTimeLeft;
-
 		private int oldTimeleft;
 
 		private int hitAmount;
@@ -151,6 +147,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public bool justHit = false;
 
 		public int pauseTimer;
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public float SwingDirection => Projectile.ai[0] * Math.Sign(direction.X);
 
@@ -261,7 +259,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Vector2 directionTo = target.DirectionTo(Owner.Center);
 				if (!Helper.IsFleshy(target))
 				{
-					Dust.NewDustPerfect(target.Center + directionTo * 10 + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * -Main.rand.NextFloat(0.5f, 5f), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
+					Dust.NewDustPerfect(target.Center + directionTo * 10 + new Vector2(0, 35), DustType<Dusts.BuzzSpark>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f) + 3.14f) * -Main.rand.NextFloat(0.5f, 5f), 0, new Color(255, 230, 60) * 0.8f, 1.6f);
 				}
 				else
 				{
@@ -271,8 +269,8 @@ namespace StarlightRiver.Content.Items.Misc
 						Dust.NewDustPerfect(target.Center + directionTo * 10, DustID.Blood, directionTo.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * -Main.rand.NextFloat(0.5f, 5f), 0, default, 0.7f);
 					}
 
-					Dust.NewDustPerfect(target.Center + directionTo * 5, ModContent.DustType<Dusts.GraveBlood>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(3f, 6f), 0, default, 1.1f);
-					Dust.NewDustPerfect(target.Center + directionTo * 10, ModContent.DustType<Dusts.GraveBlood>(), Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * -Main.rand.NextFloat(3f, 5f), 0, default, 1.1f);
+					Dust.NewDustPerfect(target.Center + directionTo * 5, DustType<Dusts.GraveBlood>(), directionTo.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * Main.rand.NextFloat(3f, 6f), 0, default, 1.1f);
+					Dust.NewDustPerfect(target.Center + directionTo * 10, DustType<Dusts.GraveBlood>(), Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)) * -Main.rand.NextFloat(3f, 5f), 0, default, 1.1f);
 				}
 
 				Dust.NewDustPerfect(target.Center + directionTo * 10, DustType<Dusts.BuzzsawSteam>(), Vector2.UnitY * -2f, 25, default, 0.5f);
@@ -293,16 +291,17 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D bladeTex = ModContent.Request<Texture2D>(Texture + "_Blade").Value;
-			Texture2D chainTex = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
-			Texture2D chainGlowTex = ModContent.Request<Texture2D>(Texture + "_ChainGlow").Value;
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D bladeTex = Request<Texture2D>(Texture + "_Blade").Value;
+			Texture2D chainTex = Request<Texture2D>(Texture + "_Chain").Value;
+			Texture2D chainGlowTex = Request<Texture2D>(Texture + "_ChainGlow").Value;
 			SpriteEffects flip = Owner.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
 			float rotation = Projectile.rotation + MathHelper.PiOver4 + (Owner.direction == -1 ? MathHelper.PiOver2 : 0f);
 			Rectangle sourceRectangle = tex.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
 			Vector2 origin = sourceRectangle.Size() / 2f;
 			Vector2 drawPos = Owner.Center + Projectile.rotation.ToRotationVector2() * 35f - Main.screenPosition + Main.rand.NextVector2Circular(1.5f, 1.5f);
 			var heatColor = Color.Lerp(Color.Transparent, new Color(255, 96, 0), hitAmount / 6f * 0.65f);
+
 			if (Projectile.timeLeft < 20)
 				heatColor = Color.Lerp(heatColor, Color.Transparent, 1f - Projectile.timeLeft / 20f);
 
@@ -327,8 +326,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			float collisionPoint = 0f;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Owner.Center, Owner.Center + 60 * Projectile.scale * Projectile.rotation.ToRotationVector2(), 20, ref collisionPoint))
 				return true;
+
 			return false;
 		}
 
@@ -340,8 +341,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public void BreakTrees(int i, int j, Vector2 visualPos)
 		{
 			Tile tileAtPosition = Framing.GetTileSafely(i, j);
+
 			if (!tileAtPosition.HasTile || !Main.tileAxe[tileAtPosition.TileType])
 				return;
+
 			float swingCompletion = 1f - Projectile.timeLeft / maxTimeLeft;
 
 			if (swingCompletion < 0.45f || swingCompletion > 0.6f)
@@ -353,6 +356,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.PickTile(i, j, 40);
 			oldTimeleft = Projectile.timeLeft;
 			pauseTimer = 6;
+
 			for (int d = 0; d < 2; d++)
 			{
 				Dust.NewDustPerfect(visualPos, DustType<Dusts.BuzzsawSteam>(), Vector2.UnitY * -2f, 25, default, 0.5f);

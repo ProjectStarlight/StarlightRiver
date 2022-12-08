@@ -1,32 +1,28 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class CoachGun : ModItem
 	{
+		private int cooldown = 0;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void Load()
 		{
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscItem + "CoachGunCasing");
 		}
-
-		private int cooldown = 0;
 
 		public override void SetStaticDefaults()
 		{
@@ -35,7 +31,6 @@ namespace StarlightRiver.Content.Items.Misc
 				"Explodes in 2.5 seconds, dealing DoT and weakening enemies\n" +
 				"Shoot it to detonate it early\n" +
 				"'My business, my rules'");
-
 		}
 
 		public override void SetDefaults()
@@ -79,6 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Item.useTime = 15;
 				Item.useAnimation = 15;
+
 				if (cooldown > 0)
 					return false;
 			}
@@ -129,7 +125,6 @@ namespace StarlightRiver.Content.Items.Misc
 				for (int k = 0; k < 15; k++)
 				{
 					Vector2 direction = offset.RotatedByRandom(spread);
-
 					Dust.NewDustPerfect(position + offset * 70, ModContent.DustType<Dusts.Glow>(), direction * Main.rand.NextFloat(8), 125, new Color(150, 80, 40), Main.rand.NextFloat(0.2f, 0.5f));
 				}
 
@@ -153,11 +148,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class CoachGunMuzzleFlash : ModProjectile
 	{
+		private Vector2 offset = Vector2.Zero;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		private Player owner => Main.player[Projectile.owner];
-
-		private Vector2 offset = Vector2.Zero;
+		private Player Owner => Main.player[Projectile.owner];
 
 		private bool initialized = false;
 
@@ -165,6 +160,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Muzzle Flash");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.width = 2;
@@ -180,13 +176,14 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!initialized)
 			{
 				initialized = true;
-				offset = Projectile.Center - owner.Center;
+				offset = Projectile.Center - Owner.Center;
 			}
 
 			Lighting.AddLight(Projectile.Center, Color.Orange.ToVector3() * 0.4f);
-			Projectile.Center = owner.Center + offset;
+			Projectile.Center = Owner.Center + offset;
 			Projectile.rotation = Projectile.ai[0];
 		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
@@ -199,21 +196,23 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 	}
+
 	public class CoachGunBomb : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
-
 		private List<Vector2> cache;
 		private Trail trail;
 
 		private bool shot = false;
 
-		private Player owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Dynamite");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.CloneDefaults(ProjectileID.Shuriken);
@@ -229,6 +228,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			float progress = 1 - Projectile.timeLeft / 150f;
+
 			for (int i = 0; i < 3; i++)
 			{
 				var sparks = Dust.NewDustPerfect(Projectile.Center + Projectile.rotation.ToRotationVector2() * 17, ModContent.DustType<CoachGunSparks>(), (Projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f));
@@ -248,7 +248,7 @@ namespace StarlightRiver.Content.Items.Misc
 					for (int i = 0; i < 5; i++)
 					{
 						Vector2 velocity = Vector2.Normalize(proj.velocity).RotatedBy(Main.rand.NextFloat(-0.6f, 0.6f)) * Main.rand.NextFloat(1.3f, 3);
-						Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), Projectile.damage, 0, owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+						Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), Projectile.damage, 0, Owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 					}
 				}
 			}
@@ -261,7 +261,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			CameraSystem.Shake += 8;
 
-			Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 			for (int i = 0; i < 10; i++)
@@ -289,11 +289,11 @@ namespace StarlightRiver.Content.Items.Misc
 				for (int i = 0; i < 5; i++)
 				{
 					Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
-					Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
+					Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, Owner.whoAmI).scale = Main.rand.NextFloat(0.85f, 1.15f);
 				}
 			}
 
-			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), Projectile.damage * (shot ? 2 : 1), 0, owner.whoAmI);
+			Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), Projectile.damage * (shot ? 2 : 1), 0, Owner.whoAmI);
 			for (int i = 0; i < 10; i++)
 			{
 				Vector2 vel = Main.rand.NextFloat(6.28f).ToRotationVector2();
@@ -310,8 +310,10 @@ namespace StarlightRiver.Content.Items.Misc
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			DrawTrail(spriteBatch);
+
 			float progress = 1 - Projectile.timeLeft / 150f;
-			Color overlayColor = Color.White;
+			Color overlayColor;
+
 			if (progress < 0.5f)
 				overlayColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Orange * 0.5f, progress * 2);
 			else
@@ -324,7 +326,8 @@ namespace StarlightRiver.Content.Items.Misc
 			spriteBatch.Draw(overlayTex, Projectile.Center - Main.screenPosition, null, overlayColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			progress *= progress;
-			Color glowColor = Color.White;
+			Color glowColor;
+
 			if (progress < 0.5f)
 				glowColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Orange, progress * 2);
 			else
@@ -411,7 +414,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			Projectile.scale *= 0.98f;
-			if (Main.rand.Next(2) == 0)
+
+			if (Main.rand.NextBool(2))
 			{
 				var dust = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CoachGunDustThree>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
 				dust.scale = 0.6f * Projectile.scale;
@@ -429,11 +433,6 @@ namespace StarlightRiver.Content.Items.Misc
 	internal class CoachGunRing : ModProjectile
 	{
 		public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
-
-		//private List<Vector2> cache;
-
-		//private Trail trail;
-		//private Trail trail2;
 
 		private float Progress => 1 - Projectile.timeLeft / 5f;
 
@@ -455,21 +454,14 @@ namespace StarlightRiver.Content.Items.Misc
 			DisplayName.SetDefault("Coach Bomb");
 		}
 
-		public override void AI()
-		{
-			//ManageCaches();
-			//ManageTrail();
-		}
-
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-			{
 				return true;
-			}
 
 			return false;
 		}
@@ -484,63 +476,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			return false;
 		}
-
-		/*private void ManageCaches()
-		{
-			cache = new List<Vector2>();
-			float radius = Radius;
-			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
-			{
-				double rad = (i / 32f) * 6.28f;
-				Vector2 offset = new Vector2((float)Math.Sin(rad), (float)Math.Cos(rad));
-				offset *= radius;
-				cache.Add(Projectile.Center + offset);
-			}
-
-			while (cache.Count > 33)
-			{
-				cache.RemoveAt(0);
-			}
-		}
-
-		private void ManageTrail()
-		{
-
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor =>
-			{
-				return Color.Orange;
-			});
-
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
-			{
-				return Color.White;
-			});
-			float nextplace = 33f / 32f;
-			Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
-			offset *= Radius;
-
-			trail.Positions = cache.ToArray();
-			trail.NextPosition = Projectile.Center + offset;
-
-			trail2.Positions = cache.ToArray();
-			trail2.NextPosition = Projectile.Center + offset;
-		}*/
-
-		/*public void DrawPrimitives()
-		{
-			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
-
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
-
-			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
-			effect.Parameters["alpha"].SetValue(1);
-
-			trail?.Render(effect);
-			trail2?.Render(effect);
-		}*/
 	}
 
 	class CoachDebuff : SmartBuff
@@ -558,6 +493,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	//TODO: Look for a way to eliminate these potentially
 	public class CoachGunGlobalProj : GlobalProjectile
 	{
 		public override bool InstancePerEntity => true;

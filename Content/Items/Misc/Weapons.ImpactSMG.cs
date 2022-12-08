@@ -1,15 +1,11 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.Vitric.IgnitionGauntlets;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -66,7 +62,7 @@ namespace StarlightRiver.Content.Items.Misc
 				var origin = new Vector2(6, 13);
 
 				int num = (int)((item.damageBoost - 1) / 0.05f);
-				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value, "x" + num.ToString(), Player.Center - new Vector2(0, 40) - Main.screenPosition, Color.White, 0f, origin, Vector2.One);
+				ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "x" + num.ToString(), Player.Center - new Vector2(0, 40) - Main.screenPosition, Color.White, 0f, origin, Vector2.One);
 			}
 		}
 
@@ -89,6 +85,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (ammo == -1)
 				return false;
+
 			if (ammo <= 1)
 			{
 				Item.useTime = 30;
@@ -115,6 +112,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (ammo > 0)
 				velocity = velocity.RotatedByRandom(0.3f);
 		}
+
 		public override Vector2? HoldoutOffset()
 		{
 			return new Vector2(0, 0);
@@ -169,14 +167,16 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 		}
 	}
+
 	public class ImpactSMGProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
-
 		private List<Vector2> cache;
 		private Trail trail;
 
-		private Player owner => Main.player[Projectile.owner];
+		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
+
+		private Player Owner => Main.player[Projectile.owner];
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Impact SMG");
@@ -198,7 +198,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 1; i < 4; i++)
 				Gore.NewGore(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(5, 5), Mod.Find<ModGore>("ImpactSMG_Gore" + i.ToString()).Type, 1f);
-			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), 0, 0, owner.whoAmI);
+			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), 0, 0, Owner.whoAmI);
 			proj.rotation = oldVelocity.ToRotation() - 1.57f;
 			return true;
 		}
@@ -207,6 +207,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Collision.CheckAABBvAABBCollision(targetHitbox.TopLeft(), targetHitbox.Size(), projHitbox.TopLeft() - new Vector2(8, 8), projHitbox.Size() + new Vector2(16, 16)))
 				return true;
+
 			return false;
 		}
 
@@ -220,18 +221,20 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			CameraSystem.Shake += 3;
 
-			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
+			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, Owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
 			proj.extraUpdates = 0;
+
 			for (int i = 0; i < 7; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, 6, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(), 0, default, 1.25f).noGravity = true;
 			}
 
-			if (owner.HeldItem.type == ModContent.ItemType<ImpactSMG>())
+			if (Owner.HeldItem.type == ModContent.ItemType<ImpactSMG>())
 			{
-				owner.itemTime = owner.itemAnimation = 0;
-				var mp = owner.HeldItem.ModItem as ImpactSMG;
+				Owner.itemTime = Owner.itemAnimation = 0;
+				var mp = Owner.HeldItem.ModItem as ImpactSMG;
 				mp.ammo = 15;
+
 				if (mp.damageBoost < 1.25f)
 					mp.damageBoost += 0.05f;
 			}
@@ -294,7 +297,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 	internal class ImpactSMGExplosion : ModProjectile
 	{
-
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
@@ -310,11 +312,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Size = new Vector2(32, 32);
 			Projectile.penetrate = -1;
 		}
+
 		public override void AI()
 		{
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 3 == 0)
 				Projectile.frame++;
+
 			if (Projectile.frame >= Main.projFrames[Projectile.type])
 				Projectile.active = false;
 		}

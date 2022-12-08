@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -8,6 +6,6 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public DullBlade() : base("Dull Blade", "Doesn't seem very sharp... yet", 1, Item.sellPrice(gold: 1), ItemRarityID.Orange) { } //rarity might need changing, not sure where this falls into progression
+		public DullBlade() : base("Dull Blade", "Doesn't seem very sharp... yet", 1, Item.sellPrice(gold: 1), ItemRarityID.Orange) { }
 	}
 }

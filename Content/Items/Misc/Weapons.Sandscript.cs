@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -83,6 +79,7 @@ namespace StarlightRiver.Content.Items.Misc
 				X = (float)Math.Cos(Projectile.ai[0] / 60 * 6.28f) * 3f,
 				Y = (float)Math.Sin(Projectile.ai[0] / 60 * 6.28f) * 10f
 			};
+
 			Projectile.velocity = relativeRot.RotatedBy(Projectile.rotation - 1.57f);
 
 			Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), Projectile.velocity * Main.rand.NextFloat(0.2f, 1.1f), 0, default, 1f);
