@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.Enums;
-using Terraria.ModLoader;
+﻿using Terraria.Enums;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -14,6 +11,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			DisplayName.SetDefault("Squid Fins");
 			Tooltip.SetDefault("Allows you to swim like a jellysquid");
 		}
+
 		public override void SetDefaults()
 		{
 			Item.width = 24;
@@ -21,6 +19,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.accessory = true;
 			Item.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(0, 2));
 		}
+
 		public override void UpdateEquip(Player player)
 		{
 			bool canSwim = player.grapCount <= 0 && player.wet && !player.mount.Active;

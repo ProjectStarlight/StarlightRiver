@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -48,6 +44,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 					numberOfBells++;
 					projectilesFound++;
+
 					if (projectilesFound > 9)
 						break;
 				}
@@ -75,9 +72,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Filters.Scene["AuroraBellPulse"].GetShader().Shader.Parameters["numberOfBells"].SetValue(numberOfBells);
 
 			if (Main.netMode != NetmodeID.Server && !Filters.Scene["AuroraBellPulse"].IsActive())
-			{
 				Filters.Scene.Activate("AuroraBellPulse").GetShader().UseProgress(0f).UseColor(Color.White.ToVector3()).UseOpacity(0.0001f);
-			}
 		}
 	}
 
@@ -117,12 +112,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 	public class AuroraBellProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.PermafrostItem + "AuroraBellProj";
-
-		private Player owner => Main.player[Projectile.owner];
-
-		private float opacity => Math.Min(1, Projectile.timeLeft / 40f);
-
 		private int chargeCounter = 300;
 
 		private int scaleCounter = 0;
@@ -133,7 +122,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private int counter = 0;
 
-		private float chargeRatio => chargeCounter / 300f;
+		public override string Texture => AssetDirectory.PermafrostItem + "AuroraBellProj";
+
+		private Player Owner => Main.player[Projectile.owner];
+
+		private float Opacity => Math.Min(1, Projectile.timeLeft / 40f);
+
+		private float ChargeRatio => chargeCounter / 300f;
 
 		public override void SetStaticDefaults()
 		{
@@ -165,18 +160,18 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float scale = (float)MathHelper.Clamp(1 + pulseProgress, 0, 2);
 
 			Vector2 centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height / 2);
-			Main.spriteBatch.Draw(tex, Projectile.Center + offset - centerer - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, Color.White * transparency * opacity, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center + offset - centerer - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, Color.White * transparency * Opacity, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * scale, SpriteEffects.None, 0f);
 
 			Texture2D backTex = ModContent.Request<Texture2D>(Texture + "_Back").Value;
 			Texture2D frontTex = ModContent.Request<Texture2D>(Texture + "_Front").Value;
 			Texture2D clapperTex = ModContent.Request<Texture2D>(Texture + "_Clapper").Value;
 			centerer = (Projectile.rotation - 1.57f).ToRotationVector2() * (tex.Height * 0.75f);
-			Main.spriteBatch.Draw(backTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
-			Main.spriteBatch.Draw(clapperTex, Projectile.Center + offset - centerer - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * opacity, -Projectile.rotation, new Vector2(tex.Width / 2, tex.Height * 0.75f), Projectile.scale, SpriteEffects.None, 0f);
-			Main.spriteBatch.Draw(frontTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(backTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * Opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(clapperTex, Projectile.Center + offset - centerer - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * Opacity, -Projectile.rotation, new Vector2(tex.Width / 2, tex.Height * 0.75f), Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(frontTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, lightColor * Opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 
 			if (chargeCounter == 300)
-				Main.spriteBatch.Draw(outlineTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, Color.White * opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(outlineTex, Projectile.Center + offset - new Vector2(0, tex.Height / 2) - Main.screenPosition, null, Color.White * Opacity, Projectile.rotation, new Vector2(tex.Width / 2, 0), Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
@@ -187,16 +182,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Projectile.scale = EaseFunction.EaseCircularOut.Ease(scaleCounter / 15f);
 
-			Projectile.rotation = (float)Math.Sin(Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection + startRotation) * (float)Math.Pow(1 - chargeRatio, 2f);
+			Projectile.rotation = (float)Math.Sin(Math.Pow(chargeCounter * 0.15f, 0.7f) * ringDirection + startRotation) * (float)Math.Pow(1 - ChargeRatio, 2f);
 			Vector2 offset = 8 * new Vector2((float)Math.Cos(counter * 0.05f), (float)Math.Sin(counter * 0.05f));
-			Lighting.AddLight(Projectile.Center + offset, Color.White.ToVector3() * 1.5f * (float)Math.Pow(1 - chargeRatio, 9f));
+			Lighting.AddLight(Projectile.Center + offset, Color.White.ToVector3() * 1.5f * (float)Math.Pow(1 - ChargeRatio, 9f));
 			counter++;
 
 			if (chargeCounter < 300)
 				chargeCounter++;
 
 			if (chargeCounter == 299)
-				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, owner.whoAmI);
+				Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRingSmall>(), 0, 0, Owner.whoAmI);
 
 			if (chargeCounter < 20)
 				return;
@@ -235,7 +230,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						if (myRect.Intersects(Projectile.Hitbox))
 						{
 							startRotation = (float)Math.Asin(Projectile.rotation);
-							ringDirection = Math.Sign(owner.Center.X - Projectile.Center.X);
+							ringDirection = Math.Sign(Owner.Center.X - Projectile.Center.X);
 							colliding = true;
 							break;
 						}
@@ -244,11 +239,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding)
 				{
-					Helper.PlayPitched("Magic/AuroraBell", chargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + (1 - chargeRatio) * 0.8f, Projectile.Center);
+					Helper.PlayPitched("Magic/AuroraBell", ChargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + (1 - ChargeRatio) * 0.8f, Projectile.Center);
 					CameraSystem.Shake += 7;
 
-					var newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
-					newProj.originalDamage = (int)(proj.damage * chargeRatio);
+					var newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * ChargeRatio), Projectile.knockBack, Owner.whoAmI, 2);
+					newProj.originalDamage = (int)(proj.damage * ChargeRatio);
 
 					if (modProj is not AuroraBellRing)
 					{
@@ -278,7 +273,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						newProjMP.cantHit.Add(Projectile);
 					}
 
-					newProjMP.radiusMult = (float)Math.Pow(chargeRatio, 0.7f);
+					newProjMP.radiusMult = (float)Math.Pow(ChargeRatio, 0.7f);
 					chargeCounter = 0;
 					break;
 				}
@@ -289,7 +284,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			if (Projectile.sentry && timeLeft > 0)
 			{
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellProj>(), 0, 0, owner.whoAmI, Projectile.ai[0], Projectile.ai[1]);
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<AuroraBellProj>(), 0, 0, Owner.whoAmI, Projectile.ai[0], Projectile.ai[1]);
 				proj.timeLeft = 40;
 				proj.sentry = false;
 

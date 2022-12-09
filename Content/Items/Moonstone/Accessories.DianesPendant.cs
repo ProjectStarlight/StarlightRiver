@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
 			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
-			Player.GetModPlayer<DianePlayer>().Active = true;
+			Player.GetModPlayer<DianePlayer>().active = true;
 
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)
 				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, new Vector2(7, 7), ModContent.ProjectileType<DianeCrescant>(), 30, 1.5f, Player.whoAmI);
@@ -52,19 +52,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 	internal class DianePlayer : ModPlayer
 	{
-		public bool Active = false;
-
+		public bool active = false;
 		public int charge = 0;
-
 		private int currentMana = -1;
+
 		public override void ResetEffects()
 		{
-			Active = false;
+			active = false;
 		}
 
 		public override void OnMissingMana(Item item, int neededMana)
 		{
-			if (Active && charge >= 40)
+			if (active && charge >= 40)
 			{
 				for (int i = 0; i < Main.projectile.Length; i++)
 				{
@@ -84,7 +83,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void PostUpdate()
 		{
-			if (currentMana != Player.statMana && Active)
+			if (currentMana != Player.statMana && active)
 			{
 				if (currentMana > Player.statMana && charge < 500)
 					charge += currentMana - Player.statMana;
@@ -149,6 +148,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void AI()
 		{
 			Projectile.scale = MathHelper.Lerp(0.75f, 1f, ChargeRatio);
+
 			if (!initialized)
 			{
 				initialized = true;
@@ -166,7 +166,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (Player.dead)
 				Projectile.active = false;
 
-			if (Player.GetModPlayer<DianePlayer>().Active)
+			if (Player.GetModPlayer<DianePlayer>().active)
 				Projectile.timeLeft = 2;
 
 			if (attacking)
@@ -185,6 +185,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			while (oldRotation.Count > AfterimageLength)
 				oldRotation.RemoveAt(0);
+
 			while (oldPosition.Count > AfterimageLength)
 				oldPosition.RemoveAt(0);
 
@@ -200,17 +201,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+
 			for (int k = AfterimageLength; k > 0; k--)
 			{
-
 				float progress = 1 - (float)((AfterimageLength - k) / (float)AfterimageLength);
 				Color color = new Color(100, 60, 255) * EaseFunction.EaseQuarticOut.Ease(progress) * MathHelper.Lerp(0.45f, 0.75f, ChargeRatio);
+
 				if (k > 0 && k < oldRotation.Count)
 					Main.spriteBatch.Draw(tex, oldPosition[k] - Main.screenPosition, null, color, oldRotation[k], tex.Size() / 2, Projectile.scale * EaseFunction.EaseQuadOut.Ease(progress), SpriteEffects.None, 0f);
 			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
 			if (flashTimer < 1)
 			{
 				float transparency = (float)Math.Pow(1 - flashTimer, 2);
@@ -222,6 +225,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			Color glowColor = new Color(150, 120, 255, 0) * 0.5f;
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor, Projectile.rotation, glowTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 
@@ -229,6 +233,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (alreadyHit.Contains(target) || pauseTimer > 0)
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 
@@ -246,11 +251,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			alreadyHit.Add(target);
 			CameraSystem.Shake += 7;
 			NPC nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
+
 			if (nextTarget != default)
 			{
 				float degrees = 0.5f + Projectile.Distance(nextTarget.Center) / 600f;
+
 				if (alreadyHit.Count % 2 == 0)
 					degrees *= -1;
+
 				oldVel = Projectile.DirectionTo(nextTarget.Center).RotatedBy(degrees);
 			}
 			else
@@ -321,10 +329,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void AttackMovement()
 		{
 			pauseTimer--;
+
 			if (pauseTimer > 0)
 			{
 				if (flashTimer < 1)
 					flashTimer += 0.04f;
+
 				Projectile.velocity = Vector2.Zero;
 				return;
 			}
@@ -336,6 +346,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Projectile.friendly = true;
 			speed = MathHelper.Lerp(30, 40, ChargeRatio);
 			NPC target = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
+
 			if (target == default)
 			{
 				Projectile.velocity *= 0.4f;
@@ -368,6 +379,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			speed = 20;
 			Projectile.friendly = false;
 			Vector2 direction = Player.Center - Projectile.Center;
+
 			if (direction.Length() > 1500)
 			{
 				direction.Normalize();

@@ -1,12 +1,7 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs.Summon;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Palestone
@@ -72,7 +67,35 @@ namespace StarlightRiver.Content.Items.Palestone
 
 	public class PaleKnight : ModProjectile
 	{
+		public const int RunFrames = 8;
+
+		public const int FlyFrames = 6;
+		public const int FlyOffset = RunFrames;
+
+		public const int AttackFrames = 6;
+		public const int AttackOffset = FlyFrames + RunFrames;
+
+		private const int Walking = 0;
+		private const int Flying = 1;
+		private const int Attacking = 2;
+
+		public const float defaultFrameSpeed = 10f;
+		public const float defaultRunSpeed = 8f;
+		public const float tiltAmount = 0.02f;
+
+		public const int validZoneWidth = 8;
+		public const int validZoneHeight = 24;
+		public const int minionSpacing = 24;
+
+		public const int enemyCheckDelay = 30;
+		public const int maxMinionChaseRange = 2000;
+
+		public const int MaxVelocity = 7;
+
+		public const int MinionFlybackRange = 450;
+
 		public override string Texture => AssetDirectory.PalestoneItem + "PalestoneKnight";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tiny Killer");
@@ -107,18 +130,6 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		//public override bool MinionContactDamage() => true;	// This is mandatory if your minion deals contact damage (further related stuff in AI() in the Movement region)
 
-		public const int RunFrames = 8;
-
-		public const int FlyFrames = 6;
-		public const int FlyOffset = RunFrames;
-
-		public const int AttackFrames = 6;
-		public const int AttackOffset = FlyFrames + RunFrames;
-
-		private const int Walking = 0;
-		private const int Flying = 1;
-		private const int Attacking = 2;
-
 		public override void PostDraw(Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
@@ -134,21 +145,6 @@ namespace StarlightRiver.Content.Items.Palestone
 			Projectile.ai[1] = target.whoAmI;//TODO: possible desync, needs testing
 		}
 
-		public const float defaultFrameSpeed = 10f;
-		public const float defaultRunSpeed = 8f;
-		public const float tiltAmount = 0.02f;
-
-		public const int validZoneWidth = 8;
-		public const int validZoneHeight = 24;
-		public const int minionSpacing = 24;
-
-		public const int enemyCheckDelay = 30;
-		public const int maxMinionChaseRange = 2000;
-
-		public const int MaxVelocity = 7;
-
-		public const int MinionFlybackRange = 450;
-
 		public override void AI()
 		{
 			Player Player = Main.player[Projectile.owner];
@@ -157,6 +153,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			#region Active check
 			if (Player.dead || !Player.active) // This is the "active check", makes sure the minion is alive while the Player is alive, and despawns if not
 				Player.ClearBuff(BuffType<PalestoneSummonBuff>());
+
 			if (Player.HasBuff(BuffType<PalestoneSummonBuff>()))
 				Projectile.timeLeft = 2;
 			#endregion
@@ -183,6 +180,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			{
 				NPC NPC = Main.npc[(int)Projectile.ai[1]];
 				float betweenPlayer = Vector2.Distance(NPC.Center, Player.Center);
+
 				if (NPC.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
 				{
 					targetCenter = NPC.Center;
@@ -203,6 +201,7 @@ namespace StarlightRiver.Content.Items.Palestone
 					{
 						NPC NPC = Main.npc[i];
 						float betweenPlayer = Vector2.Distance(NPC.Center, Player.Center);
+
 						if (NPC.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
 						{
 							float NPCBetween = Vector2.Distance(NPC.Center, Projectile.Center);
@@ -268,6 +267,7 @@ namespace StarlightRiver.Content.Items.Palestone
 							if (validZone.Intersects(Projectile.getRect()))
 							{
 								Projectile.velocity.X *= 0.90f;
+
 								if (Projectile.velocity.Length() < 0.2f && (int)Projectile.Center.X == (int)validZone.Center().X)
 								{
 									Projectile.velocity = Vector2.Zero;
@@ -314,25 +314,25 @@ namespace StarlightRiver.Content.Items.Palestone
 			switch (Projectile.ai[0])
 			{
 				case 0:
-					{
-						Projectile.rotation = 0;
-						frameCount = RunFrames;
-						frameSpeed = Math.Abs(Projectile.velocity.X * defaultRunSpeed);
-					}
 
+					Projectile.rotation = 0;
+					frameCount = RunFrames;
+					frameSpeed = Math.Abs(Projectile.velocity.X * defaultRunSpeed);
 					break;
+
 				case 1:
-					{
-						Projectile.rotation = Projectile.velocity.X * tiltAmount;
-						startOffset = FlyOffset;
-					}
 
+					Projectile.rotation = Projectile.velocity.X * tiltAmount;
+					startOffset = FlyOffset;
 					break;
+
 				case 2:
-					startOffset = AttackOffset; break;
+					startOffset = AttackOffset;
+					break;
 			}
 
 			Projectile.frameCounter++;
+
 			if ((int)(Projectile.frameCounter * frameSpeed) >= 60)
 			{
 				Projectile.frameCounter = 0;
@@ -397,6 +397,7 @@ namespace StarlightRiver.Content.Items.Palestone
 	internal class PaleKnightPlayer : ModPlayer
 	{
 		public int KnightCount = 0;
+
 		public override void ResetEffects()
 		{
 			KnightCount = 0;

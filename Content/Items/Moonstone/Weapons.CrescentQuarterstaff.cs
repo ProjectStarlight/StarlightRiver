@@ -1,14 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
@@ -49,7 +45,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 12);
+			recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 12);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -57,8 +53,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 	internal class CrescentQuarterstaffProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MoonstoneItem + Name;
-
 		enum CurrentAttack : int
 		{
 			Down = 0,
@@ -69,11 +63,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Reset = 5
 		}
 
-		private float LENGTH = 100;
-
 		private const float SWAY = 20;
-
 		private const int MAXCHARGE = 10;
+
+		private float length = 100;
 
 		private CurrentAttack currentAttack;
 
@@ -111,6 +104,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		Player Player => Main.player[Projectile.owner];
 
+		public override string Texture => AssetDirectory.MoonstoneItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Crescent Quarterstaff");
@@ -134,7 +129,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Player.heldProj = Projectile.whoAmI;
 			Projectile.velocity = Vector2.Zero;
 
-			Vector2 offset = Projectile.rotation.ToRotationVector2() * LENGTH;
+			Vector2 offset = Projectile.rotation.ToRotationVector2() * length;
 			Projectile.Center = Player.Center + offset;
 			Lighting.AddLight(Projectile.Center, new Vector3(0.905f, 0.89f, 1) * Charge);
 			Projectile.ai[1] += 0.01f;
@@ -142,6 +137,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (pauseTime-- > 0)
 				return false;
+
 			return true;
 		}
 
@@ -150,13 +146,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (FirstTickOfSwing)
 			{
 				clicked = false;
-				LENGTH = 100;
+				length = 100;
 				zRotation = 0;
 				float rotDifferenceDivider = 15;
 				direction = Player.DirectionTo(Main.MouseWorld);
 				FacingRight = direction.X < 0;
 				slashWindow = 30;
 				angularVelocity = 0;
+
 				if (initialized)
 				{
 					currentAttack++;
@@ -164,7 +161,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				else
 				{
 					Projectile.rotation = -1.57f;
-					Projectile.Center = Player.Center + Projectile.rotation.ToRotationVector2() * LENGTH;
+					Projectile.Center = Player.Center + Projectile.rotation.ToRotationVector2() * length;
 					initialized = true;
 				}
 
@@ -174,140 +171,133 @@ namespace StarlightRiver.Content.Items.Moonstone
 				switch (currentAttack)
 				{
 					case CurrentAttack.Down:
-						{
-							direction = direction.RotatedBy(MouseFacingLeft ? -0.5f : 0.5f);
-							currentAttackDuration = attackDuration = 30;
-							rotDifferenceDivider = 35f;
-							break;
-						}
+						direction = direction.RotatedBy(MouseFacingLeft ? -0.5f : 0.5f);
+						currentAttackDuration = attackDuration = 30;
+						rotDifferenceDivider = 35f;
+						break;
+
 					case CurrentAttack.FirstUp:
-						{
-							direction = direction.RotatedBy(MouseFacingLeft ? 1f : -1f);
-							currentAttackDuration = attackDuration = 30;
-							rotDifferenceDivider = 35f;
-							break;
-						}
+						direction = direction.RotatedBy(MouseFacingLeft ? 1f : -1f);
+						currentAttackDuration = attackDuration = 30;
+						rotDifferenceDivider = 35f;
+						break;
+
 					case CurrentAttack.Spin:
-						{
-							rotDifferenceDivider = 25f;
-							currentAttackDuration = attackDuration = 50;
-							break;
-						}
+						rotDifferenceDivider = 25f;
+						currentAttackDuration = attackDuration = 50;
+						break;
+
 					case CurrentAttack.SecondUp:
-						{
-							rotDifferenceDivider = 35f;
-							direction = direction.RotatedBy(MouseFacingLeft ? 1.8f : -1.8f);
-							currentAttackDuration = attackDuration = 30;
-							break;
-						}
+						rotDifferenceDivider = 35f;
+						direction = direction.RotatedBy(MouseFacingLeft ? 1.8f : -1.8f);
+						currentAttackDuration = attackDuration = 30;
+						break;
+
 					case CurrentAttack.Slam:
-						{
-							rotDifferenceDivider = 25f;
-							direction = direction.RotatedBy(MouseFacingLeft ? -0.8f : 0.8f);
-							currentAttackDuration = attackDuration = 30;
-							break;
-						}
+						rotDifferenceDivider = 25f;
+						direction = direction.RotatedBy(MouseFacingLeft ? -0.8f : 0.8f);
+						currentAttackDuration = attackDuration = 30;
+						break;
 				}
 
 				rotDifference = ((direction.ToRotation() - Projectile.rotation) % 6.28f + 9.42f) % 6.28f - 3.14f;
 
 				if (currentAttack == CurrentAttack.Slam)
 					rotDifference = MouseFacingLeft ? -1 : 1;
+
 				angularVelocity = rotDifference / rotDifferenceDivider;
 				FirstTickOfSwing = false;
 			}
 
 			attackDuration--;
+
 			if (attackDuration > 0)
 			{
 				float sinValue = (currentAttackDuration - (float)attackDuration) / currentAttackDuration;
 				sinValue *= 3.14f;
+
 				if (currentAttack != CurrentAttack.Slam)
-					LENGTH = 100 + (float)(SWAY * Math.Sin(sinValue));
+					length = 100 + (float)(SWAY * Math.Sin(sinValue));
+
 				switch (currentAttack)
 				{
 					case CurrentAttack.Down:
-						{
-							if (currentAttackDuration / 1.18f < attackDuration)
-								angularVelocity *= 1.33f;
-							else
-								angularVelocity *= 0.93f;
-							break;
-						}
+						if (currentAttackDuration / 1.18f < attackDuration)
+							angularVelocity *= 1.33f;
+						else
+							angularVelocity *= 0.93f;
+						break;
+
 					case CurrentAttack.FirstUp:
-						{
-							if (currentAttackDuration / 1.18f < attackDuration)
-								angularVelocity *= 1.33f;
-							else
-								angularVelocity *= 0.93f;
-							break;
-						}
+						if (currentAttackDuration / 1.18f < attackDuration)
+							angularVelocity *= 1.33f;
+						else
+							angularVelocity *= 0.93f;
+						break;
+
 					case CurrentAttack.Spin:
+						if (currentAttackDuration / 2 < attackDuration)
 						{
-							if (currentAttackDuration / 2 < attackDuration)
-							{
-								zRotation += 6.28f / (currentAttackDuration / 2);
-								Player.UpdateRotation(zRotation);
-							}
-							else
-							{
-								angularVelocity *= 0.85f;
-								Player.UpdateRotation(0);
-							}
-
-							break;
+							zRotation += 6.28f / (currentAttackDuration / 2);
+							Player.UpdateRotation(zRotation);
 						}
+						else
+						{
+							angularVelocity *= 0.85f;
+							Player.UpdateRotation(0);
+						}
+
+						break;
+
 					case CurrentAttack.SecondUp:
-						{
-							if (currentAttackDuration / 1.18f < attackDuration)
-								angularVelocity *= 1.33f;
-							else
-								angularVelocity *= 0.93f;
-							break;
-						}
+						if (currentAttackDuration / 1.18f < attackDuration)
+							angularVelocity *= 1.33f;
+						else
+							angularVelocity *= 0.93f;
+						break;
+
 					case CurrentAttack.Slam:
+						if (angularVelocity < 0.6f)
+							angularVelocity *= 1.13f;
+						Vector2 tilePos = Player.Center + (Projectile.rotation + angularVelocity / 2).ToRotationVector2() * length;
+						tilePos.Y += 15;
+						tilePos /= 16;
+
+						if (angularVelocity != 0)
 						{
-							if (angularVelocity < 0.6f)
-								angularVelocity *= 1.13f;
-							Vector2 tilePos = Player.Center + (Projectile.rotation + angularVelocity / 2).ToRotationVector2() * LENGTH;
-							tilePos.Y += 15;
-							tilePos /= 16;
-
-							if (angularVelocity != 0)
+							if (Main.tile[(int)tilePos.X, (int)tilePos.Y].BlockType == BlockType.Solid && angularVelocity != 0 && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Math.Sign(direction.X))
 							{
-								if (Main.tile[(int)tilePos.X, (int)tilePos.Y].BlockType == BlockType.Solid && angularVelocity != 0 && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Math.Sign(direction.X))
+								for (int i = 0; i < 13; i++)
 								{
-									for (int i = 0; i < 13; i++)
-									{
-										Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
-										dustVel.X *= 10;
-										if (Math.Abs(dustVel.X) < 6)
-											dustVel.X += Math.Sign(dustVel.X) * 6;
-										Dust.NewDustPerfect(tilePos * 16 - new Vector2(Main.rand.Next(-20, 20), 17), ModContent.DustType<Dusts.CrescentSmoke>(), dustVel, 0, new Color(236, 214, 146) * 0.15f, Main.rand.NextFloat(0.5f, 1));
-									}
+									Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
+									dustVel.X *= 10;
 
-									if (Charge > 0)
-									{
-										var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+									if (Math.Abs(dustVel.X) < 6)
+										dustVel.X += Math.Sign(dustVel.X) * 6;
 
-										if (proj.ModProjectile is QuarterOrb modproj)
-										{
-											modproj.moveDirection = new Vector2(-Player.direction, -1);
-										}
-									}
-
-									CameraSystem.Shake += 12;
-									angularVelocity = 0;
-									attackDuration = 30;
-									Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+									Dust.NewDustPerfect(tilePos * 16 - new Vector2(Main.rand.Next(-20, 20), 17), ModContent.DustType<Dusts.CrescentSmoke>(), dustVel, 0, new Color(236, 214, 146) * 0.15f, Main.rand.NextFloat(0.5f, 1));
 								}
 
-								if (LENGTH < LENGTH + SWAY)
-									LENGTH++;
+								if (Charge > 0)
+								{
+									var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+
+									if (proj.ModProjectile is QuarterOrb modproj)
+										modproj.moveDirection = new Vector2(-Player.direction, -1);
+								}
+
+								CameraSystem.Shake += 12;
+								angularVelocity = 0;
+								attackDuration = 30;
+								Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
 							}
 
-							break;
+							if (length < length + SWAY)
+								length++;
 						}
+
+						break;
+
 				}
 			}
 			else
@@ -323,7 +313,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (clicked && slashWindow <= 25)
 						FirstTickOfSwing = true;
-
 				}
 
 				if (slashWindow < 0)
@@ -348,8 +337,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			target.immune[Projectile.owner] = 30;
+
 			if (charge < MAXCHARGE)
 				charge++;
+
 			CameraSystem.Shake += 8;
 
 			if (currentAttack != CurrentAttack.Slam)
@@ -369,10 +360,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			// Custom collision so all chains across the flail can cause impact.
 			float collisionPoint = 0f;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Player.Center, Projectile.Center, 24 * Projectile.scale, ref collisionPoint))
-			{
 				return true;
-			}
 
 			return false;
 		}
@@ -380,7 +370,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			Texture2D head = ModContent.Request<Texture2D>(Texture + "_Head").Value;
+			Texture2D head = Request<Texture2D>(Texture + "_Head").Value;
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
 			SpriteEffects effects = zRotation > 1.57f && zRotation < 4.71f ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
@@ -388,8 +378,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 				effects = SpriteEffects.FlipVertically;
 
 			var origin = new Vector2(140, 10);
-			origin.X -= LENGTH;
-			origin.Y += LENGTH;
+			origin.X -= length;
+			origin.Y += length;
+
 			if (effects == SpriteEffects.FlipHorizontally)
 				origin.X = 150 - origin.X;
 
@@ -442,8 +433,16 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Player.itemAnimation = Player.itemTime = 5;
 		}
 	}
+
 	public class QuarterOrb : ModProjectile, IDrawAdditive
 	{
+		public Vector2 moveDirection;
+		public Vector2 newVelocity = Vector2.Zero;
+		public float speed = 7f;
+
+		bool collideX = false;
+		bool collideY = false;
+
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
@@ -453,12 +452,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 			DisplayName.SetDefault("Lunar Orb");
 		}
 
-		public Vector2 moveDirection;
-		public Vector2 newVelocity = Vector2.Zero;
-		public float speed = 7f;
-
-		bool collideX = false;
-		bool collideY = false;
 		public override void SetDefaults()
 		{
 			Projectile.penetrate = -1;
@@ -473,10 +466,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Projectile.scale = 0.5f;
 			newVelocity = Collide();
+
 			if (Math.Abs(newVelocity.X) < 0.5f)
 				collideX = true;
 			else
 				collideX = false;
+
 			if (Math.Abs(newVelocity.Y) < 0.5f)
 				collideY = true;
 			else
@@ -485,10 +480,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (Projectile.ai[1] == 0f)
 			{
 				Projectile.rotation += (float)(moveDirection.X * moveDirection.Y) * 0.43f;
+
 				if (collideY)
-				{
 					Projectile.ai[0] = 2f;
-				}
 
 				if (!collideY && Projectile.ai[0] == 2f)
 				{
@@ -506,10 +500,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			else
 			{
 				Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.13f;
+
 				if (collideX)
-				{
 					Projectile.ai[0] = 2f;
-				}
 
 				if (!collideX && Projectile.ai[0] == 2f)
 				{
@@ -528,6 +521,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Projectile.velocity = speed * moveDirection;
 			Projectile.velocity = Collide();
 		}
+
 		protected virtual Vector2 Collide()
 		{
 			return Collision.noSlopeCollision(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height, true, true);

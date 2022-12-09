@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
-using Terraria;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {

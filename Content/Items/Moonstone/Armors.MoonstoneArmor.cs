@@ -1,15 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using NetEasy;
+﻿using NetEasy;
 using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Core;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Moonstone
@@ -50,22 +45,21 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			if (proj.DamageType.Type == DamageClass.Melee.Type && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Player))
-			{
-				addCharge(Player, damage);
-			}
+				AddCharge(Player, damage);
 		}
 
 		private void ChargeFromMelee(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Item.DamageType.Type == DamageClass.Melee.Type && IsArmorSet(Player))
-			{
-				addCharge(Player, damage);
-			}
+				AddCharge(Player, damage);
 		}
 
-		private void addCharge(Player Player, int damage)
+		private void AddCharge(Player Player, int damage)
 		{
 			var head = Player.armor[0].ModItem as MoonstoneHead;
+
+			if (head is null)
+				return;
 
 			int oldCharge = head.moonCharge;
 			head.moonCharge += (int)(damage * 0.45f);
@@ -118,9 +112,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (spearOn)
 			{
 				if (!(Main.mouseItem.type == dummySpear.type) && !Main.mouseItem.IsAir)
-				{
 					Main.LocalPlayer.QuickSpawnClonedItem(null, Main.mouseItem, Main.mouseItem.stack);
-				}
 
 				Main.mouseItem = dummySpear;
 				player.inventory[58] = dummySpear;
@@ -382,7 +374,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 			this.whoAmI = (byte)whoAmI;
 			this.charge = charge;
 			this.spearOn = spearOn;
-
 		}
 
 		protected override void Receive()
@@ -394,7 +385,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			Player Player = Main.player[whoAmI];
-			if (Player.armor[0] != null && Player.armor[0].type == ModContent.ItemType<MoonstoneHead>())
+
+			if (Player.armor[0] != null && Player.armor[0].type == ItemType<MoonstoneHead>())
 			{
 				var head = Player.armor[0].ModItem as MoonstoneHead;
 				head.moonCharge = charge;

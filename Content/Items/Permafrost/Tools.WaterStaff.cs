@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -45,7 +41,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
 
 					for (int k = 0; k < 5; k++)
-						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
+						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(), 0.6f);
 				}
 
 				if (Player.altFunctionUse == 2)
@@ -54,14 +50,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
 					for (int k = 0; k < 10; k++)
-						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(Main.rand.NextFloat()), 0.6f);
+						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(), 0.6f);
 				}
 			}
 
 			return true;
 		}
 
-		private Color AuroraColor(float seed)
+		private Color AuroraColor()
 		{
 			return new Color(5, 200, 255);
 		}

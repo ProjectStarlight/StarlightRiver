@@ -23,8 +23,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override bool VisibleInUI => false;
 
-		public float Priority => 1f;
-
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += PlayerFrame;
@@ -121,7 +119,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				sparkles.DrawParticles(Main.spriteBatch);
 
 				//the shader for the flames
-				Effect effect1 = Terraria.Graphics.Effects.Filters.Scene["MagicalFlames"].GetShader().Shader;
+				Effect effect1 = Filters.Scene["MagicalFlames"].GetShader().Shader;
 				effect1.Parameters["sampleTexture1"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 				effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
 				effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.008f);
@@ -141,17 +139,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (activationTimerNoCurve >= 80)
 				{
 					int overlayTime = activationTimerNoCurve - 80;
-					float overlayAlpha = 1;
+					float overlayAlpha;
 
 					if (overlayTime < 5)
 						overlayAlpha = 1 - overlayTime / 5f;
-
 					else if (overlayTime <= 25)
 						overlayAlpha = 0;
-
 					else if (overlayTime > 25)
 						overlayAlpha = (overlayTime - 25) / 15f;
-
 					else
 						overlayAlpha = 1;
 
@@ -177,8 +172,20 @@ namespace StarlightRiver.Content.Items.Moonstone
 					}
 				}
 
-				if (Main.rand.Next(4) == 0)
-					sparkles.AddParticle(new Particle(new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width), Main.rand.Next(backTex.Height)), new Vector2(0, Main.rand.NextFloat(0.4f)), 0, 0, new Color(255, 230, 0), 120, new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f), new Rectangle(0, 0, 100, 100)));
+				if (Main.rand.NextBool(4))
+				{
+					sparkles.AddParticle(
+						new Particle(
+							new Vector2(111, 20) + new Vector2(Main.rand.Next(backTex.Width),
+							Main.rand.Next(backTex.Height)),
+							new Vector2(0, Main.rand.NextFloat(0.4f)),
+							0,
+							0,
+							new Color(255, 230, 0),
+							120,
+							new Vector2(Main.rand.NextFloat(0.05f, 0.15f), 0.02f),
+							new Rectangle(0, 0, 100, 100)));
+				}
 			}
 		}
 
@@ -191,7 +198,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 				particle.Scale = (float)Math.Sin(particle.Timer / 120f * 3.14f) * particle.StoredPosition.X;
 				particle.Color = new Color(180, 100 + (byte)(particle.Timer / 120f * 155), 255) * (float)Math.Sin(particle.Timer / 120f * 3.14f);
 			}
-
 			else
 			{
 				particle.Scale = particle.Timer / 60f * particle.StoredPosition.X;
@@ -280,13 +286,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private float storedRotation;
 		private Vector2 storedPos;
 
+		private bool hasSetTimeLeft = false;
+
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public ref float ComboState => ref Projectile.ai[0];
 		public ref float Maxtime => ref Projectile.ai[1];
 		public float Timer => Maxtime - Projectile.timeLeft;
-
-		private bool hasSetTimeLeft = false;
 
 		public Player Owner => Main.player[Projectile.owner];
 
@@ -316,7 +322,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				for (int k = 0; k < 3; k++)
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
 
-				if (Main.rand.Next(2) == 0)
+				if (Main.rand.NextBool(2))
 				{
 					var d = Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * 140 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(15), DustType<Dusts.Aurora>(), Vector2.Zero, 0, new Color(20, 20, 100), 0.8f);
 					d.customData = Main.rand.NextFloat(0.6f, 1.3f);
@@ -464,7 +470,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				spriteBatch.Draw(texShape, Projectile.Center - Main.screenPosition, null, Color.White * shapeOpacity, Projectile.rotation, new Vector2(texShape.Width / 2, texShape.Height / 2), Projectile.scale, 0, 0);
 			}
-
 			else
 			{
 				Texture2D tex = Request<Texture2D>(Texture + "Long").Value;

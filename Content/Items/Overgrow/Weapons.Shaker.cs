@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
@@ -67,6 +68,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 		{
 			int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.position + new Vector2(0, -32), Vector2.Zero, ProjectileType<ShakerBall>(), Item.damage, Item.knockBack);
 			Main.projectile[proj].owner = player.whoAmI;
+
 			return true;
 		}
 
@@ -116,18 +118,15 @@ namespace StarlightRiver.Content.Items.Overgrow
 
 			if (Projectile.timeLeft < 2)
 				Projectile.timeLeft = 2;
+
 			Projectile.scale = Timer < 10 ? (Timer / 10f) : 1;
 			Projectile.damage = (int)(Timer * 1.2f * player.GetDamage(DamageClass.Melee).Multiplicative);
 
 			if (Timer == 100)
-			{
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GoldWithMovement>(), Vector2.One.RotatedByRandom(6.28f));
-			}
 
 			if (State == 0) //charging/holding
-			{
 				Projectile.position = player.Top + (Projectile.position - Projectile.Bottom);
-			}
 
 			if (State == 0 && Timer < 100) //charge up
 			{
@@ -172,6 +171,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 					State = 2;
 
 					CameraSystem.Shake += (int)(Timer * 0.2f);
+
 					for (int k = 0; k <= 100; k++)
 					{
 						Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 32), DustType<Dusts.Stone>(), new Vector2(0, 1).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1) * Timer / 10f);
