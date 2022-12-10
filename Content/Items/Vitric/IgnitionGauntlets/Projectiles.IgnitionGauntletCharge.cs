@@ -1,19 +1,16 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletCharge : ModProjectile
 	{
 		int charge = 0;
+
+		private Player Owner => Main.player[Projectile.owner];
+
 		public override string Texture => AssetDirectory.VitricItem + "IgnitionGauntletLaunch_Star";
-		private Player owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -41,25 +38,29 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
+			IgnitionPlayer modPlayer = Owner.GetModPlayer<IgnitionPlayer>();
 			Texture2D starTex = ModContent.Request<Texture2D>(Texture).Value;
-			Vector2 handOffset = new Vector2(8 * owner.direction, 0).RotatedBy(owner.fullRotation);
-			Main.spriteBatch.Draw(starTex, owner.MountedCenter + handOffset - Main.screenPosition, null, new Color(255, 255, 255, 0) * (charge / (float)modPlayer.charge), Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + 0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f), SpriteEffects.None, 0f);
+			Vector2 handOffset = new Vector2(8 * Owner.direction, 0).RotatedBy(Owner.fullRotation);
+			Main.spriteBatch.Draw(starTex, Owner.MountedCenter + handOffset - Main.screenPosition, null, new Color(255, 255, 255, 0) * (charge / (float)modPlayer.charge), Main.GameUpdateCount * 0.085f, starTex.Size() / 2, 0.5f + 0.07f * (float)Math.Sin(Main.GameUpdateCount * 0.285f), SpriteEffects.None, 0f);
 			return false;
 		}
+
 		public override void AI()
 		{
-			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
-			Projectile.Center = owner.Center;
+			IgnitionPlayer modPlayer = Owner.GetModPlayer<IgnitionPlayer>();
+			Projectile.Center = Owner.Center;
+
 			if (Main.mouseRight)
 			{
-				owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction);
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.57f * Owner.direction);
+
 				if (modPlayer.charge > charge)
 					charge += 3;
+
 				if (modPlayer.charge - 50 > charge)
 				{
-					var dust = Dust.NewDustPerfect(owner.Center + new Vector2(Main.rand.Next(-25, 25), 25), ModContent.DustType<IgnitionChargeDust>(), default, default, Color.OrangeRed);
-					dust.customData = owner.whoAmI;
+					var dust = Dust.NewDustPerfect(Owner.Center + new Vector2(Main.rand.Next(-25, 25), 25), ModContent.DustType<IgnitionChargeDust>(), default, default, Color.OrangeRed);
+					dust.customData = Owner.whoAmI;
 				}
 
 				modPlayer.potentialCharge = charge;
@@ -67,13 +68,13 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			else
 			{
 				modPlayer.potentialCharge = 0;
-				if (!owner.GetModPlayer<IgnitionPlayer>().launching)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
 
-				//UNCOMMENT THIS BEFORE RELEASE
+				if (!Owner.GetModPlayer<IgnitionPlayer>().launching)
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletLaunch>(), Projectile.damage, Projectile.knockBack, Projectile.owner);
+
 				modPlayer.charge -= charge;
 				modPlayer.loadedCharge = charge;
-				owner.GetModPlayer<IgnitionPlayer>().launching = true;
+				Owner.GetModPlayer<IgnitionPlayer>().launching = true;
 				Projectile.active = false;
 			}
 		}

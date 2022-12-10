@@ -1,18 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
+﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Tiles.Forest;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Potions
 {
 	public abstract class BarrierPotion : ModItem
 	{
-		int amount;
-		int duration;
+		readonly int amount;
+		readonly int duration;
 		readonly string prefix;
 
 		public override string Texture => AssetDirectory.PotionsItem + Name;

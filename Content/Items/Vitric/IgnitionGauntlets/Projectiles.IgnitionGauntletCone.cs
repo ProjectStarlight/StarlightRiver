@@ -1,18 +1,14 @@
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletCone : ModProjectile
 	{
+		public Vector2 directionVector = Vector2.Zero;
+
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.Assets + "Invisible";
-
-		public Vector2 directionVector = Vector2.Zero;
-		private Player owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{

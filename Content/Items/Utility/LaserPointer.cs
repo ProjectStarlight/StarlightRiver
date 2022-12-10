@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -37,6 +32,7 @@ namespace StarlightRiver.Content.Items.Utility
 		private Color color;
 		private readonly int extraMaterial;
 		private readonly string InternalName;
+
 		protected override bool CloneNewInstances => true;
 
 		public override string Name => InternalName;

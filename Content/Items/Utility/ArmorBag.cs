@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
-using Terraria;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.UI;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Utility
@@ -11,11 +8,6 @@ namespace StarlightRiver.Content.Items.Utility
 	class ArmorBag : ModItem
 	{
 		public Item[] storedArmor = new Item[3];
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
 
 		public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
 
@@ -55,6 +47,11 @@ namespace StarlightRiver.Content.Items.Utility
 			}
 
 			return newBag;
+		}
+
+		public override bool CanRightClick()
+		{
+			return true;
 		}
 
 		public override void RightClick(Player Player)

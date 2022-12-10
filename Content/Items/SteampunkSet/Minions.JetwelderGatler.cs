@@ -1,30 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class JetwelderGatler : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderGatler";
-
-		public override void Load()
-		{
-			for (int k = 1; k <= 8; k++)
-				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + k);
-
-			GoreLoader.AddGoreFromTexture<JetwelderCasingGore>(Mod, AssetDirectory.SteampunkItem + "JetwelderCasing");
-		}
-
-		private const int ATTACKRANGE = 500;
-		private const int MINATTACKRANGE = 150;
+		private const int MAX_RANGE = 500;
+		private const int MIN_RANGE = 150;
 		private const float SPEED = 15f;
-		private const float IDLESPEED = 8f;
+		private const float IDLE_SPEED = 8f;
 
 		private float idleHoverOffset;
 		private int idleYOffset;
@@ -41,6 +26,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private bool firing = false;
 
 		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderGatler";
+
+		public override void Load()
+		{
+			for (int k = 1; k <= 8; k++)
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + k);
+
+			GoreLoader.AddGoreFromTexture<JetwelderCasingGore>(Mod, AssetDirectory.SteampunkItem + "JetwelderCasing");
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -122,8 +117,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			var offset = new Vector2((float)Math.Cos(Main.timeForVisualEffects * 3f + idleHoverOffset) * 50, -100 + idleYOffset);
 			Vector2 direction = Player.Center + offset - Projectile.Center;
+
 			if (direction.Length() > 15)
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLESPEED, 0.02f);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLE_SPEED, 0.02f);
 
 			Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
 			Projectile.rotation = 0 + (float)(Math.Sqrt(Projectile.velocity.Length()) * 0.2f * Projectile.spriteDirection);
@@ -132,9 +128,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void AttackMovement()
 		{
 			if (posToBe == Vector2.Zero || !ClearPath(target.Center + posToBe, target.Center))
-			{
 				posToBe = findPosToBe(target);
-			}
 
 			if (posToBe.Length() < 60)
 			{
@@ -153,9 +147,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.rotation = currentRotation;
 
 			if (Math.Abs(rotDifference) < 0.15f)
-			{
 				Projectile.rotation = rotationGoal;
-			}
 
 			if (Projectile.rotation.ToRotationVector2().X < 0)
 			{
@@ -215,10 +207,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int i = 0; i < direction.Length(); i += 8)
 			{
 				Vector2 toLookAt = point1 + Vector2.Normalize(direction) * i;
+
 				if (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
-				{
 					return false;
-				}
 			}
 
 			return true;
@@ -228,21 +219,26 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Vector2 ret = Vector2.Zero;
 			int tries = 0;
+
 			while (tries < 99)
 			{
 				tries++;
 				float angle = Main.rand.NextFloat(-3.14f, 0f);
+
 				if (angle > -2.355f && angle < -0.785)
 					continue;
-				for (int i = 0; i < ATTACKRANGE; i += 8)
+
+				for (int i = 0; i < MAX_RANGE; i += 8)
 				{
 					Vector2 toLookAt = tempTarget.Center + angle.ToRotationVector2() * i;
-					if (i > ATTACKRANGE - 16 || Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
+
+					if (i > MAX_RANGE - 16 || Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
 					{
 						ret = angle.ToRotationVector2() * i * 0.75f;
 
-						if (i > MINATTACKRANGE)
+						if (i > MIN_RANGE)
 							tries = 100;
+
 						break;
 					}
 				}
@@ -254,13 +250,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void FindFrame()
 		{
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 3 == 0)
 				Projectile.frame++;
 
 			if (Projectile.frameCounter % 2 == 0)
 				gunFrame++;
+
 			Projectile.frame %= Main.projFrames[Projectile.type];
 			gunFrame %= Main.projFrames[Projectile.type];
+
 			if (!firing)
 				gunFrame = 0;
 		}

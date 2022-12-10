@@ -1,22 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
 	class OverflowingUrn : ModItem
 	{
-
 		public const int FREEZETIME = 180;
 
 		public int freezeTimer;
@@ -83,8 +78,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 					var middleFrame = new Rectangle(0, (int)(32 * (1 - rectLerper)) - 2, 32, 2);
 					var bottomFrame = new Rectangle(0, (int)(32 * (1 - rectLerper)), 32, (int)(32 * rectLerper));
 					spriteBatch.Draw(overlayTex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, topFrame, Color.White * item.animationTimer * 0.3f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+
 					if (rectLerper * 32 + 2 < 32 && rectLerper * 32 > 0)
 						spriteBatch.Draw(dividerTex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition + new Vector2(0, (int)(32 * (1 - rectLerper)) - 2), middleFrame, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
+
 					spriteBatch.Draw(overlayTex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition + new Vector2(0, (int)(32 * (1 - rectLerper))), bottomFrame, Color.White * item.animationTimer * 0.8f, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
 
 					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
@@ -108,13 +105,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, Item.shoot, Item.damage, Item.knockBack, player.whoAmI);
 
 			if (player.channel && player.statMana > Item.mana && !player.HasBuff(ModContent.BuffType<UrnFreeze>()) && !released)
-			{
 				freezeTimer++;
-			}
 			else if (freezeTimer > 0)
-			{
 				freezeTimer--;
-			}
 
 			if (freezeTimer >= 360)
 			{
@@ -162,13 +155,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private Microsoft.Xna.Framework.Audio.SoundEffectInstance sound;
 
-		private Vector2 currentPoint => Projectile.Center - currentRotation.ToRotationVector2() * 500 * windStrength;
-		private Vector2 controlPoint => Projectile.Center - (Projectile.rotation + 1.57f).ToRotationVector2() * 350 * windStrength;
-		private Vector2 controlPointSmall => Projectile.Center - (Projectile.rotation + 1.57f).ToRotationVector2() * 50 * windStrength;
-		private Vector2 controlPointMedium => Projectile.Center - (Projectile.rotation + 1.57f - (currentRotation - (Projectile.rotation + 1.57f))).ToRotationVector2() * 150 * windStrength;
+		private Vector2 CurrentPoint => Projectile.Center - currentRotation.ToRotationVector2() * 500 * WindStrength;
+		private Vector2 ControlPoint => Projectile.Center - (Projectile.rotation + 1.57f).ToRotationVector2() * 350 * WindStrength;
+		private Vector2 ControlPointSmall => Projectile.Center - (Projectile.rotation + 1.57f).ToRotationVector2() * 50 * WindStrength;
+		private Vector2 ControlPointMed => Projectile.Center - (Projectile.rotation + 1.57f - (currentRotation - (Projectile.rotation + 1.57f))).ToRotationVector2() * 150 * WindStrength;
 
-		private Player owner => Main.player[Projectile.owner];
-		private float windStrength => MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
+		private Player Owner => Main.player[Projectile.owner];
+		private float WindStrength => MathHelper.Clamp((capCounter - 10) / 10f, 0, 1);
 
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
@@ -203,14 +196,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void AI()
 		{
-			if (owner.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
+			if (Owner.HeldItem.type == ModContent.ItemType<OverflowingUrn>())
 				Projectile.timeLeft = 20;
 
 			float rotDifference = ((Projectile.rotation + 1.57f - currentRotation) % 6.28f + 9.42f) % 6.28f - 3.14f;
 
 			currentRotation = MathHelper.Lerp(currentRotation, currentRotation + rotDifference, 0.15f);
 
-			if (windStrength > 0)
+			if (WindStrength > 0)
 			{
 				if (!windBlowing)
 				{
@@ -223,7 +216,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				windBlowing = false;
 			}
 
-			if (owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
+			if (Owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
 			{
 				freezeTimer++;
 			}
@@ -244,12 +237,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			capLeaving = false;
 
-			if (owner.channel && owner.statMana > owner.HeldItem.mana && !frozenShut || owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
+			if (Owner.channel && Owner.statMana > Owner.HeldItem.mana && !frozenShut || Owner.HasBuff(ModContent.BuffType<UrnFreeze>()))
 			{
 				if (capCounter > 10)
-				{
 					capOpen = true;
-				}
 
 				if (capCounter < 20)
 				{
@@ -299,6 +290,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (capCounter > 6 && frozenShut)
 					capCounter -= 2;
+
 				if (capCounter > 6)
 				{
 					capCounter--;
@@ -322,7 +314,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			hoverCounter += 0.03f;
 
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = owner.Center + offsetVector - new Vector2(0, 50 + 5 * (float)Math.Sin(hoverCounter));
+			Projectile.Center = Owner.Center + offsetVector - new Vector2(0, 50 + 5 * (float)Math.Sin(hoverCounter));
 			offsetVector *= 0.97f;
 
 			float rotDifference2 = ((Projectile.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f - Projectile.rotation) % 6.28f + 9.42f) % 6.28f - 3.14f;
@@ -332,7 +324,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			capCounter = (int)MathHelper.Clamp(capCounter, 0, 20);
 			appearCounter++;
 			Projectile.scale = opacity = MathHelper.Min(Projectile.timeLeft / 20f, appearCounter / 20f);
-			owner.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
+			Owner.bodyFrame = new Rectangle(0, 56 * 5, 40, 56);
 
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -356,23 +348,24 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			if (windStrength > 0)
+			if (WindStrength > 0)
 				DrawWind();
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D topTex = ModContent.Request<Texture2D>(Texture + "_Top").Value;
-			float capOpacity = owner.channel ? 1 - capCounter / 20f : 1 - MathHelper.Clamp((capCounter - 6) / 14f, 0, 1);
+			float capOpacity = Owner.channel ? 1 - capCounter / 20f : 1 - MathHelper.Clamp((capCounter - 6) / 14f, 0, 1);
 
 			float rot = 0f;
 
 			Vector2 rotationVector = (Projectile.rotation + 1.57f).ToRotationVector2();
-			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? EaseFunction.EaseCubicIn.Ease(1 - capOpacity) : EaseFunction.EaseCubicOut.Ease(1 - capOpacity)));
-			Vector2 urnPos = Projectile.Center - Main.screenPosition + new Vector2(0, owner.gfxOffY);
+			Vector2 capPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY) + rotationVector * -(20 * (capLeaving ? EaseFunction.EaseCubicIn.Ease(1 - capOpacity) : EaseFunction.EaseCubicOut.Ease(1 - capOpacity)));
+			Vector2 urnPos = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY);
 
 			if (!capLeaving)
 			{
 				float shake = (float)Math.Sin(3.14f * Math.Clamp(capCounter / 6f, 0, 1)) * 3;
 				rot = (float)Math.Sin(6.28f * Math.Clamp(capCounter / 6f, 0, 1)) * 0.03f;
+
 				if (frozenShut)
 				{
 					rot *= 7;
@@ -391,15 +384,15 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private void ManageCaches()
 		{
 			cache = new List<Vector2>();
-			Vector2 goff = new Vector2(0, owner.gfxOffY) + (Projectile.rotation - 1.57f).ToRotationVector2() * 12;
-			var curve = new BezierCurve(new Vector2[] { Projectile.Center + goff, controlPointSmall + goff, controlPointMedium + goff, controlPoint + goff, currentPoint + goff });
+			Vector2 goff = new Vector2(0, Owner.gfxOffY) + (Projectile.rotation - 1.57f).ToRotationVector2() * 12;
+			var curve = new BezierCurve(new Vector2[] { Projectile.Center + goff, ControlPointSmall + goff, ControlPointMed + goff, ControlPoint + goff, CurrentPoint + goff });
 			cache = curve.GetPoints(120);
 			cache.Reverse();
 		}
 
 		private void ManageTrails()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => 174 * windStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
+			trail ??= new Trail(Main.instance.GraphicsDevice, 120, new TriangularTip(4), factor => 174 * WindStrength + 0.9f * freezeTimer, factor => Lighting.GetColor(Projectile.Center.ToTileCoordinates()));
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 		}
@@ -438,6 +431,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
+
 	class UrnWindLine : ModDust
 	{
 		public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
@@ -477,6 +471,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (dust.fadeIn > 60)
 				dust.active = false;
+
 			return false;
 		}
 	}

@@ -1,24 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class JetwelderJumper : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderJumper";
-
-		private readonly int STARTTIMELEFT = 1200;
+		private readonly int BASE_DURATION = 1200;
 
 		private bool jumping = false;
 
@@ -29,6 +22,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private int fireCounter = 0;
 
 		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderJumper";
 
 		public override void Load()
 		{
@@ -54,7 +49,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.hostile = false;
 			Projectile.minion = true;
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = STARTTIMELEFT;
+			Projectile.timeLeft = BASE_DURATION;
 			Projectile.ignoreWater = true;
 		}
 
@@ -183,17 +178,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 	}
+
 	public class JetwelderJumperMissle : ModProjectile
 	{
+		private List<Vector2> cache;
+		private Trail trail;
+
+		private NPC victim = default;
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		private Player Player => Main.player[Projectile.owner];
 
-		private List<Vector2> cache;
-		private Trail trail;
-
-		private NPC victim = default;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Grenade");
@@ -219,6 +215,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 5 == 0)
 				Projectile.frame++;
 
@@ -339,14 +336,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
+
 	internal class JetwelderJumperExplosion : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
-
-		//private List<Vector2> cache;
-
-		//private Trail trail;
-		//private Trail trail2;
 
 		private float Progress => 1 - Projectile.timeLeft / 5f;
 
@@ -368,29 +361,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			DisplayName.SetDefault("Rocket");
 		}
 
-		public override void AI()
-		{
-			//ManageCaches();
-			//ManageTrail();
-		}
-
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
-			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-			{
-				return true;
-			}
 
-			return false;
+			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line);
 		}
 
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (target.whoAmI == Projectile.ai[0])
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 

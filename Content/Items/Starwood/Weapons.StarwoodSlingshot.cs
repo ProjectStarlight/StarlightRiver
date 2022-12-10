@@ -1,13 +1,8 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
@@ -47,6 +42,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override bool CanConsumeAmmo(Item ammo, Player player)
 		{
 			timesShot++;
+
 			if (timesShot >= 50)
 			{
 				timesShot = 0;
@@ -59,11 +55,11 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	public class StarwoodSlingshotProj : ModProjectile
 	{
-		const int minDamage = 15;
-		const int maxDamage = 20;
-		const int minVelocity = 4;
-		const int maxVelocity = 25;
-		const float chargeRate = 0.02f;
+		const int MIN_DAMAGE = 15;
+		const int MAX_DAMAGE = 20;
+		const int MIN_VELOCITY = 4;
+		const int MAX_VELOCITY = 25;
+		const float CHARGE_RATE = 0.02f;
 
 		private bool empowered = false;
 		private bool released = false;
@@ -134,10 +130,10 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				if (charge < 1)
 				{
-					if ((charge + chargeRate) >= 1)
+					if ((charge + CHARGE_RATE) >= 1)
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.25f }, Projectile.Center);
 
-					charge += chargeRate;
+					charge += CHARGE_RATE;
 				}
 			}
 			else
@@ -164,8 +160,8 @@ namespace StarlightRiver.Content.Items.Starwood
 
 				if (Projectile.timeLeft == 8)
 				{
-					Vector2 velocity = direction * Helper.LerpFloat(minVelocity, maxVelocity, charge);
-					int damage = (int)Helper.LerpFloat(minDamage, maxDamage, charge);
+					Vector2 velocity = direction * Helper.LerpFloat(MIN_VELOCITY, MAX_VELOCITY, charge);
+					int damage = (int)Helper.LerpFloat(MIN_DAMAGE, MAX_DAMAGE, charge);
 					int proj = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, velocity, ModContent.ProjectileType<StarwoodSlingshotStar>(), damage, Projectile.knockBack, Projectile.owner);
 					Main.projectile[proj].frame = (int)(charge * 5) - 1;
 
@@ -179,8 +175,6 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
 			SpriteEffects spriteEffect = SpriteEffects.None;
 			Vector2 offset = Vector2.Zero;
 
@@ -212,6 +206,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 					Texture2D fragmenttexture = ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodSlingshotParts").Value;
 					var frame2 = new Rectangle(0, (int)(i * 5 * 24), 22, 24);
+
 					if (empowered)
 						frame2.Y += fragmenttexture.Height / 2;
 
@@ -254,7 +249,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	public class StarwoodSlingshotStar : ModProjectile, IDrawAdditive
 	{
-		const int EmpoweredDamageIncrease = 5;
+		const int DAMAGE_INCREASE = 5;
 
 		//These stats get scaled when empowered
 		private float ScaleMult = 1.5f;
@@ -313,7 +308,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (empowered)
-				damage += EmpoweredDamageIncrease;
+				damage += DAMAGE_INCREASE;
 		}
 
 		public override void Kill(int timeLeft)

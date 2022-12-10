@@ -1,15 +1,11 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -48,6 +44,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.noUseGraphic = true;
 			//Item.UseSound = SoundID.DD2_SkyDragonsFuryShot;
 		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -66,10 +63,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	public class BuzzsawProj : ModProjectile
 	{
 		private const int OFFSET = 30;
-		private const int MAXCHARGE = 20;
-
-		public ref float Charge => ref Projectile.ai[0];
-		public ref float Angle => ref Projectile.ai[1];
+		private const int MAX_CHARGE = 20;
 
 		float oldAngle = 0f;
 
@@ -82,6 +76,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		//we keep track of when the saw hits so that we can show the gores in multiPlayer
 		private bool justHit = false;
+
+		public ref float Charge => ref Projectile.ai[0];
+		public ref float Angle => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
@@ -110,10 +107,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Player Player = Main.player[Projectile.owner];
 
-			if (Charge >= MAXCHARGE)
+			if (Charge >= MAX_CHARGE)
 			{
 				if (flickerTime == 0)
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath7, Projectile.Center);
+
 				flickerTime++;
 			}
 			else
@@ -145,7 +143,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 				bladeRotation += 1.2f;
 				Player.ChangeDir(direction.X > 0 ? 1 : -1);
-				shake = MathHelper.Lerp(0.04f, 0.15f, Charge / MAXCHARGE);
+				shake = MathHelper.Lerp(0.04f, 0.15f, Charge / MAX_CHARGE);
 
 				counter++;
 				Projectile.frame = counter / 5 % 2 + 2;
@@ -182,6 +180,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				for (int i = 0; i < Main.maxNPCs; i++)
 				{
 					NPC NPC = Main.npc[i];
+
 					if (NPC.active && NPC.Hitbox.Intersects(Projectile.Hitbox))
 						hitGore(NPC);
 				}
@@ -192,8 +191,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (Charge < MAXCHARGE)
+			if (Charge < MAX_CHARGE)
 				Charge++;
+
 			Projectile.netUpdate = true;
 			justHit = true;
 			hitGore(target);
@@ -238,7 +238,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override bool PreDraw(ref Color lightColor) //extremely messy code I ripped from a weapon i made for spirit :trollge:
 		{
 			var heatColor = new Color(255, 96, 0);
-			lightColor = Color.Lerp(lightColor, heatColor, Charge / MAXCHARGE * 0.6f);
+			lightColor = Color.Lerp(lightColor, heatColor, Charge / MAX_CHARGE * 0.6f);
 
 			Player Player = Main.player[Projectile.owner];
 			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
@@ -264,7 +264,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Main.spriteBatch.Draw(texture, position, null, lightColor, direction.ToRotation() - 3.14f, origin, Projectile.scale, effects1, 0.0f);
 			}
 
-			if (Charge >= MAXCHARGE && !released && flickerTime < 16)
+			if (Charge >= MAX_CHARGE && !released && flickerTime < 16)
 			{
 				texture = ModContent.Request<Texture2D>(Texture + "_White").Value;
 				texture2 = ModContent.Request<Texture2D>(Texture + "_Blade_White").Value;
@@ -296,35 +296,34 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void LaunchSaw(Player Player)
 		{
 			released = true;
+
 			if (Main.myPlayer == Player.whoAmI)
 			{
-				float speed = MathHelper.Lerp(8f, 12f, Charge / MAXCHARGE);
-				float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / MAXCHARGE);
+				float speed = MathHelper.Lerp(8f, 12f, Charge / MAX_CHARGE);
+				float damageMult = MathHelper.Lerp(0.85f, 2f, Charge / MAX_CHARGE);
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction * speed, ModContent.ProjectileType<BuzzsawProj2>(), (int)(Projectile.damage * damageMult), Projectile.knockBack, Projectile.owner);
 			}
 		}
 
 		private void ReleaseSteam(Player Player)
 		{
-			float alphaMult = MathHelper.Lerp(0.75f, 3f, Charge / MAXCHARGE);
+			float alphaMult = MathHelper.Lerp(0.75f, 3f, Charge / MAX_CHARGE);
 			Dust.NewDustPerfect(Vector2.Lerp(Projectile.Center, Player.Center, 0.75f), ModContent.DustType<Dusts.BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), (int)(Main.rand.Next(15) * alphaMult), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 		}
 	}
 
 	public class BuzzsawProj2 : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
 		private float rotationCounter;
 
 		private Vector2 oldVel;
-
-		private Player Player => Main.player[Projectile.owner];
 
 		public bool justLaunched = true;
 
 		public bool justHit = false;
 		public short pauseTimer = -1;
+
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -383,6 +382,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Vector2 direction = target.Center - Projectile.Center;
 			direction.Normalize();
+
 			for (int i = 0; i < 2; i++)
 			{
 
@@ -403,13 +403,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 	}
+
 	public class PhantomBuzzsaw : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
 		public Projectile parent;
 
 		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -448,7 +449,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
-					if (proj.active && proj.owner == this.Projectile.owner && proj.type == ModContent.ProjectileType<BuzzsawProj2>())
+
+					if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<BuzzsawProj2>())
 					{
 						parent = proj;
 						break;
@@ -467,7 +469,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			Projectile.Center = parent.Center;
 			Projectile.velocity = parent.velocity;
-
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -526,16 +527,20 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (Projectile.ai[0]++ == 0)
 				Projectile.position -= new Vector2(-Projectile.spriteDirection * 20, 28).RotatedBy(Projectile.rotation);
+
 			Projectile.velocity = Vector2.Zero;
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter > 4)
 			{
 				Projectile.frameCounter = 0;
 				Projectile.frame++;
+
 				if (Projectile.frame >= Main.projFrames[Projectile.type])
 					Projectile.active = false;
 			}
 		}
+
 		protected virtual void SetFrames()
 		{
 			Main.projFrames[Projectile.type] = 3;

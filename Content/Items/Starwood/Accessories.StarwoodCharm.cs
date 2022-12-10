@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
@@ -23,7 +18,6 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			StarlightPlayer.OnHitNPCEvent += SpawnManaOnCrit;
 			StarlightProjectile.ModifyHitNPCEvent += SpawnManaOnProjCrit;
-
 		}
 
 		private void SpawnManaOnProjCrit(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -31,25 +25,22 @@ namespace StarlightRiver.Content.Items.Starwood
 			Player Player = Main.player[Projectile.owner];
 
 			if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
-				spawnStar(target.Center);
+				SpawnStar(target.Center);
 		}
 
 		private void SpawnManaOnCrit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
-				spawnStar(target.Center);
-
+				SpawnStar(target.Center);
 		}
 
-		private void spawnStar(Vector2 position)
+		private void SpawnStar(Vector2 position)
 		{
 			Player player = Main.player[Item.playerIndexTheItemIsReservedFor];
 			int item = Item.NewItem(player.GetSource_Loot(), position, ItemID.Star, 1, true, 0, true);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
-			{
 				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
-			}
 		}
 
 		public override void SafeUpdateEquip(Player Player)

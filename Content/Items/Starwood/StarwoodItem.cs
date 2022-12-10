@@ -1,9 +1,3 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-
 namespace StarlightRiver.Content.Items.Starwood
 {
 	public abstract class StarwoodItem : ModItem

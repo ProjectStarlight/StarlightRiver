@@ -1,20 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
 	public class StarwoodBoomerangProjectile : ModProjectile, IDrawAdditive
 	{
-		private const int maxChargeTime = 50;//how long it takes to charge up
+		private const int CHARGE_TIME = 50; //how long it takes to charge up
 
-		private float chargeMult;//a multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
+		private float chargeMult; //a multiplier used during charge up, used both in ai and for drawing (goes from 0 to 1)
 
 		//These stats get scaled when empowered
 		private int ScaleMult = 2;
@@ -85,17 +80,17 @@ namespace StarlightRiver.Content.Items.Starwood
 					break;
 
 				case 1://has hit something
-					if (projOwner.controlUseItem || Projectile.ai[1] >= maxChargeTime - 5)
+					if (projOwner.controlUseItem || Projectile.ai[1] >= CHARGE_TIME - 5)
 					{
 						if (Projectile.ai[1] == 0)
-							Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ImpactHeal"), Projectile.Center);
+							SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/ImpactHeal"), Projectile.Center);
 
-						chargeMult = Projectile.ai[1] / (maxChargeTime + 3);
+						chargeMult = Projectile.ai[1] / (CHARGE_TIME + 3);
 						Projectile.ai[1]++;
 						Projectile.velocity *= 0.75f;
 						Lighting.AddLight(Projectile.Center, lightColor * chargeMult);
 
-						if (Projectile.ai[1] >= maxChargeTime + 3) //reset stats and start return phase
+						if (Projectile.ai[1] >= CHARGE_TIME + 3) //reset stats and start return phase
 						{
 							Projectile.position = Projectile.Center;
 							Projectile.width = 18;
@@ -109,7 +104,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 							NextPhase(1);
 						}//ai[]s reset here
-						else if (Projectile.ai[1] == maxChargeTime) //change hitbox size, stays for 3 frames
+						else if (Projectile.ai[1] == CHARGE_TIME) //change hitbox size, stays for 3 frames
 						{
 							Projectile.position = Projectile.Center;
 							Projectile.width = 67 * ScaleMult;
@@ -121,11 +116,11 @@ namespace StarlightRiver.Content.Items.Starwood
 								Projectile.oldPos[k] = Projectile.position;
 							}
 						}
-						else if (Projectile.ai[1] == maxChargeTime - 5) //sfx
+						else if (Projectile.ai[1] == CHARGE_TIME - 5) //sfx
 						{
 							Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2.25f * ScaleMult, dustDensity: 2, pointDepthMult: 0.3f);
 							Lighting.AddLight(Projectile.Center, lightColor * 2);
-							Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/MagicAttack"), Projectile.Center);
+							SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/MagicAttack"), Projectile.Center);
 
 							for (int k = 0; k < 50; k++)
 							{
@@ -143,7 +138,6 @@ namespace StarlightRiver.Content.Items.Starwood
 				case 2://heading back
 					if (Vector2.Distance(projOwner.Center, Projectile.Center) < 24)
 						Projectile.Kill();
-
 					else if (Vector2.Distance(projOwner.Center, Projectile.Center) < 200)
 						Projectile.velocity += Vector2.Normalize(projOwner.Center - Projectile.Center) * 4;
 					else
@@ -159,7 +153,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				if (Projectile.timeLeft % 8 == 0)
 				{
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);
+					SoundEngine.PlaySound(SoundID.Item7, Projectile.Center);
 					Dust.NewDustPerfect(Projectile.Center, dustType, (Projectile.velocity * 0.5f).RotatedByRandom(0.5f), Scale: Main.rand.NextFloat(0.8f, 1.5f));
 				}
 			}
@@ -169,7 +163,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			if (Projectile.ai[0] == 1)
 			{
-				if (Projectile.ai[1] >= maxChargeTime - 3 && Projectile.ai[1] <= maxChargeTime + 3)
+				if (Projectile.ai[1] >= CHARGE_TIME - 3 && Projectile.ai[1] <= CHARGE_TIME + 3)
 				{
 					if (empowered)
 					{
@@ -188,7 +182,6 @@ namespace StarlightRiver.Content.Items.Starwood
 					knockback *= 0.1f;
 				}
 			}
-
 			else if (empowered)
 			{
 				damage += 3;
@@ -251,13 +244,16 @@ namespace StarlightRiver.Content.Items.Starwood
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = AuraTexture;
+
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
 				if (!(Projectile.ai[0] == 1 && (Projectile.oldPos[k] / 5).ToPoint() == (Projectile.position / 5).ToPoint()))
 				{
 					Color color = (empowered ? new Color(70, 90, 100) : new Color(100, 90, 60)) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
 					if (k <= 4)
 						color *= 1.2f;
+
 					float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
 
 					spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() * 0.5f, scale * 0.5f, default, default);
@@ -265,7 +261,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 
 			Texture2D tex2 = Request<Texture2D>(AssetDirectory.StarwoodItem + "Glow2").Value;//a
-			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / maxChargeTime), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1f, 0, 0);
+			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), new Color(255, 255, 200, 75) * (Projectile.ai[1] / CHARGE_TIME), 0, tex2.Size() * 0.5f, (-chargeMult + 1) * 1f, 0, 0);
 		}
 
 		public override void PostDraw(Color lightColor)

@@ -1,20 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class Jetwelder : ModItem
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
 		private bool clickingRight = false;
+
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -33,7 +28,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 			Item.UseSound = SoundID.Item44;
 			Item.channel = true;
 			Item.noMelee = true;
@@ -46,6 +41,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (clickingRight && Player.altFunctionUse == 2)
 				return false;
+
 			return base.CanUseItem(Player);
 		}
 
@@ -54,10 +50,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (player.altFunctionUse == 2)
 				type = ModContent.ProjectileType<JetwelderSelector>();
 		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (player.altFunctionUse == 2)
 				clickingRight = true;
+
 			return true;
 		}
 
@@ -99,9 +97,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 	public class JetwelderSelector : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderSelector";
-
-		private Player Player => Main.player[Projectile.owner];
+		private const float PI_OVER_FOUR = (float)Math.PI / 4f; //sick of casting
 
 		private Vector2 direction = Vector2.Zero;
 
@@ -116,7 +112,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private float scaleCounter = 0f;
 
-		private static float PiOverFour = (float)Math.PI / 4f; //sick of casting
+		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderSelector";
 
 		public override void Load()
 		{
@@ -129,6 +127,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			DisplayName.SetDefault("Jetwelder");
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.hostile = false;
@@ -152,25 +151,25 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			DrawRobot(Main.spriteBatch,
 					  ModContent.Request<Texture2D>(Texture + "_Crawler").Value,
 					  ModContent.Request<Texture2D>(Texture + "_Crawler_Gray").Value,
-					  -2 * PiOverFour,
+					  -2 * PI_OVER_FOUR,
 					  5,
 					  crawlerScale);
 			DrawRobot(Main.spriteBatch,
 					  ModContent.Request<Texture2D>(Texture + "_Jumper").Value,
 					  ModContent.Request<Texture2D>(Texture + "_Jumper_Gray").Value,
-					  0 * PiOverFour,
+					  0 * PI_OVER_FOUR,
 					  10,
 					  jumperScale);
 			DrawRobot(Main.spriteBatch,
 					  ModContent.Request<Texture2D>(Texture + "_Gatler").Value,
 					  ModContent.Request<Texture2D>(Texture + "_Gatler_Gray").Value,
-					  2 * PiOverFour,
+					  2 * PI_OVER_FOUR,
 					  15,
 					  gatlerScale);
 			DrawRobot(Main.spriteBatch,
 					  ModContent.Request<Texture2D>(Texture + "_Final").Value,
 					  ModContent.Request<Texture2D>(Texture + "_Final_Gray").Value,
-					  4 * PiOverFour, //Yes I know this is PI but it's consistant this way
+					  4 * PI_OVER_FOUR, //Yes I know this is PI but it's consistant this way
 					  20,
 					  finalScale);
 
@@ -182,6 +181,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			JetwelderPlayer modPlayer = Player.GetModPlayer<JetwelderPlayer>();
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = Player.Center;
+
 			if (Main.mouseRight)
 			{
 				if (scaleCounter < 1)
@@ -196,6 +196,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 				Player.itemTime = Player.itemAnimation = 2;
 				Player.itemRotation = direction.ToRotation();
+
 				if (Player.direction != 1)
 					Player.itemRotation -= 3.14f;
 
@@ -206,7 +207,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (Main.mouseLeft)
 					Projectile.active = false;
 
-				if (rotation >= PiOverFour * -3 && rotation < PiOverFour * -1 && modPlayer.scrap >= 5)
+				if (rotation >= PI_OVER_FOUR * -3 && rotation < PI_OVER_FOUR * -1 && modPlayer.scrap >= 5)
 				{
 					if (crawlerScale < 1)
 						crawlerScale += 0.1f;
@@ -217,7 +218,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					crawlerScale -= 0.1f;
 				}
 
-				if (rotation >= PiOverFour * -1 && rotation < PiOverFour * 1 && modPlayer.scrap >= 10)
+				if (rotation >= PI_OVER_FOUR * -1 && rotation < PI_OVER_FOUR * 1 && modPlayer.scrap >= 10)
 				{
 					if (jumperScale < 1)
 						jumperScale += 0.1f;
@@ -228,7 +229,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					jumperScale -= 0.1f;
 				}
 
-				if (rotation >= PiOverFour * 1 && rotation < PiOverFour * 3 && modPlayer.scrap >= 15)
+				if (rotation >= PI_OVER_FOUR * 1 && rotation < PI_OVER_FOUR * 3 && modPlayer.scrap >= 15)
 				{
 					if (gatlerScale < 1)
 						gatlerScale += 0.1f;
@@ -239,7 +240,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					gatlerScale -= 0.1f;
 				}
 
-				if ((rotation >= PiOverFour * 3 || rotation < PiOverFour * -3) && modPlayer.scrap >= 20)
+				if ((rotation >= PI_OVER_FOUR * 3 || rotation < PI_OVER_FOUR * -3) && modPlayer.scrap >= 20)
 				{
 					if (finalScale < 1)
 						finalScale += 0.1f;
@@ -255,30 +256,23 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.active = false;
 
 				if (projType == ModContent.ProjectileType<JetwelderCrawler>() && modPlayer.scrap >= 5)
-				{
 					modPlayer.scrap -= 5;
-				}
 
 				if (projType == ModContent.ProjectileType<JetwelderJumper>() && modPlayer.scrap >= 10)
-				{
 					modPlayer.scrap -= 10;
-				}
 
 				if (projType == ModContent.ProjectileType<JetwelderGatler>() && modPlayer.scrap >= 15)
-				{
 					modPlayer.scrap -= 15;
-				}
 
 				if (projType == ModContent.ProjectileType<JetwelderFinal>() && modPlayer.scrap >= 20)
-				{
 					modPlayer.scrap -= 20;
-				}
 
 				//modPlayer.scrap = 20;
 				//Main.NewText(modPlayer.scrap.ToString(), Color.Orange);
 				Vector2 position = Player.Center;
 				if (projType == ModContent.ProjectileType<JetwelderCrawler>() || projType == ModContent.ProjectileType<JetwelderJumper>())
 					position = FindFirstTile(Player.Center, projType);
+
 				if (projType == ModContent.ProjectileType<JetwelderGatler>())
 					position.Y -= 10;
 
@@ -314,10 +308,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				tries++;
 				int posX = (int)position.X / 16;
 				int posY = (int)position.Y / 16;
+
 				if (Framing.GetTileSafely(posX, posY).HasTile && Main.tileSolid[Framing.GetTileSafely(posX, posY).TileType])
-				{
 					break;
-				}
 
 				position += new Vector2(0, 16);
 			}
@@ -360,20 +353,23 @@ namespace StarlightRiver.Content.Items.SteampunkSet
             ChatManager.DrawColorCodedStringWithShadow(spriteBatch, Terraria.GameContent.FontAssets.ItemStack.Value, minScrap.ToString(), pos - new Vector2(0, 40 * scale), Player.GetModPlayer<JetwelderPlayer>().scrap >= minScrap ? Color.White : Color.Red, 0f, origin, Vector2.One * EaseFunction.EaseCubicOut.Ease(scaleCounter));*/
 		}
 	}
+
 	public class JetwelderFlame : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		private Player Player => Main.player[Projectile.owner];
-
 		private Vector2 direction = Vector2.Zero;
 
 		private float scaleCounter = 0f;
+
+		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jetwelder");
 			Main.projFrames[Projectile.type] = 6;
 		}
+
 		public override void SetDefaults()
 		{
 			Projectile.hostile = false;
@@ -392,9 +388,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (scaleCounter < 1)
 				scaleCounter += 0.1f;
+
 			Projectile.scale = scaleCounter;
 
 			Projectile.velocity = Vector2.Zero;
+
 			if (Player.channel)
 			{
 				Projectile.timeLeft = 2;
@@ -419,8 +417,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Lighting.AddLight(Projectile.Center + direction * i, Color.LightBlue.ToVector3() * 0.6f);
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 2 == 0)
 				Projectile.frame++;
+
 			Projectile.frame %= Main.projFrames[Projectile.type];
 		}
 
@@ -428,8 +428,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (Main.rand.NextBool(4))
 				target.AddBuff(BuffID.OnFire, 150);
+
 			knockback = 0;
 		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -441,8 +443,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Texture2D bloomTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Color bloomColor = Color.White;
 			bloomColor.A = 0;
-			Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0);
 
+			Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, frame, bloomColor, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0);
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, new Vector2(0, tex.Height / (2 * Main.projFrames[Projectile.type])), Projectile.scale, effects, 0);
 
 			return false;
@@ -458,6 +460,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			return true;
 		}
+
 		public override void CutTiles()
 		{
 			DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
@@ -480,12 +483,15 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				case 0:
 					ItemType = ModContent.ItemType<JetwelderScrap1>();
 					break;
+
 				case 1:
 					ItemType = ModContent.ItemType<JetwelderScrap2>();
 					break;
+
 				case 2:
 					ItemType = ModContent.ItemType<JetwelderScrap3>();
 					break;
+
 				case 3:
 					ItemType = ModContent.ItemType<JetwelderScrap4>();
 					break;
@@ -494,9 +500,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.NewItem(Projectile.GetSource_FromThis(), position, ItemType);
 		}
 	}
+
 	public abstract class JetwelderScrap : ModItem
 	{
-
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
@@ -541,6 +547,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.Size = new Vector2(32, 32);
 		}
 	}
+
 	public class JetwelderScrap2 : JetwelderScrap
 	{
 		protected override void SetSize()
@@ -548,6 +555,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.Size = new Vector2(32, 32);
 		}
 	}
+
 	public class JetwelderScrap3 : JetwelderScrap
 	{
 		protected override void SetSize()
@@ -555,6 +563,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.Size = new Vector2(32, 32);
 		}
 	}
+
 	public class JetwelderScrap4 : JetwelderScrap
 	{
 		protected override void SetSize()

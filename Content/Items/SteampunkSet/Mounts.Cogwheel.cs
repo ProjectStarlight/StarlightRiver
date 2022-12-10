@@ -1,20 +1,16 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class Cogwheel : ModItem
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cogwheel");
@@ -34,6 +30,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.noMelee = true;
 			Item.mountType = ModContent.MountType<CogwheelMount>();
 		}
+
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -47,6 +44,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe2.AddTile(TileID.Anvils);
 		}
 	}
+
 	public class CogwheelMount : ModMount
 	{
 		// Since only a single instance of ModMountData ever exists, we can use player.mount._mountSpecificData to store additional data related to a specific mount.
@@ -101,6 +99,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			skipDust = true;
 		}
+
 		public override void UpdateEffects(Player player)
 		{
 			CogwheelPlayer modPlayer = player.GetModPlayer<CogwheelPlayer>();
@@ -141,6 +140,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return false;
 		}
 	}
+
 	class CogwheelBuff : SmartBuff
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
@@ -151,6 +151,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Main.buffNoTimeDisplay[Type] = true;
 		}
+
 		public override void Update(Player player, ref int buffIndex)
 		{
 			player.mount.SetMount(ModContent.MountType<CogwheelMount>(), player);
@@ -162,17 +163,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	class CogwheelPlayer : ModPlayer
 	{
 		public bool mounted = false;
-
 		public bool climbing = false;
 
 		public float climbSpeed;
-
 		public float oldSpeed;
 
 		public float armLerper;
-
 		private float armRotFront = 0f;
-
 		private float armRotBack = 0f;
 
 		public static float Acceleration = 0.17f;
@@ -189,6 +186,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (damageSource.SourceOtherIndex == 3 && mounted)
 				return false;
+
 			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 		}
 
@@ -215,6 +213,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			Vector2 dustPos = Player.Center + new Vector2(Player.velocity.X * 2, 64);
 			var direction = new Vector2(Player.direction, 0);
+
 			if (climbing)
 			{
 				direction = new Vector2(0, -1);
@@ -234,6 +233,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				if (Player.controlLeft)
 					oldSpeed = -0.01f;
+
 				if (Player.controlRight)
 					oldSpeed = 0.01f;
 			}
@@ -288,11 +288,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
 		{
 			CogwheelPlayer modPlayer = target.GetModPlayer<CogwheelPlayer>();
+
 			if (modPlayer.mounted && !npc.Hitbox.Intersects(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height - 34)))
 				return false;
+
 			return base.CanHitPlayer(npc, target, ref cooldownSlot);
 		}
 	}
+
 	public class CogwheelHitbox : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
@@ -321,19 +324,16 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			CogwheelPlayer modPlayer = Player.GetModPlayer<CogwheelPlayer>();
 
 			if (modPlayer.mounted && !Player.dead)
-			{
 				Projectile.Center = Player.Bottom - new Vector2(0, 17);
-			}
 			else
-			{
 				Projectile.active = false;
-			}
 		}
 
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (Player.velocity.Length() < 1)
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 

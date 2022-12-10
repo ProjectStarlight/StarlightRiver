@@ -1,17 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SpaceEvent
 {
@@ -20,11 +16,6 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		public Projectile ball;
 
 		public override string Texture => "StarlightRiver/Assets/Items/SpaceEvent/Thunderbuss";
-
-		public override bool AltFunctionUse(Player Player)
-		{
-			return !Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ModContent.ProjectileType<ThunderbussBall>());
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -49,6 +40,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			Item.shootSpeed = 10;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.rare = ItemRarityID.Orange;
+		}
+
+		public override bool AltFunctionUse(Player Player)
+		{
+			return !Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ModContent.ProjectileType<ThunderbussBall>());
 		}
 
 		public override Vector2? HoldoutOffset()
@@ -139,12 +135,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			{
 				int targetIndex = k % targets.Count;
 
-				float offset = Helpers.Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
+				float offset = Helper.CompareAngle(aim, (player.Center - targets[targetIndex].Center).ToRotation()) * -120;
 
 				if (targets.Count == 1)
 				{
 					if (k == 1)
 						offset += 50f;
+
 					if (k == 2)
 						offset -= 50f;
 				}
@@ -208,9 +205,6 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 		public bool sentProjOwner = false;
 
-		public ref float targetId => ref Projectile.ai[0];
-		public ref float offset => ref Projectile.ai[1];
-
 		public NPC target;
 
 		private List<Vector2> cache;
@@ -219,8 +213,10 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		private float dist1;
 		private float dist2;
 
-		Vector2 savedPos = Vector2.Zero;
-		List<Vector2> nodes = new();
+		readonly List<Vector2> nodes = new();
+
+		public ref float TargetID => ref Projectile.ai[0];
+		public ref float Offset => ref Projectile.ai[1];
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -281,13 +277,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 
 		private void FindTarget()
 		{
-
-			if (targetId < 0) //no NPC target which means we are targetting the ball instead, and need to find it
+			if (TargetID < 0) //no NPC target which means we are targetting the ball instead, and need to find it
 			{
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
-					if (proj.active && proj.owner == this.Projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+
+					if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
 					{
 						power = 30;
 						projTarget = proj;
@@ -295,23 +291,22 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 					}
 				}
 			}
-			else if ((int)targetId == 0) //targetting with ai[0] of zero which 99% of the time means this was fired from a poltergeist minion, so we check if poltergeist minion, then NPC manually
+			else if ((int)TargetID == 0) //targetting with ai[0] of zero which 99% of the time means this was fired from a poltergeist minion, so we check if poltergeist minion, then NPC manually
 			{
 				var targets = new List<NPC>();
 
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
-					if (proj.active && proj.owner == this.Projectile.owner && proj.type == ModContent.ProjectileType<PoltergeistMinion>() && ((PoltergeistMinion)proj.ModProjectile).Item.type == ModContent.ItemType<Thunderbuss>())
-					{
+
+					if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<PoltergeistMinion>() && ((PoltergeistMinion)proj.ModProjectile).Item.type == ModContent.ItemType<Thunderbuss>())
 						projOwner = proj;
-					}
 				}
 
 				if (projOwner is null)
 				{
 					//wasn't actually a poltergeist minion so we can just set directly
-					target = Main.npc[(int)targetId];
+					target = Main.npc[(int)TargetID];
 					return;
 				}
 
@@ -329,11 +324,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 					return;
 
 				target = targets[Main.rand.Next(targets.Count)];
-				targetId = target.whoAmI;
+				TargetID = target.whoAmI;
 			}
 			else
 			{
-				target = Main.npc[(int)targetId];
+				target = Main.npc[(int)TargetID];
 			}
 		}
 
@@ -342,7 +337,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			for (int i = 0; i < Main.maxProjectiles; i++)
 			{
 				Projectile proj = Main.projectile[i];
-				if (proj.active && proj.owner == this.Projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
+
+				if (proj.active && proj.owner == Projectile.owner && proj.type == ModContent.ProjectileType<ThunderbussBall>())
 				{
 					power = 15;
 					projOwner = proj;
@@ -369,7 +365,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 				return;
 			}
 
-			if (offset == 1000000)
+			if (Offset == 1000000)
 			{
 				//extremely dirty hack where we abuse the offset field to determine if this has the start anchored to the thunder ball
 				if (projOwner is null)
@@ -391,14 +387,13 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			{
 				Helper.PlayPitched("Magic/LightningExplodeShallow", 0.2f * (power / 20f), 0.5f, Projectile.Center);
 
-				savedPos = Projectile.Center;
 				startPoint = Projectile.Center;
 
 				dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, endPoint - startPoint);
 				dist2 = ApproximateSplineLength(30, midPoint, endPoint - startPoint, endPoint, endPoint - midPoint);
 			}
 
-			float effectiveOffset = offset;
+			float effectiveOffset = Offset;
 
 			if (projOwner is null)
 			{
@@ -442,7 +437,8 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			{
 				Vector2 prevPos = n == 1 ? startPoint : nodes[n - 1];
 				Vector2 dustVel = Vector2.Normalize(nodes[n] - prevPos) * Main.rand.NextFloat(-3, -2);
-				if (Main.rand.Next(20) == 0)
+
+				if (Main.rand.NextBool(20))
 					Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), dustVel, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
 			}
 
@@ -573,11 +569,11 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		private List<Vector2> cache2;
 		private Trail trail2;
 
-		public override string Texture => AssetDirectory.Invisible;
+		public bool ShouldFire = false;
 
 		public ref float Stacks => ref Projectile.ai[0];
 
-		public bool ShouldFire = false;
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override bool? CanHitNPC(NPC target)
 		{
@@ -658,9 +654,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			}
 
 			if (Projectile.timeLeft <= 30)
-			{
 				return;
-			}
 
 			Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
 
@@ -669,7 +663,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{
 					NPC NPC = Main.npc[k];
-					if (NPC.active && NPC.CanBeChasedBy(this) && Helpers.Helper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
+					if (NPC.active && NPC.CanBeChasedBy(this) && Helper.CheckCircularCollision(Projectile.Center, (int)(150 * Stacks), NPC.Hitbox))
 					{
 						int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ThunderbussShot>(), Projectile.damage, 0, Projectile.owner, k, 1000000);
 						var proj = Main.projectile[i].ModProjectile as ThunderbussShot;
@@ -688,10 +682,9 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 		{
 			Projectile.tileCollide = false;
 			Projectile.velocity *= 0;
+
 			if (Projectile.timeLeft > 30)
-			{
 				Projectile.timeLeft = 30;
-			}
 
 			return false;
 		}

@@ -1,10 +1,5 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
@@ -52,13 +47,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.96f;
-				}
 				else
-				{
 					dust.scale *= 0.93f;
-				}
 			}
 
 			if (dust.velocity.Length() > 3)
@@ -67,13 +58,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				dust.velocity *= 0.92f;
 
 			if (dust.alpha > 60)
-			{
 				dust.alpha += 12;
-			}
 			else
-			{
 				dust.alpha += 8;
-			}
 
 			Lighting.AddLight(dust.position, ((Color)GetAlpha(dust, Color.White)).ToVector3() * 0.5f);
 
@@ -102,6 +89,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			var gray = new Color(25, 25, 25);
 			Color ret;
+
 			if (dust.alpha < 80)
 				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
 			else if (dust.alpha < 160)
@@ -130,13 +118,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.98f;
-				}
 				else
-				{
 					dust.scale *= 0.96f;
-				}
 			}
 
 			if (dust.velocity.Length() > 3)
@@ -172,13 +156,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.96f;
-				}
 				else
-				{
 					dust.scale *= 0.93f;
-				}
 			}
 
 			if (dust.velocity.Length() > 3)
@@ -187,13 +167,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				dust.velocity *= 0.93f;
 
 			if (dust.alpha > 60)
-			{
 				dust.alpha += 6;
-			}
 			else
-			{
 				dust.alpha += 3;
-			}
 
 			Lighting.AddLight(dust.position, ((Color)GetAlpha(dust, Color.White)).ToVector3() * 0.5f);
 
@@ -243,6 +219,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			if (dust.fadeIn > 45)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -281,6 +258,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 			if (dust.fadeIn > 45)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -312,8 +290,10 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			dust.position += dust.velocity;
 			dust.fadeIn++;
 			dust.scale = (1 + (float)(2 * Math.Sin(dust.fadeIn * 0.157f))) * 0.3f;
+
 			if (dust.scale <= 0)
 				dust.active = false;
+
 			return false;
 		}
 	}

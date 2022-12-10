@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
@@ -163,6 +158,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (Projectile.ai[1] < 15)
 				{
 					Color color = new Color(255, 230, 100) * (1 - Projectile.ai[1] / 15f);
+
 					for (int k = 0; k < 3; k++)
 						spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.ai[1] / 7.5f + k / 12f, 0, 0);
 				}
@@ -170,8 +166,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				for (int k = 0; k < Projectile.oldPos.Length; k++)
 				{
 					Color color = new Color(255, colorOff / 2, 1 - colorOff) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length) * 0.5f;
+
 					if (k <= 4)
 						color *= 1.2f;
+
 					float scale = colorOff / 2 * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 1.4f;
 
 					spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, 0, tex.Size() / 2, scale, default, default);
@@ -201,7 +199,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void Kill(int timeLeft)
 		{
 			for (int k = 0; k < 100; k++)
-				Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * 5);
+				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * 5);
 		}
 	}
 }

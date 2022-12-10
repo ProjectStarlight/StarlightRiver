@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.RatKing
 {
@@ -24,6 +20,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		{
 			Item.value = Item.sellPrice(0, 3, 0, 0);
 		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<BloodCrystalPlayer>().equipped = true;

@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vanity
@@ -74,8 +69,8 @@ namespace StarlightRiver.Content.Items.Vanity
 
 		public override void ResetEffects() //Unfortunately as of right now there's no hook in ModItem to check if an ARMOR is equipped in vanity (UpdateVanity only works for accessories) so this'll have to do
 		{
-			robeEquipped = Player.armor[1].type == ItemType<WardenRobe>() && Player.armor[11].type == 0 || Player.armor[11].type == ItemType<WardenRobe>();
-			hatEquipped = Player.armor[0].type == ItemType<WardenHat>() && Player.armor[10].type == 0 || Player.armor[10].type == ItemType<WardenHat>();
+			robeEquipped = Player.armor[1].type == ItemType<WardenRobe>() && Player.armor[11].type == ItemID.None || Player.armor[11].type == ItemType<WardenRobe>();
+			hatEquipped = Player.armor[0].type == ItemType<WardenHat>() && Player.armor[10].type == ItemID.None || Player.armor[10].type == ItemType<WardenHat>();
 		}
 
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)

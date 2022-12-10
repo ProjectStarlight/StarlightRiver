@@ -1,16 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -56,6 +52,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			if (player.itemTime > 1)
 				Dust.NewDustPerfect(player.Center + direction.RotatedBy(-0.1f * player.direction) * 0.75f, ModContent.DustType<BuzzsawSteam>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(30), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
+
 			base.HoldItem(player);
 		}
 
@@ -80,16 +77,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 	public class RebarProj : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		const int TRAILLENGTH = 150;
+		const int TRAIL_LENGTH = 150;
 
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
 		private Trail trail;
 		private Trail trail2;
-
-		private int trailCounter;
 
 		private List<Vector2> offsetCache;
 		private List<Vector2> offsetCache2;
@@ -122,10 +115,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public Vector2 B4 => Projectile.Center + Projectile.rotation.ToRotationVector2() * 35;
 		public Vector2 Top => (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
 
+		public override string Texture => AssetDirectory.SteampunkItem + Name;
+
 		public override void Load()
 		{
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.SteampunkItem + "RebarProj");
 		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rebar");
@@ -151,10 +147,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (trailWidth > 0.3f)
 				{
 					trailWidth *= 0.995f;
+
 					if (trailWidth < 3.5f)
-					{
 						trailWidth *= 0.95f;
-					}
 				}
 				else
 				{
@@ -173,6 +168,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					{
 						if (Projectile.timeLeft > 5)
 							Projectile.timeLeft = 5;
+
 						Projectile.velocity = Vector2.Zero;
 					}
 					else
@@ -271,6 +267,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Projectile.penetrate++;
+
 			if (target.life > 0 && enemyID != target.whoAmI)
 			{
 				enemyID = target.whoAmI;
@@ -317,8 +314,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			Projectile.extraUpdates = 0;
+
 			if (Projectile.timeLeft > 80)
 				Projectile.timeLeft = 80;
+
 			Projectile.friendly = false;
 			Projectile.velocity = Vector2.Zero;
 			collided = true;
@@ -331,7 +330,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache = new List<Vector2>();
 				offsetCache = new List<Vector2>();
-				for (int i = 0; i < TRAILLENGTH; i++)
+
+				for (int i = 0; i < TRAIL_LENGTH; i++)
 				{
 					cache.Add(A4 + Top);
 
@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			cache.Add(A4 + Top);
 			offsetCache.Add((Projectile.rotation + 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache.Count > TRAILLENGTH)
+			while (cache.Count > TRAIL_LENGTH)
 			{
 				cache.RemoveAt(0);
 				offsetCache.RemoveAt(0);
@@ -352,7 +352,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				cache2 = new List<Vector2>();
 				offsetCache2 = new List<Vector2>();
-				for (int i = 0; i < TRAILLENGTH; i++)
+				for (int i = 0; i < TRAIL_LENGTH; i++)
 				{
 					cache2.Add(A4 + Top);
 					offsetCache2.Add(Vector2.Zero);
@@ -362,21 +362,18 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			cache2.Add(A4 + Top);
 			offsetCache2.Add((Projectile.rotation - 1.57f).ToRotationVector2() * Main.rand.NextFloat(-0.3f, 0.3f));
 
-			while (cache2.Count > TRAILLENGTH)
+			while (cache2.Count > TRAIL_LENGTH)
 			{
 				cache2.RemoveAt(0);
 				offsetCache2.RemoveAt(0);
 			}
-
-			trailCounter++;
 		}
 
 		private void ManageTrail()
 		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
 
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
-
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAIL_LENGTH, new TriangularTip(40), factor => factor * trailWidth * 4f, factor => Color.Red);
 
 			if (trailWidth < 3.9f && (collided || stuck || Projectile.timeLeft % 6 == 0))
 			{
@@ -424,6 +421,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private Color HeatColor(float progress, float midpoint)
 		{
 			var orange = new Color(248, 126, 0);
+
 			if (progress > midpoint)
 				return Color.Lerp(Color.Red, orange, (progress - midpoint) / (1 - midpoint));
 			else

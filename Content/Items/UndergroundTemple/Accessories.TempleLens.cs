@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -19,7 +17,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.GetCritChance(Terraria.ModLoader.DamageClass.Generic) += 3;
+			Player.GetCritChance(DamageClass.Generic) += 3;
 		}
 
 		public override void Load()

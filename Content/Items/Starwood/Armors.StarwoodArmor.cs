@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Starwood
@@ -102,6 +97,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			{
 				for (int k = 0; k < 1; k++)//temp gfx 
 					Dust.NewDustPerfect(Player.position + new Vector2(Main.rand.Next(Player.width), Main.rand.Next(Player.height)), DustType<Dusts.BlueStamina>(), -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(1.0f, 1.4f), 0, default, 1.2f);
+
 				mp.empowermentTimer--;
 			}
 			else
@@ -187,10 +183,8 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void OnKill(NPC npc)
 		{
-			if (DropStar && Main.rand.Next(2) == 0)
-			{
+			if (DropStar && Main.rand.NextBool(2))
 				Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Star);
-			}
 		}
 	}
 }
@@ -203,6 +197,7 @@ namespace StarlightRiver.Core
 	{
 		public bool empowered = false;
 		public int empowermentTimer = 0;
+
 		public void StartStarwoodEmpowerment()
 		{
 			if (Player.armor[1].ModItem is Content.Items.Starwood.StarwoodChest && ArmorHelper.IsSetEquipped(Player.armor[1].ModItem, Player))//checks if complete, not completely needed but is there so empowered isnt true for a brief moment

@@ -1,16 +1,19 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
 	class StarwoodStaffProjectile : ModProjectile, IDrawAdditive
 	{
+		private const int MAX_TIME_LEFT = 60;
+
+		//These stats get scaled when empowered
+		private int counterScore = 1;
+		private Vector3 lightColor = new(0.2f, 0.1f, 0.05f);
+		private int dustType = ModContent.DustType<Dusts.Stamina>();
+		private bool empowered;
+
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
 		public override void SetStaticDefaults()
@@ -20,17 +23,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
 		}
 
-		//These stats get scaled when empowered
-		private int counterScore = 1;
-		private Vector3 lightColor = new(0.2f, 0.1f, 0.05f);
-		private int dustType = ModContent.DustType<Dusts.Stamina>();
-		private bool empowered;
-
-		private const int MaxTimeLeft = 60;
-
 		public override void SetDefaults()
 		{
-			Projectile.timeLeft = MaxTimeLeft;
+			Projectile.timeLeft = MAX_TIME_LEFT;
 			Projectile.width = 14;
 			Projectile.height = 14;
 			Projectile.friendly = true;
@@ -43,7 +38,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void AI()
 		{
-			if (Projectile.timeLeft == MaxTimeLeft)
+			if (Projectile.timeLeft == MAX_TIME_LEFT)
 			{
 				StarlightPlayer mp = Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>();
 
@@ -73,6 +68,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void Kill(int timeLeft)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
+
 			for (int k = 0; k < 15; k++)
 				Dust.NewDustPerfect(Projectile.Center, dustType, (Projectile.velocity * 0.1f * Main.rand.NextFloat(0.8f, 0.12f)).RotatedBy(Main.rand.NextFloat(-0.15f, 0.15f)), 0, default, 1.5f);
 		}
@@ -107,6 +103,14 @@ namespace StarlightRiver.Content.Items.Starwood
 
 	class StarwoodStaffFallingStar : ModProjectile, IDrawAdditive
 	{
+		private const int MAX_TIME_LEFT = 600;
+
+		//These stats get scaled when empowered
+		private float ScaleMult = 1;
+		private Vector3 lightColor = new(0.2f, 0.1f, 0.05f);
+		private int dustType = ModContent.DustType<Dusts.Stamina>();
+		private bool empowered;
+
 		public override string Texture => AssetDirectory.StarwoodItem + "StarwoodStarfallProjectile";
 
 		public override void SetStaticDefaults()
@@ -116,17 +120,9 @@ namespace StarlightRiver.Content.Items.Starwood
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 1;
 		}
 
-		//These stats get scaled when empowered
-		private float ScaleMult = 1;
-		private Vector3 lightColor = new(0.2f, 0.1f, 0.05f);
-		private int dustType = ModContent.DustType<Dusts.Stamina>();
-		private bool empowered;
-
-		private const int MaxTimeLeft = 600;
-
 		public override void SetDefaults()
 		{
-			Projectile.timeLeft = MaxTimeLeft;
+			Projectile.timeLeft = MAX_TIME_LEFT;
 			Projectile.width = 22;
 			Projectile.height = 24;
 			Projectile.friendly = true;
@@ -138,9 +134,10 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void AI()
 		{
-			if (Projectile.timeLeft == MaxTimeLeft)
+			if (Projectile.timeLeft == MAX_TIME_LEFT)
 			{
 				StarlightPlayer mp = Main.player[Projectile.owner].GetModPlayer<StarlightPlayer>();
+
 				if (mp.empowered)
 				{
 					Projectile.frame = 1;
@@ -165,6 +162,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			Helpers.DustHelper.DrawStar(Projectile.Center, dustType, pointAmount: 5, mainSize: 2f * ScaleMult, dustDensity: 1f, pointDepthMult: 0.3f);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
+
 			for (int k = 0; k < 50; k++)
 				Dust.NewDustPerfect(Projectile.Center, dustType, Vector2.One.RotatedByRandom(6.28f) * (Main.rand.NextFloat(0.25f, 1.7f) * ScaleMult), 0, default, 1.5f);
 		}
@@ -181,8 +179,10 @@ namespace StarlightRiver.Content.Items.Starwood
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
 				Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
 				if (k <= 4)
 					color *= 1.2f;
+
 				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/Glow").Value;//TEXTURE PATH
 
@@ -192,8 +192,10 @@ namespace StarlightRiver.Content.Items.Starwood
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
 				Color color = (empowered ? new Color(200, 220, 255) * 0.35f : new Color(255, 255, 200) * 0.3f) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
+
 				if (k <= 4)
 					color *= 1.2f;
+
 				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.8f;
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Starwood/StarwoodStarfallGlowTrail").Value;//TEXTURE PATH
 
@@ -208,6 +210,9 @@ namespace StarlightRiver.Content.Items.Starwood
 		private int resetCounter = 0;
 		private int lasthitPlayer = 255;
 		private int lasthitDamage = 0;
+
+		public override bool InstancePerEntity => true;
+
 		public void AddScore(int scoreAmount, int PlayerIndex, int damage)
 		{
 			score += scoreAmount;
@@ -216,12 +221,12 @@ namespace StarlightRiver.Content.Items.Starwood
 			lasthitDamage = damage;
 		}
 
-		public override bool InstancePerEntity => true;
 		public override void PostAI(NPC npc)
 		{
 			if (score > 0)
 			{
 				resetCounter++;
+
 				if (score >= 3)
 				{
 					float rotationAmount = Main.rand.NextFloat(-0.3f, 0.3f);

@@ -1,24 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Core;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class JetwelderFinal : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderFinal";
-
-		private const int ATTACKRANGE = 400;
-		private const int MINATTACKRANGE = 150;
+		private const int MAX_RANGE = 400;
+		private const int MIN_RANGE = 150;
 		private const float SPEED = 5f;
-		private const float IDLESPEED = 3f;
+		private const float IDLE_SPEED = 3f;
 
 		private float idleHoverOffset;
 		private int idleYOffset;
@@ -30,8 +23,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private int shootCounter = 0;
 
-		private bool firing = false;
-
 		private float backRotation = 0f;
 		private float frontRotation = 0f;
 		private Vector2 backOffset = new(12, -15);
@@ -41,6 +32,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private Vector2 frontOffset = new(-6, -15);
 
 		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderFinal";
 
 		public override void Load()
 		{
@@ -69,7 +62,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.timeLeft = 1200;
 			idleHoverOffset = Main.rand.NextFloat(6.28f);
 			idleYOffset = Main.rand.Next(-25, 35);
-
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -133,19 +125,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0f);
 			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0f);
 			spriteBatch.Draw(frontTex, Projectile.Center + frontOffsetReal - Main.screenPosition, null, lightColor, frontRotation, frontTex.Size() / 2, Projectile.scale, spriteEffects, 0f);
+
 			return false;
 		}
 
 		private void IdleMovement()
 		{
-			firing = false;
 			posToBe = Vector2.Zero;
 
 			var offset = new Vector2((float)Math.Cos(Main.timeForVisualEffects * 3f + idleHoverOffset) * 50, -100 + idleYOffset);
 			Vector2 direction = Player.Center + offset - Projectile.Center;
 
 			if (direction.Length() > 15)
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLESPEED, 0.05f);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.Normalize(direction) * IDLE_SPEED, 0.05f);
 
 			Projectile.spriteDirection = Math.Sign(Projectile.velocity.X);
 			Projectile.rotation = 0 + (float)(Math.Sqrt(Projectile.velocity.Length()) * 0.2f * Projectile.spriteDirection);
@@ -156,9 +148,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void AttackMovement()
 		{
 			if (posToBe == Vector2.Zero || !ClearPath(target.Center + posToBe, target.Center))
-			{
 				posToBe = findPosToBe(target);
-			}
 
 			if (posToBe.Length() < 60)
 			{
@@ -175,6 +165,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.rotation = 0 + (float)(Math.Sqrt(Projectile.velocity.Length()) * 0.2f * Projectile.spriteDirection);
 
 			backRotation = MathHelper.Clamp((float)Math.Sqrt(Math.Abs(towardsTarget.X)) * Math.Sign(towardsTarget.X) * 0.04f, -0.5f, 0.5f);
+
 			if (target2 != default)
 			{
 				Vector2 towardsTarget2 = target2.Center - Projectile.Center;
@@ -186,14 +177,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 
 			if (direction.Length() < 250)
-			{
 				FireRockets();
-				firing = true;
-			}
-			else
-			{
-				firing = false;
-			}
 
 			if (direction.Length() > 20)
 			{
@@ -239,7 +223,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private void FireRockets()
 		{
-			firing = true;
 			shootCounter++;
 
 			if (shootCounter % 8 == 0)
@@ -250,6 +233,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				{
 					if (target2 != default)
 						trueTarget = target2;
+
 					var bulletOffset = new Vector2(frontOffset.X, frontOffset.Y - 5);
 					bulletOffset = bulletOffset.RotatedBy(frontRotation);
 					frontOffsetY = 16;
@@ -272,13 +256,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private bool ClearPath(Vector2 point1, Vector2 point2)
 		{
 			Vector2 direction = point2 - point1;
+
 			for (int i = 0; i < direction.Length(); i += 8)
 			{
 				Vector2 toLookAt = point1 + Vector2.Normalize(direction) * i;
+
 				if (Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
-				{
 					return false;
-				}
 			}
 
 			return true;
@@ -292,17 +276,21 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				tries++;
 				float angle = Main.rand.NextFloat(-3.14f, 0f);
+
 				if (angle < -2.641f || angle > -0.5)
 					continue;
-				for (int i = 0; i < ATTACKRANGE; i += 8)
+
+				for (int i = 0; i < MAX_RANGE; i += 8)
 				{
 					Vector2 toLookAt = tempTarget.Center + angle.ToRotationVector2() * i;
-					if (i > ATTACKRANGE - 16 || Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
+
+					if (i > MAX_RANGE - 16 || Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).HasTile && Main.tileSolid[Framing.GetTileSafely((int)(toLookAt.X / 16), (int)(toLookAt.Y / 16)).TileType])
 					{
 						ret = angle.ToRotationVector2() * i * 0.75f;
 
-						if (i > MINATTACKRANGE)
+						if (i > MIN_RANGE)
 							tries = 100;
+
 						break;
 					}
 				}
@@ -314,20 +302,22 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void FindFrame()
 		{
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 5 == 0)
 				Projectile.frame++;
 
 			Projectile.frame %= Main.projFrames[Projectile.type];
 		}
 	}
+
 	public class JetwelderFinalMissle : ModProjectile
 	{
+		private NPC victim = default;
 
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		private Player Player => Main.player[Projectile.owner];
 
-		private NPC victim = default;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rocket");
@@ -364,9 +354,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void AI()
 		{
 			NPC target = Main.npc[(int)Projectile.ai[0]];
+
 			if (target.life <= 0 || !target.active)
 			{
 				target = Main.npc.Where(n => n.active && n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 400).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+
 				if (target != default)
 					Projectile.ai[0] = target.whoAmI;
 			}
@@ -380,6 +372,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 5 == 0)
 				Projectile.frame++;
 
@@ -401,6 +394,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			return base.CanHitNPC(target);
 		}
+
 		public override void Kill(int timeLeft)
 		{
 			for (int i = 0; i < 4; i++)

@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vanity
 {
@@ -24,14 +21,6 @@ namespace StarlightRiver.Content.Items.Vanity
 			Item.rare = ItemRarityID.Green;
 			Item.vanity = true;
 		}
-
-		public override void UpdateEquip(Player Player)
-		{
-		}
-
-		public override void AddRecipes()
-		{
-		}
 	}
 
 	[AutoloadEquip(EquipType.Body)]
@@ -53,19 +42,6 @@ namespace StarlightRiver.Content.Items.Vanity
 			Item.rare = ItemRarityID.Green;
 			Item.vanity = true;
 		}
-
-		public override void UpdateEquip(Player Player)
-		{
-		}
-
-		public override void UpdateArmorSet(Player Player)
-		{
-			//Player.slotsMinions += 1f;
-		}
-
-		public override void AddRecipes()
-		{
-		}
 	}
 
 	[AutoloadEquip(EquipType.Legs)]
@@ -86,14 +62,6 @@ namespace StarlightRiver.Content.Items.Vanity
 			Item.value = Item.sellPrice(0, 0, 10, 0);
 			Item.rare = ItemRarityID.Green;
 			Item.vanity = true;
-		}
-
-		public override void UpdateEquip(Player Player)
-		{
-		}
-
-		public override void AddRecipes()
-		{
 		}
 	}
 }

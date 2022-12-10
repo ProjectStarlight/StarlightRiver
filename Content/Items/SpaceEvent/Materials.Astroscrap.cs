@@ -1,6 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.SpaceEvent
 {

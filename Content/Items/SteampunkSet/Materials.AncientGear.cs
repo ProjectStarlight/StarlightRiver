@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Items.SteampunkSet
+﻿namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class AncientGear : QuickMaterial
 	{

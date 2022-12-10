@@ -1,14 +1,11 @@
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Starwood
 {
 	public class StarwoodBoomerang : StarwoodItem
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
+
 		public StarwoodBoomerang() : base(ModContent.Request<Texture2D>(AssetDirectory.StarwoodItem + "StarwoodBoomerang_Alt").Value) { }
 
 		public override void SetStaticDefaults()

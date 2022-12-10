@@ -1,21 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class JetwelderCrawler : ModProjectile
 	{
-		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderCrawler";
-
-		private readonly int STARTTIMELEFT = 1200;
-
-		private Player Player => Main.player[Projectile.owner];
+		private const int BASE_DURATION = 1200;
+		private const int SPEED = 3;
+		private const int GUN_FRAMES = 4;
 
 		private Vector2 moveDirection;
 		private Vector2 newVelocity = Vector2.Zero;
@@ -32,12 +25,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private float gunRotationToBe;
 		private bool flipGun = false;
 		private int gunFrame = 3;
-		private int totalGunFrames = 4;
 
 		private bool firing = false;
 
 		private int attackCounter = 0;
-		private int SPEED => 3;
+
+		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.SteampunkItem + "JetwelderCrawler";
 
 		public override void Load()
 		{
@@ -63,7 +58,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.hostile = false;
 			Projectile.minion = true;
 			Projectile.penetrate = -1;
-			Projectile.timeLeft = STARTTIMELEFT;
+			Projectile.timeLeft = BASE_DURATION;
 			shootDistance = Main.rand.Next(300, 500);
 			windup = Main.rand.Next(40, 80);
 			Projectile.ignoreWater = true;
@@ -89,7 +84,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Texture2D flashTex = ModContent.Request<Texture2D>(Texture + "_Gun_Flash").Value;
 			SpriteEffects gunEffects = flipGun ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-			int gunFrameHeight = gunTex.Height / totalGunFrames;
+			int gunFrameHeight = gunTex.Height / GUN_FRAMES;
 			var gunFrameBox = new Rectangle(0, gunFrameHeight * gunFrame, gunTex.Width, gunFrameHeight);
 			var gunOrigin = new Vector2(flipGun ? gunTex.Width - 22 : 22, 7);
 			spriteBatch.Draw(gunTex, Projectile.Center - Main.screenPosition + GunOffset().RotatedBy(Projectile.rotation), gunFrameBox, lightColor, gunRotation - (flipGun ? 3.14f : 0), gunOrigin, Projectile.scale, gunEffects, 0f);
@@ -103,6 +98,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			NPC testtarget = Main.npc.Where(n => n.active && n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800 && ClearPath(n.Center, Projectile.Center)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
 
 			int distance = 1000;
+
 			if (testtarget != default)
 			{
 				gunRotationToBe = (Vector2.Zero - testtarget.DirectionTo(Projectile.Center + GunOffset().RotatedBy(Projectile.rotation))).ToRotation();
@@ -113,16 +109,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				distance = (int)(Projectile.Center - testtarget.Center).Length();
 			}
 
-			firing = distance < (shootDistance + (firing ? 50 : 0)) && Projectile.timeLeft < STARTTIMELEFT - windup;
+			firing = distance < (shootDistance + (firing ? 50 : 0)) && Projectile.timeLeft < BASE_DURATION - windup;
 			FindFrame();
+
 			if (firing)
-			{
 				Attack();
-			}
 			else
-			{
 				Crawl();
-			}
 		}
 
 		public override void Kill(int timeLeft)
@@ -136,11 +129,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void Crawl()
 		{
 			attackCounter = 0;
+
 			newVelocity = Collide();
 			if (Math.Abs(newVelocity.X) < 0.5f)
 				collideX = true;
 			else
 				collideX = false;
+
 			if (Math.Abs(newVelocity.Y) < 0.5f)
 				collideY = true;
 			else
@@ -152,6 +147,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			{
 				moveDirection.Y = 1;
 				moveDirection.X = Main.rand.NextBool() ? 1 : -1;
+
 				if (moveDirection.X == -1)
 					flipVertical = true;
 
@@ -210,6 +206,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		private void RotateCrawl()
 		{
 			float rotDifference = ((Projectile.velocity.ToRotation() - Projectile.rotation) % 6.28f + 9.42f) % 6.28f - 3.14f;
+
 			if (Math.Abs(rotDifference) < 0.15f)
 			{
 				Projectile.rotation = Projectile.velocity.ToRotation();
@@ -224,6 +221,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			RotateCrawl();
 			Projectile.Center -= Projectile.velocity;
 			attackCounter++;
+
 			if (attackCounter % 7 == 0 && attackCounter % 56 < 15)
 			{
 				Vector2 dir = gunRotation.ToRotationVector2();
@@ -234,19 +232,22 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Vector2 pos = Projectile.Center + GunOffset().RotatedBy(Projectile.rotation);
 				Gore.NewGore(Projectile.GetSource_FromThis(), pos, new Vector2(Math.Sign(dir.X) * -1, -0.5f) * 2, Mod.Find<ModGore>("CoachGunCasing").Type, 1f);
 				gunRotation -= Math.Sign(dir.X) * 0.3f;
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Player.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, dir.RotatedByRandom(0.1f) * 15, ProjectileID.Bullet, Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 			}
 		}
 
 		private void FindFrame()
 		{
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 3 == 0)
 				Projectile.frame++;
 
-			if (Projectile.frameCounter % 4 == 0 && gunFrame < totalGunFrames - 1)
+			if (Projectile.frameCounter % 4 == 0 && gunFrame < GUN_FRAMES - 1)
 				gunFrame++;
+
 			Projectile.frame %= Main.projFrames[Projectile.type];
+
 			if (firing)
 				Projectile.frame = 0;
 		}

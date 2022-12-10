@@ -1,11 +1,8 @@
 ﻿using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Utility
@@ -18,11 +15,6 @@ namespace StarlightRiver.Content.Items.Utility
 		public List<Item> Items = new();
 
 		public override string Texture => "StarlightRiver/Assets/Items/Utility/ArmorBag";
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
 
 		public override void Load()
 		{
@@ -55,6 +47,11 @@ namespace StarlightRiver.Content.Items.Utility
 			clone.Items = new List<Item>();
 
 			return clone;
+		}
+
+		public override bool CanRightClick()
+		{
+			return true;
 		}
 
 		private bool SpecialIngredientPickup(Item Item, Player Player)

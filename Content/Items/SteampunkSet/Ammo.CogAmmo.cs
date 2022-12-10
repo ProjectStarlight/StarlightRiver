@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -49,6 +44,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		internal bool firstHit;
 
+		public ref float Timer => ref Projectile.ai[0];
+
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public override void SetStaticDefaults()
@@ -73,8 +70,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Projectile.rotation += 0.4f + Projectile.direction;
 
-			Projectile.localAI[0]++;
-			if (Projectile.localAI[0] > 15)
+			Timer++;
+
+			if (Timer > 15)
 				Projectile.velocity.Y += 0.96f;
 
 			if (Projectile.velocity.Y > 16f)
@@ -121,6 +119,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			hasBounced = true;
 
 			MaxBounces--;
+
 			if (MaxBounces <= 0)
 				Projectile.Kill();
 
@@ -139,7 +138,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 			return false;
 		}
-		//yeah yeah examplemod shhh
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Main.instance.LoadProjectile(Projectile.type);

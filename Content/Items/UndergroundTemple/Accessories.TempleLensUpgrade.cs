@@ -1,9 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
@@ -22,7 +19,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetCritChance(DamageClass.Generic) += 4;
-
 			Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f;
 		}
 
@@ -58,7 +54,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.Debug;
 
-		public Exposed() : base("Exposed", "How do you have this its NPC only", true) { }
+		public Exposed() : base("Exposed", "Taking extra damage!", true) { }
 
 		public override void Load()
 		{
