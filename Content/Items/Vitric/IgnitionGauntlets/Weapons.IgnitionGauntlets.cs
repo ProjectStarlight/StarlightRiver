@@ -1,18 +1,16 @@
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntlets : ModItem
 	{
+		public int handCounter = 0;
+
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public int handCounter = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ignition Gauntlets");
@@ -87,7 +85,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<IgnitionGauntletCone>(), (int)(damage * 4 * damagelerper), knockback, player.whoAmI, 1);
 
-					damagelerper = (float)Math.Sqrt(damagelerper);
+					//damagelerper = (float)Math.Sqrt(damagelerper);
 					damagelerper = 1;
 
 					modPlayer.loadedCharge = 20;
@@ -105,13 +103,14 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 					for (int k = 0; k < 12; k++)
 					{
-						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(1.2f) * Main.rand.Next(3, 30) * damagelerper, 0, Color.Yellow, 2.4f * damagelerper);
-						;
+						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(),
+							Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(1.2f) * Main.rand.Next(3, 30) * damagelerper, 0, Color.Yellow, 2.4f * damagelerper);
 					}
 
 					for (int k = 0; k < 12; k++)
 					{
-						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(), Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.5f) * Main.rand.Next(3, 15) * damagelerper, 0, Color.Yellow, 1.3f * damagelerper);
+						Dust.NewDustPerfect(position + new Vector2(0, 35), ModContent.DustType<IgnitionGauntletSpark>(),
+							Vector2.Normalize(player.DirectionTo(Main.MouseWorld)).RotatedByRandom(0.5f) * Main.rand.Next(3, 15) * damagelerper, 0, Color.Yellow, 1.3f * damagelerper);
 					}
 
 					var handOffset = new Vector2(-10 * player.direction, -16);
@@ -120,7 +119,9 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 					star.scale = 1.5f;
 					star.rotation = Main.GameUpdateCount * 0.085f;
 
-					var proj = Projectile.NewProjectileDirect(source, position, player.DirectionTo(Main.MouseWorld) * 10 * damagelerper, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, player.whoAmI, Main.rand.Next(150, 250) * damagelerper, player.DirectionTo(Main.MouseWorld).ToRotation());
+					var proj = Projectile.NewProjectileDirect(source, position, player.DirectionTo(Main.MouseWorld) * 10 * damagelerper,
+						ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, player.whoAmI, Main.rand.Next(150, 250) * damagelerper, player.DirectionTo(Main.MouseWorld).ToRotation());
+
 					var mp = proj.ModProjectile as IgnitionGauntletsImpactRing;
 					mp.timeLeftStart = 50;
 					proj.timeLeft = 50;
@@ -133,10 +134,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 					return false;
 				}
 			}
-			/*if (player.velocity.Length() < 6 && !(player.controlUp || player.controlDown || player.controlLeft || player.controlRight))
-            {
-				Vector2 dir = player.DirectionTo(Main.MouseWorld) * 0.6f;
-            }*/
+
 			handCounter++;
 
 			if (handCounter % 2 == 0)
@@ -184,6 +182,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			if (launching)
 			{
 				loadedCharge--;
+
 				if (loadedCharge <= 0)
 				{
 					launching = false;
@@ -195,12 +194,14 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 				if (acceleration < 1)
 					acceleration += 0.02f;
+
 				float lerper = MathHelper.Min(rotationCounter / 8f, loadedCharge / 20f);
 
 				if (!flipping)
 				{
 					CameraSystem.Shake = (int)(2 * lerper);
 					Lighting.AddLight(Player.Center, Color.OrangeRed.ToVector3());
+
 					for (int i = 0; i < 4; i++)
 					{
 						Vector2 pos = Player.Center + new Vector2(9, 9) - Player.velocity * Main.rand.NextFloat(2);
@@ -234,8 +235,10 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				Player.fullRotationOrigin = Player.Size / 2;
 
 				Player.fullRotation = Player.DirectionTo(Main.MouseWorld).ToRotation() + 1.57f;
+
 				if (flipping)
 					Player.fullRotation += 6.28f;
+
 				Player.fullRotation *= lerper;
 
 				if (rotationCounter < 8)
@@ -253,6 +256,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			if (launching && !flipping)
 				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 1.57f * Player.direction);
 		}
+
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			if (launching)

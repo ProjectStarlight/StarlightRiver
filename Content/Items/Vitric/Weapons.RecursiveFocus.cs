@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -18,7 +13,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Summons an infernal crystal\nThe infernal crystal locks onto enemies, ramping up damage overtime\nPress <right> to cause the crystal to target multiple enemies, at the cost of causing all beams to not ramp up, dealing less damage");
+			Tooltip.SetDefault("Summons an infernal crystal\n" +
+				"The infernal crystal locks onto enemies, ramping up damage overtime\n" +
+				"Press <right> to cause the crystal to target multiple enemies, at the cost of causing all beams to not ramp up, dealing less damage");
 		}
 
 		public override void SetDefaults()
@@ -49,10 +46,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
+
 					if (proj.active && proj.type == Item.shoot && proj.owner == player.whoAmI)
-					{
 						proj.Kill();
-					}
 				}
 			}
 
@@ -64,10 +60,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class RecursiveFocusProjectile : ModProjectile
 	{
-		public Player owner => Main.player[Projectile.owner];
-
-		public override string Texture => AssetDirectory.VitricItem + Name;
-
 		public int modeSwitchTransitionTimer;
 
 		public int modeSwitchCooldown;
@@ -121,6 +113,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		private List<Vector2> multiCacheFour;
 		private Trail multiTrailFour;
 
+		public Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
+
 		public override void Load()
 		{
 			for (int i = 1; i < 5; i++)
@@ -128,6 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore" + i);
 			}
 		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Infernal Crystal");
@@ -172,7 +169,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (modeSwitchCooldown > 0)
 				modeSwitchCooldown--;
 
-			if (Main.mouseRight && Main.mouseRightRelease && modeSwitchCooldown <= 0 && owner.HeldItem.type == ModContent.ItemType<RecursiveFocus>())
+			if (Main.mouseRight && Main.mouseRightRelease && modeSwitchCooldown <= 0 && Owner.HeldItem.type == ModContent.ItemType<RecursiveFocus>())
 			{
 				if (!rightClickMode)
 				{
@@ -200,7 +197,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				ManageTrail();
 			}
 
-			var idlePos = new Vector2(owner.Center.X, owner.Center.Y - 70);
+			var idlePos = new Vector2(Owner.Center.X, Owner.Center.Y - 70);
 
 			Vector2 toIdlePos = idlePos - Projectile.Center;
 			if (toIdlePos.Length() < 0.0001f)
@@ -224,9 +221,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.netUpdate = true;
 			}
 
-			if (owner.HasMinionAttackTargetNPC)
+			if (Owner.HasMinionAttackTargetNPC)
 			{
-				NPC npc = Main.npc[owner.MinionAttackTargetNPC];
+				NPC npc = Main.npc[Owner.MinionAttackTargetNPC];
 
 				float dist = Vector2.Distance(npc.Center, Projectile.Center);
 
@@ -250,6 +247,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					foundTarget = true;
 					targetCenter = targetNPC.Center;
+
 					if (timeSpentOnTarget < 720)
 						timeSpentOnTarget++;
 				}
@@ -300,10 +298,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (rightClickMode)
 			{
-				var bloomColor = new Color(255, 150, 50)
-				{
-					A = 0
-				};
+				var bloomColor = new Color(255, 150, 50, 0);
 				Main.EntitySpriteDraw(bloomTex, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, Projectile.scale * 1.35f, SpriteEffects.None, 0);
 			}
 			else if (timeSpentOnTarget > 360)
@@ -322,9 +317,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Main.EntitySpriteDraw(crystalTexOrange, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, timeSpentOnTarget / 720f), Projectile.rotation, crystalTex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 
 					if (timeSpentOnTarget >= 720)
-					{
 						Main.EntitySpriteDraw(crystalTexGlow, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.White, Color.Transparent, flashTimer <= 1 ? 0 : 1f - flashTimer / 35f), Projectile.rotation, crystalTexGlow.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
-					}
 
 					if (flashing)
 					{
@@ -336,20 +329,15 @@ namespace StarlightRiver.Content.Items.Vitric
 						}
 
 						Texture2D crystalTexWhite = ModContent.Request<Texture2D>(Texture + "_White").Value;
+
 						if (flashTimer > 0)
 							Main.EntitySpriteDraw(crystalTexWhite, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, Color.White, 1f - flashTimer / 35f), Projectile.rotation, crystalTexWhite.Size() / 2f, Projectile.scale, SpriteEffects.None, 0);
 					}
 				}
 
 				Texture2D laserBloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-				var color2 = new Color(255, 150, 50)
-				{
-					A = 0
-				};
-				var color3 = new Color(255, 195, 135)
-				{
-					A = 0
-				};
+				var color2 = new Color(255, 150, 50, 0);
+				var color3 = new Color(255, 195, 135, 0);
 
 				Main.EntitySpriteDraw(laserBloom, targetCenter - Main.screenPosition, null, color2, 0f, laserBloom.Size() / 2f, 0.3f + MathHelper.Lerp(0, 0.4f, timeSpentOnTarget / 720f), SpriteEffects.None, 0);
 				Main.EntitySpriteDraw(laserBloom, targetCenter - Main.screenPosition, null, color3, 0f, laserBloom.Size() / 2f, 0.2f + MathHelper.Lerp(0, 0.4f, timeSpentOnTarget / 720f), SpriteEffects.None, 0);
@@ -412,6 +400,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			float scale = 0.45f + MathHelper.Lerp(0, 0.1f, timeSpentOnTarget / 720);
+
 			if (target == targetNPC || target == multiTargetNPCOne || target == multiTargetNPCTwo)
 			{
 				for (int i = 0; i < 7; i++)
@@ -434,19 +423,19 @@ namespace StarlightRiver.Content.Items.Vitric
 		public void DoModeSwitchTransition()
 		{
 			float angle = Main.rand.NextFloat(6.28f);
+
 			if (Main.rand.NextBool())
 				Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (25f - MathHelper.Lerp(0, 20, 1 - modeSwitchTransitionTimer / 120f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.65f, 0, new Color(255, 150, 50), 0.2f);
 			else
 				Dust.NewDustPerfect(Projectile.Center - angle.ToRotationVector2() * (25f - MathHelper.Lerp(0, 20, 1 - modeSwitchTransitionTimer / 120f)), ModContent.DustType<Dusts.Glow>(), angle.ToRotationVector2() * 0.65f, 0, new Color(255, 195, 135), 0.2f);
 
 			if (modeSwitchTransitionTimer == 45)
-			{
 				Helper.PlayPitched("Magic/FireCast", 0.8f, 0, Projectile.Center);
-			}
 
 			if (modeSwitchTransitionTimer <= 0)
 			{
 				Helper.PlayPitched("Magic/FireHit", 0.8f, 0, Projectile.Center);
+
 				if (!Main.dedServ)
 				{
 					for (int i = 0; i < 40; i++)
@@ -475,18 +464,16 @@ namespace StarlightRiver.Content.Items.Vitric
 					{
 						bool othernpc = npc == targetNPC || npc == multiTargetNPCTwo;
 
-						if (!othernpc)
+						if (!othernpc && !npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
 						{
-							if (!npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < range && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+							float closest = Projectile.Distance(npc.Center);
+
+							if (range > closest)
 							{
-								float closest = Projectile.Distance(npc.Center);
-								if (range > closest)
-								{
-									multiTargetCenterOne = npc.Center;
-									multiTargetNPCOne = npc;
-									foundMultiTargetOne = true;
-									range = closest;
-								}
+								multiTargetCenterOne = npc.Center;
+								multiTargetNPCOne = npc;
+								foundMultiTargetOne = true;
+								range = closest;
 							}
 						}
 					}
@@ -504,24 +491,23 @@ namespace StarlightRiver.Content.Items.Vitric
 					{
 						bool othernpc = npc == targetNPC || npc == multiTargetNPCOne;
 
-						if (!othernpc)
+						if (!othernpc && !npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < 1000f && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
 						{
-							if (!npc.dontTakeDamage && Vector2.Distance(Projectile.Center, npc.Center) < 1000f && Collision.CanHit(Projectile.Center, 1, 1, npc.Center, 1, 1))
+							float closest = Projectile.Distance(npc.Center);
+
+							if (range > closest)
 							{
-								float closest = Projectile.Distance(npc.Center);
-								if (range > closest)
-								{
-									multiTargetCenterTwo = npc.Center;
-									multiTargetNPCTwo = npc;
-									foundMultiTargetTwo = true;
-									range = closest;
-								}
+								multiTargetCenterTwo = npc.Center;
+								multiTargetNPCTwo = npc;
+								foundMultiTargetTwo = true;
+								range = closest;
 							}
 						}
 					}
 				}
 			}
 		}
+
 		public void UpdateSingleMode()
 		{
 			float scale = 0.4f + MathHelper.Lerp(0, 0.1f, timeSpentOnTarget / 720f);
@@ -529,6 +515,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			var dustPos = Vector2.Lerp(Projectile.Center, targetCenter, Main.rand.NextFloat());
 			float dustScale = MathHelper.Lerp(0.2f, 0.6f, timeSpentOnTarget / 720f);
+
 			if (Main.rand.NextBool())
 				Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
 			else
@@ -547,6 +534,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Helper.PlayPitched("Magic/FireHit", 0.5f, 0, Projectile.Center);
 				flashing = true;
+
 				if (!Main.dedServ)
 				{
 					for (int i = 0; i < 30; i++)
@@ -571,6 +559,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Helper.PlayPitched("Magic/FireHit", 0.75f, 0, Projectile.Center);
 				flashing = true;
+
 				if (!Main.dedServ)
 				{
 					for (int i = 0; i < 35; i++)
@@ -595,6 +584,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Helper.PlayPitched("Magic/FireHit", 1f, 0, Projectile.Center);
 				flashing = true;
+
 				if (!Main.dedServ)
 				{
 					for (int i = 0; i < 40; i++)
@@ -669,6 +659,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					var dustPos = Vector2.Lerp(Projectile.Center, multiTargetCenterOne, Main.rand.NextFloat());
 					float dustScale = 0.45f;
+
 					if (Main.rand.NextBool())
 						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
 					else
@@ -702,6 +693,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					var dustPos = Vector2.Lerp(Projectile.Center, multiTargetCenterTwo, Main.rand.NextFloat());
 					float dustScale = 0.45f;
+
 					if (Main.rand.NextBool())
 						Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f), 0, new Color(255, 150, 50), dustScale);
 					else
@@ -827,7 +819,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (foundTarget && timeSpentOnTarget > 2)
 			{
 				trail?.Render(effect);
-
 				trail2?.Render(effect);
 			}
 
@@ -836,14 +827,12 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (foundMultiTargetOne && timeSpentOnMultiTargetOne > 2)
 				{
 					multiTrailOne?.Render(effect);
-
 					multiTrailThree?.Render(effect);
 				}
 
 				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo > 2)
 				{
 					multiTrailTwo?.Render(effect);
-
 					multiTrailFour?.Render(effect);
 				}
 			}
@@ -853,7 +842,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (foundTarget && timeSpentOnTarget > 2)
 			{
 				trail?.Render(effect);
-
 				trail2?.Render(effect);
 			}
 
@@ -862,14 +850,12 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (foundMultiTargetOne && timeSpentOnMultiTargetOne > 2)
 				{
 					multiTrailOne?.Render(effect);
-
 					multiTrailThree?.Render(effect);
 				}
 
 				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo > 2)
 				{
 					multiTrailTwo?.Render(effect);
-
 					multiTrailFour?.Render(effect);
 				}
 			}
@@ -880,7 +866,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (foundTarget && timeSpentOnTarget >= 720)
 			{
 				trail?.Render(effect);
-
 				trail2?.Render(effect);
 			}
 
@@ -889,14 +874,12 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (foundMultiTargetOne && timeSpentOnMultiTargetOne >= 480)
 				{
 					multiTrailOne?.Render(effect);
-
 					multiTrailThree?.Render(effect);
 				}
 
 				if (foundMultiTargetTwo && timeSpentOnMultiTargetTwo >= 480)
 				{
 					multiTrailTwo?.Render(effect);
-
 					multiTrailFour?.Render(effect);
 				}
 			}

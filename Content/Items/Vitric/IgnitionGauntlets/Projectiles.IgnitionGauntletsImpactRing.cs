@@ -1,26 +1,22 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletsImpactRing : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.Assets + "Invisible";
-
 		private List<Vector2> cache;
 
 		private Trail trail;
 		private Trail trail2;
 
 		public int timeLeftStart = 10;
+
+		public override string Texture => AssetDirectory.Assets + "Invisible";
+
 		private float Progress => 1 - Projectile.timeLeft / (float)timeLeftStart;
 
 		private float Radius => Projectile.ai[0] * (float)Math.Sqrt(Math.Sqrt(Progress));
@@ -44,6 +40,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		public override void AI()
 		{
 			Projectile.velocity *= 0.95f;
+
 			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
@@ -60,6 +57,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			cache = new List<Vector2>();
 			float radius = Radius;
+
 			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
 			{
 				double rad = i / 32f * 6.28f;
@@ -77,7 +75,6 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 		private void ManageTrail()
 		{
-
 			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor => Color.Orange);
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => Color.White);

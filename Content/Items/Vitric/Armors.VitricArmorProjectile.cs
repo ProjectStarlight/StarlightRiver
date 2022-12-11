@@ -21,10 +21,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		float prevRotTarget;
 
 		public float timer;
-		public ref float State => ref Projectile.ai[0];
-
 		float prevState;
+
+		public ref float State => ref Projectile.ai[0];
 		public ref float Index => ref Projectile.ai[1];
+
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
@@ -107,7 +108,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (State == 1 && Main.myPlayer == Owner.whoAmI) //loaded
 			{
 
-				rotTarget = Helpers.Helper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+				rotTarget = Helper.LerpFloat(Projectile.rotation, (Owner.Center - Main.MouseWorld).ToRotation() + 1.57f, Math.Min(1, timer / 30f));
+
 				if (Math.Abs(rotTarget - prevRotTarget) > 0.1f)
 				{
 					prevRotTarget = rotTarget;
@@ -128,9 +130,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (State == 2)
-			{
 				Projectile.scale = Projectile.timeLeft / 15f * maxSize;
-			}
 
 			if (Main.myPlayer == Owner.whoAmI && prevState != State)
 			{
@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public ref float state => ref Projectile.ai[0];
+		public ref float State => ref Projectile.ai[0];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
-			if (Main.rand.Next(5) == 0)
+			if (Main.rand.NextBool(5))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-2, -1), 0, new Color(255, 150, 50), 0.6f);
 
 			if (Main.netMode != NetmodeID.Server)

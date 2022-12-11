@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Hell;
+﻿using StarlightRiver.Content.Items.Hell;
 using StarlightRiver.Content.NPCs.Vitric;
-using StarlightRiver.Core;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -51,11 +47,6 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.VitricItem + "MagmiteBottle";
 
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.White;
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.width = 16;
@@ -63,6 +54,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.timeLeft = 600;
 			Projectile.friendly = true;
 			Projectile.damage = 60;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.White;
 		}
 
 		public override void AI()

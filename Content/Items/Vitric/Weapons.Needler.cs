@@ -1,16 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -125,7 +121,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				NPC target = Main.npc[enemyID];
 				int needles = target.GetGlobalNPC<NeedlerNPC>().needles;
 
-				if (Main.rand.Next(Math.Max((10 - needles) * 30 + 300, 50)) == 0)
+				if (Main.rand.NextBool(Math.Max((10 - needles) * 30 + 300, 50)))
 					Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.4f, 0.8f));
 
 				if (target.GetGlobalNPC<NeedlerNPC>().needleTimer == 1)
@@ -139,10 +135,9 @@ namespace StarlightRiver.Content.Items.Vitric
 					if (needleLerp < 10)
 					{
 						needleLerp += 0.2f;
+
 						if (needles > needleLerp + 3)
-						{
 							needleLerp += 0.4f;
-						}
 					}
 				}
 				else
@@ -157,9 +152,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					if (Projectile.timeLeft > 5)
 						Projectile.timeLeft = 5;
+
 					Projectile.velocity = Vector2.Zero;
 				}
-
 				else
 				{
 					Projectile.position = target.position + offset;
@@ -170,7 +165,6 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				return false;
 			}
-
 			else
 			{
 				Projectile.rotation = Projectile.velocity.ToRotation();
@@ -303,7 +297,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
 			Projectile.scale *= 0.98f;
-			if (Main.rand.Next(2) == 0)
+
+			if (Main.rand.NextBool(2))
 			{
 				var dust = Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<NeedlerDustFastFade>(), Main.rand.NextVector2Circular(1.5f, 1.5f));
 				dust.scale = 0.6f * Projectile.scale;
@@ -331,15 +326,17 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				needles++;
 				needleTimer = 60;
-				Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireCast"), NPC.Center);
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireCast"), NPC.Center);
 			}
 
 			if (needleTimer == 1)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), NPC.Center);
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), NPC.Center);
+
 				if (needlePlayer == Main.myPlayer)
 				{
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<NeedlerExplosion>(), (int)(needleDamage * Math.Sqrt(needles)), 0, needlePlayer);
+
 					for (int i = 0; i < 5; i++)
 					{
 						Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f, 1.15f);

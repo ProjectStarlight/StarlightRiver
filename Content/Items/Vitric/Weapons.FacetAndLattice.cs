@@ -1,26 +1,21 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Projectiles;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
 	class FacetAndLattice : ModItem
 	{
-		public override string Texture => AssetDirectory.VitricItem + Name;
-
 		public bool buffed = false;
 		public int buffPower = 0;
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -74,9 +69,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			TooltipLine damageLine = tooltips.FirstOrDefault(n => n.Name == "Damage");
 
 			if (damageLine != null)
-			{
 				tooltips.Insert(tooltips.IndexOf(damageLine) + 1, new TooltipLine(Mod, "ShieldLife", "50 shield life"));
-			}
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -102,14 +95,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool? UseItem(Player Player)
 		{
 			//Player.velocity += Vector2.Normalize(Player.Center - Main.MouseWorld) * 10;
+
 			if (Player.GetModPlayer<ControlsPlayer>().mouseRight)
-			{
 				Helper.PlayPitched(SoundID.DD2_CrystalCartImpact, 1f, 0, Player.position);
-			}
 			else
-			{
 				Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
-			}
 
 			return true;
 		}
@@ -117,10 +107,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	class FacetProjectile : SpearProjectile, IDrawAdditive
 	{
-		public override string Texture => AssetDirectory.VitricItem + Name;
-
 		public ref float DrawbackTime => ref Projectile.ai[0];
 		public ref float BuffPower => ref Projectile.ai[1];
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public FacetProjectile() : base(50, 74, 164) { }
 
@@ -152,7 +142,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.timeLeft == (int)(25 * speed))
 			{
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f) * 124, ModContent.DustType<AirSetColorNoGravity>(), Vector2.Zero, 0, default, 2);
-
 				player.velocity += Vector2.UnitX.RotatedBy(Projectile.rotation + (float)Math.PI / 4f * 5f + 3.14f) * (BuffPower > 0 ? -10 : -4);
 			}
 		}
@@ -160,7 +149,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void PostAI()
 		{
 			if (Main.myPlayer != Projectile.owner)
-				findIfHit();
+				FindIfHit();
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -172,6 +161,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			hitDirection = Main.player[Projectile.owner].direction;
+
 			if (BuffPower > 0)
 			{
 				Terraria.Audio.SoundStyle slot2 = SoundID.DD2_BetsyFireballImpact with
@@ -196,19 +186,18 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.myPlayer == Projectile.owner)
 				Projectile.netUpdate = true;
 
-			if (Helpers.Helper.IsFleshy(target))
+			if (Helper.IsFleshy(target))
 			{
-				Helpers.Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
+				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Projectile.Center);
 
 				for (int k = 0; k < 20; k++)
 				{
 					Dust.NewDustPerfect(Projectile.Center, DustID.Blood, Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(6), 0, default, 1.5f);
 				}
 			}
-
 			else
 			{
-				Helpers.Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
+				Helper.PlayPitched("Impacts/Clink", 1, Main.rand.NextFloat(0.1f, 0.3f), Projectile.Center);
 
 				for (int k = 0; k < 15; k++)
 				{
@@ -217,7 +206,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		private void findIfHit()
+		private void FindIfHit()
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && Projectile.timeLeft < (int)(50 * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee)) && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
@@ -261,11 +250,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	class LatticeProjectile : ModProjectile
 	{
-		public override string Texture => AssetDirectory.VitricItem + Name;
-
 		public ref float ShieldLife => ref Projectile.ai[0];
-
 		public ref float Rotation => ref Projectile.ai[1];
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -454,6 +442,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Projectile.frameCounter % 8 == 0)
 				Projectile.frame++;
+
 			Projectile.frame %= 3;
 
 			return false;

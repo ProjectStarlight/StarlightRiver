@@ -1,22 +1,18 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletLaunch : ModProjectile
 	{
-		public override string Texture => AssetDirectory.VitricItem + Name;
-		private Player owner => Main.player[Projectile.owner];
-
 		public float noiseRotation;
 
 		public float noiseRotation2;
+
+		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void Load()
 		{
@@ -27,6 +23,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			On.Terraria.Main.DrawDust -= DrawCone;
 		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ignition Gauntlets");
@@ -49,16 +46,19 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			if (noiseRotation < 0.02f)
 				noiseRotation = Main.rand.NextFloat(6.28f);
+
 			noiseRotation += 0.12f;
 
 			if (noiseRotation2 < 0.02f)
 				noiseRotation2 = Main.rand.NextFloat(6.28f);
+
 			noiseRotation2 -= 0.12f;
 
-			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
-			Projectile.Center = owner.Center;
+			IgnitionPlayer modPlayer = Owner.GetModPlayer<IgnitionPlayer>();
+			Projectile.Center = Owner.Center;
 
-			Projectile.rotation = owner.fullRotation;
+			Projectile.rotation = Owner.fullRotation;
+
 			if (!modPlayer.launching)
 				Projectile.Kill();
 		}
@@ -84,6 +84,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			{
 				Player player = Main.player[Projectile.owner];
 				Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
+
 				if (Projectile.type == ModContent.ProjectileType<IgnitionGauntletLaunch>() && Projectile.active && player.GetModPlayer<IgnitionPlayer>().loadedCharge > 15)
 				{
 					var mp = Projectile.ModProjectile as IgnitionGauntletLaunch;

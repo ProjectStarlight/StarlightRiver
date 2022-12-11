@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -18,7 +13,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Blasts out Magmites that stick to enemies\nFor each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites\nMagmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites");
+			Tooltip.SetDefault("Blasts out Magmites that stick to enemies\n" +
+				"For each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites\n" +
+				"Magmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites");
 		}
 
 		public override void SetDefaults()
@@ -82,13 +79,13 @@ namespace StarlightRiver.Content.Items.Vitric
 	internal class MagmiteVacpackHoldout : ModProjectile
 	{
 		private int time;
-		public ref float MaxFramesTillShoot => ref Projectile.ai[1];
 
 		public ref float ShootDelay => ref Projectile.ai[0];
+		public ref float MaxFramesTillShoot => ref Projectile.ai[1];
 
-		public Player owner => Main.player[Projectile.owner];
+		public Player Owner => Main.player[Projectile.owner];
 
-		public bool CanHold => owner.channel && !owner.CCed && !owner.noItems;
+		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 
 		public override string Texture => AssetDirectory.VitricItem + "MagmiteVacpack";
 
@@ -115,31 +112,31 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
 			time++;
-
 			ShootDelay++;
 
-			Vector2 armPos = owner.RotatedRelativePoint(owner.MountedCenter, true);
-			armPos += Utils.SafeNormalize(Projectile.velocity, owner.direction * Vector2.UnitX) * 15f;
+			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
+			armPos += Utils.SafeNormalize(Projectile.velocity, Owner.direction * Vector2.UnitX) * 15f;
 
 			Vector2 barrelPos = armPos + Projectile.velocity * Projectile.width * 0.5f;
 			barrelPos.Y -= 8;
 			barrelPos.X += -8;
 
 			if (MaxFramesTillShoot == 0f)
-				MaxFramesTillShoot = owner.HeldItem.useAnimation;
+				MaxFramesTillShoot = Owner.HeldItem.useAnimation;
 
 			if (!CanHold)
 				Projectile.Kill();
 
 			if (ShootDelay >= MaxFramesTillShoot)
 			{
-				Item heldItem = owner.HeldItem;
+				Item heldItem = Owner.HeldItem;
 				int damage = Projectile.damage;
 				float shootSpeed = heldItem.shootSpeed;
-				float knockBack = owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
+				float knockBack = Owner.GetWeaponKnockback(heldItem, heldItem.knockBack);
 				Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
+
 				if (Main.myPlayer == Projectile.owner)
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), barrelPos, shootVelocity, ModContent.ProjectileType<MagmiteVacpackProjectile>(), damage, knockBack, owner.whoAmI);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), barrelPos, shootVelocity, ModContent.ProjectileType<MagmiteVacpackProjectile>(), damage, knockBack, Owner.whoAmI);
 
 				for (int i = 0; i < 10; i++)
 				{
@@ -153,14 +150,14 @@ namespace StarlightRiver.Content.Items.Vitric
 				ShootDelay = 0;
 			}
 
-			owner.ChangeDir(Projectile.direction);
-			owner.heldProj = Projectile.whoAmI;
-			owner.itemTime = 2;
-			owner.itemAnimation = 2;
+			Owner.ChangeDir(Projectile.direction);
+			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemTime = 2;
+			Owner.itemAnimation = 2;
 
 			Projectile.timeLeft = 2;
 			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
-			owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
 
 			if (Projectile.spriteDirection == -1)
 				Projectile.rotation += 3.1415927f;
@@ -175,7 +172,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Vector2 oldVelocity = Projectile.velocity;
 
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, owner.DirectionTo(Main.MouseWorld), interpolant);
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant);
+
 				if (Projectile.velocity != oldVelocity)
 				{
 					Projectile.netSpam = 0;
@@ -189,6 +187,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.rand.NextBool(10))
 			{
 				Gore.NewGore(Projectile.GetSource_FromThis(), barrelPos, (Vector2.UnitY * Main.rand.NextFloat(0.4f, 0.5f)).RotatedByRandom(MathHelper.ToRadians(35f)), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.6f, 0.7f));
+
 				if (Main.rand.NextBool(2))
 					Dust.NewDustPerfect(barrelPos, ModContent.DustType<Dusts.MagmaSmoke>(), (Vector2.UnitY * Main.rand.NextFloat(-3f, -2f)).RotatedByRandom(MathHelper.ToRadians(25f)), 100, Color.Black, Main.rand.NextFloat(0.7f, 0.9f));
 			}
@@ -196,7 +195,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.soundDelay == 0)
 			{
 				SoundEngine.PlaySound(SoundID.SplashWeak with { PitchRange = (-0.1f, 0.1f) }, Projectile.position);
-
 				Projectile.soundDelay = 6;
 			}
 		}
@@ -211,11 +209,6 @@ namespace StarlightRiver.Content.Items.Vitric
 		internal Vector2 offset = Vector2.Zero;
 
 		internal Vector2 oldVelocity;
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.White;
-		}
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -235,6 +228,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Projectile.timeLeft = 300;
 			Projectile.penetrate = -1;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.White;
 		}
 
 		public override bool PreAI()
@@ -270,6 +268,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.rotation += 0.1f + Projectile.direction;
 
 				Projectile.velocity.Y += 0.65f;
+
 				if (Projectile.velocity.Y > 16f)
 					Projectile.velocity.Y = 16f;
 
@@ -284,7 +283,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
-			if (globalNPC.MagmiteAmount < 3)
+
+			if (globalNPC.magmiteAmount < 3)
 			{
 				stuck = true;
 				Projectile.friendly = false;
@@ -293,8 +293,8 @@ namespace StarlightRiver.Content.Items.Vitric
 				offset = Projectile.position - target.position;
 				Projectile.netUpdate = true;
 
-				globalNPC.MagmiteAmount++;
-				globalNPC.MagmiteOwner = Projectile.owner;
+				globalNPC.magmiteAmount++;
+				globalNPC.magmiteOwner = Projectile.owner;
 
 				Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
 
@@ -334,7 +334,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			for (int i = 0; i < 10; i++)
 			{
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(MathHelper.ToRadians(25f)) * Main.rand.NextFloat(4f, 5f), Mod.Find<ModGore>("MagmiteGore").Type, 1.35f);
-
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
 			}
 
@@ -351,6 +350,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D texture = TextureAssets.Projectile[Projectile.type].Value;
 
 			var drawOrigin = new Vector2(texture.Width * 0.5f, Projectile.height * 0.5f);
+
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
 				Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
@@ -378,7 +378,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 
 				MagmiteVacpackGlobalNPC globalNPC = Main.npc[enemyID].GetGlobalNPC<MagmiteVacpackGlobalNPC>();
-				globalNPC.MagmiteAmount--;
+				globalNPC.magmiteAmount--;
 			}
 
 			SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, Projectile.Center);
@@ -387,7 +387,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
-			if (globalNPC.MagmiteAmount >= 3)
+
+			if (globalNPC.magmiteAmount >= 3)
 				damage = (int)(damage * 1.5);
 		}
 
@@ -408,25 +409,24 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	internal class MagmiteVacpackGlobalNPC : GlobalNPC
 	{
-		public int MagmiteAmount;
-
-		public int MagmiteOwner;
+		public int magmiteAmount;
+		public int magmiteOwner;
 
 		public override bool InstancePerEntity => true;
 
 		public override void ResetEffects(NPC npc)
 		{
-			MagmiteAmount = Utils.Clamp(MagmiteAmount, 0, 3);
+			magmiteAmount = Utils.Clamp(magmiteAmount, 0, 3);
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
-			if (MagmiteAmount > 0)
+			if (magmiteAmount > 0)
 			{
 				if (npc.lifeRegen > 0)
 					npc.lifeRegen = 0;
 
-				npc.lifeRegen -= 10 * MagmiteAmount;
+				npc.lifeRegen -= 10 * magmiteAmount;
 				if (damage < 1)
 					damage = 1;
 			}
@@ -438,8 +438,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			bool IsSummoner = projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true;
 
-			if (projectile.owner == MagmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && MagmiteAmount > 0 && player.HasMinionAttackTargetNPC)
-				damage += MagmiteAmount * 3;
+			if (projectile.owner == magmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && magmiteAmount > 0 && player.HasMinionAttackTargetNPC)
+				damage += magmiteAmount * 3;
 		}
 	}
 }

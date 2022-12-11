@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.GameContent;
+﻿using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -14,16 +9,6 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override int BossBagNPC => NPCType<Bosses.VitricBoss.VitricBoss>();
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
-
-		public override Color? GetAlpha(Color lightColor)
-		{
-			return Color.Lerp(lightColor, Color.White, 0.4f);
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -43,6 +28,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.height = 32;
 
 			Item.maxStack = 999;
+		}
+
+		public override bool CanRightClick()
+		{
+			return true;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.Lerp(lightColor, Color.White, 0.4f);
 		}
 
 		public override void OpenBossBag(Player Player)

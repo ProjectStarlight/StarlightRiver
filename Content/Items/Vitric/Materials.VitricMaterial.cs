@@ -1,6 +1,4 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Items.Vitric
+﻿namespace StarlightRiver.Content.Items.Vitric
 {
 	public class VitricOre : QuickMaterial
 	{

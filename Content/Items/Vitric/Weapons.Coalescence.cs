@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -86,8 +81,8 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		private int charge = 0;
 
-		public float chargePercent => charge / 90f;
-		Player owner => Main.player[Projectile.owner];
+		public float ChargePercent => charge / 90f;
+		Player Owner => Main.player[Projectile.owner];
 
 		public ref float State => ref Projectile.ai[0];
 		public ref float Angle => ref Projectile.ai[1];
@@ -103,18 +98,18 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-			if (owner == Main.LocalPlayer)
-				owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
+			if (Owner == Main.LocalPlayer)
+				Owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
 
-			Angle = (owner.Center - owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
+			Angle = (Owner.Center - Owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
 
 			Projectile.rotation = Angle;
-			Projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * 24;
-			owner.heldProj = Projectile.whoAmI;
+			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * 24;
+			Owner.heldProj = Projectile.whoAmI;
 
-			if (owner.channel && State == 0)
+			if (Owner.channel && State == 0)
 			{
-				float damageMult = 0.25f + chargePercent * 0.75f;
+				float damageMult = 0.25f + ChargePercent * 0.75f;
 
 				if (charge < 75)
 					charge++;
@@ -123,6 +118,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				{
 					if (Main.myPlayer == Projectile.owner)
 						Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitX, ProjectileType<VitricBowShard>(), (int)(Projectile.damage * damageMult), 1, Projectile.owner, 0, 1);
+
 					Helper.PlayPitched("ImpactHeal", 0.6f, -0.2f);
 				}
 
@@ -146,7 +142,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				charge -= 4;
 			}
 
-			Lighting.AddLight(owner.Center, new Vector3(0.3f + 0.3f * chargePercent, 0.6f + 0.2f * chargePercent, 1) * chargePercent);
+			Lighting.AddLight(Owner.Center, new Vector3(0.3f + 0.3f * ChargePercent, 0.6f + 0.2f * ChargePercent, 1) * ChargePercent);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -168,29 +164,29 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Vector2 offset = Vector2.UnitX.RotatedBy(Projectile.rotation);
 
-			float prog1 = RangeLerp(chargePercent, 0, 0.3f) + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.1f;
-			float prog2 = RangeLerp(chargePercent, 0.3f, 0.6f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 1) * 0.1f;
-			float prog3 = RangeLerp(chargePercent, 0.6f, 0.9f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 2) * 0.1f;
+			float prog1 = RangeLerp(ChargePercent, 0, 0.3f) + (float)Math.Sin(Main.GameUpdateCount / 20f) * 0.1f;
+			float prog2 = RangeLerp(ChargePercent, 0.3f, 0.6f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 1) * 0.1f;
+			float prog3 = RangeLerp(ChargePercent, 0.6f, 0.9f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 2) * 0.1f;
 
 			DrawRing(spriteBatch, Projectile.Center + offset * (-30 + prog1 * 40), 1, 1, Main.GameUpdateCount / 40f, prog1, color3);
 			DrawRing(spriteBatch, Projectile.Center + offset * (-30 + prog2 * 80), 1.5f, 1.5f, -Main.GameUpdateCount / 30f, prog2, color2);
 			DrawRing(spriteBatch, Projectile.Center + offset * (-30 + prog3 * 120), 2, 2, Main.GameUpdateCount / 20f, prog3, color1);
 
-			float prog4 = RangeLerp(chargePercent, 0.2f, 0.5f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
+			float prog4 = RangeLerp(ChargePercent, 0.2f, 0.5f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 15f), null, color3 * prog4, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog1 * 0.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 10f), null, color1 * prog4, Main.GameUpdateCount / 15f, texStar.Size() / 2, prog2 * 0.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog4 * 60), 20, 80, Main.GameUpdateCount / 25f), null, color3 * prog4, Main.GameUpdateCount / 8f, texStar.Size() / 2, prog1 * 0.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 35f), null, color2 * prog4, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 0.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog4 * 60), 20, 80, -Main.GameUpdateCount / 20f), null, color1 * prog4, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 0.2f, 0, 0);
 
-			float prog5 = RangeLerp(chargePercent, 0.5f, 0.8f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
+			float prog5 = RangeLerp(ChargePercent, 0.5f, 0.8f) + (float)Math.Sin(Main.GameUpdateCount / 20f + 3) * 0.2f;
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 12f), null, color2 * prog5, Main.GameUpdateCount / 18f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 18f), null, color3 * prog5, Main.GameUpdateCount / 12f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog5 * 100), 25, 100, -Main.GameUpdateCount / 42f), null, color1 * prog5, Main.GameUpdateCount / 10f, texStar.Size() / 2, prog2 * 0.2f * 1.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 32f), null, color3 * prog5, Main.GameUpdateCount / 6f, texStar.Size() / 2, prog2 * 0.2f * 1.2f, 0, 0);
 			spriteBatch.Draw(texStar, PosRing(Projectile.Center + offset * (-30 + prog5 * 100), 25, 100, Main.GameUpdateCount / 25f), null, color3 * prog5, Main.GameUpdateCount / 19f, texStar.Size() / 2, prog3 * 0.2f * 1.2f, 0, 0);
 
-			spriteBatch.Draw(texGlow, Projectile.Center + offset * (-40 + prog2 * 90) - Main.screenPosition, null, color3 * (chargePercent * 0.5f), 0, texGlow.Size() / 2, 3.5f, 0, 0);
+			spriteBatch.Draw(texGlow, Projectile.Center + offset * (-40 + prog2 * 90) - Main.screenPosition, null, color3 * (ChargePercent * 0.5f), 0, texGlow.Size() / 2, 3.5f, 0, 0);
 		}
 
 		private void DrawRing(SpriteBatch sb, Vector2 pos, float w, float h, float rotation, float prog, Color color) //optimization nightmare. Figure out smth later
@@ -238,28 +234,29 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	internal class VitricBowShard : ModProjectile, IDrawAdditive
 	{
-		public override string Texture => AssetDirectory.Invisible;
-
-		public Player owner => Main.player[Projectile.owner];
-
-		public ref float Timer => ref Projectile.ai[0];
-
-		public ref float Rotation => ref Projectile.ai[1];
-
-		public int fadeIn = 15;
-
 		private Vector2 startPoint;
 		private Vector2 startCenter;
 		private Vector2 targetPoint;
 		private float storedRotation;
 
 		private float prevRotation;
-		private float targetRotation => (targetPoint - startCenter).ToRotation();
-		private float targetDist => Vector2.Distance(targetPoint, startPoint);
+
+		public int fadeIn = 15;
+
 		float dist1;
 		float dist2;
 
-		Vector2 midPoint => startPoint + Vector2.UnitX.RotatedBy(storedRotation - Helpers.Helper.CompareAngle(storedRotation, targetRotation) * 0.5f) * targetDist / 2f;
+		public ref float Timer => ref Projectile.ai[0];
+		public ref float Rotation => ref Projectile.ai[1];
+
+		public Player Owner => Main.player[Projectile.owner];
+
+		private float TargetRotation => (targetPoint - startCenter).ToRotation();
+		private float TargetDistance => Vector2.Distance(targetPoint, startPoint);
+
+		Vector2 Midpoint => startPoint + Vector2.UnitX.RotatedBy(storedRotation - Helper.CompareAngle(storedRotation, TargetRotation) * 0.5f) * TargetDistance / 2f;
+
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{
@@ -280,6 +277,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (Projectile.timeLeft < 120)
 				return base.CanHitNPC(target);
+
 			return false;
 		}
 
@@ -288,9 +286,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			float factor = dist1 / (dist1 + dist2);
 
 			if (progress < factor)
-				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, targetPoint - startPoint, progress * (1 / factor));
+				return Vector2.Hermite(startPoint, Midpoint - startPoint, Midpoint, targetPoint - startPoint, progress * (1 / factor));
+
 			if (progress >= factor)
-				return Vector2.Hermite(midPoint, targetPoint - startPoint, targetPoint, targetPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
+				return Vector2.Hermite(Midpoint, targetPoint - startPoint, targetPoint, targetPoint - Midpoint, (progress - factor) * (1 / (1 - factor)));
 
 			return Vector2.Zero;
 		}
@@ -313,19 +312,19 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-			if (owner.channel && Projectile.timeLeft >= 120)
+			if (Owner.channel && Projectile.timeLeft >= 120)
 			{
 				if (Timer < fadeIn)
 					Timer++;
 
-				if (owner == Main.LocalPlayer)
-					owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
+				if (Owner == Main.LocalPlayer)
+					Owner.GetModPlayer<ControlsPlayer>().mouseRotationListener = true;
 
-				Rotation = Projectile.velocity.ToRotation() + (owner.Center - owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
+				Rotation = Projectile.velocity.ToRotation() + (Owner.Center - Owner.GetModPlayer<ControlsPlayer>().mouseWorld).ToRotation() + MathHelper.Pi;
 
 				Projectile.rotation = Rotation;
 				Projectile.timeLeft = 121;
-				Projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + Projectile.velocity.X * 6) * 10);
+				Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + Projectile.velocity.X * 6) * 10);
 			}
 
 			else if (Timer >= fadeIn)
@@ -338,7 +337,8 @@ namespace StarlightRiver.Content.Items.Vitric
 					if (Main.myPlayer == Projectile.owner)
 					{
 						targetPoint = Main.MouseWorld;
-						Rotation = Projectile.velocity.ToRotation() + (owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+						Rotation = Projectile.velocity.ToRotation() + (Owner.Center - Main.MouseWorld).ToRotation() + 3.14f;
+
 						if (Math.Abs(Projectile.rotation - prevRotation) > 0.2f)
 						{
 							Projectile.netUpdate = true;
@@ -347,26 +347,26 @@ namespace StarlightRiver.Content.Items.Vitric
 					}
 
 					Projectile.rotation = Rotation;
-					Projectile.Center = owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + Projectile.velocity.X * 6) * 10);
+					Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * (80 + (float)Math.Sin(Main.GameUpdateCount / 10f + Projectile.velocity.X * 6) * 10);
 				}
 
 				if (startPoint == Vector2.Zero)
 				{
-					if (owner == Main.LocalPlayer)
+					if (Owner == Main.LocalPlayer)
 					{
 						targetPoint = Main.MouseWorld;
 						Projectile.netUpdate = true;
 					}
 
 					startPoint = Projectile.Center;
-					startCenter = owner.Center;
+					startCenter = Owner.Center;
 					storedRotation = Projectile.rotation;
-					dist1 = ApproximateSplineLength(30, startPoint, midPoint - startPoint, midPoint, targetPoint - startPoint);
-					dist2 = ApproximateSplineLength(30, midPoint, targetPoint - startPoint, targetPoint, targetPoint - midPoint);
+					dist1 = ApproximateSplineLength(30, startPoint, Midpoint - startPoint, Midpoint, targetPoint - startPoint);
+					dist2 = ApproximateSplineLength(30, Midpoint, targetPoint - startPoint, targetPoint, targetPoint - Midpoint);
 				}
 
 				int lifeTime = 122 - Projectile.timeLeft;
-				int timeToMerge = (int)(Math.Min(0.4f, targetDist / 1200f) * 90);
+				int timeToMerge = (int)(Math.Min(0.4f, TargetDistance / 1200f) * 90);
 
 				if (lifeTime < timeToMerge)
 				{
@@ -376,7 +376,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					Projectile.velocity = Vector2.Zero;
 
-					if (Main.rand.Next(4) == 0)
+					if (Main.rand.NextBool(4))
 					{
 						var color = new Color(20 + (int)(Projectile.ai[1] / 4f * 100), 150, 255);
 						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
@@ -384,7 +384,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						d.fadeIn = 30;
 					}
 
-					if (Main.rand.Next(2) == 0)
+					if (Main.rand.NextBool(2))
 					{
 						var color = new Color(20 + (int)(Projectile.ai[1] / 4f * 100), 150, 255);
 						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
@@ -394,22 +394,22 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 				else
 				{
-					Projectile.velocity = Vector2.UnitX.RotatedBy(targetRotation) * 15 * (1 - (lifeTime - timeToMerge) / (122f - timeToMerge));
-					Projectile.rotation = targetRotation;
+					Projectile.velocity = Vector2.UnitX.RotatedBy(TargetRotation) * 15 * (1 - (lifeTime - timeToMerge) / (122f - timeToMerge));
+					Projectile.rotation = TargetRotation;
 
 					var color = new Color(20 + (int)(Projectile.ai[1] / 4f * 100), 150, 255);
 
 					if (Projectile.timeLeft < 30)
 						color *= Projectile.timeLeft / 30f;
 
-					if (Main.rand.Next(10) == 0)
+					if (Main.rand.NextBool(10))
 					{
 						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.8f, 1.4f));
 						d.customData = Main.rand.NextFloat(0.4f, 1.5f);
 						d.fadeIn = 30;
 					}
 
-					if (Main.rand.Next(5) == 0)
+					if (Main.rand.NextBool(5))
 					{
 						var d = Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Aurora>(), Vector2.Zero, 0, color * Main.rand.NextFloat(0.4f, 0.6f));
 						d.customData = Main.rand.NextFloat(0.4f, 0.8f);
@@ -435,11 +435,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			int lifeTime = 122 - Projectile.timeLeft;
-			int timeToMerge = (int)(Math.Min(0.4f, targetDist / 1200f) * 90);
+			int timeToMerge = (int)(Math.Min(0.4f, TargetDistance / 1200f) * 90);
 
-			if (Math.Abs(lifeTime - timeToMerge) <= 5 && owner.HeldItem.ModItem is Coalescence)
+			if (Math.Abs(lifeTime - timeToMerge) <= 5 && Owner.HeldItem.ModItem is Coalescence)
 			{
-				var mi = owner.HeldItem.ModItem as Coalescence;
+				var mi = Owner.HeldItem.ModItem as Coalescence;
 				mi.manaCharge++;
 
 				if (mi.manaCharge >= 5)

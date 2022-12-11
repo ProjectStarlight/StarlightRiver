@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -93,9 +88,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
 			if (item.GetGlobalItem<GlassReplica>().isReplica)
-			{
 				tooltips.FirstOrDefault(n => n.Name == "ItemName" && n.Mod == "Terraria").Text = "Replica " + item.Name;
-			}
 		}
 
 		public override bool OnPickup(Item item, Player Player)

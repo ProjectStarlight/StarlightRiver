@@ -6,8 +6,6 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 	{
 		public Vector2 directionVector = Vector2.Zero;
 
-		private Player Owner => Main.player[Projectile.owner];
-
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public override void SetStaticDefaults()
