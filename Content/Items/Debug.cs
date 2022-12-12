@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items
 {
@@ -18,7 +13,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Stick");
-			Tooltip.SetDefault("Dont use this if you're not me.\nGrants a bunch of maximum barrier when you are swag\nYou have no stamina without good drip\nYou probably play cornhole");
+			Tooltip.SetDefault("Developer item");
 		}
 
 		public override void SetDefaults()

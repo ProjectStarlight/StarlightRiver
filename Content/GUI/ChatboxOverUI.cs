@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.GUI
 			activeUpgrade = state;
 
 			if (state != null)
-				button.displayString = state._buttonName;
+				button.displayString = state.buttonName;
 
 			OnInitialize();
 		}

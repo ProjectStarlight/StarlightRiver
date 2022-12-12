@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Codex;
+﻿using StarlightRiver.Content.Codex;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -40,12 +37,8 @@ namespace StarlightRiver.Content.Pickups
 		{
 			if (timer == 1)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
 				Filters.Scene.Deactivate("Shockwave");
-			}
-
-			if (timer < 119)
-			{
 			}
 
 			if (timer == 119)

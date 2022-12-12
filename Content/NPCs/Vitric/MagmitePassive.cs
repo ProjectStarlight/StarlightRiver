@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -83,7 +78,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			ActionTimer++;
 			GlobalTimer++;
 
-			if (Main.rand.Next(10) == 0)
+			if (Main.rand.NextBool(10))
 				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
 			if (ActionState == -1)
@@ -114,7 +109,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					ActionTimer = 0;
 					return;
 				}
-
 				else if (NPC.velocity.X == 0 && tile.HasTile && (!tileUp.HasTile || !Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType]))
 				{
 					NPC.velocity.Y -= 2;
@@ -204,6 +198,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 
 			int originX = 18;
+
 			if (NPC.spriteDirection == -1)
 				originX = 30;
 

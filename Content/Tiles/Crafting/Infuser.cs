@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.GUI;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Crafting
 {

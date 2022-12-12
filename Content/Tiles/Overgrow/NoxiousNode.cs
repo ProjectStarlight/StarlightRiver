@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {

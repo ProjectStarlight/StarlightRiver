@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-
-namespace StarlightRiver.Content.NPCs.TownUpgrade
+﻿namespace StarlightRiver.Content.NPCs.TownUpgrade
 {
 	class LockedUpgrade : TownUpgrade
 	{

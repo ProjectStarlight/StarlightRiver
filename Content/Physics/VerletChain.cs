@@ -1,11 +1,7 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 
 namespace StarlightRiver.Content.Physics
 {
@@ -16,9 +12,7 @@ namespace StarlightRiver.Content.Physics
 
 		public float Priority => 1;
 
-		public void Load()
-		{
-		}
+		public void Load() { }
 
 		public void Unload()
 		{
@@ -58,8 +52,8 @@ namespace StarlightRiver.Content.Physics
 		#endregion
 
 		//basic variables
-		public bool Init = false;
-		public bool Active = false;//check Active for most init checks, since this also covers that
+		public bool init = false;
+		public bool active = false;//check Active for most init checks, since this also covers that
 
 		public int segmentCount;
 		public int segmentDistance;
@@ -146,12 +140,13 @@ namespace StarlightRiver.Content.Physics
 
 		public void Start(bool SpawnEndPoint = false)//public in case you want to reset the chain
 		{
-			Init = true;
-			Active = true;
+			init = true;
+			active = true;
 
 			if (simEndOffset == 0)
 			{
 				simEndOffset = segmentCount;
+
 				if (useEndPoint)
 					simEndOffset--;
 			}
@@ -173,6 +168,7 @@ namespace StarlightRiver.Content.Physics
 				{
 					int distance = customDistances ? segmentDistances[i] : segmentDistance;
 					Vector2 spawnGrav = customGravity ? forceGravities[i] * forceGravity : forceGravity;
+
 					if (spawnGrav != Vector2.Zero)
 						nextRopePoint += Vector2.Normalize(spawnGrav) * distance;
 					else
@@ -199,10 +195,10 @@ namespace StarlightRiver.Content.Physics
 
 		public void UpdateChain()
 		{
-			if (!Init)//hacky solution to the setdefaults problem
+			if (!init)//hacky solution to the setdefaults problem
 				Start();
 
-			if (Active)
+			if (active)
 				Simulate();
 		}
 
@@ -227,8 +223,10 @@ namespace StarlightRiver.Content.Physics
 			{
 				if (useStartPoint)
 					ropeSegments[simStartOffset].posNow = startPoint;
+
 				if (useEndPoint)
 					ropeSegments[simEndOffset - 1].posNow = endPoint;//if the end point clamp breaks, check this
+
 				ApplyConstraint();
 			}
 		}
@@ -266,7 +264,7 @@ namespace StarlightRiver.Content.Physics
 
 		public void IterateRope(Action<int> iterateMethod) //method for stuff other than drawing, only passes index, limited to rope range
 		{
-			if (Active)
+			if (active)
 			{
 				for (int i = simStartOffset; i < simEndOffset; i++)
 					iterateMethod(i);
@@ -275,7 +273,7 @@ namespace StarlightRiver.Content.Physics
 
 		public void IterateRopeFull(Action<int> iterateMethod) //method for stuff other than drawing
 		{
-			if (Active)
+			if (active)
 			{
 				for (int i = 0; i < segmentCount; i++)
 					iterateMethod(i);
@@ -295,22 +293,22 @@ namespace StarlightRiver.Content.Physics
 
 			var verticies = new VertexPositionColor[segmentCount * 9 - 6];
 
-			float rotation = (ropeSegments[0].posScreen - ropeSegments[1].posScreen).ToRotation() + (float)Math.PI / 2;
+			float rotation = (ropeSegments[0].ScreenPos - ropeSegments[1].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
-			verticies[0] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[1] = new VertexPositionColor((ropeSegments[0].posScreen + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
-			verticies[2] = new VertexPositionColor(ropeSegments[1].posScreen.Vec3().ScreenCoord(), ropeSegments[1].color);
+			verticies[0] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation - Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+			verticies[1] = new VertexPositionColor((ropeSegments[0].ScreenPos + Vector2.UnitY.RotatedBy(rotation + Math.PI / 4) * -5).Vec3().ScreenCoord(), ropeSegments[0].color);
+			verticies[2] = new VertexPositionColor(ropeSegments[1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[1].color);
 
 			for (int k = 1; k < segmentCount - 1; k++)
 			{
-				float rotation2 = (ropeSegments[k - 1].posScreen - ropeSegments[k].posScreen).ToRotation() + (float)Math.PI / 2;
+				float rotation2 = (ropeSegments[k - 1].ScreenPos - ropeSegments[k].ScreenPos).ToRotation() + (float)Math.PI / 2;
 
 				int point = k * 9 - 6;
 				int off = Math.Min(k, segmentCount - segmentCount / 4);
 
-				verticies[point] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].posScreen + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
-				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].posScreen.Vec3().ScreenCoord(), ropeSegments[k + 1].color);
+				verticies[point] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 - Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+				verticies[point + 1] = new VertexPositionColor((ropeSegments[k].ScreenPos + Vector2.UnitY.RotatedBy(rotation2 + Math.PI / 4) * -(segmentCount - off) * scale).Vec3().ScreenCoord(), ropeSegments[k].color);
+				verticies[point + 2] = new VertexPositionColor(ropeSegments[k + 1].ScreenPos.Vec3().ScreenCoord(), ropeSegments[k + 1].color);
 
 				int extra = k == 1 ? 0 : 6;
 				verticies[point + 3] = verticies[point];
@@ -333,7 +331,7 @@ namespace StarlightRiver.Content.Physics
 		/// <param name="offset"> the vector passed to prepareFunction as an offset </param>
 		public void DrawStrip(Func<Vector2, VertexBuffer> prepareFunction, Effect effect = null, Vector2 offset = default)
 		{
-			if (!Active || ropeSegments.Count < 1 || Main.dedServ)
+			if (!active || ropeSegments.Count < 1 || Main.dedServ)
 				return;
 
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
@@ -353,7 +351,7 @@ namespace StarlightRiver.Content.Physics
 
 		public void DrawStrip(float scale)
 		{
-			if (!Active || ropeSegments.Count < 1 || Main.dedServ)
+			if (!active || ropeSegments.Count < 1 || Main.dedServ)
 				return;
 
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
@@ -404,6 +402,7 @@ namespace StarlightRiver.Content.Physics
 
 			Vector2 newVel = Collision.noSlopeCollision(pos - new Vector2(3, 3), vel, 6, 6, true, true);
 			var ret = new Vector2(vel.X, vel.Y);
+
 			if (Math.Abs(newVel.X) < Math.Abs(vel.X))
 				ret.X *= 0;
 

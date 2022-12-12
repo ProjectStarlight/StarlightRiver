@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using StarlightRiver.Helpers;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Metaballs
 {
@@ -15,9 +10,9 @@ namespace StarlightRiver.Content.Metaballs
 	{
 		public override bool Active => Main.dust.Any(x => x.active && x.type == DustType);
 
-		public override Color outlineColor => new(173, 19, 19);
+		public override Color OutlineColor => new(173, 19, 19);
 
-		public virtual Color inColor => new(96, 6, 6);
+		public virtual Color InteriorColor => new(96, 6, 6);
 
 		public virtual int DustType => ModContent.DustType<BloodMetaballDust>();
 
@@ -52,7 +47,7 @@ namespace StarlightRiver.Content.Metaballs
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
 			var sourceRect = new Rectangle(0, 0, target.Width, target.Height);
-			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, inColor, new Vector2(2, 2));
+			LightingBufferRenderer.DrawWithLighting(sourceRect, target, sourceRect, InteriorColor, new Vector2(2, 2));
 			return false;
 		}
 	}
@@ -61,8 +56,8 @@ namespace StarlightRiver.Content.Metaballs
 	{
 		public override int DustType => ModContent.DustType<BloodMetaballDustLight>();
 
-		public override Color outlineColor => new(129, 0, 0);
+		public override Color OutlineColor => new(129, 0, 0);
 
-		public override Color inColor => new(192, 27, 27);
+		public override Color InteriorColor => new(192, 27, 27);
 	}
 }

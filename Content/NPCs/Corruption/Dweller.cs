@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Foregrounds;
+﻿using StarlightRiver.Content.Foregrounds;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
@@ -35,8 +31,10 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 			if (Variant == 0)
 				NPC.width = 66;
+
 			if (Variant == 1)
 				NPC.width = 58;
+
 			if (Variant == 2)
 				NPC.width = 64;
 
@@ -142,6 +140,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					if (NPC.velocity.X > 3)
 						NPC.velocity.X = 2.9f;
+
 					if (NPC.velocity.X < -3)
 						NPC.velocity.X = -2.9f;
 

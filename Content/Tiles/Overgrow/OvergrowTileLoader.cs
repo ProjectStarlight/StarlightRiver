@@ -1,8 +1,5 @@
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow

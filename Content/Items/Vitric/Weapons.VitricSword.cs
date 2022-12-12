@@ -1,17 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System.Linq;
-using Terraria;
+﻿using System.Linq;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
 	internal class VitricSword : ModItem
 	{
-		public override string Texture => AssetDirectory.VitricItem + Name;
+		public bool broken = false;
 
-		public bool Broken = false;
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -38,12 +34,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? CanHitNPC(Player Player, NPC target)
 		{
-			return !Broken;
+			return !broken;
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
 		{
-			if (!Broken)//Projectile.GetSource_FromThis()
+			if (!broken)
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item107);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Normalize(player.Center - target.Center) * -32, ModContent.ProjectileType<VitricSwordProjectile>(), 24, 0, player.whoAmI);
@@ -59,7 +55,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Main.dust[dus].customData = player;
 				}
 
-				Broken = true;
+				broken = true;
 			}
 		}
 
@@ -68,7 +64,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.projectile.Any(Projectile => Projectile.type == ModContent.ProjectileType<VitricSwordProjectile>() && Projectile.owner == Player.whoAmI && Projectile.active))
 				return false;
 			else
-				Broken = false;
+				broken = false;
 
 			return true;
 		}
@@ -76,6 +72,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	internal class VitricSwordProjectile : ModProjectile
 	{
+		private float progress = 1;
+
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetDefaults()
@@ -100,13 +98,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
 		}
 
-		private float f = 1;
-
 		public override void AI()
 		{
-			f += 0.1f;
+			progress += 0.1f;
 			Player Player = Main.player[Projectile.owner];
-			Projectile.position += Vector2.Normalize(Player.Center - Projectile.Center) * f;
+			Projectile.position += Vector2.Normalize(Player.Center - Projectile.Center) * progress;
 			Projectile.velocity *= 0.94f;
 			Projectile.rotation = (Player.Center - Projectile.Center).Length() * 0.1f;
 

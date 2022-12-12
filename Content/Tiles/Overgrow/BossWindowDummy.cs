@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 {
 	internal class BossWindowDummy : Dummy, IMoonlordLayerDrawable
 	{
-		private ParticleSystem particles = new("StarlightRiver/Assets/GUI/HolyBig", update);
+		private ParticleSystem particles = new("StarlightRiver/Assets/GUI/HolyBig", UpdateParticles);
 
 		public BossWindowDummy() : base(TileType<BossWindow>(), 16, 16) { }
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Main.spriteBatch.Draw(frametex, dpos, frametex.Frame(), new Color(255, 255, 200), 0, frametex.Frame().Size() / 2, 1, 0, 0); //frame
 		}
 
-		private static ParticleSystem.Update update => UpdateWindowParticles;
+		private static ParticleSystem.Update UpdateParticles => UpdateWindowParticles;
 
 		private static void UpdateWindowParticles(Particle particle)
 		{
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			if (Projectile.ai[0] > 0 && Projectile.ai[0] < 359)
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * 412, DustType<Dusts.Stone>());
 
-			if (Main.rand.Next(4) == 0 && Projectile.ai[0] >= 360)
+			if (Main.rand.NextBool(4) && Projectile.ai[0] >= 360)
 			{
 				float rot = Main.rand.NextFloat(-1.5f, 1.5f);
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 1).RotatedBy(rot) * 500, DustType<Dusts.GoldSlowFade>(), (new Vector2(0, 1).RotatedBy(rot) + new Vector2(0, 1.6f)) * (0.1f + Math.Abs(rot / 5f)), 0, default, 0.23f + Math.Abs(rot / 5f));
@@ -72,6 +72,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					float bright = Projectile.ai[0] / 60f;
 					if (bright > 1)
 						bright = 1;
+
 					Lighting.AddLight(Projectile.Center + new Vector2(560 + k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
 					Lighting.AddLight(Projectile.Center + new Vector2(-560 - k * 35, 150 + k * 80), new Vector3(1, 1, 0.7f) * bright);
 				}
@@ -81,6 +82,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					float bright = (Projectile.ai[0] - 60) / 150f;
 					if (bright > 1)
 						bright = 1;
+
 					Lighting.AddLight(Projectile.Center + new Vector2(450 + k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
 					Lighting.AddLight(Projectile.Center + new Vector2(-450 - k * 15, 300 + k * 50), new Vector3(1, 1, 0.7f) * bright);
 				}
@@ -90,6 +92,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					float bright = (Projectile.ai[0] - 210) / 70f;
 					if (bright > 1)
 						bright = 1;
+
 					Lighting.AddLight(Projectile.Center + new Vector2(250 + k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
 					Lighting.AddLight(Projectile.Center + new Vector2(-250 - k * 5, 350 + k * 40), new Vector3(1, 1, 0.7f) * bright);
 				}
@@ -99,6 +102,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					float bright = (Projectile.ai[0] - 280) / 50f;
 					if (bright > 1)
 						bright = 1;
+
 					Lighting.AddLight(Projectile.Center + new Vector2(40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
 					Lighting.AddLight(Projectile.Center + new Vector2(-40, 550 + k * 10), new Vector3(1, 1, 0.7f) * bright);
 				}
@@ -149,7 +153,8 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 			// Update + draw dusts
 			particles.DrawParticles(spriteBatch);
-			if (Main.rand.Next(10) == 0)
+
+			if (Main.rand.NextBool(10))
 				particles.AddParticle(new Particle(Vector2.Zero, new Vector2(0, Main.rand.NextFloat(0.6f, 1.8f)), 0, 1, Color.White, 600, Projectile.Center + new Vector2(Main.rand.Next(-350, 350), -580)));
 
 			for (int k = -2; k < 3; k++)

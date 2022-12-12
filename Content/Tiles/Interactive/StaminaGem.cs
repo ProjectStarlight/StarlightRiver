@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -18,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.Stamina>(), SoundID.Shatter, false, new Color(255, 186, 66));
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -33,6 +29,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			b = 0.071f * 1.1f;
 		}
 	}
+
 	internal class StaminaGemItem : QuickTileItem
 	{
 		public StaminaGemItem() : base("Stamina Gem", "Restores stamina when hit with an ability", "StaminaGem", 8, AssetDirectory.InteractiveTile) { }
@@ -46,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		{
 			if (Projectile.ai[0] > 0)
 				Projectile.ai[0]--;
-			else if (Main.rand.Next(3) == 0)
+			else if (Main.rand.NextBool(3))
 				Dust.NewDust(Projectile.position, 16, 16, DustType<Dusts.Stamina>());
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.4f, 0.1f) * 0.35f);
@@ -64,6 +61,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item112, Projectile.Center);
 				CombatText.NewText(Player.Hitbox, new Color(255, 170, 60), "+1");
+
 				for (float k = 0; k <= 6.28; k += 0.1f)
 					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(50) * 0.1f), 0, default, 3f);
 			}

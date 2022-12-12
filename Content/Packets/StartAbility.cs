@@ -1,7 +1,6 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.Abilities;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Content.Packets
 {

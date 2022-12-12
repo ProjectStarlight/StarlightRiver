@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -68,9 +63,7 @@ namespace StarlightRiver.Content.Pickups
 			}
 
 			if (timer == 360)
-			{
 				Helper.PlayPitched("Impale", 1, Main.rand.NextFloat(0.6f, 0.9f), Player.Center); //placeholder sound
-			}
 
 			if (timer >= 360)
 			{

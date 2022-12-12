@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Items.Vanity;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {
@@ -12,6 +10,7 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 			{
 				shop[nextSlot] = ModContent.ItemType<WardenHat>();
 				nextSlot++;
+
 				shop[nextSlot] = ModContent.ItemType<WardenRobe>();
 				nextSlot++;
 			}

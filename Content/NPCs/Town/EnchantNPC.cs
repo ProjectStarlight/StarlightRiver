@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Town
 {

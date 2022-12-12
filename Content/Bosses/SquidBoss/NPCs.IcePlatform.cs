@@ -50,10 +50,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					NPC.position.Y = actor.WaterLevelWorld - 18;
 
-					if ((BeingStoodOn || bobTime > 0) && bobTime < 30)
+					if ((beingStoodOn || bobTime > 0) && bobTime < 30)
 						bobTime++;
 
-					if (bobTime >= 30 && !BeingStoodOn)
+					if (bobTime >= 30 && !beingStoodOn)
 						bobTime = 0;
 
 					NPC.rotation = (float)System.Math.Sin((Main.GameUpdateCount + NPC.Center.X) * 0.04f) * 0.05f;
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (NPC.ai[0] == 0)
 				NPC.ai[0] = NPC.position.Y;
 
-			if (BeingStoodOn)
+			if (beingStoodOn)
 			{
 				Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
 				NPC.ai[1]++;
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (NPC.ai[0] == 0)
 				NPC.ai[0] = NPC.position.Y;
 
-			if (BeingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
+			if (beingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 			{
 				if (NPC.velocity.Y < 1.5f)
 					NPC.velocity.Y += 0.02f;

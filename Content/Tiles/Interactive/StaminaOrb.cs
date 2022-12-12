@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using System;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -63,5 +60,10 @@ namespace StarlightRiver.Content.Tiles.Interactive
 			for (float k = 0; k <= 6.28; k += 0.1f)
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Stamina>(), new Vector2((float)Math.Cos(k), (float)Math.Sin(k)) * (Main.rand.Next(25) * 0.1f), 0, default, 3f);
 		}
+	}
+
+	public class StaminaOrbItem : QuickTileItem
+	{
+		public StaminaOrbItem() : base("Stamina Orb", "Pass through this to gain stamina!\n5 second cooldown", "StaminaOrb", 8, AssetDirectory.InteractiveTile) { }
 	}
 }

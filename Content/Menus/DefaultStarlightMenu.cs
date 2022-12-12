@@ -1,17 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System;
 
 namespace StarlightRiver.Content.Menus
 {
 	internal class DefaultStarlightMenu : ModMenu
 	{
-		const int LifeTime = 120;
-		const float SinTime = LifeTime / (float)Math.PI;
-		const float ScaleMultiplier = 0.01f;
+		const int LIFETIME = 120;
+		const float SIN_TIME = LIFETIME / (float)Math.PI;
+		const float SCALE_MULT = 0.01f;
 
 		public static ParticleSystem sparkles;
 		public static ParticleSystem meteor;
@@ -29,7 +24,7 @@ namespace StarlightRiver.Content.Menus
 		private void updateSparkles(Particle particle)
 		{
 			particle.Alpha = particle.Timer / 120f;
-			particle.Scale *= -(float)Math.Sin(particle.Timer / (SinTime * 0.5f)) * ScaleMultiplier + 1;
+			particle.Scale *= -(float)Math.Sin(particle.Timer / (SIN_TIME * 0.5f)) * SCALE_MULT + 1;
 			particle.Position += particle.Velocity;
 			//particle.Color *= (float)Math.Sin(particle.Timer / SinTime) * 1.5f;
 
@@ -75,7 +70,7 @@ namespace StarlightRiver.Content.Menus
 
 			//Utils.DrawBorderString(spriteBatch, "Chance:" + chance + " PosX:" + pos.X, new Vector2(50, 50), Color.Green);
 
-			if (Main.rand.Next(chance) == 0)
+			if (Main.rand.NextBool(chance))
 			{
 				//apl/col/scale //-Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f)
 				var vel = new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.2f, 0.35f));
@@ -97,17 +92,17 @@ namespace StarlightRiver.Content.Menus
 			//}
 
 			float heightScale = (float)Math.Sin((Timer + 2) * 0.025f) * 5 + 5;
-
 			Texture2D midTex = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
 			Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Timer * 0.02f) + 4) / 4);
+
 			for (int k = 0; k < Main.screenWidth; k += midTex.Width)
 			{
 				Main.spriteBatch.Draw(midTex, new Vector2(k + 8, Main.screenHeight + 8 + heightScale), null, overlayColor, 0, new Vector2(midTex.Width / 2, midTex.Height), 1f, 0, 0);
 			}
 
 			float heightScale2 = (float)Math.Sin(Timer * 0.025f) * 3 + 3;
-
 			Texture2D glowLines = ModContent.Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines").Value;
+
 			for (float k = 0; k < Main.screenWidth + glowLines.Width; k += glowLines.Width > 1 ? glowLines.Width - 1.00f : 1)//during loading the texture has a width of one
 			{
 				Main.spriteBatch.Draw(glowLines, new Vector2(k + 8 + (int)(Timer * 0.5f) % glowLines.Width - glowLines.Width, Main.screenHeight + 8 + heightScale2), null, overlayColor * 0.45f, 0, new Vector2(glowLines.Width / 2, glowLines.Height), 1f, 0, 0);

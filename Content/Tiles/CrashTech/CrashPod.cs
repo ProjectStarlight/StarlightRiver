@@ -88,9 +88,9 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 				for (int i = 0; i < 17; i++)
 				{
 					//for some reason the BuzzSpark dust spawns super offset 
-					Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f) + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.BuzzSpark>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9.5f)).RotatedByRandom(MathHelper.ToRadians(5f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(0f, 28f) + Main.rand.NextVector2Circular(15, 25), DustType<Dusts.BuzzSpark>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9.5f)).RotatedByRandom(MathHelper.ToRadians(5f)), 0, new Color(255, 255, 60) * 0.8f, 1.15f);
 
-					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), ModContent.DustType<Dusts.Glow>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15, 25), DustType<Dusts.Glow>(), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(9)).RotatedByRandom(MathHelper.ToRadians(15f)), 0, new Color(150, 80, 40), Main.rand.NextFloat(0.25f, 0.5f));
 				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 	{
 		public override bool CanExplode(int i, int j, int type)
 		{
-			if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
+			if (Main.tile[i, j - 1].TileType == TileType<CrashPod>())
 				return false;
 
 			return base.CanExplode(i, j, type);
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 
 		public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
 		{
-			if (Main.tile[i, j - 1].TileType == ModContent.TileType<CrashPod>())
+			if (Main.tile[i, j - 1].TileType == TileType<CrashPod>())
 				return false;
 
 			return base.CanKillTile(i, j, type, ref blockDamaged);

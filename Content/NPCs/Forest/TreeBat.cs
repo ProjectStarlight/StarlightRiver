@@ -1,31 +1,26 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
 	class TreeBat : ModNPC
 	{
-		private Vector2 savedPos;
-		private Vector2 targetPos;
-
-		public ref float State => ref NPC.ai[0];
-		public ref float GlobalTimer => ref NPC.ai[1];
-
 		public enum BehaviorStates
 		{
 			Waiting,
 			Dashing,
 			Fleeing
 		}
+
+		private Vector2 savedPos;
+		private Vector2 targetPos;
+
+		public ref float State => ref NPC.ai[0];
+		public ref float GlobalTimer => ref NPC.ai[1];
 
 		public override string Texture => AssetDirectory.ForestNPC + Name;
 
@@ -64,7 +59,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 					NPC.frame = new Rectangle(0, 0, 26, 20);
 
-					if (Main.dayTime || Main.time > 28000 && Main.rand.Next(1000) == 0) //flee at day
+					if (Main.dayTime || Main.time > 28000 && Main.rand.NextBool(1000)) //flee at day
 					{
 						State = (int)BehaviorStates.Fleeing;
 						NPC.velocity.X += Main.rand.NextBool() ? 5 : -5;
@@ -130,9 +125,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 					NPC.frame = new Rectangle(0, 20 + 20 * ((int)Main.GameUpdateCount / 2 % 4), 26, 20);
 
 					if (GlobalTimer == 1)
-					{
 						NPC.velocity.X *= 2;
-					}
 
 					NPC.velocity.X *= 0.998f;
 					NPC.velocity.Y -= 0.07f;

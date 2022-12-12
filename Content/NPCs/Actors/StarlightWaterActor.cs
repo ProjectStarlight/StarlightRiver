@@ -1,18 +1,16 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.Misc;
+﻿using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.Starwood;
 using StarlightRiver.Content.Items.Vanity;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Actors
 {
 	class StarlightWaterActor : ModNPC
 	{
+		const int DUST_RANGE = 250;
+		const int ITEM_RANGE = 200;
+
 		public Item targetItem;
 
 		public static float glowStrength;
@@ -41,9 +39,6 @@ namespace StarlightRiver.Content.NPCs.Actors
 			NPC.noGravity = true;
 		}
 
-		const int dustRange = 250;
-		const int ItemRange = 200;
-
 		public override void AI()
 		{
 			if (NPC.wet)
@@ -57,7 +52,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if (dist < 500)
 				glowStrength = 1 - dist / 500f;
 
-			Vector2 pos = NPC.Center + Vector2.UnitX * Main.rand.NextFloat(-dustRange, dustRange) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
+			Vector2 pos = NPC.Center + Vector2.UnitX * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE) + Vector2.UnitY * Main.rand.NextFloat(-6, 0);
 			Tile tile = Framing.GetTileSafely(pos);
 			Tile tileDown = Framing.GetTileSafely(pos + Vector2.UnitY * 16);
 
@@ -68,15 +63,15 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 				if (Main.rand.NextBool())
 				{
-					bool red = Main.rand.Next(35) == 0;
-					bool green = Main.rand.Next(15) == 0 && !red;
+					bool red = Main.rand.NextBool(35);
+					bool green = Main.rand.NextBool(15) && !red;
 					var color = new Color(red ? 255 : Main.rand.Next(10), green ? 255 : Main.rand.Next(100), Main.rand.Next(240, 255));
 
 					Dust.NewDustPerfect(pos + new Vector2(0, Main.rand.Next(-4, 1)), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.UnitX * Main.rand.NextFloat(-0.15f, 0.15f), 200, color);
 				}
 			}
 
-			Vector2 pos2 = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-dustRange, dustRange);
+			Vector2 pos2 = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE);
 			Tile tile2 = Framing.GetTileSafely(pos2);
 
 			if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.Next(2) == 0)//under water lights
@@ -91,7 +86,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				{
 					Item Item = Main.item[k];
 
-					if (Helpers.Helper.CheckCircularCollision(NPC.Center, ItemRange, Item.Hitbox) && Item.GetGlobalItem<TransformableItem>().transformType != 0 && Item.wet)
+					if (Helpers.Helper.CheckCircularCollision(NPC.Center, ITEM_RANGE, Item.Hitbox) && Item.GetGlobalItem<TransformableItem>().transformType != 0 && Item.wet)
 						targetItem = Item;
 				}
 			}
@@ -150,15 +145,19 @@ namespace StarlightRiver.Content.NPCs.Actors
 		{
 			if (Item.type == ItemID.WoodHelmet)
 				transformType = ModContent.ItemType<StarwoodHat>();
+
 			if (Item.type == ItemID.WoodBreastplate)
 				transformType = ModContent.ItemType<StarwoodChest>();
+
 			if (Item.type == ItemID.WoodGreaves)
 				transformType = ModContent.ItemType<StarwoodBoots>();
 
 			if (Item.type == ItemID.WoodenBoomerang)
 				transformType = ModContent.ItemType<StarwoodBoomerang>();
+
 			if (Item.type == ItemID.WandofSparking)
 				transformType = ModContent.ItemType<StarwoodStaff>();
+
 			if (Item.type == ModContent.ItemType<Sling>())
 				transformType = ModContent.ItemType<StarwoodSlingshot>();
 

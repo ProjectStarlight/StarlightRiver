@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items
@@ -20,6 +16,7 @@ namespace StarlightRiver.Content.Items
 		{
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
+
 			Texture2D tex = Request<Texture2D>(texture).Value;
 
 			info.DrawDataCache.Add(new DrawData(tex, (info.drawPlayer.position - Main.screenPosition + offset).ToPoint16().ToVector2(), null, color * ((255 - info.drawPlayer.immuneAlpha) * 0.003921568627f), info.drawPlayer.headRotation, tex.Size() * 0.5f, scale, info.playerEffect, 0));
@@ -39,6 +36,7 @@ namespace StarlightRiver.Content.Items
 		{
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
+
 			Texture2D tex = Request<Texture2D>(texture).Value;
 			int frame = (int)(info.drawPlayer.legFrame.Y/*TODO*/ * 0.01785714286f);//(int)((frame / 1120f) * 20);
 			Vector2 pos = (info.drawPlayer.MountedCenter - Main.screenPosition + offset).ToPoint16().ToVector2() + new Vector2(0, info.drawPlayer.gfxOffY);
@@ -61,6 +59,7 @@ namespace StarlightRiver.Content.Items
 		{
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
+
 			Texture2D tex = Request<Texture2D>(texture).Value;
 			int frame = (int)(info.drawPlayer.bodyFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
 			var pos = (info.drawPlayer.position + info.drawPlayer.bodyPosition - Main.screenPosition + offset).ToPoint16().ToVector2();
@@ -83,6 +82,7 @@ namespace StarlightRiver.Content.Items
 		{
 			if (info.drawPlayer.ActiveAbility<Whip>())
 				return;
+
 			Texture2D tex = Request<Texture2D>(texture).Value;
 			int frame = (int)(info.drawPlayer.legFrame.Y * 0.01785714286f);//(int)((frame / 1120f) * 20);
 			var pos = (info.drawPlayer.position + info.drawPlayer.legPosition - Main.screenPosition + offset).ToPoint16().ToVector2();

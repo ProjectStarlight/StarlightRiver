@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -65,8 +61,7 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 1)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
-																													  //Filters.Scene.Deactivate("Shockwave");
+				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Pickups/get")); //start the SFX
 
 				cache1.Clear();
 				cache2.Clear();
@@ -93,9 +88,9 @@ namespace StarlightRiver.Content.Pickups
 
 				if (cache1 != null && timer > 60)
 				{
-					Dust.NewDustPerfect(cache1[Main.rand.Next(20, 100)], DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
-					Dust.NewDustPerfect(cache2[Main.rand.Next(20, 100)], DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
-					Dust.NewDustPerfect(cache3[Main.rand.Next(20, 100)], DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
+					Dust.NewDustPerfect(cache1[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
+					Dust.NewDustPerfect(cache2[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
+					Dust.NewDustPerfect(cache3[Main.rand.Next(20, 100)], DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(80, 140, 140), 0.3f);
 				}
 
 				ManageCache(ref cache1, point1);
@@ -112,8 +107,8 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 500)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item104);
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item45);
+				SoundEngine.PlaySound(SoundID.Item104);
+				SoundEngine.PlaySound(SoundID.Item45);
 			}
 
 			if (timer > 500)
@@ -250,15 +245,6 @@ namespace StarlightRiver.Content.Pickups
 	public class ForbiddenWindsPickupTile : AbilityPickupTile
 	{
 		public override int PickupType => NPCType<ForbiddenWindsPickup>();
-
-		public override void PostDraw(int i, int j, SpriteBatch spriteBatch) //get rid of this after demo
-		{
-			return;
-			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(-80, -62);
-			Utils.DrawBorderString(spriteBatch, "Dash into", pos, Color.White, 0.7f);
-			Utils.DrawBorderString(spriteBatch, "bright blue", pos + new Vector2(60, 0), Color.Cyan, 0.7f);
-			Utils.DrawBorderString(spriteBatch, "outlines", pos + new Vector2(127, 0), Color.White, 0.7f);
-		}
 	}
 
 	public class WindsTileItem : QuickTileItem

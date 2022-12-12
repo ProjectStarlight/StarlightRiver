@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using System;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs
 {

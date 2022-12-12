@@ -1,6 +1,5 @@
 ﻿using NetEasy;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Packets

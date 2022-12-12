@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Helpers;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.SpaceEvent
@@ -93,14 +88,10 @@ namespace StarlightRiver.Content.NPCs.SpaceEvent
 					}
 
 					if (Timer < 30)
-					{
 						NPC.Frame(0, (int)(Timer / 30f * 6) * NPC.frame.Height);
-					}
 
 					if (Timer > 40 && Timer < 70)
-					{
 						NPC.Frame(0, (int)(6 + (Timer - 40) / 30f * 6) * NPC.frame.Height);
-					}
 
 					if (Timer > 80 && Timer < 100)
 						NPC.velocity += Vector2.Normalize(Target.Center - NPC.Center) * 0.8f;

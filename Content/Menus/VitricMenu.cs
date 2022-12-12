@@ -1,7 +1,4 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.CustomHooks;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Menus
 {

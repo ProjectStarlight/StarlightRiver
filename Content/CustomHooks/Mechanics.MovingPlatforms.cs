@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.CustomHooks
 							self.jump = 0;
 							self.fallStart = (int)(self.position.Y / 16f);
 
-							(NPC.ModNPC as MovingPlatform).BeingStoodOn = true;
+							(NPC.ModNPC as MovingPlatform).beingStoodOn = true;
 						}
 					}
 				}
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.CustomHooks
 						self.position.Y = NPC.position.Y - self.height + 4;
 						self.position += NPC.velocity;
 
-						(NPC.ModNPC as MovingPlatform).BeingStoodOn = true;
+						(NPC.ModNPC as MovingPlatform).beingStoodOn = true;
 					}
 				}
 			}

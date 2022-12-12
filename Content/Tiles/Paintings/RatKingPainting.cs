@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Paintings

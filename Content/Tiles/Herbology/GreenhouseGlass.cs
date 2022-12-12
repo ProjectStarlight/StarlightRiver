@@ -1,8 +1,4 @@
-using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Herbology
 {

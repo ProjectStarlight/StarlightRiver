@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.GUI
 
 			spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
 			if (activeQuest != null)
-				Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest._questTip, 320, Terraria.GameContent.FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+				Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest.questTip, 320, Terraria.GameContent.FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
 			Recalculate();
 			base.Draw(spriteBatch);
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.GUI
 			Texture2D check = Request<Texture2D>("StarlightRiver/Assets/GUI/QuestCheck").Value;
 
 			spriteBatch.Draw(back, pos, back.Frame(), Color.White * (parent.activeQuest == quest ? 1 : IsMouseHovering ? 0.7f : 0.5f), 0, back.Size() / 2, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, quest._questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
+			Utils.DrawBorderString(spriteBatch, quest.questName, pos + new Vector2(-16, 0), Color.White, 0.7f, 0.5f, 0.4f);
 
 			if (quest.Unlocked)
 				spriteBatch.Draw(check, pos + new Vector2(158, 0), back.Frame(), Color.White, 0, back.Size() / 2, 1, 0, 0);
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.GUI
 			foreach (Loot loot in Quest.Requirements)
 				Helper.TryTakeItem(Main.LocalPlayer, loot.Type, loot.Count);
 
-			StarlightWorld.TownUpgrades[Quest._NPCName] = !StarlightWorld.TownUpgrades[Quest._NPCName];
+			StarlightWorld.TownUpgrades[Quest.NPCName] = !StarlightWorld.TownUpgrades[Quest.NPCName];
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82);
 		}

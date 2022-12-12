@@ -1,16 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.GameContent.Bestiary;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
 {
 	internal abstract class MovingPlatform : ModNPC
 	{
-		public bool BeingStoodOn;
+		public bool beingStoodOn;
 
 		public bool DontCollide = false;
 
@@ -121,7 +117,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			}
 
 			prevPos = NPC.position;
-			BeingStoodOn = false;
+			beingStoodOn = false;
 		}
 	}
 }

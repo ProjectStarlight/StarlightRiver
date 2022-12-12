@@ -15,7 +15,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		/// <summary>
 		/// The color of the outline of your metaball system
 		/// </summary>
-		public virtual Color outlineColor => Color.Black;
+		public virtual Color OutlineColor => Color.Black;
 
 		/// <summary>
 		/// When your metaball system should be active and creating it's rendertargets
@@ -104,7 +104,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			Effect metaballEdgeDetection = Filters.Scene["MetaballEdgeDetection"].GetShader().Shader;
 			metaballEdgeDetection.Parameters["width"].SetValue((float)Main.screenWidth / 2);
 			metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-			metaballEdgeDetection.Parameters["border"].SetValue(outlineColor.ToVector4());
+			metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
 
 			//metaballEdgeDetection.CurrentTechnique.Passes[0].Apply();
 

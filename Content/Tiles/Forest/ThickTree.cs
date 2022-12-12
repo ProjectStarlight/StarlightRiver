@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Forest
@@ -101,14 +96,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 				Vector2 sidePos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
 
 				if (left)
-				{
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(20, 0) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
-				}
 
 				if (right)
-				{
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(0, 20) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
-				}
 			}
 		}
 
@@ -186,6 +177,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			{
 				if (right)
 					x = 0;
+
 				if (left)
 					x = 18;
 

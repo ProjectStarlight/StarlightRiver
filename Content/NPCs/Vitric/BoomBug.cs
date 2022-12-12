@@ -66,8 +66,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					}
 
 					float maxSpeed = 4.0f;
-
 					NPC.velocity = (Vector2.UnitX * NPC.spriteDirection).RotatedBy(SavedRotation) * 0.15f + NPC.velocity;
+
 					if (NPC.velocity.Length() > maxSpeed)
 					{
 						NPC.velocity.Normalize();
@@ -76,6 +76,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 					NPC.TargetClosest(false);
 					Player Player = Main.player[NPC.target];
+
 					if (Vector2.DistanceSquared(NPC.Center, Player.Center) <= Math.Pow(400, 2) && Collision.CanHitLine(NPC.position, NPC.width, NPC.height, Player.position, Player.width, Player.height))
 					{
 						Timer = 0;
@@ -208,7 +209,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			return spawnInfo.Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 100 : 0;
+			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
 		}
 	}
 }

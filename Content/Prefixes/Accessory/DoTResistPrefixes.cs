@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {

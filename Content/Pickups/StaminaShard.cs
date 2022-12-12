@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -29,8 +26,9 @@ namespace StarlightRiver.Content.Pickups
 
 		public override void Visuals()
 		{
-			if (Main.rand.Next(2) == 0)
+			if (Main.rand.NextBool(2))
 				Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(Math.PI) * Main.rand.NextFloat(16), DustType<Content.Dusts.Stamina>(), Vector2.UnitY * -1);
+
 			Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.25f, 0.05f));
 		}
 
@@ -41,15 +39,11 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			if (ah.ShardCount % 3 == 0)
-			{
 				UILoader.GetUIState<TextCard>().Display("Stamina Vessel", "Your maximum stamina has increased by 1", null, 240, 0.8f);
-			}
 			else
-			{
 				UILoader.GetUIState<TextCard>().Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
-			}
 
-			Player.GetModPlayer<Core.StarlightPlayer>().MaxPickupTimer = 1;
+			Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 1;
 
 			Helper.UnlockCodexEntry<StaminaShardEntry>(Main.LocalPlayer);
 		}
@@ -73,10 +67,11 @@ namespace StarlightRiver.Content.Pickups
 			fail = true;
 
 			Tile tile = Framing.GetTileSafely(i, j);
-
 			tile.TileFrameX += 1;
+
 			if (tile.TileFrameX > 2)
 				tile.TileFrameX = 0;
+
 			Main.NewText("pickup set to stamina shard number " + tile.TileFrameX, Color.Orange);//debug?
 		}
 	}

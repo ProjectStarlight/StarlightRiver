@@ -1,11 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Lavas
@@ -23,9 +20,8 @@ namespace StarlightRiver.Content.Lavas
 				return;
 
 			IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw += DrawSpecialLava;
-			//IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
-
 			IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
+			//IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
 		}
 
 		private void UpdateActiveStyle(StarlightPlayer Player)
@@ -37,7 +33,8 @@ namespace StarlightRiver.Content.Lavas
 		public void Unload()
 		{
 			IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalDraw -= DrawSpecialLava;
-			IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
+			IL.Terraria.GameContent.Liquid.LiquidRenderer.InternalPrepareDraw -= SwapLavaDrawEffects;
+			//IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
 
 			lavas = null;
 			ActiveStyle = null;

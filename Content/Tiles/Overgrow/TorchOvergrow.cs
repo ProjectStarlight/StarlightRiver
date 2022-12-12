@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
@@ -16,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GoldWithMovement>(), SoundID.Tink, false, Color.Yellow);
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GoldWithMovement>(), SoundID.Tink, false, Color.Yellow);
 			TileID.Sets.FramesOnKillWall[Type] = true;
 		}
 

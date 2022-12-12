@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Biomes;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -73,8 +68,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 	internal class DesertWisp2 : DesertWisp
 	{
-		public override string Texture => "StarlightRiver/Assets/Invisible";
 		public Trail trail;
+
+		public override string Texture => "StarlightRiver/Assets/Invisible";
 
 		public override void SetStaticDefaults()
 		{

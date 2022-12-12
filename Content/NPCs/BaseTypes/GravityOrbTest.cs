@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.BaseTypes
@@ -34,8 +29,10 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			for (int k = 0; k < Main.maxPlayers; k++)
 			{
 				Player Player = Main.player[k];
+
 				if (!Player.active)
 					return;
+
 				GravityPlayer mp = Player.GetModPlayer<GravityPlayer>();
 
 				if (Vector2.DistanceSquared(Player.Center, NPC.Center) < (radius + attract) * (radius + attract) && mp.cooldown <= 0 && mp.controller is null)
@@ -43,6 +40,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 					mp.controller = this;
 					mp.angle = (Player.Center - NPC.Center).ToRotation();
 					mp.attractSpeed = GetComponent(Player.velocity, (Player.Center - NPC.Center).ToRotation()).Length() / 2f;
+
 					if (mp.attractSpeed < 1)
 						mp.attractSpeed = 1;
 				}

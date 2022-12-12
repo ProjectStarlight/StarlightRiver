@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Physics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Snow
@@ -24,8 +19,6 @@ namespace StarlightRiver.Content.NPCs.Snow
 			Pulling = 2,
 			Deciding = 3
 		}
-
-		public override string Texture => AssetDirectory.SnowNPC + "Snoobel";
 
 		public const int NUM_SEGMENTS = 30;
 
@@ -54,6 +47,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 		private Vector2 TrunkStart => NPC.Center + new Vector2(33 * NPC.spriteDirection, 7 + NPC.gfxOffY + NPC.velocity.Y);
 
 		private Player Target => Main.player[NPC.target];
+
+		public override string Texture => AssetDirectory.SnowNPC + "Snoobel";
 
 		public override void Load()
 		{
@@ -199,6 +194,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			effect.Parameters["flip"].SetValue(NPC.spriteDirection == 1);
 
 			List<Vector2> points;
+
 			if (cache == null)
 				points = GetTrunkPoints();
 			else
@@ -227,6 +223,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 				for (int j = 0; j < presision; j++)
 				{
 					pointCounter += (trunkChain.ropeSegments[i].posNow - trunkChain.ropeSegments[i + 1].posNow).Length() / presision;
+
 					while (pointCounter > pointLength)
 					{
 						float lerper = j / (float)presision;
@@ -237,10 +234,14 @@ namespace StarlightRiver.Content.NPCs.Snow
 			}
 
 			while (cache.Count < NUM_SEGMENTS)
+			{
 				cache.Add(trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow);
+			}
 
 			while (cache.Count > NUM_SEGMENTS)
+			{
 				cache.RemoveAt(cache.Count - 1);
+			}
 		}
 
 		private void ManageTrail()
@@ -257,8 +258,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 		{
 			xFrame = 1;
 			frameCounter++;
-
 			attackTimer++;
+
 			if (attackTimer >= 200)
 			{
 				phase = Phase.Deciding;
@@ -270,6 +271,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			if (xdist > 30)
 			{
 				xFrame = 1;
+
 				if (frameCounter % 5 == 0)
 				{
 					yFrame++;
@@ -301,6 +303,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 				trunkChain.forceGravities = new List<Vector2>();
 
 				int index = 0;
+
 				foreach (RopeSegment segment in trunkChain.ropeSegments)
 				{
 					float rad = 4f * ((float)(index - 6) / NUM_SEGMENTS);
@@ -320,6 +323,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			{
 				trunkChain.customGravity = false;
 				trunkChain.forceGravity = new Vector2(NPC.spriteDirection, 0);
+
 				if (attackTimer > WHIP_DURATION + WHIP_BUILDUP)
 					EndAttack();
 			}
@@ -340,6 +344,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 				Vector2 endPos = trunkChain.ropeSegments[NUM_SEGMENTS - 1].posNow + 16 * NPC.DirectionTo(Target.Center);
 				var endPosTileGrid = new Point((int)(endPos.X / 16), (int)(endPos.Y / 16));
 				Tile tile = Framing.GetTileSafely(endPosTileGrid);
+
 				if (tile != null && tile.HasTile && Main.tileSolid[tile.TileType] && attackTimer > 6)
 				{
 					pulling = true;
@@ -408,8 +413,10 @@ namespace StarlightRiver.Content.NPCs.Snow
 			for (int i = 0; i < anchorLength; i++)
 			{
 				float lerper = (float)Math.Pow((float)(i - anchorStart) / (anchorLength + 1 - anchorStart), 0.9f);
+
 				if (i <= anchorStart)
 					lerper = 0;
+
 				trunkChain.ropeSegments[i].posNow = Vector2.Lerp(TrunkStart + new Vector2(i * 5 * NPC.spriteDirection, 0), trunkChain.ropeSegments[i].posNow, lerper);
 			}
 		}
@@ -427,6 +434,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 		private float TotalLength(List<Vector2> points)
 		{
 			float ret = 0;
+
 			for (int i = 1; i < points.Count; i++)
 			{
 				ret += (points[i] - points[i - 1]).Length();
@@ -483,6 +491,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			bool ret = false;
 
 			float collisionPoint = 0f;
+
 			for (int i = 1; i < Snoobel.NUM_SEGMENTS; i++)
 				ret |= Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Chain.ropeSegments[i].posNow, Chain.ropeSegments[i - 1].posNow, 8, ref collisionPoint);
 

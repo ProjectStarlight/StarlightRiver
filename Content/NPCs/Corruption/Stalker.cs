@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System.Linq;
-using Terraria;
+﻿using System.Linq;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
@@ -44,6 +39,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			if (State == 0)
 			{
 				NPC.TargetClosest();
+
 				if (Vector2.Distance(Main.player[NPC.target].Center, NPC.Center) < 360 ||
 					Main.projectile.Any(n => n.active && n.friendly && Vector2.Distance(n.Center, NPC.Center) < 360) ||
 					NearLight()
@@ -56,6 +52,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			if (State == 1)
 			{
 				NPC.alpha -= 25;
+
 				if (NPC.alpha < 50)
 					NPC.active = false;
 			}

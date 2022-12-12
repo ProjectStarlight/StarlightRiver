@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.CustomHooks
 			bool hovering = Main.mouseX >= x && Main.mouseX <= x + tex.Width * Main.inventoryScale && Main.mouseY >= y && Main.mouseY <= y + tex.Height * Main.inventoryScale;
 
 			if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
-				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title;
+				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title;
 			return input;
 		}
 
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private NetworkText EmitSwapTitleDeathDelegate(NetworkText input, NPC NPC)
 		{
 			if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
-				return NetworkText.FromLiteral(NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title + " was slain...");
+				return NetworkText.FromLiteral(NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title + " was slain...");
 			return input;
 		}
 
@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private string EmitSwapTitleDelegate(NPC NPC, string input)
 		{
 			if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
-				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName)._title;
+				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title;
 			return input;
 		}
 	}

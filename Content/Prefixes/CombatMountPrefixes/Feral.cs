@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Prefixes.CombatMountPrefixes
 {

@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override bool Active => Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MagmaGunPhantomProj>());
 
-		public override Color outlineColor => new(255, 254, 255);
+		public override Color OutlineColor => new(255, 254, 255);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{

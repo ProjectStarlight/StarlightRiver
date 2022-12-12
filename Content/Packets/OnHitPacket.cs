@@ -1,7 +1,5 @@
 ﻿using NetEasy;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -34,6 +32,7 @@ namespace StarlightRiver.Content.Packets
 		{
 			Player Player = Main.player[fromWho];
 			StarlightPlayer modPlayer = Player.GetModPlayer<StarlightPlayer>();
+
 			if (projIdentity == -1)
 			{
 				modPlayer.ModifyHitNPC(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);

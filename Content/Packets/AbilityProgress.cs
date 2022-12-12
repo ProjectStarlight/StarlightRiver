@@ -3,7 +3,6 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Content.Packets
 {
@@ -23,6 +22,7 @@ namespace StarlightRiver.Content.Packets
 
 			if (handler.Unlocked<Dash>())
 				unlocks |= 0b10000000;
+
 			if (handler.Unlocked<Whip>())
 				unlocks |= 0b01000000;
 		}
@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Packets
 			//Part of me really wants to change this to some sort of string matching but that would make the packet like 11x larger
 			if ((unlocks & 0b10000000) == 0b10000000)
 				handler.Unlock<Dash>();
+
 			if ((unlocks & 0b01000000) == 0b01000000)
 				handler.Unlock<Whip>();
 

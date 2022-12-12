@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.NPCs.Overgrow;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.NPCs.Overgrow;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
@@ -22,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Main.tileLighted[Type] = false;
 			Main.tileMerge[Type][Mod.Find<ModTile>("BrickOvergrow").Type] = true;
 			Main.tileFrameImportant[Type] = true;
-			DustType = ModContent.DustType<Dusts.GoldNoMovement>();
+			DustType = DustType<Dusts.GoldNoMovement>();
 			AddMapEntry(new Color(81, 77, 71));
 		}
 
@@ -35,9 +30,11 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
 			var pos = new Vector2(4 + i * 16, 4 + j * 16);
+
 			if (!Main.npc.Any(NPC => NPC.type == NPCType<Crusher>() && (NPC.ModNPC as Crusher).Parent == Main.tile[i, j] && NPC.active))
 			{
 				int crusher = NPC.NewNPC(new EntitySource_WorldEvent(), (int)pos.X + 4, (int)pos.Y + 21, NPCType<Crusher>());
+
 				if (Main.npc[crusher].ModNPC is Crusher)
 					(Main.npc[crusher].ModNPC as Crusher).Parent = Main.tile[i, j];
 			}

@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
@@ -33,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0)
 			{
-				if (Main.rand.Next(1) == 0 && tile.TileFrameX == 0)
+				if (Main.rand.NextBool(1) && tile.TileFrameX == 0)
 				{
 					for (int x = 0; x < data.Width; x++)
 					{
@@ -55,18 +50,23 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				int newX = i;
 				int newY = j;
+
 				if (tile.TileFrameX % 36 == 18)
 					newX = i - 1;
+
 				if (tile.TileFrameY % 36 == 18)
 					newY = j - 1;
 
 				for (int k = 0; k < 2; k++)
 				{
 					for (int l = 0; l < 2; ++l)
+					{
 						Main.tile[newX + k, newY + l].TileFrameX -= 36; //Changes frames to berry-less
+					}
 				}
 
 				int rand = Main.rand.Next(3, 5);
+
 				for (int k = 0; k < rand; k++)
 				{
 					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 				NPC.frame = new Rectangle(0, NPC.height, NPC.width, NPC.height);
 
 				PhaseTimer++;
-				if (PhaseTimer >= 4 && Main.rand.Next(4) == 0)
+				if (PhaseTimer >= 4 && Main.rand.NextBool(4))
 				{
 					NPC.direction = Main.rand.NextBool() ? 1 : -1;
 					NPC.velocity += new Vector2(NPC.direction * Main.rand.NextFloat(2, 4), -6);

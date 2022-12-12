@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -57,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			Projectile.ai[0] += 0.02f;
 			Lighting.AddLight(Projectile.Center + new Vector2(0, 32), new Vector3(1, 1f, 0.6f));
 
-			if (Main.rand.Next(20) == 0)
+			if (Main.rand.NextBool(20))
 			{
 				Vector2 off = Vector2.UnitY.RotatedByRandom(0.8f);
 				Dust.NewDustPerfect(Projectile.Center + off * 20, DustType<Dusts.GoldSlowFade>(), off * 0.15f, 0, default, 0.35f);

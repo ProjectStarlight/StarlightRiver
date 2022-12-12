@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -44,6 +40,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.projectile[proj].damage /= 2;
 			Main.projectile[proj].noDropItem = true;
 			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+
 			int proj2 = Projectile.NewProjectile(source, player.Center, (aim * 8.5f).RotatedBy(-0.1f), type, damage, knockback, player.whoAmI);
 			Main.projectile[proj2].scale = 0.5f;
 			Main.projectile[proj2].damage /= 2;

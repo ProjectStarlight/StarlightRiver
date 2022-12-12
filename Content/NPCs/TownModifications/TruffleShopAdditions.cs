@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Mushroom;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {

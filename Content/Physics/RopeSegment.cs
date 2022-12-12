@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-
-namespace StarlightRiver.Content.Physics
+﻿namespace StarlightRiver.Content.Physics
 {
 	public class RopeSegment
 	{
@@ -9,7 +6,7 @@ namespace StarlightRiver.Content.Physics
 		public Vector2 posOld;
 		public Color color;
 
-		public Vector2 posScreen => posNow - Main.screenPosition;
+		public Vector2 ScreenPos => posNow - Main.screenPosition;
 
 		public RopeSegment(Vector2 pos)
 		{

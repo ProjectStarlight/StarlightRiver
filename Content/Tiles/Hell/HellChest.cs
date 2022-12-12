@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Brewing;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Brewing;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -38,12 +35,14 @@ namespace StarlightRiver.Content.Tiles.Hell
 			for (int k = 0; k < Player.inventory.Length; k++)
 			{
 				Item Item = Player.inventory[k];
+
 				if (Item.type == ItemType<Items.Hell.HellKey>())
 				{
 					if (Item.stack > 1)
 						Item.stack--;
 					else
 						Item.TurnToAir();
+
 					return true;
 				}
 			}

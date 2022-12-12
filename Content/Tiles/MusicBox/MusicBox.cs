@@ -1,13 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.MusicBox
 {
-	public class MusicBox : Core.Loaders.SimpleTileLoader
+	public class MusicBox : SimpleTileLoader
 	{
 		private static AnchorData anchor = new(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, 2, 0);
 		private static FurnitureLoadData boxData = new(2, 2, 0, SoundID.Dig, true, new Color(255, 200, 100), false, false, "Music Box", anchor);

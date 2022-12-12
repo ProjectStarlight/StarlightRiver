@@ -1,10 +1,7 @@
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Town
 {
@@ -72,10 +69,6 @@ namespace StarlightRiver.Content.NPCs.Town
 				UILoader.GetUIState<TownQuestList>().Visible = true;
 				UILoader.GetUIState<TownQuestList>().PopulateList();
 			}
-		}
-
-		public override void SetupShop(Chest shop, ref int nextSlot)
-		{
 		}
 	}
 }

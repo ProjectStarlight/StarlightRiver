@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -15,6 +11,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			this.QuickSet(50, DustID.Bone, SoundID.Tink, new Color(55, 55, 35), ModContent.ItemType<SkeletonBrickItem>(), false, false, "Skeleton Brick");
 			Main.tileBrick[Type] = true;
 		}
+
 		public override void AnimateIndividualTile(int type, int i, int j, ref int frameXOffset, ref int frameYOffset)
 		{
 			int frame = 0;
@@ -71,6 +68,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 	public class SkeletonBrickItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;
+
 		public SkeletonBrickItem() : base("Skeletal Brick", "", "SkeletonBrickTile") { }
 	}
 }

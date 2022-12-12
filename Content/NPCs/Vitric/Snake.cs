@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Biomes;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -17,9 +12,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Snake";
+		public Player Target => Main.player[NPC.target];
 
-		public Player target => Main.player[NPC.target];
+		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Snake";
 
 		public override void Load()
 		{
@@ -81,7 +76,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			{
 				case 0: // Default/spawning
 					NPC.TargetClosest();
-					if (Vector2.Distance(NPC.Center, target.Center) < 300 && Main.netMode != NetmodeID.MultiplayerClient)
+
+					if (Vector2.Distance(NPC.Center, Target.Center) < 300 && Main.netMode != NetmodeID.MultiplayerClient)
 					{
 						ChangeState(1);
 						NPC.netUpdate = true;
@@ -107,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						if (CastToTarget())
 							ChangeState(3);
 
-						NPC.spriteDirection = target.Center.X > NPC.Center.X ? 1 : -1;
+						NPC.spriteDirection = Target.Center.X > NPC.Center.X ? 1 : -1;
 					}
 
 					else
@@ -142,7 +138,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						NPC.frame.Y = NPC.height * (7 - (int)((ActionTimer - 30) / 20f * 5));
 
 					if (ActionTimer == 20 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
-						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
+						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Target.Center - NPC.Center) * 10, ProjectileType<SnakeSpit>(), 20, 0.2f, Main.myPlayer);
 
 					if (ActionTimer == 140)
 						ChangeState(2, 2);
@@ -159,12 +155,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private bool CastToTarget()
 		{
-			float dist = Vector2.Distance(NPC.Center, target.Center);
+			float dist = Vector2.Distance(NPC.Center, Target.Center);
 			float checks = dist / 4;
 
 			for (int k = 0; k < checks; k++)
 			{
-				var toCheck = Vector2.Lerp(NPC.Center, target.Center, k / checks);
+				var toCheck = Vector2.Lerp(NPC.Center, Target.Center, k / checks);
 
 				if (Helpers.Helper.PointInTile(toCheck))
 					return false;
@@ -175,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private Vector2 FindNewPosition()
 		{
-			var currentPos = (target.Center / 16).ToPoint16();
+			var currentPos = (Target.Center / 16).ToPoint16();
 
 			for (int k = 0; k < 150; k++) //maximum attempts for finding a new spot
 			{
@@ -185,7 +181,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				// ---    ---
 				// ---[][]---
 				if (
-					Vector2.Distance(randPos.ToVector2() * 16, target.Center) > 100 &&
+					Vector2.Distance(randPos.ToVector2() * 16, Target.Center) > 100 &&
 					Framing.GetTileSafely(randPos).BlockType == BlockType.Solid &&
 					Framing.GetTileSafely(randPos + new Point16(1, 0)).BlockType == BlockType.Solid &&
 					!Framing.GetTileSafely(randPos + new Point16(0, -1)).HasTile && Framing.GetTileSafely(randPos + new Point16(0, -1)).LiquidAmount == 0 &&

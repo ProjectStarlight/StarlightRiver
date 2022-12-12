@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.GUI;
+﻿using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Utility;
-using StarlightRiver.Core;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Crafting
@@ -14,11 +10,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
 	internal class CookStation : ModTile
 	{
 		public override string Texture => AssetDirectory.CraftingTile + Name;
-
-		public override void NumDust(int i, int j, bool fail, ref int num)
-		{
-			num = 1;
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -29,6 +20,11 @@ namespace StarlightRiver.Content.Tiles.Crafting
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<CookStationItem>());
+		}
+
+		public override void NumDust(int i, int j, bool fail, ref int num)
+		{
+			num = 1;
 		}
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

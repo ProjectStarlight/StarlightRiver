@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 

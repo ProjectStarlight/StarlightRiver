@@ -128,7 +128,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (DrawbackTime < 10)
 			{
-				Min -= 2;
+				minDistance -= 2;
 
 				if (DrawbackTime < 6)
 					Projectile.timeLeft += 2;

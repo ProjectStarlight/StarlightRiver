@@ -1,21 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.GameContent;
-using Terraria.ModLoader;
+﻿using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Projectiles
 {
 	public abstract class SpearProjectile : ModProjectile
 	{
-		public int Duration;
-		public float Min;
-		public float Max;
+		public int duration;
+		public float minDistance;
+		public float maxDistance;
 
 		protected SpearProjectile(int duration, float minOff, float maxOff)
 		{
-			Duration = duration;
-			Min = minOff;
-			Max = maxOff;
+			this.duration = duration;
+			minDistance = minOff;
+			maxDistance = maxOff;
 		}
 
 		public virtual void SafeSetDefaults() { }
@@ -29,7 +26,7 @@ namespace StarlightRiver.Content.Projectiles
 			Projectile.penetrate = -1;
 			Projectile.aiStyle = 19;
 			Projectile.friendly = true;
-			Projectile.timeLeft = Duration;
+			Projectile.timeLeft = duration;
 			Projectile.tileCollide = false;
 			Projectile.DamageType = DamageClass.Melee;
 			SafeSetDefaults();
@@ -45,16 +42,16 @@ namespace StarlightRiver.Content.Projectiles
 			player.heldProj = Projectile.whoAmI;
 			player.itemTime = player.itemAnimation;
 
-			int realDuration = (int)(Duration * speed);
+			int realDuration = (int)(duration * speed);
 
-			if (Projectile.timeLeft == Duration)
+			if (Projectile.timeLeft == duration)
 				Projectile.timeLeft = realDuration;
 
 			Projectile.velocity = Vector2.Normalize(Projectile.velocity);
 
 			Projectile.rotation = MathHelper.Pi * (3 / 4f) + Projectile.velocity.ToRotation();
 			float progress = Projectile.timeLeft > realDuration / 2f ? (realDuration - Projectile.timeLeft) / (realDuration / 2f) : Projectile.timeLeft / (realDuration / 2f);
-			Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * Min, Projectile.velocity * Max, progress);
+			Projectile.Center = player.MountedCenter + Vector2.SmoothStep(Projectile.velocity * minDistance, Projectile.velocity * maxDistance, progress);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

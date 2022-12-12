@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
@@ -13,31 +8,25 @@ namespace StarlightRiver.Content.NPCs.Forest
 {
 	internal class Blover : ModNPC
 	{
-		public override string Texture => AssetDirectory.ForestNPC + "Blover";
-
-		private const int XFRAMES = 2;
-
 		private int xFrame = 0;
 		private int yFrame = 0;
 		private int frameCounter = 0;
 
 		private bool blowing = false;
 
-		private ref float blowCounter => ref NPC.ai[0];
+		private ref float BlowCounter => ref NPC.ai[0];
 
-		private Player target => Main.player[NPC.target];
+		private Player Target => Main.player[NPC.target];
+
+		public override string Texture => AssetDirectory.ForestNPC + "Blover";
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blover");
 			Main.npcFrameCount[NPC.type] = 6;
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
-			{
-
-			};
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-
 		}
 
 		public override void Load()
@@ -63,6 +52,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 		{
 			if (!Main._shouldUseWindyDayMusic)
 				return 0;
+
 			return SpawnCondition.OverworldDay.Chance * 0.2f;
 		}
 
@@ -79,7 +69,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 		{
 			NPC.TargetClosest(true);
 
-			if (Math.Abs(target.Center.X - NPC.Center.X) < 300 && Math.Abs(target.Center.Y - NPC.Center.Y) < 30)
+			if (Math.Abs(Target.Center.X - NPC.Center.X) < 300 && Math.Abs(Target.Center.Y - NPC.Center.Y) < 30)
 			{
 				if (!blowing)
 				{
@@ -98,11 +88,11 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 
 			if (blowing)
-				blowCounter++;
+				BlowCounter++;
 			else
-				blowCounter = 0;
+				BlowCounter = 0;
 
-			if (blowCounter > 15)
+			if (BlowCounter > 15)
 				BlowingBehavior();
 			else
 				IdleBehavior();
@@ -153,13 +143,13 @@ namespace StarlightRiver.Content.NPCs.Forest
 				yFrame %= 6;
 			}
 
-			float targetAcceleration = Math.Sign(target.Center.X - NPC.Center.X) * (float)((300 - Math.Abs(target.Center.X - NPC.Center.X)) / 300f) * 0.55f;
+			float targetAcceleration = Math.Sign(Target.Center.X - NPC.Center.X) * (float)((300 - Math.Abs(Target.Center.X - NPC.Center.X)) / 300f) * 0.55f;
 
-			if (!target.noKnockback && (Math.Abs(target.velocity.X) < 10 || Math.Sign(target.velocity.X) != Math.Sign(targetAcceleration)))
-				target.velocity.X += targetAcceleration;
+			if (!Target.noKnockback && (Math.Abs(Target.velocity.X) < 10 || Math.Sign(Target.velocity.X) != Math.Sign(targetAcceleration)))
+				Target.velocity.X += targetAcceleration;
 
-			Vector2 dustPos = NPC.Center + new Vector2(60 * Math.Sign(target.Center.X - NPC.Center.X), Main.rand.Next(-15, 15));
-			Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.GlowLine>(), 7 * new Vector2(Math.Sign(target.Center.X - NPC.Center.X), 0), 0, Color.White * 0.3f, 1.25f);
+			Vector2 dustPos = NPC.Center + new Vector2(60 * Math.Sign(Target.Center.X - NPC.Center.X), Main.rand.Next(-15, 15));
+			Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.GlowLine>(), 7 * new Vector2(Math.Sign(Target.Center.X - NPC.Center.X), 0), 0, Color.White * 0.3f, 1.25f);
 		}
 
 		private void IdleBehavior()

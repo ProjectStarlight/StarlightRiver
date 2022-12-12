@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
-using StarlightRiver.Core;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -114,6 +109,7 @@ namespace StarlightRiver.Content.Pickups
 			}
 
 			Main.blockInput = false;
+
 			if (mp.PickupTarget?.whoAmI == NPC.whoAmI)
 			{
 				PickupVisuals(mp.PickupTimer); //if the Player is picking this up, clientside only also

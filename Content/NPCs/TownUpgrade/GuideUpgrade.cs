@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles;
+﻿using StarlightRiver.Content.Tiles;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.TownUpgrade

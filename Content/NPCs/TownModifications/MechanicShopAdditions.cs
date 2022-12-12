@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Misc;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {

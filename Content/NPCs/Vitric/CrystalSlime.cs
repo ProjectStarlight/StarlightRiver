@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
@@ -73,7 +68,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 
 				for (int k = 0; k <= 20; k++)
-					Dust.NewDust(NPC.position, 48, 32, DustType<Dusts.GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+					Dust.NewDust(NPC.position, 48, 32, DustType<GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
 
 				NPC.netUpdate = true;
 			}
@@ -83,12 +78,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.immortal = true;
 				NPC.HitSound = SoundID.NPCHit42;
 
-				if (Main.rand.Next(30) == 0)
+				if (Main.rand.NextBool(30))
 				{
 					if (Main.rand.NextBool())
-						Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle>(), 0, 0);
+						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<CrystalSparkle>(), 0, 0);
 					else
-						Dust.NewDust(NPC.position, NPC.width, NPC.height, ModContent.DustType<CrystalSparkle2>(), 0, 0);
+						Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<CrystalSparkle2>(), 0, 0);
 				}
 			}
 			else

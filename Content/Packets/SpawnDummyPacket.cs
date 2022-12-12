@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using NetEasy;
-using StarlightRiver.Core;
+﻿using NetEasy;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Packets

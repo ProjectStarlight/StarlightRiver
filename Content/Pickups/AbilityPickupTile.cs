@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -32,6 +28,7 @@ namespace StarlightRiver.Content.Pickups
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
 				NPC NPC = Main.npc[k];
+
 				if (NPC.active && NPC.type == PickupType && Vector2.DistanceSquared(NPC.position, new Vector2(i, j) * 16) <= 128)
 					return;
 			}

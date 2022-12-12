@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -41,6 +37,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 				Projectile.ai[1] = 1;
 				Player.velocity.Y *= -1;
 				Player.velocity.Y -= 5;
+
 				if (Player.velocity.Y > -10)
 					Player.velocity.Y = -10;
 
@@ -85,8 +82,10 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 			Vector2 pos = Projectile.position - Main.screenPosition;
 
 			float mult = 0.05f;
+
 			if (Projectile.ai[1] == 1)
 				mult = 0.05f + 0.00533333f * Projectile.ai[0] - 0.0000592593f * Projectile.ai[0] * Projectile.ai[0];
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			spriteBatch.Draw(back, pos, lightColor);
 			DrawBlob(spriteBatch, blob0, pos + new Vector2(12, 0), 0, mult);

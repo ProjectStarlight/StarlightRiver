@@ -1,26 +1,22 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent.Bestiary;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class KettleCreature : ModNPC
 	{
+		private const int WALK_RADIUS = 16;
+
 		KettleLimb leftLeg;
 		KettleLimb rightLeg;
 
-		private bool Floating => !leftLeg.footOnGround && !rightLeg.footOnGround;
-		private KettleLimb FootOffGround => FootOnGround == leftLeg ? rightLeg : leftLeg;
-		private KettleLimb FootOnGround;
+		private KettleLimb footOnGround;
 
-		private const int WALK_RADIUS = 16;
+		private bool Floating => !leftLeg.FootOnGround && !rightLeg.FootOnGround;
+		private KettleLimb FootOffGround => footOnGround == leftLeg ? rightLeg : leftLeg;
 
 		private ref float Timer => ref NPC.ai[0];
 		private ref float WalkTimer => ref NPC.ai[1];
@@ -79,7 +75,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						WalkTimer = 0;
 						rightLeg.savedPoint = rightLeg.foot + Vector2.UnitX * WALK_RADIUS;
 						rightLeg.foot.Y -= 5;
-						FootOnGround = leftLeg;
+						footOnGround = leftLeg;
 						Landed = 1;
 					}
 
@@ -95,7 +91,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						WalkTimer = 0;
 					}
 
-					if (FootOffGround.footOnGround && WalkTimer > 0.5f)
+					if (FootOffGround.FootOnGround && WalkTimer > 0.5f)
 					{
 						if (Timer % 300 > 200) //shoot
 						{
@@ -105,15 +101,14 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						}
 
 						WalkTimer = 0;
-						FootOnGround.savedPoint = FootOnGround.foot + Vector2.UnitX * WALK_RADIUS * NPC.direction;
-						FootOnGround.foot.Y -= 16;
-						FootOnGround = FootOffGround;
+						footOnGround.savedPoint = footOnGround.foot + Vector2.UnitX * WALK_RADIUS * NPC.direction;
+						footOnGround.foot.Y -= 16;
+						footOnGround = FootOffGround;
 
 						NPC.TargetClosest(true);
 						NPC.direction = Main.player[NPC.target].Center.X > NPC.Center.X ? -1 : 1;
 					}
 				}
-
 				else
 				{
 					leftLeg.MoveWholeLimb(NPC.velocity);
@@ -137,7 +132,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (Timer == 30)
 				{
 					float angle = 0;
-
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY.RotatedBy(angle) * -15, ProjectileType<KettleMortar>(), 20, 1, Main.myPlayer);
 				}
 
@@ -170,12 +164,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public Vector2 savedPoint;
 		private Vector2 attachOff;
 
-		private KettleCreature parent;
-		private NPC parentNPC => parent.NPC;
+		private readonly KettleCreature parent;
+		private NPC ParentNPC => parent.NPC;
 
-		private const int LIMB_LENGTH = 32;
-
-		public bool footOnGround => Helper.PointInTile(foot);
+		public bool FootOnGround => Helper.PointInTile(foot);
 
 		public KettleLimb(KettleCreature parent, Vector2 attachOff)
 		{
@@ -200,7 +192,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (Vector2.Distance(foot, attachPoint) > 120)
 				foot -= Vector2.Normalize(foot - attachPoint) * 3;
 
-			attachPoint = parentNPC.Center + attachOff;
+			attachPoint = ParentNPC.Center + attachOff;
 		}
 
 		public void Draw(SpriteBatch sb)

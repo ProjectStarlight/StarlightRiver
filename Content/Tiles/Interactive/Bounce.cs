@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -18,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Content.Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustType<Dusts.GlassNoGravity>(), SoundID.Shatter, false, new Color(115, 182, 158));
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -57,9 +53,10 @@ namespace StarlightRiver.Content.Tiles.Interactive
 				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+
 				for (int k = 0; k <= 30; k++)
 				{
-					int dus = Dust.NewDust(Projectile.position, 48, 32, Terraria.ModLoader.ModContent.DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
+					int dus = Dust.NewDust(Projectile.position, 48, 32, DustType<Dusts.GlassAttracted>(), Main.rand.Next(-16, 15), Main.rand.Next(-16, 15), 0, default, 1.3f);
 					Main.dust[dus].customData = Projectile.Center;
 				}
 			}

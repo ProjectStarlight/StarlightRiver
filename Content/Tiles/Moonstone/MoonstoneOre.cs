@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
@@ -117,12 +112,12 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 			Vector2 pos = new Vector2(i, j) * 16;
 			Lighting.AddLight(pos, new Vector3(0.1f, 0.32f, 0.5f) * 0.35f);
 			//Dust.NewDustDirect(pos, 16, 16, ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), 0, 0, 0, Color.White, 0.05f);
-			if (Main.rand.Next(50) == 0)
+			if (Main.rand.NextBool(50))
 			{
 				if (!Main.tile[i, j - 1].HasTile)
 				{
 					Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-16, -8)),
-						ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
+						DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
 				}
 			}
 		}

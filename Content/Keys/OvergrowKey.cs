@@ -1,18 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Biomes;
 using System;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Keys
 {
 	internal class OvergrowKey : Key
 	{
-		public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey") { }
-
 		public override bool ShowCondition => Main.LocalPlayer.InModBiome(GetInstance<OvergrowBiome>());
+
+		public OvergrowKey() : base("Overgrowth Key", "StarlightRiver/Assets/Keys/OvergrowKey") { }
 
 		public override void PreDraw(SpriteBatch spriteBatch)
 		{
@@ -30,8 +26,9 @@ namespace StarlightRiver.Content.Keys
 
 		public override void PreUpdate()
 		{
-			if (Main.rand.Next(4) == 0)
+			if (Main.rand.NextBool(4))
 				Dust.NewDust(Position + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5), 32, 32, DustType<Dusts.GoldWithMovement>(), 0, 0, 0, default, 0.5f);
+
 			Lighting.AddLight(Position, new Vector3(1, 1, 0.8f) * 0.6f);
 		}
 

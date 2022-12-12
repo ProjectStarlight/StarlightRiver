@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
@@ -111,9 +106,9 @@ namespace StarlightRiver.Content.Tiles.Misc
 			{
 				Lighting.AddLight(Position.ToVector2() * 16, new Vector3(1, 1, 0.7f) * 0.8f * (0.9f + (float)Math.Sin(Main.GameUpdateCount / 50f) * 0.1f));
 
-				if (Main.rand.Next(6) == 0)
+				if (Main.rand.NextBool(6))
 				{
-					int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
+					int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, DustID.GoldFlame);
 					Main.dust[i].noGravity = true;
 				}
 			}
@@ -125,6 +120,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 				for (int k = 0; k < Main.maxPlayers; k++)
 				{
 					Player Player = Main.player[k];
+
 					if (AbilityHelper.CheckDash(Player, new Rectangle(Position.X * 16, Position.Y * 16, 32, 48)))
 					{
 						WorldGen.KillTile(Position.X, Position.Y);
@@ -135,7 +131,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
 						for (int n = 0; n < 30; n++)
 						{
-							int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, 228);
+							int i = Dust.NewDust(Position.ToVector2() * 16, 32, 32, DustID.GoldFlame);
 							Main.dust[i].noGravity = true;
 						}
 

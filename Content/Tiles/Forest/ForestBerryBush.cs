@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
@@ -32,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0) //this checks to make sure this is only the top-left tile. We only want one tile to do all the growing for us, and top-left is the standard. otherwise each tile in the multitile ticks on its own due to stupid poopoo redcode.
 			{
-				if (Main.rand.Next(2) == 0 && tile.TileFrameX == 0) //a random check here can slow growing as much as you want.
+				if (Main.rand.NextBool(2) && tile.TileFrameX == 0) //a random check here can slow growing as much as you want.
 				{
 					for (int x = 0; x < data.Width; x++) //this for loop iterates through every COLUMN of the multitile, starting on the top-left.
 					{
@@ -55,8 +51,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				int newX = i; //Here to line 67 adjusts the tile position so we get the top-left of the multitile
 				int newY = j;
+
 				if (tile.TileFrameX % 36 == 18)
 					newX = i - 1;
+
 				if (tile.TileFrameY % 36 == 18)
 					newY = j - 1;
 
@@ -116,6 +114,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			return true;
 		}
 	}
+
 	public class ForestBerryBushItem : QuickTileItem
 	{
 		public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries!", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }

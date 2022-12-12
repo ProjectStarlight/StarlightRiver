@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.GUI;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,11 +8,11 @@ namespace StarlightRiver.Content.Keys
 {
 	public class Key
 	{
+		public Vector2 Position = new(0, 0);
+
 		public string Name { get; set; }
 		public string Texture { get; set; }
 		public virtual bool ShowCondition => true;
-
-		public Vector2 Position = new(0, 0);
 		public Rectangle Hitbox => new((int)Position.X, (int)Position.Y, 32, 32);
 
 		public Key(string name, string texture)
@@ -25,9 +21,11 @@ namespace StarlightRiver.Content.Keys
 			Texture = texture;
 		}
 
-		public virtual void PreDraw(SpriteBatch spriteBatch)
-		{
-		}
+		public virtual void PreDraw(SpriteBatch spriteBatch) { }
+
+		public virtual void OnPickup() { }
+
+		public virtual void PreUpdate() { }
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
@@ -40,14 +38,6 @@ namespace StarlightRiver.Content.Keys
 				Utils.DrawBorderString(spriteBatch, Name, Main.MouseScreen + new Vector2(12, 20), Main.MouseTextColorReal);
 		}
 
-		public virtual void OnPickup()
-		{
-		}
-
-		public virtual void PreUpdate()
-		{
-		}
-
 		public void Update()
 		{
 			PreUpdate();
@@ -56,10 +46,12 @@ namespace StarlightRiver.Content.Keys
 			{
 				KeySystem.Keys.Remove(this);
 				KeySystem.KeyInventory.Add(this);
+
 				if (Main.player.FirstOrDefault(p => p.Hitbox.Intersects(Hitbox)) == Main.LocalPlayer)
 					KeyInventory.keys.Add(new KeyIcon(this, true));
 				else
 					KeyInventory.keys.Add(new KeyIcon(this, false));
+
 				OnPickup();
 
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/KeyGet"));

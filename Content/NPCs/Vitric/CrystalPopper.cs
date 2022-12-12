@@ -1,21 +1,17 @@
-using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Core;
 using System;
 using System.IO;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class CrystalPopper : ModNPC
 	{
-		private const int animFramesLoop = 6; //amount of frames in the main loop
-		private readonly float AnimSpeedMult = 0.3f;
+		private const int FRAME_COUNT = 6; //amount of frames in the main loop
+		private const float ANIMATION_SPEED = 0.3f;
 
 		public override string Texture => AssetDirectory.VitricNpc + Name;
 
@@ -58,7 +54,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath4;
 
-			NPC.direction = Main.rand.Next(2) == 0 ? 1 : -1;
+			NPC.direction = Main.rand.NextBool(2) ? 1 : -1;
 			NPC.spriteDirection = NPC.direction;
 		}
 
@@ -77,6 +73,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			NPC.ai[0] = 1;
 			NPC.noGravity = true;
+
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 				NPC.netUpdate = true;
 		}
@@ -112,7 +109,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 						if (Main.netMode != NetmodeID.MultiplayerClient)
 						{
 							for (int k = -1; k <= 1; k++)
+							{
 								Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center).RotatedBy(k * 0.5f) * 6, ProjectileType<Bosses.VitricBoss.GlassSpike>(), 10, 0);
+							}
 						}
 
 						NPC.velocity = Vector2.Normalize(Main.player[NPC.target].Center - NPC.Center) * -5.5f;
@@ -131,6 +130,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 					if (NPC.collideX && Math.Abs(NPC.velocity.X) > 1f)
 						NPC.velocity.X = Vector2.Normalize(-NPC.velocity).X * 1.5f;
+
 					if (NPC.collideY && Math.Abs(NPC.velocity.Y) > 1f)
 						NPC.velocity.Y = Vector2.Normalize(-NPC.velocity).Y * 1.5f;
 
@@ -144,7 +144,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
 				for (int k = 0; k <= 4; k++)
+				{
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position, Vector2.Zero, Mod.Find<ModGore>("CrystalPopperGore" + k).Type);
+				}
 			}
 
 			if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)
@@ -161,13 +163,21 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			switch (NPC.ai[0])
 			{
-				case 0: NPC.frame.Y = frameHeight * 6; break;
-				case 1: NPC.frame.Y = frameHeight * 0; break;
+				case 0:
+					NPC.frame.Y = frameHeight * 6;
+					break;
+
+				case 1:
+					NPC.frame.Y = frameHeight * 0;
+					break;
+
 				case 2:
 					NPC.frameCounter++;//skele frame-code
-					if ((int)(NPC.frameCounter * AnimSpeedMult) >= animFramesLoop)
+
+					if ((int)(NPC.frameCounter * ANIMATION_SPEED) >= FRAME_COUNT)
 						NPC.frameCounter = 0;
-					NPC.frame.Y = (int)(NPC.frameCounter * AnimSpeedMult) * frameHeight; break;
+
+					NPC.frame.Y = (int)(NPC.frameCounter * ANIMATION_SPEED) * frameHeight; break;
 			}
 		}
 	}

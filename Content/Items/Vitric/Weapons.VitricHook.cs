@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -97,6 +93,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
+
 			if (Projectile.timeLeft < 40)//slows down the Projectile by 8%, for about 10 ticks before it retracts
 				Projectile.velocity *= 0.92f;
 
@@ -138,6 +135,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 					for (int k = 0; k < 30; k++)
 						Dust.NewDustPerfect(Player.Center, DustType<Dusts.GlassNoGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, default, Main.rand.NextFloat(1f, 2f));
+
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
 				}
 			}

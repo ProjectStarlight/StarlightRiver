@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using Terraria;
+﻿using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 

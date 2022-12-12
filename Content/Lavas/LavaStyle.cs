@@ -1,11 +1,9 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Lavas
+﻿namespace StarlightRiver.Content.Lavas
 {
 	public abstract class LavaStyle : ModWaterStyle
 	{
 		public string texturePath;
+		public string blockTexture;
 
 		public override string Texture => texturePath;
 
@@ -31,8 +29,6 @@ namespace StarlightRiver.Content.Lavas
 		}
 
 		public virtual void DrawBlockEffects(int x, int y, Tile up, Tile left, Tile right, Tile down) { }
-
-		public string blockTexture;
 
 		public virtual bool ChooseLavaStyle()
 		{

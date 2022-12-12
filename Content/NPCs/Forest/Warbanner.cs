@@ -1,19 +1,21 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
 	class Warbanner : ModNPC, IDrawAdditive
 	{
+		public enum BehaviorStates
+		{
+			Wandering,
+			Locked,
+			Fleeing
+		}
+
 		public const float MAX_BUFF_RADIUS = 500;
 
 		public List<NPC> targets = new();
@@ -23,13 +25,6 @@ namespace StarlightRiver.Content.NPCs.Forest
 		public ref float BuffRadius => ref NPC.ai[2];
 
 		public float VFXAlpha => BuffRadius / MAX_BUFF_RADIUS;
-
-		public enum BehaviorStates
-		{
-			Wandering,
-			Locked,
-			Fleeing
-		}
 
 		public override string Texture => AssetDirectory.ForestNPC + Name;
 
@@ -86,6 +81,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 					else
 					{
 						NPC.velocity *= 0.9f;
+
 						if (GlobalTimer > 600)
 						{
 							State = (int)BehaviorStates.Fleeing; //after waiting for 10 seconds for a target they instead flee
@@ -103,15 +99,11 @@ namespace StarlightRiver.Content.NPCs.Forest
 					for (int k = 0; k < targets.Count; k++)
 					{
 						NPC toCheck = targets[k];
+
 						if (toCheck is null || !toCheck.active || Vector2.Distance(NPC.Center, toCheck.Center) > (targets.Count > 1 ? MAX_BUFF_RADIUS : 2500)) //remove invalid targets
-						{
 							targets.Remove(toCheck);
-							//k--;
-						}
 						else if (Helper.CheckCircularCollision(NPC.Center, (int)BuffRadius, toCheck.Hitbox))
-						{
 							toCheck.AddBuff(BuffType<Rage>(), 2);
-						}
 					}
 
 					if (targets.Count == 0) //if we've lost all targets go back to wandering

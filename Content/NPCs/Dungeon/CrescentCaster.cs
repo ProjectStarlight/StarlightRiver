@@ -1,24 +1,16 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
 	internal class CrescentCaster : ModNPC, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.DungeonNPC + Name;
-
-		private const int XFRAMES = 3;
 		private const float ACCELERATION = 0.15f;
 		private const float MAXSPEED = 2;
 
@@ -27,19 +19,21 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		private int xFrame = 0;
 		private int yFrame = 0;
 
-		private ref float aiCounter => ref NPC.ai[0];
+		private float starOpacity = 0;
+
+		private ref float Timer => ref NPC.ai[0];
 
 		private List<NPC> supportTargets = new();
 
-		private List<CrescentCasterBolt> Bolts = new();
+		private readonly List<CrescentCasterBolt> Bolts = new();
 
-		private Player target => Main.player[NPC.target];
+		private Player Target => Main.player[NPC.target];
 
-		private bool Casting => aiCounter % aiCounterReset > 400;
+		private bool Casting => Timer % aiCounterReset > 400;
 
 		private bool Supporting => xFrame == 2;
 
-		private float starOpacity = 0;
+		public override string Texture => AssetDirectory.DungeonNPC + Name;
 
 		public override void Load()
 		{
@@ -52,10 +46,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			DisplayName.SetDefault("Crescent Caster");
 			Main.npcFrameCount[NPC.type] = 10;
 
-			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
-			{
-
-			};
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0);
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 
@@ -84,7 +75,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		public override void AI()
 		{
 			NPC.TargetClosest(true);
-			aiCounter++;
+			Timer++;
 
 			if (Casting)
 				CastBehavior();
@@ -114,7 +105,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			if (supportTargets.Count == 0)
 			{
-				aiCounter = 390;
+				Timer = 390;
 				WalkBehavior();
 				return;
 			}
@@ -126,6 +117,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					NPC.frameCounter = 0;
 					yFrame = 0;
 					break;
+
 				case 1: //Winding up to cast
 					NPC.frameCounter++;
 
@@ -140,6 +132,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 					}
 
 					break;
+
 				case 2: //Supporting
 					SupportBehavior();
 					break;
@@ -155,7 +148,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 				yFrame %= 5;
 			}
 
-			if (aiCounter % aiCounterReset < aiCounterReset - 10)
+			if (Timer % aiCounterReset < aiCounterReset - 10)
 			{
 				if (starOpacity < 1)
 					starOpacity += 0.1f;
@@ -194,7 +187,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 			else
 			{
-				direction = Math.Sign(NPC.Center.X - target.Center.X);
+				direction = Math.Sign(NPC.Center.X - Target.Center.X);
 			}
 
 			if (direction != 0)
@@ -225,7 +218,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 			else
 			{
-				NPC.direction = NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+				NPC.direction = NPC.spriteDirection = Math.Sign(Target.Center.X - NPC.Center.X);
 				yFrame = 0;
 			}
 		}
@@ -237,7 +230,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
-			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Content.Items.Dungeon.InertStaff>(), 20));
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Dungeon.InertStaff>(), 20));
 		}
 
 		public override void FindFrame(int frameHeight)
@@ -310,13 +303,13 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			foreach (CrescentCasterBolt bolt in Bolts)
 			{
 				bolt.resetCounter += bolt.resetCounterIncrement;
-				bolt.MidPointDirection *= 1.05f;
+				bolt.midPointDirection *= 1.05f;
 
-				bolt.MidPoint += bolt.MidPointDirection;
+				bolt.midPoint += bolt.midPointDirection;
 
 				bolt.UpdateTrailPoints();
 
-				if (aiCounter % aiCounterReset < aiCounterReset - 10 && xFrame == 2)
+				if (Timer % aiCounterReset < aiCounterReset - 10 && xFrame == 2)
 				{
 					if (bolt.fade < 1)
 						bolt.fade += 0.1f;
@@ -336,10 +329,10 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 				if (bolt.resetCounter > 20 && !bolt.cloneCreated) //Change bolt curve
 				{
 					bolt.cloneCreated = true;
-					CreateBolt(bolt.TargetNPC);
+					CreateBolt(bolt.targetNPC);
 				}
 
-				if (bolt.resetCounter > 30 || !IsValidTarget(bolt.TargetNPC))
+				if (bolt.resetCounter > 30 || !IsValidTarget(bolt.targetNPC))
 					Bolts.Remove(bolt);
 			}
 		}
@@ -362,7 +355,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 			foreach (CrescentCasterBolt bolt in Bolts.ToArray())
 			{
-				if (npcs.Contains(bolt.TargetNPC))
+				if (npcs.Contains(bolt.targetNPC))
 					Bolts.Remove(bolt);
 			}
 		}
@@ -381,6 +374,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		{
 			if (other.Center == NPC.Center)
 				return NPC.Center;
+
 			Vector2 directionTo = NPC.DirectionTo(other.Center);
 			return NPC.Center + directionTo.RotatedBy(-Math.Sign(directionTo.X) * Main.rand.NextFloat(0.5f, 1f)) * Main.rand.NextFloat(1f, 1.5f) * NPC.Distance(other.Center);
 		}
@@ -392,10 +386,12 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			direction.Normalize();
 
 			Vector2 tilePos1 = pos1 / 16;
+
 			for (int i = 0; i < length; i++)
 			{
 				tilePos1 += direction;
 				Tile tile = Main.tile[(int)tilePos1.X, (int)tilePos1.Y];
+
 				if (tile.HasTile && !TileID.Sets.Platforms[tile.TileType] && Main.tileSolid[tile.TileType])
 					return false;
 			}
@@ -406,11 +402,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 
 	public class CrescentCasterBolt
 	{
-		public NPC TargetNPC;
-		public NPC Owner;
+		public NPC targetNPC;
+		public NPC owner;
 
-		public Vector2 MidPoint;
-		public Vector2 MidPointDirection;
+		public Vector2 midPoint;
+		public Vector2 midPointDirection;
 
 		public Trail trail;
 		public Trail trail2;
@@ -425,14 +421,14 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		public Color baseColor = new(200, 230, 255);
 		public Color endColor = Color.Purple;
 
-		public float distanceFade => 1 - resetCounter / 30f;
+		public float DistanceFade => 1 - resetCounter / 30f;
 
 		public CrescentCasterBolt(NPC targetNPC, NPC owner, Vector2 midPoint, Vector2 midPointDirection, GraphicsDevice device)
 		{
-			TargetNPC = targetNPC;
-			Owner = owner;
-			MidPoint = midPoint;
-			MidPointDirection = midPointDirection;
+			this.targetNPC = targetNPC;
+			this.owner = owner;
+			this.midPoint = midPoint;
+			this.midPointDirection = midPointDirection;
 			resetCounterIncrement = Main.rand.NextFloat(0.85f, 1.15f);
 
 			trail = new Trail(device, 15, new TriangularTip(4), factor => 16, factor =>
@@ -440,13 +436,13 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 				if (factor.X > 0.99f)
 					return Color.Transparent;
 
-				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * distanceFade;
+				return new Color(160, 220, 255) * fade * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X) * DistanceFade;
 			});
 
 			trail2 = new Trail(device, 15, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * distanceFade;
+				return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * fade * progress * DistanceFade;
 			});
 
 			UpdateTrailPoints();
@@ -461,9 +457,11 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			var pointsWithOffset = new List<Vector2>();
 
 			int index = 0;
+
 			foreach (Vector2 point in points)
 			{
 				float offsetAmount;
+
 				if (index == 0)
 					offsetAmount = 0;
 				else
@@ -474,13 +472,13 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 
 			trail.Positions = trail2.Positions = pointsWithOffset.ToArray();
-			trail.NextPosition = trail2.NextPosition = TargetNPC.Center;
+			trail.NextPosition = trail2.NextPosition = targetNPC.Center;
 		}
 
 		public List<Vector2> BezierPoints()
 		{
-			Vector2 startPoint = Owner.Center + new Vector2(Owner.spriteDirection * 3, -25);
-			var curve = new BezierCurve(startPoint, MidPoint, TargetNPC.Center);
+			Vector2 startPoint = owner.Center + new Vector2(owner.spriteDirection * 3, -25);
+			var curve = new BezierCurve(startPoint, midPoint, targetNPC.Center);
 			return curve.GetPoints(15);
 		}
 

@@ -1,18 +1,13 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -95,14 +90,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
-
 		public ref float StoredAngle => ref Projectile.ai[0];
 		public ref float Combo => ref Projectile.ai[1];
 
 		public float Timer => 300 - Projectile.timeLeft;
 		public Player Owner => Main.player[Projectile.owner];
 		public float SinProgress => (float)Math.Sin((1 - Timer / maxTime) * 3.14f);
+
+		public override string Texture => AssetDirectory.VitricItem + "RefractiveBlade";
 
 		public sealed override void SetDefaults()
 		{
@@ -147,7 +142,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.Center = Owner.Center + Vector2.UnitX.RotatedBy(targetAngle) * (70 + (float)Math.Sin(Helper.BezierEase(Timer / maxTime) * 3.14f) * 40);
 			Projectile.rotation = targetAngle + 1.57f * 0.5f;
 
-			if (Main.netMode != Terraria.ID.NetmodeID.Server)
+			if (Main.netMode != NetmodeID.Server)
 			{
 				ManageCaches();
 				ManageTrail();
@@ -156,7 +151,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Lighting.AddLight(Projectile.Center, color.ToVector3() * SinProgress);
 
-				if (Main.rand.Next(2) == 0)
+				if (Main.rand.NextBool(2))
 					Dust.NewDustPerfect(Projectile.Center, DustType<Glow>(), Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.2f);
 			}
 
@@ -388,10 +383,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (Main.myPlayer != Owner.whoAmI)
-				checkHits();
+				CheckHits();
 		}
 
-		public void checkHits()
+		public void CheckHits()
 		{
 			// done manually for clients that aren't the Projectile owner since onhit methods are clientside
 
@@ -531,7 +526,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(LaserRotation) * i + Main.screenPosition, color.ToVector3() * height * 0.010f);
 
-				if (Main.rand.Next(20) == 0)
+				if (Main.rand.NextBool(20))
 					Dust.NewDustPerfect(Projectile.Center + Vector2.UnitX.RotatedBy(LaserRotation) * i, DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.35f);
 			}
 
@@ -575,8 +570,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	class RefractiveBladeBuff : SmartBuff
 	{
-		public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
 		public override string Texture => AssetDirectory.Buffs + "RefractiveBladeBuff";
+
+		public RefractiveBladeBuff() : base("Melting", "Taking additional melee damage!", true) { }
 
 		public override void Load()
 		{
