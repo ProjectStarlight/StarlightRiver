@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -54,7 +55,10 @@ namespace StarlightRiver.Content.Items.Misc
 					activeDebuffIds.Add(Player.buffType[i]);
 			}
 
-			int type = Main.rand.Next(activeDebuffIds);
+			if (activeDebuffIds.Count() < 1)
+				return;
+
+			int type = activeDebuffIds[Main.rand.Next(activeDebuffIds.Count() - 1)];
 
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{

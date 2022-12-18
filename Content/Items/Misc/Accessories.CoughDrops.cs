@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -22,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void DelBuff(On.Terraria.Player.orig_DelBuff orig, Player self, int buffId)
 		{
-			if (Helper.IsValidDebuff(self, buffId) && Equipped(self))
+			if (Main.debuff[self.buffType[buffId]] && Equipped(self))
 				self.AddBuff(ModContent.BuffType<CoughDropsBuff>(), 180);
 
 			orig(self, buffId);

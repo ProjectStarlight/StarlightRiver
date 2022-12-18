@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class BloodAmulet : SmartAccessory
 	{
-		public int StoredDamage;
+		public int storedDamage;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
 				SpawnBolts(player);
 			}
 		}
@@ -48,16 +48,16 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
 				SpawnBolts(player);
 			}
 		}
 
 		private void SpawnBolts(Player player)
 		{
-			while (StoredDamage > 25)
+			while ((GetEquippedInstance(player) as BloodAmulet).storedDamage > 25)
 			{
-				StoredDamage -= 25;
+				(GetEquippedInstance(player) as BloodAmulet).storedDamage -= 25;
 				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
 			}
 		}
