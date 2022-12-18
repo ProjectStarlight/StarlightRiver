@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;

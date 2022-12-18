@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.CombatMountSystem;
 using System.Collections.Generic;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;

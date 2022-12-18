@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.SpaceEvent;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.Enums;

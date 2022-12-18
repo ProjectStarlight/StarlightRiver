@@ -1,5 +1,7 @@
 ﻿using StarlightRiver.Content.NPCs.TownUpgrade;
 using StarlightRiver.Content.Tiles;
+using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.NPCUpgradeSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -46,7 +48,7 @@ namespace StarlightRiver.Content.GUI
 
 			spriteBatch.Draw(panel, pos, panel.Frame(), Color.White * 0.8f, 0, Vector2.Zero, 1, 0, 0);
 			if (activeQuest != null)
-				Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest.questTip, 320, Terraria.GameContent.FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
+				Utils.DrawBorderString(spriteBatch, Helper.WrapString(activeQuest.questTip, 320, FontAssets.DeathText.Value, 0.6f), pos + new Vector2(10, 10), Color.White, 0.6f);
 
 			Recalculate();
 			base.Draw(spriteBatch);
@@ -89,7 +91,7 @@ namespace StarlightRiver.Content.GUI
 			quests.Clear();
 
 			int offY = 0;
-			foreach (KeyValuePair<string, bool> pair in StarlightWorld.townUpgrades)
+			foreach (KeyValuePair<string, bool> pair in NPCUpgradeSystem.townUpgrades)
 			{
 				if (TownUpgrade.FromString(pair.Key) != null)
 					AddQuestButton(new TownQuestItem(TownUpgrade.FromString(pair.Key)), offY);
@@ -172,7 +174,7 @@ namespace StarlightRiver.Content.GUI
 			foreach (Loot loot in Quest.Requirements)
 				Helper.TryTakeItem(Main.LocalPlayer, loot.type, loot.count);
 
-			StarlightWorld.townUpgrades[Quest.NPCName] = !StarlightWorld.townUpgrades[Quest.NPCName];
+			NPCUpgradeSystem.townUpgrades[Quest.NPCName] = !NPCUpgradeSystem.townUpgrades[Quest.NPCName];
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82);
 		}

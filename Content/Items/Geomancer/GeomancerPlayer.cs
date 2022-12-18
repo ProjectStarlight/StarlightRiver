@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;

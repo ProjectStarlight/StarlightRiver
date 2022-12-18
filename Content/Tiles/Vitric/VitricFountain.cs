@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Vitric
+﻿using StarlightRiver.Core.Loaders.TileLoading;
+
+namespace StarlightRiver.Content.Tiles.Vitric
 {
 	internal class VitricFountain : QuickFountain
 	{

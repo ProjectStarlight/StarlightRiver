@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Biomes
+﻿using StarlightRiver.Core.Systems.CameraSystem;
+
+namespace StarlightRiver.Content.Biomes
 {
 	public class VitricTempleBiome : ModBiome
 	{

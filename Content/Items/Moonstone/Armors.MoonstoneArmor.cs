@@ -1,6 +1,6 @@
 ﻿using NetEasy;
 using StarlightRiver.Content.CustomHooks;
-
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;

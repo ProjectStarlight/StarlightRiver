@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Content.Items.SteampunkSet;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using Terraria.ID;
 

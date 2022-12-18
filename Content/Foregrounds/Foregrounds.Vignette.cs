@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Foregrounds
+﻿using StarlightRiver.Core.Systems.ForegroundSystem;
+
+namespace StarlightRiver.Content.Foregrounds
 {
 	class Vignette : Foreground
 	{

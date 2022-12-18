@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Prefixes.Accessory
 {

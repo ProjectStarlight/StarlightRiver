@@ -1,4 +1,5 @@
-﻿using static Terraria.ModLoader.ModContent;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {

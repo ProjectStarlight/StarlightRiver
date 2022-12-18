@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Codex;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;

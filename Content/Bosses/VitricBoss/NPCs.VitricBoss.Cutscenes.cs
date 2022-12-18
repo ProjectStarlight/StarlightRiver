@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles;
+using StarlightRiver.Core.Systems.NPCUpgradeSystem;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.NPCs.TownUpgrade
 		public readonly string title;
 		public readonly Texture2D icon;
 
-		public bool Unlocked => StarlightWorld.townUpgrades.TryGetValue(NPCName, out bool unlocked) && unlocked;
+		public bool Unlocked => NPCUpgradeSystem.townUpgrades.TryGetValue(NPCName, out bool unlocked) && unlocked;
 
 		public virtual List<Loot> Requirements => new() { new Loot(ItemID.DirtBlock, 1) };
 

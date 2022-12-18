@@ -1,9 +1,8 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.NPCs.TownUpgrade;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Systems.CutawaySystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
@@ -13,7 +12,6 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	//Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
 	public partial class StarlightWorld : ModSystem
 	{
 		public static StarlightWorld worldInstance;
@@ -22,14 +20,7 @@ namespace StarlightRiver.Core
 
 		public static float visualTimer;
 
-		public static float Chungus;
-
 		public static Cutaway cathedralOverlay;
-
-		public static int timer; //I dont know why this is here and really dont want to risk removing it at this point.
-
-		//Voidsmith
-		public static Dictionary<string, bool> townUpgrades = new();
 
 		public static Rectangle vitricBiome = new();
 
@@ -66,8 +57,6 @@ namespace StarlightRiver.Core
 
 			WriteRectangle(writer, vitricBiome);
 			WriteRectangle(writer, squidBossArena);
-
-			WriteNPCUpgrades(writer);
 		}
 
 		public override void NetReceive(BinaryReader reader)
@@ -77,10 +66,8 @@ namespace StarlightRiver.Core
 			vitricBiome = ReadRectangle(reader);
 			squidBossArena = ReadRectangle(reader);
 
-			if (CutawayHandler.cutaways.Count == 0)
+			if (CutawayHook.cutaways.Count == 0)
 				CreateCutaways();
-
-			ReadNPCUpgrades(reader);
 		}
 
 		private void WriteRectangle(BinaryWriter writer, Rectangle rect)
@@ -96,24 +83,8 @@ namespace StarlightRiver.Core
 			return new Rectangle(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32());
 		}
 
-		private void WriteNPCUpgrades(BinaryWriter writer)
-		{
-			foreach (KeyValuePair<string, bool> upgrade in townUpgrades)
-			{
-				writer.Write(upgrade.Key);
-				writer.Write(upgrade.Value);
-			}
-		}
-
-		private void ReadNPCUpgrades(BinaryReader reader)
-		{
-			for (int i = 0; i < townUpgrades.Count(); i++)
-				townUpgrades[reader.ReadString()] = reader.ReadBoolean();
-		}
-
 		public override void PreUpdateWorld()
 		{
-			timer++;
 			visualTimer += (float)Math.PI / 60;
 
 			if (visualTimer >= Math.PI * 2)
@@ -133,28 +104,10 @@ namespace StarlightRiver.Core
 			vitricBiome.Y = 0;
 
 			flags = default;
-
-			townUpgrades = new Dictionary<string, bool>();
-
-			//Autoload NPC upgrades
-			Mod Mod = StarlightRiver.Instance;
-			if (Mod.Code != null)
-			{
-				foreach (Type type in Mod.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(TownUpgrade))))
-				{
-					townUpgrades.Add(type.Name.Replace("Upgrade", ""), false);
-				}
-			}
 		}
 
 		public override void SaveWorldData(TagCompound tag)
 		{
-			var townTag = new TagCompound();
-			foreach (KeyValuePair<string, bool> pair in townUpgrades)
-				townTag.Add(pair.Key, pair.Value);
-
-			// TODO why the hell is this throwing Collection was modified?
-
 			tag["VitricBiomePos"] = vitricBiome.TopLeft();
 			tag["VitricBiomeSize"] = vitricBiome.Size();
 
@@ -164,10 +117,6 @@ namespace StarlightRiver.Core
 			tag["PermafrostCenter"] = permafrostCenter;
 
 			tag[nameof(flags)] = (int)flags;
-
-			tag[nameof(townUpgrades)] = townTag;
-
-			tag["Chungus"] = Chungus;
 		}
 
 		private static bool CheckForSquidArena(Player Player)
@@ -198,7 +147,7 @@ namespace StarlightRiver.Core
 			{
 				Inside = CheckForSquidArena
 			};
-			CutawayHandler.NewCutaway(cathedralOverlay);
+			CutawayHook.NewCutaway(cathedralOverlay);
 		}
 
 		public override void LoadWorldData(TagCompound tag)
@@ -217,19 +166,6 @@ namespace StarlightRiver.Core
 
 			flags = (WorldFlags)tag.GetInt(nameof(flags));
 
-			TagCompound tag1 = tag.GetCompound(nameof(townUpgrades));
-			var targetDict = new Dictionary<string, bool>();
-
-			foreach (KeyValuePair<string, object> pair in tag1)
-				targetDict.Add(pair.Key, tag1.GetBool(pair.Key));
-
-			townUpgrades = targetDict;
-
-			Chungus = tag.GetFloat("Chungus");
-
-			Chungus += Main.rand.NextFloat(-0.005f, 0.01f);
-			Chungus = MathHelper.Clamp(Chungus, 0, 1);
-
 			//setup overlays
 			if (Main.netMode == NetmodeID.SinglePlayer)
 				CreateCutaways();
@@ -242,7 +178,6 @@ namespace StarlightRiver.Core
 		public override void Unload()
 		{
 			cathedralOverlay = null;
-			townUpgrades = null;
 			genNoise = null;
 		}
 	}

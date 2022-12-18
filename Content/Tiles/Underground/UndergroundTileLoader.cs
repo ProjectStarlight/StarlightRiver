@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground

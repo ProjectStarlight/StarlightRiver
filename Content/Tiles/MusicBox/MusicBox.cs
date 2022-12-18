@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;

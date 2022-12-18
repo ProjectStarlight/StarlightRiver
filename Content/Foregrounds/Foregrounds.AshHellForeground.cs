@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.ForegroundSystem;
+using System;
 
 namespace StarlightRiver.Content.Foregrounds
 {

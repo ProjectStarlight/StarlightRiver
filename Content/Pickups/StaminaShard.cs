@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System;
 using static Terraria.ModLoader.ModContent;

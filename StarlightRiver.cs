@@ -7,7 +7,7 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
 using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Helpers;
+using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;

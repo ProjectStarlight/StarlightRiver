@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Content.Tiles.Forest;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Potions

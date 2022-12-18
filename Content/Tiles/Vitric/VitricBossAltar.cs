@@ -4,6 +4,8 @@ using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Packets;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;

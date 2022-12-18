@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
-using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria.Graphics.Effects;
 

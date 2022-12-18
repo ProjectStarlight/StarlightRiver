@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;

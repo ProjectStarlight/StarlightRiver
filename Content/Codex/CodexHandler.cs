@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;

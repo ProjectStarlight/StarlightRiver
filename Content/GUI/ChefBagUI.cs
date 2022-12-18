@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Content.Items.Food;
 using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Content.Items.Utility;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
@@ -102,7 +102,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			grid.UpdateOrder();
-			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
+			UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void Move(Vector2 moveTarget)
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.GUI
 			RecipieTab.Left.Set(moveTarget.X + 60, 0);
 			RecipieTab.Top.Set(moveTarget.Y - 36, 0);
 
-			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
+			UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void RebuildGrid()
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			grid.UpdateOrder();
-			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
+			UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void RebuildRecipies()

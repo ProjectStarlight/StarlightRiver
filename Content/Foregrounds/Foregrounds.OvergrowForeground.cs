@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems.ForegroundSystem;
 
 namespace StarlightRiver.Content.Foregrounds
 {

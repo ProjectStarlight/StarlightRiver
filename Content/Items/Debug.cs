@@ -1,4 +1,6 @@
 ﻿using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
+using StarlightRiver.Core.Systems.AuroraWaterSystem;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent;

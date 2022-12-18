@@ -1,4 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BarrierDye;
+using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.GameContent;

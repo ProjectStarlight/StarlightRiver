@@ -1,6 +1,6 @@
 ﻿using StarlightRiver.Content.Codex;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;

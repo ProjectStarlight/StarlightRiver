@@ -2,7 +2,7 @@
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;

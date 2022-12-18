@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using StarlightRiver.Core.Systems.ForegroundSystem;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Foregrounds
 {

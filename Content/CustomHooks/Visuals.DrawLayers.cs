@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Keys;
-using Terraria.Graphics;
+﻿using Terraria.Graphics;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -10,9 +9,6 @@ namespace StarlightRiver.Content.CustomHooks
 		{
 			if (Main.dedServ)
 				return;
-
-			//Keys
-			On.Terraria.Main.DrawItems += DrawKeys;
 
 			//On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
 			//On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
@@ -54,14 +50,6 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (!Main.gameMenu && shadow == 0)
 				drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
-		}
-
-		private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
-		{
-			foreach (Key key in KeySystem.Keys)
-				key.Draw(Main.spriteBatch);
-
-			orig(self);
 		}
 	}
 }

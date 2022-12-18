@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using System.IO;
 using Terraria;
 using Terraria.ID;

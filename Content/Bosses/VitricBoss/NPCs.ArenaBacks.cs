@@ -241,9 +241,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			var target2 = new Rectangle(xPos - tex3.Width, yPos, tex3.Width, targetHeight);
 			var source2 = new Rectangle(0, 0, tex3.Width, targetHeight);
 
-			Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
 		}
 
 		public virtual void ScrollDraw(SpriteBatch sb) //im lazy
@@ -260,8 +260,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			var source1 = new Rectangle(0, 0, tex.Width, height1);
 			var source2 = new Rectangle(0, tex.Height - height2, tex.Width, height2);
 
-			Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
 			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
 			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
@@ -372,14 +372,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			var target2 = new Rectangle(xPos + tex.Width, yPos, tex3.Width, targetHeight);
 			var source2 = new Rectangle(0, 0, tex3.Width, targetHeight);
 
-			Helpers.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, tex, source, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex3, source2, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target.TopLeft() - Vector2.UnitY * 56, tex2, tex2.Bounds, default);
 
-			if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
-				Texture2D egg = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
-				Helpers.LightingBufferRenderer.DrawWithLighting(target, egg, source);
+				Texture2D egg = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
+				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target, egg, source);
 			}
 		}
 
@@ -397,18 +397,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			var source2 = new Rectangle(0, 0, tex.Width, height2);
 			var source1 = new Rectangle(0, tex.Height - height1, tex.Width, height1);
 
-			Helpers.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
-			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, tex, source1, default);
+			Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
 			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
 			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 
-			if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
+			if (Holidays.AnySpecialEvent)//1 in 32 or any special date event
 			{
 				Texture2D egg = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricRightEasterEgg").Value;
-				Helpers.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
-				Helpers.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
+				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target1, egg, source1);
+				Core.Systems.LightingSystem.LightingBufferRenderer.DrawWithLighting(target2, egg, source2);
 			}
 		}
 

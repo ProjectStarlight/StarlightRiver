@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System.Collections.Generic;
 using Terraria.ID;
 

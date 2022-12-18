@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {

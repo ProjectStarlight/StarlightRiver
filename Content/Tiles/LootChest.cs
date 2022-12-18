@@ -1,5 +1,5 @@
 ﻿using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using Terraria.ID;

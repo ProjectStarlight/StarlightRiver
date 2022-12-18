@@ -3,7 +3,7 @@ using ReLogic.Graphics;
 using ReLogic.Utilities;
 using StarlightRiver.Content.Codex;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Potions;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc

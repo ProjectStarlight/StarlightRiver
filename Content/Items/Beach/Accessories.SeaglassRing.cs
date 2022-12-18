@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.DataStructures;
 using Terraria.ID;
 
