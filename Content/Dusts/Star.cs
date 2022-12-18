@@ -22,8 +22,8 @@ namespace StarlightRiver.Content.Dusts
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
 			int off = (int)dust.fadeIn / 4;
-			float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.2f * 0.2f);
-			float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.2f);
+			float sin2 = (float)Math.Sin(StarlightWorld.visualTimer + off * 0.2f * 0.2f);
+			float cos = (float)Math.Cos(StarlightWorld.visualTimer + off * 0.2f);
 			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 
 			return color * GetProgress(dust) * 0.4f;

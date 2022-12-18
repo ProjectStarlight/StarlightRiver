@@ -304,7 +304,7 @@ namespace StarlightRiver.Content.Items.Misc
 						rotation = Main.rand.NextFloat(6.18f);
 				}
 
-				CameraSystem.Shake += 11;
+				CameraSystem.shake += 11;
 
 				Projectile.rotation = MathHelper.ToRadians(Main.rand.NextFloat(45f, 60f)) * Projectile.direction;
 

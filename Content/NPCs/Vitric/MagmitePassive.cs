@@ -249,7 +249,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 	}
 
-	internal class MagmitePassiveItem : QuickNPCItem
+	internal class MagmitePassiveItem : QuickCritterItem
 	{
 		public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
 	}

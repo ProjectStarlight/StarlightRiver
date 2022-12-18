@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Buffs;
+﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
@@ -14,12 +11,14 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 		float targetRotation = 0;
 		float realRotation = 0;
 		int emergeTime = 0;
+
 		public bool ShouldSwim { get; set; }
 		public float SwimSpeed { get; set; }
 
 		private void CheckAuroraSwimming() //checks for if hte Player should be swimming
 		{
 			bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
+
 			if (canSwim)
 			{
 				if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
@@ -38,6 +37,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 						if (WorldGen.InWorld(realX, realY))
 						{
 							Tile tile = Framing.GetTileSafely(realX, realY);
+
 							if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
 							{
 								ShouldSwim = true;
@@ -123,6 +123,7 @@ namespace StarlightRiver.Core //TODO: Move this somewhere else? not sure.
 			Player.legFrame = new Rectangle(0, 56 * (int)(5 + Main.GameUpdateCount / 7 % 3), 40, 56);
 
 			float speed = 0.2f * SwimSpeed;
+
 			if (Player.controlRight)
 				Player.velocity.X += speed; //there should probably be a better way of doing this?
 			if (Player.controlLeft)

@@ -29,7 +29,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
 		{
-			if (GetEquippedInstance(self, ModContent.ItemType<AlchemistShackles>()).Equipped(self) && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
+			SmartAccessory instance = GetEquippedInstance(self, ModContent.ItemType<AlchemistShackles>());
+
+			if (instance != null && instance.Equipped(self) && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
 				orig(self, type, time1 + 900, quiet, foodHack);
 			else
 				orig(self, type, time1, quiet, foodHack);

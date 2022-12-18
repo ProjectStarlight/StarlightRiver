@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 
 namespace StarlightRiver.Helpers
 {

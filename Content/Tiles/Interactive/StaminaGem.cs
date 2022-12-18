@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		{
 			if (Projectile.ai[0] == 0)
 			{
-				Color color = Color.White * (float)Math.Sin(StarlightWorld.rottime * 3f);
+				Color color = Color.White * (float)Math.Sin(StarlightWorld.visualTimer * 3f);
 				Main.spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemGlow").Value, Projectile.position - Main.screenPosition, color);
 				Main.spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/StaminaGemOn").Value, Projectile.position - Main.screenPosition, Color.White);
 			}

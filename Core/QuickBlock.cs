@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Core
@@ -45,6 +42,7 @@ namespace StarlightRiver.Core
 
 			ModTranslation name = tile.CreateMapEntryName();
 			name.SetDefault("Metal Bar"); //all bars are called metal bar in vanilla
+
 			if (mapColor != null)
 				tile.AddMapEntry(mapColor ?? Color.Transparent, name);
 
@@ -77,7 +75,9 @@ namespace StarlightRiver.Core
 			TileObjectData.newTile.CoordinateHeights = new int[height];
 
 			for (int k = 0; k < height; k++)
+			{
 				TileObjectData.newTile.CoordinateHeights[k] = 16;
+			}
 
 			if (tallBottom) //this breaks for some tiles: the two leads are multitiles and tiles with random styles
 				TileObjectData.newTile.CoordinateHeights[height - 1] = 18;
@@ -132,7 +132,9 @@ namespace StarlightRiver.Core
 			TileObjectData.newTile.CoordinateHeights = new int[height];
 
 			for (int k = 0; k < height; k++)
+			{
 				TileObjectData.newTile.CoordinateHeights[k] = 16;
+			}
 
 			TileObjectData.newTile.CoordinateHeights[height - 1] = bottomHeight;
 

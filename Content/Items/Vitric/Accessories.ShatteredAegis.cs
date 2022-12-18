@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Player.statDefense += 4;
 		}
 
-		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			var instance = GetEquippedInstance(player) as ShatteredAegis;
 

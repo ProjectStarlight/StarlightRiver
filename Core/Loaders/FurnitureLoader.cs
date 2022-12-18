@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Core.Loaders
@@ -21,6 +18,8 @@ namespace StarlightRiver.Core.Loaders
 		private readonly int dust = DustID.Dirt;
 		private readonly int material = ItemID.DirtBlock;
 
+		public float Priority => 1f;
+
 		public FurnitureLoader(string name, string path, Color color, Color glowColor, int dust, int material = ItemID.None)
 		{
 			this.name = name;
@@ -30,8 +29,6 @@ namespace StarlightRiver.Core.Loaders
 			this.dust = dust;
 			this.material = material;
 		}
-
-		public float Priority => 1f;
 
 		public void Load()
 		{
@@ -81,6 +78,10 @@ namespace StarlightRiver.Core.Loaders
 		private readonly int craftingMaterial;
 		private readonly string texture;
 
+		public override string Name => internalName;
+
+		public override string Texture => texture;
+
 		public GenericFurnitureItem() { }
 
 		public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", name.Replace(" ", ""), 0)
@@ -91,10 +92,6 @@ namespace StarlightRiver.Core.Loaders
 			this.craftingMaterial = craftingMaterial;
 			this.texture = texture;
 		}
-
-		public override string Name => internalName;
-
-		public override string Texture => texture;
 
 		public override void SafeSetDefaults()
 		{
@@ -159,6 +156,10 @@ namespace StarlightRiver.Core.Loaders
 		protected readonly int dust;
 		protected readonly string name;
 
+		public override string Texture => TileTexture;
+
+		public override string Name => InternalName;
+
 		public Furniture(string internalName, Color color, int dust, string name, string texture)
 		{
 			InternalName = internalName;
@@ -174,10 +175,6 @@ namespace StarlightRiver.Core.Loaders
 			this.dust = dust;
 			this.name = name;
 		}
-
-		public override string Texture => TileTexture;
-
-		public override string Name => InternalName;
 
 		public override void NumDust(int i, int j, bool fail, ref int num)
 		{
@@ -235,9 +232,12 @@ namespace StarlightRiver.Core.Loaders
 			int spawnX = i - tile.TileFrameX / 18;
 			int spawnY = j + 2;
 			spawnX += tile.TileFrameX >= 72 ? 5 : 2;
+
 			if (tile.TileFrameY % 38 != 0)
 				spawnY--;
+
 			Player.FindSpawn();
+
 			if (Player.SpawnX == spawnX && Player.SpawnY == spawnY)
 			{
 				Player.RemoveSpawn();
@@ -297,8 +297,10 @@ namespace StarlightRiver.Core.Loaders
 
 			int newX = i;
 			int newY = j;
+
 			if (tile.TileFrameX % 36 == 18)
 				newX = i - 1;
+
 			if (tile.TileFrameY % 36 == 18)
 				newY = j - 1;
 
@@ -315,6 +317,7 @@ namespace StarlightRiver.Core.Loaders
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
+
 			if (tile.TileFrameX < 36)
 				(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}
@@ -344,6 +347,7 @@ namespace StarlightRiver.Core.Loaders
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
+
 			if (tile.TileFrameX < 18)
 				(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}
@@ -411,6 +415,7 @@ namespace StarlightRiver.Core.Loaders
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
+
 			if (tile.TileFrameX < 54)
 				(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}
@@ -443,18 +448,22 @@ namespace StarlightRiver.Core.Loaders
 			string text = "AM";
 			//Get current weird time
 			double time = Main.time;
-			if (!Main.dayTime)
-				//if it's night add this number
+
+			if (!Main.dayTime) //if it's night add this number
 				time += 54000.0;
+
 			//Divide by seconds in a day * 24
 			time = time / 86400.0 * 24.0;
 			//Dunno why we're taking 19.5. Something about hour formatting
 			time = time - 7.5 - 12.0;
+
 			//Format in readable time
 			if (time < 0.0)
 				time += 24.0;
+
 			if (time >= 12.0)
 				text = "PM";
+
 			int intTime = (int)time;
 			//Get the decimal points of time.
 			double deltaTime = time - intTime;
@@ -462,15 +471,16 @@ namespace StarlightRiver.Core.Loaders
 			deltaTime = (int)(deltaTime * 60.0);
 			//This could easily be replaced by deltaTime.ToString()
 			string text2 = string.Concat(deltaTime);
-			if (deltaTime < 10.0)
-				//if deltaTime is eg "1" (which would cause time to display as HH:M instead of HH:MM)
+
+			if (deltaTime < 10.0) //if deltaTime is eg "1" (which would cause time to display as HH:M instead of HH:MM)
 				text2 = "0" + text2;
-			if (intTime > 12)
-				//This is for AM/PM time rather than 24hour time
+
+			if (intTime > 12) //This is for AM/PM time rather than 24hour time
 				intTime -= 12;
-			if (intTime == 0)
-				//0AM = 12AM
+
+			if (intTime == 0)//0AM = 12AM
 				intTime = 12;
+
 			//Whack it all together to get a HH:MM format
 			string newText = string.Concat("Time: ", intTime, ":", text2, " ", text);
 			Main.NewText(newText, 255, 240, 20);
@@ -664,6 +674,7 @@ namespace StarlightRiver.Core.Loaders
 		public override bool RightClick(int i, int j)
 		{
 			Player player = Main.LocalPlayer;
+
 			if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY == 0)
 			{
 				Main.CancelClothesWindow(true);
@@ -672,6 +683,7 @@ namespace StarlightRiver.Core.Loaders
 				left %= 3;
 				left = Player.tileTargetX - left;
 				int top = Player.tileTargetY - Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY / 18;
+
 				if (player.sign > -1)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuClose);
@@ -710,6 +722,7 @@ namespace StarlightRiver.Core.Loaders
 				else
 				{
 					int oldChest = Chest.FindChest(left, top);
+
 					if (oldChest != -1)
 					{
 						Main.stackSplit = 600;
@@ -762,10 +775,13 @@ namespace StarlightRiver.Core.Loaders
 			int left = Player.tileTargetX;
 			int top = Player.tileTargetY;
 			left -= tile.TileFrameX % 54 / 18;
+
 			if (tile.TileFrameY % 36 != 0)
 				top--;
+
 			int chestIndex = Chest.FindChest(left, top);
 			player.cursorItemIconID = -1;
+
 			if (chestIndex < 0)
 			{
 				player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
@@ -790,6 +806,7 @@ namespace StarlightRiver.Core.Loaders
 
 			player.noThrow = 2;
 			player.cursorItemIconEnabled = true;
+
 			if (player.cursorItemIconText == "")
 			{
 				player.cursorItemIconEnabled = false;
@@ -804,10 +821,13 @@ namespace StarlightRiver.Core.Loaders
 			int left = Player.tileTargetX;
 			int top = Player.tileTargetY;
 			left -= tile.TileFrameX % 54 / 18;
+
 			if (tile.TileFrameY % 36 != 0)
 				top--;
+
 			int num138 = Chest.FindChest(left, top);
 			Player.cursorItemIconID = -1;
+
 			if (num138 < 0)
 			{
 				Player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
@@ -832,6 +852,7 @@ namespace StarlightRiver.Core.Loaders
 
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
+
 			if (Main.tile[Player.tileTargetX, Player.tileTargetY].TileFrameY > 0)
 				Player.cursorItemIconID = ItemID.FamiliarShirt;
 		}
@@ -870,6 +891,7 @@ namespace StarlightRiver.Core.Loaders
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
+
 			if (tile.TileFrameX < 18 && tile.TileFrameY == 0)
 				(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}
@@ -913,6 +935,7 @@ namespace StarlightRiver.Core.Loaders
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
+
 			if (tile.TileFrameX < 18 && tile.TileFrameY == 18)
 				(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}

@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
@@ -58,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Volume = 0.2f, Pitch = -0.8f }, new Vector2(i, j) * 16f);
 
-				if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
+				if (CheckIce(i - 1, j) || CheckIce(i, j - 1) || CheckIce(i + 1, j) || CheckIce(i, j + 1))
 				{
 					tile.TileFrameY += 4 * 18;
 					Item.NewItem(new Terraria.DataStructures.EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<AuroraIceItem>());
@@ -94,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			//TODO: this is gross, change it later?
-			if (checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
+			if (CheckIce(i - 1, j) || CheckIce(i, j - 1) || CheckIce(i + 1, j) || CheckIce(i, j + 1))
 				Framing.GetTileSafely(i, j).Slope = SlopeType.Solid;
 
 			return false;
@@ -104,7 +99,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			if (tile.TileFrameY >= 4 * 18 || checkIce(i - 1, j) || checkIce(i, j - 1) || checkIce(i + 1, j) || checkIce(i, j + 1))
+			if (tile.TileFrameY >= 4 * 18 || CheckIce(i - 1, j) || CheckIce(i, j - 1) || CheckIce(i + 1, j) || CheckIce(i, j + 1))
 			{
 				Color light = Lighting.GetColor(i, j);
 				spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Tiles/Permafrost/AuroraIceUnder").Value, (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition, new Rectangle(tile.TileFrameX, tile.TileFrameY % (4 * 18), 16, 16), light);
@@ -119,8 +114,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
 			float cos = (float)Math.Cos(time + off * 0.2f);
 			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
 			if (color.R < 80)
 				color.R = 80;
+
 			if (color.G < 80)
 				color.G = 80;
 
@@ -153,15 +150,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			float sin2 = (float)Math.Sin(time + off * 0.2f * 0.2f);
 			float cos = (float)Math.Cos(time + off * 0.2f);
 			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
+
 			if (color.R < 80)
 				color.R = 80;
+
 			if (color.G < 80)
 				color.G = 80;
 
 			(r, g, b) = (color.R / 255f, color.G / 255f, color.B / 255f);
 		}
 
-		bool checkIce(int x, int y)
+		bool CheckIce(int x, int y)
 		{
 			return Framing.GetTileSafely(x, y).TileType == TileID.IceBlock;
 		}

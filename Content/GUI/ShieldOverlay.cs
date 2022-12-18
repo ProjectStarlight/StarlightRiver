@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 			Player Player = Main.LocalPlayer;
 			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if ((sp.Barrier > 0 || sp.MaxBarrier > 0) && Main.ResourceSetsManager.ActiveSetKeyName == "Default") //Text, only present on classic UI
+			if ((sp.barrier > 0 || sp.maxBarrier > 0) && Main.ResourceSetsManager.ActiveSetKeyName == "Default") //Text, only present on classic UI
 			{
 				int num4 = (int)((float)Main.player[Main.myPlayer].statLifeMax2 / 20);
 				if (num4 >= 10)
@@ -36,19 +36,19 @@ namespace StarlightRiver.Content.GUI
 
 				Vector2 vector = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text);
 
-				string shieldText = $"  {sp.Barrier}/{sp.MaxBarrier}";
+				string shieldText = $"  {sp.barrier}/{sp.maxBarrier}";
 				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
 				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
 				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)));
 			}
 
-			if (sp.Barrier > 0)
+			if (sp.barrier > 0)
 			{
 				int vanillaHearts = Math.Min(20, Player.statLifeMax / 20);
-				int fullHeartsToDraw = Math.Min(vanillaHearts, sp.Barrier / 20);
-				int partialHeartMax = fullHeartsToDraw < 20 ? sp.Barrier % 20 : 0;
-				float shieldPerHeart = sp.MaxBarrier > vanillaHearts * 20 ? sp.MaxBarrier / (float)vanillaHearts : 20;
+				int fullHeartsToDraw = Math.Min(vanillaHearts, sp.barrier / 20);
+				int partialHeartMax = fullHeartsToDraw < 20 ? sp.barrier % 20 : 0;
+				float shieldPerHeart = sp.maxBarrier > vanillaHearts * 20 ? sp.maxBarrier / (float)vanillaHearts : 20;
 
 				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeart").Value;
 				Texture2D texOver = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldHeartOver").Value;
@@ -68,10 +68,10 @@ namespace StarlightRiver.Content.GUI
 
 						int width2 = 0;
 
-						if (sp.Barrier >= (k + 1) * shieldPerHeart)
+						if (sp.barrier >= (k + 1) * shieldPerHeart)
 							width2 = texBar.Width;
-						else if (sp.Barrier > k * shieldPerHeart)
-							width2 = (int)(sp.Barrier % shieldPerHeart / shieldPerHeart * texBar.Width);
+						else if (sp.barrier > k * shieldPerHeart)
+							width2 = (int)(sp.barrier % shieldPerHeart / shieldPerHeart * texBar.Width);
 
 						if (width2 > 0 && k < 20)
 						{
@@ -103,10 +103,10 @@ namespace StarlightRiver.Content.GUI
 
 					int width = 0;
 
-					if (sp.Barrier >= (k + 1) * shieldPerHeart)
+					if (sp.barrier >= (k + 1) * shieldPerHeart)
 						width = tex.Width;
-					else if (sp.Barrier > k * shieldPerHeart)
-						width = (int)(sp.Barrier % shieldPerHeart / shieldPerHeart * tex.Width);
+					else if (sp.barrier > k * shieldPerHeart)
+						width = (int)(sp.barrier % shieldPerHeart / shieldPerHeart * tex.Width);
 
 					if (width > 0 && k < 20)
 					{

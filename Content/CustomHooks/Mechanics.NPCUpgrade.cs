@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private string SetUpgradeUI(On.Terraria.NPC.orig_GetChat orig, NPC self)
 		{
-			if (StarlightWorld.TownUpgrades.TryGetValue(self.TypeName, out bool unlocked))
+			if (StarlightWorld.townUpgrades.TryGetValue(self.TypeName, out bool unlocked))
 			{
 				if (unlocked)
 					UILoader.GetUIState<ChatboxOverUI>().SetState(TownUpgrade.FromString(self.TypeName));
@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Texture2D tex = Terraria.GameContent.TextureAssets.InventoryBack.Value;
 			bool hovering = Main.mouseX >= x && Main.mouseX <= x + tex.Width * Main.inventoryScale && Main.mouseY >= y && Main.mouseY <= y + tex.Height * Main.inventoryScale;
 
-			if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+			if (hovering && string.IsNullOrEmpty(input) && Main.mouseItem.type == ItemID.None && StarlightWorld.townUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
 				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title;
 			return input;
 		}
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private Texture2D EmitSwapTitleMenuDelegate(Texture2D input, NPC NPC)
 		{
-			if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+			if (StarlightWorld.townUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
 				return TownUpgrade.FromString(NPC.TypeName).icon;
 			return input;
 		}
@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private NetworkText EmitSwapTitleDeathDelegate(NetworkText input, NPC NPC)
 		{
-			if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+			if (StarlightWorld.townUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
 				return NetworkText.FromLiteral(NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title + " was slain...");
 			return input;
 		}
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private string EmitSwapTitleDelegate(NPC NPC, string input)
 		{
-			if (StarlightWorld.TownUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
+			if (StarlightWorld.townUpgrades.TryGetValue(NPC.TypeName, out bool unlocked) && unlocked)
 				return NPC.GivenName + " the " + TownUpgrade.FromString(NPC.TypeName).title;
 			return input;
 		}

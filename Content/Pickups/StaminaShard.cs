@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Pickups
 			else
 				UILoader.GetUIState<TextCard>().Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
 
-			Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 1;
+			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
 
 			Helper.UnlockCodexEntry<StaminaShardEntry>(Main.LocalPlayer);
 		}

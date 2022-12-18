@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
+			return StarlightWorld.vitricBiome.Contains((player.position / 16).ToPoint());
 		}
 
 		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Biomes
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)
 						.UseProgress(6)
-						.UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+						.UseImage(StarlightRiver.lightingBufferInstance.screenLightingTarget, 0);
 				}
 			}
 			else
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsSceneEffectActive(Player player)
 		{
-			return StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
+			return StarlightWorld.vitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
 		}
 	}
 

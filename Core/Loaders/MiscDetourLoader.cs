@@ -1,6 +1,4 @@
-﻿using Terraria;
-
-namespace StarlightRiver.Core.Loaders
+﻿namespace StarlightRiver.Core.Loaders
 {
 	class MiscDetourLoader : IOrderedLoadable
 	{
@@ -15,6 +13,7 @@ namespace StarlightRiver.Core.Loaders
 		{
 			On.Terraria.Player.KeyDoubleTap -= Player_KeyDoubleTap;
 		}
+
 		private static void Player_KeyDoubleTap(On.Terraria.Player.orig_KeyDoubleTap orig, Player self, int keyDir)
 		{
 			orig(self, keyDir);

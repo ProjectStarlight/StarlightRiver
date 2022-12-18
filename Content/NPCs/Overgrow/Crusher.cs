@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { PitchVariance = 0.6f }, NPC.Center);
 
 				foreach (Player Player in Main.player.Where(Player => Vector2.Distance(Player.Center, NPC.Center) <= 250))
-					CameraSystem.Shake = (250 - (int)Vector2.Distance(Player.Center, NPC.Center)) / 12;
+					CameraSystem.shake = (250 - (int)Vector2.Distance(Player.Center, NPC.Center)) / 12;
 				NPC.ai[1] = 1;
 			}
 		}

@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -17,7 +13,7 @@ namespace StarlightRiver.Core
 
 		public static Vector2 oldScreenPos = Vector2.Zero;
 
-		private static Color barrierColor => Color.Cyan;
+		private static Color BarrierColor => Color.Cyan;
 
 		public override void Load()
 		{
@@ -38,7 +34,7 @@ namespace StarlightRiver.Core
 
 		public override void PreUpdateNPCs()
 		{
-			NPCBarrierGlow.anyEnemiesWithBarrier = false;
+			anyEnemiesWithBarrier = false;
 		}
 
 		public static void ResizeTarget()
@@ -87,7 +83,7 @@ namespace StarlightRiver.Core
 			{
 				NPC NPC = Main.npc[i];
 
-				if (NPC.behindTiles != behindTiles || !NPC.active || NPC.GetGlobalNPC<BarrierNPC>().Barrier <= 0)
+				if (NPC.behindTiles != behindTiles || !NPC.active || NPC.GetGlobalNPC<BarrierNPC>().barrier <= 0)
 					continue;
 
 				if (NPC.ModNPC != null)
@@ -137,8 +133,8 @@ namespace StarlightRiver.Core
 			float opacity = (1.5f - sin * 0.5f) * 0.3f;
 
 			Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
-			effect.Parameters["barrierColor"].SetValue(barrierColor.ToVector4() * opacity);
-			effect.Parameters["lightingTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+			effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
+			effect.Parameters["lightingTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
 
 			effect.CurrentTechnique.Passes[0].Apply();
 

@@ -485,7 +485,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (LaserTimer <= 0)
 				return;
 
-			int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
 
 			Texture2D texBeam = Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
@@ -551,10 +551,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color * (height * 0.012f), 0, impactTex.Size() / 2, 3.8f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
+			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color * (height * 0.05f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.38f, 0, 0);
 
 			spriteBatch.Draw(impactTex, pos, null, color * (height * 0.02f), 0, impactTex.Size() / 2, 1.2f, 0, 0);
-			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.rottime * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
+			spriteBatch.Draw(impactTex2, pos, null, color * (height * 0.05f), StarlightWorld.visualTimer * -3, impactTex2.Size() / 2, 0.17f, 0, 0);
 
 			for (int k = 0; k < 4; k++)
 			{
@@ -587,7 +587,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			player.GetModPlayer<ExposurePlayer>().ExposureMult += 0.5f;
+			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.5f;
 		}
 
 		private void IncreaseRefractiveDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)

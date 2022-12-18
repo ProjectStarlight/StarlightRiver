@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -38,6 +33,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
 				return;
+
 			r = 125 * 0.003f;
 			g = 162 * 0.003f;
 			b = 158 * 0.003f;
@@ -47,6 +43,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
 				return;
+
 			Texture2D tex = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow0").Value;
 			Texture2D tex2 = Request<Texture2D>(AssetDirectory.RiftCrafting + "Glow1").Value;
 
@@ -54,10 +51,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default);
 
 			Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 + Vector2.One * 8 - Main.screenPosition;
+
 			for (int k = 0; k < 3; k++)
-				spriteBatch.Draw(tex, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.05f), 0, tex.Size() / 2, k * 0.3f, 0, 0);
-			spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.rottime) * 0.10f), (float)Math.Sin(StarlightWorld.rottime) * 0.1f, tex.Size() / 2, 0.6f, 0, 0);
-			spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.rottime) * 0.10f), 2 + -(float)Math.Sin(StarlightWorld.rottime + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
+			{
+				spriteBatch.Draw(tex, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.05f), 0, tex.Size() / 2, k * 0.3f, 0, 0);
+			}
+
+			spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.10f), (float)Math.Sin(StarlightWorld.visualTimer) * 0.1f, tex.Size() / 2, 0.6f, 0, 0);
+			spriteBatch.Draw(tex2, pos, tex.Frame(), new Color(125, 162, 158) * (0.65f - (float)Math.Sin(StarlightWorld.visualTimer) * 0.10f), 2 + -(float)Math.Sin(StarlightWorld.visualTimer + 1) * 0.1f, tex.Size() / 2, 0.9f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);

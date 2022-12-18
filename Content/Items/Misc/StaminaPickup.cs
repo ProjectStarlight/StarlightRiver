@@ -38,8 +38,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 		{
-			spriteBatch.Draw(Terraria.GameContent.TextureAssets.Item[Item.type].Value, Item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f),
-				rotation, Vector2.One * 11, 0.9f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f, 0, 0);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.Item[Item.type].Value, Item.Center - Vector2.One * 11 - Main.screenPosition, new Rectangle(0, 0, 22, 22), Color.White * (0.7f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.1f),
+				rotation, Vector2.One * 11, 0.9f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.1f, 0, 0);
 		}
 	}
 

@@ -1,11 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -14,14 +11,14 @@ namespace StarlightRiver.Core
 	/// </summary>
 	public class GrazePlayer : ModPlayer
 	{
-		public readonly Color GrazeColor = new(135, 235, 255);
+		public readonly Color grazeColor = new(135, 235, 255);
 
 		public float grazeRectangleMult;
 
 		public int lastGrazeDamage; // damage of the last projectile the player grazed, before defense etc. 
 
 		private int grazeCooldown;
-		public int GrazeCooldownLength = 120; // modify this if you want to change the cooldown
+		public int grazeCooldownLength = 120; // modify this if you want to change the cooldown
 
 		public bool doGrazeLogic;
 
@@ -38,7 +35,7 @@ namespace StarlightRiver.Core
 			doGrazeLogic = false;
 			grazeProj = null;
 
-			GrazeCooldownLength = 120;
+			grazeCooldownLength = 120;
 
 			if (grazeCooldown > 0)
 				grazeCooldown--;
@@ -51,8 +48,9 @@ namespace StarlightRiver.Core
 
 			if (grazeCooldown > 0)
 			{
-				float scale = MathHelper.Lerp(0.55f, 0.15f, 1f - grazeCooldown / (float)GrazeCooldownLength);
-				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, GrazeColor, scale);
+				float scale = MathHelper.Lerp(0.55f, 0.15f, 1f - grazeCooldown / (float)grazeCooldownLength);
+				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, grazeColor, scale);
+
 				if (grazeCooldown == 1)
 					SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.position);
 			}
@@ -62,6 +60,7 @@ namespace StarlightRiver.Core
 				var grazeRect = new Rectangle(Player.Hitbox.X - (int)(12 * (grazeRectangleMult + 1f)), Player.Hitbox.Y - (int)(22 * (grazeRectangleMult + 1f)), (int)(Player.Hitbox.Width * (2f + grazeRectangleMult)), (int)(Player.Hitbox.Height * (2f + grazeRectangleMult)));
 
 				float maxDist = 200f;
+
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
@@ -69,6 +68,7 @@ namespace StarlightRiver.Core
 					if (proj.hostile && proj.active && proj.Distance(Player.Center) < maxDist && !proj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Contains(Player))
 					{
 						float dist = proj.Distance(Player.Center);
+
 						if (dist < maxDist)
 						{
 							grazeProj = proj;
@@ -95,7 +95,7 @@ namespace StarlightRiver.Core
 					{
 						grazeProj.GetGlobalProjectile<GrazeProjectile>().hitAndGrazedPlayers.Add(Player);
 
-						grazeCooldown = GrazeCooldownLength;
+						grazeCooldown = grazeCooldownLength;
 
 						lastGrazeDamage = grazeProj.damage;
 
@@ -118,7 +118,7 @@ namespace StarlightRiver.Core
 
 			for (int i = 0; i < 10; i++)
 			{
-				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, GrazeColor, Main.rand.NextFloat(0.3f, 0.45f));
+				Dust.NewDust(Player.position, Player.width, Player.height, ModContent.DustType<Glow>(), 0f, 0f, 0, grazeColor, Main.rand.NextFloat(0.3f, 0.45f));
 			}
 		}
 	}

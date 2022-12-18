@@ -36,14 +36,14 @@ namespace StarlightRiver.Content.CustomHooks
 						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
 						var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY);
-						float factor = Math.Min(mp.Barrier / (float)mp.MaxBarrier, 1);
+						float factor = Math.Min(mp.barrier / (float)mp.maxBarrier, 1);
 
 						var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 						var target = new Rectangle((int)(pos.X - Main.screenPosition.X), (int)(pos.Y - Main.screenPosition.Y), (int)(factor * tex.Width), tex.Height);
 
 						Main.spriteBatch.Draw(tex, target, source, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16) * 1.5f);
 
-						if (mp.Barrier < mp.MaxBarrier && mp.Barrier > 0)
+						if (mp.barrier < mp.maxBarrier && mp.barrier > 0)
 						{
 							Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBarLine").Value;
 
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.CustomHooks
 				{
 					Player Player = Main.player[PlayerIndex];
 					BarrierPlayer mp = Player.GetModPlayer<Core.BarrierPlayer>();
-					string textString = "[c/64c8ff:" + mp.Barrier + "/" + mp.MaxBarrier + "]";
+					string textString = "[c/64c8ff:" + mp.barrier + "/" + mp.maxBarrier + "]";
 
 					string vanillaString = Player.name + ": " + Player.statLife + "/" + Player.statLifeMax2;
 

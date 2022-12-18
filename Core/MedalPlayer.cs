@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
+﻿using StarlightRiver.Content.GUI;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
@@ -22,7 +18,7 @@ namespace StarlightRiver.Core
 
 		public void QualifyForMedal(Medal medal)
 		{
-			Main.NewText("Difficulty for current fight is:" + Difficulty);
+			//Main.NewText("Difficulty for current fight is:" + Difficulty);
 			attemptedMedal = medal;
 
 			if (!deathCounters.Any(n => n.name == medal.name))
@@ -54,7 +50,7 @@ namespace StarlightRiver.Core
 			activeCounter = null;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
 		{
 			if (!pvp)
 				attemptedMedal = default;
@@ -79,24 +75,28 @@ namespace StarlightRiver.Core
 
 		public override void LoadData(TagCompound tag)
 		{
-			medals.Clear();
+			this.medals.Clear();
 			deathCounters.Clear();
 
-			var list = new List<Medal>();
-			IList<TagCompound> list2 = tag.GetList<TagCompound>("medals");
+			var medals = new List<Medal>();
+			IList<TagCompound> loadedMedals = tag.GetList<TagCompound>("medals");
 
-			foreach (TagCompound c in list2)
-				list.Add(Medal.Deserialize(c));
+			foreach (TagCompound c in loadedMedals)
+			{
+				medals.Add(Medal.Deserialize(c));
+			}
 
-			medals = list;
+			this.medals = medals;
 
-			var list3 = new List<DeathCounter>();
-			IList<TagCompound> list4 = tag.GetList<TagCompound>("deathCounters");
+			var deaths = new List<DeathCounter>();
+			IList<TagCompound> loadedDeaths = tag.GetList<TagCompound>("deathCounters");
 
-			foreach (TagCompound c in list4)
-				list3.Add(DeathCounter.Deserialize(c));
+			foreach (TagCompound c in loadedDeaths)
+			{
+				deaths.Add(DeathCounter.Deserialize(c));
+			}
 
-			deathCounters = list3;
+			deathCounters = deaths;
 		}
 
 		public Texture2D GetMedalTexture(string name)

@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 
 namespace StarlightRiver.Core.VerletGenerators
 {

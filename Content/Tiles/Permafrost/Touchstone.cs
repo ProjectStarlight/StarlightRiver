@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
@@ -200,11 +195,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		private List<Vector2> cache;
 		private Trail trail;
 
-		private Vector2 initialPosition;
+		private float Opacity => Math.Min(NPC.ai[1], 1);
 
 		public override string Texture => AssetDirectory.SquidBoss + "InkBlob";
-
-		private float Opacity => Math.Min(NPC.ai[1], 1);
 
 		public override void SetStaticDefaults()
 		{
@@ -238,6 +231,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (bounding.Contains(NPC.Center.ToPoint()))
 			{
 				NPC.velocity += Vector2.Normalize(targetPos - NPC.Center) * 0.05f;
+
 				if (NPC.velocity.Length() > 6)
 					NPC.velocity = Vector2.Normalize(NPC.velocity) * 5.9f;
 			}
@@ -286,7 +280,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				}
 			}
 
-			if (StarlightWorld.SquidBossArena.Contains((NPC.Center / 16).ToPoint()))
+			if (StarlightWorld.squidBossArena.Contains((NPC.Center / 16).ToPoint()))
 			{
 				NPC.active = false;
 

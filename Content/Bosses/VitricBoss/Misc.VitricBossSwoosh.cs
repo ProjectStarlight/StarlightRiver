@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					opacity = MathHelper.Clamp((parent.GlobalTimer - 360) / 60f, 0, 1);
 			}
 
-			float sin = (float)Math.Sin(StarlightWorld.rottime + index);
+			float sin = (float)Math.Sin(StarlightWorld.visualTimer + index);
 
 			Vector2 pos = Vector2.UnitX.RotatedBy(position.ToRotation()) * 2 + Vector2.UnitY.RotatedBy(position.ToRotation()) * sin * 2.1f;
 

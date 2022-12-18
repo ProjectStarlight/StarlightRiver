@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Dusts
 					dust.scale *= 0.99f;
 				}
 
-				dust.rotation = StarlightWorld.rottime;
+				dust.rotation = StarlightWorld.visualTimer;
 				dust.position.X += (float)Math.Sin(-dust.scale * 3);
 				dust.position.Y += (float)Math.Cos(-dust.scale * 3);
 			}

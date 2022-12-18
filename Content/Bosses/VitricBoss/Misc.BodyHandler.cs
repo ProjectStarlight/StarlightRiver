@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				}
 			}
 
-			float brightness = 0.5f + (float)Math.Sin(StarlightWorld.rottime + index);
+			float brightness = 0.5f + (float)Math.Sin(StarlightWorld.visualTimer + index);
 
 			if (index == 1)
 				brightness += 0.25f;

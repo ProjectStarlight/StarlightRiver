@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.CustomHooks;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Shaders;
 using static Terraria.ModLoader.ModContent;
 
@@ -14,7 +11,7 @@ namespace StarlightRiver.Core
 	{
 		internal Dictionary<string, MapPass> MapPasses = new();
 
-		public void OrderedRenderPassBatched(SpriteBatch sb, GraphicsDevice GD, bool Batched = true)
+		public void OrderedRenderPassBatched(SpriteBatch sb, GraphicsDevice graphics)
 		{
 			RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
 			int i = 0;
@@ -32,8 +29,8 @@ namespace StarlightRiver.Core
 
 					if (Pass.ManualTarget == null)
 					{
-						GD.SetRenderTarget(Pass.MapTarget);
-						GD.Clear(Color.Transparent);
+						graphics.SetRenderTarget(Pass.mapTarget);
+						graphics.Clear(Color.Transparent);
 
 						sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
 						Pass.RenderBatched(sb);
@@ -68,6 +65,7 @@ namespace StarlightRiver.Core
 				i++;
 			}
 		}
+
 		public void DrawToMap(string Map, MapRender MR)
 		{
 			MapPasses[Map].DrawToBatchedTarget(MR);
@@ -100,37 +98,38 @@ namespace StarlightRiver.Core
 
 	public abstract class MapPass
 	{
-		internal event MapRender BatchedCalls;
+		internal event MapRender batchedCalls;
 
-		internal event MapRender PrimitiveCalls;
+		internal event MapRender primitiveCalls;
 
-		public RenderTarget2D MapTarget;
-
-		public virtual RenderTarget2D ManualTarget => null;
+		public RenderTarget2D mapTarget;
 
 		public abstract int Priority { get; }
 
 		protected abstract string MapEffectName { get; }
 
+		public virtual RenderTarget2D ManualTarget => null;
+
 		protected ScreenShaderData MapEffect => Helpers.Helpers.GetScreenShader(MapEffectName);
 
 		internal virtual void OnApplyShader() { }
+
 		public virtual void Load()
 		{
-			MapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+			mapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 		}
 
 		public void ApplyShader()
 		{
 			if (ManualTarget != null)
-				MapTarget = ManualTarget;
+				mapTarget = ManualTarget;
 
 			if (MapEffectName != "")
 			{
 				//always here jic
 				MapEffect?.Shader?.Parameters["Noise"]?.SetValue(Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoise").Value);
 				MapEffect?.Shader?.Parameters["TileTarget"]?.SetValue(PlayerTarget.ScaledTileTarget);
-				MapEffect?.Shader?.Parameters["Map"]?.SetValue(MapTarget);
+				MapEffect?.Shader?.Parameters["Map"]?.SetValue(mapTarget);
 
 				//change to something better
 				MapEffect?.UseIntensity(Main.GameUpdateCount);
@@ -146,24 +145,24 @@ namespace StarlightRiver.Core
 
 		public void DrawToBatchedTarget(MapRender method)
 		{
-			BatchedCalls += method;
+			batchedCalls += method;
 		}
 
 		public void DrawToPrimitiveTarget(MapRender method)
 		{
-			PrimitiveCalls += method;
+			primitiveCalls += method;
 		}
 
 		public void RenderBatched(SpriteBatch spriteBatch)
 		{
-			BatchedCalls?.Invoke(spriteBatch);
-			BatchedCalls = null;
+			batchedCalls?.Invoke(spriteBatch);
+			batchedCalls = null;
 		}
 
 		public void RenderPrimitive(SpriteBatch spriteBatch)
 		{
-			PrimitiveCalls?.Invoke(spriteBatch);
-			PrimitiveCalls = null;
+			primitiveCalls?.Invoke(spriteBatch);
+			primitiveCalls = null;
 		}
 
 		public Map Parent;

@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle

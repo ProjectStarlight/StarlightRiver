@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Prefixes;
+﻿using StarlightRiver.Content.Prefixes;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.Utilities;
 
 namespace StarlightRiver.Core
@@ -23,7 +20,7 @@ namespace StarlightRiver.Core
 
 		public override GlobalItem Clone(Item item, Item itemClone)
 		{
-			return item.TryGetGlobalItem<StarlightItem>(out StarlightItem gi) ? gi : this;
+			return item.TryGetGlobalItem(out StarlightItem gi) ? gi : this;
 		}
 
 		public override void UpdateAccessory(Item Item, Player Player, bool hideVisual)
@@ -73,12 +70,16 @@ namespace StarlightRiver.Core
 					CritMultiPlayer mp = Main.LocalPlayer.GetModPlayer<CritMultiPlayer>();
 
 					float mult = 2;
+
 					if (Item.DamageType.Type == DamageClass.Melee.Type)
 						mult += mp.MeleeCritMult;
+
 					if (Item.DamageType.Type == DamageClass.Ranged.Type)
 						mult += mp.RangedCritMult;
+
 					if (Item.DamageType.Type == DamageClass.Magic.Type)
 						mult += mp.MagicCritMult;
+
 					mult += mp.AllCritMult;
 
 					line.Text = $"{(int)(Item.damage * mult)} critical strike damage";

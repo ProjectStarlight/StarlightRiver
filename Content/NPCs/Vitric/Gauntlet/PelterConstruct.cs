@@ -1,16 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -108,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (pauseTimer == 0)
 			{
 				NPC.velocity = oldVel;
-				var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<StarlightRiver.Content.Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+				var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ProjectileType<Content.Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
 				ring.extraUpdates = 0;
 			}
 
@@ -222,7 +217,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 								enemyRotation = 6.28f * NPC.spriteDirection * 0.95f;
 								comboFiring = true;
 
-								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ModContent.ProjectileType<StarlightRiver.Content.Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, ringVel, ProjectileType<Content.Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
 								ring.extraUpdates = 0;
 
 								//pauseTimer = 7;

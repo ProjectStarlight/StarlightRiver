@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				case (int)PhaseEnum.SpawnEffects:
 
-					arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
+					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
 					Phase = (int)PhaseEnum.JumpToBackground;
 					ResetAttack();
 

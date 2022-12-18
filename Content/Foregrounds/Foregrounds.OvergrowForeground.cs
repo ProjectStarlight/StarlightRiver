@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Foregrounds
 		{
 			int direction = Main.dungeonX > Main.spawnTileX ? -1 : 1;
 
-			if (StarlightWorld.rottime == 0)
+			if (StarlightWorld.visualTimer == 0)
 			{
 				for (int k = 0; k < 10; k++)
 				{

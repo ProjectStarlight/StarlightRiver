@@ -2,11 +2,9 @@
 using StarlightRiver.Content.Tiles.Palestone;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
@@ -121,9 +119,10 @@ namespace StarlightRiver.Core
 
 					WorldGen.SlopeTile(x, y2);
 
-					if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
+					if (y2 == y - xSqr && xRel < width / 2 && WorldGen.genRand.NextBool(2) && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
 						WorldGen.SlopeTile(x, y2, 2);
-					if (y2 == y - xSqr && xRel > width / 2 && WorldGen.genRand.Next(2) == 0 && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
+
+					if (y2 == y - xSqr && xRel > width / 2 && WorldGen.genRand.NextBool(2) && !Main.tile[x, y2 - 1].HasTile) //Slopes only if exposed to air
 						WorldGen.SlopeTile(x, y2, 1);
 				}
 			}

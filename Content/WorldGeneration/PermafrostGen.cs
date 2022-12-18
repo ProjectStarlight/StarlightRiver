@@ -1,11 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Tiles.Permafrost;
+﻿using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core
@@ -74,6 +71,7 @@ namespace StarlightRiver.Core
 				for (int y1 = 0; y1 < 180; y1++)
 				{
 					Tile tile = Framing.GetTileSafely(center - 40 + x1, centerY + 100 + y1);
+
 					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
 					{
 						center += Main.rand.Next(-1, 2) * 109;
@@ -82,15 +80,15 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			SquidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
+			squidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
 			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
 
-			Vector2 oldPos = new Vector2(SquidBossArena.Center.X, SquidBossArena.Y) * 16;
+			Vector2 oldPos = new Vector2(squidBossArena.Center.X, squidBossArena.Y) * 16;
 
 			for (int k = 1; k <= 2; k++)
 			{
 				float fraction = k / 3f;
-				int yTarget = (int)Helper.LerpFloat(SquidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
+				int yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
 
 				for (int x = 0; x < Main.maxTilesX; x++)
 				{

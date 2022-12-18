@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ObjectData;
@@ -18,16 +16,24 @@ namespace StarlightRiver.Helpers
 		public static void OutlineRect(Rectangle rect, int tileType)
 		{
 			for (int i = 0; i < rect.Width; i++)
+			{
 				PlaceTile(rect.X + i, rect.Y, tileType, true, true);
+			}
 
 			for (int i = 0; i < rect.Width; i++)
+			{
 				PlaceTile(rect.X + i, rect.Y + rect.Height, tileType, true, true);
+			}
 
 			for (int i = 0; i < rect.Height; i++)
+			{
 				PlaceTile(rect.X, rect.Y + i, tileType, true, true);
+			}
 
 			for (int i = 0; i < rect.Height; i++)
+			{
 				PlaceTile(rect.X + rect.Width, rect.Y + i, tileType, true, true);
+			}
 		}
 
 		public static void PlaceMultitile(Point16 position, int type, int style = 0)
@@ -36,6 +42,7 @@ namespace StarlightRiver.Helpers
 
 			if (position.X + data.Width > Main.maxTilesX || position.X < 0)
 				return; //make sure we dont spawn outside of the world!
+
 			if (position.Y + data.Height > Main.maxTilesY || position.Y < 0)
 				return;
 
@@ -71,6 +78,7 @@ namespace StarlightRiver.Helpers
 		{
 			if (position.X + size.X > Main.maxTilesX || position.X < 0)
 				return false; //make sure we dont check outside of the world!
+
 			if (position.Y + size.Y > Main.maxTilesY || position.Y < 0)
 				return false;
 
@@ -95,6 +103,7 @@ namespace StarlightRiver.Helpers
 		{
 			if (position.X + size.X > Main.maxTilesX || position.X < 0)
 				return false; //make sure we dont check outside of the world!
+
 			if (position.Y + size.Y > Main.maxTilesY || position.Y < 0)
 				return false;
 
@@ -113,18 +122,14 @@ namespace StarlightRiver.Helpers
 		public static bool AirScanUp(Vector2 start, int MaxScan)
 		{
 			if (start.Y - MaxScan < 0)
-			{
 				return false;
-			}
 
 			bool clear = true;
 
 			for (int k = 1; k <= MaxScan; k++)
 			{
 				if (Main.tile[(int)start.X, (int)start.Y - k].HasTile)
-				{
 					clear = false;
-				}
 			}
 
 			return clear;

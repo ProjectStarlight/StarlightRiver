@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Items;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.PlayerLayers
 {

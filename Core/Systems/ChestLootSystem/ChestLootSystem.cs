@@ -5,29 +5,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Systems.ChestLootSystem
 {
 	public class ChestLootSystem : IPostLoadable
 	{
+		private const float DISPLAY_CASE_CHANCE = 0.125f;
+
+		private Dictionary<int, ChestRegionFlags> framingToRegion;
+		private HashSet<ChestRegionFlags> displayCaseReplaceable;
+		private Dictionary<ChestRegionFlags, List<ChestLootInfo>> regionLootInfo;
+		private Dictionary<ChestRegionFlags, List<ChestLootInfo>> regionExclusiveLootInfo;
+
 		public static ChestLootSystem Instance { get; private set; } //temp fix until a better solution is implemented in a future pr
-
-		private const float displayCaseChance = 0.125f;
-
-		private Dictionary<int, ChestRegionFlags> FramingToRegion;
-		private HashSet<ChestRegionFlags> DisplayCaseReplaceable;
-		private Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionLootInfo;
-		private Dictionary<ChestRegionFlags, List<ChestLootInfo>> RegionExclusiveLootInfo;
 
 		public void PostLoad()
 		{
 			Instance = this;
 
-			FramingToRegion = new Dictionary<int, ChestRegionFlags>
+			framingToRegion = new Dictionary<int, ChestRegionFlags>
 			{
 				[0] = ChestRegionFlags.Surface,
 				[36] = ChestRegionFlags.Underground,
@@ -59,7 +57,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 				[ModContent.TileType<Content.Tiles.Overgrow.Rock2x2>() + 10000] = ChestRegionFlags.Overgrowth,//placeholder tile
 			};
 
-			DisplayCaseReplaceable = new HashSet<ChestRegionFlags> // Could be a dictionary if seperate chances are needed
+			displayCaseReplaceable = new HashSet<ChestRegionFlags> // Could be a dictionary if seperate chances are needed
             {
 				ChestRegionFlags.Underground,
                 //ChestRegionFlags.Dungeon,
@@ -70,15 +68,19 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 				ChestRegionFlags.Ice,
 			};
 
-			RegionLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
+			regionLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
 
 			foreach (ChestRegionFlags val in Enum.GetValues<ChestRegionFlags>())
-				RegionLootInfo.Add(val, new List<ChestLootInfo>());
+			{
+				regionLootInfo.Add(val, new List<ChestLootInfo>());
+			}
 
-			RegionExclusiveLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
+			regionExclusiveLootInfo = new Dictionary<ChestRegionFlags, List<ChestLootInfo>>();
 
 			foreach (ChestRegionFlags val in Enum.GetValues<ChestRegionFlags>())
-				RegionExclusiveLootInfo.Add(val, new List<ChestLootInfo>());
+			{
+				regionExclusiveLootInfo.Add(val, new List<ChestLootInfo>());
+			}
 
 			foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
 			{
@@ -89,10 +91,14 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 					toLoad.AddLoot();
 
 					foreach (KeyValuePair<ChestRegionFlags, List<ChestLootInfo>> pair in toLoad.LootInfo)
-						RegionLootInfo[pair.Key].AddRange(pair.Value);
+					{
+						regionLootInfo[pair.Key].AddRange(pair.Value);
+					}
 
 					foreach (KeyValuePair<ChestRegionFlags, List<ChestLootInfo>> pair in toLoad.ExclusiveLootInfo)
-						RegionExclusiveLootInfo[pair.Key].AddRange(pair.Value);
+					{
+						regionExclusiveLootInfo[pair.Key].AddRange(pair.Value);
+					}
 				}
 			}
 		}
@@ -100,10 +106,10 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 		public void PostLoadUnload()
 		{
 			Instance = null;
-			FramingToRegion = null;
-			DisplayCaseReplaceable = null;
-			RegionLootInfo = null;
-			RegionExclusiveLootInfo = null;
+			framingToRegion = null;
+			displayCaseReplaceable = null;
+			regionLootInfo = null;
+			regionExclusiveLootInfo = null;
 		}
 
 		public void PopulateAllChests()
@@ -120,7 +126,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 				{
 					// This adds 2000 to the frame offset if the chest uses the alterative sheet
 					// Modded tiles will always be checked by having 10000 added to their ID
-					if (!FramingToRegion.TryGetValue(
+					if (!framingToRegion.TryGetValue(
 						ModContent.GetModTile(tile.TileType) != null ?
 							tile.TileType + 10000 :
 							tile.TileFrameX + (tile.TileType == 467 ? 2000 : 0), out ChestRegionFlags region))
@@ -132,8 +138,8 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 					if (chest.item[0].type != ItemID.GoldenKey)
 					{
 						// Gets all valid items for this chest type plus the all chest type
-						List<ChestLootInfo> itemInfoList = new(RegionExclusiveLootInfo[region]);
-						itemInfoList.AddRange(RegionExclusiveLootInfo[ChestRegionFlags.All]);
+						List<ChestLootInfo> itemInfoList = new(regionExclusiveLootInfo[region]);
+						itemInfoList.AddRange(regionExclusiveLootInfo[ChestRegionFlags.All]);
 
 						if (itemInfoList.Count > 0)
 						{
@@ -145,7 +151,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 						}
 					}
 
-					if (DisplayCaseReplaceable.Contains(region) && WorldGen.genRand.NextFloat() < displayCaseChance)
+					if (displayCaseReplaceable.Contains(region) && WorldGen.genRand.NextFloat() < DISPLAY_CASE_CHANCE)
 					{
 						if (PlaceDisplayCaseOn(chest))
 							continue;// Doesn't add non-exclusive items if a display case has placed so it does not try and access a chest that no longer exists
@@ -153,8 +159,8 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 
 					{
 						// Gets all valid items for this chest type plus the all chest type and then shuffles it.
-						List<ChestLootInfo> itemInfoList = new(RegionLootInfo[region]);
-						itemInfoList.AddRange(RegionLootInfo[ChestRegionFlags.All]);
+						List<ChestLootInfo> itemInfoList = new(regionLootInfo[region]);
+						itemInfoList.AddRange(regionLootInfo[ChestRegionFlags.All]);
 						itemInfoList = itemInfoList.OrderBy(x => WorldGen.genRand.Next()).ToList();
 
 						if (itemInfoList.Count > 0)
@@ -214,7 +220,6 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 				if (Item.accessory || Item.damage > 0 && Item.notAmmo && Item.maxStack == 1)
 				{
 					type = chest.item[i].type;
-
 					break;
 				}
 			}
@@ -241,6 +246,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 		//public readonly bool exclusive;
 		public readonly float chance;
 		public readonly int slotIndex;
+
 		public ChestLootInfo(int itemType, (int, int) stackRange, ChestRegionFlags chestRegions, float chance, int slotIndex = -1)
 		{
 			this.itemType = itemType;

@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget);
 			effect.Parameters["speed"].SetValue(50f);
-			effect.Parameters["lightTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+			effect.Parameters["lightTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);

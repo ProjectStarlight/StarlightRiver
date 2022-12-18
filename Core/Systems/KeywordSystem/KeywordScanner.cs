@@ -1,12 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Configs;
+﻿using StarlightRiver.Content.Configs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
@@ -21,7 +18,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 		{
 			this.keyword = keyword;
 			this.message = message;
-			this.colorHex = BitConverter.ToString(new byte[] { color.R, color.G, color.B }).Replace("-", "");
+			colorHex = BitConverter.ToString(new byte[] { color.R, color.G, color.B }).Replace("-", "");
 		}
 	}
 

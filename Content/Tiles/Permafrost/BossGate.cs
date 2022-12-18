@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
+using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -48,6 +49,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			if (StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && Projectile.ai[0] < 120)
 				Projectile.ai[0]++;
+
 			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) && Projectile.ai[0] > 0)
 				Projectile.ai[0]--;
 
@@ -60,7 +62,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (Projectile.ai[0] == 119)
 			{
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Tink with { Pitch = -1f }, Projectile.Center);
-				CameraSystem.Shake += 7;
+				CameraSystem.shake += 7;
 			}
 		}
 

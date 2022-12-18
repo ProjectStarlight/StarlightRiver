@@ -486,7 +486,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					proj.spriteDirection = -spriteDirection;
 				}
 
-				CameraSystem.Shake += 6;
+				CameraSystem.shake += 6;
 			}
 
 			target.immune[Projectile.owner] = 20;

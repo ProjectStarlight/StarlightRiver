@@ -31,10 +31,10 @@ namespace StarlightRiver.Content.CustomHooks
 			Player Player = Main.LocalPlayer;
 			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if (sp.Barrier <= 0 && sp.MaxBarrier <= 0)
+			if (sp.barrier <= 0 && sp.maxBarrier <= 0)
 				return arg;
 
-			return arg - (int)(Terraria.GameContent.FontAssets.MouseText.Value.MeasureString($"  {sp.Barrier}/{sp.MaxBarrier}").X / 2) - 6;
+			return arg - (int)(Terraria.GameContent.FontAssets.MouseText.Value.MeasureString($"  {sp.barrier}/{sp.maxBarrier}").X / 2) - 6;
 		}
 	}
 }

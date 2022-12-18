@@ -1,15 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -60,7 +55,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
-				} (dummy.ModProjectile as CombatShrineDummy).State = 1;
+				}
+
+				(dummy.ModProjectile as CombatShrineDummy).State = 1;
 				return true;
 			}
 
@@ -70,7 +67,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	class CombatShrineDummy : Dummy, IDrawAdditive
 	{
-		public List<NPC> slaves = new();
+		public List<NPC> minions = new();
 
 		public int maxWaves = 6;
 		private int waveTime = 0;
@@ -117,10 +114,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 						State = 0;
 						waveTime = 0;
 
-						foreach (NPC NPC in slaves)
+						foreach (NPC NPC in minions)
 							NPC.active = false;
 
-						slaves.Clear();
+						minions.Clear();
 					}
 
 					return;
@@ -145,7 +142,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					return;
 				}
 
-				if (!slaves.Any(n => n.active) && Timer - waveTime > 181) //advance the wave
+				if (!minions.Any(n => n.active) && Timer - waveTime > 181) //advance the wave
 				{
 					SpawnWave();
 					waveTime = (int)Timer;
@@ -234,14 +231,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			for (int k = 0; k < slaves.Count; k++)
+			for (int k = 0; k < minions.Count; k++)
 			{
-				NPC target = slaves[k];
+				NPC target = minions[k];
 
 				if (!target.active)
 					continue;
 
-				if (Main.rand.Next(2) == 0)
+				if (Main.rand.NextBool(2))
 					Dust.NewDustPerfect(target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)), ModContent.DustType<Dusts.Shadow>(), new Vector2(0, -Main.rand.NextFloat()), 0, Color.Black, Main.rand.NextFloat());
 
 				Effect effect = Terraria.Graphics.Effects.Filters.Scene["Whitewash"].GetShader().Shader;
@@ -267,9 +264,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				float rad = -32;
 
@@ -341,6 +338,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (damageOverride != -1)
 					NPC.damage = (int)(NPC.damage * damageOverride);
+
 				if (defenseOverride != -1)
 					NPC.defense = (int)(NPC.defense * defenseOverride);
 
@@ -351,7 +349,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(1.5f, 2), 0, new Color(255, 100, 100), 0.2f);
 				}
 
-				parent?.slaves.Add(NPC);
+				parent?.minions.Add(NPC);
 			}
 		}
 

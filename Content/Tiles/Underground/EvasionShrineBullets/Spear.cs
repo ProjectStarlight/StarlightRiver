@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
@@ -17,9 +12,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public int holdTime;
 		public EvasionShrineDummy parent;
 
-		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
-
 		public float Alpha => 1 - Projectile.alpha / 255f;
+
+		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -79,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		{
 			parent.lives--;
 
-			if (Main.rand.Next(10000) == 0)
+			if (Main.rand.NextBool(10000))
 				Main.NewText("Skill issue.");
 		}
 
@@ -90,6 +85,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 			float dist = Vector2.Distance(Projectile.Center, startPoint);
 			Texture2D bodyTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/SpearBody").Value;
+
 			for (int k = bodyTex.Height; k < dist; k += bodyTex.Height)
 			{
 				var pos = Vector2.Lerp(Projectile.Center, startPoint, k / dist);
@@ -115,10 +111,8 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 				if (timer < teleTime + timeToRise)
 					opacity = (timer - teleTime) / (float)timeToRise;
-
 				else if (timer < teleTime + timeToRise + holdTime)
 					opacity = 1;
-
 				else
 					opacity = 1 - (timer - timeToRise - teleTime - holdTime) / (float)timeToRetract;
 

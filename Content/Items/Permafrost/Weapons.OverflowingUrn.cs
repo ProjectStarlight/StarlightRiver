@@ -303,7 +303,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						int shake = 2;
 						if (frozenShut)
 							shake = 12;
-						CameraSystem.Shake = +shake;
+						CameraSystem.shake = +shake;
 					}
 				}
 

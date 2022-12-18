@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 10;
+					CameraSystem.shake += 10;
 
 					ZoomHandler.SetZoomAnimation(1.1f, 60);
 				}
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 20;
+					CameraSystem.shake += 20;
 
 					ZoomHandler.SetZoomAnimation(1.2f, 60);
 				}
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 25;
+					CameraSystem.shake += 25;
 
 					ZoomHandler.SetZoomAnimation(1.3f, 60);
 				}
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 30;
+					CameraSystem.shake += 30;
 				}
 
 				ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 20);
@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				{
 					if (GlobalTimer == 540 + k * 5)
 					{
-						var target = new Vector2(NPC.Center.X, StarlightWorld.VitricBiome.Top * 16 + 1180);
+						var target = new Vector2(NPC.Center.X, StarlightWorld.vitricBiome.Top * 16 + 1180);
 						int index = NPC.NewNPC(NPC.GetSource_FromThis(), (int)target.X, (int)target.Y, NPCType<VitricBossCrystal>(), 0, 2); //spawn in state 2: sandstone form
 						(Main.npc[index].ModNPC as VitricBossCrystal).Parent = this;
 						(Main.npc[index].ModNPC as VitricBossCrystal).StartPos = target;
@@ -203,7 +203,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 60;
+					CameraSystem.shake += 60;
 				}
 
 				if (Main.netMode != NetmodeID.Server)
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp2 = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 40;
+					CameraSystem.shake += 40;
 				}
 
 				for (int k = 0; k < 40; k++)
@@ -412,7 +412,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (IsInsideArena())
 				{
 					StarlightPlayer mp = Main.LocalPlayer.GetModPlayer<StarlightPlayer>();
-					CameraSystem.Shake += 60;
+					CameraSystem.shake += 60;
 				}
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);

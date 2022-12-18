@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -73,7 +69,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					if (aiCounter == 260)
 					{
 						Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
-						CameraSystem.Shake += 4;
+						CameraSystem.shake += 4;
 						for (int i = 0; i < 10; i++)
 						{
 							Dust.NewDustPerfect(NPC.Center + new Vector2(16 * NPC.spriteDirection, 20), DustID.Copper);
@@ -106,7 +102,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 					if (aiCounter == 464)
 					{
-						CameraSystem.Shake += 2;
+						CameraSystem.shake += 2;
 						for (int i = 0; i < 6; i++)
 						{
 							Dust.NewDustPerfect(NPC.Center + new Vector2(16 * NPC.spriteDirection, 20), DustID.Copper);

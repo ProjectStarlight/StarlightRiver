@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.SquidBoss;
+﻿using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.NPCs.TownUpgrade;
 using StarlightRiver.Content.Tiles.Permafrost;
@@ -8,10 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
@@ -20,33 +16,31 @@ namespace StarlightRiver.Core
 	//Larger scale TODO: This is slowly becoming a godclass, we should really do something about that
 	public partial class StarlightWorld : ModSystem
 	{
+		public static StarlightWorld worldInstance;
+
 		private static WorldFlags flags;
 
-		public static Vector2 RiftLocation;
-
-		public static float rottime;
+		public static float visualTimer;
 
 		public static float Chungus;
 
 		public static Cutaway cathedralOverlay;
 
-		public static int Timer; //I dont know why this is here and really dont want to risk removing it at this point.
+		public static int timer; //I dont know why this is here and really dont want to risk removing it at this point.
 
 		//Voidsmith
-		public static Dictionary<string, bool> TownUpgrades = new();
+		public static Dictionary<string, bool> townUpgrades = new();
 
-		public static Rectangle VitricBiome = new();
+		public static Rectangle vitricBiome = new();
 
-		public static int SquidNPCProgress = 0;
-		public static Rectangle SquidBossArena = new();
+		public static int squidNPCProgress = 0;
+		public static Rectangle squidBossArena = new();
 
-		public static Rectangle VitricBossArena => new(VitricBiome.X + VitricBiome.Width / 2 - 59, VitricBiome.Y - 1, 108, 74); //ceiros arena
-
-		public static StarlightWorld Instance;
+		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 59, vitricBiome.Y - 1, 108, 74); //ceiros arena
 
 		public StarlightWorld()
 		{
-			Instance = this;
+			worldInstance = this;
 		}
 
 		public static bool HasFlag(WorldFlags flag)
@@ -70,8 +64,8 @@ namespace StarlightRiver.Core
 		{
 			writer.Write((int)flags);
 
-			WriteRectangle(writer, VitricBiome);
-			WriteRectangle(writer, SquidBossArena);
+			WriteRectangle(writer, vitricBiome);
+			WriteRectangle(writer, squidBossArena);
 
 			WriteNPCUpgrades(writer);
 		}
@@ -80,8 +74,8 @@ namespace StarlightRiver.Core
 		{
 			flags = (WorldFlags)reader.ReadInt32();
 
-			VitricBiome = ReadRectangle(reader);
-			SquidBossArena = ReadRectangle(reader);
+			vitricBiome = ReadRectangle(reader);
+			squidBossArena = ReadRectangle(reader);
 
 			if (CutawayHandler.cutaways.Count == 0)
 				CreateCutaways();
@@ -104,7 +98,7 @@ namespace StarlightRiver.Core
 
 		private void WriteNPCUpgrades(BinaryWriter writer)
 		{
-			foreach (KeyValuePair<string, bool> upgrade in TownUpgrades)
+			foreach (KeyValuePair<string, bool> upgrade in townUpgrades)
 			{
 				writer.Write(upgrade.Key);
 				writer.Write(upgrade.Value);
@@ -113,33 +107,34 @@ namespace StarlightRiver.Core
 
 		private void ReadNPCUpgrades(BinaryReader reader)
 		{
-			for (int i = 0; i < TownUpgrades.Count(); i++)
-				TownUpgrades[reader.ReadString()] = reader.ReadBoolean();
+			for (int i = 0; i < townUpgrades.Count(); i++)
+				townUpgrades[reader.ReadString()] = reader.ReadBoolean();
 		}
 
 		public override void PreUpdateWorld()
 		{
-			Timer++;
-			rottime += (float)Math.PI / 60;
-			if (rottime >= Math.PI * 2)
-				rottime = 0;
+			timer++;
+			visualTimer += (float)Math.PI / 60;
+
+			if (visualTimer >= Math.PI * 2)
+				visualTimer = 0;
 		}
 
 		public override void PostUpdateWorld()
 		{
 			//SquidBoss arena
 			if (!Main.npc.Any(n => n.active && n.type == NPCType<ArenaActor>()))
-				NPC.NewNPC(new EntitySource_WorldEvent(), SquidBossArena.Center.X * 16 + 8, SquidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
+				NPC.NewNPC(new EntitySource_WorldEvent(), squidBossArena.Center.X * 16 + 8, squidBossArena.Center.Y * 16 + 56 * 16, NPCType<ArenaActor>());
 		}
 
 		public override void OnWorldLoad()
 		{
-			VitricBiome.X = 0;
-			VitricBiome.Y = 0;
+			vitricBiome.X = 0;
+			vitricBiome.Y = 0;
 
 			flags = default;
 
-			TownUpgrades = new Dictionary<string, bool>();
+			townUpgrades = new Dictionary<string, bool>();
 
 			//Autoload NPC upgrades
 			Mod Mod = StarlightRiver.Instance;
@@ -147,7 +142,7 @@ namespace StarlightRiver.Core
 			{
 				foreach (Type type in Mod.Code.GetTypes().Where(t => t.IsSubclassOf(typeof(TownUpgrade))))
 				{
-					TownUpgrades.Add(type.Name.Replace("Upgrade", ""), false);
+					townUpgrades.Add(type.Name.Replace("Upgrade", ""), false);
 				}
 			}
 		}
@@ -155,24 +150,22 @@ namespace StarlightRiver.Core
 		public override void SaveWorldData(TagCompound tag)
 		{
 			var townTag = new TagCompound();
-			foreach (KeyValuePair<string, bool> pair in TownUpgrades)
+			foreach (KeyValuePair<string, bool> pair in townUpgrades)
 				townTag.Add(pair.Key, pair.Value);
 
 			// TODO why the hell is this throwing Collection was modified?
 
-			tag["VitricBiomePos"] = VitricBiome.TopLeft();
-			tag["VitricBiomeSize"] = VitricBiome.Size();
+			tag["VitricBiomePos"] = vitricBiome.TopLeft();
+			tag["VitricBiomeSize"] = vitricBiome.Size();
 
-			tag["SquidNPCProgress"] = SquidNPCProgress;
-			tag["SquidBossArenaPos"] = SquidBossArena.TopLeft();
-			tag["SquidBossArenaSize"] = SquidBossArena.Size();
+			tag["SquidNPCProgress"] = squidNPCProgress;
+			tag["SquidBossArenaPos"] = squidBossArena.TopLeft();
+			tag["SquidBossArenaSize"] = squidBossArena.Size();
 			tag["PermafrostCenter"] = permafrostCenter;
 
 			tag[nameof(flags)] = (int)flags;
 
-			tag[nameof(TownUpgrades)] = townTag;
-
-			tag[nameof(RiftLocation)] = RiftLocation;
+			tag[nameof(townUpgrades)] = townTag;
 
 			tag["Chungus"] = Chungus;
 		}
@@ -201,38 +194,36 @@ namespace StarlightRiver.Core
             templeCutaway.inside = n => n.InModBiome(ModContent.GetInstance<VitricTempleBiome>());
             CutawayHandler.NewCutaway(templeCutaway);*/
 
-			cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, SquidBossArena.TopLeft() * 16)
+			cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, squidBossArena.TopLeft() * 16)
 			{
-				inside = CheckForSquidArena
+				Inside = CheckForSquidArena
 			};
 			CutawayHandler.NewCutaway(cathedralOverlay);
 		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
-			VitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
-			VitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;
-			VitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
-			VitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
+			vitricBiome.X = (int)tag.Get<Vector2>("VitricBiomePos").X;
+			vitricBiome.Y = (int)tag.Get<Vector2>("VitricBiomePos").Y;
+			vitricBiome.Width = (int)tag.Get<Vector2>("VitricBiomeSize").X;
+			vitricBiome.Height = (int)tag.Get<Vector2>("VitricBiomeSize").Y;
 
-			SquidNPCProgress = tag.GetInt("SquidNPCProgress");
-			SquidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
-			SquidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
-			SquidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
-			SquidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
+			squidNPCProgress = tag.GetInt("SquidNPCProgress");
+			squidBossArena.X = (int)tag.Get<Vector2>("SquidBossArenaPos").X;
+			squidBossArena.Y = (int)tag.Get<Vector2>("SquidBossArenaPos").Y;
+			squidBossArena.Width = (int)tag.Get<Vector2>("SquidBossArenaSize").X;
+			squidBossArena.Height = (int)tag.Get<Vector2>("SquidBossArenaSize").Y;
 			permafrostCenter = tag.GetInt("PermafrostCenter");
 
 			flags = (WorldFlags)tag.GetInt(nameof(flags));
 
-			TagCompound tag1 = tag.GetCompound(nameof(TownUpgrades));
+			TagCompound tag1 = tag.GetCompound(nameof(townUpgrades));
 			var targetDict = new Dictionary<string, bool>();
 
 			foreach (KeyValuePair<string, object> pair in tag1)
 				targetDict.Add(pair.Key, tag1.GetBool(pair.Key));
 
-			TownUpgrades = targetDict;
-
-			RiftLocation = tag.Get<Vector2>(nameof(RiftLocation));
+			townUpgrades = targetDict;
 
 			Chungus = tag.GetFloat("Chungus");
 
@@ -243,7 +234,7 @@ namespace StarlightRiver.Core
 			if (Main.netMode == NetmodeID.SinglePlayer)
 				CreateCutaways();
 
-			StarlightRiver.Content.Physics.VerletChainSystem.toDraw.Clear();
+			Content.Physics.VerletChainSystem.toDraw.Clear();
 
 			DummyTile.dummies.Clear();
 		}
@@ -251,7 +242,7 @@ namespace StarlightRiver.Core
 		public override void Unload()
 		{
 			cathedralOverlay = null;
-			TownUpgrades = null;
+			townUpgrades = null;
 			genNoise = null;
 		}
 	}

@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void PostAI()
 		{
-			if (!StarlightRiver.DebugMode)
+			if (!StarlightRiver.debugMode)
 				return;
 		}
 

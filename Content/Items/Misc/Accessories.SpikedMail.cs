@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player player)
 		{
-			player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
+			player.GetModPlayer<BarrierPlayer>().maxBarrier += 20;
 		}
 
 		public override void AddRecipes()
@@ -48,8 +48,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Player player = modPlayer.Player;
 
-			if (oldBarrier != player.GetModPlayer<BarrierPlayer>().Barrier)
-				oldBarrier = player.GetModPlayer<BarrierPlayer>().Barrier;
+			if (oldBarrier != player.GetModPlayer<BarrierPlayer>().barrier)
+				oldBarrier = player.GetModPlayer<BarrierPlayer>().barrier;
 		}
 
 		private void HitByNPC(Player player, NPC NPC, int damage, bool crit)
@@ -59,9 +59,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 			BarrierPlayer barrierplayer = player.GetModPlayer<BarrierPlayer>();
 
-			if (oldBarrier > barrierplayer.Barrier)
+			if (oldBarrier > barrierplayer.barrier)
 			{
-				int damageToDeal = oldBarrier - barrierplayer.Barrier;
+				int damageToDeal = oldBarrier - barrierplayer.barrier;
 				NPC.StrikeNPC(Math.Max(1, damageToDeal - NPC.defense / 2), 1, Math.Sign(NPC.Center.X - player.Center.X));
 			}
 		}

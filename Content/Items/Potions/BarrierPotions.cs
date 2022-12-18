@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override bool? UseItem(Player player)
 		{
-			player.GetModPlayer<BarrierPlayer>().Barrier += amount;
+			player.GetModPlayer<BarrierPlayer>().barrier += amount;
 			player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), duration);
 			player.AddBuff(ModContent.BuffType<NoShieldPot>(), 3600);
 			player.AddBuff(BuffID.PotionSickness, 1200);
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Items.Potions
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			Player.GetModPlayer<BarrierPlayer>().OverchargeDrainRate -= 50;
+			Player.GetModPlayer<BarrierPlayer>().overchargeDrainRate -= 50;
 		}
 	}
 }

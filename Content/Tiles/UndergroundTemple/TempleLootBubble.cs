@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.UndergroundTemple;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.UndergroundTemple;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;

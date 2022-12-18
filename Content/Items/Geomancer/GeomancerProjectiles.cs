@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private BarrierPlayer shieldPlayer => owner.GetModPlayer<BarrierPlayer>();
 
-		public int shieldLife => 100 + (shieldPlayer.Barrier - shieldPlayer.MaxBarrier);
+		public int shieldLife => 100 + (shieldPlayer.barrier - shieldPlayer.maxBarrier);
 
 		public float shieldSpring = 0;
 
@@ -211,14 +211,14 @@ namespace StarlightRiver.Content.Items.Geomancer
 							shieldSpring = 1;
 							proj.penetrate -= 1;
 							proj.friendly = true;
-							Player.GetModPlayer<BarrierPlayer>().Barrier -= proj.damage / 2;
+							Player.GetModPlayer<BarrierPlayer>().barrier -= proj.damage / 2;
 							CombatText.NewText(Projectile.Hitbox, Color.Yellow, proj.damage / 2);
 						}
 						else
 						{
 							CombatText.NewText(Projectile.Hitbox, Color.Yellow, proj.damage / 2);
 							proj.damage -= shieldLife;
-							shieldPlayer.Barrier = shieldPlayer.MaxBarrier - 100;
+							shieldPlayer.barrier = shieldPlayer.maxBarrier - 100;
 							Projectile.timeLeft = EXPLOSIONTIME;
 							return;
 						}
@@ -256,13 +256,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 			hitDirection = Math.Sign(Projectile.Center.X - Main.player[Projectile.owner].Center.X);
 			Player Player = Main.player[Projectile.owner];
 
-			Player.GetModPlayer<BarrierPlayer>().Barrier -= target.damage;
+			Player.GetModPlayer<BarrierPlayer>().barrier -= target.damage;
 			shieldSpring = 1;
 			CombatText.NewText(Projectile.Hitbox, Color.Yellow, target.damage);
 
 			if (shieldLife <= 0)
 			{
-				shieldPlayer.Barrier = shieldPlayer.MaxBarrier - 100;
+				shieldPlayer.barrier = shieldPlayer.maxBarrier - 100;
 				Projectile.timeLeft = EXPLOSIONTIME;
 			}
 		}
@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void Kill(int timeLeft)
 		{
 			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TopazShieldFade>(), 0, 0, Projectile.owner);
-			CameraSystem.Shake += 4;
+			CameraSystem.shake += 4;
 			var direction = Vector2.Normalize(Main.MouseWorld - Main.player[Projectile.owner].Center);
 			for (int i = 0; i < 4; i++)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * Main.rand.NextFloat(0.6f, 1f) * 15, ModContent.ProjectileType<TopazShard>(), Projectile.damage * 2, Projectile.knockBack, Projectile.owner);

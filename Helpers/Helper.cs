@@ -1,15 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
+﻿using Microsoft.Xna.Framework.Audio;
 using ReLogic.Graphics;
 using ReLogic.Utilities;
 using StarlightRiver.Content.Codex;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,8 +16,15 @@ namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
 	{
-		private static int tiltTime;
-		private static float tiltMax;
+		static readonly List<SoundEffectInstance> instances = new();
+
+		public static Vector2 TileAdj => (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) ? Vector2.Zero : Vector2.One * 12;
+
+		public static Vector2 ScreenSize => new(Main.screenWidth, Main.screenHeight);
+
+		public static Rectangle ScreenTiles => new((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
+
+		public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.visualTimer)) / 2f);
 
 		public static Rectangle ToRectangle(this Vector2 vector)
 		{
@@ -64,10 +68,6 @@ namespace StarlightRiver.Helpers
 					yield return value;
 			}
 		}
-		public static Vector2 TileAdj => (Lighting.Mode == Terraria.Graphics.Light.LightMode.Retro || Lighting.Mode == Terraria.Graphics.Light.LightMode.Trippy) ? Vector2.Zero : Vector2.One * 12;
-		public static Vector2 ScreenSize => new(Main.screenWidth, Main.screenHeight);
-
-		public static Rectangle ScreenTiles => new((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16);
 
 		/// <summary>
 		/// Updates the value used for flipping rotation on the Player. Should be reset to 0 when not in use.
@@ -104,8 +104,6 @@ namespace StarlightRiver.Helpers
 			return new Vector3(-1 + vector.X / Main.screenWidth * 2, (-1 + vector.Y / Main.screenHeight * 2f) * -1, 0);
 		}
 
-		public static Color IndicatorColor => Color.White * (float)(0.2f + 0.8f * (1 + Math.Sin(StarlightWorld.rottime)) / 2f);
-
 		public static Color IndicatorColorProximity(int minRadius, int maxRadius, Vector2 center)
 		{
 			float distance = Vector2.Distance(center, Main.LocalPlayer.Center);
@@ -125,6 +123,7 @@ namespace StarlightRiver.Helpers
 				MoltenGlowc = Color.Lerp(Color.Orange, Color.Lerp(Color.Red, Color.Transparent, Math.Min((time - 60f) / 50f, 1f)), Math.Min((time - 60f) / 30f, 1f));
 			return MoltenGlowc;
 		}
+
 		public static float RotationDifference(float rotTo, float rotFrom)
 		{
 			return ((rotTo - rotFrom) % 6.28f + 9.42f) % 6.28f - 3.14f;
@@ -194,7 +193,7 @@ namespace StarlightRiver.Helpers
 				if (mp.CodexState != 0)
 				{
 					UILoader.GetUIState<CodexPopup>().TripEntry(entry.Title, entry.Icon);
-					Terraria.Audio.SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/CodexUnlock"));
+					SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/CodexUnlock"));
 				}
 			}
 		}
@@ -210,7 +209,8 @@ namespace StarlightRiver.Helpers
 				LinesIntersect(point1, point2, hitbox.TopRight(), hitbox.BottomRight(), out intersectPoint);
 		}
 
-		public static bool LinesIntersect(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4, out Vector2 intersectPoint) //algorithm taken from http://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
+		//algorithm taken from http://web.archive.org/web/20060911055655/http://local.wasp.uwa.edu.au/~pbourke/geometry/lineline2d/
+		public static bool LinesIntersect(Vector2 point1, Vector2 point2, Vector2 point3, Vector2 point4, out Vector2 intersectPoint)
 		{
 			intersectPoint = Vector2.Zero;
 
@@ -226,7 +226,6 @@ namespace StarlightRiver.Helpers
 					intersectPoint = point3; //possibly not the best fallback?
 					return true;
 				}
-
 				else
 				{
 					return false; //lines are parallel
@@ -249,10 +248,13 @@ namespace StarlightRiver.Helpers
 		{
 			if (Vector2.Distance(center, hitbox.TopLeft()) <= radius)
 				return true;
+
 			if (Vector2.Distance(center, hitbox.TopRight()) <= radius)
 				return true;
+
 			if (Vector2.Distance(center, hitbox.BottomLeft()) <= radius)
 				return true;
+
 			return Vector2.Distance(center, hitbox.BottomRight()) <= radius;
 		}
 
@@ -260,10 +262,13 @@ namespace StarlightRiver.Helpers
 		{
 			if (CheckPoint(center, radius, hitbox.TopLeft(), angle, width))
 				return true;
+
 			if (CheckPoint(center, radius, hitbox.TopRight(), angle, width))
 				return true;
+
 			if (CheckPoint(center, radius, hitbox.BottomLeft(), angle, width))
 				return true;
+
 			return CheckPoint(center, radius, hitbox.BottomRight(), angle, width);
 		}
 
@@ -286,9 +291,11 @@ namespace StarlightRiver.Helpers
 						return false;
 
 					Tile tile = Framing.GetTileSafely(thisPoint);
+
 					if (Main.tileSolid[tile.TileType] && tile.HasTile)
 					{
 						var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
+
 						if (rect.Contains(point.ToPoint()))
 							return true;
 					}
@@ -304,37 +311,12 @@ namespace StarlightRiver.Helpers
 			return sec / 60 + ":" + (sec % 60 < 10 ? "0" + sec % 60 : "" + sec % 60);
 		}
 
-		public static void DoTilt(float intensity)
-		{
-			tiltMax = intensity;
-			tiltTime = 0;
-			StarlightRiver.Rotation = 0.01f;
-		}
-
-		public static void UpdateTilt()
-		{
-			if (Math.Abs(tiltMax) > 0)
-			{
-				tiltTime++;
-				if (tiltTime >= 1 && tiltTime < 40)
-				{
-					float tilt = tiltMax - tiltTime * tiltMax / 40f;
-					StarlightRiver.Rotation = tilt * (float)Math.Sin(Math.Pow(tiltTime / 40f * 6.28f, 0.9f));
-				}
-
-				if (tiltTime >= 40)
-				{
-					StarlightRiver.Rotation = 0;
-					tiltMax = 0;
-				}
-			}
-		}
-
 		public static bool ScanForTypeDown(int startX, int startY, int type, int maxDown = 50)
 		{
 			for (int k = 0; k <= maxDown && k + startY < Main.maxTilesY; k++)
 			{
 				Tile tile = Framing.GetTileSafely(startX, startY + k);
+
 				if (tile.HasTile && tile.TileType == type)
 					return true;
 			}
@@ -385,6 +367,7 @@ namespace StarlightRiver.Helpers
 		public static List<T> RandomizeList<T>(List<T> input)
 		{
 			int n = input.Count();
+
 			while (n > 1)
 			{
 				n--;
@@ -398,6 +381,7 @@ namespace StarlightRiver.Helpers
 		public static List<T> RandomizeList<T>(List<T> input, UnifiedRandom rand)
 		{
 			int n = input.Count();
+
 			while (n > 1)
 			{
 				n--;
@@ -454,8 +438,6 @@ namespace StarlightRiver.Helpers
 				!Framing.GetTileSafely(x, y - 1).HasTile ||
 				!Framing.GetTileSafely(x, y + 1).HasTile;
 		}
-
-		static List<SoundEffectInstance> instances = new();
 
 		public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)
 		{
@@ -553,6 +535,7 @@ namespace StarlightRiver.Helpers
 					for (int y = 0; y < h; y++)
 					{
 						Tile checkTile = Framing.GetTileSafely(check.X + x, check.Y + y);
+
 						if (!condition(checkTile))
 							return Point16.Zero;
 					}

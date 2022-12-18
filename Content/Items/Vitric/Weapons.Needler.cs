@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Items.Vitric
 						Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3), ModContent.ProjectileType<NeedlerEmber>(), 0, 0, needlePlayer).scale = Main.rand.NextFloat(0.85f, 1.15f);
 					}
 
-					CameraSystem.Shake = 20;
+					CameraSystem.shake = 20;
 				}
 
 				for (int i = 0; i < 10; i++)

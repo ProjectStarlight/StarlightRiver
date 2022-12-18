@@ -1,8 +1,6 @@
-﻿using StarlightRiver.Core;
-
-namespace StarlightRiver.Content.Tiles.Vitric
+﻿namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricFountain : ModFountain
+	internal class VitricFountain : QuickFountain
 	{
 		public VitricFountain() : base("VitricFountainItem", AssetDirectory.VitricTile) { }
 	}

@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Pickups
 			CodexHandler mp = player.GetModPlayer<CodexHandler>();
 			mp.CodexState = 1;
 
-			player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 120;
+			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 120;
 			player.AddBuff(BuffID.Featherfall, 130);
 		}
 	}

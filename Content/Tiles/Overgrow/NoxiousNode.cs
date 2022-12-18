@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 					WorldGen.KillTile(ParentX, ParentY);
 					Projectile.velocity = (Main.MouseWorld - Projectile.Center) * 0.1f;
 					Helpers.Helper.PlayPitched("Effects/PickupHerbs", 1, -0.5f, Projectile.Center);
-					CameraSystem.Shake += 10;
+					CameraSystem.shake += 10;
 				}
 			}
 			else

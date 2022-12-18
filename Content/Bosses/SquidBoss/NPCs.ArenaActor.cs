@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public NPC FakeBoss;
 
 		public int WaterfallWidth = 0;
-		ParticleSystem BubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody, 3);
+		ParticleSystem BubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
 		private Vector2 domeOffset = new(0, -886);
 
 		private static VertexPositionColorTexture[] verticies;
@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			FakeBoss = new NPC();
 			FakeBoss.SetDefaults(NPCType<SquidBoss>());
-			FakeBoss.Center = StarlightWorld.SquidBossArena.Center() * 16 + new Vector2(0, -500);
+			FakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
 			(FakeBoss.ModNPC as SquidBoss).QuickSetup();
 		}
 
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -NPC.ai[0]);
 
 			//Lighting
-			if (!(StarlightWorld.cathedralOverlay is null) && StarlightWorld.cathedralOverlay.fade)
+			if (!(StarlightWorld.cathedralOverlay is null) && StarlightWorld.cathedralOverlay.Fade)
 			{
 				for (int k = 0; k < 45; k++)
 				{
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			ApplyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
 			ApplyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);
-			ApplyEffect.Parameters["light"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+			ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
 			ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
 			ApplyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
 			ApplyEffect.Parameters["zoom"].SetValue(zoom);
@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			particle.Timer--;
 
 			particle.StoredPosition.Y += particle.Velocity.Y;
-			particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.rottime + particle.Velocity.X) * 0.45f;
+			particle.StoredPosition.X += (float)Math.Sin(StarlightWorld.visualTimer + particle.Velocity.X) * 0.45f;
 			particle.Position = particle.StoredPosition - Main.screenPosition;
 			particle.Alpha = particle.Timer < 70 ? particle.Timer / 70f : particle.Timer > 630 ? 1 - (particle.Timer - 630) / 70f : 1;
 		}
@@ -336,7 +336,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public void DrawBigWindow(SpriteBatch spriteBatch)
 		{
-			var drawCheck = new Rectangle(StarlightWorld.SquidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.SquidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.SquidBossArena.Width * 16, StarlightWorld.SquidBossArena.Height * 16);
+			var drawCheck = new Rectangle(StarlightWorld.squidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.squidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.squidBossArena.Width * 16, StarlightWorld.squidBossArena.Height * 16);
 			if (!Helper.OnScreen(drawCheck))
 				return;
 

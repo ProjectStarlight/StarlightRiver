@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
 	struct AuroraWaterData : ITileData
 	{
@@ -142,7 +137,7 @@ namespace StarlightRiver.Core
 			if (shader is null)
 				return;
 
-			shader.Parameters["time"].SetValue(StarlightWorld.rottime);
+			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
 			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
 			shader.Parameters["sampleTexture2"].SetValue(auroraBackTarget);
@@ -197,7 +192,6 @@ namespace StarlightRiver.Core
 
 			if (u && l && d && r)
 				SetFrameData(ref data, 3, 2);
-
 			else if (l && r && d)
 				SetFrameData(ref data, 1, 0);
 			else if (u && d && r)
@@ -206,7 +200,6 @@ namespace StarlightRiver.Core
 				SetFrameData(ref data, 1, 2);
 			else if (u && d && l)
 				SetFrameData(ref data, 1, 3);
-
 			else if (r && d)
 				SetFrameData(ref data, 0, 0);
 			else if (u && r)
@@ -215,12 +208,10 @@ namespace StarlightRiver.Core
 				SetFrameData(ref data, 0, 2);
 			else if (d && l)
 				SetFrameData(ref data, 0, 3);
-
 			else if (u && d)
 				SetFrameData(ref data, 3, 0);
 			else if (l && r)
 				SetFrameData(ref data, 3, 1);
-
 			else if (u)
 				SetFrameData(ref data, 2, 0);
 			else if (l)

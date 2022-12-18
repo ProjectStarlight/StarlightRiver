@@ -165,7 +165,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Player Player = Main.player[k];
 
-				if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
+				if (Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
 					Player.GetModPlayer<MedalPlayer>().ProbeMedal("Auroracle");
 			}
 
@@ -442,7 +442,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					Player Player = Main.player[k];
 
-					if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
+					if (Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
 						Player.GetModPlayer<MedalPlayer>().QualifyForMedal("Auroracle", 0);
 				}
 
@@ -691,7 +691,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (GlobalTimer == 240) //roar and activate
 				{
 					NPC.dontTakeDamage = false;
-					CameraSystem.Shake += 40;
+					CameraSystem.shake += 40;
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
 				}
 

@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.Graphics;
-using Terraria.ModLoader;
+﻿using Terraria.Graphics;
 
 namespace StarlightRiver.Core
 {
@@ -36,13 +33,13 @@ namespace StarlightRiver.Core
 
 		public override void PostUpdateEverything()
 		{
-			ZoomHandler.TickZoom();
+			TickZoom();
 		}
 
 		public override void ModifyTransformMatrix(ref SpriteViewMatrix Transform)
 		{
-			Transform.Zoom = ZoomHandler.ScaleVector;
-			ZoomHandler.UpdateZoom();
+			Transform.Zoom = ScaleVector;
+			UpdateZoom();
 		}
 
 		public static void AddFlatZoom(float value)

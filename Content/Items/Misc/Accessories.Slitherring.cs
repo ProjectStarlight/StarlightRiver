@@ -75,9 +75,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			ProjectileID.Sets.IsAWhip[Projectile.type] = false;
 			Player player = Main.player[Projectile.owner];
-			_flyTime = player.itemAnimationMax * Projectile.MaxUpdates * 2;
+			flyTime = player.itemAnimationMax * Projectile.MaxUpdates * 2;
 			if (Projectile.ai[0] == -1)
-				Projectile.ai[0] = _flyTime;
+				Projectile.ai[0] = flyTime;
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 			Projectile.ai[0]--;
@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < points.Count - 2; i++)
 			{
 				Vector2 nextPoint = points[i + 1] - points[i];
-				Color color = _stringColor.MultiplyRGBA(Projectile.GetAlpha(Lighting.GetColor(points[i].ToTileCoordinates())));
+				Color color = stringColor.MultiplyRGBA(Projectile.GetAlpha(Lighting.GetColor(points[i].ToTileCoordinates())));
 				var scale = new Vector2(1f, (nextPoint.Length() + 2f) / TextureAssets.FishingLine.Height());
 				Main.EntitySpriteDraw(TextureAssets.FishingLine.Value, stringPoint - Main.screenPosition, null, color, nextPoint.ToRotation() - MathHelper.PiOver2, new Vector2(TextureAssets.FishingLine.Width() * 0.5f, 2f), scale, SpriteEffects.None, 0);
 				stringPoint += nextPoint;
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Misc
 				bool draw = true;
 				if (i == 0)
 				{
-					origin.Y += _handleOffset;
+					origin.Y += handleOffset;
 				}
 				else if (i == points.Count - 2)
 				{

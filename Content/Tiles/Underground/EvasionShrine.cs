@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -58,7 +53,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
-				} (dummy.ModProjectile as EvasionShrineDummy).State = 1;
+				}
+
+				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
 				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
 				return true;
 			}
@@ -123,8 +120,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 					if (attackOrder is null)
 					{
 						attackOrder = new List<int>();
+
 						for (int k = 0; k < 15; k++)
+						{
 							attackOrder.Add(k);
+						}
 
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
 					}
@@ -132,9 +132,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					if (State > maxAttacks)
 					{
 						if (Timer > 600)
-						{
 							State = -1;
-						}
 
 						return;
 					}
@@ -234,9 +232,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				if (State > 0)
 				{

@@ -287,7 +287,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			hit.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
-			CameraSystem.Shake += 2;
+			CameraSystem.shake += 2;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -491,7 +491,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.friendly = false;
 			Helper.PlayPitched("Impacts/PanBonkBig", 0.7f, Main.rand.NextFloat(-0.2f, 0.2f), position);
 
-			CameraSystem.Shake += 10;
+			CameraSystem.shake += 10;
 			for (int j = 0; j < 17; j++)
 			{
 				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();

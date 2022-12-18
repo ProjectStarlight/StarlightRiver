@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.GUI
 				Main.mouseItem = Item.Clone();
 				mp.barrierDyeItem.TurnToAir();
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-				mp.RechargeAnimationTimer = 0;
+				mp.rechargeAnimationTimer = 0;
 			}
 
 			if (Player.HeldItem.ModItem is BarrierDye && Item.IsAir) //if the slot is empty and the cursor has an Item, put it in the slot
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.GUI
 				Player.HeldItem.TurnToAir();
 				Main.mouseItem.TurnToAir();
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-				mp.RechargeAnimationTimer = 0;
+				mp.rechargeAnimationTimer = 0;
 			}
 
 			if (Player.HeldItem.ModItem is BarrierDye && !Item.IsAir) //swap or stack
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.GUI
 				mp.barrierDyeItem = Player.HeldItem;
 				Main.mouseItem = temp;
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-				mp.RechargeAnimationTimer = 0;
+				mp.rechargeAnimationTimer = 0;
 			}
 		}
 

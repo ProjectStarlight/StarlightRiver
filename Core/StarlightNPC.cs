@@ -1,7 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
 	public partial class StarlightNPC : GlobalNPC
 	{

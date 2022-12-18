@@ -34,7 +34,7 @@
 
 	public class CorruptFadeSlow : Corrupt
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "Corrupt";
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{

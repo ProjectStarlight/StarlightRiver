@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			for (int k = 0; k < Projectile.oldPos.Length; k++)
 			{
-				Color color = new Color(255, 175 + (int)(Math.Sin(StarlightWorld.rottime * 5 + k / 2) * 50), 50) * ((float)(Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.4f);
+				Color color = new Color(255, 175 + (int)(Math.Sin(StarlightWorld.visualTimer * 5 + k / 2) * 50), 50) * ((float)(Projectile.oldPos.Length - k) / Projectile.oldPos.Length * 0.4f);
 				float scale = Projectile.scale * (Projectile.oldPos.Length - k) / Projectile.oldPos.Length;
 				Texture2D tex = Request<Texture2D>(Texture).Value;
 				Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;

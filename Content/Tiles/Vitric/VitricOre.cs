@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
@@ -26,8 +21,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.Ore[Type] = true;
 			//chest = "Vitric Crystal";//this makes the game think this is a chest, and prevents the tiles below from being broken (as well as meteors avoiding it)
 
-			var bottomAnchor = new Terraria.DataStructures.AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 3, DustType<Dusts.Air>(), SoundID.Shatter, new Color(200, 255, 230), 16, false, false, "Vitric Ore", bottomAnchor);
+			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
+			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 16, false, false, "Vitric Ore", bottomAnchor);
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -41,13 +36,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.Next(50) == 0)
+			if (Main.rand.NextBool(50))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+
 				if (Main.rand.NextBool())
-					Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle>(), Vector2.Zero);
+					Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
 				else
-					Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
+					Dust.NewDustPerfect(pos, DustType<CrystalSparkle2>(), Vector2.Zero);
 			}
 
 			base.SafeNearbyEffects(i, j, closer);
@@ -62,7 +58,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(2, 2, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
+			this.QuickSetFurniture(2, 2, DustType<Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
 		}
@@ -99,8 +95,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				for (int k = 0; k <= 10; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Projectile.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+					Dust.NewDustPerfect(Projectile.Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}
@@ -136,8 +132,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				for (int k = 0; k <= 10; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
-					Dust.NewDustPerfect(Projectile.Center, DustType<Content.Dusts.Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
+					Dust.NewDustPerfect(Projectile.Center, DustType<GlassGravity>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 1.3f);
+					Dust.NewDustPerfect(Projectile.Center, DustType<Air>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, default, 0.8f);
 				}
 			}
 		}

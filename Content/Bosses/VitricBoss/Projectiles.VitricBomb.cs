@@ -48,7 +48,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			float bright = (300 - Projectile.timeLeft) / 300f * 0.7f;
 
 			if (Projectile.timeLeft < 60)
-				bright += (float)Math.Sin(StarlightWorld.rottime * 6) * 0.12f;
+				bright += (float)Math.Sin(StarlightWorld.visualTimer * 6) * 0.12f;
 
 			spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition, tex2.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 100, 50) : new Color(210, 200, 240)) * bright, 0, tex2.Size() / 2, 2, 0, 0);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), (Projectile.timeLeft < 60 ? new Color(255, 200, 50) : new Color(220, 255, 255)) * bright, 0, tex.Size() / 2, 5, 0, 0);
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			foreach (Player Player in Main.player.Where(n => n.active && Vector2.Distance(n.Center, Projectile.Center) < 1500))
 			{
-				CameraSystem.Shake += 15;
+				CameraSystem.shake += 15;
 			}
 
 			foreach (Player Player in Main.player.Where(n => Vector2.Distance(n.Center, Projectile.Center) < 400))

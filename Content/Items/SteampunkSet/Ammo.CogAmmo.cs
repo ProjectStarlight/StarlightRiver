@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				}
 
 				Helper.PlayPitched("Impacts/Clink", 0.25f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
-				CameraSystem.Shake += 3;
+				CameraSystem.shake += 3;
 				firstHit = true;
 			}
 			else

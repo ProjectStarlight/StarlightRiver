@@ -45,14 +45,14 @@ namespace StarlightRiver.Content.Pickups
 
 		public override void Visuals()
 		{
-			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.rottime) * 30, NPC.Center.Y - 20 + (float)Math.Cos(StarlightWorld.rottime) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
+			float sin = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
+			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.visualTimer) * 30, NPC.Center.Y - 20 + (float)Math.Cos(StarlightWorld.visualTimer) * 10), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin, 0.25f);
 
-			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.rottime));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Cos(StarlightWorld.rottime) * 25, NPC.Center.Y + (float)Math.Sin(StarlightWorld.rottime) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
+			float sin2 = 0.2f + Math.Abs((float)Math.Cos(StarlightWorld.visualTimer));
+			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Cos(StarlightWorld.visualTimer) * 25, NPC.Center.Y + (float)Math.Sin(StarlightWorld.visualTimer) * 6), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin2, 0.25f);
 
-			float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.rottime));
-			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.rottime + 2) * 15, NPC.Center.Y + 20 + (float)Math.Cos(StarlightWorld.rottime + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
+			float sin3 = 0.2f + Math.Abs((float)Math.Sin(StarlightWorld.visualTimer));
+			Dust.NewDustPerfect(new Vector2(NPC.Center.X + (float)Math.Sin(StarlightWorld.visualTimer + 2) * 15, NPC.Center.Y + 20 + (float)Math.Cos(StarlightWorld.visualTimer + 2) * 4), DustType<Content.Dusts.Glow>(), Vector2.Zero, 0, new Color(100, 200, 255) * sin3, 0.2f);
 		}
 
 		public override void PickupVisuals(int timer)
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Pickups
 		{
 			player.GetHandler().Unlock<Dash>();
 
-			player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 650;
+			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 650;
 			player.GetModPlayer<StarlightPlayer>().inTutorial = true;
 			player.AddBuff(BuffID.Featherfall, 660);
 		}
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.Pickups
 					if (factor.X >= 0.95f)
 						return Color.White * 0;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().PickupTimer;
+					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;
 
 					if (time < 100)
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.Pickups
 					if (factor.X >= 0.95f)
 						return Color.White * 0;
 
-					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().PickupTimer;
+					int time = Main.LocalPlayer.GetModPlayer<StarlightPlayer>().pickupTimer;
 					float mul = 1;
 
 					if (time < 100)

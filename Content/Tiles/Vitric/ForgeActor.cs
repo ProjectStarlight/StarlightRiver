@@ -1,9 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -17,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(1, 1, DustType<Content.Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			this.QuickSetFurniture(1, 1, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
 		}
 	}
 
@@ -48,13 +44,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-			if (Main.rand.Next(3) == 0)
+			if (Main.rand.NextBool(3))
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(204 + Main.rand.Next(-10, 10), -94), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
 
-			if (Main.rand.Next(3) == 0)
+			if (Main.rand.NextBool(3))
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(0 + Main.rand.Next(-10, 10), -240), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
 
-			if (Main.rand.Next(5) == 0)
+			if (Main.rand.NextBool(5))
 			{
 				var d = Dust.NewDustPerfect(Projectile.Center + new Vector2(-110 + Main.rand.Next(120), -130), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
 				d.noGravity = true;

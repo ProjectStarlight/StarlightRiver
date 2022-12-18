@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
@@ -70,9 +65,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			float timer = duration + 30 - Projectile.timeLeft;
 
 			if (endPoint != Vector2.Zero && timer > 30)
-			{
 				Projectile.Center = PointOnSpline((timer - 30) / duration);
-			}
 
 			Projectile.rotation = (Projectile.position - Projectile.oldPos[0]).ToRotation();
 
@@ -84,7 +77,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		{
 			parent.lives--;
 
-			if (Main.rand.Next(10000) == 0)
+			if (Main.rand.NextBool(10000))
 				Main.NewText("Skill issue.");
 		}
 
@@ -94,6 +87,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 			if (progress < factor)
 				return Vector2.Hermite(startPoint, midPoint - startPoint, midPoint, endPoint - startPoint, progress * (1 / factor));
+
 			if (progress >= factor)
 				return Vector2.Hermite(midPoint, endPoint - startPoint, endPoint, endPoint - midPoint, (progress - factor) * (1 / (1 - factor)));
 

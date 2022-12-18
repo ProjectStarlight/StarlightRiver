@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			foreach (NPC boltNPC in toAddBolts)
 			{
 				BarrierNPC barrierNPC = boltNPC.GetGlobalNPC<BarrierNPC>();
-				barrierNPC.MaxBarrier += 250;
+				barrierNPC.maxBarrier += 250;
 				CreateBolt(boltNPC);
 			}
 
@@ -162,8 +162,8 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			{
 				BarrierNPC barrierNPC = supportTarget.GetGlobalNPC<BarrierNPC>();
 
-				barrierNPC.RechargeRate = 90;
-				barrierNPC.RechargeDelay = 60;
+				barrierNPC.rechargeRate = 90;
+				barrierNPC.rechargeDelay = 60;
 			}
 		}
 
@@ -348,9 +348,9 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			foreach (NPC npc in npcs)
 			{
 				BarrierNPC clearBarrierNPC = npc.GetGlobalNPC<BarrierNPC>();
-				clearBarrierNPC.MaxBarrier = 0;
-				clearBarrierNPC.RechargeRate = 0;
-				clearBarrierNPC.RechargeDelay = 180;
+				clearBarrierNPC.maxBarrier = 0;
+				clearBarrierNPC.rechargeRate = 0;
+				clearBarrierNPC.rechargeDelay = 180;
 			}
 
 			foreach (CrescentCasterBolt bolt in Bolts.ToArray())

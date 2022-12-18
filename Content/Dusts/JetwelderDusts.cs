@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class JetwelderFinalDust : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class JetwelderDust : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{

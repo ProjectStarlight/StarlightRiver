@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using static StarlightRiver.Content.WorldGeneration.DungeonGen.DungeonRoom;
 
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		public List<DungeonRoom> rooms;
 		public List<Point16> hallSections;
 
-		public secType[,] dungeon;
+		public SecType[,] dungeon;
 
 		public Point16 startPointInWorld;
 
@@ -154,19 +153,25 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			for (int x = 0; x < SectionSize; x++)
 			{
 				for (int y = 0; y < SectionSize; y++)
+				{
 					WorldGen.PlaceTile(pos.X + x, pos.Y + y, Terraria.ID.TileID.GrayBrick, false, true);
+				}
 			}
 
 			for (int x = 0; x < SectionSize; x++)
 			{
 				for (int y = 0; y < SectionSize; y++)
+				{
 					WorldGen.PlaceWall(pos.X + x, pos.Y + y, Terraria.ID.WallID.StoneSlab);
+				}
 			}
 
 			for (int x = 2; x < SectionSize - 2; x++)
 			{
 				for (int y = 2; y < SectionSize - 2; y++)
+				{
 					WorldGen.KillTile(pos.X + x, pos.Y + y);
+				}
 			}
 
 			if (connectUp)
@@ -174,7 +179,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				for (int x = 2; x < SectionSize - 2; x++)
 				{
 					for (int y = 0; y < 2; y++)
+					{
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+					}
 				}
 			}
 
@@ -183,7 +190,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				for (int x = SectionSize - 2; x < SectionSize; x++)
 				{
 					for (int y = 2; y < SectionSize - 2; y++)
+					{
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+					}
 				}
 			}
 
@@ -192,7 +201,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				for (int x = 2; x < SectionSize - 2; x++)
 				{
 					for (int y = SectionSize - 2; y < SectionSize; y++)
+					{
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+					}
 				}
 			}
 
@@ -201,7 +212,9 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				for (int x = 0; x < 2; x++)
 				{
 					for (int y = 2; y < SectionSize - 2; y++)
+					{
 						WorldGen.KillTile(pos.X + x, pos.Y + y);
+					}
 				}
 			}
 		}
@@ -223,10 +236,10 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				{
 					rooms.ForEach(n => n.FillRoom(startPointInWorld));
 					hallSections.ForEach(n => FillHallway(startPointInWorld + new Point16(n.X * SectionSize, n.Y * SectionSize),
-						n.Y > 0 && (dungeon[n.X, n.Y - 1] == secType.hall || dungeon[n.X, n.Y - 1] == secType.door),
-						n.X < dungeon.GetLength(0) - 1 && (dungeon[n.X + 1, n.Y] == secType.hall || dungeon[n.X + 1, n.Y] == secType.door),
-						n.Y < dungeon.GetLength(1) - 1 && (dungeon[n.X, n.Y + 1] == secType.hall || dungeon[n.X, n.Y + 1] == secType.door),
-						n.X > 0 && (dungeon[n.X - 1, n.Y] == secType.hall || dungeon[n.X - 1, n.Y] == secType.door)
+						n.Y > 0 && (dungeon[n.X, n.Y - 1] == SecType.hall || dungeon[n.X, n.Y - 1] == SecType.door),
+						n.X < dungeon.GetLength(0) - 1 && (dungeon[n.X + 1, n.Y] == SecType.hall || dungeon[n.X + 1, n.Y] == SecType.door),
+						n.Y < dungeon.GetLength(1) - 1 && (dungeon[n.X, n.Y + 1] == SecType.hall || dungeon[n.X, n.Y + 1] == SecType.door),
+						n.X > 0 && (dungeon[n.X - 1, n.Y] == SecType.hall || dungeon[n.X - 1, n.Y] == SecType.door)
 						));
 					return;
 				}
@@ -248,7 +261,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			if (x < 0 || x >= dungeon.GetLength(0) || y < 0 || y >= dungeon.GetLength(1)) //out of bounds
 				return false;
 
-			if (dungeon[x, y] != secType.none) //if this tile isnt free, dont even bother checking
+			if (dungeon[x, y] != SecType.none) //if this tile isnt free, dont even bother checking
 				return false;
 
 			int baseX = startPointInWorld.X + x * SectionSize;
@@ -264,7 +277,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 
 					if (TileBlacklistCondition(tile, finalX, finalY))
 					{
-						dungeon[x, y] = secType.fill; // Mark this tile as filled so we dont need to re-scan it in the future
+						dungeon[x, y] = SecType.fill; // Mark this tile as filled so we dont need to re-scan it in the future
 						return false;
 					}
 				}
@@ -307,7 +320,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			{
 				for (int y = 0; y < toValidate.SecHeight; y++)
 				{
-					if (toValidate.Layout[x, y] == secType.none)
+					if (toValidate.Layout[x, y] == SecType.none)
 						continue;
 
 					if (!IsSectionValid(toValidate.topLeft.X + x, toValidate.topLeft.Y + y))
@@ -436,7 +449,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			for (int k = 1; k < hallway.Count - 1; k++)
 			{
 				Point16 hall = hallway[k];
-				dungeon[hall.X, hall.Y] = secType.hall;
+				dungeon[hall.X, hall.Y] = SecType.hall;
 				hallSections.Add(hall);
 			}
 		}
@@ -450,7 +463,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			for (int k = 1; k < hallway.Count - 1; k++)
 			{
 				Point16 hall = hallway[k];
-				dungeon[hall.X, hall.Y] = secType.none;
+				dungeon[hall.X, hall.Y] = SecType.none;
 				hallSections.Remove(hall);
 			}
 		}
@@ -491,8 +504,11 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 				if (TryMakeRandomRoom(hall.Last().X, hall.Last().Y))
 				{
 					DungeonRoom lastRoom = rooms.Last();
+
 					foreach (Point16 door in lastRoom.GetDoorOffsets())
+					{
 						GenerateLimb(door + lastRoom.topLeft, remainingRooms - 1);
+					}
 				}
 				else
 				{

@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Player.buffType[k] > 0 && Main.debuff[Player.buffType[k]])
 				{
 					Player.maxRunSpeed += 0.05f;
-					Player.GetModPlayer<StarlightPlayer>().ItemSpeed += 0.05f;
+					Player.GetModPlayer<StarlightPlayer>().itemSpeed += 0.05f;
 				}
 			}
 		}

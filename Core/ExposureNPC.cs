@@ -1,7 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
 	public class ExposureNPC : GlobalNPC
 	{
@@ -19,6 +16,7 @@ namespace StarlightRiver.Core
 		public float ExposureMultSummon;
 
 		public override bool InstancePerEntity => true;
+
 		public override void ResetEffects(NPC npc)
 		{
 			ExposureAddAll = 0;

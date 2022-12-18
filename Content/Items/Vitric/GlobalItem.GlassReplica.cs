@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.UIScaleMatrix);
-				Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.rottime);
+				Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.visualTimer);
 			}
 
 			return true;
@@ -63,14 +63,14 @@ namespace StarlightRiver.Content.Items.Vitric
 					float scale1 = Terraria.GameContent.TextureAssets.Item[item.type].Size().Length() / tex.Size().Length();
 					var color = new Color(180, 240, 255);
 
-					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.rottime, tex.Size() / 2, 2 * scale1, 0, 0);
-					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.3f, -StarlightWorld.rottime, tex.Size() / 2, 2.5f * scale1, 0, 0);
-					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.8f, StarlightWorld.rottime * 2, tex.Size() / 2, 1.2f * scale1, 0, 0);
+					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.5f, StarlightWorld.visualTimer, tex.Size() / 2, 2 * scale1, 0, 0);
+					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.3f, -StarlightWorld.visualTimer, tex.Size() / 2, 2.5f * scale1, 0, 0);
+					spriteBatch.Draw(tex, item.Center - Main.screenPosition, null, color * 0.8f, StarlightWorld.visualTimer * 2, tex.Size() / 2, 1.2f * scale1, 0, 0);
 				}
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
-				Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.rottime);
+				Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.visualTimer);
 			}
 
 			return true;

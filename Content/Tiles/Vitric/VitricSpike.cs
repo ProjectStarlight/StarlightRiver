@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -38,6 +34,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			damage = 0;
 			System.Collections.Generic.List<Point> points = Collision.GetEntityEdgeTiles(entity);
+
 			foreach (Point p in points)
 			{
 				if (!WorldGen.InWorld(p.X, p.Y))

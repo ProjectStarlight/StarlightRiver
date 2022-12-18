@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
@@ -68,9 +63,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Lighting.AddLight(Projectile.Center, new Vector3(150, 220, 230) * 0.002f);
 
 			if (Main.rand.NextBool(10))
-			{
 				Dust.NewDustPerfect(Projectile.Center + Vector2.UnitY * -20, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
-			}
 
 			foreach (Player player in Main.player.Where(n => n.wet && Vector2.Distance(n.Center, Projectile.Center) < 30 * 16))
 				player.AddBuff(ModContent.BuffType<HotspringHeal>(), 10);
@@ -93,14 +86,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 						{
 							Lighting.AddLight(new Vector2(checkX1 * 16, checkY1 * 16), new Vector3(150, 220, 230) * 0.002f);
 
-							if (Main.rand.Next(40) == 0 && !(tile2.HasTile && Main.tileSolid[tile2.TileType]))//not sure if correct way to check solid
+							if (Main.rand.NextBool(40) && !(tile2.HasTile && Main.tileSolid[tile2.TileType]))//not sure if correct way to check solid
 							{
 								Vector2 pos = Projectile.Center + new Vector2(x, y - 1) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
 								Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.Mist>(), new Vector2(0.2f, -Main.rand.NextFloat(0.7f, 1.6f)), Main.rand.Next(50, 70), Color.White, Main.rand.NextFloat(0.2f, 0.5f));
 							}
 						}
 
-						if (Main.rand.Next(600) == 0)
+						if (Main.rand.NextBool(600))
 						{
 							Vector2 pos = Projectile.Center + new Vector2(x, y) * 16 + Vector2.UnitX * Main.rand.NextFloat(16);
 							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.SpringBubble>(), Vector2.UnitY * -Main.rand.NextFloat(0.5f, 1.2f), Main.rand.Next(40, 55), new Color(230, 255, 255), Main.rand.NextFloat(0.3f, 0.4f));

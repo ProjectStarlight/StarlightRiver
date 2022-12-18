@@ -1,12 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace StarlightRiver.Core
 {
 	internal static class ItemColorUtility
 	{
-		private static Dictionary<int, Color> AverageColor = new();
+		private static readonly Dictionary<int, Color> AverageColor = new();
 
 		public static Color GetColor(int type)
 		{
@@ -38,6 +36,7 @@ namespace StarlightRiver.Core
 				for (int j = 0; j < tex.Height; j += 2)
 				{
 					Color alpha = data[j * tex.Width + i];
+
 					if (alpha != Color.Transparent)
 					{
 						numPixels++;

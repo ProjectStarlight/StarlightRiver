@@ -186,18 +186,18 @@ namespace StarlightRiver.Content.Items
 			spriteBatch.Draw(Main.screenTarget, target, Color.White);
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO2, Color.Black);
-			spriteBatch.Draw(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, target2, Color.White);
+			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.screenLightingTarget, target2, Color.White);
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
-			spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
+			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.tileLightingTarget, target3, Color.White);
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
 		{
 			BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
-			GNPC.MaxBarrier = 100;
-			GNPC.Barrier = 100;
-			GNPC.DrawGlow = true;
+			GNPC.maxBarrier = 100;
+			GNPC.barrier = 100;
+			GNPC.drawGlow = true;
 		}
 	}
 
@@ -223,7 +223,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player Player)
 		{
-			StarlightRiver.DebugMode = !StarlightRiver.DebugMode;
+			StarlightRiver.debugMode = !StarlightRiver.debugMode;
 			return true;
 		}
 	}

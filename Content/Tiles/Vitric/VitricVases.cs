@@ -1,12 +1,7 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
@@ -31,15 +26,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				case 0:
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.DirtBlock, Main.rand.Next(1, 5));
 					break;
+
 				case 1:
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.StoneBlock, Main.rand.Next(1, 5));
 					break;
+
 				case 2:
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.ClayBlock, Main.rand.Next(1, 5));
 					break;
+
 				case 3:
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.SandBlock, Main.rand.Next(1, 5));
 					break;
+
 				case 4:
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, ItemID.SiltBlock, Main.rand.Next(1, 5));
 					break;

@@ -129,7 +129,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Player.immune = true;
 					Player.immuneTime = 20;
 					Player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
-					CameraSystem.Shake += 15;
+					CameraSystem.shake += 15;
 
 					hooked.StrikeNPC(Projectile.damage, Projectile.knockBack, Player.Center.X < hooked.Center.X ? -1 : 1);
 

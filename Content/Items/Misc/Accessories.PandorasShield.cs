@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Misc
 				int amount = (int)(gp.lastGrazeDamage * scale);
 				amount = Utils.Clamp(amount, 0, 200);
 				Player.AddBuff(ModContent.BuffType<ShieldDegenReduction>(), 180 + amount * 2);
-				Player.GetModPlayer<BarrierPlayer>().Barrier += amount;
+				Player.GetModPlayer<BarrierPlayer>().barrier += amount;
 				CombatText.NewText(Player.Hitbox, new Color(150, 255, 255), amount);
 			}
 		}

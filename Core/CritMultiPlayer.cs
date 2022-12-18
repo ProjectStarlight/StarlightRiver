@@ -1,7 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
 	class CritMultiPlayer : ModPlayer //TODO: Make compatible with new damage type hoo-hah
 	{
@@ -24,8 +21,10 @@ namespace StarlightRiver.Core
 
 				if (Projectile.DamageType.Type == DamageClass.Melee.Type)
 					toMult += mp.MeleeCritMult;
+
 				if (Projectile.DamageType.Type == DamageClass.Ranged.Type)
 					toMult += mp.RangedCritMult;
+
 				if (Projectile.DamageType.Type == DamageClass.Magic.Type)
 					toMult += mp.MagicCritMult;
 
@@ -42,8 +41,10 @@ namespace StarlightRiver.Core
 
 				if (Item.DamageType.Type == DamageClass.Melee.Type)
 					toMult += MeleeCritMult;
+
 				if (Item.DamageType.Type == DamageClass.Ranged.Type)
 					toMult += RangedCritMult;
+
 				if (Item.DamageType.Type == DamageClass.Magic.Type)
 					toMult += MagicCritMult;
 
@@ -69,8 +70,10 @@ namespace StarlightRiver.Core
 
 			if (Projectile.DamageType.Type == DamageClass.Melee.Type)
 				multiplier += mp.MeleeCritMult;
+
 			if (Projectile.DamageType.Type == DamageClass.Ranged.Type)
 				multiplier += mp.RangedCritMult;
+
 			if (Projectile.DamageType.Type == DamageClass.Magic.Type)
 				multiplier += mp.MagicCritMult;
 
@@ -86,8 +89,10 @@ namespace StarlightRiver.Core
 
 			if (Item.DamageType.Type == DamageClass.Melee.Type)
 				multiplier += mp.MeleeCritMult;
+
 			if (Item.DamageType.Type == DamageClass.Ranged.Type)
 				multiplier += mp.RangedCritMult;
+
 			if (Item.DamageType.Type == DamageClass.Magic.Type)
 				multiplier += mp.MagicCritMult;
 

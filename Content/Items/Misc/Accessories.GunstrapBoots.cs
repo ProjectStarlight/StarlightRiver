@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (player.PickAmmo(Item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemID))
 			{
 				Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.4f, 0, player.Center);
-				CameraSystem.Shake += 2;
+				CameraSystem.shake += 2;
 
 				for (int i = 0; i < 6; i++)
 					Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.5f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (player.PickAmmo(Item, out int projToShoot, out float speed, out int damage, out float knockBack, out int usedAmmoItemID))
 			{
 				Helpers.Helper.PlayPitched("Guns/Scrapshot", 0.15f, 0, player.Center);
-				CameraSystem.Shake += 1;
+				CameraSystem.shake += 1;
 
 				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.UnitY.RotatedByRandom(0.2f) * ((speed + 9) * Main.rand.NextFloat(0.85f, 1.15f)), projToShoot, (int)((damage + 7) * player.GetDamage(DamageClass.Ranged).Multiplicative), knockBack, player.whoAmI);
 

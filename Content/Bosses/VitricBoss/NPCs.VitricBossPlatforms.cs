@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (NPC.ai[0] == 1)
 			{
 				NPC.velocity.Y = -(float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.NPC.ai[3]);
-				if (NPC.position.Y <= StarlightWorld.VitricBiome.Y * 16 + 16 * 16)
+				if (NPC.position.Y <= StarlightWorld.vitricBiome.Y * 16 + 16 * 16)
 					NPC.position.Y += MaxHeight;
 			}
 
@@ -163,7 +163,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (NPC.ai[0] == 1)
 			{
 				NPC.velocity.Y = (float)MaxHeight / VitricBackdropLeft.Scrolltime * (1f / parent.NPC.ai[3]);
-				if (NPC.position.Y >= StarlightWorld.VitricBiome.Y * 16 + 16 * 16 + MaxHeight)
+				if (NPC.position.Y >= StarlightWorld.vitricBiome.Y * 16 + 16 * 16 + MaxHeight)
 					NPC.position.Y -= MaxHeight;
 			}
 

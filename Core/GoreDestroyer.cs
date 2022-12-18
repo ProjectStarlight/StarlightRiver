@@ -1,6 +1,4 @@
-﻿using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
@@ -16,6 +14,7 @@ namespace StarlightRiver.Core
 
 				return result;
 			};
+
 			On.Terraria.Gore.NewGoreDirect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
@@ -24,6 +23,7 @@ namespace StarlightRiver.Core
 
 				return result;
 			};
+
 			On.Terraria.Gore.NewGorePerfect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
@@ -47,7 +47,6 @@ namespace StarlightRiver.Core
 
 			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				Main.gore[goreID].active = false;
-
 		}
 
 		private static void DestroyGore(IEntitySource entitySource, Gore gore)

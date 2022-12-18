@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			Vector2 pos = position + dir * 75 + dir.RotatedBy(-player.direction * 1.57f) * 5;
 			Projectile.NewProjectile(source, pos, velocity.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f)), type, damage, knockback, player.whoAmI, charge);
 
-			CameraSystem.Shake += (int)(Math.Sqrt(charge) * 2);
+			CameraSystem.shake += (int)(Math.Sqrt(charge) * 2);
 
 			//Dust.NewDustPerfect(pos, DustID.Electric, dir.RotatedBy(Main.rand.NextFloat(-0.5f, 0.5f)) * Main.rand.NextFloat(5));
 			if (charge > 60)

@@ -1,8 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.ChestLootSystem;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent.Generation;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 
 namespace StarlightRiver.Core

@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
@@ -28,8 +23,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		{
 			float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;
 
-			float sin2 = (float)Math.Sin(StarlightWorld.rottime + off * 0.01f * 0.2f);
-			float cos = (float)Math.Cos(StarlightWorld.rottime + off * 0.01f);
+			float sin2 = (float)Math.Sin(StarlightWorld.visualTimer + off * 0.01f * 0.2f);
+			float cos = (float)Math.Cos(StarlightWorld.visualTimer + off * 0.01f);
 			var color = new Color(100 * (1 + sin2) / 255f, 140 * (1 + cos) / 255f, 180 / 255f);
 			Color light = Lighting.GetColor(i, j);
 

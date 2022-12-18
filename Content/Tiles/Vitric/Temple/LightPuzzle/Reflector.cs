@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
@@ -59,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			if (rotating)
 			{
 				if (Vector2.Distance(Main.MouseWorld, Projectile.Center) > 48)
-					Rotation += Helpers.Helper.CompareAngle((Main.MouseWorld - Projectile.Center).ToRotation(), Rotation) * 0.1f;
+					Rotation += Helper.CompareAngle((Main.MouseWorld - Projectile.Center).ToRotation(), Rotation) * 0.1f;
 
 				if (rotateAnimation < 15)
 					rotateAnimation++;
@@ -157,7 +152,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				return;
 
 			//Laser
-			int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color2 = new Color(100, 200 + sin, 255);
 
 			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
@@ -203,7 +198,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, Rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.8f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
+			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)

@@ -1,10 +1,8 @@
 ﻿using StarlightRiver.Content.Items.Beach;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
@@ -37,7 +35,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.TileType == TileID.Grass && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+					else if (tile.HasTile && tile.TileType == TileID.Grass && Helper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						var dims = new Point16();
 
@@ -52,14 +50,15 @@ namespace StarlightRiver.Core
 
 						if (selection == 6)
 							off = 12;
+
 						if (selection == 5)
 							off = 4;
 
 						if (!Framing.GetTileSafely(x + dims.X, y - 2).HasTile && Framing.GetTileSafely(x + dims.X, y + 1).HasTile)
 						{
 							var pos = new Point16(x, y - dims.Y + off);
-
 							bool valid = true;
+
 							for (int i = pos.X; i < pos.X + dims.X; i++)
 							{
 								for (int j = pos.Y; j < pos.Y + dims.Y; j++)
@@ -97,7 +96,7 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && Helper.AirScanUp(new Microsoft.Xna.Framework.Vector2(x, y - 1), 10) && WorldGen.genRand.Next(20) == 0)
+					else if (tile.HasTile && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock && tile.TileType == TileID.Sand && Helper.AirScanUp(new Vector2(x, y - 1), 10) && WorldGen.genRand.NextBool(20))
 					{
 						Tile newTile = Framing.GetTileSafely(x, y - 1);
 						newTile.ClearEverything();

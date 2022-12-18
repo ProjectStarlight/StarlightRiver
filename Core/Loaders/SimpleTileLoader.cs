@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
@@ -12,6 +9,8 @@ namespace StarlightRiver.Core.Loaders
 		public Mod Mod => StarlightRiver.Instance;
 
 		public virtual string AssetRoot => "StarlightRiver/Assets/Unknown/";
+
+		public virtual float Priority => 2f;
 
 		public void LoadTile(string internalName, string displayName, TileLoadData data)
 		{
@@ -86,8 +85,6 @@ namespace StarlightRiver.Core.Loaders
 			Main.tileMerge[type2][Mod.Find<ModTile>(type1).Type] = true;
 		}
 
-		public virtual float Priority => 2f;
-
 		public virtual void Load() { }
 
 		public virtual void Unload() { }
@@ -114,6 +111,10 @@ namespace StarlightRiver.Core.Loaders
 		public TileLoadData Data;
 		public readonly int DropID;
 
+		public override string Name => InternalName;
+
+		public override string Texture => TileTexture;
+
 		public LoaderTile(string internalName, TileLoadData data, int dropID, string texture)
 		{
 			InternalName = internalName;
@@ -121,10 +122,6 @@ namespace StarlightRiver.Core.Loaders
 			DropID = dropID;
 			TileTexture = texture;
 		}
-
-		public override string Name => InternalName;
-
-		public override string Texture => TileTexture;
 
 		public override void SetStaticDefaults()
 		{
@@ -155,6 +152,10 @@ namespace StarlightRiver.Core.Loaders
 		public FurnitureLoadData Data;
 		public readonly int DropID;
 
+		public override string Name => InternalName;
+
+		public override string Texture => TileTexture;
+
 		public LoaderFurniture(string internalName, FurnitureLoadData data, int drop, string texture)
 		{
 			InternalName = internalName;
@@ -162,10 +163,6 @@ namespace StarlightRiver.Core.Loaders
 			DropID = drop;
 			TileTexture = texture;
 		}
-
-		public override string Name => InternalName;
-
-		public override string Texture => TileTexture;
 
 		public override void SetStaticDefaults()
 		{

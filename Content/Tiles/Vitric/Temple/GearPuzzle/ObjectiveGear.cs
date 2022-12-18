@@ -1,10 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+﻿namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class ObjectiveGear : GearTile
 	{

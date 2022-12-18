@@ -290,7 +290,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Player Player = Main.player[Projectile.owner];
-			CameraSystem.Shake += 3;
+			CameraSystem.shake += 3;
 			Helper.PlayPitched("Impacts/GoreLight", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), target.Center);
 			if (target.knockBackResist != 0)
 			{
@@ -472,7 +472,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				npc.velocity.X = 0;
 				Player Player = Main.player[npc.target];
 				npc.DelBuff(buffIndex--);
-				CameraSystem.Shake += 10;
+				CameraSystem.shake += 10;
 
 				for (int k = 0; k <= 50; k++)
 				{

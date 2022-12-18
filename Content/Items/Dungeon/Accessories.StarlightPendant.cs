@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier = (int)MathHelper.Max(0, Player.GetModPlayer<BarrierPlayer>().MaxBarrier - 10);
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier = (int)MathHelper.Max(0, Player.GetModPlayer<BarrierPlayer>().maxBarrier - 10);
 
 			if (currentMana != Player.statMana || Player.itemTime >= 2)
 			{
@@ -48,14 +48,14 @@ namespace StarlightRiver.Content.Items.Dungeon
 			int manaConsumedTotal = 0;
 			foreach (int i in manaConsumed)
 				manaConsumedTotal += i;
-			float manaBonus = 1 + Player.GetModPlayer<BarrierPlayer>().Barrier * 0.01f;
+			float manaBonus = 1 + Player.GetModPlayer<BarrierPlayer>().barrier * 0.01f;
 
 			/*if (manaBonus > 1)
 				Main.NewText(manaBonus.ToString());*/
 			Player.manaRegen = (int)(Player.manaRegen * manaBonus);
 
-			Player.GetModPlayer<BarrierPlayer>().RechargeRate = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeRate * 1 + manaConsumedTotal * 0.025f);
-			Player.GetModPlayer<BarrierPlayer>().RechargeDelay = (int)(Player.GetModPlayer<BarrierPlayer>().RechargeDelay / (1 + manaConsumedTotal * 0.025f));
+			Player.GetModPlayer<BarrierPlayer>().rechargeRate = (int)(Player.GetModPlayer<BarrierPlayer>().rechargeRate * 1 + manaConsumedTotal * 0.025f);
+			Player.GetModPlayer<BarrierPlayer>().rechargeDelay = (int)(Player.GetModPlayer<BarrierPlayer>().rechargeDelay / (1 + manaConsumedTotal * 0.025f));
 		}
 
 		public override void AddRecipes()

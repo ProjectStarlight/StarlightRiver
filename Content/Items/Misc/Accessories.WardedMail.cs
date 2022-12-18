@@ -23,8 +23,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player player)
 		{
-			player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
-			player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction += 0.1f;
+			player.GetModPlayer<BarrierPlayer>().maxBarrier += 20;
+			player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.1f;
 		}
 
 		public override void AddRecipes()

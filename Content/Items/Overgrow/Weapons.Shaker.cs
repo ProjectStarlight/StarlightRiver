@@ -170,7 +170,7 @@ namespace StarlightRiver.Content.Items.Overgrow
 					Projectile.timeLeft = 120;
 					State = 2;
 
-					CameraSystem.Shake += (int)(Timer * 0.2f);
+					CameraSystem.shake += (int)(Timer * 0.2f);
 
 					for (int k = 0; k <= 100; k++)
 					{
@@ -265,9 +265,9 @@ namespace StarlightRiver.Content.Items.Overgrow
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Interactive/WispSwitchGlow2").Value;
 				Vector2 pos = (Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY)).PointAccur();
-				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.rottime) * 0.2f, 0, tex.Size() / 2, StarlightWorld.rottime * 0.17f, 0, 0);
-				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime + 3.14f) * 0.17f, 0, 0);
-				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.rottime - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.rottime - 3.14f) * 0.17f, 0, 0);
+				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - StarlightWorld.visualTimer) * 0.2f, 0, tex.Size() / 2, StarlightWorld.visualTimer * 0.17f, 0, 0);
+				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.visualTimer + 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.visualTimer + 3.14f) * 0.17f, 0, 0);
+				spriteBatch.Draw(tex, pos, tex.Frame(), Color.LightYellow * (6.28f - (StarlightWorld.visualTimer - 3.14f)) * 0.2f, 0, tex.Size() / 2, (StarlightWorld.visualTimer - 3.14f) * 0.17f, 0, 0);
 			}
 		}
 	}

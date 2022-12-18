@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void UpdateEquip(Player Player)
 		{
 			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.Topaz || Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
-				Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
+				Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
 		}
 
 		private void SpoofMouseItem(On.Terraria.Main.orig_DrawPendingMouseText orig)

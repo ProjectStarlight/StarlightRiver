@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Underground;
-using Terraria;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Waters.WaterAddons

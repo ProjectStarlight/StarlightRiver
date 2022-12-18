@@ -438,7 +438,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 
 				if (ScanTimer < 150)
-					CameraSystem.Shake = (int)MathHelper.Lerp(0, 2, 1 - (float)ScanTimer / 150f);
+					CameraSystem.shake = (int)MathHelper.Lerp(0, 2, 1 - (float)ScanTimer / 150f);
 
 				if (ScanTimer == 125)
 					Helper.PlayPitched("AirstrikeIncoming", 0.6f, 0);
@@ -572,7 +572,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.myPlayer == Projectile.owner)
-				CameraSystem.Shake += 9;
+				CameraSystem.shake += 9;
 
 			Projectile.friendly = false;
 			Projectile.penetrate++;

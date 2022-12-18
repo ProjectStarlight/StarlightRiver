@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class SkullbusterDustShrinking : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class SkullbusterDustFastFade : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;

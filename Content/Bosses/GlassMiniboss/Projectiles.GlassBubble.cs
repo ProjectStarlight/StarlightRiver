@@ -1,4 +1,5 @@
 ﻿using ReLogic.Content;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
@@ -112,7 +113,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Timer <= crackTime + 105)
 			{
-				CameraSystem.Shake += 6;
+				CameraSystem.shake += 6;
 
 				for (int i = 0; i < 50; i++)
 				{
@@ -133,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Timer < crackTime + 100 && Projectile.ai[1] == 1)
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.2f + Main.rand.NextFloat(-0.2f, 0.4f), Projectile.Center);
-				CameraSystem.Shake += 4;
+				CameraSystem.shake += 4;
 
 				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0)
 					Projectile.velocity.X = -oldVelocity.X * 1.05f;
@@ -160,7 +161,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (Projectile.localAI[1] == 0 && Timer < crackTime + 100)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 0.9f, 0.1f, Projectile.Center);
-					CameraSystem.Shake += 3;
+					CameraSystem.shake += 3;
 					Projectile.velocity = Projectile.DirectionFrom(target.Center) * 1.77f;
 					Projectile.localAI[1] += 30;
 				}

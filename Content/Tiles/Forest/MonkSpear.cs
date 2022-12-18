@@ -90,10 +90,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
-			float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
+			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
 			float cos = (float)System.Math.Cos(Projectile.ai[0]);
-			float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
+			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var posShort = new Vector2(ChainShort.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainShort.ropeSegments[index].posNow.Y + sin * 0.8f);
 			Color colorShort = new Color(60, 90, 170).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)posShort.X / 16, (int)posShort.Y / 16));
@@ -105,10 +105,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
-			float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
+			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
 			float cos = (float)System.Math.Cos(Projectile.ai[0]);
-			float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
+			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var posLong = new Vector2(ChainLong.ropeSegments[index].posNow.X + 1 + sin2 * 0.6f, ChainLong.ropeSegments[index].posNow.Y + sin * 0.8f);
 			Color colorLong = new Color(40, 60, 150).MultiplyRGB(Color.White * (1 - sin * 0.2f)).MultiplyRGB(Lighting.GetColor((int)posLong.X / 16, (int)posLong.Y / 16));

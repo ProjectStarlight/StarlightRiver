@@ -25,11 +25,11 @@ namespace StarlightRiver.Content.Pickups
 
 		public override void Visuals()
 		{
-			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime), (float)Math.Sin(StarlightWorld.rottime)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 1) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 2) / 2, (float)Math.Sin(StarlightWorld.rottime + 2)) * (float)Math.Sin(StarlightWorld.rottime * 2 + 4) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
-			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.rottime + 4), (float)Math.Sin(StarlightWorld.rottime + 4) / 2) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer), (float)Math.Sin(StarlightWorld.visualTimer)) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 1) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer + 2) / 2, (float)Math.Sin(StarlightWorld.visualTimer + 2)) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 4) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
+			Dust.NewDustPerfect(NPC.Center + new Vector2((float)Math.Cos(StarlightWorld.visualTimer + 4), (float)Math.Sin(StarlightWorld.visualTimer + 4) / 2) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.Zero, 0, default, 0.65f);
 
-			Dust.NewDustPerfect(NPC.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.rottime * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
+			Dust.NewDustPerfect(NPC.Center + Vector2.One.RotateRandom(Math.PI) * (float)Math.Sin(StarlightWorld.visualTimer * 2 + 2) * 32, DustType<Content.Dusts.GoldWithMovement>(), Vector2.UnitY * -2, 0, default, 0.25f);
 		}
 
 		public override void PickupVisuals(int timer)
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Pickups
 			AbilityHandler mp = player.GetHandler();
 			mp.Unlock<Whip>();
 
-			player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 570;
+			player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 570;
 			player.AddBuff(BuffID.Featherfall, 580);
 		}
 	}

@@ -62,10 +62,10 @@ namespace StarlightRiver.Content.Items.Misc
 			if (rage > 800)
 				rage = 800;
 
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
-			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction = 1;
-			Player.GetModPlayer<BarrierPlayer>().PlayerCanLiveWithOnlyBarrier = true;
-			Player.GetModPlayer<BarrierPlayer>().RechargeRate -= 10;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
+			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction = 1;
+			Player.GetModPlayer<BarrierPlayer>().playerCanLiveWithOnlyBarrier = true;
+			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 10;
 			Player.statLife = 0;
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;

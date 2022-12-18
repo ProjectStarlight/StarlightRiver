@@ -363,7 +363,7 @@ namespace StarlightRiver.Content.GUI
 			}
 			else if (Player.HeldItem.ModItem is InfusionItem)
 			{
-				(Player.HeldItem.ModItem as InfusionItem).Draw(spriteBatch, pos, 0.35f + (float)Math.Sin(StarlightWorld.rottime) * 0.1f);
+				(Player.HeldItem.ModItem as InfusionItem).Draw(spriteBatch, pos, 0.35f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.1f);
 			}
 		}
 	}

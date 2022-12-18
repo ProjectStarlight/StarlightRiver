@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Tiles/Overgrow/WallOvergrowGrassFlow").Value;
 				float offset = i * j % 6.28f;
-				float sin = (float)Math.Sin(StarlightWorld.rottime + offset);
+				float sin = (float)Math.Sin(StarlightWorld.visualTimer + offset);
 				int variant = i * i * j % 4;
 
 				spriteBatch.Draw(tex, (new Vector2(i + 0.5f, j + 0.5f) + Helper.TileAdj) * 16 + new Vector2(1, 0.5f) * sin * 1.2f - Main.screenPosition,

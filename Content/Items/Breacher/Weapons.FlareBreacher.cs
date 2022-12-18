@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (!target.immortal && !target.dontTakeDamage)
 				target.StrikeNPC(Projectile.damage, 0f, 0);
 
-			CameraSystem.Shake = 10;
+			CameraSystem.shake = 10;
 			int numberOfProjectiles = Main.rand.Next(4, 6);
 
 			if (Main.myPlayer == Projectile.owner)

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>()))
 			{
-				Rectangle squidDomeRect = StarlightWorld.SquidBossArena;
+				Rectangle squidDomeRect = StarlightWorld.squidBossArena;
 				squidDomeRect.X += 26;
 				squidDomeRect.Width -= 52;
 				squidDomeRect.Y += 35;
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			// If the tile is in the vitric biome and doesn't block light, emit light.
-			if (StarlightWorld.VitricBiome.Contains(x, y))
+			if (StarlightWorld.vitricBiome.Contains(x, y))
 			{
 				bool tileBlock = tile.HasTile && Main.tileBlockLight[tile.TileType] && !(tile.Slope != SlopeType.Solid || tile.IsHalfBlock);
 				bool wallBlock = Main.wallLight[tile.WallType];
@@ -48,12 +48,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 				if (!tileBlock && wallBlock && !lava && !lit)
 				{
-					int yOff = y - StarlightWorld.VitricBiome.Y;
+					int yOff = y - StarlightWorld.vitricBiome.Y;
 
 					if (mult > 1)
 						mult = 1;
 
-					float progress = 0.5f + yOff / (float)StarlightWorld.VitricBiome.Height * 0.7f;
+					float progress = 0.5f + yOff / (float)StarlightWorld.vitricBiome.Height * 0.7f;
 					progress = MathHelper.Max(0.5f, progress);
 
 					outputColor.X = (0.3f + (yOff > 70 ? ((yOff - 70) * 0.006f) : 0)) * progress * mult;

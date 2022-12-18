@@ -50,14 +50,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				for (int k = 0; k < NPC.ai[0] - top.Height; k += body.Height + 2)
 				{
-					Vector2 pos2 = NPC.position + Vector2.UnitY * 96 + new Vector2(k, 4 + (float)Math.Sin(StarlightWorld.rottime + k / 25f) * 10);
+					Vector2 pos2 = NPC.position + Vector2.UnitY * 96 + new Vector2(k, 4 + (float)Math.Sin(StarlightWorld.visualTimer + k / 25f) * 10);
 					spriteBatch.Draw(body, pos2 - screenPos, body.Frame(), Lighting.GetColor((int)pos2.X / 16, (int)pos2.Y / 16), 1.57f, body.Size() / 2, 1, 0, 0);
 
-					Vector2 pos3 = NPC.position + Vector2.UnitY * 96 + new Vector2(NPC.width - k, 4 + (float)Math.Sin(StarlightWorld.rottime + k / 25f) * 10);
+					Vector2 pos3 = NPC.position + Vector2.UnitY * 96 + new Vector2(NPC.width - k, 4 + (float)Math.Sin(StarlightWorld.visualTimer + k / 25f) * 10);
 					spriteBatch.Draw(body, pos3 - screenPos, body.Frame(), Lighting.GetColor((int)pos3.X / 16, (int)pos3.Y / 16), 1.57f, body.Size() / 2, 1, 0, 0);
 				}
 
-				float sin = (float)Math.Sin(StarlightWorld.rottime + 3.6f) * 10;
+				float sin = (float)Math.Sin(StarlightWorld.visualTimer + 3.6f) * 10;
 				var color = new Color(255, 40, 40);
 
 				Vector2 pos = NPC.position + Vector2.UnitY * 96 + new Vector2(NPC.ai[0] - top.Height + 36, 32 - top.Width / 2 + sin);

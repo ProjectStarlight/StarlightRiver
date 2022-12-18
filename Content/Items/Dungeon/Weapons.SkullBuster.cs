@@ -488,7 +488,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void Kill(int timeLeft)
 		{
-			CameraSystem.Shake += 3;
+			CameraSystem.shake += 3;
 
 			for (int i = 0; i < 3; i++)
 			{

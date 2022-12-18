@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class NeedlerDustSlowFade : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class NeedlerDustFastFade : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + Name;
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{

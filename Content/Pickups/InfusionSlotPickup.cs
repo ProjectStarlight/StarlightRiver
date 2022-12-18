@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.Pickups
 		public override void PickupEffects(Player Player)
 		{
 			Player.GetHandler().InfusionLimit = 1;
-			Player.GetModPlayer<StarlightPlayer>().MaxPickupTimer = 560;
+			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 560;
 		}
 
 		public override void DrawBehind(int index)
@@ -124,7 +124,7 @@ namespace StarlightRiver.Content.Pickups
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Player Player = Main.LocalPlayer;
-			int timer = Player.GetModPlayer<StarlightPlayer>().PickupTimer;
+			int timer = Player.GetModPlayer<StarlightPlayer>().pickupTimer;
 
 			if (timer < 1 || timer > 559)
 				return;

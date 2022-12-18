@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			}
 
 			//Screenshake
-			CameraSystem.Shake += (int)(359 - Projectile.ai[0]) / 175;
+			CameraSystem.shake += (int)(359 - Projectile.ai[0]) / 175;
 
 			//Lighting
 			for (float k = 0; k <= 6.28f; k += 0.2f)

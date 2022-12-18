@@ -108,14 +108,14 @@ namespace StarlightRiver.Content.GUI
 			Selections = new Item[2];
 
 			var Item = new Item();
-			Item.SetDefaults(bigItemID.Type);
+			Item.SetDefaults(bigItemID.type);
 			Item.stack = bigItemID.GetCount();
 			BigItem = Item;
 
 			for (int k = 0; k < smallItemIDs.Length; k++)
 			{
 				var Item2 = new Item();
-				Item2.SetDefaults(smallItemIDs[k].Type);
+				Item2.SetDefaults(smallItemIDs[k].type);
 				Item2.stack = smallItemIDs[k].GetCount();
 				AppendSlot(Item2, (-2 + k) * 60);
 			}

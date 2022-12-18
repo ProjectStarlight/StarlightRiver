@@ -43,7 +43,7 @@ namespace StarlightRiver.Content.Packets
 				//visuals and sounds for other Players
 
 				if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
-					CameraSystem.Shake += 10;
+					CameraSystem.shake += 10;
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, crystal.Center);
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -0.5f }, crystal.Center);

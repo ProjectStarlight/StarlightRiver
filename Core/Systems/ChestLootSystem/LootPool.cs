@@ -9,6 +9,7 @@ namespace StarlightRiver.Core.Systems.ChestLootSystem
 		public readonly Dictionary<ChestRegionFlags, List<ChestLootInfo>> ExclusiveLootInfo = new();
 
 		public virtual ChestRegionFlags Region => ChestRegionFlags.All;
+
 		public abstract void AddLoot();
 
 		/// <summary>

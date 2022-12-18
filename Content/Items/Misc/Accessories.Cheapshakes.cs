@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.PostUpdateRunSpeedsEvent -= ModifyMovement;
 		}
 
-		private bool PreHurtAccessory(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		private bool PreHurtAccessory(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			if (Equipped(Player) && Math.Abs(Player.velocity.X) > 3f)
 			{

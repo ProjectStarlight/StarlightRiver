@@ -20,7 +20,7 @@
 		private void RefreshLightingTarget(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
 		{
 			if (!Main.gameInactive && width != Main.screenWidth || height != Main.screenHeight)
-				StarlightRiver.LightingBufferInstance?.ResizeBuffers(width, height);
+				StarlightRiver.lightingBufferInstance?.ResizeBuffers(width, height);
 
 			orig(width, height, fullscreen);
 		}
@@ -31,7 +31,7 @@
 				return;
 
 			if (!Main.gameMenu)
-				StarlightRiver.LightingBufferInstance.DebugDraw();
+				StarlightRiver.lightingBufferInstance.DebugDraw();
 
 			Main.instance.GraphicsDevice.SetRenderTarget(null);
 		}

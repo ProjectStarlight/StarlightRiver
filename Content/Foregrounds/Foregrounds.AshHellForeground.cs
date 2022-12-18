@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Foregrounds
 		{
 			particle.Position = particle.StoredPosition - Main.screenPosition + (Main.screenPosition - new Vector2(StarlightWorld.permafrostCenter * 16, (Main.maxTilesY - 100) * 16)) * (particle.Scale * -0.2f);
 			particle.StoredPosition += particle.Velocity;
-			particle.Velocity.Y += (float)Math.Sin(StarlightWorld.rottime + particle.GetHashCode()) * 0.01f;
+			particle.Velocity.Y += (float)Math.Sin(StarlightWorld.visualTimer + particle.GetHashCode()) * 0.01f;
 
 			float progress = particle.Timer / 1500f;
 			float opacity = progress > 0.5f ? 0.8f : progress < 0.4f ? 0.5f : 0.5f + (progress - 0.4f) / 0.1f * 0.3f;

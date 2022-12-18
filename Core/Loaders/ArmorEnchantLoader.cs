@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.ArmorEnchantment;
 using System;
 using System.Collections.Generic;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {

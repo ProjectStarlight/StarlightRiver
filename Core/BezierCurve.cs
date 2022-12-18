@@ -1,15 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace StarlightRiver.Core
 {
 	public class BezierCurve
 	{
-		private Vector2[] _controlPoints;
+		private readonly Vector2[] controlPoints;
 
 		public BezierCurve(params Vector2[] controls)
 		{
-			_controlPoints = controls;
+			controlPoints = controls;
 		}
 
 		/// <summary>
@@ -21,10 +20,11 @@ namespace StarlightRiver.Core
 		{
 			if (T < 0f)
 				T = 0f;
+
 			if (T > 1f)
 				T = 1f;
 
-			return PrivateEvaluate(_controlPoints, T);
+			return PrivateEvaluate(controlPoints, T);
 		}
 
 		/// <summary>
@@ -57,6 +57,7 @@ namespace StarlightRiver.Core
 			if (points.Length > 2)
 			{
 				var nextPoints = new Vector2[points.Length - 1];
+
 				for (int k = 0; k < points.Length - 1; k++)
 				{
 					nextPoints[k] = Vector2.Lerp(points[k], points[k + 1], T);
@@ -72,8 +73,8 @@ namespace StarlightRiver.Core
 
 		public Vector2 this[int x]
 		{
-			get => _controlPoints[x];
-			set => _controlPoints[x] = value;
+			get => controlPoints[x];
+			set => controlPoints[x] = value;
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletSmoke : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 	public class IgnitionGauntletSmoke2 : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{

@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 				WorldGen.KillTile(ParentX, ParentY);
 				NetMessage.SendTileSquare(Player.whoAmI, (int)(Projectile.position.X / 16f), (int)(Projectile.position.Y / 16f), 2, 3, TileChangeType.None);
 
-				CameraSystem.Shake += 4;
+				CameraSystem.shake += 4;
 
 				for (int k = 1; k <= 5; k++)
 					Gore.NewGoreDirect(Projectile.GetSource_Death(), Projectile.position + new Vector2(Main.rand.Next(Projectile.width), Main.rand.Next(Projectile.height)), (Vector2.Normalize(Player.velocity) * Main.rand.NextFloat(4)).RotatedByRandom(MathHelper.ToRadians(35f)), Mod.Find<ModGore>("CrashPodGore" + k).Type);

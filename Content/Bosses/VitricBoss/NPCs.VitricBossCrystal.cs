@@ -171,7 +171,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					if (Abilities.AbilityHelper.CheckDash(Player, NPC.Hitbox))
 					{
 						if (Parent.arena.Contains(Main.LocalPlayer.Center.ToPoint()))
-							CameraSystem.Shake += 20;
+							CameraSystem.shake += 20;
 
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact, NPC.Center);
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -0.5f }, NPC.Center);
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)(NPC.Center.Y + 24) / 16);
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.VitricBiome.Y * 16) //tile collision
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.vitricBiome.Y * 16) //tile collision
 						Impact();
 
 					break;
@@ -376,7 +376,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42); //boom
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item70 with { Volume = 1f, Pitch = -1f }, NPC.Center); //boom
 
-			CameraSystem.Shake += 17;
+			CameraSystem.shake += 17;
 
 			if (state == 3 && Main.masterMode && Main.netMode != NetmodeID.MultiplayerClient)
 				Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ProjectileType<FireRingHostile>(), 20, 0, Main.myPlayer, 150);
@@ -453,7 +453,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				Texture2D ballTex = Request<Texture2D>(AssetDirectory.VitricBoss + "FinalLaser").Value;
 
 				float progress = Math.Min(1, (timer - 220) / 60f);
-				int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
+				int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 				Color color = new Color(255, 160 + sin, 40 + sin / 2) * progress;
 
 				spriteBatch.Draw(texGlow2, NPC.Center - Main.screenPosition, null, color * progress, 0, texGlow2.Size() / 2, progress * 1.0f, default, default);

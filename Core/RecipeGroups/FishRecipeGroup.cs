@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 using Terraria.Localization;
 
 namespace StarlightRiver.Core.RecipeGroups

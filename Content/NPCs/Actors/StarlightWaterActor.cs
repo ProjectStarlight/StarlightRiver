@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-				spriteBatch.Draw(tex, position + frame.Size() / 2, null, new Color(130, 200, 255) * (StarlightWaterActor.glowStrength + (float)Math.Sin(StarlightWorld.rottime) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
+				spriteBatch.Draw(tex, position + frame.Size() / 2, null, new Color(130, 200, 255) * (StarlightWaterActor.glowStrength + (float)Math.Sin(StarlightWorld.visualTimer) * 0.2f), 0, tex.Size() / 2, 1, 0, 0);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);

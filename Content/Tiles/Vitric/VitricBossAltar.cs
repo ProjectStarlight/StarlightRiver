@@ -1,17 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -51,6 +48,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (Main.rand.Next(200) == 0 && tile.TileFrameX < 90 && tile.TileFrameX > 16)
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+
 				if (Main.rand.NextBool())
 					Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
 				else
@@ -150,6 +148,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				if (Main.netMode != NetmodeID.Server)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
+
 					for (int k = 0; k < 100; k++)
 						Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>(), 0, 0, 0, default, 1.2f);
 
@@ -167,7 +166,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			}
 		}
 
-		public void findParent()
+		public void FindParent()
 		{
 			boss = null;
 			arenaLeft = null;
@@ -176,13 +175,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
 				NPC NPC = Main.npc[i];
-				if (NPC.active && NPC.type == ModContent.NPCType<VitricBoss>())
+				if (NPC.active && NPC.type == NPCType<VitricBoss>())
 					boss = NPC;
 
-				if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropLeft>())
+				if (NPC.active && NPC.type == NPCType<VitricBackdropLeft>())
 					arenaLeft = NPC;
 
-				if (NPC.active && NPC.type == ModContent.NPCType<VitricBackdropRight>())
+				if (NPC.active && NPC.type == NPCType<VitricBackdropRight>())
 					arenaRight = NPC;
 			}
 
@@ -198,7 +197,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 				CutsceneTimer = 999;
 
 			if (boss is null || arenaLeft is null || arenaRight is null)
-				findParent();
+				FindParent();
 
 			//This controls spawning the rest of the arena
 			if (arenaLeft is null || arenaRight is null || !arenaLeft.active || !arenaRight.active && Main.netMode != NetmodeID.MultiplayerClient)
@@ -239,14 +238,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (parent.TileFrameX == 0)
 				return;
 
-			if (boss is null || !boss.active || boss.type != ModContent.NPCType<VitricBoss>())
+			if (boss is null || !boss.active || boss.type != NPCType<VitricBoss>())
 				boss = null;
 
 			if (parent.TileFrameX == 90 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
 			{
-				if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
+				if (Main.LocalPlayer.InModBiome(GetInstance<VitricDesertBiome>()))
 				{
-					CameraSystem.Shake += 1;
+					CameraSystem.shake += 1;
 					Dust.NewDust(Projectile.Center + new Vector2(-632, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
 					Dust.NewDust(Projectile.Center + new Vector2(72, Projectile.height / 2), 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f));
 
@@ -280,14 +279,14 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				BarrierProgress++;
 
-				if (Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricDesertBiome>()))
+				if (Main.LocalPlayer.InModBiome(GetInstance<VitricDesertBiome>()))
 				{
 					if (BarrierProgress % 3 == 0)
-						CameraSystem.Shake += 2; //screenshake
+						CameraSystem.shake += 2; //screenshake
 
 					if (BarrierProgress == 119) //hitting the top
 					{
-						CameraSystem.Shake += 15;
+						CameraSystem.shake += 15;
 						Helper.PlayPitched("VitricBoss/CeirosPillarImpact", 0.5f, 0, Projectile.Center);
 					}
 				}

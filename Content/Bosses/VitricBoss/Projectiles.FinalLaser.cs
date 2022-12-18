@@ -150,7 +150,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
-			int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(255, 160 + sin, 40 + sin / 2);
 
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				spriteBatch.Draw(glowTex, target, source, color * 0.95f, LaserRotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
 				spriteBatch.Draw(impactTex, endpoint - Main.screenPosition, null, color * (height * 0.006f), 0, impactTex.Size() / 2, 6.4f, 0, 0);
-				spriteBatch.Draw(impactTex2, endpoint - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
+				spriteBatch.Draw(impactTex2, endpoint - Main.screenPosition, null, color * (height * 0.01f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.75f, 0, 0);
 
 				for (int k = 0; k < 4; k++)
 				{

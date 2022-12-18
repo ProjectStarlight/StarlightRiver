@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Content.Packets;
@@ -10,38 +9,27 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightPlayer : ModPlayer
 	{
-		public int Timer { get; private set; }
-
-		public bool JustHit = false;
-		public int LastHit = 0;
+		public bool justHit = false;
+		public int lastHit = 0;
 		public bool trueInvisible = false;
-
-		public bool DarkSlow = false;
 
 		public int platformTimer = 0;
 
-		public int PickupTimer = 0; //TODO: Move this into its own thing eventually
-		public int MaxPickupTimer = 0;
-		public NPC PickupTarget;
+		public int pickupTimer = 0; //TODO: Move this into its own thing eventually
+		public int maxPickupTimer = 0;
+		public NPC pickupTarget;
 		public Vector2 oldPickupPos;
 
 		public bool inTutorial;
 
-		public float GuardDamage;
-		public int GuardCrit;
-		public float GuardBuff;
-		public int GuardRad;
-
-		public float ItemSpeed;
+		public float itemSpeed;
 		public float rotation;
 
 		public static List<PlayerTicker> spawners = new();
@@ -49,40 +37,36 @@ namespace StarlightRiver.Core
 		public bool shouldSendHitPacket = false;
 		public OnHitPacket hitPacket = null;
 
+		public int Timer { get; private set; }
+
 		public override void PreUpdate()
 		{
-			if (PickupTarget != null)
+			if (pickupTarget != null)
 			{
-				if (PickupTimer == 0)
+				if (pickupTimer == 0)
 					oldPickupPos = Player.Center;
 
-				PickupTimer++;
+				pickupTimer++;
 
 				Player.immune = true;
 				Player.immuneTime = 5;
 				Player.immuneNoBlink = true;
 
-				Player.Center = Vector2.SmoothStep(oldPickupPos, PickupTarget.Center, PickupTimer / 30f);
-				if (PickupTimer >= MaxPickupTimer)
-					PickupTarget = null;
+				Player.Center = Vector2.SmoothStep(oldPickupPos, pickupTarget.Center, pickupTimer / 30f);
+				if (pickupTimer >= maxPickupTimer)
+					pickupTarget = null;
 			}
 			else
 			{
-				PickupTimer = 0;
+				pickupTimer = 0;
 			}
 
 			platformTimer--;
 
-			if (DarkSlow)
-			{
-				Player.velocity.X *= 0.8f;
-			}
-
-			DarkSlow = false;
-
 			if (!Player.immune)
 			{
 				VitricSpike.CollideWithSpikes(Player, out int damage);
+
 				if (damage > 0)
 					Player.Hurt(PlayerDeathReason.ByCustomReason(Player.name + " was impaled by glass shards."), damage, 0);
 			}
@@ -96,11 +80,7 @@ namespace StarlightRiver.Core
 		public override void ResetEffects()
 		{
 			ResetEffectsEvent?.Invoke(this);
-			GuardDamage = 1;
-			GuardCrit = 0;
-			GuardBuff = 1;
-			GuardRad = 0;
-			ItemSpeed = 1;
+			itemSpeed = 1;
 
 			trueInvisible = false;
 			shouldSendHitPacket = false;
@@ -111,14 +91,14 @@ namespace StarlightRiver.Core
 			PostUpdateEvent.Invoke(Player);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient && Player == Main.LocalPlayer)
-				StarlightWorld.rottime += (float)Math.PI / 60;
+				StarlightWorld.visualTimer += (float)Math.PI / 60;
 			Timer++;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
 		{
-			JustHit = true;
-			LastHit = Timer;
+			justHit = true;
+			lastHit = Timer;
 		}
 
 		public delegate void PostUpdateEquipsDelegate(StarlightPlayer Player);
@@ -126,7 +106,7 @@ namespace StarlightRiver.Core
 		public override void PostUpdateEquips()
 		{
 			PostUpdateEquipsEvent?.Invoke(this);
-			JustHit = false;
+			justHit = false;
 		}
 
 		/// <summary>
@@ -137,7 +117,7 @@ namespace StarlightRiver.Core
 		/// <param name="damage"></param>
 		/// <param name="knockback"></param>
 		/// <param name="crit"></param>
-		public void addHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
+		public void AddHitPacket(Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 				hitPacket = new OnHitPacket(Player, proj, target, damage, knockback, crit);
@@ -146,7 +126,7 @@ namespace StarlightRiver.Core
 		/// <summary>
 		/// This is expected to run AFTER the on hit hooks so that if and only if any event during the modify and/or hit hooks wants the data to be synced we will do so
 		/// </summary>
-		public void sendHitPacket()
+		public void SendHitPacket()
 		{
 			if (shouldSendHitPacket && hitPacket != null && Main.myPlayer == Player.whoAmI && Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -159,7 +139,7 @@ namespace StarlightRiver.Core
 		public override void OnEnterWorld(Player Player)
 		{
 			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
-			StarlightRiver.LightingBufferInstance.ResizeBuffers(Main.screenWidth, Main.screenHeight);
+			StarlightRiver.lightingBufferInstance.ResizeBuffers(Main.screenWidth, Main.screenHeight);
 
 			rotation = 0;
 
@@ -194,7 +174,7 @@ namespace StarlightRiver.Core
 
 		public override float UseTimeMultiplier(Item Item)
 		{
-			return ItemSpeed;
+			return itemSpeed;
 		}
 
 		public void DoubleTapEffects(int keyDir) //TODO: Move this to breacher armor classes
@@ -203,11 +183,13 @@ namespace StarlightRiver.Core
 			{
 				//Breacher drone
 				Projectile spotter = Main.projectile.Where(n => n.owner == Player.whoAmI && n.ModProjectile is SpotterDrone drone2).OrderBy(n => Vector2.Distance(n.Center, Player.Center)).FirstOrDefault();
+
 				if (spotter != default && spotter.ModProjectile is SpotterDrone drone && drone.CanScan)
 				{
 					BreacherPlayer modPlayer = Player.GetModPlayer<BreacherPlayer>();
 					Projectile Projectile = spotter;
 					NPC target = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
+
 					if (modPlayer.Charges >= 1 && target != default)
 					{
 						Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);

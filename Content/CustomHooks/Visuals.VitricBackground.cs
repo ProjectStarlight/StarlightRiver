@@ -16,8 +16,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody, 1);
-			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody, 1);
+			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody);
+			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody);
 
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawVitricBackground;
 			On.Terraria.Main.DrawBlack += ForceDrawBlack;
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void ForceDrawBlack(On.Terraria.Main.orig_DrawBlack orig, Main self, bool force)
 		{
-			if (StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
+			if (StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 				orig(self, true);
 			else
 				orig(self, force);
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private float NewThreshold(float orig)
 		{
-			if (StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
+			if (StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 				return 0.1f;
 			else
 				return orig;
@@ -92,9 +92,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 			Player Player = Main.LocalPlayer;
 
-			if (Player != null && StarlightWorld.VitricBiome.Intersects(Helper.ScreenTiles))
+			if (Player != null && StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 			{
-				Vector2 basepoint = (StarlightWorld.VitricBiome != default) ? StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
+				Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -246,7 +246,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Texture2D texLeft = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandLeft").Value;
 			Texture2D texRight = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandRight").Value;
 
-			var blacklist = new Rectangle(StarlightWorld.VitricBiome.X, StarlightWorld.VitricBiome.Y - 2, StarlightWorld.VitricBiome.Width, StarlightWorld.VitricBiome.Height);
+			var blacklist = new Rectangle(StarlightWorld.vitricBiome.X, StarlightWorld.vitricBiome.Y - 2, StarlightWorld.vitricBiome.Width, StarlightWorld.vitricBiome.Height);
 
 			for (int x = -tex.Width; x <= Main.screenWidth + tex.Width; x += tex.Width)
 			{
@@ -299,7 +299,7 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k <= 5; k++)
 			{
 				float x = basepoint.X + off.X + k * 739 * 4 + GetParallaxOffset(basepoint.X, parallax * 0.1f) - (int)Main.screenPosition.X;
-				float y = basepoint.Y + off.Y - (int)Main.screenPosition.Y + GetParallaxOffsetY(basepoint.Y + StarlightWorld.VitricBiome.Height * 8, parallax * 0.04f);
+				float y = basepoint.Y + off.Y - (int)Main.screenPosition.Y + GetParallaxOffsetY(basepoint.Y + StarlightWorld.vitricBiome.Height * 8, parallax * 0.04f);
 
 				if (x > -texture.Width && x < Main.screenWidth + 30)
 					Main.spriteBatch.Draw(texture, new Vector2(x, y), null, color, 0f, Vector2.Zero, 1f, flip ? SpriteEffects.FlipVertically : 0, 0);

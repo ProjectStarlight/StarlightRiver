@@ -1,14 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Content.Packets;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
 	public abstract class DummyTile : ModTile
 	{
-		public static Dictionary<Point16, Projectile> dummies = new();
+		public readonly static Dictionary<Point16, Projectile> dummies = new();
 
 		public virtual int DummyType { get; }
 
@@ -51,6 +49,7 @@ namespace StarlightRiver.Core
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
 				Projectile proj = Main.projectile[k];
+
 				if (proj.active && proj.type == type && (proj.position / 16).ToPoint16() == new Point16(i, j))
 					return true;
 			}
@@ -66,6 +65,7 @@ namespace StarlightRiver.Core
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
 				Projectile proj = Main.projectile[k];
+
 				if (proj.active && proj.ModProjectile is T && (proj.position / 16).ToPoint16() == new Point16(i, j))
 					return true;
 			}

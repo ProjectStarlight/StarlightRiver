@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple

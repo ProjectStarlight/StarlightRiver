@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			Item prevBarrierItem = mp.barrierDyeItem;
 			Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
 			Item.TurnToAir();
-			mp.RechargeAnimationTimer = 0;
+			mp.rechargeAnimationTimer = 0;
 
 			Main.EquipPageSelected = 2;
 
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			float opacity = barrier.RechargeAnimationTimer;
+			float opacity = barrier.rechargeAnimationTimer;
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
 

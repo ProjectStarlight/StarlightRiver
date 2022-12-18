@@ -1,11 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -90,6 +86,7 @@ namespace StarlightRiver.Core
 			Owner.itemTime = 2;
 			Owner.itemAnimation = 2;
 			Owner.heldProj = Projectile.whoAmI;
+
 			if (!Owner.channel && !released) //check to see if Player stops channelling
 			{
 				released = true;
@@ -103,6 +100,7 @@ namespace StarlightRiver.Core
 				Projectile.velocity = Vector2.Zero;
 				Projectile.tileCollide = false;
 				Projectile.rotation = Projectile.AngleFrom(Owner.MountedCenter);
+
 				if (++Timer % 20 == 0)
 					SoundEngine.PlaySound(SoundID.Item19 with { Volume = 0.5f, PitchVariance = 0.1f }, Projectile.Center);
 
@@ -112,12 +110,12 @@ namespace StarlightRiver.Core
 				float distfromPlayer = spinningdistance * ((float)Math.Abs(Math.Cos(radians) / 5) + 0.8f); //use a cosine function based on the amount of rotation the flail has gone through to create an ellipse-like pattern
 				Vector2 spinningoffset = new Vector2(distfromPlayer, 0).RotatedBy(radians);
 				Projectile.Center = Owner.MountedCenter + spinningoffset;
+
 				if (Owner.whoAmI == Main.myPlayer)
 					Owner.ChangeDir(Math.Sign(Main.MouseWorld.X - Owner.Center.X));
 
 				SpinExtras(Owner);
 			}
-
 			else
 			{
 				Projectile.rotation += Projectile.velocity.X * 0.03f;
@@ -126,9 +124,11 @@ namespace StarlightRiver.Core
 			}
 
 			float launchspeed = Owner.HeldItem.shootSpeed * MathHelper.Lerp(SpeedMult.X, SpeedMult.Y, ChargeTime / MaxChargeTime);
+
 			if (released && !falling) //basic flail launch, returns after a while
 			{
 				Projectile.tileCollide = true;
+
 				if (++Timer == 1 && Owner.whoAmI == Main.myPlayer)
 				{
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item19, Projectile.Center);
@@ -139,7 +139,6 @@ namespace StarlightRiver.Core
 
 				if (Timer >= MathHelper.Min(60 * (ChargeTime / MaxChargeTime), 30)) //max out on time halfway through charge
 					Return(launchspeed, Owner);
-
 				else
 					LaunchExtras(Owner);
 
@@ -161,6 +160,7 @@ namespace StarlightRiver.Core
 				{
 					FallingExtras(Owner);
 					Projectile.tileCollide = true;
+
 					if (Projectile.velocity.Y < 16f)
 						Projectile.velocity.Y += 0.5f;
 
@@ -173,8 +173,10 @@ namespace StarlightRiver.Core
 		{
 			Projectile.tileCollide = false;
 			Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Owner.Center) * launchspeed * 1.5f, 0.07f);
+
 			if (Projectile.Hitbox.Intersects(Owner.Hitbox))
 				Projectile.Kill();
+
 			ReturnExtras(Owner);
 		}
 
@@ -210,7 +212,7 @@ namespace StarlightRiver.Core
 				FallingTileCollide(oldVelocity);
 			}
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 			Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
 			Projectile.velocity = new Vector2((Projectile.velocity.X != Projectile.oldVelocity.X) ?
 				-Projectile.oldVelocity.X / 5 : Projectile.velocity.X,
@@ -221,6 +223,7 @@ namespace StarlightRiver.Core
 
 			return false;
 		}
+
 		public override bool PreDrawExtras()
 		{
 			Texture2D ChainTexture = ModContent.Request<Texture2D>(Texture + "_chain").Value;

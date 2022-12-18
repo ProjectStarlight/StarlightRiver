@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Keys;
 using System.Collections.Generic;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core

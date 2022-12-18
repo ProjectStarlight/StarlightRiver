@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
@@ -25,6 +22,7 @@ namespace StarlightRiver.Core
 
 			return base.CanUseItem(item);
 		}
+
 		//for on-hit effects that require more specific effects, Projectiles
 		public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);
 		public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
@@ -66,7 +64,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit);
 		public override void ModifyHitNPC(Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
-			addHitPacket(null, target, damage, knockback, crit);
+			AddHitPacket(null, target, damage, knockback, crit);
 			ModifyHitNPCEvent?.Invoke(Player, Item, target, ref damage, ref knockback, ref crit);
 		}
 
@@ -79,7 +77,7 @@ namespace StarlightRiver.Core
 		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
 		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			addHitPacket(proj, target, damage, knockback, crit);
+			AddHitPacket(proj, target, damage, knockback, crit);
 			ModifyHitNPCWithProjEvent?.Invoke(Player, proj, target, ref damage, ref knockback, ref crit, ref hitDirection);
 		}
 
@@ -92,7 +90,7 @@ namespace StarlightRiver.Core
 		public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			OnHitNPCEvent?.Invoke(Player, Item, target, damage, knockback, crit);
-			sendHitPacket();
+			SendHitPacket();
 		}
 
 		/// <summary>
@@ -104,7 +102,7 @@ namespace StarlightRiver.Core
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			OnHitNPCWithProjEvent?.Invoke(Player, proj, target, damage, knockback, crit);
-			sendHitPacket();
+			SendHitPacket();
 		}
 
 		public delegate void NaturalLifeRegenDelegate(Player player, ref float regen);
@@ -132,19 +130,19 @@ namespace StarlightRiver.Core
 		}
 
 		//this is the grossest one. I am sorry, little ones.
-		public delegate bool PreHurtDelegate(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource);
+		public delegate bool PreHurtDelegate(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter);
 		/// <summary>
 		/// If any PreHurtEvent returns false, the default behavior is overridden.
 		/// </summary>
 		public static event PreHurtDelegate PreHurtEvent;
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			if (PreHurtEvent != null)
 			{
 				bool result = true;
 				foreach (PreHurtDelegate del in PreHurtEvent.GetInvocationList())
 				{
-					result &= del(Player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+					result &= del(Player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 				}
 
 				return result;

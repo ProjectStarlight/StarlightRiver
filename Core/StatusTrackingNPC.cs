@@ -1,14 +1,12 @@
 ﻿using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
 	class StatusTrackingNPC : GlobalNPC
 	{
 		private Player attacker;
-		private int[] storedBuffs = new int[5];
-		private int[] storedTimes = new int[5];
+		private readonly int[] storedBuffs = new int[5];
+		private readonly int[] storedTimes = new int[5];
 		private bool compareBuffs;
 
 		public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;

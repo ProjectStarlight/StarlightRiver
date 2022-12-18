@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			}
 			else
 			{
-				CameraSystem.Shake = 5;
+				CameraSystem.shake = 5;
 
 				SoundEngine.PlaySound(new SoundStyle($"{SoundPath}Failure"), Player.Center);
 

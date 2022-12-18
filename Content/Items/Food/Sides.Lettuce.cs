@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void BuffEffects(Player Player, float multiplier)
 		{
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 40;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 40;
 		}
 	}
 }

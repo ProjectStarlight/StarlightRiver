@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenFormAndColor"].GetShader().Shader;
 			effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
-			effect.Parameters["uTime"].SetValue(barrier.RechargeAnimationTimer * 2 + (barrier.RechargeAnimationTimer >= 1 ? Main.GameUpdateCount / 30f % 2f : 0));
+			effect.Parameters["uTime"].SetValue(barrier.rechargeAnimationTimer * 2 + (barrier.rechargeAnimationTimer >= 1 ? Main.GameUpdateCount / 30f % 2f : 0));
 			effect.Parameters["sourceFrame"].SetValue(new Vector4((int)pos.X - 30, (int)pos.Y - 60, 60, 120));
 			effect.Parameters["texSize"].SetValue(tex.Size());
 

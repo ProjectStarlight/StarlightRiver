@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 
 namespace StarlightRiver.Core
 {
@@ -11,7 +8,6 @@ namespace StarlightRiver.Core
 	{
 		public static float GetHeight(string message, float scale, int wrapWidth)
 		{
-
 			SplitMessage(WrapMarkdownText(message, wrapWidth), out List<string> messages, out List<string> mods);
 			return (1 + messages.Count(n => n == "\n")) * Terraria.GameContent.FontAssets.MouseText.Value.MeasureString("A").Y * scale;
 		}
@@ -27,6 +23,7 @@ namespace StarlightRiver.Core
 
 			float xOff = 0;
 			float yOff = 0;
+
 			for (int k = 0; k < messages.Count; k++)
 			{
 				if (messages[k] == "\n") //special case for linebreak because im layzeee
@@ -68,14 +65,12 @@ namespace StarlightRiver.Core
 					writeTo = "";
 					writeTo += c;
 				}
-
 				else if (c == ']')
 				{
 					writeTo += c;
 					modifierMessages.Add(writeTo);
 					writeTo = "";
 				}
-
 				else
 				{
 					writeTo += c;
@@ -105,8 +100,10 @@ namespace StarlightRiver.Core
 			for (int k = 0; k < mods.Length; k++)
 			{
 				string subMod = mods[k].Replace(">", "");
+
 				if (subMod == "")
 					continue;
+
 				string[] parts = subMod.Split(':');
 
 				string modName = parts[0];
@@ -114,8 +111,10 @@ namespace StarlightRiver.Core
 
 				if (modName == "color")
 					color = ParseAsColor(param);
+
 				if (modName == "offset")
 					offset = ParseAsOffset(param);
+
 				if (modName == "scale")
 					scale = ParseAsScale(param);
 			}
@@ -142,6 +141,7 @@ namespace StarlightRiver.Core
 		public static string MakeVibratingText(string message, Color color)
 		{
 			string output = "";
+
 			for (int k = 0; k < message.Length; k++)
 			{
 				output += SetCharMarkdown(message[k], color, new Vector2(Main.rand.Next(-2, 2), Main.rand.Next(-2, 2)), new Vector3(Main.rand.NextFloat(0.8f, 1), 0, 0));
@@ -153,15 +153,16 @@ namespace StarlightRiver.Core
 		public static string MakeSuaveText(string message)
 		{
 			string output = "";
+
 			for (int k = 0; k < message.Length; k++)
 			{
-				float sin = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k) * 0.5f;
-				float sin2 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f) * 0.5f;
-				float sin3 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k + (float)Math.PI / 1.5f * 2) * 0.5f;
+				float sin = 0.8f + (float)Math.Sin(StarlightWorld.visualTimer + k) * 0.5f;
+				float sin2 = 0.8f + (float)Math.Sin(StarlightWorld.visualTimer + k + (float)Math.PI / 1.5f) * 0.5f;
+				float sin3 = 0.8f + (float)Math.Sin(StarlightWorld.visualTimer + k + (float)Math.PI / 1.5f * 2) * 0.5f;
 				var color = new Color(sin, sin2, sin3);
-				var off = new Vector2(0, 12 + (float)(Math.Sin(StarlightWorld.rottime * 2 + k / 2f) * 4));
+				var off = new Vector2(0, 12 + (float)(Math.Sin(StarlightWorld.visualTimer * 2 + k / 2f) * 4));
 
-				float sin4 = 0.8f + (float)Math.Sin(StarlightWorld.rottime + k * 0.25f) * 0.2f;
+				float sin4 = 0.8f + (float)Math.Sin(StarlightWorld.visualTimer + k * 0.25f) * 0.2f;
 				var scale = new Vector3(sin4, 0.5f, 0.5f);
 
 				output += SetCharMarkdown(message[k], color, off, scale);
@@ -251,6 +252,7 @@ namespace StarlightRiver.Core
 					for (int n = 0; n < words.Length; n++)
 					{
 						float w = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(words[n] + ' ').X; //duplicate the markdown signature if we have to newline, and add the newline as it's own seperate blank markdown so the draw method can identify it
+
 						if (totalWidth + w > width)
 						{
 							totalWidth = w;

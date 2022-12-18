@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 
 			Helper.PlayPitched("Impacts/FireBladeStab", 0.25f, Main.rand.NextFloat(-0.05f, 0.05f), wheelPos);
-			CameraSystem.Shake += 1;
+			CameraSystem.shake += 1;
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);
 			if (CurrentHeat < MAXHEAT)
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			}
 
 			Helper.PlayPitched("Magic/FireHit", 0.45f, 0, wheelPos);
-			CameraSystem.Shake += 4;
+			CameraSystem.shake += 4;
 		}
 	}
 

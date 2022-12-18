@@ -347,7 +347,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void Explode()
 		{
-			CameraSystem.Shake += 8;
+			CameraSystem.shake += 8;
 
 			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));

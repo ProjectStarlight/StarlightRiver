@@ -1,33 +1,31 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Core
 {
 	internal abstract class WalkableCrystal : DummyTile
 	{
-		protected readonly string ItemName;
-		protected int ItemType;
-		protected readonly string StructurePath;
-		protected string FullStructPath;
-		public readonly int VariantCount;
-		protected readonly Color? MapColor;
-		protected readonly int CrystalDustType;
-		protected readonly SoundStyle? CrystalSound;
-		public readonly int MaxWidth;
-		public readonly int MaxHeight;
-		protected readonly string TexturePath;
-		public readonly string DummyName;
+		protected readonly string itemName;
+		protected int itemType;
+		protected readonly string structurePath;
+		protected string fullStructurePath;
+		public readonly int variantCount;
+		protected readonly Color? mapColor;
+		protected readonly int dustType;
+		protected readonly SoundStyle? sound;
+		public readonly int maxWidth;
+		public readonly int maxHeight;
+		protected readonly string texturePath;
+		public readonly string dummyName;
 
-		public override int DummyType => Mod.Find<ModProjectile>(DummyName).Type;
+		public override int DummyType => Mod.Find<ModProjectile>(dummyName).Type;
+
+		public override string Texture => texturePath + Name;
 
 		public override bool SpawnConditions(int i, int j)
 		{
@@ -36,29 +34,27 @@ namespace StarlightRiver.Core
 
 		protected WalkableCrystal(int maxWidth, int maxHeight, string dummyType, string path = null, string structurePath = null, int variantCount = 1, string drop = null, int dust = 0, Color? mapColor = null, SoundStyle? sound = null)
 		{
-			ItemName = drop;
-			TexturePath = path;
-			StructurePath = structurePath;
-			VariantCount = variantCount;
-			MapColor = mapColor;
-			CrystalDustType = dust;
-			MaxHeight = maxHeight;
-			MaxWidth = maxWidth;
-			CrystalSound = sound;
-			DummyName = dummyType;
+			itemName = drop;
+			texturePath = path;
+			this.structurePath = structurePath;
+			this.variantCount = variantCount;
+			this.mapColor = mapColor;
+			dustType = dust;
+			this.maxHeight = maxHeight;
+			this.maxWidth = maxWidth;
+			this.sound = sound;
+			dummyName = dummyType;
 		}
-
-		public override string Texture => TexturePath + Name;
 
 		public override void Load()
 		{
-			string suffix = Name + (VariantCount > 1 ? "_" : string.Empty);
-			FullStructPath = (string.IsNullOrEmpty(StructurePath) ? AssetDirectory.StructureFolder : StructurePath) + suffix;
+			string suffix = Name + (variantCount > 1 ? "_" : string.Empty);
+			fullStructurePath = (string.IsNullOrEmpty(structurePath) ? AssetDirectory.StructureFolder : structurePath) + suffix;
 		}
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSet(int.MaxValue, CrystalDustType, CrystalSound, MapColor ?? Color.Transparent, -1, default, default, default);
+			this.QuickSet(int.MaxValue, dustType, sound, mapColor ?? Color.Transparent, -1, default, default, default);
 			Main.tileBlockLight[Type] = false;
 			Main.tileFrameImportant[Type] = true;
 			TileID.Sets.DrawsWalls[Type] = true;
@@ -67,8 +63,8 @@ namespace StarlightRiver.Core
 			TileObjectData.newTile.HookPlaceOverride = new PlacementHook(PostPlace, -1, 0, true);
 			TileObjectData.addTile(Type);
 
-			if (!string.IsNullOrEmpty(ItemName))
-				ItemType = Mod.Find<ModItem>(ItemName).Type;
+			if (!string.IsNullOrEmpty(itemName))
+				itemType = Mod.Find<ModItem>(itemName).Type;
 
 			SafeSetDefaults();
 		}
@@ -77,14 +73,14 @@ namespace StarlightRiver.Core
 
 		private int PostPlace(int x, int y, int type, int style, int dir, int extra)
 		{
-			if (style < VariantCount)
+			if (style < variantCount)
 			{
-				var offset = new Point16(MaxWidth / 2 - 1, MaxHeight - 1);
+				var offset = new Point16(maxWidth / 2 - 1, maxHeight - 1);
 
-				if (VariantCount > 1)//if statement because the ternary was acting weird
-					StructureHelper.Generator.GenerateStructure(FullStructPath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
+				if (variantCount > 1)//if statement because the ternary was acting weird
+					StructureHelper.Generator.GenerateStructure(fullStructurePath + style, new Point16(x, y) - offset, StarlightRiver.Instance);
 				else
-					StructureHelper.Generator.GenerateStructure(FullStructPath, new Point16(x, y) - offset, StarlightRiver.Instance);
+					StructureHelper.Generator.GenerateStructure(fullStructurePath, new Point16(x, y) - offset, StarlightRiver.Instance);
 			}
 
 			return 0;
@@ -93,7 +89,8 @@ namespace StarlightRiver.Core
 		public override bool Drop(int i, int j)
 		{
 			if (Main.tile[i, j].TileFrameX > 0)
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * MaxWidth, 16 * MaxHeight, ItemType);
+				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * maxWidth, 16 * maxHeight, itemType);
+
 			return false;
 		}
 

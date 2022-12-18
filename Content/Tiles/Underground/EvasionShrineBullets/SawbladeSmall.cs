@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
@@ -12,9 +7,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public Vector2 storedVelocity = Vector2.Zero;
 		public EvasionShrineDummy parent;
 
-		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
-
 		public float Alpha => 1 - Projectile.alpha / 255f;
+
+		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -45,13 +40,11 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, storedVelocity, Projectile.ai[0] / 20f);
 				Projectile.alpha -= 255 / 20;
 			}
-
 			else if (Projectile.timeLeft <= 20)
 			{
 				Projectile.velocity = Vector2.SmoothStep(Vector2.Zero, storedVelocity, Projectile.timeLeft / 20f);
 				Projectile.alpha += 255 / 20;
 			}
-
 			else
 			{
 				Projectile.alpha = 0;
@@ -62,9 +55,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
-			//parent.lives--;
+			parent.lives--;
 
-			if (Main.rand.Next(10000) == 0)
+			if (Main.rand.NextBool(10000))
 				Main.NewText("Skill issue.");
 		}
 

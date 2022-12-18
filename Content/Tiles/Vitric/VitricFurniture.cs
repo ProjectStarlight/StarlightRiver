@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Core.Loaders;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -14,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			color: new Color(140, 97, 86),
 			glowColor: new Color(255, 220, 150),
 			dust: DustType<Dusts.Air>(),
-			material: ModContent.ItemType<Content.Items.Vitric.SandstoneChunk>())
+			material: ItemType<Content.Items.Vitric.SandstoneChunk>())
 		{ }
 	}
 }

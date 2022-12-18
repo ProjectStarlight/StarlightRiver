@@ -315,7 +315,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		private static void SpawnBlood(NPC npc, Projectile projectile)
 		{
 			Helper.PlayPitched("Impacts/GoreHeavy", 0.5f, Main.rand.NextFloat(-0.1f, 0.1f), npc.Center);
-			CameraSystem.Shake += 8;
+			CameraSystem.shake += 8;
 			Vector2 direction = -Vector2.Normalize(projectile.velocity);
 
 			for (int i = 0; i < 16; i++)

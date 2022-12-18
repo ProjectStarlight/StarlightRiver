@@ -19,8 +19,8 @@ namespace StarlightRiver.Content.Items.Beach
 		{
 			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
-			mp.RechargeDelay -= 30;
-			mp.MaxBarrier += 10;
+			mp.rechargeDelay -= 30;
+			mp.maxBarrier += 10;
 		}
 	}
 

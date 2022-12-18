@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-
-namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
+﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 {
 	class MazeGame : WitShrineGame
 	{
@@ -13,7 +10,7 @@ namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 			{
 				for (int y = 0; y < gameBoard.GetLength(1); y++)
 				{
-					if (Main.rand.Next(3) == 0)
+					if (Main.rand.NextBool(3))
 						gameBoard[x, y] = WitShrineDummy.runeState.HostileHidden;
 				}
 			}

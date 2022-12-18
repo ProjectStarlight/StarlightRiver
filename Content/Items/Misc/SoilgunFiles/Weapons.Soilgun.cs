@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 						Helper.PlayPitched("ShadowSpawn", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.position);
 
 					if (SpawnHauntedSoulTimer % 5 == 0)
-						CameraSystem.Shake += 1;
+						CameraSystem.shake += 1;
 
 					SpawnHauntedSoulTimer--;
 					if (SpawnHauntedSoulTimer <= 0)
@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 							Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Top, (Vector2.UnitY * Main.rand.NextFloat(-8f, -5f)).RotatedByRandom(0.55f), ModContent.ProjectileType<HauntedSoul>(), HauntedSoulDamage, 1f, HauntedSoulOwner, npc.whoAmI);
 						}
 
-						CameraSystem.Shake += 5;
+						CameraSystem.shake += 5;
 						HauntedStacks = 0;
 						SpawnHauntedSoulTimer = 60;
 					}
@@ -449,7 +449,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				Dust.NewDustDirect(position, 2, 8, ModContent.DustType<SandNoGravity>(), sandVelocity.X, sandVelocity.Y, 135, default, 0.55f);
 			}
 
-			CameraSystem.Shake += 2;
+			CameraSystem.shake += 2;
 
 			owner.reuseDelay = 15;
 

@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 					{
 						Projectile.scale = 1.2f;
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.4f, PitchVariance = 0.1f }, Projectile.Center);
-						CameraSystem.Shake = 8;
+						CameraSystem.shake = 8;
 					}
 
 					Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3());

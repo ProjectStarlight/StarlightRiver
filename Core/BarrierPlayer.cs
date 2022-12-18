@@ -1,33 +1,29 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using NetEasy;
+﻿using NetEasy;
 using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
 	public class BarrierPlayer : ModPlayer //yay we have to duplicate a ton of code because terraria has no base entity class that Players and NPCs share
 	{
-		public int MaxBarrier = 0;
-		public int Barrier = 0;
-		public bool PlayerCanLiveWithOnlyBarrier = false;
+		public int maxBarrier = 0;
+		public int barrier = 0;
+		public bool playerCanLiveWithOnlyBarrier = false;
 
-		public bool DontDrainOvercharge = false;
-		public int OverchargeDrainRate = 60;
+		public bool dontDrainOvercharge = false;
+		public int overchargeDrainRate = 60;
 
-		public int TimeSinceLastHit = 0;
-		public int RechargeDelay = 480;
-		public int RechargeRate = 4;
+		public int timeSinceLastHit = 0;
+		public int rechargeDelay = 480;
+		public int rechargeRate = 4;
 
-		public float BarrierDamageReduction = 0.3f;
+		public float barrierDamageReduction = 0.3f;
 
-		public float RechargeAnimationTimer;
+		public float rechargeAnimationTimer;
 		public Item barrierDyeItem;
 
 		public bool sendUpdatePacket = true; // set this to true whenever something else happens that would desync shield values, for example: onhit effects
@@ -46,6 +42,7 @@ namespace StarlightRiver.Core
 				return barrierDyeItem.ModItem as BarrierDye;
 			}
 		}
+
 		public override void Load()
 		{
 			StarlightPlayer.PostDrawEvent += PostDrawBarrierFX;
@@ -67,41 +64,41 @@ namespace StarlightRiver.Core
 
 		public void ModifyDamage(ref int damage, ref bool crit)
 		{
-			if (Barrier > 0)
+			if (barrier > 0)
 			{
-				float reduction = 1.0f - BarrierDamageReduction;
+				float reduction = 1.0f - barrierDamageReduction;
 
-				if (Barrier > damage)
+				if (barrier > damage)
 				{
 					dye?.HitBarrierEffects(Player);
 
 					CombatText.NewText(Player.Hitbox, Color.Cyan, damage);
-					Barrier -= damage;
+					barrier -= damage;
 					damage = (int)(damage * reduction);
 				}
 				else
 				{
-					RechargeAnimationTimer = 0;
+					rechargeAnimationTimer = 0;
 
 					dye?.LoseBarrierEffects(Player);
 
-					CombatText.NewText(Player.Hitbox, Color.Cyan, Barrier);
-					int overblow = damage - Barrier;
-					damage = (int)(Barrier * reduction) + overblow;
+					CombatText.NewText(Player.Hitbox, Color.Cyan, barrier);
+					int overblow = damage - barrier;
+					damage = (int)(barrier * reduction) + overblow;
 
-					Barrier = 0;
+					barrier = 0;
 				}
 			}
 		}
 
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
-			if (Barrier > 0)
+			if (barrier > 0)
 			{
 				damage = (int)Main.CalculateDamagePlayersTake(damage, Player.statDefense);
 
 				ModifyDamage(ref damage, ref crit);
-				TimeSinceLastHit = 0;
+				timeSinceLastHit = 0;
 				Player.statDefense = 0;
 			}
 
@@ -110,61 +107,61 @@ namespace StarlightRiver.Core
 
 		public override void UpdateBadLifeRegen()
 		{
-			if (Barrier > 0)
+			if (barrier > 0)
 			{
 				Helper.UnlockCodexEntry<BarrierEntry>(Main.LocalPlayer);
 
-				if (RechargeAnimationTimer < 1)
+				if (rechargeAnimationTimer < 1)
 				{
 					if (dye != null)
-						RechargeAnimationTimer += dye.RechargeAnimationRate;
+						rechargeAnimationTimer += dye.RechargeAnimationRate;
 					else
-						RechargeAnimationTimer += 0.05f;
+						rechargeAnimationTimer += 0.05f;
 				}
 			}
 			else
 			{
-				RechargeAnimationTimer = 0;
+				rechargeAnimationTimer = 0;
 			}
 
-			if (MaxBarrier > 0)
-				TimeSinceLastHit++;
+			if (maxBarrier > 0)
+				timeSinceLastHit++;
 
-			if (MaxBarrier == 0)
-				TimeSinceLastHit = 0;
+			if (maxBarrier == 0)
+				timeSinceLastHit = 0;
 
-			if (TimeSinceLastHit >= RechargeDelay)
+			if (timeSinceLastHit >= rechargeDelay)
 			{
-				if (Barrier < MaxBarrier)
+				if (barrier < maxBarrier)
 				{
-					int rechargeRateWhole = RechargeRate / 60;
+					int rechargeRateWhole = rechargeRate / 60;
 
-					Barrier += Math.Min(rechargeRateWhole, MaxBarrier - Barrier);
+					barrier += Math.Min(rechargeRateWhole, maxBarrier - barrier);
 
-					if (RechargeRate % 60 != 0)
+					if (rechargeRate % 60 != 0)
 					{
-						int rechargeSubDelay = 60 / (RechargeRate % 60);
+						int rechargeSubDelay = 60 / (rechargeRate % 60);
 
-						if (TimeSinceLastHit % rechargeSubDelay == 0 && Barrier < MaxBarrier)
-							Barrier++;
+						if (timeSinceLastHit % rechargeSubDelay == 0 && barrier < maxBarrier)
+							barrier++;
 					}
 				}
 			}
 
-			OverchargeDrainRate = Math.Max(0, OverchargeDrainRate);
+			overchargeDrainRate = Math.Max(0, overchargeDrainRate);
 
-			if (Barrier > MaxBarrier && !DontDrainOvercharge)
+			if (barrier > maxBarrier && !dontDrainOvercharge)
 			{
-				int drainRateWhole = OverchargeDrainRate / 60;
+				int drainRateWhole = overchargeDrainRate / 60;
 
-				Barrier -= Math.Min(drainRateWhole, Barrier - MaxBarrier);
+				barrier -= Math.Min(drainRateWhole, barrier - maxBarrier);
 
-				if (OverchargeDrainRate % 60 != 0)
+				if (overchargeDrainRate % 60 != 0)
 				{
-					int drainSubDelay = 60 / (OverchargeDrainRate % 60);
+					int drainSubDelay = 60 / (overchargeDrainRate % 60);
 
-					if (Player.GetModPlayer<StarlightPlayer>().Timer % drainSubDelay == 0 && Barrier > MaxBarrier)
-						Barrier--;
+					if (Player.GetModPlayer<StarlightPlayer>().Timer % drainSubDelay == 0 && barrier > maxBarrier)
+						barrier--;
 				}
 			}
 		}
@@ -177,8 +174,8 @@ namespace StarlightRiver.Core
 
 		public override void UpdateDead()
 		{
-			Barrier = 0;
-			TimeSinceLastHit = 0;
+			barrier = 0;
+			timeSinceLastHit = 0;
 		}
 
 		public override void clientClone(ModPlayer clientClone)
@@ -191,15 +188,17 @@ namespace StarlightRiver.Core
 		public override void SendClientChanges(ModPlayer clientPlayer)
 		{
 			var clone = clientPlayer as BarrierPlayer;
+
 			if (sendUpdatePacket || clone?.barrierDyeItem?.type != barrierDyeItem?.type)
 			{
 				var packet = new ShieldPacket(this);
 				packet.Send(-1, Player.whoAmI, false);
 			}
 		}
+
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
-			if (PlayerCanLiveWithOnlyBarrier && Barrier > 0) //if the Player has no max life, its implied they can live off of shield
+			if (playerCanLiveWithOnlyBarrier && barrier > 0) //if the Player has no max life, its implied they can live off of shield
 				return false;
 
 			return base.PreKill(damage, hitDirection, pvp, ref playSound, ref genGore, ref damageSource);
@@ -217,16 +216,16 @@ namespace StarlightRiver.Core
 
 		public override void ResetEffects()
 		{
-			MaxBarrier = 0;
-			PlayerCanLiveWithOnlyBarrier = false;
+			maxBarrier = 0;
+			playerCanLiveWithOnlyBarrier = false;
 
-			DontDrainOvercharge = false;
-			OverchargeDrainRate = 60;
+			dontDrainOvercharge = false;
+			overchargeDrainRate = 60;
 
-			RechargeDelay = 480;
-			RechargeRate = 4;
+			rechargeDelay = 480;
+			rechargeRate = 4;
 
-			BarrierDamageReduction = Main.expertMode ? 0.4f : 0.3f;
+			barrierDamageReduction = Main.expertMode ? 0.4f : 0.3f;
 
 			if (dye is null)
 			{
@@ -247,7 +246,7 @@ namespace StarlightRiver.Core
 		public ShieldPacket(BarrierPlayer sPlayer)
 		{
 			whoAmI = (byte)sPlayer.Player.whoAmI;
-			shield = sPlayer.Barrier;
+			shield = sPlayer.barrier;
 
 			if (sPlayer.barrierDyeItem is null)
 				dyeType = ModContent.ItemType<BaseBarrierDye>();
@@ -259,14 +258,14 @@ namespace StarlightRiver.Core
 		{
 			BarrierPlayer Player = Main.player[whoAmI].GetModPlayer<BarrierPlayer>();
 
-			Player.Barrier = shield;
+			Player.barrier = shield;
 
 			if (Player.barrierDyeItem is null || Player.barrierDyeItem.type != dyeType)
 			{
 				var Item = new Item();
 				Item.SetDefaults(dyeType);
 				Player.barrierDyeItem = Item;
-				Player.RechargeAnimationTimer = 0;
+				Player.rechargeAnimationTimer = 0;
 			}
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server)

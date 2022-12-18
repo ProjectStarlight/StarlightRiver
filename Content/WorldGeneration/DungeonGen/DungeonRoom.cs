@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 	/// </summary>
 	public abstract class DungeonRoom
 	{
-		public enum secType
+		public enum SecType
 		{
 			none,
 			fill,
@@ -19,7 +19,8 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		}
 
 		public Point16 topLeft;
-		public Point16 topLeftTile => new(topLeft.X * SectionSize, topLeft.Y * SectionSize);
+
+		public Point16 TopLeftTile => new(topLeft.X * SectionSize, topLeft.Y * SectionSize);
 
 		public int SecWidth => Layout.GetLength(0);
 		public int SecHeight => Layout.GetLength(1);
@@ -33,7 +34,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// A matrix representing the layout of the room, used to determine the location of doors to place hallways from
 		/// and create a list of 'used' coordinates for rooms to prevent overlapping.
 		/// </summary>
-		public abstract secType[,] Layout { get; }
+		public abstract SecType[,] Layout { get; }
 
 		/// <summary>
 		/// The size of one section in your layout. Make sure this is the same as the section size of the DungeonMaker(s) you intend to use this room with.
@@ -59,7 +60,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			{
 				for (int y = 0; y < SecHeight; y++)
 				{
-					if (Layout[x, y] == secType.door)
+					if (Layout[x, y] == SecType.door)
 						output.Add(new Point16(x, y));
 				}
 			}
@@ -87,13 +88,13 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 			bool? isMulti = StructureHelper.Generator.IsMultistructure(StructurePath, StarlightRiver.Instance);
 
 			if (isMulti == true)
-				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+				StructureHelper.Generator.GenerateMultistructureRandom(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
 			else if (isMulti == false)
-				StructureHelper.Generator.GenerateStructure(StructurePath, topLeftTile + dungeonPos, StarlightRiver.Instance);
+				StructureHelper.Generator.GenerateStructure(StructurePath, TopLeftTile + dungeonPos, StarlightRiver.Instance);
 			else
-				throw new Exception($"An invalid structure file path {StructurePath} was read for dungeon room {this.GetType()}");
+				throw new Exception($"An invalid structure file path {StructurePath} was read for dungeon room {GetType()}");
 
-			OnGenerate(topLeftTile + dungeonPos);
+			OnGenerate(TopLeftTile + dungeonPos);
 		}
 
 		/// <summary>
@@ -101,14 +102,16 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// </summary>
 		/// <param name="input"></param>
 		/// <returns></returns>
-		public secType[,] InvertMatrix(secType[,] input)
+		public SecType[,] InvertMatrix(SecType[,] input)
 		{
-			var output = new secType[input.GetLength(1), input.GetLength(0)];
+			var output = new SecType[input.GetLength(1), input.GetLength(0)];
 
 			for (int x = 0; x < input.GetLength(0); x++)
 			{
 				for (int y = 0; y < input.GetLength(1); y++)
+				{
 					output[y, x] = input[x, y];
+				}
 			}
 
 			return output;

@@ -1,13 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem
 	{
 		public InworldItemNPC inWorldNPC;
+
 		public NPC NPC => inWorldNPC?.NPC;
 
 		public virtual bool VisibleInUI => true;
@@ -40,7 +38,8 @@ namespace StarlightRiver.Core
 	{
 		public InworldItem inWorldItem;
 		public Player owner;
-		public bool held => owner != null;
+
+		public bool Held => owner != null;
 
 		public Item Item => inWorldItem.Item;
 
@@ -70,7 +69,7 @@ namespace StarlightRiver.Core
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			if (CanPickup(target) && !held && target.Hitbox.Intersects(NPC.Hitbox))
+			if (CanPickup(target) && !Held && target.Hitbox.Intersects(NPC.Hitbox))
 			{
 				target.inventory[58] = Item;
 				Main.mouseItem = Item;
@@ -88,7 +87,7 @@ namespace StarlightRiver.Core
 			if (inWorldItem is null)
 				NPC.active = false;
 
-			if (held && owner.HeldItem.type != Item.type)
+			if (Held && owner.HeldItem.type != Item.type)
 				Release(true);
 		}
 	}

@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -16,11 +11,6 @@ namespace StarlightRiver.Content.Tiles
 		public virtual List<Loot> GoldLootPool => null;
 
 		public virtual string BubbleTexture => "StarlightRiver/Assets/Tiles/Bubble";
-
-		public virtual bool CanOpen(Player Player)
-		{
-			return true;
-		}
 
 		public override int DummyType => ProjectileType<LootBubbleDummy>();
 
@@ -34,10 +24,15 @@ namespace StarlightRiver.Content.Tiles
 				Dust.NewDustPerfect(origin, DustType<Dusts.BlueStamina>(), Vector2.One.RotatedByRandom(3.14f) * Main.rand.NextFloat(4), 0, default, 0.5f);
 		}
 
+		public virtual bool CanOpen(Player Player)
+		{
+			return true;
+		}
+
 		public virtual void DrawBubble(Vector2 pos, SpriteBatch spriteBatch, float time)
 		{
 			int n = (int)(time % GoldLootPool.Count);
-			Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].Type);
+			Texture2D tex2 = Helper.GetItemTexture(GoldLootPool[n].type);
 			var ItemTarget = new Rectangle((int)pos.X + 8, (int)pos.Y + 8, 16, 16);
 			spriteBatch.Draw(tex2, ItemTarget, Color.White);
 
@@ -67,7 +62,7 @@ namespace StarlightRiver.Content.Tiles
 			if (bubble.CanOpen(Player) && Player.Hitbox.Intersects(new Rectangle(ParentX * 16, ParentY * 16, 16, 16)))
 			{
 				Loot loot = bubble.GoldLootPool[Main.rand.Next(bubble.GoldLootPool.Count)];
-				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, loot.Type, loot.GetCount());
+				Item.NewItem(Projectile.GetSource_FromThis(), Projectile.Center, loot.type, loot.GetCount());
 				bubble.PickupEffects(Projectile.Center);
 
 				WorldGen.KillTile(ParentX, ParentY);
@@ -89,7 +84,7 @@ namespace StarlightRiver.Content.Tiles
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.rottime) * 0.5f);
+			float sin = 0.5f + (float)(Math.Sin(StarlightWorld.visualTimer) * 0.5f);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.SkyBlue * (0.4f + sin * 0.1f), 0, tex.Size() / 2, 0.8f + sin * 0.1f, 0, 0);
 		}
 	}

@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -27,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Framing.GetTileSafely(i, j);
 			var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
-			spriteBatch.Draw(tex, pos, source, Color.White * (0.5f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f));
+			spriteBatch.Draw(tex, pos, source, Color.White * (0.5f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.25f));
 		}
 	}
 

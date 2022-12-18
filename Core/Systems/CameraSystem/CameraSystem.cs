@@ -1,17 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.Graphics.CameraModifiers;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Systems.CameraSystem
 {
 	public class CameraSystem : ModSystem
 	{
-		public static int Shake = 0;
+		public static int shake = 0;
 
 		private static PanModifier PanModifier = new();
-		private static MoveModifier MoveModifier = new();
+		private static readonly MoveModifier MoveModifier = new();
 
 		/// <summary>
 		/// Sets up a panning animation for the screen. Great for use with things like boss spawns or defeats, or other events happening near the player.
@@ -63,8 +60,8 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 		public override void PostUpdateEverything()
 		{
-			if (Shake > 120 * ModContent.GetInstance<StarlightRiver.Content.Configs.GraphicsConfig>().ScreenshakeMult) //clamp screenshake to (120 * config) to prevent utter chaos
-				Shake = (int)(120 * ModContent.GetInstance<StarlightRiver.Content.Configs.GraphicsConfig>().ScreenshakeMult);
+			if (shake > 120 * ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult) //clamp screenshake to (120 * config) to prevent utter chaos
+				shake = (int)(120 * ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult);
 
 			PanModifier.PassiveUpdate();
 			MoveModifier.PassiveUpdate();
@@ -72,20 +69,20 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 		public override void ModifyScreenPosition()
 		{
-			float mult = ModContent.GetInstance<StarlightRiver.Content.Configs.GraphicsConfig>().ScreenshakeMult;
+			float mult = ModContent.GetInstance<Content.Configs.GraphicsConfig>().ScreenshakeMult;
 			mult *= Main.screenWidth / 2048f * 1.2f; //normalize for screen resolution
-			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), Shake * mult, 15f, 30, 2000, "Starlight Shake"));
+			Main.instance.CameraModifiers.Add(new PunchCameraModifier(Main.LocalPlayer.position, Main.rand.NextFloat(3.14f).ToRotationVector2(), shake * mult, 15f, 30, 2000, "Starlight Shake"));
 
 			if (PanModifier.TotalDuration > 0 && PanModifier.PrimaryTarget != Vector2.Zero)
 				Main.instance.CameraModifiers.Add(PanModifier);
 
-			if (Shake > 0)
-				Shake--;
+			if (shake > 0)
+				shake--;
 		}
 
 		public static void Reset()
 		{
-			Shake = 0;
+			shake = 0;
 
 			PanModifier.Reset();
 			MoveModifier.Reset();

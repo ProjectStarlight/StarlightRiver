@@ -1,10 +1,8 @@
 ﻿using StarlightRiver.Content.Tiles.CrashTech;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,10 +13,12 @@ namespace StarlightRiver.Core
 		private void DropPodGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Crashing alien tech...";
+
 			foreach (int x in WorldGen.floatingIslandHouseX)
 			{
 				if (x == 0 || x == default)
 					continue;
+
 				for (int tries = 0; tries < 20; tries++)
 				{
 					if (SpawnDropPod(x + Main.rand.Next(-20, 20)))

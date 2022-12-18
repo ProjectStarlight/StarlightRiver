@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Prefixes.Accessory
 
 		public override void Update(Item Item, Player Player)
 		{
-			Player.GetModPlayer<BarrierPlayer>().Barrier += barrier;
+			Player.GetModPlayer<BarrierPlayer>().barrier += barrier;
 		}
 
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

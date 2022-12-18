@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core.Systems.CombatMountSystem
+﻿namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
 	internal class CombatMountPlayer : ModPlayer
 	{
@@ -69,6 +64,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 			if (activeMount.primaryCooldownTimer > 0)
 				activeMount.primaryCooldownTimer--;
+
 			if (activeMount.secondaryCooldownTimer > 0)
 				activeMount.secondaryCooldownTimer--;
 

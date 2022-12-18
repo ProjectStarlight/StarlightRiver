@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 
 namespace StarlightRiver.Helpers
 {
@@ -10,6 +8,7 @@ namespace StarlightRiver.Helpers
 		{
 			Vector2 DistanceToTravel = targetPos - startingPos;
 			float MaxHeight = DistanceToTravel.Y - (heightabovetarget ?? 0);
+
 			if (minArcHeight != null)
 				MaxHeight = Math.Min(MaxHeight, -(float)minArcHeight);
 
@@ -18,12 +17,12 @@ namespace StarlightRiver.Helpers
 
 			float TravelTime;
 			float neededYvel;
+
 			if (MaxHeight <= 0)
 			{
 				neededYvel = -(float)Math.Sqrt(-2 * gravity * MaxHeight);
 				TravelTime = (float)Math.Sqrt(-2 * MaxHeight / gravity) + (float)Math.Sqrt(2 * Math.Max(DistanceToTravel.Y - MaxHeight, 0) / gravity); //time up, then time down
 			}
-
 			else
 			{
 				neededYvel = 0;

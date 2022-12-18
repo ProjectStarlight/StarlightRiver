@@ -1,9 +1,7 @@
 ﻿using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
@@ -14,6 +12,7 @@ namespace StarlightRiver.Core
 		private void BouncyMushroomGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Making the mushroom biome fun";
+
 			for (int i = 100; i < Main.maxTilesX - 100; i += 4)
 			{
 				for (int j = (int)Main.worldSurface; j < Main.maxTilesY - 100; j += 1)
@@ -22,7 +21,7 @@ namespace StarlightRiver.Core
 					if (tile.HasTile && tile.TileType == TileID.MushroomGrass && WorldGen.genRand.NextBool(25) && ClearAreaForMushroom(i, j - 7, 7, 7))
 					{
 						ClearSquare(i, j - 7, 7, 7);
-						Helper.PlaceMultitile(new Point16(i, j - 7), TileType<StarlightRiver.Content.Tiles.Mushroom.JellyShroom>());
+						Helper.PlaceMultitile(new Point16(i, j - 7), TileType<Content.Tiles.Mushroom.JellyShroom>());
 					}
 				}
 			}
@@ -46,13 +45,11 @@ namespace StarlightRiver.Core
 				for (int j = y; j < y + height; j++)
 				{
 					Tile tile = Main.tile[i, j];
-
-					if (tile.HasTile && (Main.tileSolid[tile.TileType] || tile.TileType == TileType<StarlightRiver.Content.Tiles.Mushroom.JellyShroom>()))
+					if (tile.HasTile && (Main.tileSolid[tile.TileType] || tile.TileType == TileType<Content.Tiles.Mushroom.JellyShroom>()))
 						return false;
 				}
 
 				Tile tile2 = Main.tile[i, y + height + 1];
-
 				if (!tile2.HasTile || !Main.tileSolid[tile2.TileType])
 					return false;
 			}

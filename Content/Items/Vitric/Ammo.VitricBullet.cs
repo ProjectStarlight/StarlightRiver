@@ -262,7 +262,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				SoundEngine.PlaySound(SoundID.Shatter, Projectile.position);
 
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<VitricBulletCrystalExplosion>(), Projectile.damage, 0f, Projectile.owner, enemyID);
-				CameraSystem.Shake += 1;
+				CameraSystem.shake += 1;
 
 				for (int i = 0; i < 6; i++)
 				{

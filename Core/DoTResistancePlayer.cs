@@ -1,7 +1,5 @@
 ﻿using MonoMod.RuntimeDetour;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {

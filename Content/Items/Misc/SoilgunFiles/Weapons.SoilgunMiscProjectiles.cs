@@ -637,7 +637,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 				if (Main.myPlayer == Projectile.owner)
 					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SoilgunExplosion>(), Projectile.damage, 0f, Projectile.owner, 50);
 
-				CameraSystem.Shake += 2;
+				CameraSystem.shake += 2;
 
 				Helper.PlayPitched("Magic/FireHit", 0.45f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
 

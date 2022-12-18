@@ -440,7 +440,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 				globalNPC.GlassAmount = 0;
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath.WithVolumeScale(3f), Projectile.position);
-				CameraSystem.Shake += 5;
+				CameraSystem.shake += 5;
 			}
 
 			target.AddBuff(BuffID.Frostburn, 180);

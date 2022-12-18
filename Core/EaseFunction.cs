@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace StarlightRiver.Core
@@ -36,16 +35,16 @@ namespace StarlightRiver.Core
 
 	public class PolynomialEase : EaseFunction
 	{
-		private Func<float, float> _function;
+		private readonly Func<float, float> fun;
 
 		public PolynomialEase(Func<float, float> func)
 		{
-			_function = func;
+			fun = func;
 		}
 
 		public override float Ease(float time)
 		{
-			return _function(time);
+			return fun(time);
 		}
 
 		//removed because not needed for spirit
@@ -56,11 +55,11 @@ namespace StarlightRiver.Core
 
 	public class EaseBuilder : EaseFunction
 	{
-		private List<EasePoint> _points;
+		private readonly List<EasePoint> points;
 
 		public EaseBuilder()
 		{
-			_points = new List<EasePoint>();
+			points = new List<EasePoint>();
 		}
 
 		public void AddPoint(float x, float y, EaseFunction function)
@@ -74,38 +73,41 @@ namespace StarlightRiver.Core
 				throw new ArgumentException("X value of point is not in valid range!");
 
 			var newPoint = new EasePoint(vector, function);
-			if (_points.Count == 0)
+			if (points.Count == 0)
 			{
-				_points.Add(newPoint);
+				points.Add(newPoint);
 				return;
 			}
 
-			EasePoint last = _points[^1];
+			EasePoint last = points[^1];
+
 			if (last.Point.X > vector.X)
 				throw new ArgumentException("New point has an x value less than the previous point when it should be greater or equal");
 
-			_points.Add(newPoint);
+			points.Add(newPoint);
 		}
 
 		public override float Ease(float time)
 		{
 			Vector2 prevPoint = Vector2.Zero;
-			EasePoint usePoint = _points[0];
-			for (int i = 0; i < _points.Count; i++)
+			EasePoint usePoint = points[0];
+
+			for (int i = 0; i < points.Count; i++)
 			{
-				usePoint = _points[i];
+				usePoint = points[i];
+
 				if (time <= usePoint.Point.X)
-				{
 					break;
-				}
 
 				prevPoint = usePoint.Point;
 			}
 
 			float dist = usePoint.Point.X - prevPoint.X;
 			float progress = (time - prevPoint.X) / dist;
+
 			if (progress > 1f)
 				progress = 1f;
+
 			return MathHelper.Lerp(prevPoint.Y, usePoint.Point.Y, usePoint.Function.Ease(progress));
 		}
 

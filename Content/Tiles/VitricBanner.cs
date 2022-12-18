@@ -1,8 +1,5 @@
-using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Physics;
-using StarlightRiver.Core;
 using StarlightRiver.Core.VerletGenerators;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -58,10 +55,10 @@ namespace StarlightRiver.Content.Tiles
 		{
 			int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
-			float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset - index / 3f);
+			float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset - index / 3f);
 
 			float cos = (float)System.Math.Cos(Projectile.ai[0]);
-			float sin2 = (float)System.Math.Sin(StarlightWorld.rottime + offset + cos);
+			float sin2 = (float)System.Math.Sin(StarlightWorld.visualTimer + offset + cos);
 
 			var pos = new Vector2(Chain.ropeSegments[index].posNow.X + 1 + sin2 * 1.2f, Chain.ropeSegments[index].posNow.Y + sin * 1.4f);
 

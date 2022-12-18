@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 				if (Timer == Risetime - 1) //hitting the top
 				{
-					CameraSystem.Shake += 18;
+					CameraSystem.shake += 18;
 					Helper.PlayPitched("ArenaHit", 0.2f, 0, NPC.Center);
 				}
 
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					State = 2;
 
 				if (Timer % 10 == 0)
-					CameraSystem.Shake += Timer < 100 ? 3 : 2;
+					CameraSystem.shake += Timer < 100 ? 3 : 2;
 
 				for (int k = 0; k < 18; k++)
 					Dust.NewDust(NPC.position, 560, 1, DustType<Dusts.Sand>(), 0, Main.rand.NextFloat(-5f, -1f), Main.rand.Next(255), default, Main.rand.NextFloat(1.5f)); //spawns dust
@@ -264,8 +264,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
 			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 		}
 
 		public virtual void SpawnPlatforms(bool rising = true)
@@ -401,8 +401,8 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Helpers.LightingBufferRenderer.DrawWithLighting(target2, tex, source2, default);
 
 			Texture2D tex2 = Request<Texture2D>(path + "Glow").Value;
-			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
-			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.rottime) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.Draw(tex2, target1, source1, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
+			sb.Draw(tex2, target2, source2, Color.White * (0.5f + (float)System.Math.Sin(StarlightWorld.visualTimer) * 0.1f), 0, Vector2.Zero, 0, 0);
 
 			if (DateChanges.AnySpecialEvent || DateChanges.StartupRandom8 < 8)//1 in 32 or any special date event
 			{

@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					type = ModContent.ProjectileType<ScrapshotShrapnel>();
 
 				if (Main.myPlayer == player.whoAmI)
-					CameraSystem.Shake += 8;
+					CameraSystem.shake += 8;
 
 				if (hook != null && hook.Projectile.type == ModContent.ProjectileType<ScrapshotHook>() && hook.Projectile.active && hook.isHooked)
 				{
@@ -155,7 +155,7 @@ namespace StarlightRiver.Content.Items.Breacher
 						spread = 0.05f;
 						damage += 4;
 
-						CameraSystem.Shake += 12;
+						CameraSystem.shake += 12;
 					}
 				}
 
@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Player.immune = true;
 					Player.immuneTime = 20;
 					Player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
-					CameraSystem.Shake += 15;
+					CameraSystem.shake += 15;
 
 					hooked.StrikeNPC(Projectile.damage, Projectile.knockBack, Player.Center.X < hooked.Center.X ? -1 : 1);
 					Helper.PlayPitched("Guns/ChainPull", 0.001f, 0, Player.Center);

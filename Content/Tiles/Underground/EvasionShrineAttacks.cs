@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using Terraria;
+﻿using System;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -58,7 +55,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (timer == 0)
 			{
 				for (float k = 0; k <= 6.28f; k += 1.57f)
+				{
 					SpawnDart(Projectile.Center, Projectile.Center + Vector2.One.RotatedBy(k) * 200, Projectile.Center + Vector2.UnitX.RotatedBy(k) * 400, 120);
+				}
 			}
 
 			if (timer == 140)
@@ -70,7 +69,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			if (timer == 0)
 			{
 				for (float k = 0; k <= 6.28f; k += 1.57f)
+				{
 					SpawnDart(Projectile.Center, Projectile.Center + Vector2.One.RotatedBy(k + 0.6f) * 200, Projectile.Center + Vector2.UnitX.RotatedBy(k + 0.6f) * 400, 120);
+				}
 			}
 
 			if (timer == 140)

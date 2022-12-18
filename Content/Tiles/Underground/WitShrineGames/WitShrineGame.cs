@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-
-namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
+﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 {
 	public abstract class WitShrineGame
 	{

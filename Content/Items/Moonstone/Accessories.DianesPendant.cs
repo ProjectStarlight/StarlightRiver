@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 20;
 			Player.GetModPlayer<DianePlayer>().active = true;
 
 			if (Player.ownedProjectileCounts[ModContent.ProjectileType<DianeCrescant>()] < 1 && !Player.dead)
@@ -243,13 +243,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 			BarrierPlayer modPlayer = Player.GetModPlayer<BarrierPlayer>();
 			int barrierRecovery = (int)MathHelper.Lerp(2, 6, ChargeRatio);
 
-			if (modPlayer.Barrier < modPlayer.MaxBarrier - barrierRecovery)
-				modPlayer.Barrier += barrierRecovery;
+			if (modPlayer.barrier < modPlayer.maxBarrier - barrierRecovery)
+				modPlayer.barrier += barrierRecovery;
 			else
-				modPlayer.Barrier = modPlayer.MaxBarrier;
+				modPlayer.barrier = modPlayer.maxBarrier;
 
 			alreadyHit.Add(target);
-			CameraSystem.Shake += 7;
+			CameraSystem.shake += 7;
 			NPC nextTarget = Main.npc.Where(x => x.active && !x.townNPC && !alreadyHit.Contains(x) && Projectile.Distance(x.Center) < 600).OrderBy(x => Projectile.Distance(x.Center)).FirstOrDefault();
 
 			if (nextTarget != default)

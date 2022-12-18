@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 using Terraria.Graphics.CameraModifiers;
 
 namespace StarlightRiver.Core.Systems.CameraSystem

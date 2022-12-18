@@ -1,13 +1,9 @@
-﻿
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Archaeology;
+﻿using StarlightRiver.Content.Archaeology;
 using StarlightRiver.Content.Archaeology.BuriedArtifacts;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -51,6 +47,7 @@ namespace StarlightRiver.Core
 				  TileID.JungleGrass,
 				  TileID.Mud
 			};
+
 			var range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
 
 			int amount = Main.maxTilesX / 12;
@@ -108,8 +105,11 @@ namespace StarlightRiver.Core
 		private void PlaceArtifactPool<T>(Rectangle range, int[] validTiles, int toPlace, int maxTries) where T : Artifact
 		{
 			WeightedRandom<Artifact> pool = new(Main.rand);
+
 			foreach (T artifact in StarlightRiver.Instance.GetContent<T>())
+			{
 				pool.Add(artifact, artifact.SpawnChance);
+			}
 
 			int tries = 0;
 			for (int i = 0; i < toPlace; i++)
@@ -130,6 +130,7 @@ namespace StarlightRiver.Core
 		{
 			int i = range.Left + Main.rand.Next(range.Width);
 			int j = range.Top + Main.rand.Next(range.Height);
+
 			if (!WorldGen.InWorld(i, j) || !artifact.CanGenerate(i, j))
 				return false;
 
@@ -138,6 +139,7 @@ namespace StarlightRiver.Core
 				for (int y = 0; y < artifact.Size.Y / 16; y++)
 				{
 					Tile testTile = Main.tile[x + i, y + j];
+
 					if (!testTile.HasTile || !validTiles.Contains(testTile.TileType))
 						return false;
 				}

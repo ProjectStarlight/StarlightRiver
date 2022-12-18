@@ -245,7 +245,7 @@ namespace StarlightRiver.Content.GUI
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft();
 
 			Color backColor = Player.Entries.Any(n => n.New && n.Category == Category) ?
-				new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f))
+				new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.visualTimer * 2) * 127f))
 				: Color.White; //yellow flashing background for new entries
 
 			Texture2D backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CategoryButton").Value;
@@ -279,7 +279,7 @@ namespace StarlightRiver.Content.GUI
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft();
 
 			Color backColor = Entry.New ?
-				new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.rottime * 2) * 127f))
+				new Color(255, 255, 127 + (int)((float)Math.Sin(StarlightWorld.visualTimer * 2) * 127f))
 				: Color.White; //yellow flashing background for new entries
 
 			Texture2D backTex = Entry.RequiresUpgradedBook ? Request<Texture2D>("StarlightRiver/Assets/GUI/EntryButton2").Value : Request<Texture2D>("StarlightRiver/Assets/GUI/EntryButton").Value;

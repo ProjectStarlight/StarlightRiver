@@ -1,10 +1,8 @@
 ﻿using StarlightRiver.Content.Tiles.Forest;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
@@ -17,29 +15,26 @@ namespace StarlightRiver.Core
 			progress.Message = "Planting the forest...";
 			for (int k = 60; k < Main.maxTilesX - 60; k++)
 			{
-				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2) //inner part of the world
+				if (k > Main.maxTilesX / 3 && k < Main.maxTilesX / 3 * 2 && WorldGen.genRand.NextBool(9)) //inner part of the world
 				{
-					if (WorldGen.genRand.NextBool(9)) //Big Trees
+					for (int y = 10; y < Main.worldSurface; y++)
 					{
-						for (int y = 10; y < Main.worldSurface; y++)
+						if (IsGround(k - 1, y, 4))
 						{
-							if (IsGround(k - 1, y, 4))
-							{
-								PlaceTree(k, y, WorldGen.genRand.Next(20, 35));
-								k += 6;
+							PlaceTree(k, y, WorldGen.genRand.Next(20, 35));
+							k += 6;
 
-								break;
-							}
-
-							if (!isAir(k - 1, y, 4))
-								break;
+							break;
 						}
+
+						if (!IsAir(k - 1, y, 4))
+							break;
 					}
 				}
 			}
 		}
 
-		private bool isAir(int x, int y, int w)
+		private bool IsAir(int x, int y, int w)
 		{
 			for (int k = 0; k < w; k++)
 			{

@@ -1,14 +1,14 @@
-﻿using Terraria;
-
-namespace StarlightRiver.Helpers
+﻿namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
 	{
 		public static void Kill(this NPC NPC)
 		{
 			bool ModNPCDontDie = NPC.ModNPC?.CheckDead() == false;
+
 			if (ModNPCDontDie)
 				return;
+
 			NPC.life = 0;
 			NPC.checkDead();
 			NPC.HitEffect();
@@ -18,19 +18,20 @@ namespace StarlightRiver.Helpers
 		public static void NpcVertical(NPC NPC, bool jump, int slot = 1, int jumpheight = 2) //idea: could be seperated farther
 		{
 			NPC.ai[slot] = 0;//reset jump counter
+
 			for (int y = 0; y < jumpheight; y++)//idea: this should have diminishing results for output jump height
 			{
 				Tile tileType = Framing.GetTileSafely((int)(NPC.position.X / 16) + NPC.direction * 2 + 1, (int)((NPC.position.Y + NPC.height + 8) / 16) - y - 1);
+
 				if ((Main.tileSolid[tileType.TileType] || Main.tileSolidTop[tileType.TileType]) && tileType.HasTile) //how tall the wall is
-				{
 					NPC.ai[slot] = y + 1;
-				}
 
 				if (y >= NPC.ai[slot] + NPC.height / 16 || !jump && y >= 2) //stops counting if there is room for the NPC to walk under //((int)((NPC.position.Y - target.position.Y) / 16) + 1)
 				{
 					if (NPC.HasValidTarget && jump)
 					{
 						Player target = Main.player[NPC.target];
+
 						if (NPC.ai[slot] >= (int)((NPC.position.Y - target.position.Y) / 16) + 1 - (NPC.height / 16 - 1))
 							break;
 					}

@@ -1,20 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 
 namespace StarlightRiver.Core
 {
 	public class Primitives : IDisposable
 	{
-		public bool IsDisposed { get; private set; }
-
 		private DynamicVertexBuffer vertexBuffer;
 		private DynamicIndexBuffer indexBuffer;
 
 		private readonly GraphicsDevice device;
+
+		public bool IsDisposed { get; private set; }
 
 		public Primitives(GraphicsDevice device, int maxVertices, int maxIndices)
 		{
@@ -250,9 +247,7 @@ namespace StarlightRiver.Core
 		public void Render(Effect effect)
 		{
 			if (Positions == null && !(primitives?.IsDisposed ?? true))
-			{
 				return;
-			}
 
 			SetupMeshes();
 
@@ -273,18 +268,18 @@ namespace StarlightRiver.Core
 
 		public void GenerateMesh(Vector2 trailTipPosition, Vector2 trailTipNormal, int startFromIndex, out VertexPositionColorTexture[] vertices, out short[] indices, TrailWidthFunction trailWidthFunction, TrailColorFunction trailColorFunction)
 		{
-			vertices = new VertexPositionColorTexture[0];
-			indices = new short[0];
+			vertices = Array.Empty<VertexPositionColorTexture>();
+			indices = Array.Empty<short>();
 		}
 	}
 
 	public class TriangularTip : ITrailTip
 	{
+		private readonly float length;
+
 		public int ExtraVertices => 3;
 
 		public int ExtraIndices => 3;
-
-		private readonly float length;
 
 		public TriangularTip(float length)
 		{
@@ -337,22 +332,20 @@ namespace StarlightRiver.Core
 	// Note: Every vertex in this tip is drawn twice, but the performance impact from this would be very little
 	public class RoundedTip : ITrailTip
 	{
+		// TriCount is the amount of tris the curve should have, higher means a better circle approximation. (Keep in mind each tri is drawn twice)
+		private readonly int triCount;
+
 		// The edge vextex count is count * 2 + 1, but one extra is added for the center, and there is one extra hidden vertex.
 		public int ExtraVertices => triCount * 2 + 3;
 
 		public int ExtraIndices => triCount * 2 * 3 + 5;
-
-		// TriCount is the amount of tris the curve should have, higher means a better circle approximation. (Keep in mind each tri is drawn twice)
-		private readonly int triCount;
 
 		public RoundedTip(int triCount = 2)//amount of tris
 		{
 			this.triCount = triCount;
 
 			if (triCount < 2)
-			{
 				throw new ArgumentException($"Parameter {nameof(triCount)} cannot be less than 2.");
-			}
 		}
 
 		public void GenerateMesh(Vector2 trailTipPosition, Vector2 trailTipNormal, int startFromIndex, out VertexPositionColorTexture[] vertices, out short[] indices, TrailWidthFunction trailWidthFunction, TrailColorFunction trailColorFunction)
@@ -440,9 +433,7 @@ namespace StarlightRiver.Core
 
 				// Skip last point, since there is no point to pair with it.
 				if (k == triCount * 2 + 1)
-				{
 					continue;
-				}
 
 				short[] tri = new short[]
 				{

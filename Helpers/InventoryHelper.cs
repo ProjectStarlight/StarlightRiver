@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 
 namespace StarlightRiver.Helpers
 {
@@ -51,32 +50,35 @@ namespace StarlightRiver.Helpers
 		/// <returns>The Items matching the predicate.</returns>
 		public static List<int> GetItems(this Item[] inventory, Predicate<Item> predicate, int stopCountingAt = int.MaxValue)
 		{
-			var indeces = new List<int>();
+			var indicies = new List<int>();
+
 			for (int i = 0; i < inventory.Length; i++)
 			{
 				if (stopCountingAt <= 0)
 					break;
+
 				if (predicate(inventory[i]))
 				{
-					indeces.Add(i);
+					indicies.Add(i);
 					stopCountingAt -= inventory[i].stack;
 				}
 			}
 
-			return indeces;
+			return indicies;
 		}
 		public static bool HasItem(Player Player, int type, int count)
 		{
-			int Items = 0;
+			int items = 0;
 
 			for (int k = 0; k < Player.inventory.Length; k++)
 			{
 				Item Item = Player.inventory[k];
+
 				if (Item.type == type)
-					Items += Item.stack;
+					items += Item.stack;
 			}
 
-			return Items >= count;
+			return items >= count;
 		}
 
 		/// <summary>
@@ -87,6 +89,7 @@ namespace StarlightRiver.Helpers
 			for (int k = 0; k < 49; k++)
 			{
 				Item Item = Player.inventory[k];
+
 				if (Item is null || Item.IsAir)
 					return k;
 			}
@@ -107,13 +110,16 @@ namespace StarlightRiver.Helpers
 					if (Item.type == type)
 					{
 						int stack = Item.stack;
+
 						for (int i = 0; i < stack; i++)
 						{
 							Item.stack--;
+
 							if (Item.stack == 0)
 								Item.TurnToAir();
 
 							toTake--;
+
 							if (toTake <= 0)
 								break;
 						}

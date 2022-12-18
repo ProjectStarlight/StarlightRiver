@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -22,9 +19,10 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			if (Main.rand.Next(300) == 0)
+			if (Main.rand.NextBool(300))
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+
 				if (Main.rand.NextBool())
 					Dust.NewDustPerfect(pos, DustType<CrystalSparkle>(), Vector2.Zero);
 				else

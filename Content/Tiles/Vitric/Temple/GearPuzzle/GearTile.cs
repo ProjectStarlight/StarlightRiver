@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
@@ -295,28 +290,28 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		protected bool Engaged
 		{
-			get => Entity.engaged;
-			set => Entity.engaged = value;
+			get => GearEntity.engaged;
+			set => GearEntity.engaged = value;
 		}
 
 		protected float RotationVelocity
 		{
-			get => Entity.rotationVelocity;
-			set => Entity.rotationVelocity = value;
+			get => GearEntity.rotationVelocity;
+			set => GearEntity.rotationVelocity = value;
 		}
 
 		protected float RotationOffset
 		{
-			get => Entity.rotationOffset;
-			set => Entity.rotationOffset = value;
+			get => GearEntity.rotationOffset;
+			set => GearEntity.rotationOffset = value;
 		}
 
-		protected GearTileEntity Entity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
+		protected GearTileEntity GearEntity => TileEntity.ByPosition[new Point16(ParentX, ParentY)] as GearTileEntity;
 
 		public int Size
 		{
-			get => Entity.size;
-			set => Entity.size = value % 4;
+			get => GearEntity.size;
+			set => GearEntity.size = value % 4;
 		}
 
 		public float Rotation

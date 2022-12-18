@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core.Loaders
 {
@@ -30,9 +28,7 @@ namespace StarlightRiver.Core.Loaders
 			foreach (Type t in Mod.Code.GetTypes())
 			{
 				if (t.IsSubclassOf(typeof(Foreground)) && !t.IsAbstract)
-				{
 					Foregrounds.Add((Foreground)Activator.CreateInstance(t));
-				}
 			}
 		}
 

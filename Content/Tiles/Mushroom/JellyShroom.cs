@@ -100,8 +100,8 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		{
 			float speed = Projectile.ai[1] == 1 ? 4 : 1;
 
-			float sin = 1 + (float)Math.Sin(StarlightWorld.rottime * speed + offset) * mult;
-			float sin2 = 1 + (float)Math.Sin(StarlightWorld.rottime * speed + offset + 1) * mult;
+			float sin = 1 + (float)Math.Sin(StarlightWorld.visualTimer * speed + offset) * mult;
+			float sin2 = 1 + (float)Math.Sin(StarlightWorld.visualTimer * speed + offset + 1) * mult;
 			var target = new Rectangle((int)pos.X + tex.Width / 2, (int)pos.Y + tex.Height / 2, (int)(tex.Width * sin), (int)(tex.Height * sin2));
 
 			Color color = Projectile.ai[1] == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, Projectile.ai[0] / 90f);

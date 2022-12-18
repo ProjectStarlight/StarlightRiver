@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using NetEasy;
+﻿using NetEasy;
 using System;
-using Terraria;
 using Terraria.GameInput;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Core
 {
@@ -105,6 +102,7 @@ namespace StarlightRiver.Core
 		protected override void Receive()
 		{
 			ControlsPlayer Player = Main.player[whoAmI].GetModPlayer<ControlsPlayer>();
+
 			if ((controls & 0b10000000) == 0b10000000)
 				Player.mouseRight = true;
 			else

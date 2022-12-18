@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -12,9 +10,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		internal override List<Loot> GoldLootPool => new()
 		{
-				new Loot(ItemType<Content.Items.UndergroundTemple.TemplePick>(), 1),
-				new Loot(ItemType<Content.Items.UndergroundTemple.TempleSpear>(), 1),
-				new Loot(ItemType<Content.Items.UndergroundTemple.TempleRune>(), 1)
+				new Loot(ItemType<Items.UndergroundTemple.TemplePick>(), 1),
+				new Loot(ItemType<Items.UndergroundTemple.TempleSpear>(), 1),
+				new Loot(ItemType<Items.UndergroundTemple.TempleRune>(), 1)
 			};
 
 		internal override List<Loot> SmallLootPool => new()

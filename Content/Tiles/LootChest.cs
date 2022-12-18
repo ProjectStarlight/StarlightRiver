@@ -2,9 +2,7 @@
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles
 {
@@ -33,6 +31,7 @@ namespace StarlightRiver.Content.Tiles
 				var smallLoot = new Loot[5];
 
 				List<Loot> types = Helper.RandomizeList(SmallLootPool);
+
 				for (int k = 0; k < 5; k++)
 					smallLoot[k] = types[k];
 
@@ -51,26 +50,26 @@ namespace StarlightRiver.Content.Tiles
 
 	public struct Loot
 	{
-		public int Type;
-		public int Count;
-		public int Min;
-		public int Max;
+		public int type;
+		public int count;
+		public int min;
+		public int max;
 
 		public Loot(int ID, int count)
 		{
-			Type = ID;
-			Count = count;
-			Min = 0;
-			Max = 0;
+			type = ID;
+			this.count = count;
+			min = 0;
+			max = 0;
 		}
 		public Loot(int ID, int min, int max)
 		{
-			Type = ID;
-			Min = min;
-			Max = max;
-			Count = 0;
+			type = ID;
+			this.min = min;
+			this.max = max;
+			count = 0;
 		}
 
-		public int GetCount() { return Count == 0 ? Main.rand.Next(Min, Max) : Count; }
+		public int GetCount() { return count == 0 ? Main.rand.Next(min, max) : count; }
 	}
 }

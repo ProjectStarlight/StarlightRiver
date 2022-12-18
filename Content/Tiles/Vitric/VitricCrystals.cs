@@ -1,13 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
@@ -41,12 +36,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				var modtile = GetModTile(Item.createTile) as WalkableCrystal;
 				float zoom = Main.GameViewMatrix.Zoom.X;
-				Vector2 offset = new Vector2((modtile.MaxWidth / 2 - 1) * 16, (modtile.MaxHeight - 1) * 16 - 1) * zoom;
+				Vector2 offset = new Vector2((modtile.maxWidth / 2 - 1) * 16, (modtile.maxHeight - 1) * 16 - 1) * zoom;
 				spriteBatch.Draw(TextureAssets.Tile[Item.createTile].Value, (Main.MouseWorld / (16 * zoom)).PointAccur() * (16 * zoom) - Main.screenPosition - offset,
-					TextureAssets.Tile[Item.createTile].Value.Frame(modtile.VariantCount, 1, Main.LocalPlayer.selectedItem, 0),
+					TextureAssets.Tile[Item.createTile].Value.Frame(modtile.variantCount, 1, Main.LocalPlayer.selectedItem, 0),
 					Color.White * 0.75f, 0, default, zoom, default, default);
 			}
 		}
+
 		public override bool CanUseItem(Player Player)
 		{
 			//(GetModTile(Tiletype) as WalkableCrystal).
@@ -136,6 +132,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			if (Main.rand.Next(1500) == 0)
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
+
 				if (Main.rand.NextBool())
 					Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle>(), Vector2.Zero);
 				else
@@ -150,29 +147,41 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	{
 		public VitricGiantCrystal() : base(10, 19, "VitricGiantDummy", 4) { }//a
 	}
+
 	internal class VitricGiantDummy : WalkableCrystalDummy
-	{ public VitricGiantDummy() : base(TileType<VitricGiantCrystal>(), 4) { } }
+	{
+		public VitricGiantDummy() : base(TileType<VitricGiantCrystal>(), 4) { }
+	}
 
 	internal class VitricLargeCrystal : VitricCrystal
 	{
 		public VitricLargeCrystal() : base(13, 8, "VitricLargeDummy", 2) { }
 	}
+
 	internal class VitricLargeDummy : WalkableCrystalDummy
-	{ public VitricLargeDummy() : base(TileType<VitricLargeCrystal>(), 2) { } }
+	{
+		public VitricLargeDummy() : base(TileType<VitricLargeCrystal>(), 2) { }
+	}
 
 	internal class VitricMediumCrystal : VitricCrystal
 	{
 		public VitricMediumCrystal() : base(7, 6, "VitricMediumDummy", 4) { }
 	}
+
 	internal class VitricMediumDummy : WalkableCrystalDummy
-	{ public VitricMediumDummy() : base(TileType<VitricMediumCrystal>(), 4) { } }
+	{
+		public VitricMediumDummy() : base(TileType<VitricMediumCrystal>(), 4) { }
+	}
 
 	internal class VitricSmallCrystal : VitricCrystal
 	{
 		public VitricSmallCrystal() : base(3, 3, "VitricSmallDummy", 2) { }
 	}
+
 	internal class VitricSmallDummy : WalkableCrystalDummy
-	{ public VitricSmallDummy() : base(TileType<VitricSmallCrystal>(), 2) { } }
+	{
+		public VitricSmallDummy() : base(TileType<VitricSmallCrystal>(), 2) { }
+	}
 
 	//internal class VitricLargeCrystal : ModTile //old crystal tiles
 	//{

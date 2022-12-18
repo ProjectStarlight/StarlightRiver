@@ -26,17 +26,13 @@ namespace StarlightRiver
 
 	public partial class StarlightRiver : Mod
 	{
-		public AbilityHotkeys AbilityKeys { get; private set; }
-
 		private List<IOrderedLoadable> loadCache;
 
 		private List<IRecipeGroup> recipeGroupCache;
 
-		public static float Rotation;
+		public static bool debugMode = false;
 
-		public static bool DebugMode = false;
-
-		public static LightingBuffer LightingBufferInstance = null;
+		public static LightingBuffer lightingBufferInstance = null;
 
 		//debug hook to view RTs
 		//public override void PostDrawInterface(SpriteBatch spriteBatch)
@@ -47,6 +43,8 @@ namespace StarlightRiver
 
 		public static StarlightRiver Instance { get; set; }
 
+		public AbilityHotkeys AbilityKeys { get; private set; }
+
 		public StarlightRiver()
 		{
 			Instance = this;
@@ -55,11 +53,7 @@ namespace StarlightRiver
 
 		public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
 
-		private Vector2 _lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
-
-		private Vector2 _lastViewSize;
-
-		private Viewport _lastViewPort;
+		private Vector2 lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
 
 		public static void SetLoadingText(string text)
 		{
@@ -105,11 +99,9 @@ namespace StarlightRiver
 
 			if (!Main.dedServ)
 			{
-				_lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-				_lastViewSize = Main.ViewSize;
-				_lastViewPort = Main.graphics.GraphicsDevice.Viewport;
+				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 
-				LightingBufferInstance = new LightingBuffer();
+				lightingBufferInstance = new LightingBuffer();
 
 				//Hotkeys
 				AbilityKeys = new AbilityHotkeys(this);
@@ -130,7 +122,7 @@ namespace StarlightRiver
 			{
 				Instance = null;
 				AbilityKeys.Unload();
-				LightingBufferInstance = null;
+				lightingBufferInstance = null;
 
 				SLRSpawnConditions.Unload();
 			}
@@ -148,17 +140,16 @@ namespace StarlightRiver
 		{
 			if (!Main.dedServ && !Main.gameMenu)
 			{
-				if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
+				if (lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
 				{
 					if (TileDrawOverLoader.projTarget != null)
 						TileDrawOverLoader.ResizeTarget();
+
 					if (BreacherArmorHelper.NPCTarget != null)
 						BreacherArmorHelper.ResizeTarget();
 				}
 
-				_lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-				_lastViewSize = Main.ViewSize;
-				_lastViewPort = Main.graphics.GraphicsDevice.Viewport;
+				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 			}
 		}
 

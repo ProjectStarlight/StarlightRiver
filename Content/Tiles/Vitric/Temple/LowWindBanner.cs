@@ -1,8 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Physics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.VerletGenerators;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -27,12 +24,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	internal class LowWindBannerDummy : Dummy
 	{
-		public LowWindBannerDummy() : base(TileType<LowWindBanner>(), 16, 200) { }
-
 		private RectangularBanner Chain;
 		int blow;
 
 		public override int ParentY => (int)(Projectile.position.Y / 16);
+
+		public LowWindBannerDummy() : base(TileType<LowWindBanner>(), 16, 200) { }
 
 		public override bool ValidTile(Tile tile)
 		{
@@ -77,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			{
 				int offset = (int)(Projectile.position.X / 16 + Projectile.position.Y / 16);
 
-				float sin = (float)System.Math.Sin(StarlightWorld.rottime + offset);
+				float sin = (float)System.Math.Sin(StarlightWorld.visualTimer + offset);
 				float sin2 = (float)System.Math.Sin(Main.GameUpdateCount * 0.016f + offset);
 
 				float power = (float)System.Math.Sin(index / 16f * 3.14f) * 2;

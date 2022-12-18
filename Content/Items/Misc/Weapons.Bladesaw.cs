@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			Helper.PlayPitched("Impacts/StabTiny", 1.2f, Main.rand.NextFloat(-0.3f, 0.3f), target.Center);
-			CameraSystem.Shake += 2;
+			CameraSystem.shake += 2;
 
 			ShreddedNPC globalNPC = target.GetGlobalNPC<ShreddedNPC>();
 			globalNPC.ShreddedTimer = 300;

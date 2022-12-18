@@ -286,7 +286,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 										modproj.moveDirection = new Vector2(-Player.direction, -1);
 								}
 
-								CameraSystem.Shake += 12;
+								CameraSystem.shake += 12;
 								angularVelocity = 0;
 								attackDuration = 30;
 								Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (charge < MAXCHARGE)
 				charge++;
 
-			CameraSystem.Shake += 8;
+			CameraSystem.shake += 8;
 
 			if (currentAttack != CurrentAttack.Slam)
 				pauseTime = 7;
@@ -531,7 +531,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
-			int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 40f);
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
 			var color = new Color(72 + sin, 30 + sin / 2, 127);
 
 			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);

@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
 
@@ -28,12 +25,12 @@ namespace StarlightRiver.Helpers
 
 			if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
 			{
-				int num2 = 0;
+				int timeDiff = 0;
 				for (int k = 0; k < 400; k++)
 				{
-					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > num2)
+					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
 					{
-						num2 = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
+						timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
 						targetIndex = k;
 					}
 				}
@@ -91,12 +88,12 @@ namespace StarlightRiver.Helpers
 
 			if (targetIndex == 400 && Main.netMode != NetmodeID.MultiplayerClient) //some sort of vanilla failsafe if no safe index is found it seems?
 			{
-				int num2 = 0;
+				int timeDiff = 0;
 				for (int k = 0; k < 400; k++)
 				{
-					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > num2)
+					if (Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k] > timeDiff)
 					{
-						num2 = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
+						timeDiff = Main.item[k].timeSinceItemSpawned - Main.timeItemSlotCannotBeReusedFor[k];
 						targetIndex = k;
 					}
 				}
@@ -115,9 +112,7 @@ namespace StarlightRiver.Helpers
 			Item.wet = Collision.WetCollision(Item.position, Item.width, Item.height); //not sure what this is, from vanilla
 
 			if (ItemSlot.Options.HighlightNewItems && Item.type >= ItemID.None && !ItemID.Sets.NeverAppearsAsNewInInventory[Item.type]) //vanilla Item highlight system
-			{
 				Item.newAndShiny = true;
-			}
 
 			if (Main.netMode == NetmodeID.Server && !noBroadcast) //syncing
 			{

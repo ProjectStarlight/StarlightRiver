@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (GlobalTimer == 300)
 			{
-				CameraSystem.Shake += 25;
+				CameraSystem.shake += 25;
 				Helper.PlayPitched("ArenaHit", 1f, 0.5f, NPC.Center);
 			}
 
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer == 100 + k * 30)
 				{
-					CameraSystem.Shake += 5;
+					CameraSystem.shake += 5;
 					Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}
 

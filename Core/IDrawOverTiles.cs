@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-namespace StarlightRiver.Core
+﻿namespace StarlightRiver.Core
 {
 	interface IDrawOverTiles
 	{

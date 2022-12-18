@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Player Player = Main.player[k];
 
-				if (Player.active && StarlightWorld.SquidBossArena.Contains((Player.Center / 16).ToPoint()))
+				if (Player.active && StarlightWorld.squidBossArena.Contains((Player.Center / 16).ToPoint()))
 					possible.Add(Player.whoAmI);
 			}
 
@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 							Dust.NewDustPerfect(tentacle.NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 1, new Color(255, Main.rand.Next(0, 155), 0), 0.5f);
 					}
 
-					CameraSystem.Shake += 20; //TODO: Find the right player instances
+					CameraSystem.shake += 20; //TODO: Find the right player instances
 
 					Helpers.Helper.PlayPitched("ArenaHit", 0.5f, 1f, tentacles[k].Center);
 				}

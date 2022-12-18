@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria;
-using Terraria.Graphics.Effects;
+﻿using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Loaders
 {
@@ -11,9 +8,6 @@ namespace StarlightRiver.Core.Loaders
 
 		public static RenderTarget2D projTarget;
 		public static RenderTarget2D tileTarget;
-
-		private Vector2 oldScreenPos;
-		private Vector2 offsetOverTime;
 
 		public void Load()
 		{
@@ -88,19 +82,11 @@ namespace StarlightRiver.Core.Loaders
 				new Vector2(Main.rightWorld - Main.screenWidth / Main.GameViewMatrix.Zoom.X - 672f,
 				Main.bottomWorld - Main.screenHeight / Main.GameViewMatrix.Zoom.Y - 672f) - Main.GameViewMatrix.Translation;
 
-			if (
-			   Main.screenPosition.X <= input.X
-			   || Main.screenPosition.X >= input2.X)
-			{
+			if (Main.screenPosition.X <= input.X || Main.screenPosition.X >= input2.X)
 				translation.X = 0;
-			}
 
-			if (
-			   Main.screenPosition.Y <= input.Y
-			   || Main.screenPosition.Y >= input2.Y)
-			{
+			if (Main.screenPosition.Y <= input.Y || Main.screenPosition.Y >= input2.Y)
 				translation.Y = 0;
-			}
 
 			gD.SetRenderTarget(projTarget);
 			gD.Clear(Color.Transparent);
@@ -113,10 +99,9 @@ namespace StarlightRiver.Core.Loaders
 			for (int i = 0; i < Main.projectile.Length; i++)
 			{
 				Projectile proj = Main.projectile[i];
+
 				if (proj.active && proj.ModProjectile is IDrawOverTiles iface)
-				{
 					iface.DrawOverTiles(spriteBatch);
-				}
 			}
 
 			spriteBatch.End();
@@ -130,8 +115,6 @@ namespace StarlightRiver.Core.Loaders
 			spriteBatch.End();
 
 			gD.SetRenderTargets(bindings);
-
-			oldScreenPos = Main.screenPosition;
 		}
 
 		private void DrawTarget()

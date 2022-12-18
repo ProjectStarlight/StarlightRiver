@@ -1,8 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Core.Systems
+﻿namespace StarlightRiver.Core.Systems
 {
 	internal class DebugSystem : ModSystem
 	{
@@ -18,7 +14,7 @@ namespace StarlightRiver.Core.Systems
 			if (Main.LocalPlayer.position == Vector2.Zero || float.IsNaN(Main.LocalPlayer.position.X) || float.IsNaN(Main.LocalPlayer.position.Y))
 				Main.LocalPlayer.position = new Vector2(Main.spawnTileX * 16, Main.spawnTileY * 16);
 
-			if (!StarlightRiver.DebugMode)
+			if (!StarlightRiver.debugMode)
 			{
 				orig(self, gameTime);
 				return;

@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.GUI
 			int offY = 0;
 			foreach (Loot loot in activeQuest.Requirements)
 			{
-				UIElement element = new RequirementPreview(loot.Type, loot.Count);
+				UIElement element = new RequirementPreview(loot.type, loot.count);
 				element.Top.Set(16, 0);
 				element.Left.Set(16, 0);
 				element.Width.Set(32, 0);
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.GUI
 			quests.Clear();
 
 			int offY = 0;
-			foreach (KeyValuePair<string, bool> pair in StarlightWorld.TownUpgrades)
+			foreach (KeyValuePair<string, bool> pair in StarlightWorld.townUpgrades)
 			{
 				if (TownUpgrade.FromString(pair.Key) != null)
 					AddQuestButton(new TownQuestItem(TownUpgrade.FromString(pair.Key)), offY);
@@ -165,14 +165,14 @@ namespace StarlightRiver.Content.GUI
 				return;
 			foreach (Loot loot in Quest.Requirements)
 			{
-				if (!Helper.HasItem(Main.LocalPlayer, loot.Type, loot.Count))
+				if (!Helper.HasItem(Main.LocalPlayer, loot.type, loot.count))
 					return;
 			}
 
 			foreach (Loot loot in Quest.Requirements)
-				Helper.TryTakeItem(Main.LocalPlayer, loot.Type, loot.Count);
+				Helper.TryTakeItem(Main.LocalPlayer, loot.type, loot.count);
 
-			StarlightWorld.TownUpgrades[Quest.NPCName] = !StarlightWorld.TownUpgrades[Quest.NPCName];
+			StarlightWorld.townUpgrades[Quest.NPCName] = !StarlightWorld.townUpgrades[Quest.NPCName];
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item82);
 		}

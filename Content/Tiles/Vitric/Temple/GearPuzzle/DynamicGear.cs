@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ModLoader;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
@@ -59,6 +54,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
 			Texture2D tex = Size switch
 			{
 				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
@@ -67,6 +63,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
 				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
 			};
+
 			if (gearAnimation > 0) //switching between sizes animation
 			{
 				Texture2D texOld = oldSize switch
@@ -77,6 +74,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 					3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
 					_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
 				};
+
 				if (gearAnimation > 20)
 				{
 					float progress = Helpers.Helper.BezierEase((gearAnimation - 20) / 20f);

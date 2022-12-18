@@ -110,9 +110,9 @@ namespace StarlightRiver.Content.Pickups
 
 			Main.blockInput = false;
 
-			if (mp.PickupTarget?.whoAmI == NPC.whoAmI)
+			if (mp.pickupTarget?.whoAmI == NPC.whoAmI)
 			{
-				PickupVisuals(mp.PickupTimer); //if the Player is picking this up, clientside only also
+				PickupVisuals(mp.pickupTimer); //if the Player is picking this up, clientside only also
 				Main.blockInput = true;
 				// TODO sync it so they're not floating? idk
 			}
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Pickups
 			if (CanPickup(target) && target.Hitbox.Intersects(NPC.Hitbox))
 			{
 				PickupEffects(target);
-				mp.PickupTarget = NPC;
+				mp.pickupTarget = NPC;
 
 				var packet = new AbilityProgress(target.whoAmI, target.GetHandler());
 				packet.Send();
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Pickups
 			if (Visible)
 			{
 				Texture2D tex = Request<Texture2D>(Texture).Value;
-				Vector2 pos = NPC.Center - screenPos + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
+				Vector2 pos = NPC.Center - screenPos + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
 				spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 			}
 
@@ -156,7 +156,7 @@ namespace StarlightRiver.Content.Pickups
 			if (Visible)
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow0").Value;
-				Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.rottime) * 5);
+				Vector2 pos = NPC.Center - Main.screenPosition + new Vector2(0, (float)Math.Sin(StarlightWorld.visualTimer) * 5);
 
 				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.3f, 0, tex.Size() / 2, 1, 0, 0);
 				spriteBatch.Draw(tex, pos, tex.Frame(), GlowColor * 0.5f, 0, tex.Size() / 2, 0.6f, 0, 0);

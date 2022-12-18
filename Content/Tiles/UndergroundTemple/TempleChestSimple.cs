@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Items.Brewing;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.Brewing;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ObjectData;

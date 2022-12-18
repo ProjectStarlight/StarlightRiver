@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class CoachGunDustTwo : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class CoachGunDustThree : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;

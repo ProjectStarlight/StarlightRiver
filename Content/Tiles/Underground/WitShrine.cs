@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -56,7 +51,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
 					}
-				} (dummy.ModProjectile as WitShrineDummy).State = 1;
+				}
+
+				(dummy.ModProjectile as WitShrineDummy).State = 1;
 				(dummy.ModProjectile as WitShrineDummy).Timer = 0;
 				return true;
 			}
@@ -67,6 +64,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 	public partial class WitShrineDummy : Dummy, IDrawAdditive
 	{
+		public enum runeState
+		{
+			None,
+			Freindly,
+			Hostile,
+			HostileHidden,
+			Goal
+		}
+
 		public runeState[,] gameBoard = new runeState[6, 6];
 		public runeState[,] oldGameBoard = new runeState[6, 6];
 		public WitShrineGame activeGame = null;
@@ -81,15 +87,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public float Windup => Math.Min(1, Timer / 120f);
 
 		private Vector2 PlayerCenter => Projectile.Center + new Vector2(-48 * 3 + 24, -16 * 22) + Vector2.SmoothStep(Player * 48, oldPlayer * 48, PlayerTimer / 30f);
-
-		public enum runeState
-		{
-			None,
-			Freindly,
-			Hostile,
-			HostileHidden,
-			Goal
-		}
 
 		public WitShrineDummy() : base(ModContent.TileType<WitShrine>(), 3 * 16, 6 * 16) { }
 
@@ -130,7 +127,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 						case 3: activeGame = new MazeGame(this); break;
 
 						case 99: activeGame = new LoseGame(this); break;
-
 					}
 
 					activeGame?.SetupBoard();
@@ -164,7 +160,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 					for (int k = 0; k < 4; k++)
 					{
-						if (Main.rand.Next(2) == 0)
+						if (Main.rand.NextBool(2))
 						{
 							Vector2 pos = PlayerCenter + new Vector2(15, 15).RotatedBy(k / 4f * 6.28f);
 							Vector2 velocity = -Vector2.Normalize(Player - oldPlayer) * 0.2f;
@@ -227,9 +223,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				Texture2D runeTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/WitRune").Value;
 				var runeFrame = new Rectangle(0, 0, 22, 22);
@@ -245,31 +241,36 @@ namespace StarlightRiver.Content.Tiles.Underground
 					{
 						int random = rand.Next(4);
 
-						float sin = 0.5f + (float)Math.Sin(StarlightWorld.rottime + x + y) * 0.5f;
+						float sin = 0.5f + (float)Math.Sin(StarlightWorld.visualTimer + x + y) * 0.5f;
 
 						switch (gameBoard[x, y])
 						{
 							case runeState.None:
 								color = Color.Transparent;
 								break;
+
 							case runeState.Freindly:
 								runeFrame.X = 22;
 								runeFrame.Y = 22 * random;
 								color = new Color(20, 50, 255);
 								break;
+
 							case runeState.Hostile:
 								runeFrame.X = 0;
 								runeFrame.Y = 22 * random;
 								color = new Color(255, 30, 10);
 								break;
+
 							case runeState.HostileHidden:
 								color = Color.Transparent;
 								break;
+
 							case runeState.Goal:
 								runeFrame.X = 44;
 								runeFrame.Y = 0;
 								color = new Color(255, 200, 50);
 								break;
+
 							default:
 								color = Color.Transparent;
 								break;
@@ -284,6 +285,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 							runeState.Goal => new Color(255, 200, 50),
 							_ => Color.Transparent,
 						};
+
 						if (Player == new Vector2(x, y))
 							color = Color.Transparent;
 

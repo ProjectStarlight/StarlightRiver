@@ -1,9 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Configs;
+﻿using StarlightRiver.Content.Configs;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
@@ -15,13 +12,11 @@ namespace StarlightRiver.Core
 		private readonly List<Particle> Particles = new();
 		private Texture2D Texture;
 		private readonly Update UpdateDelegate;
-		private readonly int Styles;
 
-		public ParticleSystem(string texture, Update updateDelegate, int styles = 1)
+		public ParticleSystem(string texture, Update updateDelegate)
 		{
 			Texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			UpdateDelegate = updateDelegate;
-			Styles = styles;
 		}
 
 		public void DrawParticles(SpriteBatch spriteBatch)

@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.GUI
 			// Draws the transparent visual
 			else if (Main.mouseItem?.ModItem is InfusionItem mouseItem && mp.CanSetInfusion(mouseItem))
 			{
-				float opacity = 0.33f + (float)Math.Sin(StarlightWorld.rottime) * 0.25f;
+				float opacity = 0.33f + (float)Math.Sin(StarlightWorld.visualTimer) * 0.25f;
 				mouseItem.Draw(spriteBatch, GetDimensions().Center() + Vector2.UnitY, opacity);
 			}
 		}

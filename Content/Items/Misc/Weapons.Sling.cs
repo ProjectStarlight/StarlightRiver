@@ -292,7 +292,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public void ShootSlingProjectile()
 		{
-			CameraSystem.Shake += 2;
+			CameraSystem.shake += 2;
 
 			if (Main.myPlayer == Projectile.owner)
 			{
@@ -463,7 +463,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			CameraSystem.Shake += 1;
+			CameraSystem.shake += 1;
 		}
 
 		public override void Kill(int timeLeft)
