@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.GUI
 		public int Timer = 0;
 		public Vector2 basePos;
 
-		public ExtraDefenseInfoPanel DoTResistPanel = new(ModContent.Request<Texture2D>(AssetDirectory.GUI + "DoTResistBG").Value, 1);
+		public ExtraDefenseInfoPanel DoTResistPanel = new(ModContent.Request<Texture2D>(AssetDirectory.GUI + "DoTResistBG", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, 1);
 
 		public override bool Visible => Main.playerInventory;
 
