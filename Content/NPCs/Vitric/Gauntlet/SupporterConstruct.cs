@@ -1,22 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
 	internal class SupporterConstruct : VitricConstructNPC
 	{
-		public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
-
 		private int direction = 0;
 		private int directionCounter = 0;
 		private int directionThreshhold = 15;
@@ -43,6 +36,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private int destructionTimer = 0;
 
+		public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
+
 		public override void Load()
 		{
 			On.Terraria.Main.DrawNPCs += DrawBarrierGlow;
@@ -64,10 +59,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 100;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
+
 			NPC.HitSound = SoundID.Item27 with
 			{
 				Pitch = -0.3f
 			};
+
 			NPC.DeathSound = SoundID.Shatter;
 			NPC.noGravity = false;
 		}
@@ -122,7 +119,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				.OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
 
 				if (healingTarget != default && healingTarget != null)
+				{
 					alreadyHealed.Add(healingTarget);
+				}
 				else
 				{
 					switchTimer = 98;
@@ -178,7 +177,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					for (int i = 10; i < width; i += 10)
 					{
 						if (Main.rand.NextBool(50))
-							Dust.NewDustPerfect(NPC.Center + (Vector2.UnitX.RotatedBy(laserRotation) * i) + (Vector2.UnitY.RotatedBy(laserRotation) * Main.rand.NextFloat(-8, 8)), DustType<Dusts.Glow>(), -Vector2.UnitX.RotatedBy(laserRotation) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
+							Dust.NewDustPerfect(NPC.Center + Vector2.UnitX.RotatedBy(laserRotation) * i + Vector2.UnitY.RotatedBy(laserRotation) * Main.rand.NextFloat(-8, 8), DustType<Dusts.Glow>(), -Vector2.UnitX.RotatedBy(laserRotation) * Main.rand.NextFloat(-1.5f, -0.5f), 0, color, 0.4f);
 					}
 				}
 
@@ -203,14 +202,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				Vector2 posToBe = healingTarget.Center;
 
-				if (healingTarget.type == ModContent.NPCType<ShieldConstruct>())
+				if (healingTarget.type == NPCType<ShieldConstruct>())
 					posToBe.X -= 150 * healingTarget.spriteDirection;
 
 				if (doingCombo)
 					posToBe = comboPos;
 
 				if ((NPC.Center - posToBe).Length() > 100)
+				{
 					NPC.velocity.X += Math.Sign(posToBe.X - NPC.Center.X) * 5f;
+				}
 				else
 				{
 					if (directionCounter > directionThreshhold)
@@ -232,11 +233,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (NPC.collideX && NPC.velocity.Y == 0)
 					NPC.velocity.Y = -8;
 
-				if (true)
-				{
-					Main.DoUpdate_AnimateItemIcons();
-				}
-
 				for (int i = 10; i < width; i += 10)
 					Lighting.AddLight(pos + Vector2.UnitX.RotatedBy(laserRotation) * i + Main.screenPosition, color.ToVector3() * 0.030f);
 			}
@@ -250,8 +246,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D mainTex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 			SpriteEffects spriteEffects = SpriteEffects.None;
 
 			int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
@@ -282,8 +278,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
 				var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
 
-				var source = new Rectangle((int)(((laserTimer - 150) / 20f) * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
-				var source2 = new Rectangle((int)(((laserTimer - 150) / 45f) * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
+				var source = new Rectangle((int)((laserTimer - 150) / 20f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
+				var source2 = new Rectangle((int)((laserTimer - 150) / 45f * -texBeam2.Width), 0, texBeam2.Width, texBeam2.Height);
 
 				spriteBatch.Draw(texBeam, target, source, color, laserRotation, origin, 0, 0);
 				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, laserRotation, origin2, 0, 0);
@@ -303,16 +299,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 4; i++)
+				{
 					Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+				}
 
 				for (int k = 1; k <= 5; k++)
+				{
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+				}
 			}
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 		{
-			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[] {
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
 				new FlavorTextBestiaryInfoElement("One of the Glassweaver's constructs. Channels its power to strengthen its allies' glass bodies. This may result in a power surge.")
 			});
@@ -324,7 +325,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			   n => n.active &&
 			   n.ModNPC is VitricConstructNPC &&
 			   n.type != NPC.type &&
-			   n.type != ModContent.NPCType<ShieldConstruct>()).FirstOrDefault();
+			   n.type != NPCType<ShieldConstruct>()).FirstOrDefault();
 
 			if (otherConstructs == null || otherConstructs == default)
 			{

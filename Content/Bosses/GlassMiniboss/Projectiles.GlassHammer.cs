@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -14,6 +10,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	class GlassHammer : ModProjectile
 	{
 		Vector2 origin;
+
+		float swingTimer;
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
@@ -39,7 +37,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Projectile.localAI[0] = (int)TotalTime;
+			swingTimer = (int)TotalTime;
 			Projectile.timeLeft = (int)TotalTime + 50;
 			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
 		}
@@ -49,11 +47,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
 
-			Projectile.localAI[0]--;
+			swingTimer--;
 
-			float dropLerp = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.55f, Projectile.localAI[0], true), 3f);
-			float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, Projectile.localAI[0], true));
-			float swingAccel = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.16f, 0, Projectile.localAI[0], true), 1.7f);
+			float dropLerp = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.55f, swingTimer, true), 3f);
+			float liftLerp = Helpers.Helper.SwoopEase(1f - Utils.GetLerpValue(TotalTime * 0.5f, TotalTime * 0.15f, swingTimer, true));
+			float swingAccel = (float)Math.Pow(Utils.GetLerpValue(TotalTime * 0.16f, 0, swingTimer, true), 1.7f);
 			//20 degree spawn
 			//10 degree drop
 			//40 degree lift
@@ -63,7 +61,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float chargeRot = MathHelper.Lerp(-MathHelper.ToRadians(20), MathHelper.ToRadians(10), dropLerp)
 				- MathHelper.Lerp(MathHelper.ToRadians(40), 0, liftLerp)
 				+ MathHelper.Lerp(MathHelper.ToRadians(180), MathHelper.ToRadians(17), swingAccel);
-			int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, Projectile.localAI[0], true) * 3f);
+			int handleFrame = (int)(Utils.GetLerpValue(TotalTime * 0.2f, TotalTime * 0.01f, swingTimer, true) * 3f);
 			Vector2 handleOffset = handleFrame switch
 			{
 				1 => new Vector2(25, -5),
@@ -75,12 +73,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Projectile.rotation = chargeRot * -Parent.direction + (Parent.direction < 0 ? -MathHelper.PiOver4 : MathHelper.PiOver4) + Parent.rotation;
 			origin = Parent.Center + handleOffset;
-			Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, Projectile.localAI[0], true));
+			Projectile.Center = origin + new Vector2(78 * Parent.direction, -78).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime + 5, TotalTime * 0.4f, swingTimer, true));
 
-			if (Projectile.localAI[0] == 0)
+			if (swingTimer == 0)
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0f, Projectile.Center);
-				Core.Systems.CameraSystem.Shake += 15;
+				CameraSystem.shake += 15;
 
 				for (int i = 0; i < 30; i++)
 				{
@@ -94,7 +92,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 			}
 
-			if (Projectile.localAI[0] > TotalTime * 0.5f)
+			if (swingTimer > TotalTime * 0.5f)
 			{
 				var alongHammer = Vector2.Lerp(origin, Projectile.Center + Main.rand.NextVector2Circular(80, 10).RotatedBy(Projectile.rotation), Main.rand.NextFloat());
 				Dust.NewDustPerfect(alongHammer, DustType<Dusts.Cinder>(), origin.DirectionTo(alongHammer).RotatedByRandom(0.5f) * 2f, 0, Glassweaver.GlowDustOrange, 0.8f);
@@ -103,7 +101,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
-			if (Projectile.localAI[0] < TotalTime * 0.12f)
+			if (swingTimer < TotalTime * 0.12f)
 				target.AddBuff(BuffType<Buffs.Squash>(), 180);
 		}
 
@@ -130,16 +128,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Vector2 handle = frame.Size() * new Vector2(Parent.direction < 0 ? 0.2f : 0.8f, 0.2f);
 
-			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, Projectile.localAI[0], true));
+			float scaleIn = Projectile.scale * Helpers.Helper.BezierEase(Utils.GetLerpValue(TotalTime * 0.9f, TotalTime * 0.6f, swingTimer, true));
 
-			Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, Projectile.localAI[0], true);
+			Color fadeIn = Color.Lerp(lightColor, Color.White, 0.2f) * Utils.GetLerpValue(TotalTime * 0.93f, TotalTime * 0.89f, swingTimer, true);
 			Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, frame, fadeIn, Projectile.rotation, handle, scaleIn, effects, 0);
 
-			Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.95f, Projectile.localAI[0], true) * Utils.GetLerpValue(TotalTime * 0.35f, TotalTime * 0.45f, Projectile.localAI[0], true);
+			Color hotFade = new Color(255, 255, 255, 128) * Utils.GetLerpValue(TotalTime, TotalTime * 0.95f, swingTimer, true) * Utils.GetLerpValue(TotalTime * 0.35f, TotalTime * 0.45f, swingTimer, true);
 			Main.EntitySpriteDraw(hammer.Value, Projectile.Center - Main.screenPosition, hotFrame, hotFade, Projectile.rotation, handle, scaleIn, effects, 0);
 
 			Asset<Texture2D> hammerSmall = Request<Texture2D>(Texture + "Small");
-			float scaleOut = Projectile.scale * Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.8f, Projectile.localAI[0], true);
+			float scaleOut = Projectile.scale * Utils.GetLerpValue(TotalTime * 0.6f, TotalTime * 0.8f, swingTimer, true);
 			Main.EntitySpriteDraw(hammerSmall.Value, Projectile.Center - Main.screenPosition, null, hotFade, Projectile.rotation, hammerSmall.Size() * 0.5f, scaleOut, effects, 0);
 
 			return false;
@@ -198,9 +196,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void AI()
 		{
 			Timer++;
-
-			if (Projectile.localAI[0] > 0)
-				Projectile.localAI[0]--;
 
 			if (Timer == RAISE_TIME - 59)
 			{

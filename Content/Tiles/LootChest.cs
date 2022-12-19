@@ -1,59 +1,75 @@
 ﻿using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles
 {
 	public abstract class LootChest : ModTile
-    {
-        internal virtual List<Loot> GoldLootPool { get; }
-        internal virtual List<Loot> SmallLootPool { get; }
+	{
+		internal virtual List<Loot> GoldLootPool { get; }
+		internal virtual List<Loot> SmallLootPool { get; }
 
-        public virtual void SafeSetDefaults() { }
+		public virtual void SafeSetDefaults() { }
 
-        public virtual bool CanOpen(Player Player) => true;
+		public virtual bool CanOpen(Player Player)
+		{
+			return true;
+		}
 
-        public override void SetStaticDefaults()
-        {
-            SafeSetDefaults();
-            MinPick = int.MaxValue;
-        }
+		public override void SetStaticDefaults()
+		{
+			SafeSetDefaults();
+			MinPick = int.MaxValue;
+		}
 
-        public override bool RightClick(int i, int j)
-        {
-            if (CanOpen(Main.LocalPlayer))
-            {
-                Loot[] smallLoot = new Loot[5];
+		public override bool RightClick(int i, int j)
+		{
+			if (CanOpen(Main.LocalPlayer))
+			{
+				var smallLoot = new Loot[5];
 
-                List<Loot> types = Helper.RandomizeList(SmallLootPool);
-                for (int k = 0; k < 5; k++) smallLoot[k] = types[k];
+				List<Loot> types = Helper.RandomizeList(SmallLootPool);
 
-                UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
-                UILoader.GetUIState<LootUI>().Visible = true;
+				for (int k = 0; k < 5; k++)
+					smallLoot[k] = types[k];
 
-                WorldGen.KillTile(i, j);
-                NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
+				UILoader.GetUIState<LootUI>().SetItems(GoldLootPool[Main.rand.Next(GoldLootPool.Count)], smallLoot);
+				UILoader.GetUIState<LootUI>().Visible = true;
 
-                return true;
-            }
-            return false;
-        }
-    }
+				WorldGen.KillTile(i, j);
+				NetMessage.SendTileSquare(Main.myPlayer, i, j, 2, 2, TileChangeType.None);
 
-    public struct Loot
-    {
-        public int Type;
-        public int Count;
-        public int Min;
-        public int Max;
+				return true;
+			}
 
-        public Loot(int ID, int count) { Type = ID; Count = count; Min = 0; Max = 0; }
-        public Loot(int ID, int min, int max) { Type = ID; Min = min; Max = max; Count = 0; }
+			return false;
+		}
+	}
 
-        public int GetCount() { return Count == 0 ? Main.rand.Next(Min, Max) : Count; }
-    }
+	public struct Loot
+	{
+		public int type;
+		public int count;
+		public int min;
+		public int max;
+
+		public Loot(int ID, int count)
+		{
+			type = ID;
+			this.count = count;
+			min = 0;
+			max = 0;
+		}
+		public Loot(int ID, int min, int max)
+		{
+			type = ID;
+			this.min = min;
+			this.max = max;
+			count = 0;
+		}
+
+		public int GetCount() { return count == 0 ? Main.rand.Next(min, max) : count; }
+	}
 }

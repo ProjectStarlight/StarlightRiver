@@ -1,12 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
@@ -76,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			var fakeNPC = new NPC();
 			fakeNPC.SetDefaults((int)NPCType);
 
-			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).previewTexturePath).Value;
+			Texture2D tex = ModContent.Request<Texture2D>((fakeNPC.ModNPC as VitricConstructNPC).PreviewTexturePath).Value;
 
 			Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
@@ -92,10 +87,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			trail?.Render(trailEffect);
 
 			Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-			var color = new Color(255, 160, 100)
-			{
-				A = 0
-			};
+			var color = new Color(255, 160, 100, 0);
+
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * (1 - Timer / 25f), 0, glowTex.Size() / 2, Timer * 0.1f, 0, 0);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color * (1 - Timer / 25f), 0, glowTex.Size() / 2, Timer * 0.05f, 0, 0);
 

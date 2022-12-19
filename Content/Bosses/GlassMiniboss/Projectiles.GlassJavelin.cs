@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using StarlightRiver.Core;
-using Terraria;
+﻿using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -48,8 +43,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Projectile.tileCollide == true)
 			{
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.166f);
-				//acceleration
-				if (Projectile.timeLeft < 80)
+
+				if (Projectile.timeLeft < 80) //acceleration
 					Projectile.velocity *= 0.96f + Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f;
 			}
 			else

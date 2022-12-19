@@ -1,24 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
 	internal class GruntConstruct : VitricConstructNPC
 	{
-		public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
-
-		private Player target => Main.player[NPC.target];
-
 		private const int XFRAMES = 4; //TODO: Swap to using NPC.Frame
 
 		private int xFrame = 0;
@@ -52,12 +43,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool juggernautComboLaunched = false;
 		public NPC juggernautPartner = default;
 
+		private Player Target => Main.player[NPC.target];
+
+		public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
+
 		public override void Load()
 		{
 			for (int k = 1; k <= 17; k++)
+			{
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/ConstructGore" + k);
+			}
+
 			for (int j = 1; j <= 3; j++)
+			{
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.VitricNpc + "Gore/GruntSwordGore" + j);
+			}
 		}
 
 		public override void SetStaticDefaults()
@@ -75,10 +75,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 150;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.2f;
+
 			NPC.HitSound = SoundID.Item27 with
 			{
 				Pitch = -0.3f
 			};
+
 			NPC.DeathSound = SoundID.Shatter;
 			cooldownDuration = Main.rand.Next(65, 90);
 			maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
@@ -88,7 +90,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void FindFrame(int frameHeight)
 		{
 			int frameWidth = 116;
-			NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight + 2), frameWidth, frameHeight);
+			NPC.frame = new Rectangle(xFrame * frameWidth, yFrame * frameHeight + 2, frameWidth, frameHeight);
 		}
 
 		public override void SafeAI() //TODO: Document snippets with their intended behavior
@@ -114,14 +116,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (!juggernautComboLaunched || NPC.velocity.Y > 0)
 				unboundRollRotation = MathHelper.Lerp(unboundRollRotation, 6.28f, 0.2f);
 
-			NPC.rotation = unboundRotation + (unboundRollRotation * Math.Sign(NPC.velocity.X));
+			NPC.rotation = unboundRotation + unboundRollRotation * Math.Sign(NPC.velocity.X);
 
 			if (ComboBehavior() || JuggernautComboBehavior())
 				return;
 
-			if (Math.Abs(target.Center.X - NPC.Center.X) < 600 && !idling)
+			if (Math.Abs(Target.Center.X - NPC.Center.X) < 600 && !idling)
 			{
-				if ((Math.Abs(target.Center.X - NPC.Center.X) < 100 || attacking))
+				if (Math.Abs(Target.Center.X - NPC.Center.X) < 100 || attacking)
 				{
 					if (attackCooldown < 0)
 					{
@@ -133,12 +135,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				NPC closestPelter = Main.npc.Where(x => //TODO: Same as shielder combo, cache partner
 				x.active &&
-				x.type == ModContent.NPCType<PelterConstruct>() &&
+				x.type == NPCType<PelterConstruct>() &&
 				NPC.Distance(x.Center) < 600).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
 
 				if (closestPelter != default && !attacking)
 				{
-					xPosToBe = (int)MathHelper.Lerp(closestPelter.Center.X, target.Center.X, 0.8f);
+					xPosToBe = (int)MathHelper.Lerp(closestPelter.Center.X, Target.Center.X, 0.8f);
 
 					if (Math.Abs(xPosToBe - NPC.Center.X) < 25 || idling)
 					{
@@ -148,7 +150,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					}
 				}
 				else
-					xPosToBe = (int)target.Center.X;
+				{
+					xPosToBe = (int)Target.Center.X;
+				}
 
 				float xDir = xPosToBe - NPC.Center.X;
 				int xSign = Math.Sign(xDir);
@@ -179,7 +183,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			}
 			else
+			{
 				IdleBehavior();
+			}
 		}
 
 		public override void OnKill()
@@ -187,19 +193,26 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
+				{
 					Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+				}
 
 				for (int k = 1; k <= 12; k++)
+				{
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+				}
+
 				for (int j = 1; j <= 3; j++)
+				{
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("GruntSwordGore" + j).Type);
+				}
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D mainTex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
 			DrawConstruct(mainTex, glowTex, spriteBatch, screenPos, drawColor, Vector2.Zero, true);
 			return false;
@@ -211,10 +224,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 
 			SpriteEffects effects = SpriteEffects.None;
-			var origin = new Vector2(frameWidth / 4, (frameHeight * 0.75f) - 8);
+			var origin = new Vector2(frameWidth / 4, frameHeight * 0.75f - 8);
 
 			if (xFrame == 2)
 				origin.Y -= 2;
+
 			if (xFrame == 0)
 				origin.Y += 2;
 
@@ -268,7 +282,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			if (xFrame != 2)
 			{
-				NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+				NPC.spriteDirection = Math.Sign(Target.Center.X - NPC.Center.X);
 				frameCounter = 0;
 				yFrame = 0;
 				xFrame = 2;
@@ -289,7 +303,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				frameCounter = 0;
 
 				if (yFrame < 13)
+				{
 					yFrame++;
+				}
 				else
 				{
 					attackCooldown = cooldownDuration;
@@ -326,7 +342,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (doingCombo)
 			{
-				if (partner.active && (partner.ModNPC as ShieldConstruct).guarding)
+				if (partner.active && (partner.ModNPC as ShieldConstruct).Guarding)
 				{
 
 					if (!comboJumpedTwice)
@@ -392,19 +408,21 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 							{
 								comboDirection = NPC.spriteDirection;
 								partner.velocity.X = -1 * comboDirection;
-								NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
+								NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center + new Vector2(NPC.spriteDirection * 15, 0), 0.2f, 120, 250);
 								NPC.velocity.X *= 2f;
 								unboundRotation = -6.28f * NPC.spriteDirection * 0.95f;
 								comboJumpedTwice = true;
 
-								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
+								var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Bottom, NPC.Bottom.DirectionTo(partner.Center), ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(25, 35), NPC.Center.DirectionTo(partner.Center).ToRotation());
 								ring.extraUpdates = 0;
 							}
 						}
 					}
 
 					if (comboJumpedTwice)
+					{
 						NPC.spriteDirection = comboDirection;
+					}
 					else
 					{
 						NPC.velocity.X += NPC.spriteDirection * 0.5f;
@@ -434,6 +452,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (!juggernautComboLaunched)
 				{
 					savedDirection = NPC.spriteDirection;
+
 					if (juggernautPartner == null || juggernautPartner == default || !juggernautPartner.active)
 					{
 						juggernautPartner = default;
@@ -441,9 +460,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						return false;
 					}
 
-					if (Math.Abs(juggernautPartner.Center.X + (juggernautPartner.direction * 60) - NPC.Center.X) > 20) //Run to partner
+					if (Math.Abs(juggernautPartner.Center.X + juggernautPartner.direction * 60 - NPC.Center.X) > 20) //Run to partner
 					{
-						NPC.direction = NPC.spriteDirection = Math.Sign(juggernautPartner.Center.X + (juggernautPartner.direction * 80) - NPC.Center.X);
+						NPC.direction = NPC.spriteDirection = Math.Sign(juggernautPartner.Center.X + juggernautPartner.direction * 80 - NPC.Center.X);
 
 						if (xFrame != 1)
 						{
@@ -483,6 +502,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						if (frameCounter > 3)
 						{
 							frameCounter = 0;
+
 							if (yFrame < 14)
 								yFrame++;
 						}
@@ -493,7 +513,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					NPC.direction = NPC.spriteDirection = savedDirection;
 					NPC.velocity.X *= 1.05f;
 
-					if (NPC.velocity.Y < -1 && frameCounter == 0 && Math.Abs(target.Center.X - NPC.Center.X) > 100) //In ball form
+					if (NPC.velocity.Y < -1 && frameCounter == 0 && Math.Abs(Target.Center.X - NPC.Center.X) > 100) //In ball form
 					{
 						yFrame = 0;
 						xFrame = 3;
@@ -541,8 +561,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private bool SuitablePartner(NPC potentialPartner)
 		{
 			return potentialPartner.active &&
-			potentialPartner.type == ModContent.NPCType<ShieldConstruct>() &&
-			(potentialPartner.ModNPC as ShieldConstruct).guarding &&
+			potentialPartner.type == NPCType<ShieldConstruct>() &&
+			(potentialPartner.ModNPC as ShieldConstruct).Guarding &&
 			!(potentialPartner.ModNPC as ShieldConstruct).jumpingUp &&
 			!(potentialPartner.ModNPC as ShieldConstruct).stacked &&
 			(potentialPartner.ModNPC as ShieldConstruct).bounceCooldown <= 0 &&
@@ -558,8 +578,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
-			float distance = (sin * 3) + 4;
+			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
+			float distance = sin * 3 + 4;
 
 			for (int i = 0; i < 8; i++)
 			{

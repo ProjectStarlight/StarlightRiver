@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
+using StarlightRiver.Core.Systems.CameraSystem;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -10,10 +9,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			AttackTimer++;
 
 			if (AttackTimer == 40)
-				Core.Systems.CameraSystem.Shake = 8;
+				CameraSystem.shake = 8;
 
 			if (AttackTimer > 38 && AttackTimer < 160)
-				Core.Systems.CameraSystem.Shake += 2;
+				CameraSystem.shake += 2;
 
 			if (AttackTimer > 410)
 			{

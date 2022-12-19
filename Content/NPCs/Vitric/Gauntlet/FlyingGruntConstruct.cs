@@ -1,14 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -22,8 +17,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 	internal class FlyingGruntConstruct : VitricConstructNPC
 	{
-		public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
-
 		private const int XFRAMES = 5;
 
 		public int xFrame = 0;
@@ -52,7 +45,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public bool readyForPelterArrow = false;
 		public bool hitPelterArrow = false;
 
-		private Player target => Main.player[NPC.target];
+		private Player Target => Main.player[NPC.target];
+
+		public override string Texture => AssetDirectory.GauntletNpc + "FlyingGruntConstruct";
 
 		public override void SetStaticDefaults()
 		{
@@ -105,7 +100,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				archerPartner = Main.npc.Where(x =>
 				x.active &&
-				x.type == ModContent.NPCType<FlyingPelterConstruct>() &&
+				x.type == NPCType<FlyingPelterConstruct>() &&
 				x.Distance(NPC.Center) < 800 &&
 				(x.ModNPC as FlyingPelterConstruct).pairedGrunt == default).OrderBy(x =>
 				x.Distance(NPC.Center)).FirstOrDefault();
@@ -118,14 +113,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				else
 					PairedBehavior();
 
-				if (NPC.Distance(target.Center) < 300 && attackCooldown <= 0)
+				if (NPC.Distance(Target.Center) < 300 && attackCooldown <= 0)
 					attacking = true;
 
 				AnimateIdle();
 				attackPhase = AttackPhase.charging;
 			}
 			else
+			{
 				AttackBehavior();
+			}
 
 			NPC.velocity.X *= 1.05f;
 		}
@@ -190,10 +187,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			if (Main.netMode != NetmodeID.Server)
 			{
 				for (int i = 0; i < 9; i++)
+				{
 					Dust.NewDustPerfect(NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), DustType<Cinder>(), Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = false;
+				}
 
 				for (int k = 1; k <= 12; k++)
+				{
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("ConstructGore" + k).Type);
+				}
 			}
 		}
 
@@ -212,7 +213,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				oldPosition = NPC.Center;
 				movementTarget = Main.rand.NextVector2Circular(500, 400);
 				movementTarget.Y *= -Math.Sign(movementTarget.Y);
-				movementTarget += target.Center;
+				movementTarget += Target.Center;
 			}
 		}
 
@@ -226,7 +227,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			movementTarget = NPC.Center + Vector2.One;
 			oldPosition = NPC.Center;
-			Vector2 direction = NPC.DirectionTo(target.Center);
+			Vector2 direction = NPC.DirectionTo(Target.Center);
 
 			switch (attackPhase)
 			{
@@ -235,7 +236,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					AnimateIdle();
 					NPC.velocity = Vector2.Lerp(NPC.velocity, direction.RotatedByRandom(0.6f) * 10, 0.05f);
 
-					if (NPC.Distance(target.Center) < 200)
+					if (NPC.Distance(Target.Center) < 200)
 						attackPhase = AttackPhase.slowing;
 
 					break;
@@ -262,7 +263,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 						frameCounter = 0;
 
 						if (yFrame < 11)
+						{
 							yFrame++;
+						}
 						else
 						{
 							attacking = false;
@@ -291,12 +294,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void PairedBehavior()
 		{
-			var potentialPos = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
+			var potentialPos = Vector2.Lerp(archerPartner.Center, Target.Center, 0.5f);
 
 			if (GoToPos(movementTarget, oldPosition) && potentialPos.Distance(NPC.Center) > 60)
 			{
 				oldPosition = NPC.Center;
-				movementTarget = Vector2.Lerp(archerPartner.Center, target.Center, 0.5f);
+				movementTarget = Vector2.Lerp(archerPartner.Center, Target.Center, 0.5f);
 				NPC.velocity.X = 0;
 				NPC.velocity.Y = (float)Math.Cos(bobCounter) * 0.15f;
 			}
@@ -330,6 +333,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		{
 			xFrame = 0;
 			frameCounter++;
+
 			if (frameCounter > 3)
 			{
 				frameCounter = 0;
@@ -385,13 +389,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					return true;
 				}
 
-				NPC.spriteDirection = Math.Sign(target.Center.X - NPC.Center.X);
+				NPC.spriteDirection = Math.Sign(Target.Center.X - NPC.Center.X);
 
 				if (!readyForPelterArrow)
 				{
 					if (!pelterComboCharging) //go to combo spot
 					{
-						var posToGoTo = new Vector2(MathHelper.Lerp(target.Center.X, pelterPartner.Center.X, 0.7f), pelterPartner.Center.Y - 300);
+						var posToGoTo = new Vector2(MathHelper.Lerp(Target.Center.X, pelterPartner.Center.X, 0.7f), pelterPartner.Center.Y - 300);
 
 						if (GoToPos(posToGoTo, oldPosition))
 						{
@@ -427,6 +431,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					Vector2 arrowPos = NPC.Center + new Vector2(NPC.spriteDirection * 20, 10);
 					xFrame = 3;
 					frameCounter++;
+
 					if (frameCounter > 3)
 					{
 						frameCounter = 0;
@@ -449,14 +454,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 						for (float i = -1; i < 1.1f; i += 1)
 						{
-							Vector2 arrowVel = arrowPos.DirectionTo(target.Center).RotatedBy(i / 3f) * 20;
+							Vector2 arrowVel = arrowPos.DirectionTo(Target.Center).RotatedBy(i / 3f) * 20;
 							int damage = (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1));
 							var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), arrowPos, arrowVel, ProjectileType<PelterConstructArrow>(), damage, NPC.knockBackResist);
 
 							for (int k = 0; k < 15; k++)
 							{
 								Vector2 dustPos = arrowPos + Main.rand.NextVector2Circular(10, 10);
-								Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
+								Dust.NewDustPerfect(dustPos, DustType<Glow>(), arrowPos.DirectionTo(Target.Center).RotatedByRandom(0.7f + i) * Main.rand.NextFloat(0.1f, 1f) * 4f, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.75f, 1.25f)).noGravity = true;
 							}
 						}
 					}

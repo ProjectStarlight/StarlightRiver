@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using System;
-using Terraria;
+﻿using System;
 
 namespace StarlightRiver.Helpers
 {
@@ -20,13 +18,15 @@ namespace StarlightRiver.Helpers
 			float TravelTime;
 			float neededYvel;
 
-			if (MaxHeight <= 0) {
+			if (MaxHeight <= 0)
+			{
 				neededYvel = -(float)Math.Sqrt(-2 * gravity * MaxHeight);
 				TravelTime = (float)Math.Sqrt(-2 * MaxHeight / gravity) + (float)Math.Sqrt(2 * Math.Max(DistanceToTravel.Y - MaxHeight, 0) / gravity); //time up, then time down
 			}
-			else {
+			else
+			{
 				neededYvel = 0;
-				TravelTime = (-neededYvel + (float)Math.Sqrt(Math.Pow(neededYvel, 2) - (4 * -DistanceToTravel.Y * gravity / 2))) / (gravity); //time down
+				TravelTime = (-neededYvel + (float)Math.Sqrt(Math.Pow(neededYvel, 2) - 4 * -DistanceToTravel.Y * gravity / 2)) / gravity; //time down
 			}
 
 			if (maxXvel != null)
@@ -35,6 +35,9 @@ namespace StarlightRiver.Helpers
 			return new Vector2(DistanceToTravel.X / TravelTime, neededYvel);
 		}
 
-		public static Vector2 GetArcVel(this Entity ent, Vector2 targetPos, float gravity, float? minArcHeight = null, float? maxArcHeight = null, float? maxXvel = null, float? heightabovetarget = null) => GetArcVel(ent.Center, targetPos, gravity, minArcHeight, maxArcHeight, maxXvel, heightabovetarget);
+		public static Vector2 GetArcVel(this Entity ent, Vector2 targetPos, float gravity, float? minArcHeight = null, float? maxArcHeight = null, float? maxXvel = null, float? heightabovetarget = null)
+		{
+			return GetArcVel(ent.Center, targetPos, gravity, minArcHeight, maxArcHeight, maxXvel, heightabovetarget);
+		}
 	}
 }

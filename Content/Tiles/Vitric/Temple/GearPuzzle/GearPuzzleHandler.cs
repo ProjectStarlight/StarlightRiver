@@ -1,13 +1,4 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -26,10 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			set => puzzleOriginLocation = new Vector2(value.X, value.Y);
 		}
 
-		public static GearTileEntity PuzzleOriginEntity
-		{
-			get => TileEntity.ByPosition.ContainsKey(PuzzleOriginLocation) ? TileEntity.ByPosition[PuzzleOriginLocation] as GearTileEntity : null;
-		}
+		public static GearTileEntity PuzzleOriginEntity => TileEntity.ByPosition.ContainsKey(PuzzleOriginLocation) ? TileEntity.ByPosition[PuzzleOriginLocation] as GearTileEntity : null;
 
 		public override void PreUpdateEntities()
 		{

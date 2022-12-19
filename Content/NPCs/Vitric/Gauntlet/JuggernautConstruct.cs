@@ -1,13 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Bosses.GlassMiniboss;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -90,7 +86,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void FindFrame(int frameHeight)
 		{
 			int frameWidth = 122;
-			NPC.frame = new Rectangle(xFrame * frameWidth, (yFrame * frameHeight), frameWidth, frameHeight);
+			NPC.frame = new Rectangle(xFrame * frameWidth, yFrame * frameHeight, frameWidth, frameHeight);
 		}
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
@@ -107,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			int frameHeight = mainTex.Height / Main.npcFrameCount[NPC.type];
 			int frameWidth = mainTex.Width / XFRAMES;
 
-			Vector2 origin = new Vector2(frameWidth * 0.25f, (frameHeight * 0.5f) + 3);
+			var origin = new Vector2(frameWidth * 0.25f, frameHeight * 0.5f + 3);
 
 			if (NPC.spriteDirection != 1)
 			{
@@ -115,7 +111,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				origin.X = frameWidth - origin.X;
 			}
 
-			Vector2 slopeOffset = new Vector2(0, NPC.gfxOffY);
+			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 			spriteBatch.Draw(mainTex, offset + slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale * 2, effects, 0f);
 
 			if (drawGlowTex)
@@ -167,11 +163,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			xFrame = 1;
 			frameCounter++;
 
-			if ((frameCounter > 4 && yFrame < 20) || frameCounter > 30)
+			if (frameCounter > 4 && yFrame < 20 || frameCounter > 30)
 			{
 				frameCounter = 0;
 				if (yFrame < 20)
+				{
 					yFrame++;
+				}
 				else
 				{
 					xFrame = 2;
@@ -182,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (yFrame == 2) //Spawn early since it spawns with a telegraph
 					spikeCounter = 30;
 				if (yFrame == 15)
-					Core.Systems.CameraSystem.Shake += 8;
+					CameraSystem.shake += 8;
 			}
 
 			if (spikeCounter >= 0)
@@ -191,6 +189,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					SpawnSpike();
 				}
+
 				spikeCounter--;
 			}
 		}
@@ -219,7 +218,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				yFrame = 0;
 				frameCounter = 0;
 				savedDirection = NPC.spriteDirection;
-				var launchTargetModNPC = (launchTarget.ModNPC as GruntConstruct);
+				var launchTargetModNPC = launchTarget.ModNPC as GruntConstruct;
 
 				launchTargetModNPC.doingJuggernautCombo = true;
 				launchTargetModNPC.juggernautPartner = NPC;
@@ -236,13 +235,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				NPC.direction = NPC.spriteDirection = savedDirection;
 
-				var launchTargetModNPC = (launchTarget.ModNPC as GruntConstruct);
+				var launchTargetModNPC = launchTarget.ModNPC as GruntConstruct;
 
 				//animation logic
 				xFrame = 0;
 				frameCounter++;
 
-				if ((frameCounter > 4 && yFrame < 22) || frameCounter > 30)
+				if (frameCounter > 4 && yFrame < 22 || frameCounter > 30)
 				{
 					frameCounter = 0;
 
@@ -250,23 +249,25 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					{
 						if (yFrame == 13)
 						{
-							if (Math.Abs(NPC.Center.X + (NPC.direction * 60) - launchTarget.Center.X) < 40)
+							if (Math.Abs(NPC.Center.X + NPC.direction * 60 - launchTarget.Center.X) < 40)
 							{
 								yFrame++;
 							}
 						}
 						else
+						{
 							yFrame++;
+						}
 
 						if (yFrame == 16)
 						{
-							Core.Systems.CameraSystem.Shake += 8;
+							CameraSystem.shake += 8;
 							launchTargetModNPC.juggernautComboLaunched = true;
 							launchTarget.velocity.Y = -6;
 							launchTarget.velocity.X = NPC.direction * 18;
 
 							Vector2 ringVel = NPC.DirectionTo(launchTarget.Center);
-							Projectile ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + (ringVel * 35), ringVel, ModContent.ProjectileType<Content.Items.Vitric.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
+							var ring = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + ringVel * 35, ringVel, ProjectileType<Items.Vitric.IgnitionGauntlets.IgnitionGauntletsImpactRing>(), 0, 0, Target.whoAmI, Main.rand.Next(35, 45), ringVel.ToRotation());
 							ring.extraUpdates = 0;
 						}
 					}
@@ -286,8 +287,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private void SpawnSpike()
 		{
-			float endPositionX = NPC.Center.X + (NPC.spriteDirection * 300);
-			float startPositionX = NPC.Center.X + (NPC.spriteDirection * 110);
+			float endPositionX = NPC.Center.X + NPC.spriteDirection * 300;
+			float startPositionX = NPC.Center.X + NPC.spriteDirection * 110;
 
 			float spikePositionX = MathHelper.Lerp(endPositionX, startPositionX, spikeCounter / 30f);
 			float spikePositionY = NPC.Bottom.Y + 16;
@@ -312,10 +313,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (tries-- < 0)
 					return;
 			}
+
 			spikePositionY += 32;
 
-			Vector2 spikePos = new Vector2(spikePositionX, spikePositionY);
-			Projectile raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - (spikeCounter / 30f));
+			var spikePos = new Vector2(spikePositionX, spikePositionY);
+			var raise = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), spikePos, Vector2.Zero, ProjectileType<GlassRaiseSpike>(), (int)(NPC.damage * (Main.expertMode || Main.masterMode ? 0.3f : 1)), 1f, Main.myPlayer, -20, 1 - spikeCounter / 30f);
 			raise.direction = NPC.spriteDirection;
 			raise.scale = 0.65f;
 
@@ -328,8 +330,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
-			float sin = 0.5f + ((float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f);
-			float distance = (sin * 3) + 4;
+			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
+			float distance = sin * 3 + 4;
 
 			for (int i = 0; i < 8; i++)
 			{

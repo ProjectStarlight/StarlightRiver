@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
+﻿using StarlightRiver.Content.Items;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
+using System;
 using System.IO;
-using StarlightRiver.Content.Items;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
@@ -68,7 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			if (rotating)
 			{
 				if (Vector2.Distance(Main.MouseWorld, Projectile.Center) > 48)
-					Rotation += Helpers.Helper.CompareAngle((Main.MouseWorld - Projectile.Center).ToRotation(), Rotation) * 0.1f;
+					Rotation += Helper.CompareAngle((Main.MouseWorld - Projectile.Center).ToRotation(), Rotation) * 0.1f;
 
 				if (rotateAnimation < 15)
 					rotateAnimation++;
@@ -98,7 +90,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			{
 				Vector2 posCheck = Projectile.Center + Vector2.UnitX.RotatedBy(Rotation) * k * 8;
 
-				if(Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<Reflector>())
+				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<Reflector>())
 				{
 					endPoint = posCheck;
 
@@ -120,7 +112,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 
 			Emit = 1;
-			var dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
+			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
 			if (dummy != null)
 			{
@@ -133,10 +125,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public void DeactivateDownstream(bool disableSelf = false)
 		{
-			if(disableSelf)
+			if (disableSelf)
 				Emit = 0;
 
-			var dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
+			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
 			if (dummy != null)
 			{
@@ -149,19 +141,19 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override void PostDraw(Color lightColor)
 		{
-			var tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 3.14f - 1.57f / 2, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			var tickTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "TickLine").Value;
+			Texture2D tickTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "TickLine").Value;
 			float opacity = rotateAnimation / 15f;
 
-			for(int k = 0; k < 30; k++)
+			for (int k = 0; k < 30; k++)
 			{
 				float rot = k / 30f * 6.28f;
-				float rotOpacity = (1.0f - (Math.Abs(Helpers.Helper.CompareAngle(rot, Rotation)) / 6.28f));
+				float rotOpacity = 1.0f - Math.Abs(Helpers.Helper.CompareAngle(rot, Rotation)) / 6.28f;
 				Color color = new Color(100, 220, 255) * rotOpacity * opacity;
 				spriteBatch.Draw(tickTexture, Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * 32, null, color, rot + 1.57f, tickTexture.Size() / 2, 0.5f + rotOpacity * 0.5f, 0, 0);
 			}
@@ -172,16 +164,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				return;
 
 			//Laser
-			int sin = (int)(Math.Sin(StarlightWorld.rottime * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
 			var color2 = new Color(100, 200 + sin, 255);
 
-			var texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
-			var texBeam2 = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
+			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
+			Texture2D texBeam2 = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
 
-			Vector2 origin = new Vector2(0, texBeam.Height / 2);
-			Vector2 origin2 = new Vector2(0, texBeam2.Height / 2);
+			var origin = new Vector2(0, texBeam.Height / 2);
+			var origin2 = new Vector2(0, texBeam2.Height / 2);
 
-			var effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
+			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
 			effect.Parameters["uColor"].SetValue(color2.ToVector3());
 
@@ -191,7 +183,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			float height = texBeam.Height / 10f * (1 - opacity);
 			int width = (int)(Projectile.Center - endPoint).Length() - 6;
 
-			var pos = Projectile.Center + Vector2.UnitX.RotatedBy(Rotation) * 6 - Main.screenPosition;
+			Vector2 pos = Projectile.Center + Vector2.UnitX.RotatedBy(Rotation) * 6 - Main.screenPosition;
 
 			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.5f));
 			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
@@ -210,15 +202,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-			var impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
-			var impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
-			var glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
+			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
+			Texture2D impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
 
 			target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 3.5f));
 			spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, Rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
 			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.8f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.rottime * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
+			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)

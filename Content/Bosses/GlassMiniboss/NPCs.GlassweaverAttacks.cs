@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -213,7 +211,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.Y += 1.5f;
 			}
 			else
+			{
 				NPC.velocity.X *= 0.5f;
+			}
 
 			if (AttackTimer > 65 && AttackTimer < 90 && NPC.collideY && NPC.velocity.Y > 0)
 			{
@@ -316,7 +316,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.Center += new Vector2((float)Math.Sin(AttackTimer * 0.04f % MathHelper.TwoPi), (float)Math.Cos(AttackTimer * 0.04f % MathHelper.TwoPi)) * 0.2f;
 			}
 			else
+			{
 				NPC.velocity.X *= 0.8f;
+			}
 
 			if (AttackTimer % betweenSpearTime == 0 && AttackTimer >= JAVELIN_SPAWN_TIME && AttackTimer < JAVELIN_SPAWN_TIME + spearCount * betweenSpearTime)
 			{
@@ -387,6 +389,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GlassRaiseAlt()
 		{
 			attackType = (int)AttackTypes.GlassRaise;
+
 			hammerTime = 110;
 
 			if (AttackTimer == 1)
@@ -407,6 +410,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.X *= 0.7f;
 
 			if (AttackTimer == HAMMER_SPAWN_TIME)
+
 				hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI, hammerTime);
 
 			int spikeCount = 3;
@@ -472,7 +476,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Main.projectile[bubbleIndex].Center = staffPos + Main.rand.NextVector2Circular(3, 3) * Utils.GetLerpValue(220, 120, AttackTimer, true);
 				NPC.velocity *= 0.87f;
 				NPC.velocity.Y -= 0.01f;
-				Core.Systems.CameraSystem.Shake += (int)(AttackTimer / 180f);
+				CameraSystem.shake += (int)(AttackTimer / 180f);
 			}
 
 			if (AttackTimer == 240)
@@ -490,7 +494,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						NPC.Top = Vector2.Lerp(NPC.Top, moveTarget - new Vector2(120, 0).RotatedBy(moveTarget.AngleTo(target)), 0.05f);
 				}
 				else if (AttackTimer == BUBBLE_RECOIL_TIME - 20)
+				{
 					HitBubble(NPC.DirectionTo(target));
+				}
 
 				NPC.direction = Direction;
 
@@ -528,7 +534,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
-					Core.Systems.CameraSystem.Shake += 10;
+					CameraSystem.shake += 10;
 					bubble.velocity = direction * speed;
 					bubble.ai[1] = 1;
 

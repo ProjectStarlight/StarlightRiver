@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -40,7 +36,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				else if (!closed)
 				{
 					closed = true;
-					Core.Systems.CameraSystem.Shake += 9;
+					CameraSystem.shake += 9;
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, Projectile.Center);
 
 					var dustPos = new Vector2(Projectile.Center.X, Projectile.Center.Y - Projectile.height);

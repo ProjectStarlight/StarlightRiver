@@ -1,23 +1,8 @@
-﻿using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.Enums;
-using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
-using StarlightRiver.Content.CustomHooks;
+using System.Linq;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
@@ -25,11 +10,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	{
 		public override bool Active => Main.LocalPlayer.InModBiome(ModContent.GetInstance<Biomes.PermafrostTempleBiome>());
 
-		public override Color outlineColor => new Color(255, 254, 255);
+		public override Color OutlineColor => new(255, 254, 255);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
 
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
@@ -60,7 +45,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			foreach (Projectile proj in Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<AuroraWaterSplash>()))
 			{
-				var tex2 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "AuroraWaterSplash").Value;
+				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "AuroraWaterSplash").Value;
 				var frame = new Rectangle(0, (int)(6 - proj.timeLeft / 40f * 6) * 106, 72, 106);
 
 				spriteBatch.Draw(tex2, (proj.Center - Main.screenPosition) / 2f, frame, new Color(0.4f, 1, 1), 0, new Vector2(36, 53), 0.5f, 0, 0);
@@ -72,7 +57,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
-			var effect = Filters.Scene["WavesDistort"].GetShader().Shader;
+			Effect effect = Filters.Scene["WavesDistort"].GetShader().Shader;
 
 			if (effect is null)
 				return true;
@@ -95,7 +80,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)
 		{
-			var effect = Filters.Scene["Waves"].GetShader().Shader;
+			Effect effect = Filters.Scene["Waves"].GetShader().Shader;
 
 			if (effect is null)
 				return true;
@@ -105,7 +90,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget);
 			effect.Parameters["speed"].SetValue(50f);
-			effect.Parameters["lightTexture"].SetValue(StarlightRiver.LightingBufferInstance.ScreenLightingTexture);
+			effect.Parameters["lightTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);

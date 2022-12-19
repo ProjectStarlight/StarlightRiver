@@ -1,20 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	internal class GlassVolley : ModProjectile, IDrawAdditive
 	{
-		public override string Texture => AssetDirectory.Invisible;
-
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float Rotation => ref Projectile.ai[1];
+
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{
@@ -60,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (Timer <= 30) //draws the proejctile's tell ~0.75 seconds before it goes off
 			{
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VolleyTell").Value;
-				float alpha = (float)Math.Sin((Timer / 30f) * 3.14f) * 0.8f;
+				float alpha = (float)Math.Sin(Timer / 30f * 3.14f) * 0.8f;
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), new Color(200, 255, 255) * alpha, Projectile.rotation - 1.57f, new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 			}
 		}
@@ -68,8 +63,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 	public class GlassVolleyShard : ModProjectile
 	{
-		public override string Texture => AssetDirectory.VitricBoss + Name;
 		public Vector2 homePos;
+
+		public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		public override void SetDefaults()
 		{
@@ -94,12 +90,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.58f;
 
-			Color color2 = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((600 - Projectile.timeLeft), 120));
-			Color color = Color.Lerp(new Color(100, 145, 200), color2, color2.R / 255f);
+			Color color2 = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(600 - Projectile.timeLeft, 120));
+			var color = Color.Lerp(new Color(100, 145, 200), color2, color2.R / 255f);
 
 			if (Main.rand.NextBool(5))
 			{
-				Dust swirl = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Vector2.Normalize(Projectile.velocity).RotatedByRandom(0.5f) * 2, 0, color, Main.rand.NextFloat(0.5f, 1f));
+				var swirl = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Vector2.Normalize(Projectile.velocity).RotatedByRandom(0.5f) * 2, 0, color, Main.rand.NextFloat(0.5f, 1f));
 				swirl.customData = homePos;
 			}
 
@@ -110,34 +106,34 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			for (int k = 0; k < 20; k++)
 			{
-				var vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10f);
-				Dust swirl = Dust.NewDustPerfect(Projectile.Center + vel, DustType<Dusts.Cinder>(), vel, 0, new Color(100, 145, 200), Main.rand.NextFloat(0.5f, 2f));
+				Vector2 vel = Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10f);
+				var swirl = Dust.NewDustPerfect(Projectile.Center + vel, DustType<Dusts.Cinder>(), vel, 0, new Color(100, 145, 200), Main.rand.NextFloat(0.5f, 2f));
 				swirl.customData = Projectile.Center;
 			}
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min((600 - Projectile.timeLeft), 120));
+			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(600 - Projectile.timeLeft, 120));
 
-			var glow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+			Texture2D glow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 
 			Color bloomColor = color;
 			bloomColor.A = 0;
 
-			Main.EntitySpriteDraw(glow, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation * 0.2f, glow.Size() * 0.5f, 1 - (Projectile.timeLeft / 600f) * 0.75f, SpriteEffects.None, 0);
+			Main.EntitySpriteDraw(glow, Projectile.Center - Main.screenPosition, null, bloomColor, Projectile.rotation * 0.2f, glow.Size() * 0.5f, 1 - Projectile.timeLeft / 600f * 0.75f, SpriteEffects.None, 0);
 
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 32, 128), lightColor, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
 			Main.EntitySpriteDraw(Request<Texture2D>(Texture).Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 128, 32, 128), color, Projectile.rotation, new Vector2(16, 64), Projectile.scale, 0, 0);
 
-			var tell = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowHarsh").Value;
-			var trail = Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
+			Texture2D tell = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowHarsh").Value;
+			Texture2D trail = Request<Texture2D>("StarlightRiver/Assets/GlowTrailOneEnd").Value;
 			float tellLength = Helpers.Helper.BezierEase(1 - (Projectile.timeLeft - 570) / 30f) * 18f;
 
 			color = Color.Lerp(new Color(150, 225, 255), color, color.R / 255f);
 			color.A = 0;
 
-			var trailLength = Projectile.velocity.Length() / trail.Width * 25;
+			float trailLength = Projectile.velocity.Length() / trail.Width * 25;
 
 			if (Projectile.timeLeft > 595)
 				trailLength = 0;

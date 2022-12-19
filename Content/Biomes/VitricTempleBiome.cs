@@ -1,21 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Codex.Entries;
 using StarlightRiver.Content.Tiles.Vitric.Temple;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
+using StarlightRiver.Core.Systems.CameraSystem;
 
 namespace StarlightRiver.Content.Biomes
 {
 	public class VitricTempleBiome : ModBiome
 	{
-		public static Rectangle GlassTempleZone => new Rectangle(StarlightWorld.VitricBiome.Center.X - 50, StarlightWorld.VitricBiome.Center.Y - 4, 101, 400);
+		public static Rectangle GlassTempleZone => new(StarlightWorld.vitricBiome.Center.X - 50, StarlightWorld.vitricBiome.Center.Y - 4, 101, 400);
 
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassTemple");
 
