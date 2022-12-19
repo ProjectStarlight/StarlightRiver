@@ -1,252 +1,234 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Physics;
-using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
-using System.Reflection;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-    class PlayerTarget : HookGroup
-    {
-        //Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
-        public override SafetyLevel Safety => SafetyLevel.Safe;
+	class PlayerTarget : HookGroup
+	{
+		//Drawing Player to Target. Should be safe. Excuse me if im duplicating something that alr exists :p
+		public static RenderTarget2D Target;
 
-        private MethodInfo PlayerDrawMethod;
+		public static bool canUseTarget = false;
 
-        public static RenderTarget2D Target;
+		public static RenderTarget2D ScaledTileTarget { get; set; }
 
-        public static bool canUseTarget = false;
+		public static int sheetSquareX;
+		public static int sheetSquareY;
 
-        public static RenderTarget2D ScaledTileTarget { get; set; }
+		/// <summary>
+		/// we use a dictionary for the Player indexes because they are not guarenteed to be 0, 1, 2 etc. the Player at index 1 leaving could result in 2 Players being numbered 0, 2
+		/// but we don't want a gigantic RT with all 255 possible Players getting template space so we resize and keep track of their effective index
+		/// </summary>
+		private static Dictionary<int, int> PlayerIndexLookup;
 
-        public static int sheetSquareX;
-        public static int sheetSquareY;
+		/// <summary>
+		/// to keep track of Player counts as they change
+		/// </summary>
+		private static int prevNumPlayers;
 
-        /// <summary>
-        /// we use a dictionary for the Player indexes because they are not guarenteed to be 0, 1, 2 etc. the Player at index 1 leaving could result in 2 Players being numbered 0, 2
-        /// but we don't want a gigantic RT with all 255 possible Players getting template space so we resize and keep track of their effective index
-        /// </summary>
-        private static Dictionary<int, int> PlayerIndexLookup;
+		//stored vars so we can determine original lighting for the Player / potentially other uses
+		Vector2 oldPos;
+		Vector2 oldCenter;
+		Vector2 oldMountedCenter;
+		Vector2 oldScreen;
+		Vector2 oldItemLocation;
+		Vector2 positionOffset;
 
-        /// <summary>
-        /// to keep track of Player counts as they change
-        /// </summary>
-        private static int prevNumPlayers;
+		public override void Load()
+		{
+			if (Main.dedServ)
+				return;
 
+			sheetSquareX = 200;
+			sheetSquareY = 300;
 
-        //stored vars so we can determine original lighting for the Player / potentially other uses
-        Vector2 oldPos;
-        Vector2 oldCenter;
-        Vector2 oldMountedCenter;
-        Vector2 oldScreen;
-        Vector2 oldItemLocation;
-        Vector2 positionOffset;
+			PlayerIndexLookup = new Dictionary<int, int>();
+			prevNumPlayers = -1;
 
-        public override void Load()
-        {
-            if (Main.dedServ)
-                return;
+			Main.QueueMainThreadAction(() =>
+			{
+				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+				ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
+			});
 
-            sheetSquareX = 200;
-            sheetSquareY = 300;
+			On.Terraria.Main.SetDisplayMode += RefreshTargets;
+			On.Terraria.Main.CheckMonoliths += DrawTargets;
+			On.Terraria.Lighting.GetColor_int_int += getColorOverride;
+			On.Terraria.Lighting.GetColor_Point += getColorOverride;
+			On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
+			On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
+			On.Terraria.Lighting.GetColorClamped += GetColorOverride;
+		}
 
-            PlayerIndexLookup = new Dictionary<int, int>();
-            prevNumPlayers = -1;
+		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+		{
+			if (canUseTarget)
+				return orig.Invoke(x, y, oldColor);
 
-            Main.QueueMainThreadAction(() =>
-            {
-                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-                ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-            });
-
-            On.Terraria.Main.SetDisplayMode += RefreshTargets;
-            On.Terraria.Main.CheckMonoliths += DrawTargets;
-            On.Terraria.Lighting.GetColor_int_int += getColorOverride;
-            On.Terraria.Lighting.GetColor_Point += getColorOverride;
-            On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
-            On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
-            On.Terraria.Lighting.GetColorClamped += GetColorOverride;
-        }
-
-        private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
-        {
-            if (canUseTarget)
-                return orig.Invoke(x, y, oldColor);
-
-            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
-        }
+			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
+		}
 		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
 		{
-            if (canUseTarget)
-                return orig.Invoke(point, originalColor);
+			if (canUseTarget)
+				return orig.Invoke(point, originalColor);
 
-            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
-        }
+			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
+		}
 
 		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_Point orig, Point point)
-        {
-            if (canUseTarget)
-                return orig.Invoke(point);
+		{
+			if (canUseTarget)
+				return orig.Invoke(point);
 
-            return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
-        }
+			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
+		}
 
-        public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int orig, int x, int y)
-        {
-            if (canUseTarget)
-                return orig.Invoke(x, y);
+		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int orig, int x, int y)
+		{
+			if (canUseTarget)
+				return orig.Invoke(x, y);
 
-            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
-        }
+			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
+		}
 
-        public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
-        {
-            if (canUseTarget)
-                return orig.Invoke(x, y, c);
+		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
+		{
+			if (canUseTarget)
+				return orig.Invoke(x, y, c);
 
-            return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), c);
-        }
+			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), c);
+		}
 
-        public static Rectangle getPlayerTargetSourceRectangle(int whoAmI)
-        {
-            if (PlayerIndexLookup.ContainsKey(whoAmI))
-                return new Rectangle(PlayerIndexLookup[whoAmI] * sheetSquareX, 0, sheetSquareX, sheetSquareY);
+		public static Rectangle getPlayerTargetSourceRectangle(int whoAmI)
+		{
+			if (PlayerIndexLookup.ContainsKey(whoAmI))
+				return new Rectangle(PlayerIndexLookup[whoAmI] * sheetSquareX, 0, sheetSquareX, sheetSquareY);
 
-            return Rectangle.Empty;
-        }
+			return Rectangle.Empty;
+		}
 
-        /// <summary>
-        /// gets the whoAmI's Player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the Player's position in terms of screen coordinates
-        /// </summary>
-        /// <param name="whoAmI"></param>
-        /// <returns></returns>
-        public static Vector2 getPlayerTargetPosition(int whoAmI)
-        {
-            return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
-        }
+		/// <summary>
+		/// gets the whoAmI's Player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the Player's position in terms of screen coordinates
+		/// </summary>
+		/// <param name="whoAmI"></param>
+		/// <returns></returns>
+		public static Vector2 getPlayerTargetPosition(int whoAmI)
+		{
+			return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
+		}
 
-        private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
-        {
-            if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-                ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
+		private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
+		{
+			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
+				ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
 
-            orig(width, height, fullscreen);
-        }
+			orig(width, height, fullscreen);
+		}
 
-        private void DrawTargets(On.Terraria.Main.orig_CheckMonoliths orig)
-        {
-            //TODO: this may benefit from adding booleans for other places in the code to check if they're going to use the RTs since we don't necessarily need these generated on every frame for some performance improvements
+		private void DrawTargets(On.Terraria.Main.orig_CheckMonoliths orig)
+		{
+			//TODO: this may benefit from adding booleans for other places in the code to check if they're going to use the RTs since we don't necessarily need these generated on every frame for some performance improvements
 
-            orig();
+			orig();
 
-            if (Main.gameMenu)
-                return;
+			if (Main.gameMenu)
+				return;
 
-            if (Main.player.Any(n => n.active))
-                DrawPlayerTarget();
+			if (Main.player.Any(n => n.active))
+				DrawPlayerTarget();
 
-            if (Main.instance.tileTarget.IsDisposed)
-                return;
+			if (Main.instance.tileTarget.IsDisposed)
+				return;
 
-            RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
+			RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
 
-            Matrix matrix = Main.GameViewMatrix.ZoomMatrix;
+			Matrix matrix = Main.GameViewMatrix.ZoomMatrix;
 
-            GraphicsDevice GD = Main.graphics.GraphicsDevice;
-            SpriteBatch sb = Main.spriteBatch;
+			GraphicsDevice GD = Main.graphics.GraphicsDevice;
+			SpriteBatch sb = Main.spriteBatch;
 
-            GD.SetRenderTarget(ScaledTileTarget);
-            GD.Clear(Color.Transparent);
+			GD.SetRenderTarget(ScaledTileTarget);
+			GD.Clear(Color.Transparent);
 
-            sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
-            Main.spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-            sb.End();
+			sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
+			Main.spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
+			sb.End();
 
-            Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
+			Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
 
-        }
+		}
 
-        public static Vector2 getPositionOffset(int whoAmI)
-        {
-            if (PlayerIndexLookup.ContainsKey(whoAmI))
-                return new Vector2(PlayerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX / 2, sheetSquareY / 2);
+		public static Vector2 getPositionOffset(int whoAmI)
+		{
+			if (PlayerIndexLookup.ContainsKey(whoAmI))
+				return new Vector2(PlayerIndexLookup[whoAmI] * sheetSquareX + sheetSquareX / 2, sheetSquareY / 2);
 
-            return Vector2.Zero;
-        }
+			return Vector2.Zero;
+		}
 
-        private void DrawPlayerTarget()
-        {
-            var activePlayerCount = Main.player.Count(n => n.active);
+		private void DrawPlayerTarget()
+		{
+			int activePlayerCount = Main.player.Count(n => n.active);
 
-            if (activePlayerCount != prevNumPlayers)
-            {
-                prevNumPlayers = activePlayerCount;
-                Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
-                int activeCount = 0;
-                for (int i = 0; i < Main.maxPlayers; i++)
-                {
-                    if (Main.player[i].active)
-                    {
-                        PlayerIndexLookup[i] = activeCount;
-                        activeCount++;
-                    }
+			if (activePlayerCount != prevNumPlayers)
+			{
+				prevNumPlayers = activePlayerCount;
+				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
+				int activeCount = 0;
+				for (int i = 0; i < Main.maxPlayers; i++)
+				{
+					if (Main.player[i].active)
+					{
+						PlayerIndexLookup[i] = activeCount;
+						activeCount++;
+					}
+				}
+			}
 
-                }
-            }
+			RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
+			canUseTarget = false;
+			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-            RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
-            canUseTarget = false;
-            Main.graphics.GraphicsDevice.SetRenderTarget(Target);
-            Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+			Main.spriteBatch.Begin();
+			//Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow = 0f;
+			for (int i = 0; i < Main.maxPlayers; i++)
+			{
+				Player player = Main.player[i];
 
-            Main.spriteBatch.Begin();
-            //Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow = 0f;
-            for (int i = 0; i < Main.maxPlayers; i++)
-            {
-                var player = Main.player[i];
+				if (player.active && player.dye.Length > 0)
+				{
+					oldPos = player.position;
+					oldCenter = player.Center;
+					oldMountedCenter = player.MountedCenter;
+					oldScreen = Main.screenPosition;
+					oldItemLocation = player.itemLocation;
+					int oldHeldProj = player.heldProj;
 
-                if (player.active && player.dye.Length > 0)
-                {
-                    oldPos = player.position;
-                    oldCenter = player.Center;
-                    oldMountedCenter = player.MountedCenter;
-                    oldScreen = Main.screenPosition;
-                    oldItemLocation = player.itemLocation;
-                    int oldHeldProj = player.heldProj;
+					//temp change Player's actual position to lock into their frame
+					positionOffset = getPositionOffset(i);
+					player.position = positionOffset;
+					player.Center = oldCenter - oldPos + positionOffset;
+					player.itemLocation = oldItemLocation - oldPos + positionOffset;
+					player.MountedCenter = oldMountedCenter - oldPos + positionOffset;
+					player.heldProj = -1;
+					Main.screenPosition = Vector2.Zero;
 
-                    //temp change Player's actual position to lock into their frame
-                    positionOffset = getPositionOffset(i);
-                    player.position = positionOffset;
-                    player.Center = oldCenter - oldPos + positionOffset;
-                    player.itemLocation = oldItemLocation - oldPos + positionOffset;
-                    player.MountedCenter = oldMountedCenter - oldPos + positionOffset;
-                    player.heldProj = -1;
-                    Main.screenPosition = Vector2.Zero;
+					Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin, 0f);
 
-                    Main.PlayerRenderer.DrawPlayer(Main.Camera, player, player.position, player.fullRotation, player.fullRotationOrigin, 0f);
+					player.position = oldPos;
+					player.Center = oldCenter;
+					Main.screenPosition = oldScreen;
+					player.itemLocation = oldItemLocation;
+					player.MountedCenter = oldMountedCenter;
+					player.heldProj = oldHeldProj;
+				}
+			}
 
-                    player.position = oldPos;
-                    player.Center = oldCenter;
-                    Main.screenPosition = oldScreen;
-                    player.itemLocation = oldItemLocation;
-                    player.MountedCenter = oldMountedCenter;
-                    player.heldProj = oldHeldProj;
-                }
+			Main.spriteBatch.End();
 
-            }
-
-            Main.spriteBatch.End();
-
-            Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
-            canUseTarget = true;
-        }
-    }
+			Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets2);
+			canUseTarget = true;
+		}
+	}
 }
