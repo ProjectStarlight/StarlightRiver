@@ -1,8 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Items.Potions
+﻿namespace StarlightRiver.Content.Items.Potions
 {
 	class InoculationPotion : ModItem
 	{

@@ -1,22 +1,14 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using StarlightRiver.Core.Loaders;
-using Terraria.ModLoader;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.MusicBox
 {
-	public class MusicBox : Core.Loaders.SimpleTileLoader
+	public class MusicBox : SimpleTileLoader
 	{
-		private static AnchorData anchor = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, 2, 0);
-		private static FurnitureLoadData boxData = new FurnitureLoadData(2, 2, 0, SoundID.Dig, true, new Color(255, 200, 100), false, false, "Music Box", anchor);
+		private static AnchorData anchor = new(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, 2, 0);
+		private static FurnitureLoadData boxData = new(2, 2, 0, SoundID.Dig, true, new Color(255, 200, 100), false, false, "Music Box", anchor);
 
 		public override string AssetRoot => "StarlightRiver/Assets/Tiles/MusicBox/";
 
@@ -42,16 +34,16 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 			Mod.AddContent(new MusicBoxItem(name + "Item", displayName, "", name, ItemRarityID.LightRed, AssetRoot + name + "Item", true));
 			Mod.AddContent(new LoaderFurniture(name, boxData, Mod.Find<ModItem>(name + "Item").Type, AssetRoot + name));
 
-			var mod = StarlightRiver.Instance;
+			StarlightRiver mod = StarlightRiver.Instance;
 			MusicLoader.AddMusicBox(mod, MusicLoader.GetMusicSlot(StarlightRiver.Instance, path), mod.Find<ModItem>(name + "Item").Type, mod.Find<ModTile>(name).Type);
 		}
 	}
 
 	public class MusicBoxItem : LoaderTileItem
 	{
-		public MusicBoxItem(string internalName, string name, string tooltip, string placetype, int rare = 0, string texturePath = null, bool pathHasName = false, int ItemValue = 0) :
-			base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue)
-		{ 
+		public MusicBoxItem(string internalName, string name, string tooltip, string placetype, int rare = 0, string texturePath = null, bool pathHasName = false, int ItemValue = 0)
+			: base(internalName, name, tooltip, placetype, rare, texturePath, pathHasName, ItemValue)
+		{
 
 		}
 

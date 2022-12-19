@@ -78,9 +78,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
         public override bool PreAI()
         {
-            if (_flyTime == 0)
+            if (flyTime == 0)
             {
-                _flyTime = Projectile.ai[0];
+                flyTime = Projectile.ai[0];
                 Projectile.ai[0] = 0;
             }
 
@@ -89,13 +89,13 @@ namespace StarlightRiver.Content.Items.Permafrost
             Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
             Projectile.spriteDirection = ((!(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f)) ? 1 : -1);
 
-            if (Projectile.ai[0] >= _flyTime)
+            if (Projectile.ai[0] >= flyTime)
             {
                 Projectile.Kill();
                 return false;
             }
 
-            if (Projectile.ai[0] == (int)(_flyTime / 2f))
+            if (Projectile.ai[0] == (int)(flyTime / 2f))
             {
                 Vector2 position = Projectile.WhipPointsForCollision[Projectile.WhipPointsForCollision.Count - 1];
                 SoundEngine.PlaySound(SoundID.Item153, position);
@@ -108,13 +108,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetPoints(List<Vector2> controlPoints)
 		{
-            float time = Projectile.ai[0] / _flyTime;
+            float time = Projectile.ai[0] / flyTime;
 
             if (Projectile.ai[1] == -1)
                 time = 1 - time;
 
             float timeModified = time * 1.5f;
-            float segmentOffset = MathHelper.Pi * 10f * (1f - timeModified) * (-Projectile.spriteDirection) / _segments;
+            float segmentOffset = MathHelper.Pi * 10f * (1f - timeModified) * (-Projectile.spriteDirection) / segments;
             float tLerp = 0f;
 
             if (timeModified > 1f)
@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Items.Permafrost
             //vanilla code
             Player player = Main.player[Projectile.owner];
             float realRange = (50) * time * player.whipRangeMultiplier;
-            float segmentLength = Projectile.velocity.Length() * realRange * timeModified * _rangeMultiplier / (float)_segments;
+            float segmentLength = Projectile.velocity.Length() * realRange * timeModified * rangeMultiplier / (float)segments;
             Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile) + new Vector2(0, 12);
             Vector2 firstPos = playerArmPosition;
             float negativeAngle = -MathHelper.PiOver2;
@@ -136,9 +136,9 @@ namespace StarlightRiver.Content.Items.Permafrost
             float positiveAngle = MathHelper.PiOver2;
             controlPoints.Add(playerArmPosition);
 
-            for (int i = 0; i < _segments; i++)
+            for (int i = 0; i < segments; i++)
             {
-                float thisOffset = segmentOffset * ((float)i / (float)_segments);
+                float thisOffset = segmentOffset * ((float)i / (float)segments);
                 Vector2 nextFirst = firstPos + negativeAngle.ToRotationVector2() * segmentLength;
                 Vector2 nextLast = lastPos + positiveAngle.ToRotationVector2() * (segmentLength * 2f);
                 Vector2 nextMid = midPos + directedAngle.ToRotationVector2() * (segmentLength * 2f);

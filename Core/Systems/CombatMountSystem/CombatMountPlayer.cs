@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System;
 
 namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
@@ -24,16 +16,16 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
 		{
-			var activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
-			var sItem = self.HeldItem;
+			CombatMount activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
+			Item sItem = self.HeldItem;
 
 			if (activeMount is null || self.CCed || !self.controlUseItem || !self.releaseUseItem || self.itemAnimation != 0)
 			{
 				orig(self, i);
 				return;
 			}
-					
-			if ((sItem.DamageType.Type != DamageClass.Summon.Type && sItem.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || self.controlSmart)
+
+			if (sItem.DamageType.Type != DamageClass.Summon.Type && sItem.DamageType.Type != DamageClass.SummonMeleeSpeed.Type || self.controlSmart)
 			{
 				self.releaseUseItem = activeMount.autoReuse;
 				self.controlUseItem = false;
@@ -47,14 +39,14 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				return;
 			}
 
-			if (sItem.ModItem is null || (sItem.ModItem != null && !sItem.ModItem.AltFunctionUse((Player)self)))
+			if (sItem.ModItem is null || sItem.ModItem != null && !sItem.ModItem.AltFunctionUse(self))
 			{
 				if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 				{
 					self.releaseUseItem = activeMount.autoReuse;
 					self.controlUseItem = false;
 
-					activeMount.StartSecondaryAction((Player)self);
+					activeMount.StartSecondaryAction(self);
 					return;
 				}
 			}
@@ -70,14 +62,17 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			if (activeMount is null)
 				return;
 
-			if(mountingTime > 0)
+			if (mountingTime > 0)
 				mountingTime--;
 
 			if (Player.HeldItem.IsAir && Main.mouseRight && !Player.releaseUseItem && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0) //special case for shooting while holding air
 				activeMount.StartSecondaryAction(Player);
 
-			if (activeMount.primaryCooldownTimer > 0) activeMount.primaryCooldownTimer --;
-			if (activeMount.secondaryCooldownTimer > 0) activeMount.secondaryCooldownTimer --;
+			if (activeMount.primaryCooldownTimer > 0)
+				activeMount.primaryCooldownTimer--;
+
+			if (activeMount.secondaryCooldownTimer > 0)
+				activeMount.secondaryCooldownTimer--;
 
 			if (activeMount.primaryAttackTimer > 0)
 			{
@@ -96,8 +91,8 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override void PostUpdate()
 		{
-			if(mountingTime > 0)
-				Player.gfxOffY = Helpers.Helper.LerpFloat(Player.mount.PlayerOffset, 0, (1 - mountingTime / 30f)) - (float)Math.Sin(3.14f * (1 - mountingTime / 30f)) * 64;
+			if (mountingTime > 0)
+				Player.gfxOffY = Helpers.Helper.LerpFloat(Player.mount.PlayerOffset, 0, 1 - mountingTime / 30f) - (float)Math.Sin(3.14f * (1 - mountingTime / 30f)) * 64;
 		}
 
 		public void Dismount()
@@ -111,11 +106,11 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 	{
 		public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
-			var isValid = ((item.DamageType.Type == DamageClass.Summon.Type || item.DamageType.Type == DamageClass.SummonMeleeSpeed.Type) && !Main.LocalPlayer.controlSmart);
+			bool isValid = (item.DamageType.Type == DamageClass.Summon.Type || item.DamageType.Type == DamageClass.SummonMeleeSpeed.Type) && !Main.LocalPlayer.controlSmart;
 
 			if (!Main.playerInventory && !isValid && Main.LocalPlayer.GetModPlayer<CombatMountPlayer>().activeMount != null)
 			{
-				var tex = Terraria.GameContent.TextureAssets.Item[item.type].Value;
+				Texture2D tex = Terraria.GameContent.TextureAssets.Item[item.type].Value;
 				spriteBatch.Draw(tex, position, frame, drawColor * 0.25f, 0, origin, scale, 0, 0);
 				return false;
 			}
@@ -125,7 +120,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool AltFunctionUse(Item item, Player player)
 		{
-			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
+			CombatMount activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
 			if (activeMount != null)
 				return true;
@@ -135,14 +130,14 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override bool CanUseItem(Item item, Player player)
 		{
-			var activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
+			CombatMount activeMount = player.GetModPlayer<CombatMountPlayer>().activeMount;
 
 			if (activeMount != null)
 			{
-				if ((item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type) || player.controlSmart)
+				if (item.DamageType.Type != DamageClass.Summon.Type && item.DamageType.Type != DamageClass.SummonMeleeSpeed.Type || player.controlSmart)
 					return false;
 
-				if (item.ModItem is null || (item.ModItem != null && !item.ModItem.AltFunctionUse((Player)player)))
+				if (item.ModItem is null || item.ModItem != null && !item.ModItem.AltFunctionUse(player))
 				{
 					if (Main.mouseRight && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0)
 						return false;
