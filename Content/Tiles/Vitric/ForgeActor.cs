@@ -55,6 +55,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			//spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
+
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(950, 320), new Vector3(1, 0.8f, 0.4f) * 3f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 320), new Vector3(1, 0.8f, 0.4f) * 3f);
+
+			float pulse = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f) + (float)System.Math.Cos(Main.GameUpdateCount * 0.024f);
+
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulse * 0.5f));
 		}
 	}
 }
