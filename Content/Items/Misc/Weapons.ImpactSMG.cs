@@ -228,8 +228,11 @@ namespace StarlightRiver.Content.Items.Misc
 			if (catchDelay > 0)
 				catchDelay--;
 
-			if (!CanHold && shots > 10)
+			if (!CanHold)
 			{
+				if (shots < 10)
+					Projectile.Kill();
+
 				if (overheated)
 					ExplodingAI();
 				else
@@ -286,6 +289,14 @@ namespace StarlightRiver.Content.Items.Misc
 					flashed = true;
 				}
 			}
+		}
+
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			width = 12;
+			height = 12;
+
+			return true;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -483,6 +494,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Dust.NewDustPerfect(pos, ModContent.DustType<GlowFastDecelerate>(), Projectile.rotation.ToRotationVector2().RotatedByRandom(0.35f) * 7f, 0, new Color(255, 40, 40), 0.3f);
 			}
+
+			if (!Owner.HasAmmo(Owner.HeldItem))
+				Projectile.Kill();
 		}
 
 		private void BoomerangAI()
