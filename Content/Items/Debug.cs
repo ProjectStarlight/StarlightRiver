@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -39,6 +40,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			NPC.NewNPC(new EntitySource_WorldGen(), StarlightWorld.vitricBiome.X * 16, (StarlightWorld.vitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
 			return true;
 		}
 	}

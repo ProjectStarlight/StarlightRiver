@@ -61,14 +61,14 @@ namespace StarlightRiver.Core
 					KillTile(x, y);
 
 					if (y > vitricBiome.Y + 5 && y < vitricBiome.Y + 9)
-						PlaceTile(x, y, TileType<VitricBossBarrier>(), true, true);
+						PlaceTile(x, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, true, true);
 				}
 			}
 
 			for (int y = vitricBiome.Y + 9; y < vitricBiome.Y + vitricBiome.Height - 77; y++) //collision for pillars
 			{
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, TileType<VitricBossBarrier>(), false, false);
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, TileType<VitricBossBarrier>(), false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
 			}
 
 			VitricIslandLocations = new List<Point>(); //List for island positions
@@ -512,7 +512,7 @@ namespace StarlightRiver.Core
 
 		private static void GenForge()
 		{
-			int x = forgeSide == 0 ? vitricBiome.X - 40 : vitricBiome.Right - 40;
+			int x = vitricBiome.X - 37;
 			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
 			NPC.NewNPC(new EntitySource_WorldGen(), vitricBiome.X * 16, (vitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}

@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return PickCloseSpot(-1);
 		}
 
-		private void JumpToTarget(int timeStart, int timeEnd, float yStrength = 1f, bool spin = false)
+		private void JumpToTarget(int timeStart, int timeEnd, float yStrength = 0.5f, bool spin = false)
 		{
 			jumpStart = timeStart;
 			jumpEnd = timeEnd;
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void SpinJumpToTarget(int timeStart, int timeEnd, float totalRotations = 5, int direction = 1)
 		{
-			JumpToTarget(timeStart, timeEnd, 0.7f, true);
+			JumpToTarget(timeStart, timeEnd, 0.4f, true);
 			float progress = Helpers.Helper.BezierEase(Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true));
 			NPC.rotation = MathHelper.WrapAngle(progress * MathHelper.TwoPi * totalRotations) * NPC.direction * direction;
 		}
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				NPC.FaceTarget();
 				JumpToTarget(2, 50);
-				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, NPC.DirectionTo(moveTarget).Y * NPC.Distance(moveTarget) * 0.1f, 0.1f);
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, NPC.DirectionTo(moveTarget).Y * NPC.Distance(moveTarget) * 0.05f, 0.05f);
 			}
 
 			if (AttackTimer < 65 && AttackTimer > 30)
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int s = 0; s < 3; s++)
 				{
 					int slash = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSword>(), 10, 0.2f, Main.myPlayer, AttackTimer - 2, NPC.whoAmI);
-					Main.projectile[slash].localAI[0] = s;
+					(Main.projectile[slash].ModProjectile as GlassSword).variant = s;
 				}
 			}
 
@@ -401,7 +401,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer > 1 && AttackTimer <= 75)
 			{
-				JumpToTarget(3, 75, 1.2f);
+				JumpToTarget(3, 75, 0.8f);
 				NPC.velocity.X = -Direction * 0.3f;
 				NPC.direction = Direction;
 			}

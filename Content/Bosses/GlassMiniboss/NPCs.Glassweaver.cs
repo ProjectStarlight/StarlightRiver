@@ -113,11 +113,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
+		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+		{
+			Main.NewText($"Boss hit by projectile: [Name: {projectile.ModProjectile?.Name}, Damage: {damage}, Hostile: {projectile.hostile}, Friendly: {projectile.friendly}]");
+		}
+
 		public override void AI()
 		{
 			AttackTimer++;
-
-			NPC.noGravity = false;
 
 			switch (Phase)
 			{
@@ -125,22 +128,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(11 * 16, 70 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(512, 32), Vector2.Zero, ModContent.ProjectileType<GlassweaverDoor>(), 0, 0, NPC.target);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(352, 114), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
 					ResetAttack();
 
 					break;
 
 				case (int)Phases.JumpToBackground:
 
-					//if (AttackTimer <= 90) 
-					//    SpawnAnimation();
-
-					//else
-					//{
-					Phase = (int)Phases.GlassGauntlet;
-					ResetAttack();
-					//    NPC.noGravity = false;
-					//}
+					if (AttackTimer <= 120)
+					{
+						SpawnAnimation();
+					}
+					else
+					{
+						Phase = (int)Phases.GlassGauntlet;
+						ResetAttack();
+					}
 
 					break;
 
@@ -179,6 +182,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case (int)Phases.DirectPhase:
 
 					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
+
 					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
 						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
@@ -294,12 +298,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				case (int)Phases.GlassGauntlet:
 
-					return false;
+					break;
 
 				case (int)Phases.ReturnToForeground:
-
-					if (AttackTimer > 30 & AttackTimer < 180)
-						return false;
 
 					break;
 

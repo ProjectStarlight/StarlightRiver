@@ -23,6 +23,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.penetrate = -1;
 		}
 
+		public override bool CanHitPlayer(Player target)
+		{
+			return false;
+		}
+
 		public override void AI()
 		{
 			NPC parent = Main.npc.Where(n => n.active && n.type == ModContent.NPCType<Glassweaver>()).FirstOrDefault();
@@ -64,7 +69,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			var frame = new Rectangle(0, 0, tex.Width, height);
 			var origin = new Vector2(tex.Width / 2, 0);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - new Vector2(0, height) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - new Vector2(0, height - tex.Height / 2) - Main.screenPosition, frame, lightColor, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}
