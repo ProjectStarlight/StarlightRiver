@@ -20,7 +20,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void SpawnEnemy(Vector2 pos, int type, bool onFloor = true)
 		{
-			Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), pos, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 2);
+			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 0);
+
+			if (Main.projectile[i].ModProjectile is GauntletSpawner)
+			{
+				var gs = Main.projectile[i].ModProjectile as GauntletSpawner;
+				gs.startPos = NPC.Center;
+				gs.targetPos = pos;
+			}
 		}
 
 		private void CheckGauntletWave()

@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 					2 => ModContent.NPCType<ShieldConstruct>(),
 					_ => ModContent.NPCType<GruntConstruct>(),
 				};
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -5, ModContent.ProjectileType<GauntletSpawner>(), 1, 0, Main.myPlayer, monster);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.UnitY.RotatedByRandom(1) * -5, ModContent.ProjectileType<ConstructSpawner>(), 1, 0, Main.myPlayer, monster);
 
 				Spawned += 150;
 			}
