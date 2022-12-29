@@ -644,7 +644,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				hide = true;
 				canHit = false;
 				if (pullTimer == 0)
-					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
+					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200 && x.Distance(owner.Center) < 500).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
 
 				if (pullTarget != default)
 				{
@@ -1125,6 +1125,7 @@ namespace StarlightRiver.Content.Items.Breacher
         {
 			if (jumping)
             {
+				Player.mount?.Dismount(Player);
 				storedBodyRotation += 0.3f * Player.direction;
 				Player.fullRotation = storedBodyRotation;
 				Player.fullRotationOrigin = Player.Size / 2;

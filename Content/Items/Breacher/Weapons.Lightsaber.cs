@@ -8,11 +8,7 @@
 //Merge boilerplate code in lightsabertypes for swinging
 //Make the lightsaber held on the handle
 //Separate and move files
-//Nerf
 //Screenshake limit
-
-//TODO on red lightsaber:
-//Range limit
 
 //TODO on white rightclick:
 //Make the lightsabers throw in a synergized way
@@ -24,9 +20,6 @@
 //Sound effects
 //Destruction dust
 //Make it have less boilerplate
-
-//TODO on green rightclick:
-//Make it disable mounts
 
 //TODO on purple rightclick:
 //Make it not geek out with gfxoffset
@@ -131,6 +124,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (phaseblades.Contains(item.type))
             {
+				item.damage = 16;
 				item.noUseGraphic = true;
 				item.noMelee = true;
 				item.autoReuse = false;
