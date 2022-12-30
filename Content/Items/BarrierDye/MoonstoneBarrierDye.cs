@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Terraria.ID;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
+using StarlightRiver.Content.Items.Moonstone;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {
@@ -31,6 +32,14 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		{
 			Item.rare = ItemRarityID.Orange;
 		}
+
+        public override void AddRecipes()
+        {
+            Recipe recipe = CreateRecipe();
+            recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 6);
+            recipe.AddTile(TileID.Anvils);
+            recipe.Register();
+        }
 
         public override void PostDrawEffects(SpriteBatch spriteBatch, Player Player)
         {
