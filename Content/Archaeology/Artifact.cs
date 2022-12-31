@@ -133,7 +133,7 @@ namespace StarlightRiver.Content.Archaeology
 				offScreen = Vector2.Zero;
 			}
 
-			spriteBatch.Draw(tex, WorldPosition - Main.screenPosition + offScreen, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, WorldPosition - Main.screenPosition, null, Lighting.GetColor(Position.ToPoint()), 0, Vector2.Zero, 1, SpriteEffects.None, 0f);
 		}
 
 		public void CheckOpen()
