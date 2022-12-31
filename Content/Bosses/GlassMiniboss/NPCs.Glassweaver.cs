@@ -211,33 +211,54 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					switch (AttackPhase)
 					{
-						case 0: TripleSlash(); break;
+						case 0:
+							TripleSlash();
+							break;
 
-						case 1: Whirlwind(); break;
+						case 1:
+							Whirlwind();
+							break;
 
 						case 2:
 							if (attackVariant)
 								MagmaSpear();
 							else
-								JavelinRain(); break;
+								JavelinRain();
+							break;
 
-						case 3: BigBrightBubble(); break;
+						case 3:
+							BigBrightBubble();
+							break;
 
 						case 4:
 							if (attackVariant)
 								GlassRaise();
 							else
-								GlassRaiseAlt(); break;
+								GlassRaiseAlt();
+							break;
 
-						case 5: JavelinRain(); break;
+						case 5:
+							JavelinRain();
+							break;
 
-						case 6: TripleSlash(); break;
+						case 6:
+							TripleSlash();
+							break;
 
-						case 7: MagmaSpear(); break;
+						case 7:
+							if (attackVariant)
+								MagmaSpear();
+							else
+								MagmaSpearAlt();
+							break;
 
-						case 8: BigBrightBubble(); break;
+						case 8:
+							BigBrightBubble();
+							break;
 
-						default: TripleSlash(); break;
+						default:
+							TripleSlash();
+							break;
 					}
 
 					break;

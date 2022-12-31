@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -112,11 +113,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public const float EXPLOSION_RADIUS = 300f;
 
 		private float speed;
+		public float bounces = 0;
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
-		public ref float Bounces => ref Projectile.ai[1];
 
 		public override void SetStaticDefaults()
 		{
@@ -141,11 +142,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Timer++;
 
 			Projectile.tileCollide = Timer > 0;
-			speed = 16.5f;
+			speed = Main.expertMode ? 15f : 13f;
 
 			if (Timer > -1)
 			{
-				Projectile.velocity.Y += 0.6f;
+				Projectile.velocity.Y += Main.expertMode ? 0.5f : 0.4f;
 
 				if (Main.rand.NextBool(8))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1f);
@@ -154,7 +155,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				Projectile.velocity = Vector2.Zero;
 
-				if (Main.rand.NextBool(3))
+				if (Main.rand.NextBool(6))
 				{
 					Vector2 magVel = -Vector2.UnitY.RotatedBy(Projectile.ai[1]).RotatedByRandom(0.2f) * Main.rand.NextFloat(10f, 15f) * Utils.GetLerpValue(-50, 0, Timer, true);
 					var magma = Dust.NewDustPerfect(Projectile.Bottom + Main.rand.NextVector2Circular(10, 2), DustType<Dusts.Cinder>(), magVel, 0, Glassweaver.GlowDustOrange, 1.5f);
@@ -191,14 +192,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Timer > 0)
 			{
-				if (Bounces > 2)
+				if (bounces > 2)
 					return true;
 
 				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.4f, 1f, Projectile.Center);
 					Projectile.velocity.Y = -oldVelocity.Y * 0.95f;
-					Bounces++;
+					bounces++;
 				}
 			}
 
@@ -235,6 +236,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 
 				Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade * 0.8f, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.66f, 0.5f), 0, 0);
+			}
+			else //Draw tell before firing
+			{
+				Texture2D line = TextureAssets.Extra[60].Value;
+				Color color = Color.OrangeRed;
+				color.A = 0;
+
+				color *= (float)Math.Sin(-Timer / 44f * 3.14f) * 0.8f;
+
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.1f, 3), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.15f, 2), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.2f, 1), SpriteEffects.None, 0);
 			}
 
 			return false;
