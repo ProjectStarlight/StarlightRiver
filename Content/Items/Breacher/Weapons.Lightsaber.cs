@@ -33,6 +33,7 @@
 //Adjust color
 
 //TODO on orange rightclick:
+//Better effect
 //Better description
 
 using Microsoft.Xna.Framework;
