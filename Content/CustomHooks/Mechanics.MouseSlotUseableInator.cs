@@ -1,18 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using StarlightRiver.Core;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class MouseSlotUsableInator : HookGroup
 	{
-		public override SafetyLevel Safety => SafetyLevel.Fragile;
-
 		public override void Load()
 		{
 			On.Terraria.Player.dropItemCheck += DontDropCoolStuff;
@@ -38,7 +31,9 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			else
+			{
 				orig(sb, inv, context, slot, position, color);
+			}
 		}
 
 		private void AllowBigHotkeying(ILContext il)
@@ -50,11 +45,14 @@ namespace StarlightRiver.Content.CustomHooks
 			ILLabel label = il.DefineLabel(c.Next);
 
 			c.Index -= 4;
-			c.EmitDelegate<Func<bool>>( ShouldAllowHotkey );
+			c.EmitDelegate<Func<bool>>(ShouldAllowHotkey);
 			c.Emit(OpCodes.Brtrue, label);
 		}
 
-		private bool ShouldAllowHotkey() => Main.mouseItem.ModItem is InworldItem;
+		private bool ShouldAllowHotkey()
+		{
+			return Main.mouseItem.ModItem is InworldItem;
+		}
 
 		private void AllowBigScrolling(ILContext il)
 		{

@@ -1,34 +1,30 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.SpaceEvent;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using StarlightRiver.Content.Items.SpaceEvent;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Buffs;
-using Terraria.Graphics.Effects;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
 	public class SupplyBeacon : ModItem
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Supply Beacon");
 			Tooltip.SetDefault("Taking over 50 damage summons a supply drop \nStand near the supply drop to buff either damage, regeneration, or defense \n10 second cooldown");
-
 		}
 
 		public override void SetDefaults()
 		{
 			Item.width = 30;
 			Item.height = 28;
-			Item.rare = 3;
+			Item.rare = ItemRarityID.Orange;
 			Item.value = Item.buyPrice(0, 4, 0, 0);
 			Item.accessory = true;
 		}
@@ -64,7 +60,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			active = false;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit)
+		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
 		{
 			if (cooldown <= 0 && active)
 			{
@@ -78,6 +74,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				}
 			}
 		}
+
 		public override void PreUpdate()
 		{
 			cooldown--;
@@ -88,20 +85,21 @@ namespace StarlightRiver.Content.Items.Breacher
 					SummonDrop(Player, accessory);
 			}
 			else
+			{
 				launchCounter = 0;
+			}
 		}
 
 		private static void SummonDrop(Player Player, Item acc)
 		{
-			Vector2 direction = new Vector2(0, -1);
+			var direction = new Vector2(0, -1);
 			direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-			Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + (direction * 800) + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
+			Projectile.NewProjectile(Player.GetSource_Accessory(acc), Player.Center + direction * 800 + new Vector2(Main.rand.Next(-300, 300), 0), direction * -15, ModContent.ProjectileType<SupplyBeaconProj>(), 0, 0, Player.whoAmI, Main.rand.Next(3));
 		}
 	}
+
 	internal class SupplyBeaconProj : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
-
 		private bool landed = false;
 		private bool ableToLand = false;
 
@@ -112,11 +110,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private float startupCounter = 0f;
 
+		public override string Texture => AssetDirectory.BreacherItem + Name;
+
 		private int state => (int)Projectile.ai[0]; //0 is defense, 1 is healing, 2 is attack
 
 		private Player owner => Main.player[Projectile.owner];
 
-		private float trailAlpha => Math.Max(0, 1 - (startupCounter * 5));
+		private float trailAlpha => Math.Max(0, 1 - startupCounter * 5);
 
 		public override void SetDefaults()
 		{
@@ -142,11 +142,8 @@ namespace StarlightRiver.Content.Items.Breacher
 				if (Main.netMode != NetmodeID.Server)
 					ManageCaches();
 
-
 				if (Projectile.Center.Y > owner.Center.Y - 100 && !Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16].HasTile)
-				{
 					ableToLand = true;
-				}
 
 				if (ableToLand)
 					Projectile.tileCollide = true;
@@ -154,10 +151,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			else
 			{
 				Projectile.velocity.Y += 0.3f;
+
 				if (startupCounter < 1)
 					startupCounter += 0.02f;
 
-				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f))), GetColor().ToVector3() * startupCounter);
+				Lighting.AddLight(Projectile.Center - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), GetColor().ToVector3() * startupCounter);
 				BuffPlayers();
 			}
 
@@ -168,7 +166,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D mainTex = TextureAssets.Projectile[Projectile.type].Value;
-			Vector2 position = (Projectile.Center - Main.screenPosition);
+			Vector2 position = Projectile.Center - Main.screenPosition;
+
 			if (landed)
 			{
 				Texture2D displayTex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
@@ -179,15 +178,16 @@ namespace StarlightRiver.Content.Items.Breacher
 
 				Color symbolColor = Color.White;
 
-				Rectangle symbolFrame = new Rectangle(
+				var symbolFrame = new Rectangle(
 					state * symbolTex.Width / 3,
-					(Main.timeForVisualEffects * 100) % 10 > 5 ? 0 : symbolTex.Height / 2,
+					Main.timeForVisualEffects * 100 % 10 > 5 ? 0 : symbolTex.Height / 2,
 					symbolTex.Width / 3,
 					symbolTex.Height / 2);
 
 				Main.spriteBatch.Draw(displayTex, position, null, displayColor, 0, new Vector2(displayTex.Width / 2, displayTex.Height), startupCounter, SpriteEffects.None, 0);
-				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + (7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f))), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(symbolTex, position - new Vector2(0, 40 + 7 * (float)Math.Sin(Main.timeForVisualEffects * 0.06f)), symbolFrame, symbolColor, 0, new Vector2(symbolTex.Width / 6, symbolTex.Height / 4), startupCounter, SpriteEffects.None, 0);
 			}
+
 			Main.spriteBatch.Draw(mainTex, position, null, lightColor, Projectile.rotation, mainTex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
 
 			Texture2D starTex = ModContent.Request<Texture2D>(Texture + "_Star").Value;
@@ -214,11 +214,13 @@ namespace StarlightRiver.Content.Items.Breacher
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCHit42, Projectile.Center);
 					landed = true;
 					Projectile.timeLeft = 700;
-					Core.Systems.CameraSystem.Shake += 12;
+					CameraSystem.shake += 12;
 				}
+
 				Projectile.extraUpdates = 0;
 				Projectile.velocity = Vector2.Zero;
 			}
+
 			return false;
 		}
 
@@ -242,6 +244,7 @@ namespace StarlightRiver.Content.Items.Breacher
 							buffType = ModContent.BuffType<SupplyBeaconDamage>();
 							break;
 					}
+
 					player.AddBuff(buffType, 2);
 				}
 			}
@@ -257,6 +260,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					cache.Add(Projectile.Center);
 				}
 			}
+
 			cache.Add(Projectile.Center);
 
 			while (cache.Count > 100)
@@ -267,29 +271,19 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private Color GetColor()
 		{
-			switch (state)
+			return state switch
 			{
-				case 0:
-					return Color.Orange;
-				case 1:
-					return Color.Green;
-				case 2:
-					return Color.Red;
-			}
-			return Color.White;
+				0 => Color.Orange,
+				1 => Color.Green,
+				2 => Color.Red,
+				_ => Color.White,
+			};
 		}
 
 		private void ManageTrail()
 		{
-
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor =>
-			{
-				return GetColor();
-			});
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor =>
-			{
-				return Color.White;
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor => GetColor());
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
@@ -302,9 +296,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
@@ -315,6 +309,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			trail2?.Render(effect);
 		}
 	}
+
 	class SupplyBeaconDefense : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Debug;
@@ -378,30 +373,33 @@ namespace StarlightRiver.Content.Items.Breacher
 			Player.GetDamage(DamageClass.Summon) += 0.2f;
 		}
 	}
+
 	public class SupplyBeaconDefenseDust : ModDust
 	{
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
-        public override void OnSpawn(Dust dust)
-        {
+		public override void OnSpawn(Dust dust)
+		{
 			dust.noGravity = true;
 			dust.frame = new Rectangle(0, 0, 10, 10);
 		}
 
-		public override Color? GetAlpha(Dust dust, Color lightColor) => Color.White * ((255 - dust.alpha) / 255f);
-
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			return Color.White * ((255 - dust.alpha) / 255f);
+		}
 
 		public override bool Update(Dust dust)
-        {
+		{
 			dust.position.Y -= 2;
 			dust.alpha += 15;
 			if (dust.alpha > 255)
 				dust.active = false;
 			return false;
-        }
-    }
+		}
+	}
 
-	public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { }
+	public class SupplyBeaconHealDust : SupplyBeaconDefenseDust { } //What are these here for?
 
 	public class SupplyBeaconAttackDust : SupplyBeaconDefenseDust { }
 }

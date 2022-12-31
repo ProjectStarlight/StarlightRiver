@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -22,12 +17,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load() //TODO: Make cursedaccessory.Load not hide this
 		{
-			StatusTrackingNPC.buffCompareEffects += CollarEffects;			
+			StatusTrackingNPC.buffCompareEffects += CollarEffects;
+			StarlightNPC.OnKillEvent += AddLostCollarToZoologistLoot;
 		}
 
 		public override void Unload()
 		{
 			StatusTrackingNPC.buffCompareEffects -= CollarEffects;
+			StarlightNPC.OnKillEvent -= AddLostCollarToZoologistLoot;
 		}
 
 		private void CollarEffects(Player player, NPC NPC, int[] oldTypes, int[] newTypes, int[] oldTimes, int[] newTimes)
@@ -42,6 +39,22 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
+		private void AddLostCollarToZoologistLoot(NPC NPC)
+		{
+			if (NPC.type == NPCID.BestiaryGirl)
+			{
+				int playerIndex = NPC.lastInteraction;
+
+				if (!Main.player[playerIndex].active || Main.player[playerIndex].dead)
+					playerIndex = NPC.FindClosestPlayer();
+
+				Player player = Main.player[playerIndex];
+
+				if (!player.HasItem(Type))
+					Item.NewItem(NPC.GetSource_Loot(), NPC.getRect(), Type, 1);
+			}
+		}
+
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<DoTResistancePlayer>().DoTResist += 0.4f;
@@ -51,12 +64,14 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.buffImmune[k] = false;
 			}
 
-			for(int k = 0; k < Player.buffType.Length; k++)
-				if(Player.buffType[k] > 0 && Main.debuff[Player.buffType[k]])
+			for (int k = 0; k < Player.buffType.Length; k++)
+			{
+				if (Player.buffType[k] > 0 && Main.debuff[Player.buffType[k]])
 				{
 					Player.maxRunSpeed += 0.05f;
-					Player.GetModPlayer<StarlightPlayer>().ItemSpeed += 0.05f;
+					Player.GetModPlayer<StarlightPlayer>().itemSpeed += 0.05f;
 				}
+			}
 		}
 	}
 }

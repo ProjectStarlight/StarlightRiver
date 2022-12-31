@@ -1,10 +1,3 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-using System;
-
 namespace StarlightRiver.Content.Dusts.ArtifactSparkles
 {
     abstract class ArtifactSparkle : ModDust
@@ -157,4 +150,14 @@ namespace StarlightRiver.Content.Dusts.ArtifactSparkles
     class RedArtifactSparkle : ArtifactSparkle { }
 
     class LimeArtifactSparkle : ArtifactSparkle { }
+
+	class GoldArtifactSparkle : ArtifactSparkle { }
+
+	class RedArtifactSparkle : ArtifactSparkle { }
+
+	class LimeArtifactSparkle : ArtifactSparkle { }
+
+	class WhiteArtifactSparkle : ArtifactSparkle { }
+
+	class BlueArtifactSparkle : ArtifactSparkle { }
 }
