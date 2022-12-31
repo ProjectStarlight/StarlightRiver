@@ -7,36 +7,36 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	class DoorVertical : ModTile
-    {
-        public override string Texture => AssetDirectory.VitricTile + Name;
+	{
+		public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetStaticDefaults()
-        {
-            MinPick = int.MaxValue;
-            TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
-        }
-    }
+		public override void SetStaticDefaults()
+		{
+			MinPick = int.MaxValue;
+			TileID.Sets.DrawsWalls[Type] = true;
+			this.QuickSetFurniture(1, 7, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+		}
+	}
 
-    class DoorVerticalItem : QuickTileItem
-    {
-        public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
-    }
+	class DoorVerticalItem : QuickTileItem
+	{
+		public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+	}
 
-    class DoorHorizontal : ModTile
-    {
-        public override string Texture => AssetDirectory.VitricTile + Name;
+	class DoorHorizontal : ModTile
+	{
+		public override string Texture => AssetDirectory.VitricTile + Name;
 
-        public override void SetStaticDefaults()
-        {
-            MinPick = int.MaxValue;
-            TileID.Sets.DrawsWalls[Type] = true;
-            (this).QuickSetFurniture(7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
-        }
-    }
+		public override void SetStaticDefaults()
+		{
+			MinPick = int.MaxValue;
+			TileID.Sets.DrawsWalls[Type] = true;
+			this.QuickSetFurniture(7, 1, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+		}
+	}
 
-    class DoorHorizontalItem : QuickTileItem
-    {
-        public DoorHorizontalItem() : base("Horizontal Temple Door", "Temple Door, But what if it was horizontal?", "DoorHorizontal", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
-    }
+	class DoorHorizontalItem : QuickTileItem
+	{
+		public DoorHorizontalItem() : base("Horizontal Temple Door", "Temple Door, But what if it was horizontal?", "DoorHorizontal", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+	}
 }

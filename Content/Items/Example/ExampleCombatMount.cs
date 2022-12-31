@@ -1,13 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Example
 {
@@ -32,7 +25,7 @@ namespace StarlightRiver.Content.Items.Example
 				player.velocity.X *= moveSpeedMultiplier;
 
 			if (!player.controlLeft && !player.controlRight)
-				player.velocity *= (1 - Math.Max(1, moveSpeedMultiplier) * 0.1f);
+				player.velocity *= 1 - Math.Max(1, moveSpeedMultiplier) * 0.1f;
 		}
 
 		public override void OnStartPrimaryAction(Player player)
@@ -42,13 +35,13 @@ namespace StarlightRiver.Content.Items.Example
 
 		public override void PrimaryAction(int timer, Player player)
 		{
-			for(int k = 0; k < 6; k++)
+			for (int k = 0; k < 6; k++)
 			{
 				int check = (int)(k / 6f * MaxPrimaryTime);
 
 				if (timer == check)
 				{
-					var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * 20;
+					Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center) * 20;
 					Projectile.NewProjectile(player.GetSource_Misc("Test"), player.Center, vel, ModContent.ProjectileType<Items.SteampunkSet.JetwelderJumperMissle>(), damageCoefficient, 0, player.whoAmI);
 					Helpers.Helper.PlayPitched("Guns/FlareFire", 1, 1, player.Center);
 				}

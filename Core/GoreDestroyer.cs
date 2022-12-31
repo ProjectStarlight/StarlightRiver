@@ -1,20 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.UI.Chat;
+﻿using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
@@ -30,6 +14,7 @@ namespace StarlightRiver.Core
 
 				return result;
 			};
+
 			On.Terraria.Gore.NewGoreDirect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
@@ -38,6 +23,7 @@ namespace StarlightRiver.Core
 
 				return result;
 			};
+
 			On.Terraria.Gore.NewGorePerfect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
@@ -61,7 +47,6 @@ namespace StarlightRiver.Core
 
 			if (entitySource is EntitySource_Parent deathSource4 && deathSource4.Entity is NPC npc4 && npc4.GetGlobalNPC<GoreDestroyerNPC>().destroyGore)
 				Main.gore[goreID].active = false;
-
 		}
 
 		private static void DestroyGore(IEntitySource entitySource, Gore gore)
@@ -81,14 +66,14 @@ namespace StarlightRiver.Core
 	}
 
 	public class GoreDestroyerNPC : GlobalNPC
-    {
+	{
 		public override bool InstancePerEntity => true;
 
 		public bool destroyGore = false;
 
-        public override void ResetEffects(NPC npc)
-        {
+		public override void ResetEffects(NPC npc)
+		{
 			destroyGore = false;
-        }
-    }
+		}
+	}
 }
