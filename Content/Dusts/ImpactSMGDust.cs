@@ -1,12 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
+﻿using System;
 
 namespace StarlightRiver.Content.Dusts
 {
@@ -23,7 +15,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			Color gray = new Color(25, 25, 25);
+			var gray = new Color(25, 25, 25);
 			Color ret;
 			if (dust.alpha < 80)
 			{
@@ -34,7 +26,9 @@ namespace StarlightRiver.Content.Dusts
 				ret = Color.Lerp(new Color(150, 50, 50), gray, (dust.alpha - 80) / 80f);
 			}
 			else
+			{
 				ret = gray;
+			}
 
 			return ret * ((255 - dust.alpha) / 255f);
 		}
@@ -64,6 +58,7 @@ namespace StarlightRiver.Content.Dusts
 				dust.scale *= 0.985f;
 				dust.alpha += 4;
 			}
+
 			dust.position += dust.velocity;
 			if (dust.alpha >= 255)
 				dust.active = false;
@@ -74,7 +69,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class ImpactSMGDustTwo : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustTwo";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -85,7 +80,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			Color gray = new Color(25, 25, 25);
+			var gray = new Color(25, 25, 25);
 			Color ret;
 			if (dust.alpha < 80)
 			{
@@ -96,7 +91,10 @@ namespace StarlightRiver.Content.Dusts
 				ret = Color.Lerp(new Color(160, 50, 50), gray, (dust.alpha - 80) / 80f);
 			}
 			else
+			{
 				ret = gray;
+			}
+
 			return ret * ((255 - dust.alpha) / 255f);
 		}
 
@@ -126,6 +124,7 @@ namespace StarlightRiver.Content.Dusts
 				dust.scale *= 0.985f;
 				dust.alpha += 4;
 			}
+
 			dust.position += dust.velocity;
 
 			if (dust.alpha >= 255)
@@ -137,7 +136,7 @@ namespace StarlightRiver.Content.Dusts
 
 	public class ImpactSMGDustThree : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noGravity = true;
@@ -147,7 +146,7 @@ namespace StarlightRiver.Content.Dusts
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			Color gray = new Color(25, 25, 25);
+			var gray = new Color(25, 25, 25);
 			Color ret;
 			if (dust.alpha < 40)
 				ret = Color.Lerp(new Color(255, 50, 50), new Color(160, 50, 50), dust.alpha / 40f);
