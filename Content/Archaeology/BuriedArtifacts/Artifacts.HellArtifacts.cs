@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
     public class CharonsObolArtifact : HellArtifact
     {
-        public override string TexturePath => AssetDirectory.HellItem + "CharonsObol";
+        public override string TexturePath => AssetDirectory.HellItem + "CharonsObol_Sparkleless";
 
         public override Vector2 Size => new Vector2(32, 28);
 
