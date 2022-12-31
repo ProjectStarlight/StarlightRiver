@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -9,11 +6,14 @@ namespace StarlightRiver.Content.Items.Food
 	{
 		public ManaExtract() : base("Restore 50 mana on use\nReduces duration of potion sickness slightly", 120, IngredientType.Side) { }
 
-		public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.Blue;
+		}
 
 		public override void OnUseEffects(Player player, float multiplier)
 		{
-			var heal = (int)(50 * multiplier);
+			int heal = (int)(50 * multiplier);
 			player.statMana += heal;
 			player.ManaEffect(heal);
 		}

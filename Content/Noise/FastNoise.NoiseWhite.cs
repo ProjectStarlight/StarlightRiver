@@ -8,41 +8,52 @@ using DECIMAL = System.Single;
 namespace StarlightRiver.Noise
 {
 	public partial class FastNoise
-    {
-        public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y)
-        {
-            int xi = FloatCast2Int(x);
-            int yi = FloatCast2Int(y);
+	{
+		public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y)
+		{
+			int xi = FloatCast2Int(x);
+			int yi = FloatCast2Int(y);
 
-            return ValCoord2D(Seed, xi, yi);
-        }
-        public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y, DECIMAL z)
-        {
-            int xi = FloatCast2Int(x);
-            int yi = FloatCast2Int(y);
-            int zi = FloatCast2Int(z);
+			return ValCoord2D(Seed, xi, yi);
+		}
+		public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y, DECIMAL z)
+		{
+			int xi = FloatCast2Int(x);
+			int yi = FloatCast2Int(y);
+			int zi = FloatCast2Int(z);
 
-            return ValCoord3D(Seed, xi, yi, zi);
-        }
-        public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y, DECIMAL z, DECIMAL w)
-        {
-            int xi = FloatCast2Int(x);
-            int yi = FloatCast2Int(y);
-            int zi = FloatCast2Int(z);
-            int wi = FloatCast2Int(w);
+			return ValCoord3D(Seed, xi, yi, zi);
+		}
+		public DECIMAL GetWhiteNoise(DECIMAL x, DECIMAL y, DECIMAL z, DECIMAL w)
+		{
+			int xi = FloatCast2Int(x);
+			int yi = FloatCast2Int(y);
+			int zi = FloatCast2Int(z);
+			int wi = FloatCast2Int(w);
 
-            return ValCoord4D(Seed, xi, yi, zi, wi);
-        }
-        public DECIMAL GetWhiteNoiseInt(int x, int y) => ValCoord2D(Seed, x, y);
-        public DECIMAL GetWhiteNoiseInt(int x, int y, int z) => ValCoord3D(Seed, x, y, z);
-        public DECIMAL GetWhiteNoiseInt(int x, int y, int z, int w) => ValCoord4D(Seed, x, y, z, w);
+			return ValCoord4D(Seed, xi, yi, zi, wi);
+		}
+		public DECIMAL GetWhiteNoiseInt(int x, int y)
+		{
+			return ValCoord2D(Seed, x, y);
+		}
 
-        [MethodImpl(Inline)]
-        private int FloatCast2Int(DECIMAL f)
-        {
-            var i = BitConverter.DoubleToInt64Bits(f);
+		public DECIMAL GetWhiteNoiseInt(int x, int y, int z)
+		{
+			return ValCoord3D(Seed, x, y, z);
+		}
 
-            return (int)(i ^ (i >> 32));
-        }
-    }
+		public DECIMAL GetWhiteNoiseInt(int x, int y, int z, int w)
+		{
+			return ValCoord4D(Seed, x, y, z, w);
+		}
+
+		[MethodImpl(Inline)]
+		private int FloatCast2Int(DECIMAL f)
+		{
+			long i = BitConverter.DoubleToInt64Bits(f);
+
+			return (int)(i ^ (i >> 32));
+		}
+	}
 }

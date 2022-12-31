@@ -1,22 +1,13 @@
-using System;
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-using Terraria;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Helpers;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ObjectData;
-
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
@@ -57,7 +48,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 			name = CreateMapEntryName(Name + "_Locked");
 			name.SetDefault("Ankh Chest");
 			AddMapEntry(Color.Cyan, name, MapChestName);
-			DustType = DustID.Sand; 
+			DustType = DustID.Sand;
 			AdjTiles = new int[] { TileID.Containers };
 			ChestDrop = ModContent.ItemType<AnkhChestItem>();
 			ContainerName.SetDefault("Ankh Chest");
@@ -77,7 +68,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			int chest = Chest.FindChest(left, top);
 
-			if (chest < 0) 
+			if (chest < 0)
 				return Language.GetTextValue("LegacyChestType.0");
 			else if (Main.chest[chest].name == "")
 				return name;
@@ -85,13 +76,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 				return name + ": " + Main.chest[chest].name;
 		}
 
-        public override bool SpawnConditions(int i, int j)
-        {
+		public override bool SpawnConditions(int i, int j)
+		{
 			Tile tile = Main.tile[i, j];
 			return tile.TileFrameX == 72 && tile.TileFrameY == 0;
 		}
 
-        public override ushort GetMapOption(int i, int j) 
+		public override ushort GetMapOption(int i, int j)
 		{
 			int style = Main.tile[i, j].TileFrameX / 36;
 
@@ -99,11 +90,17 @@ namespace StarlightRiver.Content.Tiles.Desert
 			return (ushort)(style == 0 ? 0 : 1);
 		}
 
-		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
+		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
+		{
+			return true;
+		}
 
-		public override bool IsLockedChest(int i, int j) => Main.tile[i, j].TileFrameX / 36 == 2;
+		public override bool IsLockedChest(int i, int j)
+		{
+			return Main.tile[i, j].TileFrameX / 36 == 2;
+		}
 
-		public override bool UnlockChest(int i, int j, ref short frameXAdjustment, ref int dustType, ref bool manual) 
+		public override bool UnlockChest(int i, int j, ref short frameXAdjustment, ref int dustType, ref bool manual)
 		{
 			frameXAdjustment = -72;
 			return true;
@@ -182,22 +179,25 @@ namespace StarlightRiver.Content.Tiles.Desert
 				}
 				else
 				{
-					NetMessage.SendData(31, -1, -1, null, left, (float)top, 0f, 0f, 0, 0, 0);
+					NetMessage.SendData(31, -1, -1, null, left, top, 0f, 0f, 0, 0, 0);
 					Main.stackSplit = 600;
 				}
 			}
 			else
 			{
-				if (!isLocked) 
+				if (!isLocked)
 				{
 					int chest = Chest.FindChest(left, top);
-					if (chest >= 0) {
+					if (chest >= 0)
+					{
 						Main.stackSplit = 600;
-						if (chest == player.chest) {
+						if (chest == player.chest)
+						{
 							player.chest = -1;
 							SoundEngine.PlaySound(SoundID.MenuClose);
 						}
-						else {
+						else
+						{
 							player.chest = chest;
 							Main.playerInventory = true;
 							Main.recBigList = false;
@@ -205,6 +205,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 							player.chestY = top;
 							SoundEngine.PlaySound(player.chest < 0 ? SoundID.MenuOpen : SoundID.MenuTick);
 						}
+
 						Recipe.FindRecipes();
 					}
 				}

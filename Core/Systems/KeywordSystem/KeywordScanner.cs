@@ -1,15 +1,10 @@
-﻿using System;
+﻿using StarlightRiver.Content.Configs;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 using System.Collections.ObjectModel;
-using Terraria.UI.Chat;
-using StarlightRiver.Configs;
 using System.IO;
+using System.Linq;
+using Terraria.UI.Chat;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
 {
@@ -23,32 +18,32 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 		{
 			this.keyword = keyword;
 			this.message = message;
-			this.colorHex = BitConverter.ToString(new byte[] { color.R, color.G, color.B }).Replace("-", "");
+			colorHex = BitConverter.ToString(new byte[] { color.R, color.G, color.B }).Replace("-", "");
 		}
 	}
 
 	internal class KeywordScanner : GlobalItem
 	{
-		public static List<Keyword> keywords = new List<Keyword>();
+		public static List<Keyword> keywords = new();
 
-		public List<Keyword> thisKeywords = new List<Keyword>();
+		public List<Keyword> thisKeywords = new();
 
 		public override bool InstancePerEntity => true;
 
 		public override void Load() //temporary debug behavior
 		{
-			var font = Terraria.GameContent.FontAssets.MouseText.Value;
+			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			var stream = Mod.GetFileStream("Keywords.txt");
+			Stream stream = Mod.GetFileStream("Keywords.txt");
 
-			StreamReader reader = new StreamReader(stream);
-			var lines = reader.ReadToEnd().Split('\n');
+			var reader = new StreamReader(stream);
+			string[] lines = reader.ReadToEnd().Split('\n');
 
 			stream.Close();
 
-			foreach(string line in lines)
+			foreach (string line in lines)
 			{
-				var split = line.Split(" | ");
+				string[] split = line.Split(" | ");
 				keywords.Add(new Keyword(split[0], Helpers.Helper.WrapString(split[1], 200, font, 1), new Color(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]))));
 			}
 		}
@@ -60,7 +55,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		private string BuildKeyword(Keyword word)
 		{
-			var config = ModContent.GetInstance<GUIConfig>();
+			GUIConfig config = ModContent.GetInstance<GUIConfig>();
 
 			string color;
 
@@ -69,7 +64,7 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			else
 				color = "AAAAAA";
 
-			if(config.KeywordStyle == KeywordStyle.Brackets || config.KeywordStyle == KeywordStyle.Both)
+			if (config.KeywordStyle == KeywordStyle.Brackets || config.KeywordStyle == KeywordStyle.Both)
 				return "[c/" + color + ":{" + word.keyword + "}]";
 			else
 				return "[c/" + color + ":" + word.keyword + "]";
@@ -83,24 +78,24 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 				float height = -16;
 				Vector2 pos;
 
-				var font = Terraria.GameContent.FontAssets.MouseText.Value;
+				ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 				if (Main.MouseScreen.X < Main.screenWidth / 2)
 				{
-					var widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
+					string widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
 					width = ChatManager.GetStringSize(font, widest, Vector2.One).X;
 
 					pos = new Vector2(x, y) + new Vector2(width + 30, 0);
 				}
 				else
 				{
-					var widest = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
+					Keyword widest = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
 					width = ChatManager.GetStringSize(font, widest.message, Vector2.One).X + 20;
 
 					pos = new Vector2(x, y) - new Vector2(width + 30, 0);
 				}
 
-				var widest2 = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
+				Keyword widest2 = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
 				width = ChatManager.GetStringSize(font, widest2.message, Vector2.One).X + 20;
 
 				foreach (Keyword keyword in thisKeywords)
@@ -136,39 +131,39 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		public string ScanLine(string input)
 		{
-			var strings = input.Split(' ');
+			string[] strings = input.Split(' ');
 
-			for(int k = 0; k < strings.Length; k++)
+			for (int k = 0; k < strings.Length; k++)
 			{
-				var word = strings[k];
+				string word = strings[k];
 
 				if (word.Length < 1)
 					continue;
 
 				if (word[0] == '\\')
 				{
-					strings[k] = word.Substring(1);
+					strings[k] = word[1..];
 					continue;
 				}
 
 				if (keywords.Any(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase)))
 				{
-					var keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase));
+					Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase));
 
-					if(!thisKeywords.Contains(keyword))
+					if (!thisKeywords.Contains(keyword))
 						thisKeywords.Add(keyword);
 
 					strings[k] = BuildKeyword(keyword);
 					continue;
 				}
 
-				var suffix = word.Substring(word.Length - 1);
+				string suffix = word[^1..];
 
 				if (suffix == ":" || suffix == "," || suffix == "." || suffix == ";") //Common punctuation that shouldnt invalidate a keyword.
 				{
-					if (keywords.Any(n => string.Equals(n.keyword, word.Substring(0, word.Length - 1), StringComparison.OrdinalIgnoreCase)))
+					if (keywords.Any(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase)))
 					{
-						var keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word.Substring(0, word.Length - 1), StringComparison.OrdinalIgnoreCase));
+						Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase));
 
 						if (!thisKeywords.Contains(keyword))
 							thisKeywords.Add(keyword);
