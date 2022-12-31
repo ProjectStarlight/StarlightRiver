@@ -281,7 +281,7 @@ namespace StarlightRiver.Content.Items.Misc
                     break;
             }
 
-            Core.Systems.CameraSystem.Shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
+            Core.Systems.CameraSystem.CameraSystem.shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
 
             for (int k = 0; k < 12; k++)
                 Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(30,30), ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(7, 7), 0, default, Main.rand.NextFloat(0.85f, 1.15f));

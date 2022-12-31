@@ -172,16 +172,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (colliding)
 				{
-                    Helper.PlayPitched("Magic/AuroraBell", chargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + ((1 - chargeRatio) * 0.8f), Projectile.Center);
-                    Core.Systems.CameraSystem.Shake += 7;
+                    Helper.PlayPitched("Magic/AuroraBell", ChargeRatio, Main.rand.NextFloat(-0.1f, 0.1f) + ((1 - ChargeRatio) * 0.8f), Projectile.Center);
+                    Core.Systems.CameraSystem.CameraSystem.shake += 7;
 
-                    DistortionPointHandler.AddPoint(Projectile.Center, (float)Math.Pow(chargeRatio, 0.7f), 0,
+                    DistortionPointHandler.AddPoint(Projectile.Center, (float)Math.Pow(ChargeRatio, 0.7f), 0,
                     (intensity, ticksPassed) => intensity,
                     (progress, ticksPassed) => (float)Math.Sqrt(ticksPassed / 20f),
                     (progress, intensity, ticksPassed) => ticksPassed <= 20);
 
-                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * chargeRatio), Projectile.knockBack, owner.whoAmI, 2);
-					newProj.originalDamage = (int)(proj.damage * chargeRatio);
+                    Projectile newProj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + offset, Vector2.Zero, ModContent.ProjectileType<AuroraBellRing>(), (int)(proj.damage * ChargeRatio), Projectile.knockBack, Owner.whoAmI, 2);
+					newProj.originalDamage = (int)(proj.damage * ChargeRatio);
 
                     if (modProj is not AuroraBellRing)
                     {
@@ -209,7 +209,7 @@ namespace StarlightRiver.Content.Items.Permafrost
                     else
                         newProjMP.cantHit.Add(Projectile);
 
-                    newProjMP.radiusMult = (float)Math.Pow(chargeRatio, 0.7f);
+                    newProjMP.radiusMult = (float)Math.Pow(ChargeRatio, 0.7f);
 					chargeCounter = 0;
 					break;
 				}
