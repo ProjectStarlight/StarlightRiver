@@ -1,22 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Terraria.UI.Chat;
 using Terraria.Audio;
-using StarlightRiver.Core.Systems;
+using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -28,7 +18,10 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Impact SMG");
 
-			Tooltip.SetDefault("Hold <left> to rapidly fire high impact bullets, heating over time\nRelease to boomerang the gun\nHitting an enemy while its not overheated grants you a stacking buff to the Impact SMG's damage\nHitting an enemy while its overheated causes it to consume all stacks for a deadly explosion");
+			Tooltip.SetDefault("Hold <left> to rapidly fire high impact bullets, heating over time\n" +
+				"Release to boomerang the gun\n" +
+				"Hitting an enemy while its not overheated grants you a stacking buff to the Impact SMG's damage\n" +
+				"Hitting an enemy while its overheated causes it to consume all stacks for a deadly explosion");
 		}
 
 		public override void SetDefaults()
@@ -71,7 +64,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public class ImpactSMGPlayer : ModPlayer
+	public class ImpactSMGPlayer : ModPlayer //TODO: Rework into stackable buff
 	{
 		public int stacks;
 
@@ -100,7 +93,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Update(Player player, ref int buffIndex)
 		{
 			if (player.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
+			{
 				player.buffTime[buffIndex] = 18000;
+			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -111,7 +106,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void ModifyBuffTip(ref string tip, ref int rare)
 		{
 			rare = ItemRarityID.Red;
-
 			tip = "The Impact SMG deals " + Main.LocalPlayer.GetModPlayer<ImpactSMGPlayer>().stacks * 5 + "% " + "increased damage";
 		}
 
@@ -125,7 +119,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			float progress = mp.stacks / 5f;
 
-			Color color = Color.Lerp(Color.Transparent, new Color(255, 50, 50, 0), progress);
+			var color = Color.Lerp(Color.Transparent, new Color(255, 50, 50, 0), progress);
 
 			spriteBatch.Draw(backTex, drawParams.Position, drawParams.SourceRectangle, drawParams.DrawColor, 0f, default, 1f, 0f, 0f);
 
@@ -139,42 +133,35 @@ namespace StarlightRiver.Content.Items.Misc
 	public class ImpactSMGHoldout : ModProjectile
 	{
 		public int shootDelay;
-
 		public int shots;
-
 		public int heat;
 
 		public int flashTimer;
-
 		public int throwTimer;
+		public int explodingTimer;
 
 		public int catchDelay;
 
-		public int explodingTimer;
-
 		public bool hasHit;
-
-		public bool thrown;
-
-		public bool throwing;
 
 		public bool flashed;
 
-		public bool updateVelo = true;
-
 		public bool draw; //only draw two ticks after spawning
 
+		public bool thrown;
+		public bool throwing;
+
 		public bool exploding;
-
 		public bool exploded;
-		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
-
-		public bool overheated => shots >= 30;
-
 
 		public Vector2 mousePos;
-
 		public Vector2 mouseWorld;
+
+		public bool updateVelo = true;
+
+		public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
+
+		public bool Overheated => shots >= 30;
 
 		public ref float ShootDelay => ref Projectile.ai[0];
 
@@ -186,7 +173,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + "ImpactSMG";
 
-		public override bool? CanDamage() => thrown;
+		public override bool? CanDamage()
+		{
+			return thrown;
+		}
 
 		public override void Load()
 		{
@@ -219,7 +209,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (MaxShootDelay == 0f)
 				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem);
 
-			if (overheated)
+			if (Overheated)
 				MaxShootDelay = CombinedHooks.TotalUseTime(Owner.HeldItem.useTime, Owner, Owner.HeldItem) * 1.2f;
 
 			if (flashTimer > 0)
@@ -228,9 +218,15 @@ namespace StarlightRiver.Content.Items.Misc
 			if (catchDelay > 0)
 				catchDelay--;
 
-			if (!CanHold && shots > 10)
+			if (!CanHold)
 			{
-				if (overheated)
+				if (shots < 10)
+				{
+					Projectile.Kill();
+					return;
+				}
+
+				if (Overheated)
 					ExplodingAI();
 				else
 					BoomerangAI();
@@ -246,7 +242,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (shootDelay % (int)MaxShootDelay == 0)
 					ShootBullet(armPos);
-
 
 				Owner.ChangeDir(Projectile.direction);
 
@@ -268,10 +263,10 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					updateVelo = false;
 					float interpolant = Utils.GetLerpValue(1f, 5f, Projectile.Distance(Main.MouseWorld), true);
-
 					Vector2 oldVelocity = Projectile.velocity;
 
 					Projectile.velocity = Vector2.One.RotatedBy(Vector2.Lerp(Projectile.velocity, Owner.DirectionTo(Main.MouseWorld), interpolant).ToRotation() - MathHelper.PiOver4).RotatedByRandom(0.1f);
+
 					if (Projectile.velocity != oldVelocity)
 					{
 						Projectile.netSpam = 0;
@@ -279,13 +274,21 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 				}
 
-				if (overheated && !flashed)
+				if (Overheated && !flashed)
 				{
 					SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 					flashTimer = 20;
 					flashed = true;
 				}
 			}
+		}
+
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			width = 12;
+			height = 12;
+
+			return true;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -314,7 +317,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (!exploding)
 					shootDelay = 15;
 			}
-			
+
 			return false;
 		}
 
@@ -326,7 +329,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (overheated && !exploding && !exploded)
+			if (Overheated && !exploding && !exploded)
 			{
 				Helper.PlayPitched("Magic/FireCast", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ShootDelay = 0;
@@ -336,12 +339,11 @@ namespace StarlightRiver.Content.Items.Misc
 				exploding = true;
 				Projectile.tileCollide = true;
 			}
-			else if (!overheated && thrown)
+			else if (!Overheated && thrown)
 			{
 				for (int i = 0; i < 10; i++)
 				{
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), Projectile.velocity.RotatedByRandom(0.45f) * Main.rand.NextFloat(0.5f), 0, new Color(190, 50, 50), 0.35f);
-
 					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), Projectile.velocity.RotatedByRandom(0.55f) * Main.rand.NextFloat(0.5f), 0, new Color(255, 40, 40), 0.4f);
 				}
 
@@ -358,16 +360,18 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Kill(int timeLeft)
 		{
-			if (!overheated)
+			if (!Overheated)
 			{
 				if (hasHit)
 				{
 					ImpactSMGPlayer mp = Owner.GetModPlayer<ImpactSMGPlayer>();
+
 					if (mp.stacks < 5)
 						mp.stacks++;
 
 					if (!Owner.HasBuff<ImpactSMGBuff>())
-					Owner.AddBuff(ModContent.BuffType<ImpactSMGBuff>(), 120);
+						Owner.AddBuff(ModContent.BuffType<ImpactSMGBuff>(), 120);
+
 					mp.flashTimer = 15;
 
 					for (int i = 0; i < 15; i++)
@@ -376,7 +380,9 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 				}
 				else
+				{
 					Owner.GetModPlayer<ImpactSMGPlayer>().stacks = 0;
+				}
 			}
 		}
 
@@ -399,10 +405,11 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				float progress = Owner.GetModPlayer<ImpactSMGPlayer>().stacks / 5f;
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), progress), Projectile.rotation, bloomTex.Size() / 2f, 0.65f, 0f, 0f);
-				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), progress), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);				
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 0, 0, 0), progress), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
 			}
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, flip, 0f);
+
 			if (shots > 0)
 			{
 				Main.spriteBatch.Draw(glowMap, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(255, 0, 0, 0), shots / 30f) * 0.5f, Projectile.rotation, glowMap.Size() / 2f, Projectile.scale, flip, 0f);
@@ -414,7 +421,7 @@ namespace StarlightRiver.Content.Items.Misc
 				//Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation) - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), shots / 30f) * 0.5f, Projectile.rotation, bloomTex.Size() / 2f, 0.35f, 0f, 0f);
 			}
 
-			if (flashed)	
+			if (flashed)
 			{
 				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0f);
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Transparent, new Color(180, 50, 50, 0), flashTimer / 20f), Projectile.rotation, bloomTex.Size() / 2f, 0.85f, 0f, 0f);
@@ -425,12 +432,15 @@ namespace StarlightRiver.Content.Items.Misc
 				float progress = explodingTimer / 45f;
 
 				if (!exploded)
+				{
 					for (int i = 0; i < 2; i++)
 					{
 						Main.spriteBatch.Draw(flareTex, Projectile.Center - Main.screenPosition, null, new Color(255, 50, 50, 0), MathHelper.Lerp(0f, 6f, progress), flareTex.Size() / 2f, MathHelper.Lerp(0.1f, 0.025f, progress), 0f, 0f);
 					}
+				}
 
 				Color overlayColor;
+
 				if (progress < 0.5f)
 					overlayColor = Color.Lerp(new Color(0, 0, 0, 0), new Color(255, 50, 50, 0) * 0.5f, progress * 2);
 				else
@@ -440,6 +450,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				progress *= progress;
 				Color glowColor;
+
 				if (progress < 0.5f)
 					glowColor = Color.Lerp(new Color(0, 0, 0, 0), new Color(255, 50, 50, 0), progress * 2);
 				else
@@ -449,7 +460,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, glowColor * 0.75f, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, flip, 0);
 
 				Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition, null, glowColor, 0f, bloomTex.Size() / 2f, 0.55f, 0, 0);
-			}			
+			}
 
 			return false;
 		}
@@ -461,14 +472,16 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 pos = armPos + Projectile.rotation.ToRotationVector2() * 20f + Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
 
 			Owner.PickAmmo(Owner.HeldItem, out int projID, out float shootSpeed, out int damage, out float knockBack, out int ammoID);
+
 			if (Main.myPlayer == Projectile.owner)
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), (int)(Projectile.damage * (overheated ? 1.2f : 1f)), Projectile.knockBack, Projectile.owner);
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Projectile.rotation.ToRotationVector2() * Main.rand.NextFloat(25f, 25f + shootSpeed), ModContent.ProjectileType<ImpactSMGShot>(), (int)(Projectile.damage * (Overheated ? 1.2f : 1f)), Projectile.knockBack, Projectile.owner);
 
 			Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(Projectile.direction == 1 ? -14 : 0, -10 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), -Projectile.rotation.ToRotationVector2() * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMG_Shell").Type).timeLeft = 1;
 
 			updateVelo = true;
 
 			Helper.PlayPitched("Guns/RifleLight", 0.35f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
+
 			if (shots >= 25)
 			{
 				Helper.PlayPitched("Guns/dry_fire", 0.7f, Main.rand.NextFloat(-0.1f, 0.1f), pos);
@@ -480,9 +493,64 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 3; i++)
 			{
 				Dust.NewDustPerfect(pos, ModContent.DustType<GlowFastDecelerate>(), Projectile.rotation.ToRotationVector2().RotatedByRandom(0.25f) * 5f, 0, new Color(190, 40, 40), 0.25f);
-
 				Dust.NewDustPerfect(pos, ModContent.DustType<GlowFastDecelerate>(), Projectile.rotation.ToRotationVector2().RotatedByRandom(0.35f) * 7f, 0, new Color(255, 40, 40), 0.3f);
 			}
+
+			if (!Owner.HasAmmo(Owner.HeldItem))
+				Projectile.Kill();
+		}
+
+		private void ClampVelocity()
+		{
+			Vector2 playerCenter = Owner.Center;
+			Vector2 pos = Projectile.Center;
+
+			float betweenX = Owner.Center.X - pos.X;
+			float betweenY = Owner.Center.Y - pos.Y;
+
+			float distance = (float)Math.Sqrt(betweenX * betweenX + betweenY * betweenY);
+			float speed = 15f;
+			float adjust = 0.95f;
+
+			if (distance > 3000f)
+				Projectile.Kill();
+
+			distance = speed / distance;
+			betweenX *= distance;
+			betweenY *= distance;
+
+			if (Projectile.velocity.X < betweenX)
+			{
+				Projectile.velocity.X += adjust;
+
+				if (Projectile.velocity.X < 0f && betweenX > 0f)
+					Projectile.velocity.X += adjust;
+			}
+			else if (Projectile.velocity.X > betweenX)
+			{
+				Projectile.velocity.X -= adjust;
+
+				if (Projectile.velocity.X > 0f && betweenX < 0f)
+					Projectile.velocity.X -= adjust;
+			}
+
+			if (Projectile.velocity.Y < betweenY)
+			{
+				Projectile.velocity.Y += adjust;
+
+				if (Projectile.velocity.Y < 0f && betweenY > 0f)
+					Projectile.velocity.Y += adjust;
+			}
+			else if (Projectile.velocity.Y > betweenY)
+			{
+				Projectile.velocity.Y -= adjust;
+
+				if (Projectile.velocity.Y > 0f && betweenY < 0f)
+					Projectile.velocity.Y -= adjust;
+			}
+
+			if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
+				Projectile.Kill();
 		}
 
 		private void BoomerangAI()
@@ -517,12 +585,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 20)
 			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease(throwTimer / 20f);
+				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 20f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 30)
 			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else
@@ -547,52 +615,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					Owner.heldProj = Projectile.whoAmI;
 
-					Vector2 playerCenter = Owner.Center;
-					Vector2 pos = Projectile.Center;
-
-					float betweenX = Owner.Center.X - pos.X;
-					float betweenY = Owner.Center.Y - pos.Y;
-
-					float distance = (float)Math.Sqrt(betweenX * betweenX + betweenY * betweenY);
-					float speed = 15f;
-					float adjust = 0.95f;
-
-					if (distance > 3000f)
-					{
-						Projectile.Kill();
-					}
-
-					distance = speed / distance;
-					betweenX *= distance;
-					betweenY *= distance;
-
-					if (Projectile.velocity.X < betweenX)
-					{
-						Projectile.velocity.X += adjust;
-						if (Projectile.velocity.X < 0f && betweenX > 0f)
-							Projectile.velocity.X += adjust;
-					}
-					else if (Projectile.velocity.X > betweenX)
-					{
-						Projectile.velocity.X -= adjust;
-						if (Projectile.velocity.X > 0f && betweenX < 0f)
-							Projectile.velocity.X -= adjust;
-					}
-					if (Projectile.velocity.Y < betweenY)
-					{
-						Projectile.velocity.Y += adjust;
-						if (Projectile.velocity.Y < 0f && betweenY > 0f)
-							Projectile.velocity.Y += adjust;
-					}
-					else if (Projectile.velocity.Y > betweenY)
-					{
-						Projectile.velocity.Y -= adjust;
-						if (Projectile.velocity.Y > 0f && betweenY < 0f)
-							Projectile.velocity.Y -= adjust;
-					}
-
-					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
-						Projectile.Kill();
+					ClampVelocity();
 				}
 
 				Owner.ChangeDir(Projectile.Center.X < Owner.Center.X ? -1 : 1);
@@ -606,69 +629,6 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-
-		//reload anim code, scrapped, but im keeping the code
-		/*private void DoReload()
-		{
-			if (Main.myPlayer == Projectile.owner && mouseWorld == Vector2.Zero)
-			{
-				mouseWorld = Main.MouseWorld;
-				mousePos = Owner.DirectionTo(Main.MouseWorld);
-			}
-
-			Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
-			armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 15f;
-
-			Owner.heldProj = Projectile.whoAmI;
-			Owner.itemTime = 2;
-			Owner.itemAnimation = 2;
-
-			Projectile.timeLeft = 2;
-			Projectile.rotation = Utils.ToRotation(Projectile.velocity);
-			Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
-
-			if (shootDelay > 2)
-			{
-				draw = true;
-				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
-			}
-
-			Projectile.position = armPos - Projectile.Size * 0.5f;
-
-			Projectile.spriteDirection = mouseWorld.X < Owner.Center.X ? -1 : 1;
-				
-			shootDelay++;
-
-			if (shootDelay < 30)
-			{
-				float progress = EaseBuilder.EaseCircularOut.Ease(shootDelay / 30f);
-				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, 3f, progress) * Owner.direction - MathHelper.PiOver4);
-			}
-			else if (shootDelay < 45)
-			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease((shootDelay - 30) / 15f);
-				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(3f, -0.25f, progress) * Owner.direction - MathHelper.PiOver4);
-
-				if (shootDelay == 40)
-				{
-					drawMag = false;
-					Gore.NewGoreDirect(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(8, 8 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), Projectile.velocity * 3f + Vector2.UnitY * -2f, Mod.Find<ModGore>("ImpactSMGHoldout_Magazine").Type);
-				}
-			}
-			else if (shootDelay < 70 && shootDelay > 55)
-				drawMag = true;
-			else if (shootDelay == 70)
-			{
-				for (int i = 0; i < 15; i++)
-				{
-					Dust.NewDustPerfect(Projectile.Center + new Vector2(8, 8 * Projectile.spriteDirection).RotatedBy(Projectile.rotation), ModContent.DustType<GlowFastDecelerate>(), Main.rand.NextVector2Circular(5f, 2.5f), 0, new Color(255, 50, 50), 0.35f);
-				}
-
-				Helper.PlayPitched("Impacts/Clink", 0.50f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.position);
-			}
-			else if (shootDelay >= 80)
-				Projectile.Kill();			
-		}*/
 
 		private void ExplodingAI()
 		{
@@ -702,12 +662,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (throwTimer < 20)
 			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease(throwTimer / 20f);
+				float progress = EaseFunction.EaseCircularInOut.Ease(throwTimer / 20f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(0f, -1.85f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else if (throwTimer < 30)
 			{
-				float progress = EaseBuilder.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
+				float progress = EaseFunction.EaseCircularInOut.Ease((throwTimer - 20f) / 10f);
 				Projectile.velocity = Vector2.One.RotatedBy(mousePos.ToRotation() + MathHelper.Lerp(-1.85f, 0.35f, progress) * Owner.direction - MathHelper.PiOver4);
 			}
 			else
@@ -742,31 +702,28 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						ImpactSMGPlayer mp = Owner.GetModPlayer<ImpactSMGPlayer>();
 						Helper.PlayPitched("Magic/FireHit", 0.75f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-						CameraSystem.Shake += 10 + mp.stacks;
-						//Holdout.reloadDelay = 240;
-						//Holdout.maxReloadDelay = 240;
+						CameraSystem.shake += 10 + mp.stacks;
 
-						for (int i = 0; i < 20 + (mp.stacks * 3); i++)
+						for (int i = 0; i < 20 + mp.stacks * 3; i++)
 						{
-							Dust dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDustTwo>());
+							var dust = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDustTwo>());
 							dust.velocity = Main.rand.NextVector2Circular(7 + mp.stacks, 7 + mp.stacks);
 							dust.scale = Main.rand.NextFloat(1.5f, 1.9f);
 							dust.alpha = Main.rand.Next(80) + 40;
 							dust.rotation = Main.rand.NextFloat(6.28f);
 
-							Dust dust2 = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDust>());
+							var dust2 = Dust.NewDustDirect(Projectile.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<ImpactSMGDust>());
 							dust2.velocity = Main.rand.NextVector2Circular(7 + mp.stacks, 7 + mp.stacks);
 							dust2.scale = Main.rand.NextFloat(1.5f, 1.9f);
 							dust2.alpha = 70 + Main.rand.Next(60);
 							dust2.rotation = Main.rand.NextFloat(6.28f);
 
 							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), Main.rand.NextVector2Circular(10f, 10f), 0, new Color(255, 50, 50), 0.35f);
-
 							Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Glow>(), Main.rand.NextVector2CircularEdge(5f, 5f), 0, new Color(255, 50, 50), 0.65f);
 						}
 
 						if (Main.myPlayer == Projectile.owner)
-							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), (int)(Projectile.damage * (2 + mp.stacks * 0.1f)), 3f, Projectile.owner, 65 + (Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 10));
+							Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ImpactSMGExplosion>(), (int)(Projectile.damage * (2 + mp.stacks * 0.1f)), 3f, Projectile.owner, 65 + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 10);
 
 						exploding = false;
 						exploded = true;
@@ -784,53 +741,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					Owner.heldProj = Projectile.whoAmI;
 
-					Vector2 playerCenter = Owner.Center;
-					Vector2 pos = Projectile.Center;
-
-					float betweenX = Owner.Center.X - pos.X;
-					float betweenY = Owner.Center.Y - pos.Y;
-
-					float distance = (float)Math.Sqrt(betweenX * betweenX + betweenY * betweenY);
-					float speed = 15f;
-					float adjust = 0.95f;
-
-					if (distance > 3000f)
-					{
-						Projectile.Kill();
-					}
-
-					distance = speed / distance;
-					betweenX *= distance;
-					betweenY *= distance;
-
-					if (Projectile.velocity.X < betweenX)
-					{
-						Projectile.velocity.X += adjust;
-						if (Projectile.velocity.X < 0f && betweenX > 0f)
-							Projectile.velocity.X += adjust;
-					}
-					else if (Projectile.velocity.X > betweenX)
-					{
-						Projectile.velocity.X -= adjust;
-						if (Projectile.velocity.X > 0f && betweenX < 0f)
-							Projectile.velocity.X -= adjust;
-					}
-
-					if (Projectile.velocity.Y < betweenY)
-					{
-						Projectile.velocity.Y += adjust;
-						if (Projectile.velocity.Y < 0f && betweenY > 0f)
-							Projectile.velocity.Y += adjust;
-					}
-					else if (Projectile.velocity.Y > betweenY)
-					{
-						Projectile.velocity.Y -= adjust;
-						if (Projectile.velocity.Y > 0f && betweenY < 0f)
-							Projectile.velocity.Y -= adjust;
-					}
-
-					if (Vector2.Distance(Projectile.Center, Owner.Center) < 20f)
-						Projectile.Kill();
+					ClampVelocity();
 				}
 
 				if (!exploding)
@@ -849,7 +760,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (exploded && explodingTimer > 0)
 					explodingTimer--;
-			}		
+			}
 		}
 	}
 
@@ -892,9 +803,11 @@ namespace StarlightRiver.Content.Items.Misc
 				ManageTrail();
 			}
 		}
+
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			Player Owner = Main.player[Projectile.owner];
+
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
 				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
 		}
@@ -906,7 +819,6 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(), 0, new Color(190, 40, 40), 0.25f);
-
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.35f) * Main.rand.NextFloat(), 0, new Color(255, 40, 40), 0.3f);
 			}
 
@@ -920,7 +832,6 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(), 0, new Color(190, 40, 40), 0.25f);
-
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<GlowFastDecelerate>(), -Projectile.velocity.RotatedByRandom(0.35f) * Main.rand.NextFloat(), 0, new Color(255, 40, 40), 0.3f);
 			}
 
@@ -940,6 +851,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < 10; i++)
 				{
 					cache.Add(Projectile.Center);
@@ -956,18 +868,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 3.5f, factor =>
-			{
-				return new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f);
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 3.5f, factor => new Color(255, 255, 255) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center;
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 6f, factor =>
-			{
-				return new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f);
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(160), factor => factor * 6f, factor => new Color(190, 40, 40) * factor.X * (Projectile.timeLeft / 80f));
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center;
@@ -977,9 +883,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.05f);
 			effect.Parameters["repeats"].SetValue(1f);
@@ -997,10 +903,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Trail trail;
 		private Trail trail2;
-		public override string Texture => AssetDirectory.Invisible;
-		private float Progress => 1 - Projectile.timeLeft / 25f;
 
+		private float Progress => 1 - Projectile.timeLeft / 25f;
 		private float Radius => Projectile.ai[0] * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetDefaults()
 		{
@@ -1071,15 +978,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 25 * (1 - Progress), factor =>
-			{
-				return new Color(180, 50, 50);
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 25 * (1 - Progress), factor => new Color(180, 50, 50));
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 20 * (1 - Progress), factor =>
-			{
-				return new Color(255, 50, 50);
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 40, new TriangularTip(1), factor => 20 * (1 - Progress), factor => new Color(255, 50, 50));
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = cache[39];
@@ -1092,9 +993,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.03f);

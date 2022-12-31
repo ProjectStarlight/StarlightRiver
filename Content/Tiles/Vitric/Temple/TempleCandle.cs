@@ -1,17 +1,4 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using StarlightRiver.Core.Loaders;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria.ObjectData;
-using Terraria;
+﻿using Terraria.ID;
 using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -30,6 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			Tile tile = Main.tile[i, j];
+
 			if (tile.TileFrameX == 0)
 			{
 				r = 1f;

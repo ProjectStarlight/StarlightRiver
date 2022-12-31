@@ -1,84 +1,78 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
+using StarlightRiver.Core.Systems.AuroraWaterSystem;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items
 {
 	class DebugStick : ModItem
-    {
-        public override string Texture => AssetDirectory.Assets+ "Items/DebugStick";
+	{
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Debug Stick");
-            Tooltip.SetDefault("Dont use this if you're not me.\nGrants a bunch of maximum barrier when you are swag\nYou have no stamina without good drip\nYou probably play cornhole");
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug Stick");
+			Tooltip.SetDefault("Developer item");
+		}
 
-        public override void SetDefaults()
-        {
-            Item.damage = 10;
-            Item.DamageType = DamageClass.Melee;
-            Item.width = 38;
-            Item.height = 40;
-            Item.useTime = 18;
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 40;
+			Item.useTime = 18;
 
-            Item.useAnimation = 18;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.knockBack = 5f;
-            Item.value = 1000;
-            Item.rare = ItemRarityID.LightRed;
-            Item.autoReuse = true;
-            Item.UseSound = SoundID.Item18;
-            Item.useTurn = true;
-            Item.accessory = true;
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.LightRed;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+			Item.accessory = true;
 
-            //Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
-        }
+			//Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
+		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-            player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
+			player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
 
-            Main.NewText(WorldGen.worldSurface);
-            Main.NewText(WorldGen.worldSurfaceLow);
-            Main.NewText(WorldGen.worldSurfaceHigh);
-            Main.NewText(player.Center.Y / 16);
+			Main.NewText(WorldGen.worldSurface);
+			Main.NewText(WorldGen.worldSurfaceLow);
+			Main.NewText(WorldGen.worldSurfaceHigh);
+			Main.NewText(player.Center.Y / 16);
 
-            Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
-        }
+			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
+		}
 
 		public override bool? UseItem(Player player)
-        {
-            var instance = ModContent.GetInstance<Archaeology.BuriedArtifacts.PerfectlyGenericArtifact>();
-            instance.Place((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
-            return true;
-            var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
-            dungeon.GenerateDungeon(new Point16(30, 30), 8);
-            return true;
+		{
+			Archaeology.BuriedArtifacts.PerfectlyGenericArtifact instance = ModContent.GetInstance<Archaeology.BuriedArtifacts.PerfectlyGenericArtifact>();
+			instance.Place((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+			return true;
+			var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
+			dungeon.GenerateDungeon(new Point16(30, 30), 8);
+			return true;
 
-            return true;
-            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
+			return true;
+			var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 
-            var tile = Framing.GetTileSafely(center.X, center.Y);
-            ref var tileData = ref tile.Get<AuroraWaterData>();
+			Tile tile = Framing.GetTileSafely(center.X, center.Y);
+			ref AuroraWaterData tileData = ref tile.Get<AuroraWaterData>();
 
-            if (tileData.HasAuroraWater)
-                Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY); ;
+			if (tileData.HasAuroraWater)
+				Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY);
+			;
 
-            return true;
+			return true;
 
-            /*
+			/*
             var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
             var radius = Main.rand.Next(2, 5);
 
@@ -176,99 +170,99 @@ namespace StarlightRiver.Content.Items
             Player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
 
             return true;*/
-        }
+		}
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-            return;
+			return;
 
 			var target = new Rectangle(50, 160, Main.screenWidth / 10, Main.screenHeight / 10);
-            var target2 = new Rectangle(50, 160 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
-            var target3 = new Rectangle(50, 160 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
+			var target2 = new Rectangle(50, 160 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
+			var target3 = new Rectangle(50, 160 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
 
-            var targetO = new Rectangle(48, 158, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
-            var targetO2 = new Rectangle(48, 158 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
-            var targetO3 = new Rectangle(48, 158 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
+			var targetO = new Rectangle(48, 158, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
+			var targetO2 = new Rectangle(48, 158 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
+			var targetO3 = new Rectangle(48, 158 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10 + 4, Main.screenHeight / 10 + 4);
 
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO, Color.Black);
-            spriteBatch.Draw(Main.screenTarget, target, Color.White);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO, Color.Black);
+			spriteBatch.Draw(Main.screenTarget, target, Color.White);
 
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO2, Color.Black);
-            spriteBatch.Draw(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, target2, Color.White);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO2, Color.Black);
+			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.screenLightingTarget, target2, Color.White);
 
-            spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
-            spriteBatch.Draw(StarlightRiver.LightingBufferInstance.TileLightingTexture, target3, Color.White);
-        }
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
+			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.tileLightingTarget, target3, Color.White);
+		}
 
-        public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
-        {
-            BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
-            GNPC.MaxBarrier = 100;
-            GNPC.Barrier = 100;
-            GNPC.DrawGlow = true;
-        }
-    }
+		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+		{
+			BarrierNPC GNPC = target.GetGlobalNPC<BarrierNPC>();
+			GNPC.maxBarrier = 100;
+			GNPC.barrier = 100;
+			GNPC.drawGlow = true;
+		}
+	}
 
-    class DebugModerEnabler : ModItem
+	class DebugModerEnabler : ModItem
 	{
-        public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Debug Mode");
-            Tooltip.SetDefault("Enables debug mode which does... stuff!\nHold Y to make bosses go at ludicrous speed.");
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Debug Mode");
+			Tooltip.SetDefault("Enables debug mode which does... stuff!\nHold Y to make bosses go at ludicrous speed.");
+		}
 
-        public override void SetDefaults()
-        {
-            Item.damage = 10;
-            Item.width = 38;
-            Item.height = 38;
-            Item.useTime = 15;
-            Item.useAnimation = 15;
-            Item.useStyle = ItemUseStyleID.Swing;
-        }
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.width = 38;
+			Item.height = 38;
+			Item.useTime = 15;
+			Item.useAnimation = 15;
+			Item.useStyle = ItemUseStyleID.Swing;
+		}
 
-        public override bool? UseItem(Player Player)
-        {
-            StarlightRiver.DebugMode = !StarlightRiver.DebugMode;
-            return true;
-        }
-    }
+		public override bool? UseItem(Player Player)
+		{
+			StarlightRiver.debugMode = !StarlightRiver.debugMode;
+			return true;
+		}
+	}
 
-    class Eraser : ModItem
+	class Eraser : ModItem
 	{
-        public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
+		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Eraser");
-            Tooltip.SetDefault("Death");
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Eraser");
+			Tooltip.SetDefault("Death");
+		}
 
-        public override void SetDefaults()
-        {
-            Item.damage = 10;
-            Item.DamageType = DamageClass.Melee;
-            Item.width = 38;
-            Item.height = 38;
-            Item.useTime = 2;
-            Item.useAnimation = 2;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.knockBack = 5f;
-            Item.value = 1000;
-            Item.rare = ItemRarityID.LightRed;
-            Item.autoReuse = true;
-            Item.UseSound = SoundID.Item18;
-            Item.useTurn = true;
-            Item.accessory = true;
-        }
+		public override void SetDefaults()
+		{
+			Item.damage = 10;
+			Item.DamageType = DamageClass.Melee;
+			Item.width = 38;
+			Item.height = 38;
+			Item.useTime = 2;
+			Item.useAnimation = 2;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.knockBack = 5f;
+			Item.value = 1000;
+			Item.rare = ItemRarityID.LightRed;
+			Item.autoReuse = true;
+			Item.UseSound = SoundID.Item18;
+			Item.useTurn = true;
+			Item.accessory = true;
+		}
 
-        public override bool? UseItem(Player Player)
-        {
-            foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
-                NPC.StrikeNPC(99999, 0, 0, false, false, false);
-            return true;
-        }
-    }
+		public override bool? UseItem(Player Player)
+		{
+			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
+				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+			return true;
+		}
+	}
 }
