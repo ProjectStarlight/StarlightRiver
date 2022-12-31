@@ -1,120 +1,155 @@
-﻿namespace StarlightRiver.Content.Dusts.ArtifactSparkles
+namespace StarlightRiver.Content.Dusts.ArtifactSparkles
 {
-	abstract class ArtifactSparkle : ModDust
-	{
-		public override string Texture => AssetDirectory.ArtifactSparkles + Name;
+    abstract class ArtifactSparkle : ModDust
+    {
+        public override string Texture => AssetDirectory.ArtifactSparkles + Name;
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return Color.White;
-		}
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return Color.White;
+        }
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(18 * Main.rand.Next(2), 0, 18, 18);
-		}
+        public override void OnSpawn(Dust dust)
+        {
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.frame = new Rectangle(18 * Main.rand.Next(2), 0, 18, 18);
+        }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.customData is null)
-			{
-				dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
-				dust.customData = 1;
-			}
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
+                dust.customData = 1;
+            }
 
-			if (dust.frame.X == 18)
-			{
-				if (dust.alpha % 50 == 45)
-					dust.frame.Y += 18;
+            if (dust.frame.X == 18)
+            {
+                if (dust.alpha % 50 == 45)
+                    dust.frame.Y += 18;
+                dust.alpha += 5;
+            }
+            else
+            {
+                if (dust.alpha % 64 == 56)
+                    dust.frame.Y += 18;
+                dust.alpha += 8;
+            }
 
-				dust.alpha += 5;
-			}
-			else
-			{
-				if (dust.alpha % 64 == 56)
-					dust.frame.Y += 18;
+            if (dust.alpha > 255)
+                dust.active = false;
 
-				dust.alpha += 8;
-			}
+            dust.position += dust.velocity;
+            return false;
+        }
+    }
 
-			if (dust.alpha > 255)
-				dust.active = false;
+    class GeodeArtifactSparkle : ModDust //These have a bit more frames so they need to be their own class
+    {
+        public override string Texture => AssetDirectory.ArtifactSparkles + Name;
 
-			dust.position += dust.velocity;
-			return false;
-		}
-	}
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            return Color.White;
+        }
 
-	class GeodeArtifactSparkle : ModDust //These have a bit more frames so they need to be their own class
-	{
-		public override string Texture => AssetDirectory.ArtifactSparkles + Name;
+        public override void OnSpawn(Dust dust)
+        {
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.frame = new Rectangle(24 * Main.rand.Next(4), 0, 24, 24);
+        }
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			return Color.White;
-		}
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
+                dust.customData = 1;
+            }
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.frame = new Rectangle(24 * Main.rand.Next(4), 0, 24, 24);
-		}
+            switch (dust.frame.X)
+            {
+                case 0:
+                    if (dust.alpha % 50 == 45)
+                        dust.frame.Y += 24;
+                    dust.alpha += 5;
+                    break;
+                case 24:
+                    if (dust.alpha % 64 == 56)
+                        dust.frame.Y += 24;
+                    dust.alpha += 8;
+                    break;
+                case 48:
+                    if (dust.alpha % 42 == 36)
+                        dust.frame.Y += 24;
+                    dust.alpha += 6;
+                    break;
+                case 72:
+                    if (dust.alpha % 50 == 45)
+                        dust.frame.Y += 24;
+                    dust.alpha += 5;
+                    break;
+            }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.customData is null)
-			{
-				dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
-				dust.customData = 1;
-			}
+            if (dust.alpha > 255)
+                dust.active = false;
 
-			switch (dust.frame.X)
-			{
-				case 0:
-					if (dust.alpha % 50 == 45)
-						dust.frame.Y += 24;
+            dust.position += dust.velocity;
+            return false;
+        }
+    }
 
-					dust.alpha += 5;
-					break;
+    class GeodeArtifactSparkleFast : GeodeArtifactSparkle
+    {
+        public override string Texture => AssetDirectory.ArtifactSparkles + "GeodeArtifactSparkle";
 
-				case 24:
-					if (dust.alpha % 64 == 56)
-						dust.frame.Y += 24;
+        public override bool Update(Dust dust)
+        {
+            if (dust.customData is null)
+            {
+                dust.position -= new Vector2(dust.frame.Width / 2, dust.frame.Height / 2) * dust.scale;
+                dust.customData = 1;
+            }
 
-					dust.alpha += 8;
-					break;
+            switch (dust.frame.X)
+            {
+                case 0:
+                    if (dust.alpha % 50 == 40)
+                        dust.frame.Y += 24;
+                    dust.alpha += 10;
+                    break;
+                case 24:
+                    if (dust.alpha % 64 == 58)
+                        dust.frame.Y += 24;
+                    dust.alpha += 16;
+                    break;
+                case 48:
+                    if (dust.alpha % 42 == 30)
+                        dust.frame.Y += 24;
+                    dust.alpha += 12;
+                    break;
+                case 72:
+                    if (dust.alpha % 50 == 40)
+                        dust.frame.Y += 24;
+                    dust.alpha += 10;
+                    break;
+            }
 
-				case 48:
-					if (dust.alpha % 42 == 36)
-						dust.frame.Y += 24;
+            if (dust.alpha > 255)
+                dust.active = false;
 
-					dust.alpha += 6;
-					break;
+            dust.position += dust.velocity;
+            return false;
+        }
+    }
 
-				case 72:
-					if (dust.alpha % 50 == 45)
-						dust.frame.Y += 24;
+    class GoldArtifactSparkle : ArtifactSparkle { }
 
-					dust.alpha += 5;
-					break;
-			}
+    class RedArtifactSparkle : ArtifactSparkle { }
 
-			if (dust.alpha > 255)
-				dust.active = false;
-
-			dust.position += dust.velocity;
-			return false;
-		}
-	}
-
-	class GoldArtifactSparkle : ArtifactSparkle { }
-
-	class RedArtifactSparkle : ArtifactSparkle { }
-
-	class LimeArtifactSparkle : ArtifactSparkle { }
+    class LimeArtifactSparkle : ArtifactSparkle { }
 
 	class WhiteArtifactSparkle : ArtifactSparkle { }
 
