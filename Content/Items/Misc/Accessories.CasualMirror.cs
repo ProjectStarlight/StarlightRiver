@@ -1,10 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -44,12 +38,12 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.lifeRegen *= -1;
 			}
 		}
+
 		public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
 		{
 			if (equipped && hitDirection == 0 && damageSource.SourceOtherIndex == 8)
-			{
 				damageSource = PlayerDeathReason.ByCustomReason(Player.name + " didn't read the tooltip");
-			}
+
 			return true;
 		}
 	}

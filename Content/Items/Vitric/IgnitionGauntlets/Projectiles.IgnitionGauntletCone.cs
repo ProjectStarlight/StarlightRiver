@@ -1,28 +1,12 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletCone : ModProjectile
 	{
+		public Vector2 directionVector = Vector2.Zero;
 
 		public override string Texture => AssetDirectory.Assets + "Invisible";
-
-		public Vector2 directionVector = Vector2.Zero;
-		private Player owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -51,9 +35,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			for (float i = -0.7f; i < 0.7f; i += 0.05f)
 			{
-				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + ((Projectile.rotation + i).ToRotationVector2() * 220 * Projectile.ai[0])))
+				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + (Projectile.rotation + i).ToRotationVector2() * 220 * Projectile.ai[0]))
 					return true;
 			}
+
 			return false;
 		}
 
@@ -61,6 +46,5 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			target.AddBuff(BuffID.OnFire, 180);
 		}
-
 	}
 }

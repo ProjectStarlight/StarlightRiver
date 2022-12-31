@@ -1,18 +1,11 @@
-﻿//TODO:
-//Obtainment
-
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using StarlightRiver.NPCs;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Snow
 {
 	public class MeadHorn : SmartAccessory
-    {
-        public override string Texture => AssetDirectory.SnowItem + Name;
+	{
+		public override string Texture => AssetDirectory.SnowItem + Name;
 
 		public MeadHorn() : base("Mead Horn", "Potions last 50% longer") { }
 
@@ -33,13 +26,14 @@ namespace StarlightRiver.Content.Items.Snow
 				orig(self, type, timeToAdd, quiet, foodHack);
 				return;
 			}
+
 			orig(self, type, (int)(timeToAdd * 1.5f), quiet, foodHack);
 		}
 
 		public override void SafeSetDefaults()
-        {
-            Item.value = Item.sellPrice(0, 1, 0, 0);
-            Item.rare = ItemRarityID.Green;
-        }
-    }
+		{
+			Item.value = Item.sellPrice(0, 1, 0, 0);
+			Item.rare = ItemRarityID.Green;
+		}
+	}
 }
