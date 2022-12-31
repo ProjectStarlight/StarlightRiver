@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Archaeology;
 using StarlightRiver.Content.Archaeology.BuriedArtifacts;
-using System;
 using System.Linq;
 using Terraria.ID;
 using Terraria.IO;
@@ -20,6 +19,8 @@ namespace StarlightRiver.Core
 			PlaceLavaArtifacts();
 			PlaceUndergroundArtifacts();
 			PlaceJungleArtifacts();
+			//PlaceSnowArtifacts();
+			PlaceHellArtifacts();
 
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
@@ -83,6 +84,21 @@ namespace StarlightRiver.Core
 			int amount = Main.maxTilesX / 800;
 
 			PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
+		}
+
+		private void PlaceHellArtifacts()
+		{
+			int[] tiles = new int[]
+			{
+				  TileID.Ash,
+				  TileID.Hellstone
+			};
+
+			var range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 500);
+
+			int amount = Main.maxTilesX / 400;
+
+			PlaceArtifactPool<HellArtifact>(range, tiles, amount, 999);
 		}
 
 		private void PlaceUndergroundArtifacts()
