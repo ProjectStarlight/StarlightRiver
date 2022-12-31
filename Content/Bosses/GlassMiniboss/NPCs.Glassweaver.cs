@@ -124,13 +124,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			Dust.NewDustPerfect(arenaPos, ModContent.DustType<Dusts.BlueStamina>());
 
+			Dust.NewDustPerfect(PickSpot(), ModContent.DustType<Dusts.Stamina>());
+			Dust.NewDustPerfect(PickCloseSpot(), ModContent.DustType<Dusts.Void>());
+			Dust.NewDustPerfect(PickSpotSelf(), ModContent.DustType<Dusts.LavaSpark>());
+
 			switch (Phase)
 			{
 				case (int)Phases.SpawnEffects:
 
-					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-48, 80 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
 					ResetAttack();
 
 					break;
@@ -192,8 +196,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						AttackPhase++;
 
-						if (AttackPhase > 8)
-							AttackPhase = 0;
+						if (AttackPhase > 7)
+							AttackPhase = 7;
 
 						attackVariant = Main.rand.NextBool(2);
 						NPC.netUpdate = true;

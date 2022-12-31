@@ -116,6 +116,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
+		public ref float Bounces => ref Projectile.ai[1];
 
 		public override void SetStaticDefaults()
 		{
@@ -190,13 +191,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Timer > 0)
 			{
-				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0 || Math.Abs(Projectile.velocity.Y - oldVelocity.Y) < 3)
+				if (Bounces > 2)
 					return true;
 
 				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.4f, 1f, Projectile.Center);
-					Projectile.velocity.Y = -oldVelocity.Y * 0.77f;
+					Projectile.velocity.Y = -oldVelocity.Y * 0.95f;
+					Bounces++;
 				}
 			}
 

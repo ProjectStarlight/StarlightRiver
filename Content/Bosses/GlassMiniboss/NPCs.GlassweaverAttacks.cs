@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private const int JAVELIN_SPAWN_TIME = 30;
 		private const int HAMMER_SPAWN_TIME = 90;
 		private const int BUBBLE_RECOIL_TIME = 300;
-		private const int SIDE_OFFSET_X = 520;
+		private const int SIDE_OFFSET_X = 480;
 		private const int SIDE_OFFSET_Y = 30;
 		private const int SHORT_OFFSET_X = 130;
 		private const int SHORT_OFFSET_Y = -10;
@@ -178,18 +178,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void MagmaSpear()
 		{
 			attackType = (int)AttackTypes.MagmaSpear;
-			int lobCount = 5;
+			int lobCount = 3;
 
 			if (Main.masterMode)
 				lobCount = 15;
 			else if (Main.expertMode)
-				lobCount = 8;
+				lobCount = 4;
 
 			if (AttackTimer == 1)
 			{
 				NPC.TargetClosest();
 				moveStart = NPC.Center;
-				moveTarget = Vector2.Lerp(PickSpot(), PickCloseSpot(), 0.77f) - new Vector2(0, 70);
+				moveTarget = PickSpot() - new Vector2(0, 70);
 				NPC.velocity.Y -= 9f;
 
 				spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Main.myPlayer, 0, NPC.whoAmI);
@@ -204,10 +204,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.velocity.Y *= 0.94f;
 				NPC.noGravity = true;
 			}
-			else if (AttackTimer < 85 && !(NPC.collideY || NPC.velocity.Y < 0))
+			else if (AttackTimer < 85 && !NPC.collideY)
 			{
 				moveTarget = arenaPos;
-				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * 20, 0.4f).X;
+				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * 5, 0.4f).X;
 				NPC.velocity.Y += 1.5f;
 			}
 			else
@@ -217,7 +217,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer > 65 && AttackTimer < 90 && NPC.collideY && NPC.velocity.Y > 0)
 			{
-				AttackTimer = 80;
+				AttackTimer = 90;
 				Main.projectile[spearIndex].ai[0] = 80;
 
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
@@ -226,7 +226,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				for (int i = 0; i < lobCount; i++)
 				{
-					float lobVel = MathHelper.ToRadians(MathHelper.Lerp(17, 76, (float)i / lobCount)) * NPC.direction;
+					float lobVel = MathHelper.ToRadians(MathHelper.Lerp(6, 90, (float)i / lobCount)) * NPC.direction;
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Main.myPlayer, -44 - i, lobVel);
 				}
 
