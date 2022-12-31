@@ -24,14 +24,14 @@ namespace StarlightRiver.Core
 
     public class DistortionPoint
     {
-        public Vector2 Position;
+        public Vector2 position;
 
-        public bool Active = true;
+        public bool active = true;
 
-        public float Intensity;
-        public float Progress;
+        public float intensity;
+        public float progress;
 
-        public int TicksPassed = 0;
+        public int tickspassed = 0;
 
         public DistortionIntensityFunction UpdateIntensity;
         public DistortionProgressFunction UpdateProgress;
@@ -39,34 +39,25 @@ namespace StarlightRiver.Core
 
         public DistortionPoint(Vector2 position, float intensity, float progress, DistortionIntensityFunction updateIntensity, DistortionProgressFunction updateProgress, DistortionActiveFunction updateActive)
         {
-            Position = position;
-            Intensity = intensity;
-            Progress = progress;
+            this.position = position;
+            this.intensity = intensity;
+            this.progress = progress;
             UpdateIntensity = updateIntensity;
             UpdateProgress = updateProgress;
             UpdateActive = updateActive;
         }
     }
+
     public class DistortionPointHandler : ModSystem
     {
         public static List<DistortionPoint> DistortionPoints = new List<DistortionPoint>();
-
-        public override void Load()
-        {
-            if (Main.netMode != NetmodeID.Server)
-            {
-                Ref<Effect> screenRef = new Ref<Effect>(Mod.Assets.Request<Effect>("Effects/DistortionPulse").Value);
-                Filters.Scene["DistortionPulse"] = new Filter(new ScreenShaderData(screenRef, "MainPS"), EffectPriority.VeryHigh);
-                Filters.Scene["DistortionPulse"].Load();
-            }
-        }
 
         public override void PostUpdateProjectiles()
         {
             if (Main.gameMenu)
                 return;
 
-            int projectilesFound = 0;
+            int pointsFound = 0;
             int numberOfShockwaves = 0;
             float[] progresses = new float[10];
             float[] intensity = new float[10];
@@ -74,26 +65,27 @@ namespace StarlightRiver.Core
 
             foreach (DistortionPoint point in DistortionPoints.ToArray())
             {
-                if (!point.Active)
+                if (!point.active)
                     DistortionPoints.Remove(point);
             }
+
             foreach (DistortionPoint point in DistortionPoints)
             {
-                point.Intensity = point.UpdateIntensity.Invoke(point.Intensity, ++point.TicksPassed);
-                point.Progress = point.UpdateProgress.Invoke(point.Progress, point.TicksPassed);
-                point.Active = point.UpdateActive.Invoke(point.Progress, point.Intensity, point.TicksPassed);
+                point.intensity = point.UpdateIntensity.Invoke(point.intensity, ++point.tickspassed);
+                point.progress = point.UpdateProgress.Invoke(point.progress, point.tickspassed);
+                point.active = point.UpdateActive.Invoke(point.progress, point.intensity, point.tickspassed);
 
-                intensity[projectilesFound] = point.Intensity;
-                positions[projectilesFound] = point.Position;
-                progresses[projectilesFound] = point.Progress;
+                intensity[pointsFound] = point.intensity;
+                positions[pointsFound] = point.position;
+                progresses[pointsFound] = point.progress;
                 numberOfShockwaves++;
-                projectilesFound++;
+                pointsFound++;
 
-                if (projectilesFound > 9)
+                if (pointsFound > 9)
                     break;
             }
 
-            if (projectilesFound == 0)
+            if (pointsFound == 0)
             {
                 if (Filters.Scene["DistortionPulse"].IsActive())
                     Filters.Scene["DistortionPulse"].Deactivate();
@@ -101,12 +93,12 @@ namespace StarlightRiver.Core
                 return;
             }
 
-            while (projectilesFound < 9)
+            while (pointsFound < 9)
             {
-                projectilesFound++;
-                progresses[projectilesFound] = 0;
-                positions[projectilesFound] = Vector2.Zero;
-                intensity[projectilesFound] = 0;
+                pointsFound++;
+                progresses[pointsFound] = 0;
+                positions[pointsFound] = Vector2.Zero;
+                intensity[pointsFound] = 0;
             }
 
             Filters.Scene["DistortionPulse"].GetShader().Shader.Parameters["progresses"].SetValue(progresses);
@@ -124,9 +116,7 @@ namespace StarlightRiver.Core
         {
             Vector2 offScreen = new Vector2(Main.offScreenRange);
             if (Main.drawToScreen)
-            {
                 offScreen = Vector2.Zero;
-            }
 
             if (DistortionPoints.Count < 10)
                 DistortionPoints.Add(new DistortionPoint(position - offScreen, intensity, progress, updateIntensity, updateProgress, updateActive));

@@ -1,18 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.CustomHooks;
-using Terraria.Graphics.Effects;
-using Terraria;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Dungeon
 {
@@ -37,8 +24,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void UpdateAccessory(Player Player, bool hideVisual)
 		{
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 10;
-			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction += 0.05f;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 10;
+			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction += 0.05f;
 		}
 	}
 }

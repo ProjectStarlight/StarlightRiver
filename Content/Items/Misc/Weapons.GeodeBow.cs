@@ -1,16 +1,12 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BuriedArtifacts;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BuriedArtifacts;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -295,7 +291,7 @@ namespace StarlightRiver.Content.Items.Misc
 					break;
 			}
 
-			Core.Systems.CameraSystem.Shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
+			CameraSystem.shake += (int)Math.Min(11, 5 * (float)Math.Sqrt(counter));
 
 			for (int k = 0; k < 12; k++)
 			{
