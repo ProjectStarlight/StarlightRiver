@@ -102,6 +102,8 @@ namespace StarlightRiver.Content.Items.Vitric
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, Projectile.Center);
 
 		}
+	}
+
 	class MagmaBottleBurn : ModProjectile, IDrawAdditive
 	{
 		public override string Texture => AssetDirectory.Invisible;
