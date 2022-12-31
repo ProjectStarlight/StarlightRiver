@@ -2,6 +2,8 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -34,13 +36,12 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 		}
 
-		public override void SafeUpdateEquip(Player player)
-		{
-			if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true))
-			{
-				if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
-					Fire(player);
-
+        public override void SafeUpdateEquip(Player player)
+        {
+            if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true) && !player.ActiveAbility<Dash>())
+            {
+                if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
+                    Fire(player);
 				if (player.wingTime > 0)
 				{
 					shotTimer++;
