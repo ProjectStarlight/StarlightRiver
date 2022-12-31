@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						case 7:
 							if (attackVariant)
-								MagmaSpear();
+								MagmaSpearAlt();
 							else
 								MagmaSpearAlt();
 							break;

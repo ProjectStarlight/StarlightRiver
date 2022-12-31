@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		Vector2 origin;
 
+		public bool boundToParent = true;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref Projectile.ai[0];
@@ -46,8 +48,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
 
-			float stabLerp = (float)Math.Pow(Utils.GetLerpValue(66, 82, Timer, true), 2f);
-			Projectile.rotation = MathHelper.ToRadians(MathHelper.Lerp(-60, 10, stabLerp)) * Parent.direction - MathHelper.Pi;
+			if (boundToParent)
+			{
+				float stabLerp = (float)Math.Pow(Utils.GetLerpValue(66, 82, Timer, true), 2f);
+				Projectile.rotation = MathHelper.ToRadians(MathHelper.Lerp(-60, -10, stabLerp)) * Parent.direction - MathHelper.Pi;
+			}
+			else
+			{
+				if (Projectile.velocity.Length() > 0)
+					Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			}
 
 			Vector2 handPos;
 
@@ -58,9 +68,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			handPos.X *= Parent.direction;
 
-			origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
-			Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
-			Projectile.velocity = Parent.velocity;
+			if (boundToParent)
+			{
+				origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
+				Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
+				Projectile.velocity = Parent.velocity;
+			}
 
 			if (Timer > 170)
 				Projectile.Kill();

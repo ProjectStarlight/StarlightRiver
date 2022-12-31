@@ -247,8 +247,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 1)
 			{
 				NPC.TargetClosest();
+				NPC.FaceTarget();
+
 				moveStart = NPC.Center;
-				moveTarget = PickSpot() - new Vector2(0, 70);
 				moveTarget.X = Target.Center.X;
 
 				if (moveTarget.X - arenaPos.X < -SIDE_OFFSET_X)
@@ -265,32 +266,44 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer <= 65)
 			{
-				NPC.FaceTarget();
 				float jumpProgress = Utils.GetLerpValue(5, 65, AttackTimer, true);
-				NPC.position.X = MathHelper.Lerp(MathHelper.SmoothStep(moveStart.X, moveTarget.X, MathHelper.Min(jumpProgress * 1.1f, 1f)), moveTarget.X, jumpProgress) - NPC.width / 2f;
+				NPC.position.X = MathHelper.Lerp(MathHelper.SmoothStep(moveStart.X, moveTarget.X, MathHelper.Min(jumpProgress * 1.1f, 1f)), moveTarget.X + 200 * -NPC.direction, jumpProgress) - NPC.width / 2f;
 				NPC.velocity.Y *= 0.94f;
 				NPC.noGravity = true;
 			}
-			else if (AttackTimer < 85 && !NPC.collideY)
+
+			if (AttackTimer == 65)
 			{
-				moveTarget = arenaPos;
-				NPC.velocity.X = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(moveTarget) * 5, 0.4f).X;
-				NPC.velocity.Y += 1.5f;
-			}
-			else
-			{
-				NPC.velocity.X *= 0.5f;
+				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
+				spear.boundToParent = false;
+				spear.Projectile.velocity = (moveTarget + Vector2.UnitY * 32 - spear.Projectile.Center) * 0.05f;
+				spear.Projectile.velocity.X *= 3.5f;
+
+				NPC.velocity -= spear.Projectile.velocity * 0.35f;
 			}
 
-			if (AttackTimer > 65 && AttackTimer < 90 && NPC.collideY && NPC.velocity.Y > 0)
+			if (AttackTimer > 65 && AttackTimer < 85)
 			{
-				AttackTimer = 90;
-				Main.projectile[spearIndex].ai[0] = 80;
+				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
+				spear.Projectile.velocity.X *= 0.95f;
+			}
+
+			if (AttackTimer > 65 && AttackTimer < 160)
+			{
+				NPC.velocity *= 0.94f;
+			}
+
+			if (AttackTimer == 85)
+			{
+				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
+				spear.Projectile.velocity *= 0;
 
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
-
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + Vector2.UnitY * 32, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Main.myPlayer);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), Main.projectile[spearIndex].Center, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Main.myPlayer);
 			}
+
+			if (AttackTimer == 160)
+				NPC.noGravity = false;
 
 			if (AttackTimer > 220)
 				ResetAttack();
