@@ -188,9 +188,11 @@ namespace StarlightRiver.Content.Tiles.Desert
 				if (!isLocked)
 				{
 					int chest = Chest.FindChest(left, top);
+
 					if (chest >= 0)
 					{
 						Main.stackSplit = 600;
+
 						if (chest == player.chest)
 						{
 							player.chest = -1;
@@ -238,6 +240,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 			}
 		}
 	}
+
 	internal class AnkhChestDummy : Dummy
 	{
 		public override string Texture => AssetDirectory.DesertTile + "AnkhChestGlow";
@@ -248,7 +251,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 		{
 			if (AbilityHelper.CheckDash(Player, Projectile.Hitbox))
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 				Player.GetHandler().ActiveAbility?.Deactivate();
 				Player.velocity = Vector2.Normalize(Player.velocity) * -10f;
 
