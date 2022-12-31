@@ -11,8 +11,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Casual Mirror");
-			Tooltip.SetDefault("Regenerate life when you would take damage-over-time.\nCursed : take damage-over-time when you would regenerate life.\n This includes natural regeneration");
+			DisplayName.SetDefault("Causal Mirror");
+			Tooltip.SetDefault("Regenerate life when you would take damage-over-time.\nCursed : take damage-over-time when you would regenerate life.\nThis includes natural regeneration");
 		}
 
 		public override void SafeUpdateEquip(Player Player)

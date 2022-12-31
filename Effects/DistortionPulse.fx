@@ -15,7 +15,7 @@ float4 uShaderSpecificData;
 float progresses[10];
 float2 positions[10];
 float intensity[10];
-float numberOfBells;
+float numberOfPoints;
 
 
 float2 uImageSize1;
@@ -38,7 +38,7 @@ float4 GetSaturationAndBrightness(float3 color)
     return float4(saturation, brightness, brightestComponent, darkestComponent);
 }
 
-float4 BellShader(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
+float4 DistortionShader(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
 {
     float2 position = uScreenResolution * coords + uScreenPosition;
     float4 textureColor = tex2D(uImage0, coords);
@@ -71,7 +71,7 @@ float4 BellShader(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
             color = lerp(uColor, float3(1.0, 1.0, 1.0), 2.0 * brightness - 1.0);
         }
 
-        if (i < numberOfBells)
+        if (i < numberOfPoints)
         {
             textureColor.rgb = lerp(textureColor.rgb, color * textureColor.a, (max(radius - distanceToPixel, 0) / (radius * 0.2f)) * uOpacity);
             textureColor.b += blueDiff;
@@ -83,8 +83,8 @@ float4 BellShader(float4 unused : COLOR0, float2 coords : TEXCOORD0) : COLOR0
 
 technique Technique1
 {
-    pass AuroraBellPulsePass
+    pass DistortionPulsePass
     {
-        PixelShader = compile ps_3_0 BellShader();
+        PixelShader = compile ps_3_0 DistortionShader();
     }
 }
