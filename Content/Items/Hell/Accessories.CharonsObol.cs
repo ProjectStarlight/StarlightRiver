@@ -1,26 +1,19 @@
 ﻿//TODO:
 //Make it work with lucky coin
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
-using StarlightRiver.NPCs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
-using System;
-using System.Media;
-using System.Diagnostics.Contracts;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Hell
 {
 	public class CharonsObol : CursedAccessory
-    {
-        public override string Texture => AssetDirectory.HellItem + Name;
+	{
+		public override string Texture => AssetDirectory.HellItem + Name;
 
 		public CharonsObol() : base(ModContent.Request<Texture2D>(AssetDirectory.HellItem + "CharonsObol").Value) { }
 
@@ -41,10 +34,10 @@ namespace StarlightRiver.Content.Items.Hell
 		}
 
 		public override void SafeSetDefaults()
-        {
-            Item.value = Item.sellPrice(0, 3, 0, 0);
-            Item.rare = ItemRarityID.Orange;
-        }
+		{
+			Item.value = Item.sellPrice(0, 3, 0, 0);
+			Item.rare = ItemRarityID.Orange;
+		}
 
 		private void SpawnObols(On.Terraria.NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
 		{
@@ -57,39 +50,42 @@ namespace StarlightRiver.Content.Items.Hell
 			if (self.value < 100)
 			{
 				CreateCoin(ModContent.ProjectileType<CopperObol>(), 100, closestPlayer, self);
+
 				if (self.value > 50)
 					CreateCoin(ModContent.ProjectileType<CopperObol>(), 100, closestPlayer, self);
 			}
 			else if (self.value < 1000)
 			{
 				CreateCoin(ModContent.ProjectileType<SilverObol>(), 150, closestPlayer, self);
+
 				if (self.value > 500)
 					CreateCoin(ModContent.ProjectileType<SilverObol>(), 150, closestPlayer, self);
 			}
 			else if (self.value < 10000)
 			{
 				CreateCoin(ModContent.ProjectileType<GoldObol>(), 200, closestPlayer, self);
+
 				if (self.value > 5000)
 					CreateCoin(ModContent.ProjectileType<GoldObol>(), 200, closestPlayer, self);
 			}
 			else
 			{
 				CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 300, closestPlayer, self);
+
 				if (self.value > 50000)
 					CreateCoin(ModContent.ProjectileType<PlatinumObol>(), 300, closestPlayer, self);
 			}
 		}
 
-		private void CreateCoin(int type, int damage, Player closestPlayer, NPC self) => Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, type, damage, 3, closestPlayer.whoAmI);
+		private void CreateCoin(int type, int damage, Player closestPlayer, NPC self)
+		{
+			Projectile.NewProjectile(self.GetSource_Loot(), self.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(5, 7) * 0.5f, type, damage, 3, closestPlayer.whoAmI);
+		}
 	}
+
 	public abstract class ObolProj : ModProjectile
 	{
-
-		public override string Texture => AssetDirectory.HellItem + Name;
-
-		private Player Player => Main.player[Projectile.owner];
-
-		readonly int TRAILLENGTH = 600;
+		const int TRAILLENGTH = 600;
 
 		public List<Vector2> cache;
 		public Trail trail;
@@ -109,17 +105,21 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public float jerk = 0.05f;
 
+		private Entity target = default;
+
 		public Vector2 Center => Projectile.Center;
 
 		public Vector2 Top => (Projectile.rotation - 1.57f).ToRotationVector2() * 5;
 
-		private Entity target = default;
+		private readonly List<NPC> alreadyHit = new();
 
-		private List<NPC> alreadyHit = new List<NPC>();
+		public virtual Color TrailColor => Color.Gold;
 
-		public virtual Color trailColor => Color.Gold;
+		public virtual int DustType => 1;
 
-		public virtual int dustType => 1;
+		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.HellItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -154,6 +154,7 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter % 12 == 0)
 				Projectile.frame++;
 
@@ -172,7 +173,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (!Projectile.friendly && !disappeared)
 			{
 				if (Main.rand.NextBool(15))
-					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 10), dustType, Vector2.Zero);
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(10, 10), DustType, Vector2.Zero);
 
 				Projectile.velocity.Y += 0.0325f;
 
@@ -181,7 +182,8 @@ namespace StarlightRiver.Content.Items.Hell
 
 				Rectangle detectionHitbox = Projectile.Hitbox;
 				detectionHitbox.Inflate(14, 14);
-				var propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && (n.Hitbox.Intersects(Projectile.Hitbox) || (n.ModProjectile is not ObolProj && n.Hitbox.Intersects(detectionHitbox)))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+				Projectile propeller = Main.projectile.Where(n => n.active && n != Projectile && n.friendly && (n.Hitbox.Intersects(Projectile.Hitbox) || n.ModProjectile is not ObolProj && n.Hitbox.Intersects(detectionHitbox))).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
 				if (propeller != default)
 				{
 					if (propeller.ModProjectile is ObolProj modProj)
@@ -197,27 +199,31 @@ namespace StarlightRiver.Content.Items.Hell
 						cache = modProj.cache;
 					}
 					else
+					{
 						propeller.penetrate--;
+					}
 
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.CoinPickup with { Pitch = -0.15f}, Projectile.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.CoinPickup with { Pitch = -0.15f }, Projectile.Center);
 
-					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
-					(proj.ModProjectile as ObolImpact).color = trailColor;
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ObolImpact>(), 0, 0, Player.whoAmI);
+					(proj.ModProjectile as ObolImpact).color = TrailColor;
 					ManageCaches();
 
-					Projectile.timeLeft = 3000; 
+					Projectile.timeLeft = 3000;
 					Projectile.friendly = true;
 
 					PickTarget();
 					pauseTimer = 15;
 				}
 			}
-			else 
+			else
 			{
 				Projectile.extraUpdates = 50;
+
 				if (!disappeared)
 				{
 					ManageCaches();
+
 					if (target != default)
 					{
 						if (!target.active)
@@ -237,14 +243,16 @@ namespace StarlightRiver.Content.Items.Hell
 					if (trailWidth > 0.3f)
 					{
 						trailWidth *= 0.998f;
+
 						if (trailWidth < 3.5f)
-						{
 							trailWidth *= 0.998f;
-						}
 					}
 					else
+					{
 						trailWidth = 0;
+					}
 				}
+
 				ManageTrail();
 			}
 		}
@@ -252,9 +260,10 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void OnHitNPC(NPC hitTarget, int damage, float knockback, bool crit)
 		{
 			Projectile.penetrate++;
+
 			if (hitTarget == target)
 			{
-				Core.Systems.CameraSystem.Shake += 3;
+				CameraSystem.shake += 3;
 				Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 				ManageCaches();
 				Projectile.velocity = Vector2.Zero;
@@ -263,13 +272,16 @@ namespace StarlightRiver.Content.Items.Hell
 				Projectile.timeLeft = 3000;
 			}
 			else
+			{
 				alreadyHit.Add(hitTarget);
+			}
 		}
 
 		public override bool? CanHitNPC(NPC hitTarget)
 		{
 			if (alreadyHit.Contains(hitTarget))
 				return false;
+
 			return base.CanHitNPC(hitTarget);
 		}
 
@@ -278,6 +290,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (!disappeared && !embedded)
 			{
 				Projectile.velocity = Vector2.Zero;
+
 				if (Projectile.friendly)
 				{
 					ManageCaches();
@@ -291,13 +304,14 @@ namespace StarlightRiver.Content.Items.Hell
 					embedded = true;
 				}
 			}
+
 			return false;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-			Color bloomColor = trailColor;
+			Color bloomColor = TrailColor;
 			bloomColor.A = 0;
 
 			if (!bouncedOff && !embedded)
@@ -314,7 +328,8 @@ namespace StarlightRiver.Content.Items.Hell
 			Color coinColor = bouncedOff ? lightColor : Color.White;
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
-			Rectangle frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+			var frameBox = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frameBox, coinColor * ((255 - Projectile.alpha) / 255f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 
 			if (flashTimer <= 0)
@@ -322,12 +337,13 @@ namespace StarlightRiver.Content.Items.Hell
 
 			Texture2D whiteTex = ModContent.Request<Texture2D>(AssetDirectory.HellItem + "ObolFlash").Value;
 			Main.spriteBatch.Draw(whiteTex, Projectile.Center - Main.screenPosition, frameBox, Color.White * (flashTimer / 15f), Projectile.rotation, frameBox.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 
 		private void PickTarget()
 		{
-			var closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+			Projectile closestCoin = Main.projectile.Where(n => n.active && n != Projectile && !n.friendly && n.ModProjectile is ObolProj modProj2 && !modProj2.disappeared && !modProj2.bouncedOff && !modProj2.embedded && n.Distance(Projectile.Center) < 1000 && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
 
 			if (closestCoin != default)
 			{
@@ -336,14 +352,17 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 			else
 			{
-				var closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
+				NPC closestNPC = Main.npc.Where(n => n.active && n.CanBeChasedBy() && !n.friendly && Helper.ClearPath(n.Center, Projectile.Center)).OrderBy(n => n.lifeMax).LastOrDefault();
+
 				if (closestNPC != default)
 				{
 					target = closestNPC;
 					Projectile.velocity = Projectile.DirectionTo(closestNPC.Center) * 7;
 				}
 				else
+				{
 					Projectile.velocity = Main.rand.NextVector2CircularEdge(2f, 2f);
+				}
 			}
 		}
 
@@ -352,6 +371,7 @@ namespace StarlightRiver.Content.Items.Hell
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < TRAILLENGTH; i++)
 					cache.Add(Center);
 			}
@@ -365,15 +385,9 @@ namespace StarlightRiver.Content.Items.Hell
 		private void ManageTrail()
 		{
 
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor =>
-			{
-				return trailColor;
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 3f, factor => TrailColor);
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor =>
-			{
-				return Color.White * 0.75f;
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new NoTip(), factor => trailWidth * 1.5f, factor => Color.White * 0.75f);
 
 			trail.Positions = cache.ToArray();
 			trail2.Positions = cache.ToArray();
@@ -389,9 +403,9 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
@@ -404,10 +418,9 @@ namespace StarlightRiver.Content.Items.Hell
 
 	internal class ObolImpact : ModProjectile
 	{
-		public override string Texture => AssetDirectory.Assets + "StarTexture";
-
 		public Color color;
-		Player owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.Assets + "StarTexture";
 
 		public override void SetStaticDefaults()
 		{
@@ -439,7 +452,7 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-			Color color2 = color * (1 - (Projectile.alpha / 255f));
+			Color color2 = color * (1 - Projectile.alpha / 255f);
 			color2.A = 0;
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color2, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.25f * new Vector2(1.5f, 1f), SpriteEffects.None, 0f);
@@ -447,32 +460,31 @@ namespace StarlightRiver.Content.Items.Hell
 		}
 	}
 
-	public class CopperObol : ObolProj 
-	{ 
-		public override Color trailColor => new Color(255, 139, 65);
+	public class CopperObol : ObolProj
+	{
+		public override Color TrailColor => new(255, 139, 65);
 
-		public override int dustType => DustID.CopperCoin;
-
+		public override int DustType => DustID.CopperCoin;
 	}
 
-	public class SilverObol : ObolProj 
-	{ 
-		public override Color trailColor => new Color(210, 221, 222);
+	public class SilverObol : ObolProj
+	{
+		public override Color TrailColor => new(210, 221, 222);
 
-		public override int dustType => DustID.SilverCoin;
+		public override int DustType => DustID.SilverCoin;
 	}
 
 	public class GoldObol : ObolProj
 	{
-		public override Color trailColor => new Color(254, 255, 113);
+		public override Color TrailColor => new(254, 255, 113);
 
-		public override int dustType => DustID.GoldCoin;
+		public override int DustType => DustID.GoldCoin;
 	}
 
 	public class PlatinumObol : ObolProj
 	{
-		public override Color trailColor => new Color(253, 181, 249);
+		public override Color TrailColor => new(253, 181, 249);
 
-		public override int dustType => DustID.PlatinumCoin;
+		public override int DustType => DustID.PlatinumCoin;
 	}
 }

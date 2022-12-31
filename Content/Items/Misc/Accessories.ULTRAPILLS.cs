@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Ultrapills() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "ULTRAPILLS").Value) { }
+		public Ultrapills() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Ultrapills").Value) { }
 
 		public override void SetStaticDefaults()
 		{
