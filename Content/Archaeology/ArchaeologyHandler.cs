@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core;
-using StarlightRiver.Packets;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;

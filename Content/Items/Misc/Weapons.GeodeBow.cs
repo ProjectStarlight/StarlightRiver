@@ -222,6 +222,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             Lighting.AddLight(Projectile.Center, Color.Magenta.ToVector3());
             pulseCounter += 0.05f;
+
             if (Projectile.timeLeft > 50)
             {
                 if (scaleFactor < 1.2f)
@@ -229,6 +230,7 @@ namespace StarlightRiver.Content.Items.Misc
             }
             else
                 scaleFactor -= 0.03f;
+
             if (scaleFactor <= 0)
                 Projectile.active = false;
 
@@ -251,7 +253,7 @@ namespace StarlightRiver.Content.Items.Misc
         {
             for (int i = 1; i <= 5; i++)
             {
-                Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Segment" + i.ToString()).Value;
+                Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Segment" + i).Value;
                 float progress = MathHelper.Clamp((scaleFactor * 5) - i, 0, 1);
                 Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, progress * crystalScales[i - 1], SpriteEffects.None, 0f);
             }
@@ -310,11 +312,13 @@ namespace StarlightRiver.Content.Items.Misc
     {
         public override string Texture => AssetDirectory.Invisible;
 
-        public float radiusMult => Projectile.ai[1];
+        public ref float radiusMult => ref Projectile.ai[1];
 
         public float Progress => 1 - (Projectile.timeLeft / 10f);
 
         private float Radius => (150 + (15 * Projectile.ai[0])) * (float)(Math.Sqrt(Progress)) * radiusMult;
+
+        public override bool PreDraw(ref Color lightColor) => false;
 
         public override void SetDefaults()
         {
@@ -351,8 +355,6 @@ namespace StarlightRiver.Content.Items.Misc
                 proj.active = false;
             }
         }
-
-        public override bool PreDraw(ref Color lightColor) => false;
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
@@ -405,7 +407,7 @@ namespace StarlightRiver.Content.Items.Misc
 
         private void ManageCache()
         {
-            if (cache == null)
+            if (cache is null)
             {
                 cache = new List<Vector2>();
                 for (int i = 0; i < 15; i++)
