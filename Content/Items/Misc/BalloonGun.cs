@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class BalloonGunBalloon : ModProjectile
 	{
-		public readonly int NUM_SEGMENTS = 15;
+		public const int NUM_SEGMENTS = 15;
 
 		private Trail trail;
 		private List<Vector2> cache = new();
@@ -266,7 +266,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 			effect.Parameters["alpha"].SetValue(1);
 
 			trail?.Render(effect);
