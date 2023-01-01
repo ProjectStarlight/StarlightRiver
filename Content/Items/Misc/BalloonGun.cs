@@ -1,13 +1,4 @@
-﻿//TODO:
-//Sellprice
-//Rarity
-//Obtainment
-//Implement secret feature
-//Implement rainbow balloons
-//Make balloons pop
-//Sound effects
-//Fix trail jankiness
-
+﻿using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Content.NPCs.Snow;
 using StarlightRiver.Content.Physics;
@@ -16,6 +7,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -50,6 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.shootSpeed = 10f;
 			Item.autoReuse = true;
 			Item.useTurn = false;
+			Item.UseSound = SoundID.Item102;
 		}
 	}
 
@@ -131,7 +124,8 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (!attachTarget.active)
 				{
-					Projectile.active = false;
+					attached = false;
+					Projectile.Kill();
 					return;
 				}
 				Projectile.Center = attachTarget.Center;
@@ -164,7 +158,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 pos = points[NUM_SEGMENTS - 1];
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture + textureNumber).Value;
-
+			if (Owner.name == "cloud")
+				tex = ModContent.Request<Texture2D>(Texture + "_Cloud").Value; 
 			DrawChain();
 
 			Vector2 origin = tex.Size() * new Vector2(0.5f, 0.92f);
@@ -186,6 +181,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Kill(int timeLeft)
 		{
+			Vector2 dustPos = GetChainPoints()[NUM_SEGMENTS - 1];
+			SoundEngine.PlaySound(SoundID.NPCDeath63, dustPos);
+			for (int i = 0; i < 12; i++)
+			{
+				Vector2 dir = Main.rand.NextVector2Circular(8, 8);
+				Dust.NewDustPerfect(dustPos + dir * 2, ModContent.DustType<Dusts.GlowLineFast>(), dir, 0, Color.White, 0.5f);
+			}
 			if (attached)
 				attachTarget.GetGlobalNPC<BalloonGunGNPC>().balloonsAttached--;
 		}
