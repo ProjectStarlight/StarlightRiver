@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gravebuster");
-			Tooltip.SetDefault("Destroys nearby graves \nFavorite it to prevent yourself from dropping graves on death \n'You like the taste of brains, we don't like zombies'");
+			Tooltip.SetDefault("Destroys nearby graves \n'You like the taste of brains, we don't like zombies'");
 		}
 
 		public override void SetDefaults()
