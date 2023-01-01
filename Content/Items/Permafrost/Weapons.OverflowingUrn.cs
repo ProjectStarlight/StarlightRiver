@@ -29,15 +29,15 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overflowing Urn");
-			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will freeze you\nYou have greatly increased defense while frozen");
+			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will frostburn you");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 20;
+			Item.damage = 15;
 			Item.channel = true;
 			Item.DamageType = DamageClass.Magic;
-			Item.mana = 6;
+			Item.mana = 3;
 			Item.width = 1;
 			Item.height = 34;
 			Item.useTime = 8;
@@ -183,9 +183,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.timeLeft = 20;
 			Projectile.ignoreWater = true;
 			Projectile.hide = true;
-
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 2;
 		}
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -333,17 +330,26 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
+
+			return Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
+		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
 
-			if (windBlowing && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
+			if (!windBlowing)
+				return false;
+			if (base.CanHitNPC(target) == true && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
 			{
-				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 1);
+				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
 				target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
 			}
 
-			return false;
+			return base.CanHitNPC(target);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
