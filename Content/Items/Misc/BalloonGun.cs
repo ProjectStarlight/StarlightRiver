@@ -153,7 +153,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 pos = points[NUM_SEGMENTS - 1];
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture + textureNumber).Value;
-			if (Owner.name == "cloud" || Owner.name == "Cloud")
+			if (Owner.name == "cloud" || Owner.name == "Cloud") //DO NOT MENTION THIS TO CLOUD!!!!!
 				tex = ModContent.Request<Texture2D>(Texture + "_Cloud").Value;
 			DrawChain();
 
