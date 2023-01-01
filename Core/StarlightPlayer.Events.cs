@@ -158,6 +158,13 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
+		public delegate void PreUpdateBuffsDelegate(Player player);
+		public static event PreUpdateBuffsDelegate PreUpdateBuffsEvent;
+		public override void PreUpdateBuffs()
+		{
+			PreUpdateBuffsEvent?.Invoke(Player);
+		}
+
 		public delegate void PostUpdateRunSpeedsDelegate(Player player);
 		public static event PostUpdateRunSpeedsDelegate PostUpdateRunSpeedsEvent;
 		public override void PostUpdateRunSpeeds()
