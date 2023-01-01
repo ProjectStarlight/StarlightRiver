@@ -1,15 +1,12 @@
-﻿using Terraria.ModLoader;
-using Terraria;
-using Terraria.ModLoader.IO;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Core
 {
-    class RecipeSystem : ModSystem
+	class RecipeSystem : ModSystem
 	{
-		public static List<string> knownRecipies = new List<string>();
+		public static List<string> knownRecipies = new();
 
 		public override void OnWorldLoad()
 		{
