@@ -106,7 +106,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Projectile.velocity.Y > -1)
 					Projectile.velocity.Y -= 0.05f;
 
-				NPC target = Main.npc.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && !n.boss).FirstOrDefault();
+				NPC target = Main.npc.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && n.knockBackResist != 0).FirstOrDefault();
 
 				if (target != default)
 				{
