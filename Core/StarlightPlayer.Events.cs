@@ -112,6 +112,13 @@ namespace StarlightRiver.Core
 			NaturalLifeRegenEvent?.Invoke(Player, ref regen);
 		}
 
+		public delegate void UpdateLifeRegenDelegate(Player player);
+		public static event UpdateLifeRegenDelegate UpdateLifeRegenEvent;
+		public override void UpdateLifeRegen()
+		{
+			UpdateLifeRegenEvent?.Invoke(Player);
+		}
+
 		public delegate void PostUpdateDelegate(Player player);
 		public static event PostUpdateDelegate PostUpdateEvent;
 

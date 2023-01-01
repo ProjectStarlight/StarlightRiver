@@ -316,10 +316,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
@@ -336,10 +335,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
@@ -357,10 +355,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
