@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -64,6 +65,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Color glowColor = Color.White;
 
+		private List<Vector2> oldPos = new List<Vector2>();
+		private List<float> oldRot = new List<float>();
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
@@ -119,6 +123,14 @@ namespace StarlightRiver.Content.Items.Misc
 				glowColor.A = 0;
 			}
 
+			oldPos.Add(Projectile.Center);
+			oldRot.Add(Projectile.rotation);
+
+			while (oldPos.Count > 8)
+			{
+				oldPos.RemoveAt(0);
+				oldRot.RemoveAt(0);
+			}
 			Projectile.velocity.X *= 0.995f;
 			Projectile.velocity.Y += gravity;
 		}
@@ -131,6 +143,17 @@ namespace StarlightRiver.Content.Items.Misc
 			var sourceRect = new Rectangle(Projectile.frame * width, 0, width, tex.Height);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, sourceRect, glowColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+
+			if (oldPos.Count == 0)
+				return false;
+
+			for (int i = 0; i < oldPos.Count; i++)
+			{
+				Vector2 pos = oldPos[i];
+				float rot = oldRot[i];
+				float opacity = i / (float)oldPos.Count;
+				Main.spriteBatch.Draw(glowTex, pos - Main.screenPosition, sourceRect, glowColor * opacity, rot, new Vector2(width, tex.Height) / 2, 1f * opacity, default, default);
+			}
 			return false;
 		}
 
