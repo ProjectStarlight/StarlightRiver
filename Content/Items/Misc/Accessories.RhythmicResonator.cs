@@ -10,6 +10,14 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class RhythmicResonator : SmartAccessory
 	{
+		public bool equipped;
+		public int RhythmTimer;
+		public int MaxRhythmTimer; //just used visually for the UI
+		public int RhythmStacks;
+		public int ResetTimer;
+		public int flashTimer; // also for UI
+		public bool bufferedInput;
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public RhythmicResonator() : base("Rhythmic Resonator", "Attack in rhythm with your weapon to gradually increase damage and knockback\nDisables autoswing") { }
@@ -18,6 +26,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			StarlightItem.CanAutoReuseItemEvent += PreventAutoReuse;
 			StarlightItem.UseItemEvent += UseItemEffects;
+
+			StarlightPlayer.ModifyHitNPCEvent += BoostDamage;
+			StarlightPlayer.ModifyHitNPCWithProjEvent += BoostDamageProj;
+
+			StarlightPlayer.ResetEffectsEvent += ResetEffects;
 		}
 
 		public override void Unload()
@@ -32,11 +45,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Green;
 		}
 
-		public override void SafeUpdateEquip(Player Player)
-		{
-			Player.GetModPlayer<RhythmicResonatorModPlayer>().equipped = true;
-		}
-
 		private bool? PreventAutoReuse(Item Item, Player Player)
 		{
 			if (Equipped(Player))
@@ -47,97 +55,98 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private bool? UseItemEffects(Item Item, Player Player)
 		{
-			RhythmicResonatorModPlayer modPlayer = Player.GetModPlayer<RhythmicResonatorModPlayer>();
-
 			if (Equipped(Player))
 			{
-				if (modPlayer.RhythmTimer > -2 && modPlayer.RhythmTimer < 3 || modPlayer.bufferedInput) // five frame window plus buffer
+				var instance = GetEquippedInstance(Player) as RhythmicResonator;
+
+				// five frame window plus buffer
+				if (instance.RhythmTimer > -2 && instance.RhythmTimer < 3 || instance.bufferedInput)
 				{
-					modPlayer.bufferedInput = false;
-					modPlayer.flashTimer = 20;
-					modPlayer.RhythmStacks++;
-					modPlayer.ResetTimer = Utils.Clamp((int)(Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f)) * 2f), 30, 180); //set the reset timer for the stacks to triple the items use time, clamped at 3 seconds
+					instance.bufferedInput = false;
+					instance.flashTimer = 20;
+					instance.RhythmStacks++;
+
+					//set the reset timer for the stacks to triple the items use time, clamped at 3 seconds
+					instance.ResetTimer = Utils.Clamp((int)(Item.useTime * (1f - (Player.GetTotalAttackSpeed(Item.DamageType) - 1f)) * 2f), 30, 180);
 					SoundEngine.PlaySound(SoundID.MenuTick with { Volume = 1.15f, Pitch = -0.2f, PitchVariance = 0.15f }, Player.Center);
 
-					if (Main.myPlayer == Player.whoAmI) //only spawn dust on client
+					//only spawn dust on client
+					if (Main.myPlayer == Player.whoAmI)
 					{
 						for (int i = 0; i < 15; i++)
 						{
-							Dust.NewDustPerfect(Main.MouseWorld + Vector2.One * 10 + Main.rand.NextVector2Circular(2.5f, 2.5f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1.75f, 1.75f), 0, Color.White, 0.7f);
+							Vector2 pos = Main.MouseWorld + Vector2.One * 10 + Main.rand.NextVector2Circular(2.5f, 2.5f);
+							Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(1.75f, 1.75f), 0, Color.White, 0.7f);
 						}
 					}
 				}
 
-				float speed = CombinedHooks.TotalUseTime(Item.useTime, Player, Item) + 1; //one tick of leeway
-				modPlayer.RhythmTimer = (int)speed;
-				modPlayer.MaxRhythmTimer = (int)speed;
+				//one tick of leeway
+				float speed = CombinedHooks.TotalUseTime(Item.useTime, Player, Item) + 1;
+				instance.RhythmTimer = (int)speed;
+				instance.MaxRhythmTimer = (int)speed;
 			}
 
 			return null;
 		}
-	}
 
-	public class RhythmicResonatorModPlayer : ModPlayer //needs a modplayer for the UI
-	{
-		public bool equipped;
-		public int RhythmTimer;
-		public int MaxRhythmTimer; //just used visually for the UI
-		public int RhythmStacks;
-		public int ResetTimer;
-		public int flashTimer; // also for UI
-		public bool bufferedInput;
-
-		public override void ResetEffects()
+		public void BoostDamage(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
-			equipped = false;
+			var instance = GetEquippedInstance(player) as RhythmicResonator;
 
-			RhythmStacks = Utils.Clamp(RhythmStacks, 0, 5);
+			if (Equipped(player) && instance.RhythmStacks > 0)
+			{
+				Main.NewText(instance.RhythmStacks);
 
-			if (ResetTimer > 0)
-				ResetTimer--;
+				damage = (int)(damage * (1f + 0.05f * instance.RhythmStacks)); //5% increase up to 25%
+				knockback *= 1f + 0.1f * instance.RhythmStacks; // 10% yadada
+			}
+		}
+
+		public void BoostDamageProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			var instance = GetEquippedInstance(player) as RhythmicResonator;
+
+			if (Equipped(player) && instance.RhythmStacks > 0)
+			{
+				damage = (int)(damage * (1f + 0.05f * instance.RhythmStacks));
+				knockback *= 1f + 0.1f * instance.RhythmStacks;
+			}
+		}
+
+		private void ResetEffects(StarlightPlayer Player)
+		{
+			var instance = GetEquippedInstance(Player.Player) as RhythmicResonator;
+
+			instance.RhythmStacks = Utils.Clamp(instance.RhythmStacks, 0, 5);
+
+			if (instance.ResetTimer > 0)
+				instance.ResetTimer--;
 			else
-				RhythmStacks = 0;
+				instance.RhythmStacks = 0;
 
-			if (RhythmTimer > -2)
-				RhythmTimer--;
+			if (instance.RhythmTimer > -2)
+				instance.RhythmTimer--;
 			else
-				bufferedInput = false;
+				instance.bufferedInput = false;
 
-			if (flashTimer > 0)
-				flashTimer--;
+			if (instance.flashTimer > 0)
+				instance.flashTimer--;
 		}
 
-		public override void ModifyHitNPC(Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			if (equipped && RhythmStacks > 0)
-			{
-				damage = (int)(damage * (1f + 0.05f * RhythmStacks)); //5% increase up to 25%
-				knockback *= 1f + 0.1f * RhythmStacks; // 10% yadada
-			}
-		}
-
-		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			if (equipped && RhythmStacks > 0)
-			{
-				damage = (int)(damage * (1f + 0.05f * RhythmStacks));
-				knockback *= 1f + 0.1f * RhythmStacks;
-			}
-		}
-
-		public override void PreUpdate()
-		{
-			if (equipped)
-			{
-				if (Main.mouseLeft && Main.mouseLeftRelease && RhythmTimer > -2 && RhythmTimer < 3)
-					bufferedInput = true;
-			}
+			if (Main.mouseLeft && Main.mouseLeftRelease && RhythmTimer > -2 && RhythmTimer < 3)
+				bufferedInput = true;
 		}
 	}
 
 	public class RhythmicResonatorUIState : SmartUIState
 	{
-		public override bool Visible => !Main.playerInventory && Main.LocalPlayer.GetModPlayer<RhythmicResonatorModPlayer>().equipped && (!Main.player[Main.myPlayer].dead && !Main.player[Main.myPlayer].ghost && !Main.gameMenu || !PlayerInput.InvisibleGamepadInMenus);
+		public static RhythmicResonator Instance => SmartAccessory.GetEquippedInstance(Main.LocalPlayer, ModContent.ItemType<RhythmicResonator>()) as RhythmicResonator;
+
+		public override bool Visible => !Main.playerInventory && Instance != null &&
+			(!Main.player[Main.myPlayer].dead && !Main.player[Main.myPlayer].ghost && !Main.gameMenu || !PlayerInput.InvisibleGamepadInMenus);
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -160,31 +169,29 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!Main.gameMenu && Main.LocalPlayer.hasRainbowCursor)
 				inside = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.25f % 1f, 1f, 0.5f, byte.MaxValue);
 
-			RhythmicResonatorModPlayer modPlayer = Main.LocalPlayer.GetModPlayer<RhythmicResonatorModPlayer>();
-
-			if (modPlayer.flashTimer > 0)
+			if (Instance.flashTimer > 0)
 			{
 				Color color = Main.cursorColor;
 
 				if (!Main.gameMenu && Main.LocalPlayer.hasRainbowCursor)
 					color = Main.hslToRgb(Main.GlobalTimeWrappedHourly * 0.25f % 1f, 1f, 0.5f, byte.MaxValue);
 
-				border = Color.Lerp(Color.White, Main.MouseBorderColor, 1f - modPlayer.flashTimer / 20f);
-				inside = Color.Lerp(Color.White, color, 1f - modPlayer.flashTimer / 20f);
+				border = Color.Lerp(Color.White, Main.MouseBorderColor, 1f - Instance.flashTimer / 20f);
+				inside = Color.Lerp(Color.White, color, 1f - Instance.flashTimer / 20f);
 			}
 
-			if (modPlayer.RhythmTimer > 0)
+			if (Instance.RhythmTimer > 0)
 			{
-				float progress = 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer;
+				float progress = 1f - Instance.RhythmTimer / (float)Instance.MaxRhythmTimer;
 				float alpha = MathHelper.Lerp(0f, 1f, progress * 2);
 
-				int start = Utils.Clamp(modPlayer.MaxRhythmTimer * 3, 30, 90);
-				var offset = Vector2.Lerp(new Vector2(-start, 2), new Vector2(6, 2), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
+				int start = Utils.Clamp(Instance.MaxRhythmTimer * 3, 30, 90);
+				var offset = Vector2.Lerp(new Vector2(-start, 2), new Vector2(6, 2), 1f - Instance.RhythmTimer / (float)Instance.MaxRhythmTimer);
 
 				Main.spriteBatch.Draw(texSmallOutline, mouse + Vector2.One * 9 + offset - Main.screenPosition, null, border * alpha, 0f, texOutline.Size() / 2f, Main.cursorScale, SpriteEffects.None, 0f);
 				Main.spriteBatch.Draw(texSmall, mouse + Vector2.One * 9 + offset - Main.screenPosition, null, inside * alpha, 0f, tex.Size() / 2f, Main.cursorScale, SpriteEffects.None, 0f);
 
-				offset = Vector2.Lerp(new Vector2(start + 46, 2), new Vector2(42, 2), 1f - modPlayer.RhythmTimer / (float)modPlayer.MaxRhythmTimer);
+				offset = Vector2.Lerp(new Vector2(start + 46, 2), new Vector2(42, 2), 1f - Instance.RhythmTimer / (float)Instance.MaxRhythmTimer);
 
 				Main.spriteBatch.Draw(texSmallOutline, mouse + Vector2.One * 9 + offset - Main.screenPosition, null, border * alpha, 0f, texOutline.Size() / 2f, Main.cursorScale, SpriteEffects.FlipHorizontally, 0f);
 				Main.spriteBatch.Draw(texSmall, mouse + Vector2.One * 9 + offset - Main.screenPosition, null, inside * alpha, 0f, tex.Size() / 2f, Main.cursorScale, SpriteEffects.FlipHorizontally, 0f);
