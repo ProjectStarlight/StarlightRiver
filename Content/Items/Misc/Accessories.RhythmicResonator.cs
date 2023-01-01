@@ -96,8 +96,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Equipped(player) && instance.RhythmStacks > 0)
 			{
-				Main.NewText(instance.RhythmStacks);
-
 				damage = (int)(damage * (1f + 0.05f * instance.RhythmStacks)); //5% increase up to 25%
 				knockback *= 1f + 0.1f * instance.RhythmStacks; // 10% yadada
 			}
