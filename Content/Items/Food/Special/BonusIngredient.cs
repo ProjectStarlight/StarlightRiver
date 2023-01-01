@@ -1,17 +1,13 @@
 ﻿using StarlightRiver.Content.Items.Utility;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
 	public static class FoodRecipieHandler //TODO: Maybe move this somewhere else layer?
-	{ 
-		public static List<FoodRecipie> Recipes = new List<FoodRecipie>();
+	{
+		public static List<FoodRecipie> Recipes = new();
 
 		public static Item GetFromRecipie(FoodRecipie recipie)
 		{
@@ -33,14 +29,14 @@ namespace StarlightRiver.Content.Items.Food.Special
 		{
 			this.result = result;
 			mainType = main;
-			sideType = side;	
+			sideType = side;
 			sideType2 = side2;
 			seasoningType = seasoning;
 		}
 
 		public bool Matches(List<Item> items)
 		{
-			var comparison = this; //.NET needs this for some reason???
+			FoodRecipie comparison = this; //.NET needs this for some reason???
 
 			return items.Any(n => n.type == comparison.mainType) &&
 				items.Any(n => n.type == comparison.sideType) &&

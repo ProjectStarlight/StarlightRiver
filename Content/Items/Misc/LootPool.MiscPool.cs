@@ -1,8 +1,3 @@
-using StarlightRiver.Core.Systems.ChestLootSystem;
-using StarlightRiver.Helpers;
-using System.Collections.Generic;
-using Terraria.ModLoader;
-
 namespace StarlightRiver.Content.Items.Misc
 {
     public class MiscPool : LootPool
