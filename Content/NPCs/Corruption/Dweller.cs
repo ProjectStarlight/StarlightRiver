@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				case (int)States.Transforming: //fall-through moment
 				case (int)States.Idle:
 
-					Texture2D barkTex = Request<Texture2D>("Terraria/Tiles_5_0").Value; //corruption tree bark 
+					Texture2D barkTex = Request<Texture2D>("Terraria/Images/Tiles_5_0").Value; //corruption tree bark 
 
 					for (int k = 0; k < Height; k += 16)
 					{
@@ -211,8 +211,9 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					break;
 
 				case (int)States.Attacking:
-
-					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * NPC.height, NPC.width, NPC.height);
+					int frameHeight = (Request<Texture2D>(Texture + Variant).Value.Height / 4);
+					int frameWidth = Request<Texture2D>(Texture + Variant).Value.Width;
+					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * frameHeight, frameWidth, frameHeight);
 
 					spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
 
