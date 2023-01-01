@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -133,6 +134,28 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				SpriteEffects effects1 = SpriteEffects.FlipHorizontally;
 				Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
+			}
+
+			var range = new Vector2(25, 25);
+			Vector2 startPos = Projectile.Center / 16 - range;
+			Vector2 endPos = Projectile.Center / 16 + range;
+			for (int i = (int)startPos.X; i < (int)endPos.X; i++)
+			{
+				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
+				{
+					Tile tile = Main.tile[i, j];
+					Tile tile2 = Main.tile[i + 1, j + 1];
+
+					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					{
+						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
+
+						Color color = Color.White * Progress * 0.3f;
+						color.A = 0;
+						Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1, SpriteEffects.None, 0f);
+					}
+				}
 			}
 
 			return false;
