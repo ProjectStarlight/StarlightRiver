@@ -1,8 +1,4 @@
-﻿using StarlightRiver.Content.Bosses.VitricBoss;
-using StarlightRiver.Content.Items.BuriedArtifacts;
-using StarlightRiver.Content.NPCs.Snow;
-using StarlightRiver.Content.Physics;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Physics;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	class BalloonGun: ModItem
+	internal class BalloonGun : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -54,19 +50,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Trail trail;
 		private List<Vector2> cache = new();
+		private int textureNumber = 0;
+		private float floatRotation = 0;
 
-		int textureNumber = 0;
-
-		float floatRotation = 0;
-
-		bool cloud = false; //Keep this a secret from cloud!!!!
-
-		bool attached = false;
-
-		NPC attachTarget = default;
+		private bool attached = false;
+		private NPC attachTarget = default;
 
 		public VerletChain Chain;
-		Player Owner => Main.player[Projectile.owner];
+
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
 		{
@@ -111,7 +103,7 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Projectile.velocity.Y > -1)
 					Projectile.velocity.Y -= 0.05f;
 
-				var target = Main.npc.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && !n.boss).FirstOrDefault();
+				NPC target = Main.npc.Where(n => n.active && n.Hitbox.Intersects(Projectile.Hitbox) && !n.boss).FirstOrDefault();
 
 				if (target != default)
 				{
@@ -128,6 +120,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Projectile.Kill();
 					return;
 				}
+
 				Projectile.Center = attachTarget.Center;
 			}
 
@@ -142,7 +135,9 @@ namespace StarlightRiver.Content.Items.Misc
 					Chain.ropeSegments[i].posNow = Vector2.Lerp(Chain.ropeSegments[i].posNow, posToBe, 0.015f);
 				}
 				else
+				{
 					Chain.ropeSegments[i].posNow = Chain.startPoint;
+				}
 			}
 
 			if (!Main.dedServ)
@@ -158,8 +153,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 pos = points[NUM_SEGMENTS - 1];
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture + textureNumber).Value;
-			if (Owner.name == "cloud")
-				tex = ModContent.Request<Texture2D>(Texture + "_Cloud").Value; 
+			if (Owner.name == "cloud" || Owner.name == "Cloud")
+				tex = ModContent.Request<Texture2D>(Texture + "_Cloud").Value;
 			DrawChain();
 
 			Vector2 origin = tex.Size() * new Vector2(0.5f, 0.92f);
@@ -170,6 +165,7 @@ namespace StarlightRiver.Content.Items.Misc
 				origin = tex.Size() * 0.5f;
 				rot = 0;
 			}
+
 			Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)), rot, origin, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
@@ -182,12 +178,13 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Kill(int timeLeft)
 		{
 			Vector2 dustPos = GetChainPoints()[NUM_SEGMENTS - 1];
-			SoundEngine.PlaySound(SoundID.NPCDeath63, dustPos);
+			var unused1 = SoundEngine.PlaySound(SoundID.NPCDeath63, dustPos);
 			for (int i = 0; i < 12; i++)
 			{
 				Vector2 dir = Main.rand.NextVector2Circular(8, 8);
-				Dust.NewDustPerfect(dustPos + dir * 2, ModContent.DustType<Dusts.GlowLineFast>(), dir, 0, Color.White, 0.5f);
+				var unused = Dust.NewDustPerfect(dustPos + dir * 2, ModContent.DustType<Dusts.GlowLineFast>(), dir, 0, Color.White, 0.5f);
 			}
+
 			if (attached)
 				attachTarget.GetGlobalNPC<BalloonGunGNPC>().balloonsAttached--;
 		}
