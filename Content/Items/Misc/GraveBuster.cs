@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public class GraveBusterHeld : ModProjectile
+	public class GraveBusterHeld : ModProjectile, IDrawOverTiles
 	{
 		private bool initialized = false;
 
@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.Items.Misc
 		Player Owner => Main.player[Projectile.owner];
 
 		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
+
+		private float Progress => 1 - (Owner.itemTime / 80f);
 
 		public override void SetStaticDefaults()
 		{
@@ -85,7 +87,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.active = false;
 			}
 
-			if (Projectile.timeLeft % 6 == 0 && Owner.itemTime > 15)
+			if (Projectile.timeLeft % 6 == 0 && Owner.itemTime > 15 && false)
 			{
 				var range = new Vector2(25, 25);
 				Vector2 startPos = Projectile.Center / 16 - range;
@@ -102,7 +104,7 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
 							Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-							Projectile.NewProjectile(Projectile.GetSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
+							//Projectile.NewProjectile(Projectile.GetSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
 						}
 					}
 				}
@@ -134,6 +136,28 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			return false;
+		}
+
+		public void DrawOverTiles(SpriteBatch spriteBatch)
+		{
+			var range = new Vector2(25, 25);
+			Vector2 startPos = Projectile.Center / 16 - range;
+			Vector2 endPos = Projectile.Center / 16 + range;
+			for (int i = (int)startPos.X; i < (int)endPos.X; i++)
+			{
+				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
+				{
+					Tile tile = Main.tile[i, j];
+					Tile tile2 = Main.tile[i + 1, j + 1];
+
+					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					{
+						Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+						Vector2 drawPos = new Vector2(i, j) * 16;
+						spriteBatch.Draw(tex, drawPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), Color.White * Progress, 0, Vector2.Zero, 32, SpriteEffects.None, 0f);
+					}
+				}
+			}
 		}
 
 		private void DestroyGraves()
