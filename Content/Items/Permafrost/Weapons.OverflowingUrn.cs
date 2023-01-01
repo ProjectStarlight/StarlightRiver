@@ -71,6 +71,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (item.animationTimer > 0)
 				{
+					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
+					{
+						tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overload").Value;
+						overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay_Overload").Value;
+					}
+
 					spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
 
 					float rectLerper = MathHelper.Clamp(item.freezeTimer / 360f, 0, 1);
