@@ -6,6 +6,7 @@
 //Implement rainbow balloons
 //Make balloons pop
 //Sound effects
+//Fix trail jankiness
 
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Content.NPCs.Snow;
@@ -91,7 +92,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.timeLeft = 999;
 			Projectile.ignoreWater = true;
 			Projectile.hide = true;
-			textureNumber = Main.rand.Next(4, 8);
+			textureNumber = Main.rand.Next(1, 8);
 			floatRotation = Main.rand.NextFloat(-0.4f, 0.4f);
 		}
 
@@ -174,7 +175,7 @@ namespace StarlightRiver.Content.Items.Misc
 				origin = tex.Size() * 0.5f;
 				rot = 0;
 			}
-			Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, lightColor, rot, origin, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(tex, pos - Main.screenPosition, null, Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)), rot, origin, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 
