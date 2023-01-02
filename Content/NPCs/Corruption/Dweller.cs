@@ -59,11 +59,13 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			NPC.behindTiles = true;
 			NPC.HitSound = SoundID.NPCHit47;
 			NPC.DeathSound = SoundID.NPCDeath49;
+			NPC.damage = 20;
 		}
 
 		public override void OnSpawn(IEntitySource source)
 		{
 			NPC.position.Y -= Main.rand.Next(200, 300);
+			NPC.damage = 0; //Use this to override bestiary entry
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -71,7 +73,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
-				new FlavorTextBestiaryInfoElement("The dwellers have evolved to camoflauge themselves as trees, and use this ability to ambush unsuspecting victims in comical fashion. The laugh just sells the point.")
+				new FlavorTextBestiaryInfoElement("They have evolved to camoflauge themselves as trees, and use this ability to ambush unsuspecting victims in comical fashion. The laugh just sells the point.")
 			});
 		}
 

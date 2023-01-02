@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
-				new FlavorTextBestiaryInfoElement("[PH] It's a blover! CUUUUUUUUUTE")
+				new FlavorTextBestiaryInfoElement("While harmless on their own, they harness the wind to push back friend and foe alike. Can make for a deadly combo with other creatures - watch out!")
 			});
 		}
 
