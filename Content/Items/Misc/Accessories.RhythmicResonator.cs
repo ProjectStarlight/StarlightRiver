@@ -114,22 +114,25 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ResetEffects(StarlightPlayer Player)
 		{
-			var instance = GetEquippedInstance(Player.Player) as RhythmicResonator;
+			if (Equipped(Player.Player))
+			{
+				var instance = GetEquippedInstance(Player.Player) as RhythmicResonator;
 
-			instance.RhythmStacks = Utils.Clamp(instance.RhythmStacks, 0, 5);
+				instance.RhythmStacks = Utils.Clamp(instance.RhythmStacks, 0, 5);
 
-			if (instance.ResetTimer > 0)
-				instance.ResetTimer--;
-			else
-				instance.RhythmStacks = 0;
+				if (instance.ResetTimer > 0)
+					instance.ResetTimer--;
+				else
+					instance.RhythmStacks = 0;
 
-			if (instance.RhythmTimer > -2)
-				instance.RhythmTimer--;
-			else
-				instance.bufferedInput = false;
+				if (instance.RhythmTimer > -2)
+					instance.RhythmTimer--;
+				else
+					instance.bufferedInput = false;
 
-			if (instance.flashTimer > 0)
-				instance.flashTimer--;
+				if (instance.flashTimer > 0)
+					instance.flashTimer--;
+			}
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
