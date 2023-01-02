@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts //using empty class
 
 	public abstract class SnowArtifact : Artifact { }
 
+	public abstract class HellArtifact : Artifact { }
+
 	public abstract class JungleArtifact : Artifact
 	{
 		public override bool CanGenerate(int i, int j) //Make sure it doesn't generate near mushroom grass

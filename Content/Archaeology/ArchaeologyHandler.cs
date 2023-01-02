@@ -1,4 +1,11 @@
-﻿using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.GUI;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Map;
@@ -10,13 +17,13 @@ namespace StarlightRiver.Content.Archaeology
 	public class ArchaeologyHandler : ModSystem
 	{
 		public override void Load()
-		{
-			On.Terraria.Main.DrawTiles += DrawArtifacts;
+		{ 
+			On.Terraria.Main.DoDraw_DrawNPCsBehindTiles += DrawArtifacts;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Main.DrawTiles -= DrawArtifacts;
+			On.Terraria.Main.DoDraw_DrawNPCsBehindTiles -= DrawArtifacts;
 		}
 
 		public override void PreUpdateDusts()
@@ -33,15 +40,18 @@ namespace StarlightRiver.Content.Archaeology
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
 
-		public void DrawArtifacts(On.Terraria.Main.orig_DrawTiles orig, Main self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets, int waterStyleOverride = -1)
+		public void DrawArtifacts(On.Terraria.Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
 		{
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 			{
 				if (item.Value is Artifact artifact && artifact.IsOnScreen())
 					artifact.Draw(Main.spriteBatch);
 			}
 
-			orig(self, solidLayer, forRenderTargets, intoRenderTargets, waterStyleOverride);
+			Main.spriteBatch.End();
+
+			orig(self);
 		}
 	}
 
