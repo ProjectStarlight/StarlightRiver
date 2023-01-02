@@ -196,8 +196,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						AttackPhase++;
 
-						if (AttackPhase > 7)
-							AttackPhase = 7;
+						if (AttackPhase > 8)
+							AttackPhase = 0;
 
 						attackVariant = Main.rand.NextBool(2);
 						NPC.netUpdate = true;
@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						case 7:
 							if (attackVariant)
-								MagmaSpearAlt();
+								MagmaSpear();
 							else
 								MagmaSpearAlt();
 							break;
