@@ -77,12 +77,13 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			Projectile.velocity *= 0.7f;
+			Projectile.velocity *= 0.9f;
 		}
 
 		public override void AI()
 		{
-			Projectile.rotation = Projectile.velocity.ToRotation();
+			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			Projectile.velocity.Y += 0.1f;
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
 		}
