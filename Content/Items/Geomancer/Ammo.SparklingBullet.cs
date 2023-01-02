@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
-using StarlightRiver.Helpers;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -9,6 +7,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 	public class SparklingBullet : ModItem
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + Name;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparkling Bullet");
@@ -84,6 +83,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 			Projectile.velocity.Y += 0.1f;
+
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
 		}
@@ -96,6 +96,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				Item.NewItem(new EntitySource_DropAsItem(Projectile), player.Center, ModContent.ItemType<SparklingBullet>(), 1);
 			}
 		}
+
 		public override void Kill(int timeLeft)
 		{
 			for (int i = 0; i < 7; i++)
