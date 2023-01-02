@@ -1,14 +1,11 @@
-﻿//TODO:
-//Bestiary
-//Make it jump
-//Make it not occaisionally turn back into a tree sprite
-
-using StarlightRiver.Content.Foregrounds;
+﻿using StarlightRiver.Content.Foregrounds;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.Utilities;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
@@ -67,6 +64,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override void OnSpawn(IEntitySource source)
 		{
 			NPC.position.Y -= Main.rand.Next(200, 300);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
+				new FlavorTextBestiaryInfoElement("The dwellers have evolved to camoflauge themselves as trees, and use this ability to ambush unsuspecting victims in comical fashion. The laugh just sells the point.")
+			});
 		}
 
 		public override void AI()
@@ -177,6 +183,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			var rand = new Random(NPC.GetHashCode());
+			int frameHeight = (Request<Texture2D>(Texture + Variant).Value.Height / 4);
+			int frameWidth = Request<Texture2D>(Texture + Variant).Value.Width;
+
+			if (NPC.IsABestiaryIconDummy)
+			{
+				NPC.frame = new Rectangle(0, 0, frameWidth, frameHeight);
+				spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
+				return false;
+			}
 
 			switch (State)
 			{
@@ -235,8 +250,6 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					break;
 
 				case (int)States.Attacking:
-					int frameHeight = (Request<Texture2D>(Texture + Variant).Value.Height / 4);
-					int frameWidth = Request<Texture2D>(Texture + Variant).Value.Width;
 					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * frameHeight, frameWidth, frameHeight);
 
 					spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
