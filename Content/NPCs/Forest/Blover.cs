@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
-				new FlavorTextBestiaryInfoElement("While harmless on their own, they harness the wind to push back friend and foe alike. Can make for a deadly combo with other creatures - watch out!")
+				new FlavorTextBestiaryInfoElement("Blovers are clover-based plants that harness the ambient mana during particularly windy days to spin their fan-shaped leaves at approaching creatures. They are immobile, and would serve as a good form of defense if one were to discover a way to move or perhaps plant one.")
 			});
 		}
 
