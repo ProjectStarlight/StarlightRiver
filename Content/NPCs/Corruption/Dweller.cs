@@ -1,4 +1,11 @@
-﻿using StarlightRiver.Content.Foregrounds;
+﻿//TODO:
+//Sound effects
+//Bestiary
+//Money
+//Balance
+//Spawning
+
+using StarlightRiver.Content.Foregrounds;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -24,6 +31,12 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		};
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Corruption/Dweller";
+
+		public override void Load()
+		{
+			for (int j = 1; j <= 7; j++)
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, "StarlightRiver/Assets/NPCs/Corruption/DwellerGore" + j);
+		}
 
 		public override void SetDefaults()
 		{
@@ -221,6 +234,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			}
 
 			return false;
+		}
+
+		public override void OnKill()
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int j = 1; j <= 7; j++)
+					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("DwellerGore" + j).Type);
+			}
 		}
 	}
 }
