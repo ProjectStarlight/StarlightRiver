@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.UndergroundSnow,
-				new FlavorTextBestiaryInfoElement("A curious but cruel creature, the snoobel wanders the frozen caverns forever using it's trunk as an instrument of absolute death.")
+				new FlavorTextBestiaryInfoElement("A curious but cruel creature, the snoobel wanders the frozen caverns forever using its trunk as an instrument of absolute death.")
 			});
 		}
 
