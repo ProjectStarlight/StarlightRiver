@@ -1,13 +1,14 @@
 ﻿//TODO:
-//Sound effects
 //Bestiary
-//Money
-//Balance
-//Spawning
+//Make it jump
+//Make it not occaisionally turn back into a tree sprite
 
 using StarlightRiver.Content.Foregrounds;
 using System;
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
@@ -52,13 +53,20 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				NPC.width = 64;
 
 			NPC.height = NPC.width;
-
+			NPC.value = 100;
 			NPC.lifeMax = 120;
 			NPC.defense = 6;
 			NPC.knockBackResist = 0;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.behindTiles = true;
+			NPC.HitSound = SoundID.NPCHit47;
+			NPC.DeathSound = SoundID.NPCDeath49;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			NPC.position.Y -= Main.rand.Next(200, 300);
 		}
 
 		public override void AI()
@@ -71,7 +79,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				{
 					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid)
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
 					{
 						root = tile;
 						Height = k * 16;
@@ -109,6 +117,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					if (Timer > 60 && Math.Abs(Target.Center.X - NPC.Center.X) < 32 && yOff < (Height - 16) && yOff > 0) //under the tree
 					{
+						SoundEngine.PlaySound(SoundID.Zombie79, NPC.Center);
 						State = (int)States.Transforming;
 						Timer = 0;
 					}
@@ -159,6 +168,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.rotation += NPC.velocity.X / (NPC.width / 2f);
 
+					if (NPC.collideX && NPC.collideY)
+						NPC.velocity.Y = -6;
 					break;
 			}
 		}
@@ -234,6 +245,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			}
 
 			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return SpawnCondition.Corruption.Chance * 0.27f;
 		}
 
 		public override void OnKill()
