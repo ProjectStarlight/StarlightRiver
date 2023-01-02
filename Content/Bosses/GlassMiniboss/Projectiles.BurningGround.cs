@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	internal class BurningGround : ModProjectile
+	internal class BurningGround : ModProjectile, IDrawOverTiles
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (Timer < 60)
 			{
-				Projectile.width = (int)Timer * 6;
-				Projectile.position.X -= 3;
+				Projectile.width = (int)Timer * 8;
+				Projectile.position.X -= 4;
 			}
 
 			if (Timer > 360)
@@ -36,13 +36,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
-			var color = new Color(255, 200, 50)
-			{
-				A = 0
-			};
+			var color = new Color(255, 200, 50, 0);
 
 			var target = new Rectangle((int)Projectile.position.X - (int)Main.screenPosition.X, (int)Projectile.position.Y - (int)Main.screenPosition.Y, Projectile.width, Projectile.height);
-			Main.spriteBatch.Draw(tex, target, null, color, 0, Vector2.Zero, 0, 0);
+			//Main.spriteBatch.Draw(tex, target, null, color, 0, Vector2.Zero, 0, 0);
 		}
 
 		public override bool CanHitPlayer(Player target)
@@ -51,6 +48,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				target.AddBuff(ModContent.BuffType<GlassweaverDot>(), Main.masterMode ? 120 : 60);
 
 			return false;
+		}
+
+		public void DrawOverTiles(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/GlassMiniboss/FireAura").Value;
+			var color = new Color(255, 200, 50, 0);
+			//color.A = 0;
+
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, 0, tex.Size() / 2, Projectile.width / (float)tex.Width, 0, 0);
 		}
 	}
 

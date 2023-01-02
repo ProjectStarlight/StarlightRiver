@@ -247,16 +247,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 1)
 			{
 				NPC.TargetClosest();
-				NPC.FaceTarget();
+				NPC.direction = Main.rand.NextBool() ? 1 : -1;
 
 				moveStart = NPC.Center;
 				moveTarget.X = Target.Center.X;
+				moveTarget.Y = arenaPos.Y;
 
-				if (moveTarget.X - arenaPos.X < -SIDE_OFFSET_X)
-					moveTarget.X = arenaPos.X - SIDE_OFFSET_X;
+				if (moveTarget.X - arenaPos.X < -SIDE_OFFSET_X + 200)
+					moveTarget.X = arenaPos.X - SIDE_OFFSET_X + 200;
 
-				if (moveTarget.X - arenaPos.X > SIDE_OFFSET_X)
-					moveTarget.X = arenaPos.X + SIDE_OFFSET_X;
+				if (moveTarget.X - arenaPos.X > SIDE_OFFSET_X - 200)
+					moveTarget.X = arenaPos.X + SIDE_OFFSET_X - 200;
 
 				NPC.velocity.Y -= 9f;
 
@@ -270,6 +271,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.position.X = MathHelper.Lerp(MathHelper.SmoothStep(moveStart.X, moveTarget.X, MathHelper.Min(jumpProgress * 1.1f, 1f)), moveTarget.X + 200 * -NPC.direction, jumpProgress) - NPC.width / 2f;
 				NPC.velocity.Y *= 0.94f;
 				NPC.noGravity = true;
+
+				Dust.NewDustPerfect(moveTarget, ModContent.DustType<Dusts.Stamina>());
 			}
 
 			if (AttackTimer == 65)
@@ -277,7 +280,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
 				spear.boundToParent = false;
 				spear.Projectile.velocity = (moveTarget + Vector2.UnitY * 32 - spear.Projectile.Center) * 0.05f;
-				spear.Projectile.velocity.X *= 3.5f;
+				spear.Projectile.velocity.X *= 2.5f;
 
 				NPC.velocity -= spear.Projectile.velocity * 0.35f;
 			}
