@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override string Texture => AssetDirectory.GeomancerItem + Name;
 
 		public static int bulletsConsumed = 0;
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparkling Bullet");
