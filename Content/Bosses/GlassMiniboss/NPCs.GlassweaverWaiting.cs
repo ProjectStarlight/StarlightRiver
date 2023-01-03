@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.GUI;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -29,6 +30,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string GetChat()
 		{
+			RichTextBox.OpenDialogue(NPC, "Test", "Hello I am an NPC and I have some cool text to give you, this is an example of how I will deliver it!");
+			RichTextBox.AddButton("Talk to me!", () => RichTextBox.SetData(NPC, "Test", "Well maybe I wont if you're going to be rude!"));
+			RichTextBox.AddButton("Close", () => RichTextBox.CloseDialogue());
+
+			return "";
+
 			// If pre-EOW, warn the Player.
 			if (!NPC.downedBoss2)
 			{
