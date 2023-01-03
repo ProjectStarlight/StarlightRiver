@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Snow
 	public class AquamarinePendant : SmartAccessory
 	{
 		private bool hasBarrier = false;
+
 		public override string Texture => AssetDirectory.SnowItem + Name;
 
 		public AquamarinePendant() : base("Aquamarine Pendant", "+15 Barrier \nLosing all of your barrier releases ice shards") { }
@@ -20,7 +21,9 @@ namespace StarlightRiver.Content.Items.Snow
 			bPlayer.maxBarrier += 15;
 
 			if (bPlayer.barrier > 0)
+			{
 				hasBarrier = true;
+			}
 			else if (hasBarrier)
 			{
 				hasBarrier = false;
