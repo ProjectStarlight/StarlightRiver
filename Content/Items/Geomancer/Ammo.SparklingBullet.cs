@@ -95,6 +95,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 				default,
 				Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
 			}
+
+			if (Projectile.timeLeft == 2 && SparklingBullet.bulletsConsumed > 0)
+				SparklingBullet.bulletsConsumed--;
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
@@ -106,12 +109,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 			}
 		}
 
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			if (SparklingBullet.bulletsConsumed > 0)
+				SparklingBullet.bulletsConsumed--;
+
+			return true;
+		}
+
 		public override void Kill(int timeLeft)
 		{
 			for (int i = 0; i < 7; i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkle>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, default, Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
-
 			}
 		}
 	}
