@@ -4,6 +4,7 @@
 
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Desert;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;
@@ -19,26 +20,10 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override int DummyType => ModContent.ProjectileType<TwistSwordTileProj>();
+
 		public override void SetStaticDefaults()
 		{
-			Main.tileFrameImportant[Type] = true;
-			Main.tileSolid[Type] = false;
-			TileObjectData.newTile.Height = 1;
-			TileObjectData.newTile.Width = 1;
-			TileObjectData.newTile.Origin = new Point16(0, 0); // Todo: make less annoying.
-			TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
-			TileObjectData.newTile.UsesCustomCanPlace = true;
-			TileObjectData.newTile.LavaDeath = false;
-			TileObjectData.newTile.CoordinateHeights = new int[] { 16 };
-			TileObjectData.newTile.CoordinateWidth = 16;
-			TileObjectData.newTile.CoordinatePadding = 2;
-			TileObjectData.addTile(Type);
-
-			HitSound = SoundID.Tink;
-
-			ModTranslation name = CreateMapEntryName();
-			name.SetDefault("Twisted Greatsword");
-			AddMapEntry(Color.Blue, name);
+			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Iron, SoundID.Tink, Color.Blue, 16, false, false, "Twisted Greatsword", default, new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0));
 		}
 
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
@@ -47,9 +32,8 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 		}
 	}
 
-	public class TwistSwordTileProj : ModProjectile
+	public class TwistSwordTileProj : Dummy
 	{
-		public override string Texture => AssetDirectory.DungeonTile + "TwistSwordTile";
 
 		public float swaySpeed = 0.01f;
 
@@ -57,12 +41,11 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 		public float springiness = 0.1f;
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Twisted Sword");
-		}
+		public override string Texture => AssetDirectory.DungeonTile + "TwistSwordTile";
 
-		public override void SetDefaults()
+		public TwistSwordTileProj() : base(ModContent.TileType<TwistSwordTile>(), 32, 72) { }
+
+		public override void SafeSetDefaults()
 		{
 			Projectile.knockBack = 6f;
 			Projectile.width = 32;
@@ -82,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 			return false;
 		}
 
-		public override void AI()
+		public override void Update()
 		{
 			int i = (int)(Projectile.position.X / 16);
 			int j = (int)(Projectile.position.Y / 16);
@@ -111,7 +94,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 				Dust.NewDustPerfect(dustPos, dustType, Vector2.Zero);
 			}
 
-			Player collider = Main.player.Where(n => n.active && !n.dead && Collision.CheckAABBvLineCollision(n.position, n.Hitbox.Size(), Projectile.Center, endPoint)).FirstOrDefault();
+			Player collider = Main.player.Where(n => n.active && !n.dead && Terraria.Collision.CheckAABBvLineCollision(n.position, n.Hitbox.Size(), Projectile.Center, endPoint)).FirstOrDefault();
 
 			if (collider != default)
 			{

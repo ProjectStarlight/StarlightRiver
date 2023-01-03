@@ -10,6 +10,7 @@ namespace StarlightRiver.Core
 	{
 
 		private readonly int[] dungeonBricks = new int[] { TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick };
+
 		private void TwistSwordGen(GenerationProgress progress, GameConfiguration configuration)
 		{
 			progress.Message = "Mounting weaponry";
