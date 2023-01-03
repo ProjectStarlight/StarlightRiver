@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 				for (int k = 0; k < 20; k++)
 				{
 					float dustRot = aim + 1.57f * 1.5f + Main.rand.NextFloat(-0.2f, 0.2f);
-					Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(dustRot) * 80 + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
+					Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(dustRot) * 80, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
 				}
 
 				return false;
