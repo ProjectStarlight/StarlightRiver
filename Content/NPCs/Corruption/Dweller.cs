@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.rotation += NPC.velocity.X / (NPC.width / 2f);
 
-					if (NPC.collideX && NPC.collideY)
+					if (NPC.collideX && NPC.velocity.Y == 0)
 						NPC.velocity.Y = -6;
 					break;
 			}
