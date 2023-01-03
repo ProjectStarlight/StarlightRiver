@@ -156,6 +156,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
 			Projectile.velocity.Y += 0.1f;
+
+			if (Projectile.timeLeft < 20)
+				Projectile.scale *= 0.9f;
 		}
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
