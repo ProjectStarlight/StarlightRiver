@@ -13,14 +13,14 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Palenail");
-			Tooltip.SetDefault("Summons the little man.");
+			Tooltip.SetDefault("Summons the Pale Knight");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 7;
+			Item.damage = 15;
 			Item.knockBack = 3f;
 			Item.mana = 10;
 			Item.width = 32;
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			Item.UseSound = SoundID.Item44;
 
 			Item.noMelee = true;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = DamageClass.Summon;
 			Item.buffType = BuffType<PalestoneSummonBuff>();
 			Item.shoot = ProjectileType<PaleKnight>();
 		}
@@ -94,11 +94,14 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public const int MinionFlybackRange = 450;
 
+		public ref float AttackState => ref Projectile.ai[0];
+		public ref float EnemyWhoAmI => ref Projectile.ai[1];
+
 		public override string Texture => AssetDirectory.PalestoneItem + "PalestoneKnight";
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Tiny Killer");
+			DisplayName.SetDefault("Pale Knight");
 			Main.projFrames[Projectile.type] = 20;
 
 			Main.projPet[Projectile.type] = true; // Denotes that this Projectile is a pet or minion
@@ -132,17 +135,17 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public override void PostDraw(Color lightColor)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
-			Utils.DrawBorderString(spriteBatch, Projectile.ai[1].ToString(), Projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
-			Utils.DrawBorderString(spriteBatch, Projectile.ai[0].ToString(), Projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
+			/*SpriteBatch spriteBatch = Main.spriteBatch;
+			Utils.DrawBorderString(spriteBatch, EnemyWhoAmI.ToString(), Projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
+			Utils.DrawBorderString(spriteBatch, AttackState.ToString(), Projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
 			Utils.DrawBorderString(spriteBatch, Projectile.velocity.Length().ToString(), Projectile.position + new Vector2(0, -20) - Main.screenPosition, Color.LightBlue);
-			if (Projectile.ai[1] >= 0)
-				Utils.DrawLine(spriteBatch, Projectile.Center, Main.npc[(int)Projectile.ai[1]].Center, Color.LightBlue, Color.IndianRed, 2f);
+			if (EnemyWhoAmI >= 0)
+				Utils.DrawLine(spriteBatch, Projectile.Center, Main.npc[(int)EnemyWhoAmI].Center, Color.LightBlue, Color.IndianRed, 2f);*/
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			Projectile.ai[1] = target.whoAmI;//TODO: possible desync, needs testing
+			EnemyWhoAmI = target.whoAmI;//TODO: possible desync, needs testing
 		}
 
 		public override void AI()
@@ -161,7 +164,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			#region Find target
 			// Starting search distance
 			Vector2 targetCenter = Projectile.Center;
-			bool foundTarget = Projectile.ai[1] >= 0;
+			bool foundTarget = EnemyWhoAmI >= 0;
 
 			// This code is required if your minion weapon has the targeting feature
 			if (Player.HasMinionAttackTargetNPC)
@@ -172,13 +175,13 @@ namespace StarlightRiver.Content.Items.Palestone
 				if (between < maxMinionChaseRange)
 				{
 					targetCenter = NPC.Center;
-					Projectile.ai[1] = NPC.whoAmI;
+					EnemyWhoAmI = NPC.whoAmI;
 					foundTarget = true;
 				}
 			}
 			else if (foundTarget)
 			{
-				NPC NPC = Main.npc[(int)Projectile.ai[1]];
+				NPC NPC = Main.npc[(int)EnemyWhoAmI];
 				float betweenPlayer = Vector2.Distance(NPC.Center, Player.Center);
 
 				if (NPC.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
@@ -187,14 +190,14 @@ namespace StarlightRiver.Content.Items.Palestone
 				}
 				else
 				{
-					Projectile.ai[1] = -1;
+					EnemyWhoAmI = -1;
 					foundTarget = false;
 				}
 			}
 
 			if (!foundTarget)
 			{
-				if (Projectile.ai[1] < -enemyCheckDelay)
+				if (EnemyWhoAmI < -enemyCheckDelay)
 				{
 					// This code is required either way, used for finding a target
 					for (int i = 0; i < Main.maxNPCs; i++)
@@ -212,19 +215,19 @@ namespace StarlightRiver.Content.Items.Palestone
 							if ((closest || !foundTarget) && Collision.CanHitLine(Projectile.position, 0, 0, NPC.position, 0, 0))
 							{
 								targetCenter = NPC.Center;
-								Projectile.ai[1] = NPC.whoAmI;
+								EnemyWhoAmI = NPC.whoAmI;
 								foundTarget = true;
 							}
 						}
 					}
 
 					if (!foundTarget)
-						Projectile.ai[1] = -1;
+						EnemyWhoAmI = -1;
 
 				}
 				else
 				{
-					Projectile.ai[1]--;
+					EnemyWhoAmI--;
 				}
 			}
 
@@ -238,29 +241,37 @@ namespace StarlightRiver.Content.Items.Palestone
 			#region Movement
 			Vector2 pos = Player.Center + new Vector2((validZoneWidth + modPlayer.KnightCount * minionSpacing + 32) * -Player.direction, 16);
 			var validZone = new Rectangle((int)(pos.X - validZoneWidth), (int)(pos.Y - validZoneHeight), validZoneWidth * 2, validZoneHeight * 2);
+			if (foundTarget)
+			{
+				Projectile.tileCollide = true;
+				AttackState = Attacking;
+			}		
+			else
+			{
+				Projectile.tileCollide = true;
+				AttackState = Walking;
+			}
+				
 
 			if (Vector2.Distance(Projectile.position, Player.position) > MinionFlybackRange && Vector2.Distance(Projectile.Center, validZone.Center()) > MinionFlybackRange && !foundTarget)
 			{
 				Projectile.tileCollide = false;
-				Projectile.ai[0] = Flying;
+				AttackState = Flying;
 			}
-			else if (Projectile.ai[0] == Flying && !WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
+			else if (AttackState == Flying && !WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
 			{
 				Projectile.tileCollide = true;
-				Projectile.ai[0] = Walking;
+				AttackState = Walking;
 			}
 
-			//Projectile.ai[0] = 0;//debug
+			
+			//AttackState = 0;//debug
 
-			switch (Projectile.ai[0])
+			switch (AttackState)
 			{
 				case Walking:
 					{
-						if (foundTarget)
-						{
-							Projectile.velocity.X += Vector2.Normalize(targetCenter - Projectile.Center).X * 0.1f;
-						}
-						else
+						if (!foundTarget)
 						{
 							Projectile.velocity.X += Vector2.Normalize(validZone.Center() - Projectile.Center).X * 0.1f;
 
@@ -295,6 +306,21 @@ namespace StarlightRiver.Content.Items.Palestone
 					Projectile.velocity += Vector2.Normalize(Player.Center - Projectile.Center) * 0.5f;
 					break;
 				case Attacking:
+					Projectile.velocity.X += Vector2.Normalize(targetCenter - Projectile.Center).X * 0.1f;
+
+					if (Projectile.Center.Y > targetCenter.Y && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
+						Projectile.velocity.Y -= Projectile.Center.Y - targetCenter.Y;
+
+					if (Projectile.velocity.Length() < 0.1f)
+					{
+						Projectile.frame = 0;
+						Projectile.frameCounter = 0;
+					}
+
+					Projectile.velocity.Y += 0.35f;
+
+					if (Projectile.velocity.HasNaNs())
+						foundTarget = false;
 
 					break;
 			}
@@ -309,9 +335,9 @@ namespace StarlightRiver.Content.Items.Palestone
 
 			int startOffset = 0;
 			int frameCount = FlyFrames;
-			float frameSpeed = defaultFrameSpeed;//this value is in fps
+			float frameSpeed = defaultFrameSpeed; //this value is in fps
 
-			switch (Projectile.ai[0])
+			switch (AttackState)
 			{
 				case 0:
 
@@ -359,7 +385,7 @@ namespace StarlightRiver.Content.Items.Palestone
 
 				if (Projectile.velocity.X != oldVelocity.X)//hit wall
 				{
-					if (Projectile.ai[0] == Walking)
+					if (AttackState == Walking)
 					{
 						int xpos = (int)((Projectile.Center.X + oldVelocity.X) / 16);
 						int yposTop = (int)((Projectile.position.Y + Projectile.height + 12) / 16) - 2;
