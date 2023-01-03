@@ -87,12 +87,14 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Projectile.velocity.Y += 0.1f;
 
 			if (Main.rand.NextBool(10))
+			{
 				Dust.NewDustPerfect(Projectile.Center,
 				ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(),
 				Main.rand.NextVector2Circular(0.5f, 0.5f),
 				0,
 				default,
 				Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
+			}
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
