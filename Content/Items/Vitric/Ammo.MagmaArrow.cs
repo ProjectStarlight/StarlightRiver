@@ -1,3 +1,5 @@
+using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -77,6 +79,9 @@ namespace StarlightRiver.Content.Items.Vitric
 				moltenCounter -= 0.05f;
 
 			Lighting.AddLight(Projectile.Center, (Color.Orange * Heat).ToVector3());
+
+			if (coolness < 1 && Main.rand.NextBool(10))
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<ArrowMagma>(), Projectile.damage / 3, 0, Projectile.owner);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -101,6 +106,60 @@ namespace StarlightRiver.Content.Items.Vitric
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(tex.Width / 3 * 2, 0, tex.Width / 3, tex.Height), //white sprite
 				Color.Lerp(Color.Orange, Color.White, moltenCounter) * moltenCounter, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 
+			return false;
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (Heat > 0.4f)
+				target.AddBuff(BuffID.OnFire, 180);
+		}
+
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			damage += (int)(coolness * 8);
+			knockback *= 1 + coolness;
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+		}
+	}
+
+	internal class ArrowMagma : ModProjectile
+	{
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Magma Arrow");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 8;
+			Projectile.height = 8;
+			Projectile.friendly = true;
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.penetrate = -1;
+			Projectile.timeLeft = 150;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			Projectile.scale = Main.rand.NextFloat(0.3f, 0.5f);
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity.Y += 0.1f;
+		}
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			Projectile.velocity = Vector2.Zero;
 			return false;
 		}
 	}
