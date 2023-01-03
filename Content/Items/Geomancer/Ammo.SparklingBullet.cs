@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 	{
 		public override string Texture => AssetDirectory.GeomancerItem + Name;
 
+		public static int bulletsConsumed = 0;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sparkling Bullet");
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void OnConsumedAsAmmo(Item weapon, Player player)
 		{
-			player.GetModPlayer<SparklingBulletPlayer>().bulletsConsumed++;
+			bulletsConsumed++;
 		}
 	}
 
@@ -85,19 +86,19 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Projectile.velocity.Y += 0.1f;
 
 			if (Main.rand.NextBool(10))
-				Dust.NewDustPerfect(Projectile.Center, 
-				ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(), 
-				Main.rand.NextVector2Circular(0.5f, 0.5f), 
-				0, 
-				default, 
+				Dust.NewDustPerfect(Projectile.Center,
+				ModContent.DustType<Dusts.ArtifactSparkles.GeodeArtifactSparkleFast>(),
+				Main.rand.NextVector2Circular(0.5f, 0.5f),
+				0,
+				default,
 				Main.rand.NextFloat(0.85f, 1.15f) * Projectile.scale);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (Player.GetModPlayer<SparklingBulletPlayer>().bulletsConsumed > 0)
+			if (SparklingBullet.bulletsConsumed > 0 && Main.LocalPlayer == Player)
 			{
-				Player.GetModPlayer<SparklingBulletPlayer>().bulletsConsumed--;
+				SparklingBullet.bulletsConsumed--;
 				Item.NewItem(new EntitySource_DropAsItem(Projectile), Player.Center, ModContent.ItemType<SparklingBullet>(), 1);
 			}
 		}
@@ -110,10 +111,5 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			}
 		}
-	}
-
-	public class SparklingBulletPlayer : ModPlayer
-	{
-		public int bulletsConsumed = 0;
 	}
 }
