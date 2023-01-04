@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Items.BaseTypes;
+using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -31,13 +32,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Equipped(Player) && crit)
-				target.AddBuff(BuffType<Exposed>(), 120);
+				ApplyExposed(target);
 		}
 
 		private void ModifyProjectileLens(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (Equipped(Main.player[Projectile.owner]) && crit)
-				target.AddBuff(BuffType<Exposed>(), 120);
+				ApplyExposed(target);
+		}
+
+		private void ApplyExposed(NPC target)
+		{
+			var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250).ToList();
+			nearby.ForEach(n => n.AddBuff(ModContent.BuffType<Exposed>(), 200));
 		}
 
 		public override void AddRecipes()
@@ -78,11 +85,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				damage = (int)(damage * 1.2f);
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
 			}
-		}
-
-		public override void Update(NPC NPC, ref int buffIndex)
-		{
-			//spawn dust and do a spelunker-esque glow maybe?
 		}
 	}
 }
