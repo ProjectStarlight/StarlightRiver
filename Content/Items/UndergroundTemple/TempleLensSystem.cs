@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		private void DrawLens(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			orig(self, behindTiles);
-			if (Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Buffs.Illuminant>())))
+			if (!behindTiles && Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Buffs.Illuminant>())))
 			{
 				GraphicsDevice gD = Main.graphics.GraphicsDevice;
 				SpriteBatch spriteBatch = Main.spriteBatch;
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-			Color gold = Color.Gold;
+			Color gold = Color.Orange;
 			gold.A = 0;
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
