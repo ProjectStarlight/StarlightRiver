@@ -189,6 +189,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.timeLeft = 20;
 			Projectile.ignoreWater = true;
 			Projectile.hide = true;
+			Projectile.ownerHitCheck = true;
 		}
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
