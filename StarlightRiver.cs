@@ -6,6 +6,7 @@ global using Terraria.ModLoader;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
 using StarlightRiver.Content.Items.Breacher;
+using StarlightRiver.Content.Items.UndergroundTemple;
 using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
@@ -147,6 +148,9 @@ namespace StarlightRiver
 
 					if (BreacherArmorHelper.NPCTarget != null)
 						BreacherArmorHelper.ResizeTarget();
+
+					if (TempleLensSystem.NPCTarget != null)
+						TempleLensSystem.ResizeTarget();
 				}
 
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
