@@ -1,12 +1,19 @@
 ﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Systems.CameraSystem;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassweaverWaiting : ModNPC
 	{
+		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-48, 80 * 16) + new Vector2(0, 256);
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref NPC.ai[0];
+		public ref float State => ref NPC.ai[1];
 
 		public override void SetStaticDefaults()
 		{
@@ -28,11 +35,60 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.knockBackResist = 0;
 		}
 
+		public override void AI()
+		{
+			Timer++;
+
+			if (State == 1)
+			{
+				NPC.scale -= 1 / 60f;
+
+				if (Timer > 60)
+				{
+					NPC.Center = ArenaPos;
+					NPC.scale = 1;
+					State = 2;
+				}
+			}
+		}
+
 		public override string GetChat()
 		{
-			RichTextBox.OpenDialogue(NPC, "Test", "Hello I am an NPC and I have some cool text to give you, this is an example of how I will deliver it!");
-			RichTextBox.AddButton("Talk to me!", () => RichTextBox.SetData(NPC, "Test", "Well maybe I wont if you're going to be rude!"));
-			RichTextBox.AddButton("Close", () => RichTextBox.CloseDialogue());
+			if (State == 0) //Waiting at entrance
+			{
+				RichTextBox.OpenDialogue(NPC, "Glassweaver", "Placeholder_Introduction");
+				RichTextBox.AddButton("Tell me more", () =>
+				{
+					RichTextBox.ClearButtons();
+					RichTextBox.SetData(NPC, "Glassweaver", "Placeholder_Introduction_2");
+
+					RichTextBox.AddButton("Show me", () =>
+					{
+						CameraSystem.AsymetricalPan(180, 240, 150, ArenaPos);
+						RichTextBox.SetData(NPC, "Glassweaver", "Placeholder_After_Camera");
+					});
+
+					RichTextBox.AddButton("See you later", () =>
+					{
+						RichTextBox.CloseDialogue();
+						State = 1;
+						Timer = 0;
+					});
+				});
+			}
+			else if (State == 2) //Waiting in arena
+			{
+				RichTextBox.OpenDialogue(NPC, "Glassweaver", "Placeholder_Challenge");
+
+				RichTextBox.AddButton("Fight", () =>
+				{
+					NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
+					RichTextBox.CloseDialogue();
+					NPC.active = false;
+				});
+
+				RichTextBox.AddButton("See you later", () => RichTextBox.CloseDialogue());
+			}
 
 			return "";
 
@@ -70,18 +126,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 		}
 
-		public override void SetChatButtons(ref string button, ref string button2)
+		public override void SaveData(TagCompound tag)
 		{
-			button = "Challenge";
+			tag.Add("State", State);
 		}
 
-		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
+		public override void LoadData(TagCompound tag)
 		{
-			if (firstButton)
-			{
-				NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
-				NPC.active = false;
-			}
+			State = tag.GetFloat("State");
 		}
 	}
 }
