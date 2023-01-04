@@ -193,6 +193,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.timeLeft < 15)
 				Projectile.scale *= 0.9f;
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Projectile.timeLeft > 15)
