@@ -11,8 +11,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 	public class TempleLensSystem : IOrderedLoadable
 	{
 		public static RenderTarget2D NPCTarget;
-
 		public static RenderTarget2D LensTarget;
+
 		public float Priority => 1.1f;
 
 		public void Load()
