@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.BaseTypes;
 using System.Linq;
 using Terraria.ID;
@@ -75,6 +76,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				damage = (int)(damage * 1.2f);
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
+				CreateDust(NPC);
 			}
 		}
 
@@ -84,6 +86,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				damage = (int)(damage * 1.2f);
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
+				CreateDust(NPC);
+			}
+		}
+
+		private void CreateDust(NPC NPC)
+		{
+			for (int i = 0; i < 14; i++)
+			{
+				Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+				Dust.NewDustPerfect(NPC.Center + (dir * 15), ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
+
+				Vector2 dir2 = Main.rand.NextVector2CircularEdge(1, 1);
+				Dust.NewDustPerfect(NPC.Center + (dir2 * 15), ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
 			}
 		}
 	}
