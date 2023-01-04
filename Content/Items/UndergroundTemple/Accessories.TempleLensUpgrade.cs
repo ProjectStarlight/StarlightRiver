@@ -46,6 +46,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			var nearby = Main.npc.Where(n => n.active && n != target && n.Distance(target.Center) < 250).ToList();
 			nearby.ForEach(n => n.AddBuff(ModContent.BuffType<Exposed>(), 200));
+			nearby.ForEach(n => Exposed.CreateDust(n, false));
 		}
 
 		public override void AddRecipes()
@@ -76,7 +77,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				damage = (int)(damage * 1.2f);
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
-				CreateDust(NPC);
+				CreateDust(NPC, true);
 			}
 		}
 
@@ -86,16 +87,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				damage = (int)(damage * 1.2f);
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
-				CreateDust(NPC);
+				CreateDust(NPC, true);
 			}
 		}
 
-		private void CreateDust(NPC NPC)
+		public static void CreateDust(NPC NPC, bool hit)
 		{
 			for (int i = 0; i < 14; i++)
 			{
-				Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-				Dust.NewDustPerfect(NPC.Center + (dir * 15), ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
+				if (hit)
+				{
+					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+					Dust.NewDustPerfect(NPC.Center + (dir * 15), ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
+				}
 
 				Vector2 dir2 = Main.rand.NextVector2CircularEdge(1, 1);
 				Dust.NewDustPerfect(NPC.Center + (dir2 * 15), ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
