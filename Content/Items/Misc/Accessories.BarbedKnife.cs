@@ -10,6 +10,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public BarbedKnife() : base("Barbed Knife", "Critical strikes apply a bleeding debuff that stacks up to five times") { }
 
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.Blue;
+			Item.value = Item.sellPrice(0, 0, 20, 0);
+		}
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
