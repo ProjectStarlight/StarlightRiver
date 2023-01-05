@@ -96,14 +96,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				NPC NPC = Main.npc[i];
 
 				if (NPC.active && NPC.HasBuff(ModContent.BuffType<Buffs.Illuminant>()))
-				{
 					spriteBatch.Draw(bloom, NPC.Center - Main.screenPosition, null, gold, 0, bloom.Size() / 2, 5, SpriteEffects.None, 0f);
-				}
 
 				if (NPC.active && NPC.HasBuff(ModContent.BuffType<Exposed>()))
-				{
 					spriteBatch.Draw(bloom, NPC.Center - Main.screenPosition, null, gold, 0, bloom.Size() / 2, 2, SpriteEffects.None, 0f);
-				}
 			}
 			spriteBatch.End();
 			gD.SetRenderTargets(bindings);
