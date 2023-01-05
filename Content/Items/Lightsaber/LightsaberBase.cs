@@ -9,9 +9,6 @@
 //Sound effects
 
 //TODO on blue rightclick:
-//Make lasers have dust
-//Sound effects
-//Destruction dust
 //Make it have less boilerplate
 
 //TODO on purple rightclick:
@@ -338,9 +335,9 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		{
 			Projectile.penetrate++;
 			hit.Add(target);
-			//Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
+			
 			if (Core.Systems.CameraSystem.Shake < 20)
-			Core.Systems.CameraSystem.Shake += 2;
+				Core.Systems.CameraSystem.Shake += 2;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
