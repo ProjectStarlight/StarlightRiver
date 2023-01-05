@@ -78,6 +78,10 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 
 			spriteBatch.End();
+			#endregion
+
+			#region lenstarget
+
 
 			gD.SetRenderTarget(LensTarget);
 			gD.Clear(Color.Transparent);
@@ -103,6 +107,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 			spriteBatch.End();
 			gD.SetRenderTargets(bindings);
+
 			#endregion
 		}
 
