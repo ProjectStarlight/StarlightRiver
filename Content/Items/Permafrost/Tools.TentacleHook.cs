@@ -1,20 +1,9 @@
-﻿//TODO:
-//Neck
-//Sellprice
-//Rarity
-//Visuals
-//Clean up code
-
-using ReLogic.Content;
-using StarlightRiver.Core.Systems.AuroraWaterSystem;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
-	class TentacleHook : ModItem
+	internal class TentacleHook : ModItem
 	{
 		public override string Texture => AssetDirectory.PermafrostItem + "TentacleHook";
 
@@ -29,17 +18,17 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.noUseGraphic = true;
 			Item.damage = 0;
 			Item.knockBack = 7f;
-			Item.useStyle = 5;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.shootSpeed = 10f;
 			Item.width = 18;
 			Item.height = 28;
 			Item.UseSound = SoundID.Item1;
 			Item.useAnimation = 20;
 			Item.useTime = 20;
-			Item.rare = 1;
 			Item.noMelee = true;
-			Item.value = 20000;
-			Item.shootSpeed = 12f; // how quickly the hook is shot.
+			Item.value = Item.sellPrice(0, 0, 80, 0);
+			Item.rare = ItemRarityID.Green;
+			Item.shootSpeed = 18f; // how quickly the hook is shot.
 			Item.shoot = ModContent.ProjectileType<TentacleHookProj>();
 		}
 	}
@@ -48,27 +37,15 @@ namespace StarlightRiver.Content.Items.Permafrost
 	{
 		public override string Texture => AssetDirectory.PermafrostItem + "TentacleHookProj";
 
-		private static Asset<Texture2D> chainTexture;
+		private List<Vector2> followPoints = new();
 
-		private List<Vector2> followPoints = new List<Vector2>();
-
-		private bool pulling = true;
+		private bool launching = true;
 
 		private int timer = 0;
 
+		private int stillTimer = 0;
+
 		private Player Owner => Main.player[Projectile.owner];
-
-		public override void Load()
-		{ // This is called once on mod (re)load when this piece of content is being loaded.
-		  // This is the path to the texture that we'll use for the hook's chain. Make sure to update it.
-			chainTexture = ModContent.Request<Texture2D>(Texture + "_Chain");
-		}
-
-		public override void Unload()
-		{ // This is called once on mod reload when this piece of content is being unloaded.
-		  // It's currently pretty important to unload your static fields like this, to avoid having parts of your mod remain in memory when it's been unloaded.
-			chainTexture = null;
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -77,84 +54,72 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetDefaults()
 		{
-			Projectile.CloneDefaults(ProjectileID.GemHookAmethyst); // Copies the attributes of the Amethyst hook's projectile.
+			Projectile.CloneDefaults(ProjectileID.GemHookAmethyst);
 		}
 
 		public override void AI()
 		{
-			if (pulling)
+			if (launching)
 			{
-				if (timer++ % 3 == 0)
+				if (timer++ % 6 == 0)
 					followPoints.Add(Projectile.Center);
 
 				if (timer < 120)
-					Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
+				{
+					if (Projectile.Distance(Main.MouseWorld) > 25)
+					{
+						Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
+						stillTimer = 0;
+					}
+					else
+					{
+						Projectile.Center = Main.MouseWorld;
+						stillTimer++;
+						if (stillTimer > 15)
+							timer = 121;
+					}
+				}
 				else
+				{
 					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
+				}
 			}
 		}
 
-		// Return true if it is like: Hook, CandyCaneHook, BatHook, GemHooks
-		 public override bool? SingleGrappleHook(Player player)
-		 {
+		public override bool? SingleGrappleHook(Player player)
+		{
 			return true;
-		 }
+		}
 
-		// Use this to kill oldest hook. For hooks that kill the oldest when shot, not when the newest latches on: Like SkeletronHand
-		// You can also change the projectile like: Dual Hook, Lunar Hook
-		// public override void UseGrapple(Player player, ref int type)
-		// {
-		//	int hooksOut = 0;
-		//	int oldestHookIndex = -1;
-		//	int oldestHookTimeLeft = 100000;
-		//	for (int i = 0; i < 1000; i++)
-		//	{
-		//		if (Main.projectile[i].active && Main.projectile[i].owner == projectile.whoAmI && Main.projectile[i].type == projectile.type)
-		//		{
-		//			hooksOut++;
-		//			if (Main.projectile[i].timeLeft < oldestHookTimeLeft)
-		//			{
-		//				oldestHookIndex = i;
-		//				oldestHookTimeLeft = Main.projectile[i].timeLeft;
-		//			}
-		//		}
-		//	}
-		//	if (hooksOut > 1)
-		//	{
-		//		Main.projectile[oldestHookIndex].Kill();
-		//	}
-		// }
-
-		// Amethyst Hook is 300, Static Hook is 600.
 		public override float GrappleRange()
 		{
-			return 400f;
+			return 300f;
 		}
 
 		public override void NumGrappleHooks(Player player, ref int numHooks)
 		{
-			numHooks = 1; // The amount of hooks that can be shot out
+			numHooks = 1;
 		}
 
-		// default is 11, Lunar is 24
 		public override void GrappleRetreatSpeed(Player player, ref float speed)
 		{
-			pulling = false;
-			speed = 15f; // How fast the grapple returns to you after meeting its max shoot distance
+			launching = false;
+			speed = 15f;
 		}
 
 		public override void GrapplePullSpeed(Player player, ref float speed)
 		{
-			speed = 10; // How fast you get pulled to the grappling hook projectile's landing position
+			speed = 18;
 		}
 
-		// Adjusts the position that the player will be pulled towards. This will make them hang 50 pixels away from the tile being grappled.
 		public override void GrappleTargetPoint(Player player, ref float grappleX, ref float grappleY)
 		{
+			launching = false;
 			if (followPoints.Count < 1)
 			{
 				return;
 			}
+
 			grappleX = followPoints[0].X;
 			grappleY = followPoints[0].Y;
 
@@ -162,9 +127,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 				followPoints.RemoveAt(0);
 		}
 
-		// Draws the grappling hook's chain.
 		public override bool PreDrawExtras()
 		{
+			Texture2D chainTexture = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
+			Texture2D neckTexture = ModContent.Request<Texture2D>(Texture + "_Neck").Value;
 			Vector2 playerCenter = Main.player[Projectile.owner].MountedCenter;
 			Vector2 center = Projectile.Center;
 			Vector2 directionToPlayer = playerCenter - Projectile.Center;
@@ -175,7 +141,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			while (distanceToPlayer > 20f && !float.IsNaN(distanceToPlayer))
 			{
 				directionToPlayer /= distanceToPlayer; // get unit vector
-				directionToPlayer *= chainTexture.Height(); // multiply by chain link length
+				directionToPlayer *= chainTexture.Height; // multiply by chain link length
 
 				center += directionToPlayer; // update draw position
 				directionToPlayer = playerCenter - center; // update distance
@@ -186,19 +152,20 @@ namespace StarlightRiver.Content.Items.Permafrost
 				// Draw chain
 				if (chainNum == 0)
 				{
-					Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture + "_Neck").Value, center - Main.screenPosition,
-					chainTexture.Value.Bounds, drawColor, chainRotation,
-					chainTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
+					Main.EntitySpriteDraw(neckTexture, center - Main.screenPosition,
+					neckTexture.Bounds, drawColor, chainRotation,
+					neckTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 				}
 				else
 				{
-					Main.EntitySpriteDraw(chainTexture.Value, center - Main.screenPosition,
-						chainTexture.Value.Bounds, drawColor, chainRotation,
+					Main.EntitySpriteDraw(chainTexture, center - Main.screenPosition,
+						chainTexture.Bounds, drawColor, chainRotation,
 						chainTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 				}
+
 				chainNum++;
 			}
-			// Stop vanilla from drawing the default chain.
+
 			return false;
 		}
 	}
