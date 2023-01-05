@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			var data = TileObjectData.GetTileData(tile.TileType, TileObjectData.GetTileStyle(tile)); //grabs the TileObjectData associated with our tile. So we dont have to use as many magic numbers
 			int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); //the width of a full frame of our multitile in pixels. We get this by multiplying the size of 1 full frame with padding by the width of our tile in tiles.
 
-			if (tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0) //this checks to make sure this is only the top-left tile. We only want one tile to do all the growing for us, and top-left is the standard. otherwise each tile in the multitile ticks on its own due to stupid poopoo redcode.
+			if ((tile.TileFrameX == 0 || tile.TileFrameX == 36) && tile.TileFrameY % 36 == 0) //this checks to make sure this is only the top-left tile. We only want one tile to do all the growing for us, and top-left is the standard. otherwise each tile in the multitile ticks on its own due to stupid poopoo redcode.
 			{
 				if (Main.rand.NextBool(2) && tile.TileFrameX == 0) //a random check here can slow growing as much as you want.
 				{
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override bool RightClick(int i, int j)
 		{
-			if (Main.tile[i, j].TileFrameX > 35) //Only runs if it has berries
+			if (Main.tile[i, j].TileFrameX > 71) //Only runs if it has berries
 			{
 				Tile tile = Framing.GetTileSafely(i, j); //Selects current tile
 
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void MouseOver(int i, int j)
 		{
-			if (Framing.GetTileSafely(i, j).TileFrameX >= 32)
+			if (Framing.GetTileSafely(i, j).TileFrameX >= 72)
 			{
 				Player Player = Main.LocalPlayer;
 				Player.cursorItemIconID = ItemType<ForestBerries>();
@@ -83,9 +83,10 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i * 16, j * 16), ItemType<ForestBerryBushItem>()); //drop a bush Item
-
 			if (frameX > 35)
+				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i * 16, j * 16), ItemType<ForestBerryBushItem>()); //drop a bush Item
+
+			if (frameX > 71)
 				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries if harvestable
 		}
 	}
@@ -117,6 +118,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	public class ForestBerryBushItem : QuickTileItem
 	{
-		public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries!", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
+		public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
 	}
 }
