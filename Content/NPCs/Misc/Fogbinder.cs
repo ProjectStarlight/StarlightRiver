@@ -5,6 +5,9 @@
 //Buff targets
 //Make it able to be stood on and immortal
 //Visuals
+//Better chain texture
+//Make it bob slightly
+//Visuals for chain attachments and breaking
 
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
@@ -22,6 +25,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private int yFrame = 0;
 
 		public List<NPC> targets = new();
+
+		public Player player => Main.player[NPC.target];
 
 		public override string Texture => AssetDirectory.MiscNPC + Name;
 
@@ -52,6 +57,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void AI()
 		{
+			NPC.TargetClosest(true);
+			NPC.spriteDirection = NPC.direction;
 			frameCounter++;
 			if (frameCounter % 4 == 0)
 				yFrame++;
@@ -72,6 +79,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			Texture2D texture = Request<Texture2D>(Texture).Value;
+			Texture2D glowTexture = Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D chainTex = Request<Texture2D>(Texture + "_Chain").Value;
 
 			SpriteEffects effects = SpriteEffects.None;
 			var origin = new Vector2(NPC.width / 2, NPC.height / 2);
@@ -81,7 +90,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 
-			Texture2D chainTex = Request<Texture2D>(Texture + "_Chain").Value;
 			foreach (NPC target in targets)
 			{
 				float distanceToTarget = (target.Center - NPC.Center).Length();
@@ -94,7 +102,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, drawColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 				}
 			}
+
 			Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
+			Main.spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
 
 			return false;
 		}
@@ -113,7 +123,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			if (fogbinder.active)
 			{
-				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / 4000f);
+				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / 2000f);
 
 				if (npc.Distance(fogbinder.Center) > 500)
 					fogbinder = default;
