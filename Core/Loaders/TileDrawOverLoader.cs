@@ -2,12 +2,14 @@
 
 namespace StarlightRiver.Core.Loaders
 {
-	class TileDrawOverLoader : IOrderedLoadable
+	class TileDrawOverLoader : IOrderedLoadable, IResizable
 	{
 		public float Priority => 1.1f;
 
 		public static RenderTarget2D projTarget;
 		public static RenderTarget2D tileTarget;
+
+		public bool IsResizable => projTarget != null;
 
 		public void Load()
 		{
@@ -21,7 +23,7 @@ namespace StarlightRiver.Core.Loaders
 			On.Terraria.Main.Update += Main_Update;
 		}
 
-		public static void ResizeTarget()
+		public void ResizeTarget()
 		{
 			projTarget?.Dispose();
 			tileTarget?.Dispose();

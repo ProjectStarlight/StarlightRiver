@@ -8,12 +8,16 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-	public class TempleLensSystem : IOrderedLoadable
+	public class TempleLensSystem : IOrderedLoadable, IResizable
 	{
 		public static RenderTarget2D NPCTarget;
 		public static RenderTarget2D LensTarget;
 
+		public bool IsResizable => NPCTarget != null;
+
 		public float Priority => 1.1f;
+
+		public static bool Active => Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Buffs.Illuminant>())) || Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Exposed>()));
 
 		public void Load()
 		{
@@ -40,7 +44,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null || (!Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Buffs.Illuminant>()))) && !Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Exposed>())))
+			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null || !Active)
 				return;
 
 			#region npctarget
@@ -105,7 +109,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		private void DrawLens(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			orig(self, behindTiles);
-			if (!behindTiles && (Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Buffs.Illuminant>())) || Main.npc.Any(n => n.active && n.HasBuff(ModContent.BuffType<Exposed>()))))
+			if (!behindTiles && Active)
 			{
 				GraphicsDevice gD = Main.graphics.GraphicsDevice;
 				SpriteBatch spriteBatch = Main.spriteBatch;
@@ -126,7 +130,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 		}
 
-		public static void ResizeTarget()
+		public void ResizeTarget()
 		{
 			Main.QueueMainThreadAction(() => NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 			Main.QueueMainThreadAction(() => LensTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));

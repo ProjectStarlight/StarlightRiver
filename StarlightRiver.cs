@@ -29,6 +29,8 @@ namespace StarlightRiver
 	{
 		private List<IOrderedLoadable> loadCache;
 
+		private List<IResizable> resizableCache;
+
 		private List<IRecipeGroup> recipeGroupCache;
 
 		public static bool debugMode = false;
@@ -98,6 +100,17 @@ namespace StarlightRiver
 				recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
 			}
 
+			resizableCache = new List<IResizable>();
+
+			foreach (Type type in Code.GetTypes())
+			{
+				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IResizable)))
+				{
+					object instance = Activator.CreateInstance(type);
+					resizableCache.Add(instance as IResizable);
+				}
+			}
+
 			if (!Main.dedServ)
 			{
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
@@ -143,14 +156,11 @@ namespace StarlightRiver
 			{
 				if (lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
 				{
-					if (TileDrawOverLoader.projTarget != null)
-						TileDrawOverLoader.ResizeTarget();
-
-					if (BreacherArmorHelper.NPCTarget != null)
-						BreacherArmorHelper.ResizeTarget();
-
-					if (TempleLensSystem.NPCTarget != null)
-						TempleLensSystem.ResizeTarget();
+					foreach (IResizable resizable in resizableCache)
+					{
+						if (resizable.IsResizable)
+							resizable.ResizeTarget();
+					}
 				}
 
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);

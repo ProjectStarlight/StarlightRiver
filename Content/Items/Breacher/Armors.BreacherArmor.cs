@@ -808,15 +808,17 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	public class BreacherArmorHelper : IOrderedLoadable
+	public class BreacherArmorHelper : IOrderedLoadable, IResizable
 	{
 		public static RenderTarget2D NPCTarget;
 
 		public static bool anyScanned;
 
+		private static float alpha = 1f;
+
 		public float Priority => 1.1f;
 
-		private static float alpha = 1f;
+		public bool IsResizable => NPCTarget != null;
 
 		public void Load()
 		{
@@ -837,7 +839,7 @@ namespace StarlightRiver.Content.Items.Breacher
 				DrawNPCTarget();
 		}
 
-		public static void ResizeTarget()
+		public void ResizeTarget()
 		{
 			Main.QueueMainThreadAction(() => NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 		}
