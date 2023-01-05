@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Item.useTime = 15;
 			Item.useAnimation = 15;
 			Item.useStyle = ItemUseStyleID.EatFood;
-			Item.healLife = 5;
+			Item.healLife = 20;
 			Item.potion = true;
 			Item.UseSound = SoundID.Item2;
 		}
