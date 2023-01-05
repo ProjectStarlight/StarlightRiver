@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private void Main_CheckMonoliths(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
+			orig();
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 

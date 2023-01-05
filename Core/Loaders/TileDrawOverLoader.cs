@@ -9,7 +9,7 @@ namespace StarlightRiver.Core.Loaders
 		public static RenderTarget2D projTarget;
 		public static RenderTarget2D tileTarget;
 
-		public bool IsResizable => projTarget != null;
+		public bool IsResizable => true;
 
 		public void Load()
 		{
