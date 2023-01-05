@@ -1,6 +1,5 @@
 ﻿//TODO:
 //Clean up code
-//Make them configurable
 //Merge boilerplate code in lightsabertypes for swinging
 
 //TODO on white rightclick:

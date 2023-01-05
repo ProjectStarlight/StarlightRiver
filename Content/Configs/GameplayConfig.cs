@@ -12,9 +12,9 @@ namespace StarlightRiver.Configs
 
 		public override bool NeedsReload(ModConfig pendingConfig)
 		{
-			if (Lightsabers == (pendingConfig as GameplayConfig).Lightsabers) 
-				return false;
-			return true;
+			if (Lightsabers != (pendingConfig as GameplayConfig).Lightsabers) 
+				return true;
+			return false;
 		}
 
 		[Label("Custom Phasesabers")]
