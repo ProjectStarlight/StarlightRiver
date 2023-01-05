@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
@@ -45,6 +46,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private int stillTimer = 0;
 
+		private float colorCounter = 0;
+
 		private Player Owner => Main.player[Projectile.owner];
 
 		public override void SetStaticDefaults()
@@ -59,6 +62,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void AI()
 		{
+			colorCounter += 0.8f;
 			if (launching)
 			{
 				if (timer++ % 6 == 0)
@@ -93,7 +97,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override float GrappleRange()
 		{
-			return 300f;
+			return 350f;
 		}
 
 		public override void NumGrappleHooks(Player player, ref int numHooks)
@@ -127,9 +131,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 				followPoints.RemoveAt(0);
 		}
 
-		public override bool PreDrawExtras()
+		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D chainTexture = ModContent.Request<Texture2D>(Texture + "_Chain").Value;
+			Texture2D chainGlowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 			Texture2D neckTexture = ModContent.Request<Texture2D>(Texture + "_Neck").Value;
 			Vector2 playerCenter = Main.player[Projectile.owner].MountedCenter;
 			Vector2 center = Projectile.Center;
@@ -138,6 +143,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			float distanceToPlayer = directionToPlayer.Length();
 
 			int chainNum = 0;
+
+			float colorIncrement = colorCounter;
 			while (distanceToPlayer > 20f && !float.IsNaN(distanceToPlayer))
 			{
 				directionToPlayer /= distanceToPlayer; // get unit vector
@@ -147,25 +154,36 @@ namespace StarlightRiver.Content.Items.Permafrost
 				directionToPlayer = playerCenter - center; // update distance
 				distanceToPlayer = directionToPlayer.Length();
 
-				Color drawColor = Lighting.GetColor((int)center.X / 16, (int)(center.Y / 16));
+				Color chainColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
 
-				// Draw chain
+				Color bloomColor = chainColor * 0.75f;
+				bloomColor.A = 0;
+
+				Main.spriteBatch.Draw(chainGlowTex, center - Main.screenPosition,
+					chainGlowTex.Bounds, bloomColor, chainRotation,
+					chainGlowTex.Size() * 0.5f, 0.2f, SpriteEffects.None, 0);
+
 				if (chainNum == 0)
 				{
-					Main.EntitySpriteDraw(neckTexture, center - Main.screenPosition,
-					neckTexture.Bounds, drawColor, chainRotation,
+					Main.spriteBatch.Draw(neckTexture, center - Main.screenPosition,
+					neckTexture.Bounds, chainColor, chainRotation,
 					neckTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 				}
 				else
 				{
-					Main.EntitySpriteDraw(chainTexture, center - Main.screenPosition,
-						chainTexture.Bounds, drawColor, chainRotation,
+					Main.spriteBatch.Draw(chainTexture, center - Main.screenPosition,
+						chainTexture.Bounds, chainColor, chainRotation,
 						chainTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 				}
-
+				colorIncrement++;
 				chainNum++;
 			}
 
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Color drawColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, drawColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
 		}
 	}
