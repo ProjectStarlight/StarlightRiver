@@ -60,6 +60,9 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
+			if (!Main.Configuration.Get<bool>("Lightsabers", true))
+				return;
+
 			switch (item.type)
 			{
 				case ItemID.RedPhaseblade:
@@ -88,7 +91,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
         public override void SetDefaults(Item item)
         {
-            switch (item.type)
+			if (!Main.Configuration.Get<bool>("Lightsabers", true))
+				return;
+
+			switch (item.type)
             {
 				case ItemID.RedPhaseblade:
 					item.shoot = ModContent.ProjectileType<LightsaberProj_Red>();
@@ -129,6 +135,8 @@ namespace StarlightRiver.Content.Items.Lightsaber
         }
 		public override bool AltFunctionUse(Item item, Player player)
 		{
+			if (!Main.Configuration.Get<bool>("Lightsabers", true))
+				return base.AltFunctionUse(item, player);
 			if (phaseblades.Contains(item.type) && item.type != ItemID.YellowPhaseblade && item.type != ItemID.OrangePhaseblade)
 				return true;
 			return base.AltFunctionUse(item, player);
@@ -136,14 +144,17 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			if (item.type == ItemID.WhitePhaseblade && player.GetModPlayer<LightsaberPlayer>().whiteCooldown > 0 && player.altFunctionUse == 2)
-				return false;
-
-			if (phaseblades.Contains(item.type))
+			if (Main.Configuration.Get<bool>("Lightsabers", true))
 			{
-				Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
-				(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
-				return false;
+				if (item.type == ItemID.WhitePhaseblade && player.GetModPlayer<LightsaberPlayer>().whiteCooldown > 0 && player.altFunctionUse == 2)
+					return false;
+
+				if (phaseblades.Contains(item.type))
+				{
+					Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+					(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
+					return false;
+				}
 			}
 			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
 		}
