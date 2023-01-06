@@ -1,19 +1,12 @@
-﻿//TODO:
-//Bestiary
-//Buff targets
-//Make it able to be stood on and immortal
-//Better chain texture
-//Make it bob slightly
-//Visuals for chain attachments and breaking
-//Sound effects
-
-using StarlightRiver.Content.Buffs;
+﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader.Utilities;
+using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
@@ -25,11 +18,14 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private float deathTimer = 0;
 
+		private float bobTimer = 0f;
+
 		public List<NPC> targets = new();
 
 		public Player player => Main.player[NPC.target];
 
 		public override string Texture => AssetDirectory.MiscNPC + Name;
+
 		public override void Load()
 		{
 			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscNPC + "Fogbinder_Chain");
@@ -55,6 +51,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.DeathSound = SoundID.NPCDeath2;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
+				new FlavorTextBestiaryInfoElement("They call it... The fogbinder. Appearing during thunderstorms, this being is very Spooky, Demented, Demonic, Hellish, and Evil.")
+			});
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -84,14 +89,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
-			frameCounter++;
-			if (frameCounter % 5 == 0)
-				yFrame++;
-			yFrame %= Main.npcFrameCount[NPC.type];
 
-			NPC.velocity = Vector2.Zero;
+			bobTimer += 0.05f;
+			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
 
-			targets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type).ToList();
+			targets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
 			targets.ForEach(n => n.GetGlobalNPC<FogbinderGNPC>().fogbinder = NPC);
 
 			if (Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(NPC.Hitbox)))
@@ -99,6 +101,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				deathTimer += 0.01f;
 				if (deathTimer > 1)
 				{
+					SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
 					NPC.active = false;
 					foreach (NPC target in targets)
 					{
@@ -122,6 +125,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void FindFrame(int frameHeight)
 		{
+			frameCounter++;
+			if (frameCounter % 5 == 0)
+				yFrame++;
+			yFrame %= Main.npcFrameCount[NPC.type];
+
 			int frameWidth = NPC.width;
 			NPC.frame = new Rectangle(0, frameHeight * yFrame, frameWidth, frameHeight);
 		}
@@ -149,7 +157,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				for (float i = 0; i < distanceToTarget; i+= chainTex.Width + 4)
 				{
 					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
-					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16));
+					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * target.GetGlobalNPC<FogbinderGNPC>().chainOpacity;
 					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, lightColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 				}
 			}
@@ -175,20 +183,30 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public NPC fogbinder;
 
+		public float chainOpacity = 0;
+
 		private float pull = -1;
 
 		public override void AI(NPC npc)
 		{
 			if (fogbinder == default || fogbinder is null)
 			{
+				chainOpacity = 0;
 				pull = -1;
 				return;
 			}
 
 			if (fogbinder.active)
 			{
+				if (chainOpacity < 1)
+					chainOpacity += 0.02f;
+
 				if (pull == -1)
+				{
+					npc.damage *= 2;
+					npc.defense *= 2;
 					pull = Main.rand.Next(1500, 2500);
+				}
 				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / pull);
 
 				if (Main.rand.NextBool(2))
@@ -207,7 +225,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 					}
 					fogbinder = default;
 					pull = -1;
+					npc.damage = (int)(npc.damage * 0.5f);
+					npc.defense = (int)(npc.defense * 0.5f);
 				}
+			}
+			else
+			{
+				fogbinder = default;
+				npc.damage = (int)(npc.damage * 0.5f);
+				npc.defense = (int)(npc.defense * 0.5f);
 			}
 		}
 	}
