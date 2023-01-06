@@ -103,6 +103,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				{
 					SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
 					NPC.active = false;
+					Main.BestiaryTracker.Kills.RegisterKill(NPC);
 					foreach (NPC target in targets)
 					{
 						float distanceToTarget = (target.Center - NPC.Center).Length();
@@ -170,7 +171,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			if (!Main.IsItStorming)
+			if (!Main.IsItStorming || Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Fogbinder>()))
 				return 0;
 
 			return SpawnCondition.Overworld.Chance * 0.05f;
