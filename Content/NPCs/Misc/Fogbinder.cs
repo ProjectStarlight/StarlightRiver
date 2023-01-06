@@ -94,7 +94,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Dust.NewDustPerfect(NPC.Center + new Vector2(0,50), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.88f).RotatedByRandom(0.15f), 0, Color.White, 0.35f);
 
 			NPC.TargetClosest(true);
-			NPC.spriteDirection = NPC.direction;
 
 			bobTimer += 0.05f;
 			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
@@ -138,6 +137,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 			yFrame %= divider;
 
+			if (laughing && yFrame % 6 == 5)
+			{
+				SoundEngine.PlaySound(SoundID.NPCHit55, NPC.Center);
+			}
+
 			int frameWidth = NPC.width;
 			NPC.frame = new Rectangle(frameWidth * xFrame, frameHeight * yFrame, frameWidth, frameHeight);
 		}
@@ -148,11 +152,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Texture2D glowTexture = Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D chainTex = Request<Texture2D>(Texture + "_Chain").Value;
 
-			SpriteEffects effects = SpriteEffects.None;
+			SpriteEffects effects = SpriteEffects.FlipHorizontally;
 			var origin = new Vector2(NPC.width / 2, NPC.height / 2);
-
-			if (NPC.spriteDirection != 1)
-				effects = SpriteEffects.FlipHorizontally;
 
 			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 
