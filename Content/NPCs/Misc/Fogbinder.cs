@@ -13,8 +13,10 @@ namespace StarlightRiver.Content.NPCs.Misc
 {
 	class Fogbinder : ModNPC
 	{
+		private const int XFRAMES = 2;
 		private int frameCounter = 0;
-		private int yFrame = 0;
+		public int yFrame = 0;
+		public int xFrame = 1;
 
 		private float deathTimer = 0;
 
@@ -23,6 +25,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public List<NPC> targets = new();
 
 		public Player player => Main.player[NPC.target];
+
+		private bool laughing => xFrame == 0;
 
 		public override string Texture => AssetDirectory.MiscNPC + Name;
 
@@ -34,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Fogbinder");
-			Main.npcFrameCount[NPC.type] = 4;
+			Main.npcFrameCount[NPC.type] = 15;
 		}
 
 		public override void SetDefaults()
@@ -126,13 +130,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void FindFrame(int frameHeight)
 		{
+			int divider = laughing ? Main.npcFrameCount[NPC.type] : 4;
 			frameCounter++;
 			if (frameCounter % 5 == 0)
 				yFrame++;
-			yFrame %= Main.npcFrameCount[NPC.type];
+			if (yFrame >= divider && laughing)
+			{
+				xFrame = 1;
+				divider = 4;
+			}
+			yFrame %= divider;
 
 			int frameWidth = NPC.width;
-			NPC.frame = new Rectangle(0, frameHeight * yFrame, frameWidth, frameHeight);
+			NPC.frame = new Rectangle(frameWidth * xFrame, frameHeight * yFrame, frameWidth, frameHeight);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -204,6 +214,13 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				if (pull == -1)
 				{
+					Fogbinder modNPC = (fogbinder.ModNPC as Fogbinder);
+					if (modNPC.xFrame == 1)
+					{
+						modNPC.xFrame = 0;
+						modNPC.yFrame = 0;
+					}
+
 					npc.damage *= 2;
 					npc.defense *= 2;
 					pull = Main.rand.Next(1500, 2500);
