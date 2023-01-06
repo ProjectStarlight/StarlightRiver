@@ -46,10 +46,10 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	internal class MagmaArrowProj : ModProjectile
 	{
-		private float coolness = 0;
+		private float progressToDepletion = 0;
 		private float moltenCounter = 1;
 
-		private float Heat => 1 - coolness;
+		private float magmaRemaining => 1 - progressToDepletion;
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -74,15 +74,15 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-			if (coolness < 1 && moltenCounter <= 0)
-				coolness += 0.01f;
+			if (progressToDepletion < 1 && moltenCounter <= 0)
+				progressToDepletion += 0.01f;
 
 			if (moltenCounter > 0)
 				moltenCounter -= 0.025f;
 
-			Lighting.AddLight(Projectile.Center, (Color.Orange * Heat).ToVector3());
+			Lighting.AddLight(Projectile.Center, (Color.Orange * magmaRemaining).ToVector3());
 
-			if (Main.rand.NextFloat() > System.MathF.Sqrt(coolness) && Main.rand.NextBool(9) && Heat > 0.25f)
+			if (Main.rand.NextFloat() > System.MathF.Sqrt(progressToDepletion) && Main.rand.NextBool(9) && magmaRemaining > 0.25f)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1), ModContent.ProjectileType<ArrowMagma>(), Projectile.damage / 2, 0, Projectile.owner);
 		}
 
@@ -95,15 +95,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			bloomColor.A = 0;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) + (Projectile.rotation - 1.57f).ToRotationVector2() * 10, new Rectangle(0, 0, tex.Width, tex.Height), //bloom
-				bloomColor * Heat, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * 0.85f, SpriteEffects.None, 0);
+				bloomColor * magmaRemaining, Projectile.rotation, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale * 0.85f, SpriteEffects.None, 0);
 
 			tex = TextureAssets.Projectile[Projectile.type].Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(tex.Width / 3, 0, tex.Width / 3, tex.Height), //crystal arrow
-				lightColor * coolness, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
+				lightColor * progressToDepletion, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(0, 0, tex.Width / 3, tex.Height), //magma arrow
-				lightColor * Heat, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
+				lightColor * magmaRemaining, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
 
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), new Rectangle(tex.Width / 3 * 2, 0, tex.Width / 3, tex.Height), //white sprite
 				Color.Lerp(Color.Orange, Color.White, moltenCounter) * moltenCounter, Projectile.rotation, new Vector2(tex.Width / 6, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0);
@@ -113,14 +113,14 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (Heat > 0.4f)
+			if (magmaRemaining > 0.4f)
 				target.AddBuff(BuffID.OnFire, 180);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			damage += (int)(coolness * 8);
-			knockback *= 1 + coolness;
+			damage += (int)(progressToDepletion * 8);
+			knockback *= 1 + progressToDepletion;
 		}
 
 		public override void Kill(int timeLeft)
@@ -133,10 +133,11 @@ namespace StarlightRiver.Content.Items.Vitric
 	}
 
 	internal class ArrowMagma : ModProjectile
-	{
-		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
+	{ 
 
 		private List<Vector2> oldPos = new();
+
+		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
 
 		public override void SetStaticDefaults()
 		{
@@ -164,14 +165,20 @@ namespace StarlightRiver.Content.Items.Vitric
 			for (int i = 1; i < oldPos.Count; i++)
 			{
 				for (int j = 0; j < 5; j++)
+				{
 					Main.spriteBatch.Draw(tex, Vector2.Lerp(oldPos[i], oldPos[i - 1], j / 5f) - Main.screenPosition, null, color, 0, tex.Size() / 2, (i + 4) / 8f * Projectile.scale, SpriteEffects.None, 0f);
+
+				}
 			}
 
 			color = new Color(255, 255, 255, 0);
 			for (int i = 1; i < oldPos.Count; i++)
 			{
 				for (int j = 0; j < 5; j++)
+				{
 					Main.spriteBatch.Draw(tex, Vector2.Lerp(oldPos[i], oldPos[i - 1], j / 5f) - Main.screenPosition, null, color, 0, tex.Size() / 2, (i + 4) / 8f * Projectile.scale * 0.2f, SpriteEffects.None, 0f);
+
+				}
 			}
 
 			return false;
@@ -188,7 +195,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			oldPos.Add(Projectile.Center);
 			while (oldPos.Count > 4)
+			{
 				oldPos.RemoveAt(0);
+			}
 
 			if (Projectile.timeLeft < 15)
 				Projectile.scale *= 0.9f;
