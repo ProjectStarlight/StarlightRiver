@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Buffs.Summon;
 using System;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -94,6 +95,10 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public const int MinionFlybackRange = 450;
 
+		public int JumpDelay;
+		public int AttackDelay;
+		public bool JustPogod;
+
 		public ref float AttackState => ref Projectile.ai[0];
 		public ref float EnemyWhoAmI => ref Projectile.ai[1];
 
@@ -110,7 +115,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Don't mistake this with "if this is true, then it will automatically home". It is just for damage reduction for certain NPCs
 		}
 
-		public sealed override void SetDefaults()
+		public override void SetDefaults()
 		{
 			Projectile.width = 28;
 			Projectile.height = 32;
@@ -150,6 +155,12 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public override void AI()
 		{
+			if (JumpDelay > 0)
+				JumpDelay--;
+
+			if (AttackDelay > 0)
+				AttackDelay--;
+
 			Player Player = Main.player[Projectile.owner];
 			PaleKnightPlayer modPlayer = Player.GetModPlayer<PaleKnightPlayer>();
 
@@ -195,47 +206,21 @@ namespace StarlightRiver.Content.Items.Palestone
 				}
 			}
 
-			if (!foundTarget)
+			NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Player.Center) < maxMinionChaseRange && Collision.CanHitLine(Projectile.position, 0, 0, n.position, 0, 0)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+			if (target != default)
 			{
-				if (EnemyWhoAmI < -enemyCheckDelay)
-				{
-					// This code is required either way, used for finding a target
-					for (int i = 0; i < Main.maxNPCs; i++)
-					{
-						NPC NPC = Main.npc[i];
-						float betweenPlayer = Vector2.Distance(NPC.Center, Player.Center);
-
-						if (NPC.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
-						{
-							float NPCBetween = Vector2.Distance(NPC.Center, Projectile.Center);
-							float targetBetween = Vector2.Distance(targetCenter, Projectile.Center);
-							bool closest = NPCBetween < targetBetween;
-
-							//collision check moved into if statement for performance
-							if ((closest || !foundTarget) && Collision.CanHitLine(Projectile.position, 0, 0, NPC.position, 0, 0))
-							{
-								targetCenter = NPC.Center;
-								EnemyWhoAmI = NPC.whoAmI;
-								foundTarget = true;
-							}
-						}
-					}
-
-					if (!foundTarget)
-						EnemyWhoAmI = -1;
-
-				}
-				else
-				{
-					EnemyWhoAmI--;
-				}
+				targetCenter = target.Center;
+				EnemyWhoAmI = target.whoAmI;
+				foundTarget = true;
+			}
+			else
+			{
+				EnemyWhoAmI = 0;
+				foundTarget = false;
 			}
 
-			// friendly needs to be set to true so the minion can deal contact damage
-			// friendly needs to be set to false so it doesn't damage things like target dummies while idling
-			// Both things depend on if it has a target or not, so it's just one assignment here
-			// You don't need this assignment if your minion is shooting things instead of dealing contact damage
-			//Projectile.friendly = foundTarget;
+
+
 			#endregion
 
 			#region Movement
@@ -246,7 +231,7 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.tileCollide = true;
 				AttackState = Attacking;
 			}		
-			else
+			else if (AttackState != Flying)
 			{
 				Projectile.tileCollide = true;
 				AttackState = Walking;
@@ -258,15 +243,15 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.tileCollide = false;
 				AttackState = Flying;
 			}
-			else if (AttackState == Flying && !WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
+			/*else if (AttackState == Flying && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)(Projectile.Bottom.Y / 16)))
 			{
 				Projectile.tileCollide = true;
 				AttackState = Walking;
-			}
+			}*/
 
-			
+
 			//AttackState = 0;//debug
-
+			float stepSpeed = 1f;
 			switch (AttackState)
 			{
 				case Walking:
@@ -274,6 +259,20 @@ namespace StarlightRiver.Content.Items.Palestone
 						if (!foundTarget)
 						{
 							Projectile.velocity.X += Vector2.Normalize(validZone.Center() - Projectile.Center).X * 0.1f;
+
+							if (Projectile.Center.Y > Player.Bottom.Y + 20f && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
+								Projectile.velocity.Y -= Projectile.Center.Y - Player.Center.Y;
+
+							if (Projectile.Center.X < Player.Center.X)
+							{
+								if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 + 16), (int)(Projectile.Bottom.Y / 16)))
+									Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref stepSpeed, ref Projectile.gfxOffY);
+							}
+							else
+							{
+								if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 - 16), (int)(Projectile.Bottom.Y / 16)))
+									Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref stepSpeed, ref Projectile.gfxOffY);
+							}
 
 							if (validZone.Intersects(Projectile.getRect()))
 							{
@@ -303,14 +302,72 @@ namespace StarlightRiver.Content.Items.Palestone
 
 					break;
 				case Flying:
-					Projectile.velocity += Vector2.Normalize(Player.Center - Projectile.Center) * 0.5f;
+
+					float adjust = 1f;
+					Vector2 toPlayer = Player.Center - Projectile.Center;
+					if (toPlayer.Length() < 0.0001f)
+					{
+						toPlayer = Vector2.Zero;
+					}
+					else
+					{
+						adjust = Vector2.Distance(toPlayer, Projectile.Center) * 0.01f;
+						adjust = Utils.Clamp(adjust, 0.15f, 0.5f);
+					}
+
+					Projectile.velocity += Vector2.Normalize(Player.Center - Projectile.Center) * adjust;
+					if (Vector2.Distance(Projectile.Center, Player.Center) < 50f)
+						AttackState = Walking;
+
 					break;
-				case Attacking:
-					Projectile.velocity.X += Vector2.Normalize(targetCenter - Projectile.Center).X * 0.1f;
+				case Attacking:	
+					if (Projectile.Center.Distance(targetCenter) < 250f && JumpDelay <= 0 && AttackDelay <= 0 && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)(Projectile.Bottom.Y / 16)))
+					{
+						Projectile.velocity += Projectile.DirectionTo(new Vector2(targetCenter.X, targetCenter.Y - 20)) * Utils.Clamp(Vector2.Distance(Projectile.Center, targetCenter), 2f, 10f);
+						JumpDelay = 120;
+					}
+					else
+					{
+						Projectile.velocity.X += Vector2.Normalize(targetCenter - Projectile.Center).X * 0.1f;
 
-					if (Projectile.Center.Y > targetCenter.Y && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)((Projectile.position.Y + Projectile.height) / 16)))
-						Projectile.velocity.Y -= Projectile.Center.Y - targetCenter.Y;
+						if (Projectile.Center.Y > targetCenter.Y && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Bottom.X / 16), (int)(Projectile.Bottom.Y / 16)))
+							Projectile.velocity.Y -= Utils.Clamp(Projectile.Center.Y - targetCenter.Y, 0, 15);
 
+						if (JustPogod)
+						{
+							var pogoPos = new Vector2(targetCenter.X, targetCenter.Y - 50);
+
+							Vector2 toIdlePos = pogoPos - Projectile.Center;
+							if (toIdlePos.Length() < 0.0001f)
+							{
+								toIdlePos = Vector2.Zero;
+							}
+							else
+							{
+								float speed = Vector2.Distance(pogoPos, Projectile.Center) * 0.2f;
+								speed = Utils.Clamp(speed, 5f, 10f);
+								toIdlePos.Normalize();
+								toIdlePos *= speed;
+							}
+
+							Projectile.velocity = (Projectile.velocity * (45f - 1) + toIdlePos) / 45f;
+						}
+					}
+
+					if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 + 16), (int)(Projectile.Bottom.Y / 16)))
+						JustPogod = false;
+
+					if (Projectile.Center.X < targetCenter.X)
+					{
+						if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 + 16), (int)(Projectile.Bottom.Y / 16)))
+							Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref stepSpeed, ref Projectile.gfxOffY);
+					}
+					else
+					{
+						if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 - 16), (int)(Projectile.Bottom.Y / 16)))
+							Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref stepSpeed, ref Projectile.gfxOffY);
+					}
+						
 					if (Projectile.velocity.Length() < 0.1f)
 					{
 						Projectile.frame = 0;
@@ -322,11 +379,36 @@ namespace StarlightRiver.Content.Items.Palestone
 					if (Projectile.velocity.HasNaNs())
 						foundTarget = false;
 
+					if (AttackDelay <= 0)
+					{
+						if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Top) < 45f && Projectile.Center.Y < Main.npc[(int)EnemyWhoAmI].Top.Y)
+						{
+							(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner).ModProjectile as PalestoneSlash).parent = Projectile;
+							AttackDelay = 30;
+							Projectile.velocity *= 0.25f;
+							JustPogod = true;
+						}
+						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Left) < 45f && Projectile.Center.X < Main.npc[(int)EnemyWhoAmI].Left.X)
+						{
+							(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * 10f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner).ModProjectile as PalestoneSlash).parent = Projectile;
+							AttackDelay = 45;
+							Projectile.velocity *= 0.25f;
+						}
+						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Right) < 45f && Projectile.Center.X > Main.npc[(int)EnemyWhoAmI].Right.X)
+						{
+							(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * -10f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner).ModProjectile as PalestoneSlash).parent = Projectile;
+							AttackDelay = 45;
+							Projectile.velocity *= 0.25f;
+						}
+					}
+
 					break;
 			}
 
-			var cap = new Vector2(MaxVelocity);
-			Projectile.velocity = Vector2.Clamp(Projectile.velocity, -cap, cap);
+			Projectile.velocity.X = Vector2.Clamp(Projectile.velocity, -new Vector2(8f), new Vector2(8f)).X;
+
+			Projectile.velocity.Y = Vector2.Clamp(Projectile.velocity, -new Vector2(16f), new Vector2(16f)).Y;
+
 			#endregion
 
 			#region Animation and visuals
@@ -417,6 +499,57 @@ namespace StarlightRiver.Content.Items.Palestone
 			}
 
 			return false;
+		}
+	}
+
+	public class PalestoneSlash : ModProjectile
+	{
+		public Projectile parent;
+		public override string Texture => AssetDirectory.PalestoneItem + "KnightSlash";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Pale Slash");
+			Main.projFrames[Projectile.type] = 6;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 12;
+			Projectile.height = 12;
+
+			Projectile.tileCollide = false;
+
+			Projectile.friendly = true;
+
+			Projectile.penetrate = -1;
+
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
+
+			Projectile.timeLeft = 18;
+			Projectile.scale = 1.5f;
+		}
+
+		public override void AI()
+		{
+			Projectile.rotation = Projectile.velocity.ToRotation();
+
+			if (parent != null)
+			{
+				Projectile.position = parent.position + Projectile.velocity;
+			}
+			else
+				Projectile.Kill();
+
+			if (++Projectile.frameCounter % 3 == 0)
+				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
+		}
+
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		{
+			if (parent != null)
+				parent.velocity -= Projectile.velocity * 0.5f;
 		}
 	}
 
