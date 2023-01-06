@@ -1,10 +1,8 @@
 ﻿//TODO:
 //Value
 //Bestiary
-//Spawning
 //Buff targets
 //Make it able to be stood on and immortal
-//Visuals
 //Better chain texture
 //Make it bob slightly
 //Visuals for chain attachments and breaking
@@ -15,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 using Terraria.ID;
+using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
@@ -57,10 +56,28 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void AI()
 		{
+			Dust.NewDustPerfect(NPC.Center + new Vector2(0,50), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.88f).RotatedByRandom(0.15f), 0, Color.White, 0.35f);
+
+			foreach (NPC target in targets)
+			{
+				float distanceToTarget = (target.Center - NPC.Center).Length();
+
+				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
+
+				for (float i = 0; i < distanceToTarget; i += 10)
+				{
+					if (Main.rand.NextBool(60))
+					{
+						Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+						Dust.NewDustPerfect(pos + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.25f);
+					}
+				}
+			}
+
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
 			frameCounter++;
-			if (frameCounter % 4 == 0)
+			if (frameCounter % 5 == 0)
 				yFrame++;
 			yFrame %= Main.npcFrameCount[NPC.type];
 
@@ -108,6 +125,14 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			return false;
 		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			if (!Main.IsItStorming)
+				return 0;
+
+			return SpawnCondition.Overworld.Chance * 0.05f;
+		}
 	}
 
 	public class FogbinderGNPC : GlobalNPC
@@ -116,17 +141,30 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public NPC fogbinder;
 
+		private float pull = -1;
+
 		public override void AI(NPC npc)
 		{
 			if (fogbinder == default || fogbinder is null)
+			{
+				pull = -1;
 				return;
+			}
 
 			if (fogbinder.active)
 			{
-				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / 2000f);
+				if (pull == -1)
+					pull = Main.rand.Next(1500, 2500);
+				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / pull);
+
+				if (Main.rand.NextBool(2))
+					Dust.NewDustPerfect(npc.Center + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.35f);
 
 				if (npc.Distance(fogbinder.Center) > 500)
+				{
 					fogbinder = default;
+					pull = -1;
+				}
 			}
 		}
 	}
