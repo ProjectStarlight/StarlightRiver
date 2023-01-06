@@ -3,16 +3,23 @@
 //Make phoenix able to target NPCs
 //Visuals
 //Balance
+//Sound effects
+//Improve circling behavior
+//Make the phoenixes teleport if they get too far away
+//Bloom particles on hit
 
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Buffs.Summon;
+using StarlightRiver.Core;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -52,7 +59,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void UpdateInventory(Player player)
 		{
 			stormTimer++;
-			if (stormTimer % 300 == 100)
+			if (player.HasMinionAttackTargetNPC)
+				stormTimer++;
+			if (stormTimer % 240 < 2)
 			{
 				List<Projectile> toSwoop = Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.ModProjectile is PhoenixStormMinion modProj && modProj.syncItem == Item).ToList();
 				toSwoop.ForEach(n => (n.ModProjectile as PhoenixStormMinion).swoopDelay = Main.rand.Next(10, 40));
@@ -103,6 +112,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		private List<Vector2> swoopTrajectory = new List<Vector2>();
 
 		private NPC target;
+
+		private Trail trail;
+		private List<Vector2> cache;
 
 		private Player player => Main.player[Projectile.owner];
 
@@ -159,8 +171,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			#endregion
 
+			#region trail stuff
+			ManageCaches();
+			ManageTrail();
+			#endregion
+
 			if (swooping)
 			{
+				if (Main.rand.NextBool(2))
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20, 20), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat()), 0.45f);
+				
 				if (swoopTrajectory.Count == 0)
 				{
 					swooping = false;
@@ -213,6 +233,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				posToBe += posOffset;
 
 				Projectile.velocity = Projectile.DirectionTo(posToBe) * MathF.Sqrt(Projectile.Distance(posToBe)) * 0.35f;
+				Projectile.velocity.Y += MathF.Cos(circleCounter * 3.9f) * 2;
 				Projectile.rotation = 0;
 			}
 		}
@@ -225,8 +246,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{
+		{ 
+			for (int i = 0; i < 12; i++)
+				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20, 20), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5, 5), 0, Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat()), 0.55f);
 			alreadyHit.Add(target);
+			target.AddBuff(BuffID.OnFire, 240);
 			Projectile.penetrate++;
 		}
 
@@ -234,6 +258,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D whiteTex = Request<Texture2D>(Texture + "_White").Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
 			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 			
@@ -243,9 +268,20 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				spriteEffects = SpriteEffects.None;
 			}
+			
+			if (player.HasMinionAttackTargetNPC || swooping)
+			{
+				int glowFrameHeight = glowTex.Height / Main.projFrames[Projectile.type];
+				Rectangle glowFrame = new Rectangle(0, glowFrameHeight * Projectile.frame, glowTex.Width, glowFrameHeight);
+				Color glowColor = Color.OrangeRed;
+				glowColor.A = 0;
+				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowFrame, glowColor, rotation, glowFrame.Size() / 2, Projectile.scale * 1.2f, spriteEffects, 0f);
+			}
+
 			if (swooping)
 			{
 				Main.spriteBatch.End();
+				DrawTrail();
 				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < oldPos.Count(); i++)
 				{
@@ -261,6 +297,36 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
+		private void ManageCaches()
+		{
+			if (cache == null)
+			{
+				cache = new List<Vector2>();
+				for (int i = 0; i < 10; i++)
+				{
+					cache.Add(Projectile.Center);
+				}
+			}
+
+			cache.Add(Projectile.Center);
+
+			while (cache.Count > 10)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 13 * factor, factor =>
+			{
+				return Color.OrangeRed;
+			});
+
+			trail.Positions = cache.ToArray();
+			trail.NextPosition = Projectile.Center + Projectile.velocity;
+		}
+
 		public override bool MinionContactDamage() => swooping;
 
 		private void Swoop()
@@ -271,12 +337,28 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (target == default || swooping)
 				return;
 
-			Vector2 endPoint = Projectile.Center + new Vector2((target.Center.X - Projectile.Center.X) * 3, 0) + Main.rand.NextVector2Circular(50, 25);
-			Vector2 control1 = new Vector2(Projectile.Center.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 25); ;
-			Vector2 control2 = new Vector2(endPoint.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 25); ;
+			Vector2 endPoint = Projectile.Center + new Vector2((target.Center.X - Projectile.Center.X) * 3, -70) + Main.rand.NextVector2Circular(50, 25);
+			Vector2 control1 = new Vector2(Projectile.Center.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 55);
+			Vector2 control2 = new Vector2(endPoint.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 55);
 			BezierCurve curve = new BezierCurve(Projectile.Center, control1, control2, endPoint);
 			swoopTrajectory = curve.GetPoints(10);
 			swooping = true;
+		}
+
+		private void DrawTrail()
+		{
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
+			effect.Parameters["repeats"].SetValue(2f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
+
+			trail?.Render(effect);
 		}
 	}
 
