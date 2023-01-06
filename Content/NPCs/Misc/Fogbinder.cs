@@ -13,6 +13,24 @@ namespace StarlightRiver.Content.NPCs.Misc
 {
 	class Fogbinder : ModNPC
 	{
+		private class BindedNPC //I made it a class instead of a struct so that I can consistantly pass by reference
+		{
+			public NPC npc;
+
+			public float chainTimer;
+
+			public int distanceDividend;
+
+			public bool active = true;
+
+			public BindedNPC(NPC npc, float chainTimer, int distanceDividend)
+			{
+				this.npc = npc;
+				this.chainTimer = chainTimer;
+				this.distanceDividend = distanceDividend;
+			}
+		}
+
 		private const int XFRAMES = 2;
 		private int frameCounter = 0;
 		public int yFrame = 0;
@@ -22,7 +40,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private float bobTimer = 0f;
 
-		public List<NPC> targets = new();
+		private List<BindedNPC> targets = new();
 
 		public Player player => Main.player[NPC.target];
 
@@ -75,30 +93,20 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			Dust.NewDustPerfect(NPC.Center + new Vector2(0,50), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.88f).RotatedByRandom(0.15f), 0, Color.White, 0.35f);
 
-			foreach (NPC target in targets)
-			{
-				float distanceToTarget = (target.Center - NPC.Center).Length();
-
-				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
-
-				for (float i = 0; i < distanceToTarget; i += 10)
-				{
-					if (Main.rand.NextBool(60))
-					{
-						Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
-						Dust.NewDustPerfect(pos + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.25f);
-					}
-				}
-			}
-
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
 
 			bobTimer += 0.05f;
 			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
+			var newTargets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
+			newTargets.ForEach(n => ApplyBuff(n));
 
-			targets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
-			targets.ForEach(n => n.GetGlobalNPC<FogbinderGNPC>().fogbinder = NPC);
+			targets.ForEach(n => UpdateTarget(n, !newTargets.Contains(n.npc)));
+			foreach (BindedNPC target in targets.ToArray())
+			{
+				if (!target.npc.active)
+					targets.Remove(target);
+			}
 
 			if (Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(NPC.Hitbox)))
 			{
@@ -108,18 +116,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 					SoundEngine.PlaySound(SoundID.NPCDeath6, NPC.Center);
 					NPC.active = false;
 					Main.BestiaryTracker.Kills.RegisterKill(NPC);
-					foreach (NPC target in targets)
-					{
-						float distanceToTarget = (target.Center - NPC.Center).Length();
-
-						Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
-
-						for (float i = 0; i < distanceToTarget; i += 14)
-						{
-							Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
-							Gore.NewGoreDirect(NPC.GetSource_Death(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
-						}
-					}
+					targets.ForEach(n => UpdateTarget(n, true));
 				}
 			}
 			else
@@ -159,8 +156,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 
-			foreach (NPC target in targets)
+			foreach (BindedNPC bindedTarget in targets)
 			{
+				NPC target = bindedTarget.npc;
 				float distanceToTarget = (target.Center - NPC.Center).Length();
 
 				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
@@ -168,7 +166,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				for (float i = 0; i < distanceToTarget; i+= chainTex.Width + 4)
 				{
 					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
-					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * target.GetGlobalNPC<FogbinderGNPC>().chainOpacity;
+					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * bindedTarget.chainTimer;
 					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, lightColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 				}
 			}
@@ -186,73 +184,62 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			return SpawnCondition.Overworld.Chance * 0.05f;
 		}
-	}
 
-	public class FogbinderGNPC : GlobalNPC
-	{
-		public override bool InstancePerEntity => true;
-
-		public NPC fogbinder;
-
-		public float chainOpacity = 0;
-
-		private float pull = -1;
-
-		public override void AI(NPC npc)
+		private void ApplyBuff(NPC target)
 		{
-			if (fogbinder == default || fogbinder is null)
+			if (!target.HasBuff(ModContent.BuffType<Fogbinded>()))
 			{
-				chainOpacity = 0;
-				pull = -1;
-				return;
-			}
+				target.defense *= 2;
+				target.damage *= 2;
+				targets.Add(new BindedNPC(target, 0, Main.rand.Next(1500, 2500)));
 
-			if (fogbinder.active)
-			{
-				if (chainOpacity < 1)
-					chainOpacity += 0.02f;
-
-				if (pull == -1)
+				if (!laughing)
 				{
-					Fogbinder modNPC = (fogbinder.ModNPC as Fogbinder);
-					if (modNPC.xFrame == 1)
-					{
-						modNPC.xFrame = 0;
-						modNPC.yFrame = 0;
-					}
-
-					npc.damage *= 2;
-					npc.defense *= 2;
-					pull = Main.rand.Next(1500, 2500);
-				}
-				npc.velocity = Vector2.Lerp(npc.velocity, npc.DirectionTo(fogbinder.Center), npc.Distance(fogbinder.Center) / pull);
-
-				if (Main.rand.NextBool(2))
-					Dust.NewDustPerfect(npc.Center + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.35f);
-
-				if (npc.Distance(fogbinder.Center) > 500)
-				{
-					float distanceToBinder = (fogbinder.Center - npc.Center).Length();
-
-					Vector2 directionToBinder = Vector2.Normalize(fogbinder.Center - npc.Center);
-
-					for (float i = 0; i < distanceToBinder; i += 14)
-					{
-						Vector2 pos = Vector2.Lerp(npc.Center, fogbinder.Center, i / distanceToBinder);
-						Gore.NewGoreDirect(npc.GetSource_FromAI(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
-					}
-					fogbinder = default;
-					pull = -1;
-					npc.damage = (int)(npc.damage * 0.5f);
-					npc.defense = (int)(npc.defense * 0.5f);
+					xFrame = 0;
+					yFrame = 0;
 				}
 			}
-			else
+
+			target.AddBuff(ModContent.BuffType<Fogbinded>(), 99999);
+		}
+
+		private void UpdateTarget(BindedNPC boundTarget, bool leaving)
+		{
+			NPC target = boundTarget.npc;
+			float distanceToTarget = (target.Center - NPC.Center).Length();
+			Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
+			if (leaving)
 			{
-				fogbinder = default;
-				npc.damage = (int)(npc.damage * 0.5f);
-				npc.defense = (int)(npc.defense * 0.5f);
+				target.damage = (int)(target.damage * 0.5f);
+				target.defense = (int)(target.defense * 0.5f);
+
+				for (float i = 0; i < distanceToTarget; i += 14)
+				{
+					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+					Gore.NewGoreDirect(NPC.GetSource_Death(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
+				}
+				int buffIndex = target.FindBuffIndex(ModContent.BuffType<Fogbinded>());
+				target.DelBuff(buffIndex);
+				boundTarget.active = false;
+			}
+
+			boundTarget.chainTimer += 0.02f;
+			target.velocity = Vector2.Lerp(target.velocity, target.DirectionTo(NPC.Center), distanceToTarget / boundTarget.distanceDividend);
+
+			for (float i = 0; i < distanceToTarget; i += 10)
+			{
+				if (Main.rand.NextBool(60))
+				{
+					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+					Dust.NewDustPerfect(pos + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.25f);
+				}
 			}
 		}
+	}
+
+	public class Fogbinded : SmartBuff
+	{
+		public override string Texture => AssetDirectory.Invisible;
+		public Fogbinded() : base("Fogbinded", "Bound to the fogbinder", true) { }
 	}
 }
