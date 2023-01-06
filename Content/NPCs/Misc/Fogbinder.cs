@@ -1,11 +1,11 @@
 ﻿//TODO:
-//Value
 //Bestiary
 //Buff targets
 //Make it able to be stood on and immortal
 //Better chain texture
 //Make it bob slightly
 //Visuals for chain attachments and breaking
+//Sound effects
 
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Helpers;
@@ -23,11 +23,17 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private int frameCounter = 0;
 		private int yFrame = 0;
 
+		private float deathTimer = 0;
+
 		public List<NPC> targets = new();
 
 		public Player player => Main.player[NPC.target];
 
 		public override string Texture => AssetDirectory.MiscNPC + Name;
+		public override void Load()
+		{
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscNPC + "Fogbinder_Chain");
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -47,6 +53,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.aiStyle = -1;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath2;
+			NPC.immortal = true;
+			NPC.dontTakeDamage = true;
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -85,6 +93,31 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			targets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type).ToList();
 			targets.ForEach(n => n.GetGlobalNPC<FogbinderGNPC>().fogbinder = NPC);
+
+			if (Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(NPC.Hitbox)))
+			{
+				deathTimer += 0.01f;
+				if (deathTimer > 1)
+				{
+					NPC.active = false;
+					foreach (NPC target in targets)
+					{
+						float distanceToTarget = (target.Center - NPC.Center).Length();
+
+						Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
+
+						for (float i = 0; i < distanceToTarget; i += 14)
+						{
+							Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+							Gore.NewGoreDirect(NPC.GetSource_Death(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
+						}
+					}
+				}
+			}
+			else
+			{
+				deathTimer = 0;
+			}
 		}
 
 		public override void FindFrame(int frameHeight)
@@ -113,15 +146,16 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
 
-				for (float i = 0; i < distanceToTarget; i+= chainTex.Width)
+				for (float i = 0; i < distanceToTarget; i+= chainTex.Width + 4)
 				{
 					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
-					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, drawColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
+					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16));
+					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, lightColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 				}
 			}
 
-			Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
-			Main.spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+			Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor * (1 - deathTimer), NPC.rotation, origin, NPC.scale, effects, 0f);
+			Main.spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White * (1 - deathTimer), NPC.rotation, origin, NPC.scale, effects, 0f);
 
 			return false;
 		}
@@ -162,6 +196,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				if (npc.Distance(fogbinder.Center) > 500)
 				{
+					float distanceToBinder = (fogbinder.Center - npc.Center).Length();
+
+					Vector2 directionToBinder = Vector2.Normalize(fogbinder.Center - npc.Center);
+
+					for (float i = 0; i < distanceToBinder; i += 14)
+					{
+						Vector2 pos = Vector2.Lerp(npc.Center, fogbinder.Center, i / distanceToBinder);
+						Gore.NewGoreDirect(npc.GetSource_FromAI(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
+					}
 					fogbinder = default;
 					pull = -1;
 				}
