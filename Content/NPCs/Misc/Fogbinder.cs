@@ -224,7 +224,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 				boundTarget.active = false;
 			}
 
-			boundTarget.chainTimer += 0.02f;
+			if (boundTarget.chainTimer < 1)
+				boundTarget.chainTimer += 0.02f;
 			target.velocity = Vector2.Lerp(target.velocity, target.DirectionTo(NPC.Center), distanceToTarget / boundTarget.distanceDividend);
 
 			for (float i = 0; i < distanceToTarget; i += 10)
