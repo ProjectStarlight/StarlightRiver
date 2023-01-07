@@ -6,9 +6,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 {
 	public class SparklingBullet : ModItem
 	{
-		public override string Texture => AssetDirectory.GeomancerItem + Name;
-
 		public static int bulletsConsumed = 0;
+
+		public override string Texture => AssetDirectory.GeomancerItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -51,9 +51,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 	internal class SparklingBulletProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.GeomancerItem + "SparklingBullet";
-
 		private Player Player => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.GeomancerItem + "SparklingBullet";
 
 		public override void SetStaticDefaults()
 		{
