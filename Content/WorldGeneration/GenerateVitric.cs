@@ -514,7 +514,6 @@ namespace StarlightRiver.Core
 		{
 			int x = vitricBiome.X - 37;
 			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
-			NPC.NewNPC(new EntitySource_WorldGen(), vitricBiome.X * 16, (vitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		private static void GenTemple()
@@ -526,6 +525,8 @@ namespace StarlightRiver.Core
 				new Point16(vitricBiome.Center.X - X_OFFSET, vitricBiome.Center.Y - Y_OFFSET),
 				StarlightRiver.Instance
 				);
+
+			NPC.NewNPC(new EntitySource_WorldGen(), (vitricBiome.Center.X - 16) * 16, (vitricBiome.Center.Y - 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>

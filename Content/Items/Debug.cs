@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			NPC.NewNPC(new EntitySource_WorldGen(), StarlightWorld.vitricBiome.X * 16 - 48, (StarlightWorld.vitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 			return true;
 		}
 	}

@@ -8,12 +8,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassweaverWaiting : ModNPC
 	{
+		public const int FRAME_WIDTH = 110;
+		public const int FRAME_HEIGHT = 92;
+
 		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-48, 80 * 16) + new Vector2(0, 256);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
+		public ref float VisualTimer => ref NPC.ai[2];
 
 		public override void SetStaticDefaults()
 		{
@@ -30,6 +34,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.damage = 10;
 			NPC.defense = 15;
 			NPC.lifeMax = 250;
+			NPC.dontTakeDamage = true;
+			NPC.immortal = true;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
@@ -38,15 +44,43 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void AI()
 		{
 			Timer++;
+			VisualTimer++;
+
+			if (State == 0 || State == 2)
+			{
+				NPC.direction = 1;
+
+				NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
+			}
 
 			if (State == 1)
 			{
-				NPC.scale -= 1 / 60f;
+				if (Timer == 15)
+				{
+					NPC.direction = -1;
+					NPC.frame = new Rectangle(0, FRAME_HEIGHT * ((int)(VisualTimer / 10f) % 7), FRAME_WIDTH, FRAME_HEIGHT);
+				}
+
+				if (Timer == 30)
+					NPC.frame = new Rectangle(FRAME_WIDTH, 0, FRAME_WIDTH, FRAME_HEIGHT);
+
+				if (Timer == 60)
+				{
+					NPC.velocity.Y -= 20;
+					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 112);
+				}
 
 				if (Timer > 60)
 				{
+					NPC.noTileCollide = true;
+					NPC.noGravity = true;
+					NPC.velocity.X = -10;
+					NPC.velocity.Y += 0.25f;
+				}
+
+				if (Timer > 120)
+				{
 					NPC.Center = ArenaPos;
-					NPC.scale = 1;
 					State = 2;
 				}
 			}
@@ -124,6 +158,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				"You are beyond prepared to challenge me. What are you waiting for?"
 				});
 			}
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Vector2 pos = NPC.Center - Vector2.UnitY * 14 - Main.screenPosition;
+			Vector2 origin = new Vector2(FRAME_WIDTH, FRAME_HEIGHT) * 0.5f;
+
+			spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+
+			return false;
 		}
 
 		public override void SaveData(TagCompound tag)
