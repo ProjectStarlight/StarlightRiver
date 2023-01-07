@@ -123,6 +123,23 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				RichTextBox.AddButton("See you later", () => RichTextBox.CloseDialogue());
 			}
+			else if (State == 3) //After winning
+			{
+				RichTextBox.OpenDialogue(NPC, "Glassweaver", "Placeholder_After_Win");
+
+				RichTextBox.AddButton("I need a key", () =>
+				{
+					if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleKey>(), 1))
+					{
+						RichTextBox.SetData(NPC, "Glassweaver", "Placeholder_Already_Have_Key");
+					}
+					else
+					{
+						Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleKey>());
+						RichTextBox.CloseDialogue();
+					}
+				});
+			}
 
 			return "";
 
