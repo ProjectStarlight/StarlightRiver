@@ -353,7 +353,11 @@ namespace StarlightRiver.Content.Items.Palestone
 							Projectile.velocity = (Projectile.velocity * 14f + toIdlePos) / 15f;
 						}
 						else if (Math.Abs(Projectile.Center.X - targetCenter.X) < 35f)
+						{
 							Projectile.velocity.X *= 0.9f;
+							if (Projectile.Center.Y < targetCenter.Y && Math.Abs(Projectile.Center.Y - targetCenter.Y) > 100f)
+								Projectile.velocity.Y += 0.35f;
+						}
 					}
 
 					if (WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16 + 16), (int)(Projectile.Bottom.Y / 16)) || Projectile.Center.Y > Main.npc[(int)EnemyWhoAmI].Top.Y)
@@ -475,6 +479,12 @@ namespace StarlightRiver.Content.Items.Palestone
 			Projectile.direction = Projectile.velocity.X > 0 ? 1 : -1;//this is here since I believe this gets synced, if it doesn't this line can be moved above where the sprite direction is set
 			#endregion
 
+			if (!foundTarget && JustPogod)
+			{
+				JustPogod = false;
+				Projectile.velocity.Y *= 0.35f;
+			}
+
 			modPlayer.KnightCount++;
 		}
 
@@ -582,7 +592,17 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			if (parent != null && !hasHit)
+			{
 				parent.velocity -= knockbackVelo;
+				for (int i = 0; i < 5; i++)
+				{
+					float mult = Main.rand.NextFloat(0.75f, 1.5f);
+					if (Down)
+						mult = Main.rand.NextFloat(0.1f, 0.35f);
+
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), -knockbackVelo.RotatedByRandom(0.35f) * mult, 0, Color.White, 0.55f);
+				}
+			}
 
 			hasHit = true;
 		}
@@ -590,17 +610,15 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glowt").Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
 			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
 			if (Down && parent != null)
 				flip = parent.spriteDirection == -1 ? SpriteEffects.FlipVertically : 0f;
 
-			Rectangle frame = texGlow.Frame(verticalFrames: 6, frameY: Projectile.frame);
+			Main.spriteBatch.Draw(texGlow, Projectile.Center + knockbackVelo * 0.5f - Main.screenPosition, null, Color.Lerp(new Color(255, 255, 255, 0) * 0.25f, Color.Transparent, 1f - Projectile.timeLeft / 18f), Projectile.rotation, texGlow.Size() / 2f, 1.625f, flip, 0f);
 
-			//Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, frame, new Color(255, 255, 255, 0), Projectile.rotation, frame.Size() / 2f, Projectile.scale, flip, 0f);
-
-			frame = tex.Frame(verticalFrames: 6, frameY: Projectile.frame);
+			Rectangle frame = tex.Frame(verticalFrames: 6, frameY: Projectile.frame);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, Color.White, Projectile.rotation, frame.Size() / 2f, Projectile.scale, flip, 0f);
 			return false;
