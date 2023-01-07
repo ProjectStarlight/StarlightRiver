@@ -56,6 +56,10 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 			Projectile.rotation = 1.57f;
 		}
 
+		public override int ParentX => (int)(Projectile.position.X / 16);
+
+		public override int ParentY => (int)(Projectile.position.Y / 16);
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -67,9 +71,7 @@ namespace StarlightRiver.Content.Tiles.Dungeon
 
 		public override void Update()
 		{
-			int i = (int)(Projectile.position.X / 16);
-			int j = (int)(Projectile.position.Y / 16);
-			Tile tile = Main.tile[i, j];
+			Tile tile = Parent;
 
 			if (tile.HasTile && tile.TileType == ModContent.TileType<TwistSwordTile>())
 				Projectile.timeLeft = 2;
