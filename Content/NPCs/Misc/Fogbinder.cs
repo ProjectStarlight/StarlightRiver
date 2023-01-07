@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
 
-				for (float i = 0; i < distanceToTarget; i+= chainTex.Width + 4)
+				for (float i = 0; i < distanceToTarget; i+= chainTex.Width)
 				{
 					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
 					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * bindedTarget.chainTimer;
@@ -214,7 +214,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				target.damage = (int)(target.damage * 0.5f);
 				target.defense = (int)(target.defense * 0.5f);
 
-				for (float i = 0; i < distanceToTarget; i += 14)
+				for (float i = 0; i < distanceToTarget; i += 20)
 				{
 					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
 					Gore.NewGoreDirect(NPC.GetSource_Death(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
