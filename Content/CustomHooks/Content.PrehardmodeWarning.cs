@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private void WorldGen_StartHardmode(On.Terraria.WorldGen.orig_StartHardmode orig)
 		{
 			orig();
-			UILoader.GetUIState<MessageBox>().Display("Thank you for playing!", "You have reached the end of Starlight River. While there will be hardmode content in the future, there currently isn't any. Follow us on social media for more information on future content.");
+			UILoader.GetUIState<MessageBox>().Display("Thank you for playing!", "You've reached the current end of Starlight River. Hardmode content is planned and under development, follow us on social media for spoilers and future updates.");
 		}
 	}
 }
