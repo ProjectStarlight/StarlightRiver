@@ -85,11 +85,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class PhoenixStormMinion : ModProjectile
 	{
-		private readonly int AFTER_IMAGE_LENGTH = 6;
-
+		private const int AFTER_IMAGE_LENGTH = 6;
 
 		public Item syncItem;
 		public int swoopDelay = -1;
+
 		private float circleCounter = 0;
 		private bool swooping = false;
 		private float swoopSpeed = 0.1f;
