@@ -42,9 +42,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private List<BindedNPC> targets = new();
 
-		public Player player => Main.player[NPC.target];
+		public Player Target => Main.player[NPC.target];
 
-		private bool laughing => xFrame == 0;
+		private bool Laughing => xFrame == 0;
 
 		public override string Texture => AssetDirectory.MiscNPC + Name;
 
@@ -126,18 +126,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void FindFrame(int frameHeight)
 		{
-			int divider = laughing ? Main.npcFrameCount[NPC.type] : 4;
+			int divider = Laughing ? Main.npcFrameCount[NPC.type] : 4;
 			frameCounter++;
 			if (frameCounter % 5 == 0)
 				yFrame++;
-			if (yFrame >= divider && laughing)
+			if (yFrame >= divider && Laughing)
 			{
 				xFrame = 1;
 				divider = 4;
 			}
 			yFrame %= divider;
 
-			if (laughing && yFrame % 6 == 5)
+			if (Laughing && yFrame % 6 == 5)
 			{
 				SoundEngine.PlaySound(SoundID.NPCHit55, NPC.Center);
 			}
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				target.damage *= 2;
 				targets.Add(new BindedNPC(target, 0, Main.rand.Next(1500, 2500)));
 
-				if (!laughing)
+				if (!Laughing)
 				{
 					xFrame = 0;
 					yFrame = 0;
