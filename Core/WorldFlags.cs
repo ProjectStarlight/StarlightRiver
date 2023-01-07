@@ -17,13 +17,6 @@ namespace StarlightRiver.Core
 		OvergrowBossFree = 1 << 6,
 		OvergrowBossDowned = 1 << 7,
 
-<<<<<<< HEAD
-        SealOpen = 1 << 8,
-    }
-=======
 		SealOpen = 1 << 8,
-
-		AluminumMeteors = 1 << 9
 	}
->>>>>>> master
 }

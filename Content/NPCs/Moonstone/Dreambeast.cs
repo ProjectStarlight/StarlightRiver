@@ -1,17 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.MetaballSystem;
-using StarlightRiver.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
@@ -22,7 +15,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		public Vector2 homePos;
 		public int flashTime;
 
-		private bool AppearVisible => Main.LocalPlayer.HasBuff(ModContent.BuffType<Buffs.Overcharge>());
+		private bool AppearVisible => Main.LocalPlayer.HasBuff(ModContent.BuffType<Overcharge>());
 		private Player Target => Main.player[NPC.target];
 
 		public ref float Phase => ref NPC.ai[0];
@@ -47,7 +40,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override ModNPC Clone(NPC newEntity)
 		{
-			var clone = base.Clone(newEntity);
+			ModNPC clone = base.Clone(newEntity);
 			(clone as Dreambeast).chains = chains;
 			return clone;
 		}
@@ -56,9 +49,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			for (int k = 0; k < chains.Length; k++)
 			{
-				var chain = chains[k];
+				VerletChain chain = chains[k];
 
 				if (chain is null)
+				{
 					chains[k] = new VerletChain(20 + 2 * k, true, NPC.Center, 5, false)
 					{
 						constraintRepetitions = 5,//defaults to 2, raising this lowers stretching at the cost of performance
@@ -66,6 +60,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						forceGravity = new Vector2(0f, 0.8f),//gravity x/y
 						scale = 0.6f
 					};
+				}
 			}
 		}
 
@@ -82,15 +77,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (flashTime < 30 && Phase != 0)
 				flashTime++;
-	
+
 			for (int k = 0; k < chains.Length; k++)
 			{
-				var chain = chains[k];
+				VerletChain chain = chains[k];
 				chain?.UpdateChain(NPC.Center);
 
-				for (int i = 0; i < chain.ropeSegments.Count; i++) 
+				for (int i = 0; i < chain.ropeSegments.Count; i++)
 				{
-					chain.ropeSegments[i].posNow += Vector2.UnitX * (float)Math.Sin(Main.GameUpdateCount * 0.02f + k + (i / 4f)) * i / 10f;
+					chain.ropeSegments[i].posNow += Vector2.UnitX * (float)Math.Sin(Main.GameUpdateCount * 0.02f + k + i / 4f) * i / 10f;
 				}
 			}
 
@@ -109,9 +104,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		/// </summary>
 		private void PickTarget()
 		{
-			List<Player> possibleTargets = new List<Player>();
+			var possibleTargets = new List<Player>();
 
-			foreach(var player in Main.player)
+			foreach (Player player in Main.player)
 			{
 				if (player.active && player.HasBuff<Overcharge>() && Vector2.Distance(player.Center, homePos) < 1000)
 					possibleTargets.Add(player);
@@ -136,11 +131,11 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.Center = target;
 
 			//We need to do this so the chains dont snap back like a rubber band
-			foreach(var chain in chains)
+			foreach (VerletChain chain in chains)
 			{
 				chain.startPoint += diff;
 
-				foreach(var segment in chain.ropeSegments)
+				foreach (RopeSegment segment in chain.ropeSegments)
 				{
 					segment.posOld += diff;
 					segment.posNow += diff;
@@ -197,7 +192,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 					AttackTimer = 0;
 					PickTarget();
 
-					if(NPC.target == -1)
+					if (NPC.target == -1)
 					{
 						Phase = 0;
 						return;
@@ -248,26 +243,26 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public void DrawToMetaballs(SpriteBatch spriteBatch)
 		{
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
 
 			spriteBatch.Draw(tex, (NPC.Center - Main.screenPosition) / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.5f, 0, 0);
 
-			foreach (var chain in chains)
+			foreach (VerletChain chain in chains)
 			{
-				foreach (var segment in chain.ropeSegments)
+				foreach (RopeSegment segment in chain.ropeSegments)
 				{
-					spriteBatch.Draw(tex, segment.posScreen / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.05f, 0, 0);
+					spriteBatch.Draw(tex, segment.ScreenPos / 2, null, Color.White * NPC.Opacity, 0, tex.Size() / 2, 0.05f, 0, 0);
 				}
 			}
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/VitricBossGodrayHead").Value;
 
 			if (!AppearVisible)
 			{
-				var effect = Terraria.Graphics.Effects.Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
+				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoonstoneBeastEffect"].GetShader().Shader;
 				effect.Parameters["baseTexture"].SetValue(tex);
 				effect.Parameters["distortTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise2").Value);
 				effect.Parameters["size"].SetValue(tex.Size());
@@ -283,8 +278,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 			if (AppearVisible && flashTime > 0)
 			{
-				var flashTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
-				var color = Color.White * (1 - flashTime / 30f);
+				Texture2D flashTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowAlpha").Value;
+				Color color = Color.White * (1 - flashTime / 30f);
 				color.A = 0;
 
 				spriteBatch.Draw(flashTex, NPC.Center - Main.screenPosition, null, color, 0, flashTex.Size() / 2, flashTime, 0, 0);
@@ -300,13 +295,13 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override bool Active => NPC.AnyNPCs(ModContent.NPCType<Dreambeast>());
 
-		public override Color outlineColor => new Color(220, 200, 255) * (activeBeast?.Opacity ?? 0);
+		public override Color OutlineColor => new Color(220, 200, 255) * (activeBeast?.Opacity ?? 0);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
-			for(int k = 0; k < Main.maxNPCs; k++)
+			for (int k = 0; k < Main.maxNPCs; k++)
 			{
-				var npc = Main.npc[k];
+				NPC npc = Main.npc[k];
 
 				if (npc.ModNPC is Dreambeast)
 					(npc.ModNPC as Dreambeast).DrawToMetaballs(spriteBatch);

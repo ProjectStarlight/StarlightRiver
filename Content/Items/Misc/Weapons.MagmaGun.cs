@@ -43,16 +43,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			counter++;
-
 			foreach (Projectile Projectile in Main.projectile)
 			{
 				if (Projectile.owner == player.whoAmI && Projectile.type == type && Projectile.active)
 					proj = Projectile;
-<<<<<<< HEAD
-            }
-=======
 			}
->>>>>>> master
 
 			if (counter % 5 == 0)
 			{
@@ -78,11 +73,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-<<<<<<< HEAD
-		public override void HoldItem(Player player)
-=======
 		public override void UpdateInventory(Player player)
->>>>>>> master
 		{
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
 				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
@@ -124,28 +115,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public float endScale = 1;
 		public float fadeIn = 0f;
 
-<<<<<<< HEAD
-		public float scale;
-
-		public bool active = true;
-
-		public Vector2 Position;
-=======
 		public Vector2 position;
->>>>>>> master
 
 		public Vector2 velocity;
 		public Vector2 oldVel;
-<<<<<<< HEAD
-		public Vector2 Size => new Vector2(WIDTH, HEIGHT);
-
-		public Vector2 Center
-		{
-			get => Position + (Size / 2);
-			set => Position = value - (Size / 2);
-		}
-
-=======
 
 		public float scale;
 		public bool active = true;
@@ -158,7 +131,6 @@ namespace StarlightRiver.Content.Items.Misc
 			set => position = value - size / 2;
 		}
 
->>>>>>> master
 		public MagmaGlob(Vector2 velocity, Vector2 position)
 		{
 			this.velocity = velocity;
@@ -173,7 +145,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (fadeIn < 1)
 				fadeIn += 0.1f;
-
 			scale = Math.Min(endScale, endScale * (timeLeft / 20f)) * fadeIn;
 
 			if (Main.rand.NextBool(2000))
@@ -210,25 +181,13 @@ namespace StarlightRiver.Content.Items.Misc
 			if (stoppedInTile && Main.rand.NextBool(200))
 			{
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-<<<<<<< HEAD
-				int dustID = Dust.NewDust(Position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
-=======
 				int dustID = Dust.NewDust(position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y);
->>>>>>> master
 				Main.dust[dustID].noGravity = false;
 			}
+
 			else if (stoppedInTile && Main.rand.NextBool(500))
 			{
 				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(20);
-<<<<<<< HEAD
-				int dustID = Dust.NewDust(Position + dir, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), 0,0);
-				Main.dust[dustID].noGravity = true;
-			}
-			else if (Velocity == Vector2.Zero && Main.rand.NextBool(700))
-            {
-				Vector2 bubbleDir = -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
-				int d = Dust.NewDust(Position + (bubbleDir * 4), WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
-=======
 				int dustID = Dust.NewDust(position + dir, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), 0, 0);
 				Main.dust[dustID].noGravity = true;
 			}
@@ -237,7 +196,6 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Vector2 bubbleDir = -Vector2.UnitY.RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
 				int d = Dust.NewDust(position + bubbleDir * 4, WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
->>>>>>> master
 				Main.dust[d].velocity = bubbleDir;
 			}
 
@@ -252,7 +210,6 @@ namespace StarlightRiver.Content.Items.Misc
 				velocity = Vector2.Zero;
 				int i = 0;
 				int j = 0;
-
 				if (!TouchingTiles(ref i, ref j))
 				{
 					embedTimer = 1;
@@ -286,54 +243,36 @@ namespace StarlightRiver.Content.Items.Misc
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.SplashWeak, Center);
 
 					stoppedInTile = true;
-<<<<<<< HEAD
-					oldVel = Velocity;
-					Velocity = Vector2.Zero;
-					int k;
-					int d;
-=======
 					oldVel = velocity;
 					velocity = Vector2.Zero;
->>>>>>> master
 
 					if (Main.rand.NextBool())
 					{
 						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.8f) * Main.rand.NextFloat(2, 3);
-<<<<<<< HEAD
-						d = Dust.NewDust(Position + (bubbleDir * 4), WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
-=======
 						int d = Dust.NewDust(position + bubbleDir * 4, WIDTH, HEIGHT, ModContent.DustType<Dusts.LavaSpark>(), 0, 0, 0, new Color(255, 150, 50), Main.rand.NextFloat(0.2f, 0.3f));
->>>>>>> master
 						Main.dust[d].velocity = bubbleDir;
 					}
 					else
 					{
 						Vector2 bubbleDir = -Vector2.Normalize(oldVel).RotatedByRandom(0.2f) * 6;
-<<<<<<< HEAD
-						Vector2 pos = Position + new Vector2(Main.rand.Next(WIDTH), Main.rand.Next(HEIGHT));
-						pos += (bubbleDir * 4);
-=======
 						Vector2 pos = position + new Vector2(Main.rand.Next(WIDTH), Main.rand.Next(HEIGHT));
 						pos += bubbleDir * 4;
->>>>>>> master
 
 						if (WorldGen.InWorld((int)(pos.X / 16), (int)(pos.Y / 16)))
 						{
 							Tile tile2 = Main.tile[(int)(pos.X / 16), (int)(pos.Y / 16)];
 
 							if (!Main.tileSolid[tile2.TileType] || !tile2.HasTile)
+							{
 								Gore.NewGoreDirect(new EntitySource_Misc("Spawned from magma gun"), pos, bubbleDir, StarlightRiver.Instance.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+							}
 						}
 					}
 
 					for (int k = 0; k < 4; k++)
 					{
 						Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 4);
-<<<<<<< HEAD
-						Dust.NewDust(Position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
-=======
 						Dust.NewDust(position, WIDTH, HEIGHT, ModContent.DustType<MagmaGunDust>(), dir.X, dir.Y, default, default, 2);
->>>>>>> master
 					}
 				}
 			}
@@ -491,12 +430,7 @@ namespace StarlightRiver.Content.Items.Misc
 							glob.enemyOffset = glob.Center - target.Center;
 						}
 
-<<<<<<< HEAD
-                        target.AddBuff(BuffID.OnFire, 30);
-
-=======
 						target.AddBuff(BuffID.OnFire, 30);
->>>>>>> master
 						return true;
 					}
 				}
@@ -516,15 +450,7 @@ namespace StarlightRiver.Content.Items.Misc
 			foreach (MagmaGlob glob in Globs)
 			{
 				if (glob.active)
-<<<<<<< HEAD
-				{
-					var start = glob.Center - new Vector2((MagmaGlob.WIDTH / 2) * glob.scale, 0);
-					var end = glob.Center + new Vector2((MagmaGlob.WIDTH / 2) * glob.scale, 0);
-					Utils.PlotTileLine(start, end, MagmaGlob.HEIGHT * glob.scale, DelegateMethods.CutTiles);
-				}
-=======
 					Utils.PlotTileLine(glob.Center - new Vector2(MagmaGlob.WIDTH / 2 * glob.scale, 0), glob.Center + new Vector2(MagmaGlob.WIDTH / 2 * glob.scale, 0), MagmaGlob.HEIGHT * glob.scale, DelegateMethods.CutTiles);
->>>>>>> master
 			}
 		}
 
@@ -545,9 +471,6 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
-<<<<<<< HEAD
-    }
-=======
 
 		/*public void DrawOverTiles(SpriteBatch spriteBatch)
         {
@@ -560,12 +483,10 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}*/
 	}
->>>>>>> master
 
 	public class MagmaGunDust : ModDust
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
-
 		public override void OnSpawn(Dust dust)
 		{
 			dust.noLight = true;

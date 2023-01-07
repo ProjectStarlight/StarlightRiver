@@ -7,12 +7,6 @@ using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-<<<<<<< HEAD
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using Terraria;
-=======
->>>>>>> master
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -540,41 +534,6 @@ namespace StarlightRiver.Helpers
 				{
 					for (int y = 0; y < h; y++)
 					{
-<<<<<<< HEAD
-                        Tile checkTile = Framing.GetTileSafely(check.X + x, check.Y + y);
-                        if (!condition(checkTile))
-                            return Point16.Zero;
-                    }
-                
-                    return check;
-            }
-
-            return Point16.Zero;
-        }
-
-        /// <summary>
-        /// Adds a <see cref="VariableDefinition"/> corresponding to the <see cref="Type"/> of <typeparamref name="T"/> to <see cref="ILContext.Body"/>'s <see cref="MethodBody.Variables"/> collection. <br />
-        /// This effectively creates a new local variable to work with.
-        /// </summary>
-        /// <param name="il">The <see cref="ILContext"/> to add a local variable to.</param>
-        /// <typeparam name="T">The local variable's type.</typeparam>
-        /// <returns>The index of the local variable.</returns>
-        public static int MakeLocalVariable<T>(this ILContext il) => il.MakeLocalVariable(typeof(T));
-
-        /// <summary>
-        /// Adds a <see cref="VariableDefinition"/> corresponding to the given <paramref name="type"/> to <see cref="ILContext.Body"/>'s <see cref="MethodBody.Variables"/> collection. <br />
-        /// This effectively creates a new local variable to work with.
-        /// </summary>
-        /// <param name="il">The <see cref="ILContext"/> to add a local variable to.</param>
-        /// <param name="type">The local variable's type.</param>
-        /// <returns>The index of the local variable.</returns>
-        public static int MakeLocalVariable(this ILContext il, Type type)
-        {
-            il.Body.Variables.Add(new VariableDefinition(il.Import(type)));
-            return il.Body.Variables.Count - 1;
-        }
-    }
-=======
 						Tile checkTile = Framing.GetTileSafely(check.X + x, check.Y + y);
 
 						if (!condition(checkTile))
@@ -591,6 +550,7 @@ namespace StarlightRiver.Helpers
 		public static bool ClearPath(Vector2 point1, Vector2 point2)
 		{
 			Vector2 direction = point2 - point1;
+
 			for (int i = 0; i < direction.Length(); i += 4)
 			{
 				Vector2 toLookAt = point1 + Vector2.Normalize(direction) * i;
@@ -602,6 +562,5 @@ namespace StarlightRiver.Helpers
 			return true;
 		}
 	}
->>>>>>> master
 }
 

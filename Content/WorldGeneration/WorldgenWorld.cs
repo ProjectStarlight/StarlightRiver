@@ -33,20 +33,9 @@ namespace StarlightRiver.Core
 			}
 		}
 
-<<<<<<< HEAD
-        public override void PostWorldGen()
-        {
-            ChestLootSystem.Instance.PopulateAllChests();
-        }
-    }
-=======
 		public override void PostWorldGen()
 		{
-			if (WorldGen.genRand.NextBool())
-				Flag(WorldFlags.AluminumMeteors);
-
 			ChestLootSystem.Instance.PopulateAllChests();
 		}
 	}
->>>>>>> master
 }

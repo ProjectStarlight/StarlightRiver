@@ -33,17 +33,6 @@ namespace StarlightRiver.Core
 
 		public const string BalancedItem = Assets + "Items/Balanced/";
 
-<<<<<<< HEAD
-        public const string ArtifactItem =          Assets + "Items/BuriedArtifacts";
-        public const string AluminumItem =          Assets + "Items/AstralMeteor/";
-        public const string MoonstoneItem =         Assets + "Items/Moonstone/";
-        public const string MoonstoneNPC =          Assets + "NPCs/Moonstone/";
-        public const string CaveTempleItem =        Assets + "Items/UndergroundTemple/";
-        public const string DungeonItem =           Assets + "Items/Dungeon/";
-        public const string GravediggerItem =       Assets + "Items/Gravedigger/";
-        public const string DemonItem =             Assets + "Items/Demon/";
-        public const string GeomancerItem =         Assets + "Items/Geomancer/";
-=======
 		public const string ArtifactItem = Assets + "Items/BuriedArtifacts/";
 		public const string AluminumItem = Assets + "Items/AstralMeteor/";
 		public const string MoonstoneItem = Assets + "Items/Moonstone/";
@@ -53,12 +42,12 @@ namespace StarlightRiver.Core
 		public const string GravediggerItem = Assets + "Items/Gravedigger/";
 		public const string DemonItem = Assets + "Items/Demon/";
 		public const string GeomancerItem = Assets + "Items/Geomancer/";
->>>>>>> master
 
 		public const string SpaceEventItem = Assets + "Items/SpaceEvent/";
 		public const string SpaceEventNPC = Assets + "NPCs/SpaceEvent/";
 
 		public const string DungeonNPC = Assets + "NPCs/Dungeon/";
+		public const string MoonstoneNPC = Assets + "NPCs/Moonstone/";
 
 		public const string OvergrowTile = Assets + "Tiles/Overgrow/";
 		public const string OvergrowItem = Assets + "Items/Overgrow/";
