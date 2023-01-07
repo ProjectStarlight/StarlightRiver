@@ -48,6 +48,7 @@ namespace StarlightRiver.Core
 		public const string MiscNPC = Assets + "NPCs/Misc/";
 
 		public const string DungeonNPC = Assets + "NPCs/Dungeon/";
+		public const string DungeonTile = Assets + "Tiles/Dungeon/";
 
 		public const string OvergrowTile = Assets + "Tiles/Overgrow/";
 		public const string OvergrowItem = Assets + "Items/Overgrow/";
