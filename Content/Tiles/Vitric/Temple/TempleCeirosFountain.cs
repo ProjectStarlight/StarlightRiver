@@ -1,18 +1,7 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.Enums;
-using StarlightRiver.Core.Loaders;
-using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria.ObjectData;
-using Terraria;
-using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
@@ -55,7 +44,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				frameCounter = 0;
 			}
 			else
+			{
 				frameCounter++;
+			}
 
 			if (frame >= 4)
 				frame = 0;

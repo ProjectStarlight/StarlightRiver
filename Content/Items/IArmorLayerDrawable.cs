@@ -1,10 +1,9 @@
 ﻿using Terraria.DataStructures;
-using Terraria.ModLoader;
 
-namespace StarlightRiver.Items.Armor
+namespace StarlightRiver.Content.Items
 {
 	internal interface IArmorLayerDrawable
-    {
-        void DrawArmorLayer(PlayerDrawSet info);
-    }
+	{
+		void DrawArmorLayer(PlayerDrawSet info);
+	}
 }
