@@ -16,13 +16,14 @@ namespace StarlightRiver.Content.Items.Vitric
 	public class PhoenixStorm : ModItem
 	{
 		public int stormTimer = 0;
+
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Phoenix Storm");
 			Tooltip.SetDefault("Summons a storm of phoenixes that periodically swoops in on enemies");
-			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
+			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
@@ -49,8 +50,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void UpdateInventory(Player player)
 		{
 			stormTimer++;
+
 			if (player.HasMinionAttackTargetNPC)
 				stormTimer++;
+
 			if (stormTimer % 240 < 2)
 			{
 				List<Projectile> toSwoop = Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.ModProjectile is PhoenixStormMinion modProj && modProj.syncItem == Item).ToList();
@@ -60,10 +63,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			// This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
 			player.AddBuff(Item.buffType, 2);
 
-			// Here you can change where the minion is spawned. Most vanilla minions spawn at the cursor position.
 			position = Main.MouseWorld;
 
 			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -108,7 +109,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private float glowOpacity = 1;
 
-		private Player player => Main.player[Projectile.owner];
+		private Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -117,10 +118,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			DisplayName.SetDefault("Phoenix");
 			Main.projFrames[Projectile.type] = 7;
 
-			Main.projPet[Projectile.type] = true; // Denotes that this Projectile is a pet or minion
-			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true; // This is necessary for right-click targeting
-			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; // This is needed so your minion can properly spawn when summoned and replaced when other minions are summoned			 
-			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Don't mistake this with "if this is true, then it will automatically home". It is just for damage reduction for certain NPCs
+			Main.projPet[Projectile.type] = true;
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true; 
+			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; 
+			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; 
 		}
 
 		public sealed override void SetDefaults()
@@ -147,28 +148,21 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void AI()
 		{
-			#region Active check
-			if (player.dead || !player.active) // This is the "active check", makes sure the minion is alive while the Player is alive, and despawns if not
-				player.ClearBuff(BuffType<PhoenixStormSummonBuff>());
+			if (Owner.dead || !Owner.active) // This is the "active check", makes sure the minion is alive while the Player is alive, and despawns if not
+				Owner.ClearBuff(BuffType<PhoenixStormSummonBuff>());
 
-			if (player.HasBuff(BuffType<PhoenixStormSummonBuff>()))
+			if (Owner.HasBuff(BuffType<PhoenixStormSummonBuff>()))
 				Projectile.timeLeft = 2;
-			#endregion
 
-			#region Find Target
-			if (player.HasMinionAttackTargetNPC)
-				target = Main.npc[player.MinionAttackTargetNPC];
+			if (Owner.HasMinionAttackTargetNPC)
+				target = Main.npc[Owner.MinionAttackTargetNPC];
 			else
-				target = Main.npc.Where(n => n.active && n.Distance(player.Center) < 800 && n.CanBeChasedBy(Projectile)).OrderBy(n => n.Distance(player.Center)).FirstOrDefault();
+				target = Main.npc.Where(n => n.active && n.Distance(Owner.Center) < 800 && n.CanBeChasedBy(Projectile)).OrderBy(n => n.Distance(Owner.Center)).FirstOrDefault();
 
-			#endregion
-
-			#region trail stuff
 			ManageCaches();
 			ManageTrail();
-			#endregion
 
-			if (player.HasMinionAttackTargetNPC || swooping)
+			if (Owner.HasMinionAttackTargetNPC || swooping)
 			{
 				if (glowOpacity < 1)
 					glowOpacity += 0.05f;
@@ -213,12 +207,14 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
-				if (Projectile.Distance(player.Center) > 1000)
-					Projectile.Center = player.Center;
+				if (Projectile.Distance(Owner.Center) > 1000)
+					Projectile.Center = Owner.Center;
 
 				Projectile.frameCounter++;
+
 				if (Projectile.frameCounter % 3 == 0)
 					Projectile.frame++;
+
 				Projectile.frame %= Main.projFrames[Projectile.type] - 1;
 
 					swoopDelay--;
@@ -226,7 +222,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					Swoop();
 
 				circleCounter += swoopSpeed;
-				Vector2 posToBe = player.Center;
+				Vector2 posToBe = Owner.Center;
 				if (target != default)
 					posToBe = target.Center;
 
@@ -246,17 +242,22 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (alreadyHit.Contains(target))
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{ 
+		{
 			for (int i = 0; i < 12; i++)
+			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20, 20), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5, 5), 0, Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat()), 0.55f);
+			}
 			alreadyHit.Add(target);
 			target.AddBuff(BuffID.OnFire, 240);
 			Projectile.penetrate++;
 		}
+
+		public override bool MinionContactDamage() => swooping;
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -272,7 +273,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Projectile.velocity.X < 0)
 				spriteEffects = SpriteEffects.None;
 			
-			if (player.HasMinionAttackTargetNPC || swooping)
+			if (Owner.HasMinionAttackTargetNPC || swooping)
 			{
 				int glowFrameHeight = glowTex.Height / Main.projFrames[Projectile.type];
 				Rectangle glowFrame = new Rectangle(0, glowFrameHeight * Projectile.frame, glowTex.Width, glowFrameHeight);
@@ -329,8 +330,6 @@ namespace StarlightRiver.Content.Items.Vitric
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
-
-		public override bool MinionContactDamage() => swooping;
 
 		private void Swoop()
 		{
