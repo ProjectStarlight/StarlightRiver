@@ -36,8 +36,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 	internal class TentacleHookProj : ModProjectile
 	{
-		public override string Texture => AssetDirectory.PermafrostItem + "TentacleHookProj";
-
 		private List<Vector2> followPoints = new();
 
 		private bool launching = true;
@@ -49,6 +47,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private float colorCounter = 0;
 
 		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.PermafrostItem + "TentacleHookProj";
 
 		public override void SetStaticDefaults()
 		{
@@ -120,9 +120,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			launching = false;
 			if (followPoints.Count < 1)
-			{
 				return;
-			}
 
 			grappleX = followPoints[0].X;
 			grappleY = followPoints[0].Y;
