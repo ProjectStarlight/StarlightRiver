@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.CustomHooks
 {
 	class PrehardmodeWarning : HookGroup
 	{
-		//Swaps the vanilla meteor events out, could create conflicts if other mods attempt the same but shouldnt be anything fatal
 		public override void Load()
 		{
 			On.Terraria.WorldGen.StartHardmode += WorldGen_StartHardmode;
