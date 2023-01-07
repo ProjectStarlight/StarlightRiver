@@ -1,13 +1,3 @@
-//TODO:
-//Usestyle
-//Make phoenix able to target NPCs
-//Visuals
-//Balance
-//Sound effects
-//Improve circling behavior
-//Make the phoenixes teleport if they get too far away
-//Bloom particles on hit
-
 using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Buffs.Summon;
@@ -45,11 +35,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.height = 32;
 			Item.useTime = 36;
 			Item.useAnimation = 36;
-			Item.useStyle = ItemUseStyleID.Swing;
+			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.UseSound = SoundID.Item44;
 
 			Item.noMelee = true;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = DamageClass.Summon;
 			Item.buffType = BuffType<PhoenixStormSummonBuff>();
 			Item.shoot = ProjectileType<PhoenixStormMinion>();
 			Item.rare = ItemRarityID.Orange;
@@ -116,6 +106,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		private Trail trail;
 		private List<Vector2> cache;
 
+		private float glowOpacity = 1;
+
 		private Player player => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
@@ -176,6 +168,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			ManageTrail();
 			#endregion
 
+			if (player.HasMinionAttackTargetNPC || swooping)
+			{
+				if (glowOpacity < 1)
+					glowOpacity += 0.05f;
+				Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * 0.6f);
+			}
+			else if (glowOpacity > 0)
+				glowOpacity -= 0.05f;
+
 			if (swooping)
 			{
 				if (Main.rand.NextBool(2))
@@ -212,6 +213,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 			else
 			{
+				if (Projectile.Distance(player.Center) > 1000)
+					Projectile.Center = player.Center;
+
 				Projectile.frameCounter++;
 				if (Projectile.frameCounter % 3 == 0)
 					Projectile.frame++;
@@ -264,16 +268,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			
 			SpriteEffects spriteEffects = SpriteEffects.FlipHorizontally;
 			float rotation = Projectile.rotation;
+
 			if (Projectile.velocity.X < 0)
-			{
 				spriteEffects = SpriteEffects.None;
-			}
 			
 			if (player.HasMinionAttackTargetNPC || swooping)
 			{
 				int glowFrameHeight = glowTex.Height / Main.projFrames[Projectile.type];
 				Rectangle glowFrame = new Rectangle(0, glowFrameHeight * Projectile.frame, glowTex.Width, glowFrameHeight);
-				Color glowColor = Color.OrangeRed;
+				Color glowColor = Color.OrangeRed * glowOpacity;
 				glowColor.A = 0;
 				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowFrame, glowColor, rotation, glowFrame.Size() / 2, Projectile.scale * 1.2f, spriteEffects, 0f);
 			}
