@@ -19,7 +19,7 @@ namespace StarlightRiver.Core
 			PlaceLavaArtifacts();
 			PlaceUndergroundArtifacts();
 			PlaceJungleArtifacts();
-			//PlaceSnowArtifacts();
+			PlaceSnowArtifacts();
 			PlaceHellArtifacts();
 
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
@@ -53,6 +53,20 @@ namespace StarlightRiver.Core
 			int amount = Main.maxTilesX / 12;
 
 			PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
+		}
+
+		private void PlaceSnowArtifacts()
+		{
+			int[] tiles = new int[]
+			{
+				  TileID.SnowBlock,
+				  TileID.IceBlock
+			};
+
+			var range = new Rectangle(100, 100, Main.maxTilesX - 100, Main.maxTilesY - 400);
+			int amount = Main.maxTilesX / 20;
+
+			PlaceArtifactPool<SnowArtifact>(range, tiles, amount, 4999);
 		}
 
 		private void PlaceOceanArtifacts()

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.MetaballSystem;
+﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
@@ -6,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	internal class MagmaMetaballs : MetaballActor
 	{
-		public override bool Active => Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MagmaGunPhantomProj>());
+		public override bool Active => Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<MagmaGunPhantomProj>() || n.type == ModContent.ProjectileType<ArrowMagma>()));
 
 		public override Color OutlineColor => new(255, 254, 255);
 
