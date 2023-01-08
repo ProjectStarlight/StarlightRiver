@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
 			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
 
-			Vector2 parallaxOffset = new Vector2(player.Center.X - Projectile.position.X, 0) * 0.15f;
+			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - Projectile.position.X, 0) * 0.15f;
 			Texture2D farBackdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdrop").Value;
 			Texture2D farBackdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdropGlow").Value;
 

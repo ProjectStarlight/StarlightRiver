@@ -19,15 +19,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		float attackType;
 		public Vector2 arenaPos;
 
-		private SpriteEffects GetSpriteEffects()
-		{
-			return NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		}
-
 		internal ref float Phase => ref NPC.ai[0];
 		internal ref float GlobalTimer => ref NPC.ai[1];
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
+
+		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
 
 		//Phase tracking utils
 		public enum Phases
@@ -69,20 +68,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 		}
 
-		public override string Texture => AssetDirectory.Glassweaver + Name;
-
-		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
-
-		public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
-		{
-			spriteEffects = GetSpriteEffects();
-		}
-
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
-		{
-			return false; //no contact damage!
-		}
-
 		public override void SetDefaults()
 		{
 			NPC.width = 82;
@@ -97,6 +82,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.HitSound = SoundID.NPCHit52;
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
 			NPC.dontTakeDamage = true;
+		}
+
+		private SpriteEffects GetSpriteEffects()
+		{
+			return NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		}
+
+		public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
+		{
+			spriteEffects = GetSpriteEffects();
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false; //no contact damage!
 		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
