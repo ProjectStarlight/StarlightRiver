@@ -123,7 +123,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override bool RightClick(int i, int j)
 		{
-
 			Tile tile = Framing.GetTileSafely(i, j);
 			i -= tile.TileFrameX / 18;
 			j -= tile.TileFrameY / 18;
@@ -174,11 +173,13 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public override void SaveData(TagCompound tag)
 		{
 			tag["Point"] = targetPoint;
+			tag["hasWisp"] = hasWisp;
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			targetPoint = tag.Get<Vector2>("Point");
+			hasWisp = tag.GetBool("hasWisp");
 		}
 	}
 

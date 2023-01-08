@@ -63,6 +63,30 @@ namespace StarlightRiver.Core
 			int center = iceLeft + (iceRight - iceLeft) / 2;
 			int centerY = (int)WorldGen.worldSurfaceHigh + (iceBottom - (int)WorldGen.worldSurfaceHigh) / 2;
 
+		TryToGenerateArena:
+
+			if (center < iceLeft || center > iceRight - 109)
+				center = iceLeft + (iceRight - iceLeft) / 2;
+
+			for (int x1 = 0; x1 < 109; x1++)
+			{
+				for (int y1 = 0; y1 < 180; y1++)
+				{
+					Tile tile = Framing.GetTileSafely(center - 40 + x1, centerY + 100 + y1);
+
+					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+					{
+						center += Main.rand.Next(-1, 2) * 109;
+						goto TryToGenerateArena;
+					}
+				}
+			}
+
+			squidBossArena = new Rectangle(center - 40, centerY + 100, 109, 180);
+			StructureHelper.Generator.GenerateStructure("Structures/SquidBossArena", new Point16(center - 40, centerY + 100), Mod);
+
+			Vector2 oldPos = new Vector2(squidBossArena.Center.X, squidBossArena.Y) * 16;
+
 			//Find locations for and place the touchstone altars which lead to the boss' arena
 			for (int k = 1; k <= 2; k++)
 			{
@@ -91,16 +115,23 @@ namespace StarlightRiver.Core
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
 				StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(xTarget, yTarget), Mod);
-				(TileEntity.ByPosition[new Point16(xTarget + 9, yTarget + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
+
+				var te = TileEntity.ByPosition[new Point16(xTarget + 9, yTarget + 6)] as TouchstoneTileEntity;
+				te.targetPoint = oldPos;
+
 				oldPos = new Vector2(xTarget + 11, yTarget + 9) * 16;
 			}
 
 			for (int y = 14; y < Main.maxTilesY - 200; y++)
 			{
-				if (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock)
+				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
 					StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(center, y - 12), Mod);
-					(TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
+
+					var te = TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity;
+					te.targetPoint = oldPos;
+					te.hasWisp = true;
+
 					break;
 				}
 
