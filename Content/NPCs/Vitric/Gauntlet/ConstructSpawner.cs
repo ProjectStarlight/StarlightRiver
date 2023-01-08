@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 			else //While being thrown out
 			{
-				if(gravity)
+				if (gravity)
 					Projectile.velocity.Y += 0.1f;
 
 				if (Main.rand.NextBool(2))
@@ -57,9 +57,14 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (Timer > 70)
 			{
-				NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+				SpawnNPC();
 				Projectile.Kill();
 			}
+		}
+
+		public virtual void SpawnNPC()
+		{
+			NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

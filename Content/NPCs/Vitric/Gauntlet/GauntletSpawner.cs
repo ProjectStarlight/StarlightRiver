@@ -32,5 +32,13 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			return true;
 		}
+
+		public override void SpawnNPC()
+		{
+			int i = NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+
+			var mnpc = Main.npc[i].ModNPC as VitricConstructNPC;
+			mnpc.partOfGauntlet = true;
+		}
 	}
 }
