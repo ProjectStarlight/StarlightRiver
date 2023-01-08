@@ -69,9 +69,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 				for (int i = 0; i < Main.projectile.Length; i++)
 				{
 					Projectile proj = Main.projectile[i];
+
 					if (proj.active && proj.owner == Player.whoAmI && proj.type == ModContent.ProjectileType<DianeCrescant>())
 					{
 						var mp = proj.ModProjectile as DianeCrescant;
+
 						if (!mp.attacking)
 							mp.StartAttack();
 						break;
@@ -88,6 +90,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			{
 				if (currentMana > Player.statMana && charge < 500)
 					charge += currentMana - Player.statMana;
+
 				currentMana = Player.statMana;
 			}
 		}
@@ -121,9 +124,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private float ChargeRatio => charge / 500f;
 
-		public override string Texture => AssetDirectory.MoonstoneItem + Name;
-
 		private int AfterimageLength => (int)MathHelper.Lerp(11, 22, ChargeRatio);
+
+		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -185,10 +188,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			oldPosition.Add(Projectile.Center);
 
 			while (oldRotation.Count > AfterimageLength)
+			{
 				oldRotation.RemoveAt(0);
+			}
 
 			while (oldPosition.Count > AfterimageLength)
+			{
 				oldPosition.RemoveAt(0);
+			}
 
 			if (flashTimer < 1)
 				flashTimer += 0.04f;
@@ -354,7 +361,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 				attacking = false;
 
 				for (int k = 0; k < 9; k++)
+				{
 					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<Dusts.Glow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+				}
 			}
 			else
 			{
@@ -365,7 +374,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			for (int k = 0; k < 2; k++)
+			{
 				Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(25), ModContent.DustType<DianeGlow>(), Vector2.Zero, 0, new Color(50, 50, 255), 0.4f);
+			}
 
 			if (Main.rand.NextBool(3))
 			{

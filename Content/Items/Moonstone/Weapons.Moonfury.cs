@@ -17,6 +17,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Moonfury");
+			Tooltip.SetDefault("Call down a shard of moonstone, afflicting enemies with Dreamfire\nAfflicted enemies take extra damage on hit from Moonfury");
+		}
+
 		public override void SetDefaults()
 		{
 			Item.damage = 25;
@@ -34,12 +40,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.autoReuse = false;
 			Item.shoot = ModContent.ProjectileType<MoonfuryProj>();
 			Item.useTurn = true;
-		}
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Moonfury");
-			Tooltip.SetDefault("Call down a shard of moonstone, afflicting enemies with Dreamfire\nAfflicted enemies take extra damage on hit from Moonfury");
 		}
 
 		public override void AddRecipes()
@@ -84,7 +84,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 				return false;
 
 			cooldown = 75;
-
 			return true;
 		}
 
@@ -105,16 +104,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 	}
-
 	internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
 		private List<Vector2> cache;
 		private Trail trail;
 		private Trail trail2;
 
-		private bool stuck = false;
-
 		private float trailWidth = 1;
+		private bool stuck = false;
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
@@ -174,7 +171,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			ManageTrail();
 		}
-
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (!stuck)
@@ -243,9 +239,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private void ManageTrail()
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(12), factor => (10 + factor * 25) * trailWidth, factor => new Color(120, 20 + (int)(100 * factor.X), 255) * factor.X * trailWidth);
+
 			trail.Positions = cache.ToArray();
 
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new RoundedTip(6), factor => (80 + 0 + factor * 0) * trailWidth, factor => new Color(100, 20 + (int)(60 * factor.X), 255) * factor.X * 0.15f * trailWidth);
+
 			trail2.Positions = cache.ToArray();
 
 			if (Projectile.velocity.Length() > 1)
@@ -291,9 +289,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private Trail trail;
 		private Trail trail2;
 
-		private float Progress => 1 - Projectile.timeLeft / 10f;
+		protected float Progress => 1 - Projectile.timeLeft / 10f;
 
-		private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+		protected virtual float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
 
 		public override string Texture => AssetDirectory.MoonstoneItem + "MoonfuryProj";
 
@@ -365,9 +363,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor => Color.White);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor => new Color(100, 0, 255));
 
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor => Color.Lerp(new Color(180, 180, 255), new Color(85, 85, 200), Progress));
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
