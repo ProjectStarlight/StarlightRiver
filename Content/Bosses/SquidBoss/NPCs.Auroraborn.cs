@@ -39,8 +39,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (NPC.ai[0] % 60 == 0)
 			{
 				NPC.velocity = Vector2.Normalize(NPC.Center - Player.Center) * -6f;
+
 				for (int k = 0; k < 10; k++)
+				{
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Starlight>(), NPC.velocity * Main.rand.NextFloat(-5, 5));
+				}
 			}
 
 			NPC.ai[0]++;

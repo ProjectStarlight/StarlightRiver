@@ -75,6 +75,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class IcePlatformSmall : MovingPlatform, IUnderwater
 	{
 		public override string Texture => AssetDirectory.SquidBoss + Name;
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			return false;
@@ -120,6 +121,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	class GoldPlatform : MovingPlatform, IUnderwater
 	{
 		public override string Texture => AssetDirectory.SquidBoss + Name;
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			return false;

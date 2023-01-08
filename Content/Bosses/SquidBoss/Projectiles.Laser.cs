@@ -8,9 +8,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class Laser : InteractiveProjectile, IUnderwater
 	{
-		public NPC Parent;
+		public NPC parent;
 
-		public int Height;
+		public int height;
 
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				int y = (int)Projectile.Center.Y / 16 - 28;
 
-				int xOff = (Parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
+				int xOff = (parent.ModNPC as SquidBoss).variantAttack ? 18 : -76;
 
 				for (int k = 0; k < 59; k++)
 				{
@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Projectile.ai[1]++;
 
-			Projectile.Center = Parent.Center;
+			Projectile.Center = parent.Center;
 
 			//collision
 			int height = 0;
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 			}
 
-			Height = height;
+			this.height = height;
 
 			var rect = new Rectangle((int)Projectile.position.X, (int)Projectile.position.Y - height + 16, Projectile.width, height - 16);
 
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			float height = texBeam2.Height / 2f * 1.5f;
-			int adjustedLaserHeight = Height - 32;
+			int adjustedLaserHeight = this.height - 32;
 
 			for (int k = 0; k <= adjustedLaserHeight; k += 500)
 			{
@@ -160,8 +160,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Main.NewText(thisHeight);
 			}
 
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
-			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (Height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * -0.045f, texStar.Size() / 2, 0.65f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

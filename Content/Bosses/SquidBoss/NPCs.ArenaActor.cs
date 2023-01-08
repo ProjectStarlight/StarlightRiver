@@ -12,15 +12,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class ArenaActor : ModNPC
 	{
-		public NPC FakeBoss;
+		public NPC fakeBoss;
 
-		public int WaterfallWidth = 0;
-		ParticleSystem BubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
+		public int waterfallWidth = 0;
+		ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
 		private Vector2 domeOffset = new(0, -886);
 
 		private static VertexPositionColorTexture[] verticies;
 		private static VertexBuffer buffer;
-		private static Effect ApplyEffect;
+		private static Effect applyEffect;
 
 		public float WaterLevelWorld => NPC.Center.Y + 35 * 16 - NPC.ai[0];
 
@@ -56,10 +56,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.noGravity = true;
 			NPC.lifeMax = 10;
 
-			FakeBoss = new NPC();
-			FakeBoss.SetDefaults(NPCType<SquidBoss>());
-			FakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
-			(FakeBoss.ModNPC as SquidBoss).QuickSetup();
+			fakeBoss = new NPC();
+			fakeBoss.SetDefaults(NPCType<SquidBoss>());
+			fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
+			(fakeBoss.ModNPC as SquidBoss).QuickSetup();
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -74,22 +74,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{
-				(FakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
-				(FakeBoss.ModNPC as SquidBoss).GlobalTimer++;
-				(FakeBoss.ModNPC as SquidBoss).Opacity = 0f;
-				(FakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
-				(FakeBoss.ModNPC as SquidBoss).Animate(6, 0, 8);
+				(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => n.ai[1]++);
+				(fakeBoss.ModNPC as SquidBoss).GlobalTimer++;
+				(fakeBoss.ModNPC as SquidBoss).Opacity = 0f;
+				(fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
+				(fakeBoss.ModNPC as SquidBoss).Animate(6, 0, 8);
 
 				var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
 
 				if (followBox.Contains(Main.LocalPlayer.Center.ToPoint()))
-					FakeBoss.Center += (Main.LocalPlayer.Center + new Vector2(0, -50) - FakeBoss.Center) * 0.01f;
+					fakeBoss.Center += (Main.LocalPlayer.Center + new Vector2(0, -50) - fakeBoss.Center) * 0.01f;
 
-				if (WaterfallWidth > 0)
-					WaterfallWidth--;
+				if (waterfallWidth > 0)
+					waterfallWidth--;
 			}
 
-			if (WaterfallWidth > 0)
+			if (waterfallWidth > 0)
 			{
 				int heightDust = 2850 - (int)NPC.ai[0];
 
@@ -211,7 +211,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						Item.TurnToAir();
 
 						for (int n = 0; n < 50; n++)
+						{
 							Dust.NewDustPerfect(Item.Center, DustType<Dusts.Starlight>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20));
+						}
 					}
 				}
 			}
@@ -233,10 +235,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 
 			//these should only initialize on the client!!!
-			if (ApplyEffect is null)
-				ApplyEffect = Main.dedServ ? null : ApplyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
+			if (applyEffect is null)
+				applyEffect = Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
+
 			if (buffer is null)
 				buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+
 			if (verticies is null)
 				verticies = new VertexPositionColorTexture[6];
 
@@ -248,16 +252,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					0, 0, 0, 1
 				);
 
-			ApplyEffect.Parameters["drawSize"].SetValue(target.Size());
-			ApplyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
-			ApplyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects / 75f);
+			applyEffect.Parameters["drawSize"].SetValue(target.Size());
+			applyEffect.Parameters["colorSampleY"].SetValue(1 - (0.5f + DrawHelper.ConvertY(WaterLevelWorld - Main.screenPosition.Y) / 2f));
+			applyEffect.Parameters["time"].SetValue((float)Main.timeForVisualEffects / 75f);
 
-			ApplyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
-			ApplyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);
-			ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
-			ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
-			ApplyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
-			ApplyEffect.Parameters["zoom"].SetValue(zoom);
+			applyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
+			applyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);
+			applyEffect.Parameters["light"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			applyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
+			applyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
+			applyEffect.Parameters["zoom"].SetValue(zoom);
 
 			//var verticies = new VertexPositionColorTexture[6];
 			//var buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
@@ -274,7 +278,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Main.instance.GraphicsDevice.SetVertexBuffer(buffer);
 
-			foreach (EffectPass pass in ApplyEffect.CurrentTechnique.Passes)
+			foreach (EffectPass pass in applyEffect.CurrentTechnique.Passes)
 			{
 				pass.Apply();
 				Main.instance.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
@@ -295,10 +299,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		private void DrawWaterfalls(SpriteBatch spriteBatch)
 		{
-			if (WaterfallWidth <= 0)
+			if (waterfallWidth <= 0)
 				return;
 
-			float width = WaterfallWidth + 2 * (float)Math.Sin(Main.GameUpdateCount * 0.1f);
+			float width = waterfallWidth + 2 * (float)Math.Sin(Main.GameUpdateCount * 0.1f);
 			int height = 2850 - (int)NPC.ai[0];
 
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
@@ -316,14 +320,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(tex, target, source, new Color(0.4f, 1, 1));
 				spriteBatch.Draw(tex, target2, source, new Color(0.4f, 1, 1));
 
-				/*
-                LightingBufferRenderer.DrawWithLighting(target, tex, source, color * 6);
-                LightingBufferRenderer.DrawWithLighting(target2, tex, source, color * 6);
-
-                LightingBufferRenderer.DrawWithLighting(target, tex2, source, color);
-                LightingBufferRenderer.DrawWithLighting(target2, tex2, source, color);
-                */
-
 				float sin = (float)Math.Sin(-NPC.ai[1] * 4 + k * 0.01f);
 				float sin2 = (float)Math.Sin(-NPC.ai[2] * 4 + k * 0.002f);
 				float cos = (float)Math.Cos(-NPC.ai[2] * 4 + k * 0.01f);
@@ -338,6 +334,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void DrawBigWindow(SpriteBatch spriteBatch)
 		{
 			var drawCheck = new Rectangle(StarlightWorld.squidBossArena.X * 16 - (int)Main.screenPosition.X, StarlightWorld.squidBossArena.Y * 16 - (int)Main.screenPosition.Y, StarlightWorld.squidBossArena.Width * 16, StarlightWorld.squidBossArena.Height * 16);
+
 			if (!Helper.OnScreen(drawCheck))
 				return;
 
@@ -366,22 +363,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
 			//Draw our fake boss           
-			(FakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
-			(FakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
+			(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
+			(fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
 
-			BubblesSystem.DrawParticles(spriteBatch);
-
-			if (Main.rand.NextBool(4))
-				BubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+			bubblesSystem.DrawParticles(spriteBatch);
 
 			if (Main.rand.NextBool(4))
-				BubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+
+			if (Main.rand.NextBool(4))
+				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(0.6f, 1.2f)), 0, Main.rand.NextFloat(0.4f, 0.8f), Color.White * Main.rand.NextFloat(0.2f, 0.4f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
 			if (Main.rand.NextBool(20))
-				BubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), 500), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
 			if (Main.rand.NextBool(20))
-				BubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
+				bubblesSystem.AddParticle(new Particle(Vector2.Zero, new Vector2(Main.rand.NextFloat(6.28f), -Main.rand.NextFloat(1.6f, 2.2f)), 0, Main.rand.NextFloat(1.0f, 1.4f), Color.White * Main.rand.NextFloat(0.4f, 0.5f), 700, pos + new Vector2(Main.rand.Next(-600, 600), Main.rand.Next(-1200, -600)), new Rectangle(0, Main.rand.Next(3) * 16, 16, 16)));
 
 			spriteBatch.End(); //we have to restart the SB here anyways, so lets use it to draw our BG with primitives
 
@@ -462,7 +459,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void Unload()
 		{
-			BubblesSystem = null;
+			bubblesSystem = null;
 		}
 	}
 }

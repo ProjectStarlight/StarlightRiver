@@ -41,15 +41,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Player Player = Main.player[NPC.target];
 
 			NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.15f;
+
 			if (NPC.velocity.LengthSquared() > 4)
 				NPC.velocity *= 0.95f;
+
 			if (NPC.ai[0] % 15 == 0)
 				NPC.velocity.Y -= 0.5f;
 
 			NPC.rotation = NPC.velocity.X * 0.25f;
 
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.type == Type && Vector2.Distance(n.Center, NPC.Center) < 32))
+			{
 				npc.velocity += (npc.Center - NPC.Center) * 0.05f;
+			}
 		}
 
 		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
@@ -62,7 +66,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (NPC.life <= 0)
 			{
 				for (int i = 0; i < 8; i++)
+				{
 					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5, 5), 0, new Color(150, 200, 255) * 0.5f);
+				}
 			}
 		}
 

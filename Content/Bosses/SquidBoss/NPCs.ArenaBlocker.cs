@@ -37,6 +37,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (NPC.ai[1] == 1 && NPC.ai[0] > 0)
 				NPC.ai[0] -= 4;
+
 			NPC.friendly = false;
 		}
 

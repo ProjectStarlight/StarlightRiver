@@ -99,6 +99,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < cache.Count; k++)
 			{
 				var hitbox = new Rectangle((int)cache[k].X - 4, (int)cache[k].Y - 4, 8, 8);
+
 				if (hitbox.Intersects(targetHitbox))
 					return true;
 			}

@@ -426,7 +426,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tent.ai[0] = 1;
 
 				(tent.ModNPC as Tentacle).Parent = this;
-				(tent.ModNPC as Tentacle).OffsetFromParentBody = xb;
+				(tent.ModNPC as Tentacle).offsetFromParentBody = xb;
 				(tent.ModNPC as Tentacle).Timer = 60;
 				tentacles.Add(tent);
 			}
@@ -568,7 +568,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					savedPoint = NPC.Center;
 
 				if (GlobalTimer < 50)
-					Arena.WaterfallWidth = (int)GlobalTimer;
+					Arena.waterfallWidth = (int)GlobalTimer;
 
 				if (GlobalTimer < 325) //water rising up
 				{
@@ -587,7 +587,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 
 				if (GlobalTimer > 275 && GlobalTimer <= 325)
-					Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 275);
+					Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
 
 				if (GlobalTimer == 325) //make the remaining tentacles vulnerable
 				{
@@ -659,7 +659,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Phase == (int)AIStates.SecondPhase) //second phase
 			{
 				if (GlobalTimer < 50)
-					Arena.WaterfallWidth = (int)GlobalTimer;
+					Arena.waterfallWidth = (int)GlobalTimer;
 
 				if (GlobalTimer < 300) //water rising
 				{
@@ -678,7 +678,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 
 				if (GlobalTimer > 250 && GlobalTimer <= 300)
-					Arena.WaterfallWidth = 50 - ((int)GlobalTimer - 250);
+					Arena.waterfallWidth = 50 - ((int)GlobalTimer - 250);
 
 				if (GlobalTimer == 300) //reset
 				{
@@ -763,7 +763,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				}
 
 				if (GlobalTimer > 240 && GlobalTimer <= 290)
-					Arena.WaterfallWidth = (int)GlobalTimer - 240;
+					Arena.waterfallWidth = (int)GlobalTimer - 240;
 
 				if (GlobalTimer > 240) //following unless using ink attack
 				{
@@ -807,7 +807,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Phase == (int)AIStates.Fleeing)
 			{
 				if (GlobalTimer < 50)
-					Arena.WaterfallWidth = 50 - (int)GlobalTimer;
+					Arena.waterfallWidth = 50 - (int)GlobalTimer;
 
 				if (GlobalTimer > 50)
 					NPC.active = false;

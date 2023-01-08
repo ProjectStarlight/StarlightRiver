@@ -13,14 +13,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public void SpawnAnimation()
 		{
 			if (GlobalTimer == 1)
-				savedPoint = Arena.FakeBoss.Center;
+				savedPoint = Arena.fakeBoss.Center;
 
 			if (GlobalTimer > 1 && GlobalTimer < 100)
 			{
 				NPC.Center = spawnPoint + new Vector2(0, 20);
 
 				float progress = Helper.BezierEase(GlobalTimer / 100f);
-				Arena.FakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
+				Arena.fakeBoss.Center = Vector2.Lerp(savedPoint, new Vector2(savedPoint.X, spawnPoint.Y), progress);
 			}
 
 			if (GlobalTimer == 300)
@@ -75,11 +75,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X + x, (int)NPC.Center.Y - 50, NPCType<Tentacle>(), 0, 1);
 					(Main.npc[i].ModNPC as Tentacle).Parent = this;
-					(Main.npc[i].ModNPC as Tentacle).MovementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
-					(Main.npc[i].ModNPC as Tentacle).OffsetFromParentBody = xb;
-					(Main.npc[i].ModNPC as Tentacle).BasePoint = Main.npc[i].Center + Vector2.UnitY * 10;
+					(Main.npc[i].ModNPC as Tentacle).movementTarget = new Vector2((int)NPC.Center.X + x, (int)NPC.Center.Y - 500 - y);
+					(Main.npc[i].ModNPC as Tentacle).offsetFromParentBody = xb;
+					(Main.npc[i].ModNPC as Tentacle).basePoint = Main.npc[i].Center + Vector2.UnitY * 10;
 					(Main.npc[i].ModNPC as Tentacle).Timer = 120 + k * 20;
-					(Main.npc[i].ModNPC as Tentacle).StalkWaviness = 0;
+					(Main.npc[i].ModNPC as Tentacle).stalkWaviness = 0;
 					tentacles.Add(Main.npc[i]);
 				}
 
@@ -94,9 +94,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					float progress = Helper.SwoopEase((GlobalTimer - (100 + k * 30)) / 60f);
 
-					tentacle.NPC.Center = Vector2.Lerp(tentacle.BasePoint, tentacle.MovementTarget, progress);
-					tentacle.DownwardDrawDistance = 50;
-					tentacle.StalkWaviness = progress * 0.5f;
+					tentacle.NPC.Center = Vector2.Lerp(tentacle.basePoint, tentacle.movementTarget, progress);
+					tentacle.downwardDrawDistance = 50;
+					tentacle.stalkWaviness = progress * 0.5f;
 				}
 			}
 
@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				foreach (NPC tentacle in tentacles)
 				{
 					var mt = tentacle.ModNPC as Tentacle;
-					tentacle.Center = Vector2.SmoothStep(mt.MovementTarget, mt.BasePoint, (GlobalTimer - 500) / 50f);
+					tentacle.Center = Vector2.SmoothStep(mt.movementTarget, mt.basePoint, (GlobalTimer - 500) / 50f);
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				foreach (NPC tentacle in tentacles)
 				{
 					var mt = tentacle.ModNPC as Tentacle;
-					mt.DownwardDrawDistance = 28 + (int)(22 * (1 - (GlobalTimer - 550) / 50f));
+					mt.downwardDrawDistance = 28 + (int)(22 * (1 - (GlobalTimer - 550) / 50f));
 				}
 			}
 
@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				foreach (NPC tentacle in tentacles)
 				{
 					var mt = tentacle.ModNPC as Tentacle;
-					mt.DownwardDrawDistance = 28;
+					mt.downwardDrawDistance = 28;
 				}
 
 				Phase = (int)AIStates.FirstPhase;
@@ -137,12 +137,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				for (int k = 0; k < tentacles.Count; k++)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacle.MovementTarget = tentacle.NPC.Center;
+					tentacle.movementTarget = tentacle.NPC.Center;
 				}
 			}
 
 			if (GlobalTimer < 50)
-				Arena.WaterfallWidth = 50 - (int)GlobalTimer;
+				Arena.waterfallWidth = 50 - (int)GlobalTimer;
 
 			if (GlobalTimer < 60)
 			{
@@ -156,10 +156,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					for (int i = 0; i < 4; i++)
 					{
-						if (tentacle.DownwardDrawDistance > 28)
-							tentacle.DownwardDrawDistance--;
+						if (tentacle.downwardDrawDistance > 28)
+							tentacle.downwardDrawDistance--;
 
-						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, GlobalTimer / 60f);
+						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, GlobalTimer / 60f);
 					}
 				}
 			}

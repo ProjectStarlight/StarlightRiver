@@ -84,8 +84,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						adj = 200;
 
 					tentacles[k].Center = new Vector2(Main.player[NPC.target].Center.X + adj, spawnPoint.Y - 50);
-					tentacle.BasePoint = tentacles[k].Center;
-					tentacle.MovementTarget = tentacles[k].Center + new Vector2(0, -980);
+					tentacle.basePoint = tentacles[k].Center;
+					tentacle.movementTarget = tentacles[k].Center + new Vector2(0, -980);
 					tentacle.NPC.netUpdate = true;
 
 					if (tentacle.State != 2)
@@ -93,14 +93,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					savedPoint = new Vector2(Main.player[NPC.target].Center.X + adj + (Main.rand.NextBool() ? 150 : -150), Main.player[NPC.target].Center.Y);
 
-					SpawnTell(tentacle.MovementTarget + new Vector2(0, -64), tentacle.BasePoint);
+					SpawnTell(tentacle.movementTarget + new Vector2(0, -64), tentacle.basePoint);
 
 					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
 
 				if (AttackTimer > k * 100 && AttackTimer < k * 100 + 50)
 				{
-					tentacle.DownwardDrawDistance += 2;
+					tentacle.downwardDrawDistance += 2;
 					NPC.velocity = (savedPoint - NPC.Center) * 0.035f * Math.Min(1, (AttackTimer - k * 100) / 10f); //visually pursue the player
 				}
 
@@ -130,10 +130,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					int time = (int)AttackTimer - (k * 100 + 30);
 
-					tentacle.StalkWaviness = 0;
-					tentacle.ZSpin = time / 30f * 6.28f;
+					tentacle.stalkWaviness = 0;
+					tentacle.zSpin = time / 30f * 6.28f;
 
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, time / 40f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, time / 40f);
 				}
 
 				if (AttackTimer == k * 100 + 70) //impact
@@ -156,19 +156,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (AttackTimer > k * 100 + 70 && AttackTimer < k * 100 + 300) //retracting
 				{
 					int time = (int)AttackTimer - (k * 100 + 70);
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 190f);
-					tentacle.StalkWaviness = Math.Min(1.5f, time / 30f);
-					tentacle.ZSpin = 0;
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, time / 190f);
+					tentacle.stalkWaviness = Math.Min(1.5f, time / 30f);
+					tentacle.zSpin = 0;
 
 					if (AttackTimer == k * 100 + 250 && tentacle.State != 2)
 						tentacle.State = 1;
 
 					if (AttackTimer > k * 100 + 250)
-						tentacle.DownwardDrawDistance -= 2;
+						tentacle.downwardDrawDistance -= 2;
 				}
 
 				if (AttackTimer == k * 100 + 300)
-					tentacle.DownwardDrawDistance = 28;
+					tentacle.downwardDrawDistance = 28;
 			}
 
 			if (AttackTimer == 540)
@@ -320,15 +320,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				tentacleL.NPC.Center = spawnPoint + new Vector2(-800, 0);
 				tentacleR.NPC.Center = spawnPoint + new Vector2(800, 0);
-				tentacleL.BasePoint = tentacleL.NPC.Center;
-				tentacleR.BasePoint = tentacleR.NPC.Center;
-				tentacleL.MovementTarget = tentacleL.NPC.Center + new Vector2(0, -1080);
-				tentacleR.MovementTarget = tentacleR.NPC.Center + new Vector2(0, -1080);
-				tentacleL.StalkWaviness = 0;
-				tentacleR.StalkWaviness = 0;
+				tentacleL.basePoint = tentacleL.NPC.Center;
+				tentacleR.basePoint = tentacleR.NPC.Center;
+				tentacleL.movementTarget = tentacleL.NPC.Center + new Vector2(0, -1080);
+				tentacleR.movementTarget = tentacleR.NPC.Center + new Vector2(0, -1080);
+				tentacleL.stalkWaviness = 0;
+				tentacleR.stalkWaviness = 0;
 
-				SpawnTell(tentacleL.MovementTarget + new Vector2(0, 128), tentacleL.BasePoint);
-				SpawnTell(tentacleR.MovementTarget + new Vector2(0, 128), tentacleR.BasePoint);
+				SpawnTell(tentacleL.movementTarget + new Vector2(0, 128), tentacleL.basePoint);
+				SpawnTell(tentacleR.movementTarget + new Vector2(0, 128), tentacleR.basePoint);
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Drown, NPC.Center);
 			}
@@ -337,8 +337,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Opacity = 1 - AttackTimer / 60f * 0.5f;
 
-				tentacleL.DownwardDrawDistance++;
-				tentacleR.DownwardDrawDistance++;
+				tentacleL.downwardDrawDistance++;
+				tentacleR.downwardDrawDistance++;
 			}
 
 			if (AttackTimer > 60 && AttackTimer < 100) //rising
@@ -351,19 +351,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				float timer = (AttackTimer - 60) / 40f;
 
-				tentacles[0].Center = Vector2.SmoothStep(tentacleL.BasePoint, tentacleL.MovementTarget, timer);
-				tentacles[3].Center = Vector2.SmoothStep(tentacleR.BasePoint, tentacleR.MovementTarget, timer);
+				tentacles[0].Center = Vector2.SmoothStep(tentacleL.basePoint, tentacleL.movementTarget, timer);
+				tentacles[3].Center = Vector2.SmoothStep(tentacleR.basePoint, tentacleR.movementTarget, timer);
 
-				tentacleL.ZSpin = timer * 6.28f * 2;
-				tentacleR.ZSpin = timer * 6.28f * 2;
+				tentacleL.zSpin = timer * 6.28f * 2;
+				tentacleR.zSpin = timer * 6.28f * 2;
 			}
 
 			if (AttackTimer == 100)
 			{
 				Helpers.Helper.PlayPitched("ArenaHit", 0.75f, 1f, NPC.Center);
 
-				tentacleL.ZSpin = 0;
-				tentacleR.ZSpin = 0;
+				tentacleL.zSpin = 0;
+				tentacleR.zSpin = 0;
 
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
 			}
@@ -378,14 +378,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				float timer = Helpers.Helper.BezierEase((AttackTimer - 130) / 250f);
 
-				tentacleL.StalkWaviness = timer * 0.45f;
-				tentacleR.StalkWaviness = timer * 0.45f;
+				tentacleL.stalkWaviness = timer * 0.45f;
+				tentacleR.stalkWaviness = timer * 0.45f;
 
-				tentacleL.BasePoint.X = Helpers.Helper.LerpFloat(tentacleL.MovementTarget.X, platforms[0].Center.X - 100, timer);
-				tentacleR.BasePoint.X = Helpers.Helper.LerpFloat(tentacleR.MovementTarget.X, platforms[0].Center.X + 100, timer);
+				tentacleL.basePoint.X = Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, platforms[0].Center.X - 100, timer);
+				tentacleR.basePoint.X = Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, platforms[0].Center.X + 100, timer);
 
-				tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.MovementTarget.X, platforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
-				tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.MovementTarget.X, platforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
+				tentacleL.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleL.movementTarget.X, platforms[0].Center.X - 100, timer), tentacleL.NPC.Center.Y);
+				tentacleR.NPC.Center = new Vector2(Helpers.Helper.LerpFloat(tentacleR.movementTarget.X, platforms[0].Center.X + 100, timer), tentacleR.NPC.Center.Y);
 			}
 
 			if (AttackTimer == 260)
@@ -422,22 +422,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (AttackTimer == 520)
 			{
-				tentacleL.MovementTarget = tentacleL.NPC.Center;
-				tentacleR.MovementTarget = tentacleR.NPC.Center;
+				tentacleL.movementTarget = tentacleL.NPC.Center;
+				tentacleR.movementTarget = tentacleR.NPC.Center;
 			}
 
 			if (AttackTimer > 520 && AttackTimer < 580)
 			{
-				tentacleL.NPC.Center = Vector2.SmoothStep(tentacleL.MovementTarget, tentacleL.BasePoint, (AttackTimer - 520) / 60f);
-				tentacleR.NPC.Center = Vector2.SmoothStep(tentacleR.MovementTarget, tentacleR.BasePoint, (AttackTimer - 520) / 60f);
+				tentacleL.NPC.Center = Vector2.SmoothStep(tentacleL.movementTarget, tentacleL.basePoint, (AttackTimer - 520) / 60f);
+				tentacleR.NPC.Center = Vector2.SmoothStep(tentacleR.movementTarget, tentacleR.basePoint, (AttackTimer - 520) / 60f);
 			}
 
 			if (AttackTimer > 580 && AttackTimer < 640)
 			{
 				Opacity = 0.5f + (AttackTimer - 580) / 60f * 0.5f;
 
-				tentacleL.DownwardDrawDistance--;
-				tentacleR.DownwardDrawDistance--;
+				tentacleL.downwardDrawDistance--;
+				tentacleR.downwardDrawDistance--;
 			}
 
 			if (AttackTimer == 660)
@@ -462,46 +462,46 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (k != 2)
 				{
 					if (AttackTimer == 1)
-						tentacle.DrawPortal = true;
+						tentacle.shouldDrawPortal = true;
 
 					if (AttackTimer == 150 + k * 20)
 					{
-						tentacle.DrawPortal = true;
+						tentacle.shouldDrawPortal = true;
 						tentacle.NPC.Center = platforms[k].Center + new Vector2(0, -150);
-						tentacle.BasePoint = tentacle.NPC.Center;
-						tentacle.MovementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
-						tentacle.StalkWaviness = 0.5f;
+						tentacle.basePoint = tentacle.NPC.Center;
+						tentacle.movementTarget = Vector2.Lerp(tentacle.NPC.Center, spawnPoint, 0.25f);
+						tentacle.stalkWaviness = 0.5f;
 					}
 
 					if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
-						tentacle.DownwardDrawDistance++;
+						tentacle.downwardDrawDistance++;
 
 					if (AttackTimer > 200 + k * 20 && AttackTimer < 260 + k * 20)
-						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - (200 + k * 20)) / 60f);
+						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, (AttackTimer - (200 + k * 20)) / 60f);
 
 					if (AttackTimer > 360 + k * 20 && AttackTimer < 390 + k * 20)
-						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - (360 + k * 20)) / 30f);
+						tentacle.NPC.Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, (AttackTimer - (360 + k * 20)) / 30f);
 
 					if (AttackTimer > 400 + k * 10 && AttackTimer < 430 + k * 10)
-						tentacle.DownwardDrawDistance--;
+						tentacle.downwardDrawDistance--;
 
 					if (AttackTimer == 430 + k * 10)
-						tentacle.DrawPortal = false;
+						tentacle.shouldDrawPortal = false;
 				}
 
 				else
 				{
 					if (AttackTimer < 100)
-						tentacle.DownwardDrawDistance++;
+						tentacle.downwardDrawDistance++;
 
 					if (AttackTimer > 100 + k * 20 && AttackTimer < 280 + k * 20)
 					{
-						tentacle.BasePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
+						tentacle.basePoint = spawnPoint + Vector2.UnitX * (-0.5f + Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f)) * 1200;
 						tentacle.NPC.Center = spawnPoint + Vector2.UnitX.RotatedBy(Helpers.Helper.BezierEase((AttackTimer - (100 + k * 20)) / 180f) * 3.14f) * -890;
 					}
 
-					if (AttackTimer > 320 + k * 20 && tentacle.DownwardDrawDistance > 28)
-						tentacle.DownwardDrawDistance--;
+					if (AttackTimer > 320 + k * 20 && tentacle.downwardDrawDistance > 28)
+						tentacle.downwardDrawDistance--;
 				}
 			}
 
@@ -627,8 +627,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					var tentacle = npc.ModNPC as Tentacle;
 
-					if (tentacle.DownwardDrawDistance > -10)
-						tentacle.DownwardDrawDistance--;
+					if (tentacle.downwardDrawDistance > -10)
+						tentacle.downwardDrawDistance--;
 				}
 			}
 
@@ -636,7 +636,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				savedPoint = NPC.Center; //farmost point of laser
 				int i = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(0, -200), Vector2.Zero, ModContent.ProjectileType<Laser>(), 10, 0.2f, 255, 0, AttackTimer * 0.1f);
-				(Main.projectile[i].ModProjectile as Laser).Parent = NPC;
+				(Main.projectile[i].ModProjectile as Laser).parent = NPC;
 			}
 
 			int laserTime = Main.masterMode ? 300 : Main.expertMode ? 450 : 600; //faster in expert
@@ -669,8 +669,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					var tentacle = npc.ModNPC as Tentacle;
 
-					if (tentacle.DownwardDrawDistance < 28)
-						tentacle.DownwardDrawDistance += 2;
+					if (tentacle.downwardDrawDistance < 28)
+						tentacle.downwardDrawDistance += 2;
 				}
 			}
 
@@ -696,9 +696,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						_ => 0,
 					};
 					tentacles[k].Center = new Vector2(spawnPoint.X + off, spawnPoint.Y - 100);
-					tentacle.BasePoint = tentacles[k].Center;
-					tentacle.StalkWaviness = 0.5f;
-					tentacle.MovementTarget = tentacles[k].Center + new Vector2(off * 0.65f, -1200);
+					tentacle.basePoint = tentacles[k].Center;
+					tentacle.stalkWaviness = 0.5f;
+					tentacle.movementTarget = tentacles[k].Center + new Vector2(off * 0.65f, -1200);
 				}
 			}
 
@@ -711,9 +711,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 
 					if (AttackTimer % 2 == 0)
-						tentacle.DownwardDrawDistance++;
+						tentacle.downwardDrawDistance++;
 
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, AttackTimer / 120f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, AttackTimer / 120f);
 				}
 			}
 
@@ -726,7 +726,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					float prog = Helpers.Helper.BezierEase((AttackTimer - 60) / 60f);
-					tentacles[k].Center = tentacle.BasePoint + (tentacle.NPC.Center - tentacle.BasePoint).RotatedBy(prog * (k == 1 ? 0.4f : -0.4f));
+					tentacles[k].Center = tentacle.basePoint + (tentacle.NPC.Center - tentacle.basePoint).RotatedBy(prog * (k == 1 ? 0.4f : -0.4f));
 				}
 			}
 
@@ -757,7 +757,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				for (int k = 1; k <= 2; k++)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacle.MovementTarget = tentacle.NPC.Center;
+					tentacle.movementTarget = tentacle.NPC.Center;
 				}
 			}
 
@@ -768,8 +768,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					float prog = Helpers.Helper.BezierEase((AttackTimer - 240) / 60f);
 
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, prog);
-					tentacles[k].Center = tentacle.BasePoint + (tentacle.NPC.Center - tentacle.BasePoint).RotatedBy(prog * (k == 1 ? -0.4f : 0.4f));
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, prog);
+					tentacles[k].Center = tentacle.basePoint + (tentacle.NPC.Center - tentacle.basePoint).RotatedBy(prog * (k == 1 ? -0.4f : 0.4f));
 				}
 			}
 
@@ -778,8 +778,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				for (int k = 1; k <= 2; k++)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacle.DownwardDrawDistance -= 2;
-					tentacle.NPC.Center = tentacle.BasePoint;
+					tentacle.downwardDrawDistance -= 2;
+					tentacle.NPC.Center = tentacle.basePoint;
 				}
 			}
 
@@ -799,14 +799,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacles[k].Center = spawnPoint + new Vector2(-600, -1100);
-					tentacle.BasePoint = tentacles[k].Center;
+					tentacle.basePoint = tentacles[k].Center;
 				}
 
 				for (int k = 2; k < 4; k++) //right
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacles[k].Center = spawnPoint + new Vector2(600, -1100);
-					tentacle.BasePoint = tentacles[k].Center;
+					tentacle.basePoint = tentacles[k].Center;
 				}
 			}
 
@@ -835,14 +835,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					Vector2 off = (new Vector2(0, 1) * radius).RotatedBy(AttackTimer / 240f * 6.28f + (k == 0 ? 3.14f : 0));
-					tentacles[k].Center = tentacle.BasePoint + off;
+					tentacles[k].Center = tentacle.basePoint + off;
 				}
 
 				for (int k = 2; k < 4; k++) //right
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					Vector2 off = (new Vector2(0, -1) * radius).RotatedBy(1.57f + AttackTimer / 240f * 6.28f + (k == 2 ? 3.14f : 0));
-					tentacles[k].Center = tentacle.BasePoint + off;
+					tentacles[k].Center = tentacle.basePoint + off;
 				}
 			}
 
@@ -859,19 +859,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				var tentacle = tentacles[k].ModNPC as Tentacle;
 
 				if (AttackTimer == 1)
-					tentacle.DrawPortal = true;
+					tentacle.shouldDrawPortal = true;
 
 				if (AttackTimer == k * 80 || k == 0 && AttackTimer == 1) //teleport where needed
 				{
 					RandomizeTarget();
 
 					tentacles[k].Center = new Vector2(Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor).Center.X + (k % 2 == 0 ? -500 : 500), NPC.Center.Y + Main.rand.Next(-200, 200));
-					tentacle.BasePoint = tentacles[k].Center;
-					tentacle.MovementTarget = Main.player[NPC.target].Center;
+					tentacle.basePoint = tentacles[k].Center;
+					tentacle.movementTarget = Main.player[NPC.target].Center;
 					tentacle.NPC.netUpdate = true;
-					tentacle.StalkWaviness = 0.5f;
+					tentacle.stalkWaviness = 0.5f;
 
-					SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
+					SpawnTell(tentacle.movementTarget, tentacle.basePoint);
 
 					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
@@ -885,27 +885,27 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					}
 
 					int time = (int)AttackTimer - (k * 80 + 30);
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, time / 50f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, time / 50f);
 					tentacles[k].ai[1] += 5f; //make it squirm faster
 
-					tentacle.DownwardDrawDistance++;
+					tentacle.downwardDrawDistance++;
 				}
 
 				if (Main.masterMode && AttackTimer == k * 80 + 130)
-					Projectile.NewProjectile(NPC.GetSource_FromThis(), tentacle.BasePoint, Vector2.Normalize(tentacle.MovementTarget - tentacle.BasePoint) * 8, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == -1 ? 0 : 3.14f);
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), tentacle.basePoint, Vector2.Normalize(tentacle.movementTarget - tentacle.basePoint) * 8, ModContent.ProjectileType<InkBlob>(), 10, 0.2f, Main.myPlayer, k == -1 ? 0 : 3.14f);
 
 				if (AttackTimer > k * 80 + 90 && AttackTimer < k * 80 + 150) //retracting
 				{
 					int time = (int)AttackTimer - (k * 80 + 90);
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, time / 60f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, time / 60f);
 
-					tentacle.DownwardDrawDistance--;
+					tentacle.downwardDrawDistance--;
 				}
 
 				if (AttackTimer == k * 80 + 150)
 				{
-					tentacle.DrawPortal = false;
-					tentacle.DownwardDrawDistance = 28;
+					tentacle.shouldDrawPortal = false;
+					tentacle.downwardDrawDistance = 28;
 				}
 			}
 
@@ -922,17 +922,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Player Player = Main.player[NPC.target];
 
 					tentacles[k].Center = Player.Center + new Vector2(k % 2 == 0 ? -800 : 800, k > 1 ? 0 : -400);
-					tentacle.BasePoint = tentacles[k].Center;
-					tentacle.MovementTarget = Main.player[NPC.target].Center;
-					tentacle.DrawPortal = true;
+					tentacle.basePoint = tentacles[k].Center;
+					tentacle.movementTarget = Main.player[NPC.target].Center;
+					tentacle.shouldDrawPortal = true;
 
-					SpawnTell(tentacle.MovementTarget, tentacle.BasePoint);
+					SpawnTell(tentacle.movementTarget, tentacle.basePoint);
 
 					Helpers.Helper.PlayPitched("SquidBoss/LightSwoosh", 1, 0, tentacle.NPC.Center);
 				}
 
 				if (AttackTimer > 400 && AttackTimer <= 420)
-					tentacle.DownwardDrawDistance++;
+					tentacle.downwardDrawDistance++;
 
 				if (AttackTimer > 420 && AttackTimer < 460) //shooting out
 				{
@@ -942,20 +942,20 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item81, NPC.Center);
 					}
 
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, tentacle.MovementTarget, (AttackTimer - 420) / 40f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, tentacle.movementTarget, (AttackTimer - 420) / 40f);
 					tentacles[k].ai[1] += 5f; //make it squirm faster
 				}
 
 				if (AttackTimer > 460 && AttackTimer < 520) //retracting
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.MovementTarget, tentacle.BasePoint, (AttackTimer - 460) / 60f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.movementTarget, tentacle.basePoint, (AttackTimer - 460) / 60f);
 
 				if (AttackTimer > 520 && AttackTimer <= 540)
-					tentacle.DownwardDrawDistance--;
+					tentacle.downwardDrawDistance--;
 
 				if (AttackTimer == 540)
 				{
-					tentacle.DownwardDrawDistance = 28;
-					tentacle.DrawPortal = false;
+					tentacle.downwardDrawDistance = 28;
+					tentacle.shouldDrawPortal = false;
 				}
 			}
 
@@ -973,7 +973,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					var tentacle = tentacles[k].ModNPC as Tentacle;
 					tentacles[k].Center = new Vector2(platforms[k].Center.X, spawnPoint.Y - 100);
-					tentacle.BasePoint = tentacles[k].Center;
+					tentacle.basePoint = tentacles[k].Center;
 					tentacle.NPC.netUpdate = true;
 				}
 
@@ -982,13 +982,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					Dust.NewDust(platforms[k].position, 200, 16, DustID.Fireworks, 0, 0, 0, default, 0.7f);
 
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacles[k].Center = Vector2.SmoothStep(tentacle.BasePoint, platforms[k].Center, AttackTimer / 90f);
+					tentacles[k].Center = Vector2.SmoothStep(tentacle.basePoint, platforms[k].Center, AttackTimer / 90f);
 				}
 
 				if (AttackTimer == 90)
 				{
 					var tentacle = tentacles[k].ModNPC as Tentacle;
-					tentacle.MovementTarget = tentacles[k].Center;
+					tentacle.movementTarget = tentacles[k].Center;
 					platforms[k].ai[3] = 450; //sets it into fall mode
 											  //(platforms[0].ModNPC as IcePlatform).fallToPos = (int)tentacle.BasePoint.Y;
 				}
