@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 			else
 			{
-				if (bugTimer++ % 90 == 0)
+				if (bugTimer++ % 190 == 0)
 					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
 				if (TileGapDown() < 15 && TileGapUp() > 5)
 					NPC.velocity.Y -= 0.1f;
