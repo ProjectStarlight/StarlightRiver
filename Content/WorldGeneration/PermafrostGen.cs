@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -141,6 +142,30 @@ namespace StarlightRiver.Core
 					continue;
 				}
 			}
+
+			//Place ore
+			for (int k = 0; k < 100; k++) //placement attempts
+			{
+				var point = new Point16(WorldGen.genRand.Next(iceLeft, iceRight), WorldGen.genRand.Next(centerY, iceBottom));
+
+				Tile tile = Framing.GetTileSafely(point.X, point.Y);
+
+				if (tile.HasTile && tile.TileType == TileID.IceBlock)
+					PlaceOre(point);
+			}
+
+			//Place water
+			for (int k = 0; k < 10; k++) //placement attempts
+			{
+				var point = new Point16(WorldGen.genRand.Next(iceLeft, iceRight), WorldGen.genRand.Next(centerY, iceBottom));
+
+				Tile tile = Framing.GetTileSafely(point.X, point.Y);
+
+				int radius = WorldGen.genRand.Next(14, 30);
+
+				if (SafeForWater(point, radius))
+					PlaceWater(point, radius);
+			}
 		}
 
 		private void PlaceOre(Point16 center)
@@ -179,6 +204,40 @@ namespace StarlightRiver.Core
 
 					bool dum = false;
 					ModContent.GetInstance<AuroraIce>().TileFrame(x, y, ref dum, ref dum);
+				}
+			}
+		}
+
+		private bool SafeForWater(Point16 center, int radius)
+		{
+			for (int x = -radius; x < radius; x++)
+			{
+				for (int y = -radius; y < radius; y++)
+				{
+					Point16 pos = center + new Point16(x, y);
+					Tile tile = Framing.GetTileSafely(pos);
+
+					if (tile.HasTile && tile.TileType == ModContent.TileType<AuroraBrick>())
+						return false;
+
+					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
+						return false;
+				}
+			}
+
+			return true;
+		}
+
+		private void PlaceWater(Point16 center, int radius)
+		{
+			for (int x = -radius; x < radius; x++)
+			{
+				for (int y = -radius; y < radius; y++)
+				{
+					Point16 pos = center + new Point16(x, y);
+
+					if (Vector2.Distance(center.ToVector2(), pos.ToVector2()) <= radius)
+						AuroraWaterSystem.PlaceAuroraWater(pos.X, pos.Y);
 				}
 			}
 		}
