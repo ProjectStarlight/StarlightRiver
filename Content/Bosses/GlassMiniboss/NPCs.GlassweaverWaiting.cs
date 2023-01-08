@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public const int FRAME_WIDTH = 110;
 		public const int FRAME_HEIGHT = 92;
 
-		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-48, 80 * 16) + new Vector2(0, 256);
+		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
@@ -80,6 +80,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Timer > 120)
 				{
+					NPC.velocity *= 0;
+					NPC.noGravity = false;
+					NPC.noTileCollide = false;
 					NPC.Center = ArenaPos;
 					State = 2;
 				}
@@ -129,13 +132,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				RichTextBox.AddButton("I need a key", () =>
 				{
-					if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleKey>(), 1))
+					if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
 					{
 						RichTextBox.SetData(NPC, "Glassweaver", "Placeholder_Already_Have_Key");
 					}
 					else
 					{
-						Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleKey>());
+						Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 						RichTextBox.CloseDialogue();
 					}
 				});

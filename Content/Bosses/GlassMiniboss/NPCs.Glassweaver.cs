@@ -1,6 +1,7 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using System;
 using System.IO;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -132,7 +133,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				case (int)Phases.SpawnEffects:
 
-					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-48, 80 * 16) + new Vector2(0, 256);
+					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 					Phase = (int)Phases.JumpToBackground;
 					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
 					ResetAttack();
@@ -259,6 +260,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						default:
 							TripleSlash();
 							break;
+					}
+
+					break;
+
+				case (int)Phases.DeathEffects:
+
+					NPC.noGravity = false;
+					NPC.velocity.X = (arenaPos.X - NPC.Center.X) * 0.2f;
+
+					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
+					{
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.active = false;
 					}
 
 					break;
