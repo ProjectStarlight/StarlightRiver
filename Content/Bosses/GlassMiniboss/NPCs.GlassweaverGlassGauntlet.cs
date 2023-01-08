@@ -186,8 +186,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
 			}
 
-			if (AttackTimer >= 161 && ActiveGauntletCount > 4)
-				AttackTimer = 161;
+			if (AttackTimer == 161 && ActiveGauntletCount > 4)
+				AttackTimer = 160;
 
 			if (AttackTimer == 180)
 			{
@@ -227,8 +227,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-370 * PlayerDirection, 0), Supporter, true);
 			}
 
-			if (AttackTimer >= 161 && ActiveGauntletCount > 4)
-				AttackTimer = 161;
+			if (AttackTimer == 161 && ActiveGauntletCount > 4)
+				AttackTimer = 160;
 
 			if (AttackTimer == 180)
 			{
