@@ -12,7 +12,11 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// so it is only lost when all are unequipped and can persist if only one is.
 		///  </summary>
 		public List<Item> parents = new();
-		public bool isChild; //If the item should dissappear if all of its parents are gone
+
+		/// <summary>
+		/// If the item should dissappear if all of its parents are gone
+		/// </summary>
+		public bool isChild;
 
 		private readonly string name;
 		private readonly string tooltip;
