@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.Biomes
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Moonstone");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeMedium;
+
 		public override void Load()
 		{
 			Filters.Scene["MoonstoneTower"] = new Filter(new ScreenShaderData("FilterMiniTower").UseColor(0.1f, 0.0f, 0.255f).UseOpacity(0.6f), EffectPriority.VeryHigh);
