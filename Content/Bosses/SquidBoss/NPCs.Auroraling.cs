@@ -8,6 +8,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class Auroraling : ModNPC
 	{
+		public ref float Timer => ref NPC.ai[0];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override void SetDefaults()
@@ -34,8 +36,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			NPC.ai[0]++;
-			NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
+			Timer++;
+			NPC.frame = new Rectangle(26 * ((int)(Timer / 5) % 3), 0, 26, 30);
 
 			NPC.TargetClosest();
 			Player Player = Main.player[NPC.target];
@@ -76,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (NPC.IsABestiaryIconDummy)
 			{
-				NPC.ai[0]++;
+				Timer++;
 				NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
 			}
 
