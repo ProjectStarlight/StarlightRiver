@@ -7,6 +7,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
 	public abstract class VitricConstructNPC : ModNPC
 	{
+		public bool partOfGauntlet = false;
+
 		public bool ableToDoCombo = true;
 
 		public int healingCounter = 0;//Counts down from 5 if the enemy isn't being healed

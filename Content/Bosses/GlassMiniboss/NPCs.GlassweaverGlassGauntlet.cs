@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using System;
+using System.Linq;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -18,6 +19,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private int PlayerDirection => Math.Sign(Target.Center.X - NPC.Center.X);
 
+		private int ActiveGauntletCount => Main.npc.Count(enemy => enemy.active && enemy.ModNPC is VitricConstructNPC && (enemy.ModNPC as VitricConstructNPC).partOfGauntlet);
+
 		private void SpawnEnemy(Vector2 pos, int type, bool onFloor = true)
 		{
 			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 0);
@@ -32,18 +35,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void CheckGauntletWave()
 		{
-			bool allEnemiesDowned = true;
-
-			foreach (NPC enemy in Main.npc)
-			{
-				if (enemy.active && enemy.ModNPC is VitricConstructNPC)
-				{
-					allEnemiesDowned = false;
-					continue;
-				}
-			}
-
-			if (allEnemiesDowned)
+			if (ActiveGauntletCount <= 0)
 				waitTime++;
 
 			if (waitTime > 50)
@@ -123,6 +115,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer > 160)
 				CheckGauntletWave();
 		}
+
 		private void GauntletWave3()
 		{
 			if (AttackTimer == 1)
@@ -143,7 +136,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 40) //Air ranged and support
 			{
 				SpawnEnemy(arenaPos + new Vector2(-240 * PlayerDirection, -100), FlyingPelter, false);
-				SpawnEnemy(arenaPos + new Vector2(-280 * PlayerDirection, -120), FlyingPelter, false);
 				SpawnEnemy(arenaPos + new Vector2(-320 * PlayerDirection, -100), FlyingPelter, false);
 
 				SpawnEnemy(arenaPos + new Vector2(-240 * PlayerDirection, 0), Supporter, true);
@@ -155,6 +147,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer > 160)
 				CheckGauntletWave();
 		}
+
 		private void GauntletWave4()
 		{
 			if (AttackTimer == 1)
@@ -181,6 +174,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer > 160)
 				CheckGauntletWave();
 		}
+
 		private void GauntletWave5()
 		{
 			if (AttackTimer == 1)
@@ -190,18 +184,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				SpawnEnemy(arenaPos + new Vector2(200, 0), Shielder, true);
 				SpawnEnemy(arenaPos + new Vector2(260, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
 			}
 
 			if (AttackTimer == 30) //Ground ranged and air melee
 			{
 				SpawnEnemy(arenaPos + new Vector2(-200, 0), Pelter, true);
-				SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
-
 				SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingGrunt, false);
-				//SpawnEnemy(arenaPos + new Vector2(260, -80), FlyingGrunt, false);
-				SpawnEnemy(arenaPos + new Vector2(320, -50), FlyingGrunt, false);
 			}
 
 			if (AttackTimer == 40) //Air ranged and support
@@ -211,12 +199,22 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(300, 0), Supporter, true);
 
 				SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
-				// SpawnEnemy(arenaPos + new Vector2(-380, -90), FlyingPelter, false);
+			}
+
+			if (AttackTimer == 80)
+			{
+				SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
+				SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
+
+				SpawnEnemy(arenaPos + new Vector2(320, -50), FlyingGrunt, false);
+
+				SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
 			}
 
 			if (AttackTimer > 160)
 				CheckGauntletWave();
 		}
+
 		private void GauntletWave6()
 		{
 			if (AttackTimer == 1)
@@ -224,8 +222,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 20) //Ground melee
 			{
-				//SpawnEnemy(arenaPos + new Vector2(40 * PlayerDirection, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
 				SpawnEnemy(arenaPos + new Vector2(-120 * PlayerDirection, 0), Shielder, true);
 				SpawnEnemy(arenaPos + new Vector2(-220 * PlayerDirection, 0), Shielder, true);
 				SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Juggernaut, true);
@@ -233,20 +229,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 30) //Ground ranged and air melee
 			{
-				//SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, 0), Pelter, true);
-				SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
-
 				SpawnEnemy(arenaPos + new Vector2(-180 * PlayerDirection, -100), FlyingGrunt, false);
 				SpawnEnemy(arenaPos + new Vector2(-220 * PlayerDirection, -125), FlyingGrunt, false);
 			}
 
 			if (AttackTimer == 40) //Air ranged and support
 			{
-				SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
-				//SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, -150), FlyingPelter, false);
-
 				SpawnEnemy(arenaPos + new Vector2(-340 * PlayerDirection, 0), Supporter, true);
 				SpawnEnemy(arenaPos + new Vector2(-370 * PlayerDirection, 0), Supporter, true);
+			}
+
+			if (AttackTimer > 41 && ActiveGauntletCount > 4)
+				AttackTimer = 41;
+
+			if (AttackTimer == 80)
+			{
+				SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
+				SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
+				SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
 			}
 
 			if (AttackTimer > 160)
