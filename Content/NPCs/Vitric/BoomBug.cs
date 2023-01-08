@@ -5,7 +5,6 @@
 //Money dropping
 //Magma charging
 //Drops
-//Glowmask
 
 //TODO on lesser firebug
 //Bestiary
@@ -121,6 +120,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
 
+			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 0.8f);
 			if (dying)
 			{
 				NPC.velocity.Y += 0.1f;
@@ -159,6 +159,37 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.frame = new Rectangle(0, frameHeight * yFrame, NPC.width, frameHeight);
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+
+			SpriteEffects effects = SpriteEffects.None;
+			if (NPC.spriteDirection == 1)
+				effects = SpriteEffects.FlipHorizontally;
+
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			for (int i = 0; i < 6; i++)
+			{
+				float angle = (i / 6f) * MathHelper.TwoPi;
+
+				float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+				float distance = 1.5f + cos;
+
+				float opacity = 0.6f + (0.2f * cos);
+
+				Vector2 offset = angle.ToRotationVector2() * distance;
+				spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
