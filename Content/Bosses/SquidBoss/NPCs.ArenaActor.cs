@@ -22,7 +22,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		private static VertexBuffer buffer;
 		private static Effect applyEffect;
 
-		public float WaterLevelWorld => NPC.Center.Y + 35 * 16 - NPC.ai[0];
+		public ref float WaterLevel => ref NPC.ai[0];
+		public ref float VisualTimerA => ref NPC.ai[1];
+		public ref float VisualTimerB => ref NPC.ai[2];
+
+		public float WaterLevelWorld => NPC.Center.Y + 35 * 16 - WaterLevel;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -69,8 +73,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			NPC.ai[1] += 0.04f; //used as timers for visuals
-			NPC.ai[2] += 0.01f;
+			VisualTimerA += 0.04f; //used as timers for visuals
+			VisualTimerB += 0.01f;
 
 			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
 			{
@@ -91,7 +95,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (waterfallWidth > 0)
 			{
-				int heightDust = 2850 - (int)NPC.ai[0];
+				int heightDust = 2850 - (int)WaterLevel;
 
 				Vector2 posDust = NPC.Center + new Vector2(-500 + Main.rand.NextFloat(-25, 25), -2280 + heightDust);
 				Dust.NewDustPerfect(posDust, DustType<Dusts.Glow>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(5), 0, new Color(150, 200, 255) * 0.5f);
@@ -102,14 +106,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Dust.NewDustPerfect(posDust, DustType<Dusts.AuroraWater>(), -Vector2.UnitY.RotatedByRandom(1.2f) * Main.rand.NextFloat(4), 0, new Color(150, 200, 255));
 			}
 
-			if (NPC.ai[0] < 150)
-				NPC.ai[0] = 150; //water clamping and return logic
+			if (WaterLevel < 150)
+				WaterLevel = 150; //water clamping and return logic
 
-			if (!Main.npc.Any(n => n.active && n.ModNPC is SquidBoss) && NPC.ai[0] > 150)
-				NPC.ai[0]--;
+			if (!Main.npc.Any(n => n.active && n.ModNPC is SquidBoss) && WaterLevel > 150)
+				WaterLevel--;
 
-			if (NPC.ai[1] > 6.28f)
-				NPC.ai[1] = 0;
+			if (VisualTimerA > 6.28f)
+				VisualTimerA = 0;
 
 			if (!Main.npc.Any(n => n.active && n.ModNPC is IcePlatform)) //spawn platforms if not present
 			{
@@ -137,7 +141,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y - 2000, NPCType<GoldPlatform>());
 			}
 
-			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -NPC.ai[0]);
+			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
 
 			//Lighting
 			if (!(StarlightWorld.cathedralOverlay is null) && StarlightWorld.cathedralOverlay.Fade)
@@ -151,9 +155,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					if (Framing.GetTileSafely(target).WallType == WhitelistID)
 					{
-						float sin = (float)Math.Sin(NPC.ai[1] + k);
-						float sin2 = (float)Math.Sin(NPC.ai[2] + k * 0.2f);
-						float cos = (float)Math.Cos(NPC.ai[2] + k);
+						float sin = (float)Math.Sin(VisualTimerA + k);
+						float sin2 = (float)Math.Sin(VisualTimerB + k * 0.2f);
+						float cos = (float)Math.Cos(VisualTimerB + k);
 						Lighting.AddLight(target, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f));
 					}
 				}
@@ -186,7 +190,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				Player player = Main.player[k];
 
-				if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)NPC.ai[0])))
+				if (player.active && player.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y, 104 * 16, (int)WaterLevel)))
 					player.AddBuff(BuffType<Buffs.PrismaticDrown>(), 4, false);
 			}
 
@@ -197,14 +201,14 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (Item is null || !Item.active)
 					continue;
 
-				if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y + 8, 200 * 16, (int)NPC.ai[0])) && Item.velocity.Y > -4)
+				if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y + 8, 200 * 16, (int)WaterLevel)) && Item.velocity.Y > -4)
 					Item.velocity.Y -= 0.2f;
 
 				if (Item.Hitbox.Intersects(new Rectangle((int)pos.X, (int)pos.Y - 8, 200 * 16, 16)))
 				{
-					Item.position.Y = WaterLevelWorld - 16 + (float)Math.Sin((NPC.ai[1] + Item.position.X) % 6.28f) * 4;
+					Item.position.Y = WaterLevelWorld - 16 + (float)Math.Sin((VisualTimerA + Item.position.X) % 6.28f) * 4;
 
-					if (Item.type == ItemType<SquidBossSpawn>() && NPC.ai[0] == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
+					if (Item.type == ItemType<SquidBossSpawn>() && WaterLevel == 150 && !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss)) //ready to spawn another squid              
 					{
 						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y + 630, NPCType<SquidBoss>());
 						Item.active = false;
@@ -223,7 +227,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Texture2D tex = Request<Texture2D>(AssetDirectory.SquidBoss + "CathedralWater").Value;
 			Vector2 pos = NPC.Center + new Vector2(-840, 30 * 16) + new Vector2(0, -tex.Height) - Main.screenPosition;
-			var source = new Rectangle(0, tex.Height - (int)NPC.ai[0] + 5 * 16, tex.Width, (int)NPC.ai[0] - 5 * 16);
+			var source = new Rectangle(0, tex.Height - (int)WaterLevel + 5 * 16, tex.Width, (int)WaterLevel - 5 * 16);
 
 			spriteBatch.Draw(tex, (pos + source.TopLeft()) * 0.5f, source, new Color(0.4f, 1, 1), 0, default, 0.5f, 0, 0);
 			DrawWaterfalls(spriteBatch);
@@ -303,7 +307,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 
 			float width = waterfallWidth + 2 * (float)Math.Sin(Main.GameUpdateCount * 0.1f);
-			int height = 2850 - (int)NPC.ai[0];
+			int height = 2850 - (int)WaterLevel;
 
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
 			Texture2D tex2 = Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/Laser").Value;
@@ -320,9 +324,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(tex, target, source, new Color(0.4f, 1, 1));
 				spriteBatch.Draw(tex, target2, source, new Color(0.4f, 1, 1));
 
-				float sin = (float)Math.Sin(-NPC.ai[1] * 4 + k * 0.01f);
-				float sin2 = (float)Math.Sin(-NPC.ai[2] * 4 + k * 0.002f);
-				float cos = (float)Math.Cos(-NPC.ai[2] * 4 + k * 0.01f);
+				float sin = (float)Math.Sin(-VisualTimerA * 4 + k * 0.01f);
+				float sin2 = (float)Math.Sin(-VisualTimerB * 4 + k * 0.002f);
+				float cos = (float)Math.Cos(-VisualTimerB * 4 + k * 0.01f);
 				Lighting.AddLight(target.Center() * 2 + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
 				Lighting.AddLight(target2.Center() * 2 + Main.screenPosition, new Vector3(10 * (1 + sin2), 14 * (1 + cos), 18) * (0.02f + sin * 0.003f) * width / 50f);
 			}
@@ -385,7 +389,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.SquidBoss + "Window").Value;
 			LightingBufferRenderer.DrawWithLighting(NPC.Center - backdrop.Size() / 2 + new Vector2(0, -886) - Main.screenPosition, backdrop);
 
-			Vector2 shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - NPC.ai[0]) - Main.screenPosition;
+			Vector2 shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - WaterLevel) - Main.screenPosition;
 			DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));
 
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -403,10 +407,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			for (int k = 0; k < 4; k++)
 			{
 				var lightColor = new Color(120, 210, 255);
-				spriteBatch.Draw(ray, NPC.Center + new Vector2(450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.9f + (float)Math.Sin((NPC.ai[2] + k) * 2) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
-				spriteBatch.Draw(ray, NPC.Center + new Vector2(-450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.45f + (float)Math.Sin((NPC.ai[2] + k) * 2) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
+				spriteBatch.Draw(ray, NPC.Center + new Vector2(450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.9f + (float)Math.Sin((VisualTimerB + k) * 2) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
+				spriteBatch.Draw(ray, NPC.Center + new Vector2(-450, -250) - Main.screenPosition, null, lightColor * 0.5f, 0.45f + (float)Math.Sin((VisualTimerB + k) * 2) * 0.11f, Vector2.Zero, 1.5f, 0, 0);
 
-				spriteBatch.Draw(ray, NPC.Center + new Vector2(0, -450) - Main.screenPosition, null, lightColor * 0.5f, 0.68f + (float)Math.Sin(NPC.ai[2] * 2 + k / 4f * 6.28f) * 0.13f, Vector2.Zero, 1.9f, 0, 0);
+				spriteBatch.Draw(ray, NPC.Center + new Vector2(0, -450) - Main.screenPosition, null, lightColor * 0.5f, 0.68f + (float)Math.Sin(VisualTimerB * 2 + k / 4f * 6.28f) * 0.13f, Vector2.Zero, 1.9f, 0, 0);
 			}
 
 			spriteBatch.End();

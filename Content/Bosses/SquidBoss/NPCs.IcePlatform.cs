@@ -7,6 +7,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 	{
 		public int bobTime = 0;
 
+		public ref float State => ref NPC.ai[1];
+		public ref float HomeYPosition => ref NPC.ai[2];
+		public ref float FallTime => ref NPC.ai[3];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override void SafeSetDefaults()
@@ -17,18 +21,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SafeAI()
 		{
-			if (NPC.ai[2] == 0)
-				NPC.ai[2] = NPC.position.Y;
+			if (HomeYPosition == 0)
+				HomeYPosition = NPC.position.Y;
 
-			if (NPC.ai[3] != 0)
+			if (FallTime != 0)
 			{
-				if (NPC.ai[3] > 360)
+				if (FallTime > 360)
 					NPC.position.Y += 8;
 
-				if (NPC.ai[3] <= 90 && NPC.ai[3] > 0)
+				if (FallTime <= 90 && FallTime > 0)
 					NPC.position.Y -= 9;
 
-				NPC.ai[3]--;
+				FallTime--;
 
 				return;
 			}
@@ -37,16 +41,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				var actor = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<ArenaActor>()).ModNPC as ArenaActor;
 
-				if (NPC.position.Y >= NPC.ai[2])
+				if (NPC.position.Y >= HomeYPosition)
 				{
 					NPC.rotation = 0;
-					NPC.ai[1] = 0;
+					State = 0;
 				}
 
 				if (NPC.position.Y + 18 >= actor.WaterLevelWorld)
-					NPC.ai[1] = 1;
+					State = 1;
 
-				if (NPC.ai[1] == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y))
+				if (State == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y))
 				{
 					NPC.position.Y = actor.WaterLevelWorld - 18;
 
@@ -74,6 +78,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 	class IcePlatformSmall : MovingPlatform, IUnderwater
 	{
+		public ref float HomeYPosition => ref NPC.ai[0];
+		public ref float FallTimer => ref NPC.ai[1];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -94,24 +101,24 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SafeAI()
 		{
-			if (NPC.ai[0] == 0)
-				NPC.ai[0] = NPC.position.Y;
+			if (HomeYPosition == 0)
+				HomeYPosition = NPC.position.Y;
 
 			if (beingStoodOn)
 			{
 				Dust.NewDust(NPC.position, NPC.width, NPC.height, Terraria.ID.DustID.Ice);
-				NPC.ai[1]++;
+				FallTimer++;
 			}
-			else if (NPC.ai[1] > 0)
+			else if (FallTimer > 0)
 			{
-				NPC.ai[1]--;
+				FallTimer--;
 			}
 
 			int maxStandTime = Main.masterMode ? 2 : 20;
 
-			if (NPC.ai[1] >= maxStandTime)
+			if (FallTimer >= maxStandTime)
 				NPC.velocity.Y += 0.3f;
-			else if (NPC.position.Y > NPC.ai[0])
+			else if (NPC.position.Y > HomeYPosition)
 				NPC.velocity.Y = -1;
 			else
 				NPC.velocity.Y = 0;
@@ -120,6 +127,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 	class GoldPlatform : MovingPlatform, IUnderwater
 	{
+		public ref float HomeYPosition => ref NPC.ai[0];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -140,18 +149,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SafeAI()
 		{
-			if (NPC.ai[0] == 0)
-				NPC.ai[0] = NPC.position.Y;
+			if (HomeYPosition == 0)
+				HomeYPosition = NPC.position.Y;
 
 			if (beingStoodOn && StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 			{
 				if (NPC.velocity.Y < 1.5f)
 					NPC.velocity.Y += 0.02f;
 
-				if (NPC.position.Y - NPC.ai[0] > 1600)
+				if (NPC.position.Y - HomeYPosition > 1600)
 					NPC.velocity.Y = 0;
 			}
-			else if (NPC.position.Y > NPC.ai[0])
+			else if (NPC.position.Y > HomeYPosition)
 			{
 				NPC.velocity.Y = -6;
 			}
