@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public override void SetDefaults()
 		{
-			Item.damage = 15;
+			Item.damage = 20;
 			Item.knockBack = 3f;
 			Item.mana = 10;
 			Item.width = 32;
@@ -352,9 +352,13 @@ namespace StarlightRiver.Content.Items.Palestone
 
 							Projectile.velocity = (Projectile.velocity * 14f + toIdlePos) / 15f;
 						}
-						else if (Math.Abs(Projectile.Center.X - targetCenter.X) < 35f)
+						else if (Math.Abs(Projectile.Center.X - targetCenter.X) < 30f)
 						{
-							Projectile.velocity.X *= 0.9f;
+							if (Projectile.Center.Y < targetCenter.Y)
+								Projectile.velocity.X *= 0.9f;
+							else
+								Projectile.velocity.X *= 0.95f;
+
 							if (Projectile.Center.Y < targetCenter.Y && Math.Abs(Projectile.Center.Y - targetCenter.Y) > 100f)
 								Projectile.velocity.Y += 0.35f;
 						}
@@ -385,6 +389,7 @@ namespace StarlightRiver.Content.Items.Palestone
 							Projectile.velocity *= 0.25f;
 							JustPogod = true;
 							PogoAnimTimer = 20;
+							Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
 						}
 						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Left) < 35f && Projectile.Center.X < Main.npc[(int)EnemyWhoAmI].Left.X)
 						{
@@ -488,6 +493,12 @@ namespace StarlightRiver.Content.Items.Palestone
 			modPlayer.KnightCount++;
 		}
 
+		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
+		{
+			fallThrough = Projectile.shouldFallThrough;
+			return true;
+		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Projectile.velocity.Y != oldVelocity.Y)
@@ -552,8 +563,8 @@ namespace StarlightRiver.Content.Items.Palestone
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 12;
-			Projectile.height = 12;
+			Projectile.width = 16;
+			Projectile.height = 16;
 
 			Projectile.tileCollide = false;
 
