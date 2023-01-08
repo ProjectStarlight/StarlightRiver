@@ -38,6 +38,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "SupporterConstruct";
 
+		public override Vector2 PreviewOffset => new Vector2(0, 0);
+
 		public override void Load()
 		{
 			On.Terraria.Main.DrawNPCs += DrawBarrierGlow;

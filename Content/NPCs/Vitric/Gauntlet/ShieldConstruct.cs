@@ -46,6 +46,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
+		public override Vector2 PreviewOffset => new Vector2(0, 8);
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Shield Construct");
@@ -67,6 +69,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void OnSpawn(IEntitySource source)
 		{
+			FindFrame(56);
 			maxSpeed = Main.rand.NextFloat(1f, 1.25f);
 			acceleration = Main.rand.NextFloat(0.12f, 0.25f);
 			timerTickSpeed = Main.rand.NextFloat(0.85f, 1f);

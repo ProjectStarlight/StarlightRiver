@@ -64,6 +64,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "PelterConstruct";
 
+		public override Vector2 PreviewOffset => new Vector2(0, 0);
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pelter Construct");
@@ -90,6 +92,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void OnSpawn(IEntitySource source)
 		{
+			FindFrame(48);
 			shielderComboCooldown = Main.rand.Next(450, 550);
 			maxSpeed = Main.rand.NextFloat(1.75f, 2.25f);
 			acceleration = Main.rand.NextFloat(0.22f, 0.35f);

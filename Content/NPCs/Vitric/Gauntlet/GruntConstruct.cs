@@ -2,8 +2,10 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -33,7 +35,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private float unboundRotation;
 
-		private float unboundRollRotation = 0f;
+		private float unboundRollRotation = 6.28f;
 
 		private int cooldownDuration = 80;
 		private float maxSpeed = 5;
@@ -46,6 +48,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		private Player Target => Main.player[NPC.target];
 
 		public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
+
+		public override Vector2 PreviewOffset => new Vector2(8, 6);
 
 		public override void Load()
 		{
@@ -85,6 +89,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			cooldownDuration = Main.rand.Next(65, 90);
 			maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
 			acceleration = Main.rand.NextFloat(0.22f, 0.35f);
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			FindFrame(82);
 		}
 
 		public override void FindFrame(int frameHeight)
