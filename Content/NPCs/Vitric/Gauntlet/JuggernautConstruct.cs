@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -32,6 +33,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private Player Target => Main.player[NPC.target];
 
+		public override Vector2 PreviewOffset => new Vector2(0, 6);
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Juggernaut Construct");
@@ -52,6 +55,11 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Pitch = -0.3f
 			};
 			NPC.DeathSound = SoundID.Shatter;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			FindFrame(63);
 		}
 
 		public override void SafeAI()

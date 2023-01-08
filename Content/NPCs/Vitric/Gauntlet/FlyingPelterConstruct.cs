@@ -66,6 +66,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "FlyingPelterConstruct";
 
+		public override Vector2 PreviewOffset => new Vector2(0, 0);
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Flying Pelter Construct");

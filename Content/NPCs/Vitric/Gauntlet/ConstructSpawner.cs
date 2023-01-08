@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -12,6 +13,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public bool gravity = true;
 
+		public Player nearestPlayer = default;
 		public ref float NPCType => ref Projectile.ai[0];
 		public ref float Timer => ref Projectile.ai[1];
 
@@ -29,6 +31,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void AI()
 		{
+			nearestPlayer = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.Distance(Projectile.Center)).FirstOrDefault();
+
 			ManageCaches();
 			ManageTrail();
 
@@ -112,7 +116,16 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, 0, 0);
+			SpriteEffects spriteEffects = SpriteEffects.None;
+			Vector2 drawOffset = (fakeNPC.ModNPC as VitricConstructNPC).PreviewOffset;
+
+			if (nearestPlayer.Center.X < Projectile.Center.X)
+			{
+				drawOffset.X *= -1;
+				spriteEffects = SpriteEffects.FlipHorizontally;
+			}
+
+			Main.spriteBatch.Draw(tex, drawOffset + Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, spriteEffects, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

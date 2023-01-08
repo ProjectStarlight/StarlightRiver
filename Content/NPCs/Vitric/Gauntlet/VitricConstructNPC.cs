@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public virtual string PreviewTextureGlowmaskPath => Texture + "_Preview_Glow";
 
+		public virtual Vector2 PreviewOffset => Vector2.Zero;
+
 		public virtual void DrawHealingGlow(SpriteBatch spriteBatch) { }
 
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
