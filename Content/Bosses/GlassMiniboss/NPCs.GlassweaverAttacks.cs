@@ -43,10 +43,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (NPC.life <= 1)
 				Phase = (int)Phases.DeathEffects;
-
-			NPC.TargetClosest();
-			if (Target.dead || !Target.active || Target == null)
-				Phase = (int)Phases.DespawnEffects;
 		}
 
 		//according to the targets position,

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
 			}
 
-			if (AttackTimer > 410)
+			if (AttackTimer > 90)
 			{
 				Phase = (int)Phases.DirectPhase;
 				ResetAttack();

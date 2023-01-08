@@ -3,6 +3,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
+using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -24,6 +25,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		internal ref float AttackPhase => ref NPC.ai[2];
 		internal ref float AttackTimer => ref NPC.ai[3];
 
+		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
 
 		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
@@ -37,7 +40,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			GlassGauntlet,
 			ReturnToForeground,
 			DirectPhase,
-			DeathEffects
+			DeathEffects,
+			FailEffects
 		}
 
 		public enum AttackTypes
@@ -157,6 +161,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.GlassGauntlet:
 
+					if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
+					{
+						Phase = (int)Phases.FailEffects;
+						AttackTimer = 0;
+						return;
+					}
+
 					switch (AttackPhase)
 					{
 						case 0: GauntletWave0(); break;
@@ -196,6 +207,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer == 1)
 					{
+						if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
+						{
+							Phase = (int)Phases.FailEffects;
+							AttackTimer = 61;
+							return;
+						}
+
 						AttackPhase++;
 
 						if (AttackPhase > 8)
@@ -273,6 +291,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
 					{
 						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.active = false;
+					}
+
+					break;
+
+				case (int)Phases.FailEffects:
+
+					if (AttackTimer < 60)
+					{
+						NPC.position.Y -= (AttackTimer - 45) * 0.3f;
+						NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
+					}
+
+					NPC.noGravity = false;
+					NPC.velocity.X = (arenaPos.X - NPC.Center.X) * 0.2f;
+
+					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
+					{
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 2);
 						NPC.active = false;
 					}
 
