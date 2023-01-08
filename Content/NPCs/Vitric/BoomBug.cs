@@ -18,6 +18,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -78,6 +79,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
 					dust.alpha = 70 + Main.rand.Next(60);
 					dust.rotation = Main.rand.NextFloat(6.28f);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f,0.5f);
+					Dust.NewDustPerfect(NPC.Center + dir * 45, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.85f, 1.45f));
 				}
 
 				for (int i = 0; i < 8; i++)
@@ -273,6 +280,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
 				dust.alpha = 70 + Main.rand.Next(60);
 				dust.rotation = Main.rand.NextFloat(6.28f);
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+				Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
 			}
 
 			for (int i = 0; i < 4; i++)
