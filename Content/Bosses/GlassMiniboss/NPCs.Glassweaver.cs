@@ -82,6 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.HitSound = SoundID.NPCHit52;
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
 			NPC.dontTakeDamage = true;
+			NPC.npcSlots = 100;
 		}
 
 		private SpriteEffects GetSpriteEffects()
