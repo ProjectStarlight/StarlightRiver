@@ -518,11 +518,14 @@ namespace StarlightRiver.Core
 
 		private static void GenTemple()
 		{
-			const int X_OFFSET = 59;
-			const int Y_OFFSET = 71;
+			Point16 dimensions = Point16.Zero;
+			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+
+			int yOff = 71;
+
 			StructureHelper.Generator.GenerateStructure(
-				"Structures/VitricTemple",
-				new Point16(vitricBiome.Center.X - X_OFFSET, vitricBiome.Center.Y - Y_OFFSET),
+				"Structures/VitricTempleNew",
+				new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff),
 				StarlightRiver.Instance
 				);
 
