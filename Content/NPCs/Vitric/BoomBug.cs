@@ -4,16 +4,16 @@
 //Balance
 //Money dropping
 //Magma charging
-//Spiraling on death
 //Drops
+//Glowmask
 
 //TODO on lesser firebug
 //Bestiary
 //Sound effects
 //Balance
-//No mney dropping
-//Explosion effect
 using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -29,6 +29,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		private int yFrame = 0;
 
 		private int bugTimer = 0;
+
+		public bool dying = false;
 
 		private bool chargingMagma = false;
 
@@ -46,7 +48,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			NPC.width = 34;
 			NPC.height = 40;
-			NPC.knockBackResist = 1.5f;
+			NPC.knockBackResist = 1f;
 			NPC.lifeMax = 150;
 			NPC.noGravity = true;
 			NPC.noTileCollide = false;
@@ -64,11 +66,62 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				new FlavorTextBestiaryInfoElement("[PH] Entry")
 			});
 		}
+		public override bool CheckDead()
+		{
+			if (dying)
+			{
+				Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+				for (int i = 0; i < 8; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+					dust.velocity = Main.rand.NextVector2Circular(3, 3);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = 70 + Main.rand.Next(60);
+					dust.rotation = Main.rand.NextFloat(6.28f);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+					dust.velocity = Main.rand.NextVector2Circular(3, 3);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = Main.rand.Next(80) + 40;
+					dust.rotation = Main.rand.NextFloat(6.28f);
+
+					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+				}
+
+				for (int i = 0; i < 3; i++)
+				{
+					Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
+					var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+					proj.friendly = false;
+					proj.hostile = true;
+					proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
+				}
+				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
+				return true;
+			}
+			NPC.life = 1;
+			NPC.immortal = true;
+			NPC.dontTakeDamage = true;
+			dying = true;
+			return false;
+		}
 
 		public override void AI()
 		{
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
+
+			if (dying)
+			{
+				NPC.velocity.Y += 0.1f;
+				NPC.velocity.X += Math.Sign(NPC.velocity.X) * 0.08f;
+				if (NPC.collideX || NPC.collideY)
+					NPC.Kill();
+				return;
+			}
 			if (chargingMagma)
 			{
 
@@ -140,6 +193,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		private bool parentless = false;
 
+		private int timer = 0;
+
 		private Player Target => Main.player[NPC.target];
 
 		private NPC Parent => Main.npc[(int)NPC.ai[0]];
@@ -177,19 +232,70 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
+			if (timer == 0)
+				NPC.velocity.Y = 10;
 			NPC.TargetClosest(true);
 			NPC.spriteDirection = NPC.direction;
 
-			if (NPC.Distance(Target.Center) < 600)
-				NPC.velocity = NPC.DirectionTo(Target.Center) * 8;
+			if (NPC.Distance(Target.Center) < 600 && timer++ > 600)
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 9, 0.05f);
 			else if (Parent.active && !parentless)
-				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Parent.Center) * 6, 0.1f);
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Parent.Center) * 6, 0.045f);
 			else
+			{
+				timer = 601;
 				parentless = true;
+			}
+
+			if (Parent.ModNPC is BoomBug modNPC && modNPC.dying)
+			{
+				timer = 601;
+				parentless = true;
+			}
 
 			if (NPC.collideX || NPC.collideY)
 				NPC.Kill();
 		}
+
+		public override void OnHitPlayer(Player target, int damage, bool crit)
+		{
+			NPC.Kill();
+		}
+
+		public override void OnKill()
+		{
+			Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+
+			for (int i = 0; i < 4; i++)
+			{
+				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+				dust.velocity = Main.rand.NextVector2Circular(2, 2);
+				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+				dust.alpha = 70 + Main.rand.Next(60);
+				dust.rotation = Main.rand.NextFloat(6.28f);
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+				dust.velocity = Main.rand.NextVector2Circular(2, 2);
+				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+				dust.alpha = Main.rand.Next(80) + 40;
+				dust.rotation = Main.rand.NextFloat(6.28f);
+
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+			}
+
+			for (int i = 0; i < 2; i++)
+			{
+				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
+				var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+				proj.friendly = false;
+				proj.hostile = true;
+				proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
+			}
+		}
+
 		public override void FindFrame(int frameHeight)
 		{
 			NPC.frameCounter++;
