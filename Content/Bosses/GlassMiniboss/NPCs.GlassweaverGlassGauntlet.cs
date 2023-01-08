@@ -128,11 +128,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-200 * PlayerDirection, 0), Shielder, true);
 			}
 
-			if (AttackTimer == 30) //Ground ranged and air melee
-			{
-
-			}
-
 			if (AttackTimer == 40) //Air ranged and support
 			{
 				SpawnEnemy(arenaPos + new Vector2(-240 * PlayerDirection, -100), FlyingPelter, false);
@@ -159,16 +154,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-200 * PlayerDirection, 0), Grunt, true);
 				SpawnEnemy(arenaPos + new Vector2(-280 * PlayerDirection, 0), Grunt, true);
 				SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, 0), Grunt, true);
-			}
-
-			if (AttackTimer == 30) //Ground ranged and air melee
-			{
-
-			}
-
-			if (AttackTimer == 40) //Air ranged and support
-			{
-
 			}
 
 			if (AttackTimer > 160)
@@ -201,7 +186,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
 			}
 
-			if (AttackTimer == 80)
+			if (AttackTimer >= 121 && ActiveGauntletCount > 4)
+				AttackTimer = 121;
+
+			if (AttackTimer == 160)
 			{
 				SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
 				SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
@@ -211,7 +199,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
 			}
 
-			if (AttackTimer > 160)
+			if (AttackTimer > 240)
 				CheckGauntletWave();
 		}
 
@@ -239,17 +227,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-370 * PlayerDirection, 0), Supporter, true);
 			}
 
-			if (AttackTimer > 41 && ActiveGauntletCount > 4)
-				AttackTimer = 41;
+			if (AttackTimer >= 121 && ActiveGauntletCount > 4)
+				AttackTimer = 121;
 
-			if (AttackTimer == 80)
+			if (AttackTimer == 160)
 			{
 				SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
 				SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
 				SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
 			}
 
-			if (AttackTimer > 160)
+			if (AttackTimer > 240)
 				CheckGauntletWave();
 		}
 
