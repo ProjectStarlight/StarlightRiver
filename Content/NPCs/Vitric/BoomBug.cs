@@ -167,7 +167,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
 				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -6, 6);
 
-				if (bugTimer > 200)
+				if (bugTimer > 700)
 				{
 					NPC.velocity.Y = 0;
 					chargingMagma = true;
