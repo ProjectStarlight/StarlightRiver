@@ -109,6 +109,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			//Owner.heldProj = Projectile.whoAmI;
 
+			//die when not held
+			if (Owner.HeldItem.type != ModContent.ItemType<Tentalance>())
+				Projectile.active = false;
+
 			if (!Owner.channel || Timer > 0)
 			{
 				Timer++;
