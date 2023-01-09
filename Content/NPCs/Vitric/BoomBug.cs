@@ -3,7 +3,7 @@
 //Sound effects
 //Balance
 //Money dropping
-//Magma charging
+//Polish magma launching
 //Drops
 
 //TODO on lesser firebug
@@ -33,6 +33,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public bool dying = false;
 
 		private bool chargingMagma = false;
+		private float magmaCharge = 0;
 
 		private Player Target => Main.player[NPC.target];
 
@@ -123,6 +124,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 0.8f);
 			if (dying)
 			{
+				chargingMagma = false;
 				NPC.velocity.Y += 0.1f;
 				NPC.velocity.X += Math.Sign(NPC.velocity.X) * 0.08f;
 				if (NPC.collideX || NPC.collideY)
@@ -131,11 +133,28 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 			if (chargingMagma)
 			{
+				bugTimer = 0;
+				magmaCharge += 0.01f;
+				NPC.velocity.Y += TileGapDown() * 0.0005f;
+				NPC.velocity.X *= 0.95f;
 
+				Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
+
+				if (magmaCharge < 1)
+					Dust.NewDustPerfect(NPC.velocity + NPC.Center + dustDir * 40, ModContent.DustType<Dusts.Glow>(), dustDir * -2, 0, Color.OrangeRed, magmaCharge);
+
+				if (magmaCharge > 1.75f)
+				{
+					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.1f, 100, 400, 12);
+					NPC.velocity = projVel * 0.75f;
+					magmaCharge = 0;
+					chargingMagma = false;
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 70, 4);
+				}
 			}
 			else
 			{
-				if (bugTimer++ % 190 == 0)
+				if (++bugTimer % 190 == 0)
 					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
 				if (TileGapDown() < 15 && TileGapUp() > 5)
 					NPC.velocity.Y -= 0.1f;
@@ -145,15 +164,23 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
 				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -6, 6);
+
+				if (bugTimer > 900)
+				{
+					NPC.velocity.Y = 0;
+					chargingMagma = true;
+				}
 			}
 		}
 		public override void FindFrame(int frameHeight)
 		{
 			if (!chargingMagma)
+			{
 				NPC.frameCounter++;
 
-			if (NPC.frameCounter % 4 == 0)
-				yFrame++;
+				if (NPC.frameCounter % 4 == 0)
+					yFrame++;
+			}
 
 			yFrame %= Main.npcFrameCount[NPC.type];
 			NPC.frame = new Rectangle(0, frameHeight * yFrame, NPC.width, frameHeight);
@@ -163,7 +190,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D magmaTex = Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
 
+			Vector2 magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
 			SpriteEffects effects = SpriteEffects.None;
 			if (NPC.spriteDirection == 1)
 				effects = SpriteEffects.FlipHorizontally;
@@ -183,6 +212,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				Vector2 offset = angle.ToRotationVector2() * distance;
 				spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+			}
+
+			for (int j = 0; j < 4; j++)
+			{
+				spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, Color.OrangeRed, NPC.rotation, magmaTex.Size() / 2, NPC.scale * magmaCharge, effects, 0f);
 			}
 
 			spriteBatch.End();
@@ -349,6 +383,54 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			yFrame %= Main.npcFrameCount[NPC.type];
 			NPC.frame = new Rectangle(0, frameHeight * yFrame, NPC.width, frameHeight);
+		}
+	}
+
+	public class FirebugMagma : ModProjectile, IDrawAdditive
+	{
+		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+
+		public override void SetDefaults()
+		{
+			Projectile.hostile = true;
+			Projectile.width = 22;
+			Projectile.height = 22;
+			Projectile.penetrate = 1;
+			Projectile.timeLeft = 180;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.damage = 5;
+			Projectile.hide = true;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Molten glass");
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity.Y += 0.1f;
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			for (int k = 0; k <= 10; k++)
+			{
+				var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
+				d.noGravity = false;
+			}
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+
+			for (int i = 0; i < 4; i++)
+			{
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(),
+					Color.OrangeRed, 0, tex.Size() / 2, 1.5f, 0, 0);
+			}
 		}
 	}
 }
