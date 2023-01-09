@@ -3,8 +3,8 @@
 //Sound effects
 //Balance
 //Money dropping
-//Polish magma launching
 //Drops
+//Magma ball sound effects
 
 //TODO on lesser firebug
 //Bestiary
@@ -16,6 +16,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Terraria;
 using Terraria.GameContent.Bestiary;
@@ -145,7 +146,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				if (magmaCharge > 1.75f)
 				{
-					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.1f, 100, 400, 12);
+					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
 					NPC.velocity = projVel * 0.75f;
 					magmaCharge = 0;
 					chargingMagma = false;
@@ -165,7 +166,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
 				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -6, 6);
 
-				if (bugTimer > 900)
+				if (bugTimer > 200)
 				{
 					NPC.velocity.Y = 0;
 					chargingMagma = true;
@@ -334,6 +335,38 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.Kill();
 		}
 
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+
+			SpriteEffects effects = SpriteEffects.None;
+			if (NPC.spriteDirection == 1)
+				effects = SpriteEffects.FlipHorizontally;
+
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			for (int i = 0; i < 6; i++)
+			{
+				float angle = (i / 6f) * MathHelper.TwoPi;
+
+				float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+				float distance = 1.5f + cos;
+
+				float opacity = 0.6f + (0.2f * cos);
+
+				Vector2 offset = angle.ToRotationVector2() * distance;
+				spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+			}
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			return false;
+		}
+
 		public override void OnKill()
 		{
 			Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
@@ -388,6 +421,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 	public class FirebugMagma : ModProjectile, IDrawAdditive
 	{
+		private List<Vector2> oldPos = new List<Vector2>();
 		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
 
 		public override void SetDefaults()
@@ -410,14 +444,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
-			Projectile.velocity.Y += 0.1f;
+			Projectile.velocity.Y += 0.2f;
+
+			oldPos.Add(Projectile.Center);
+			if (oldPos.Count > 16)
+				oldPos.RemoveAt(0);
 		}
 
 		public override void Kill(int timeLeft)
 		{
 			for (int k = 0; k <= 10; k++)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
+				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
 				d.noGravity = false;
 			}
 		}
@@ -426,10 +464,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < oldPos.Count; i++)
 			{
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(),
-					Color.OrangeRed, 0, tex.Size() / 2, 1.5f, 0, 0);
+				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
+					Color.OrangeRed * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
+
+				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
+					Color.White * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
 			}
 		}
 	}
