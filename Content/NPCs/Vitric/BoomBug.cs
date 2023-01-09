@@ -1,15 +1,10 @@
 ﻿//TODO on firebug:
 //Bestiary
-//Sound effects
-//Balance
 //Money dropping
 //Drops
-//Magma ball sound effects
 
 //TODO on lesser firebug
 //Bestiary
-//Sound effects
-//Balance
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
@@ -19,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -56,6 +52,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.noTileCollide = false;
 			NPC.damage = 10;
 			NPC.aiStyle = -1;
+			NPC.value = 200;
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath4;
 		}
@@ -68,6 +65,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				new FlavorTextBestiaryInfoElement("[PH] Entry")
 			});
 		}
+
 		public override bool CheckDead()
 		{
 			if (dying)
@@ -142,10 +140,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
 
 				if (magmaCharge < 1)
-					Dust.NewDustPerfect(NPC.velocity + NPC.Center + dustDir * 40, ModContent.DustType<Dusts.Glow>(), dustDir * -2, 0, Color.OrangeRed, magmaCharge);
+					Dust.NewDustPerfect(new Vector2(NPC.spriteDirection * -8, 14) + NPC.Center + dustDir * 40, ModContent.DustType<Dusts.Glow>(), dustDir * -2, 0, Color.OrangeRed, magmaCharge);
 
 				if (magmaCharge > 1.75f)
 				{
+					SoundEngine.PlaySound(SoundID.Item45, NPC.Center);
 					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
 					NPC.velocity = projVel * 0.75f;
 					magmaCharge = 0;
@@ -200,28 +199,31 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			for (int i = 0; i < 6; i++)
+			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
-				float angle = (i / 6f) * MathHelper.TwoPi;
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				for (int i = 0; i < 6; i++)
+				{
+					float angle = (i / 6f) * MathHelper.TwoPi;
 
-				float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
-				float distance = 1.5f + cos;
+					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+					float distance = 1.5f + cos;
 
-				float opacity = 0.6f + (0.2f * cos);
+					float opacity = 0.6f + (0.2f * cos);
 
-				Vector2 offset = angle.ToRotationVector2() * distance;
-				spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+					Vector2 offset = angle.ToRotationVector2() * distance;
+					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+				}
+
+				for (int j = 0; j < 4; j++)
+				{
+					spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, Color.OrangeRed, NPC.rotation, magmaTex.Size() / 2, NPC.scale * magmaCharge, effects, 0f);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-
-			for (int j = 0; j < 4; j++)
-			{
-				spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, Color.OrangeRed, NPC.rotation, magmaTex.Size() / 2, NPC.scale * magmaCharge, effects, 0f);
-			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -346,30 +348,33 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			for (int i = 0; i < 6; i++)
+			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
-				float angle = (i / 6f) * MathHelper.TwoPi;
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				for (int i = 0; i < 6; i++)
+				{
+					float angle = (i / 6f) * MathHelper.TwoPi;
 
-				float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
-				float distance = 1.5f + cos;
+					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+					float distance = 1.5f + cos;
 
-				float opacity = 0.6f + (0.2f * cos);
+					float opacity = 0.6f + (0.2f * cos);
 
-				Vector2 offset = angle.ToRotationVector2() * distance;
-				spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+					Vector2 offset = angle.ToRotationVector2() * distance;
+					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
 
 		public override void OnKill()
 		{
-			Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+			SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -453,6 +458,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void Kill(int timeLeft)
 		{
+			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
 			for (int k = 0; k <= 10; k++)
 			{
 				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
