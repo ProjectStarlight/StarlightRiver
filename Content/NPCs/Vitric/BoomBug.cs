@@ -146,7 +146,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				{
 					SoundEngine.PlaySound(SoundID.Item45, NPC.Center);
 					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
-					NPC.velocity = projVel * 0.75f;
+					NPC.velocity = projVel * -1;
 					magmaCharge = 0;
 					chargingMagma = false;
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 70, 4);
@@ -154,6 +154,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 			else
 			{
+
+				if (bugTimer < 20)
+					NPC.velocity *= 0.9f;
+
 				if (++bugTimer % 190 == 0)
 					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
 				if (TileGapDown() < 15 && TileGapUp() > 5)
