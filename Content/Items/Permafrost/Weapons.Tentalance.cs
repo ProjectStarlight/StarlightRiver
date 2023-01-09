@@ -1,15 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -59,7 +52,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool CanShoot(Player player)
 		{
-			return CanUseItem(player);	
+			return CanUseItem(player);
 		}
 
 		public override void HoldItem(Player player)
@@ -104,6 +97,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.DamageType = DamageClass.Melee;
 		}
 
+		public override bool? CanHitNPC(NPC target)
+		{
+			if (ChargeSnapshot <= 0)
+				return false;
+
+			return base.CanHitNPC(target);
+		}
+
 		public override void AI()
 		{
 			//Owner.heldProj = Projectile.whoAmI;
@@ -144,8 +145,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
-			var dist = ((float)Math.Sin((Timer / 120f) * 3.14f) - (Charge / 30f) * 0.1f);
-			var rot = (float)Math.Sin((Timer / 120f) * 6.28f) * 0.05f;
+			float dist = (float)Math.Sin(Timer / 120f * 3.14f) - Charge / 30f * 0.1f;
+			float rot = (float)Math.Sin(Timer / 120f * 6.28f) * 0.05f;
 			Projectile.Center = basePos + dist * Projectile.velocity.RotatedBy(rot) * (4 + ChargeSnapshot / 7.5f);
 
 			Projectile.rotation = Projectile.velocity.ToRotation();
@@ -166,11 +167,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
-			var spriteBatch = Main.spriteBatch;
+			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			var tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name).Value;
-			var texGlow = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow").Value;
-			var texGlow2 = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow2").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name).Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow").Value;
+			Texture2D texGlow2 = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Glow2").Value;
 
 			spriteBatch.Draw(tex, Projectile.Center - Projectile.velocity - Main.screenPosition, null, lightColor, Projectile.rotation + 1.57f / 2, tex.Size() / 2, 1, 0, 0);
 
@@ -179,9 +180,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			for (int k = 0; k < 24; k++)
 			{
-				Vector2 pos = Vector2.Lerp(basePos, Projectile.Center, k / 29f);
+				var pos = Vector2.Lerp(basePos, Projectile.Center, k / 29f);
 				pos += Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (float)Math.Sin(k / 24f * 6.28f * 2) * 5;
-				var texSegment = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Segment").Value;
+				Texture2D texSegment = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + Name + "Segment").Value;
 
 				spriteBatch.Draw(texSegment, pos - Main.screenPosition, null, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), Projectile.rotation, texSegment.Size() / 2, 1, 0, 0);
 			}
@@ -189,9 +190,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			//Render trail
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.01f);
 			effect.Parameters["repeats"].SetValue(1);
@@ -215,8 +216,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			Vector2 basePos = Owner.Center + Vector2.UnitY * Owner.gfxOffY;
-			var sinTime = Timer / 120f * Math.PI * (4 + ChargeSnapshot / 15f) * 2;
-			var amplitude = 0.25f * Math.Max(0, (Projectile.timeLeft - 60) / 60f);
+			double sinTime = Timer / 120f * Math.PI * (4 + ChargeSnapshot / 15f) * 2;
+			float amplitude = 0.25f * Math.Max(0, (Projectile.timeLeft - 60) / 60f);
 			cache.Add(Projectile.Center - basePos + Projectile.velocity.RotatedBy(1.57f) * (float)Math.Sin(sinTime) * amplitude);
 
 			while (cache.Count > 60)
@@ -227,12 +228,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 15, factor =>
-			{
-				return GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f);
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 60, new TriangularTip(4), factor => 15, factor => GetColor(factor.X) * factor.X * (float)Math.Sin(Math.Max(0, Projectile.timeLeft - 30) / 90f * 3.14f));
 
-			Vector2[] realCache = new Vector2[60];
+			var realCache = new Vector2[60];
 
 			for (int k = 0; k < 60; k++)
 			{
@@ -240,7 +238,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 
 			trail.Positions = realCache;
-			
+
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
 		}
 	}
