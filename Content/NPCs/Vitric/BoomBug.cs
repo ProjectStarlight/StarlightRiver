@@ -8,12 +8,9 @@
 using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -82,7 +79,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				for (int i = 0; i < 8; i++)
 				{
-					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f,0.5f);
+					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 					Dust.NewDustPerfect(NPC.Center + dir * 45, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.85f, 1.45f));
 				}
 
@@ -108,6 +105,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
 				return true;
 			}
+
 			NPC.life = 1;
 			NPC.immortal = true;
 			NPC.dontTakeDamage = true;
