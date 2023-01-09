@@ -484,26 +484,19 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Phase == (int)AIStates.FirstPhase) //first phase, part 1. Tentacle attacks and ink.
 			{
+				BossBarOverlay.forceInvulnerabilityVisuals = false;
+
 				AttackTimer++;
 
 				//passive movement
 				NPC.position.X += (float)Math.Sin(GlobalTimer * 0.03f);
 				NPC.position.Y += (float)Math.Cos(GlobalTimer * 0.08f);
 
-				int tentacleLife = 0;
-
-				foreach (NPC tentacle in tentacles)
-				{
-					tentacleLife += tentacle.life;
-				}
-
-				NPC.life = baseLife + tentacleLife;
+				int tentacleLife = tentacles[0].lifeMax;
 
 				if (AttackTimer == 1)
 				{
-					int tentacleCount = tentacles.Count(n => n.ai[0] == 2);
-
-					if (tentacleCount <= 2 && tentacleCount > 1) //phasing logic
+					if (NPC.life <= NPC.lifeMax - tentacleLife * 2) //phasing logic
 					{
 						Phase = (int)AIStates.FirstPhaseTwo;
 						GlobalTimer = 0;
@@ -555,14 +548,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Phase == (int)AIStates.FirstPhaseTwo) //first phase, part 2. Tentacle attacks and ink. Raise water first.
 			{
-				int tentacleLife = 0;
+				BossBarOverlay.forceInvulnerabilityVisuals = false;
 
-				foreach (NPC tentacle in tentacles)
-				{
-					tentacleLife += tentacle.life;
-				}
-
-				NPC.life = baseLife + tentacleLife;
+				int tentacleLife = tentacles[0].lifeMax;
 
 				if (GlobalTimer == 1)
 					savedPoint = NPC.Center;
@@ -605,8 +593,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 					if (AttackTimer == 1)
 					{
-						if (tentacles.Count(n => n.ai[0] == 2) == 4) //phasing logic
+						if (NPC.life <= NPC.lifeMax - tentacleLife * 4) //phasing logic
 						{
+							foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
+								tentacle.Kill();
+
 							Phase = (int)AIStates.SecondPhase;
 							GlobalTimer = 0;
 							ResetAttack();
@@ -658,6 +649,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (Phase == (int)AIStates.SecondPhase) //second phase
 			{
+				BossBarOverlay.forceInvulnerabilityVisuals = null;
+
 				if (GlobalTimer < 50)
 					Arena.waterfallWidth = (int)GlobalTimer;
 
