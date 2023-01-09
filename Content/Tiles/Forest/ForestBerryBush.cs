@@ -114,6 +114,16 @@ namespace StarlightRiver.Content.Tiles.Forest
 			player.AddBuff(BuffID.PotionSickness, 15);
 			return true;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = Recipe.Create(ItemID.LesserHealingPotion,3);
+			recipe.AddIngredient(ItemID.Bottle, 3);
+			recipe.AddIngredient(ModContent.ItemType<ForestBerries>(), 1);
+			recipe.AddIngredient(ItemID.Gel, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
+		}
 	}
 
 	public class ForestBerryBushItem : QuickTileItem
