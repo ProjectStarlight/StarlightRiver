@@ -18,7 +18,5 @@ namespace StarlightRiver.Core
 		OvergrowBossDowned = 1 << 7,
 
 		SealOpen = 1 << 8,
-
-		AluminumMeteors = 1 << 9
 	}
 }

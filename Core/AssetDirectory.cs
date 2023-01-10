@@ -45,8 +45,12 @@ namespace StarlightRiver.Core
 
 		public const string SpaceEventItem = Assets + "Items/SpaceEvent/";
 		public const string SpaceEventNPC = Assets + "NPCs/SpaceEvent/";
+		public const string MiscNPC = Assets + "NPCs/Misc/";
 
+    public const string DungeonTile = Assets + "Tiles/Dungeon/";
 		public const string DungeonNPC = Assets + "NPCs/Dungeon/";
+
+		public const string MoonstoneNPC = Assets + "NPCs/Moonstone/";
 
 		public const string OvergrowTile = Assets + "Tiles/Overgrow/";
 		public const string OvergrowItem = Assets + "Items/Overgrow/";

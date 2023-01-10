@@ -10,98 +10,56 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSet(50, DustType<Dusts.Electric>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOreItem>(), true, true, "Moonstone Ore");
+			this.QuickSet(50, DustType<Dusts.Stone>(), SoundID.Tink, new Color(64, 71, 89), ItemType<Items.Moonstone.MoonstoneOreItem>(), true, true, "Moonstone Ore");
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			//Utils.DrawBorderString(spriteBatch, temp.ToString(), (new Vector2(i + 12, j + 7 - (i % 4)) * 16) - Main.screenPosition, Color.White, 0.75f);
 
-			if (!Main.tile[i, j - 1].HasTile)
+			for (int k = j - 1; k > j - 6; k--)
 			{
-				Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (((float)Math.Sin(Main.GameUpdateCount * 0.02f) + 4) / 4);
-				float heightScale = (float)Math.Sin(Main.GameUpdateCount * 0.025f) / 8 + 1;
+				if (Main.tile[i, k].HasTile)
+					return true;
+			}
 
-				bool emptyLeft;
-				bool emptyRight;
-				Texture2D midTex;
-				float yOffsetLeft = 0;
-				float yOffsetRight = 0;
+			Color overlayColor = new Color(0.12f, 0.135f, 0.23f, 0f) * (2 * (((float)Math.Sin(Main.GameUpdateCount * 0.02f) + 4) / 4));
+			float heightScale = (float)Math.Sin(Main.GameUpdateCount * 0.025f) / 8 + 1;
 
-				switch (Main.tile[i, j].Slope)
-				{
-					case SlopeType.SlopeDownLeft:// '\' slope
-						Tile tileLeft0 = Main.tile[i - 1, j];
-						Tile tileRight0 = Main.tile[i + 1, j + 1];
+			Texture2D midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
+			float yOffsetLeft = 0;
+			float yOffsetRight = 0;
 
-						emptyLeft = !(tileLeft0.HasTile && tileLeft0.TileType == Type && !Main.tile[i - 1, j - 1].HasTile ||
-							Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].TileType == Type && !Main.tile[i - 1, j - 2].HasTile);
+			switch (Main.tile[i, j].Slope)
+			{
+				case SlopeType.SlopeDownLeft: // '\' slope
+					yOffsetLeft = 1f;
+					break;
 
-						emptyRight = !tileRight0.HasTile || tileRight0.TileType != Type || tileRight0.Slope == SlopeType.SlopeDownRight || Main.tile[i + 1, j].HasTile;
+				case SlopeType.SlopeDownRight: // '/' slope 
+					yOffsetRight = 1f;
+					break;
+			}
 
-						midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeRight").Value;
-						yOffsetLeft = 1f;
-						break;
+			const int stepUp = 5;
+			var frame = new Rectangle(0, 0, 16, 88 - stepUp * 8 + 8 * (j % stepUp));
+			spriteBatch.Draw(midTex, new Vector2(i + 12, j + 12.5f) * 16 - Main.screenPosition, frame, overlayColor, default, new Vector2(0, frame.Height), new Vector2(1, 2), default, default);
 
-					case SlopeType.SlopeDownRight:// '/' slope
-						Tile tileLeft1 = Main.tile[i - 1, j + 1];
-						Tile tileRight1 = Main.tile[i + 1, j];
+			Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			int realX = i * 16;
+			int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
+			int realWidth = glowLines.Width - 1; //1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
+			Color drawColor = overlayColor * 0.35f;
 
-						emptyLeft = !tileLeft1.HasTile || tileLeft1.TileType != Type || tileLeft1.Slope == SlopeType.SlopeDownLeft || Main.tile[i - 1, j].HasTile;
+			float val = (Main.GameUpdateCount * 0.3333f + realY) % realWidth;
+			int offset = (int)(val + realX % realWidth - realWidth);
 
-						emptyRight = !(tileRight1.HasTile && tileRight1.TileType == Type && !Main.tile[i + 1, j - 1].HasTile ||
-							Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile);
+			spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, 16, glowLines.Height), new Rectangle(offset + 1, 0, 16, (int)(glowLines.Height * heightScale)), drawColor);
 
-						midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSlopeLeft").Value;
-						yOffsetRight = 1f;
-						break;
-
-					default:
-						Tile tileLeft2 = Main.tile[i - 1, j];
-						Tile tileRight2 = Main.tile[i + 1, j];
-
-						emptyLeft = !(tileLeft2.HasTile && tileLeft2.TileType == Type && tileLeft2.Slope != SlopeType.SlopeDownLeft && !Main.tile[i - 1, j - 1].HasTile ||
-							Main.tile[i - 1, j - 1].Slope == SlopeType.SlopeDownLeft && Main.tile[i - 1, j - 1].TileType == Type && !Main.tile[i - 1, j - 2].HasTile);
-
-						emptyRight = !(tileRight2.HasTile && tileRight2.TileType == Type && tileRight2.Slope != SlopeType.SlopeDownRight && !Main.tile[i + 1, j - 1].HasTile ||
-							Main.tile[i + 1, j - 1].Slope == SlopeType.SlopeDownRight && Main.tile[i + 1, j - 1].TileType == Type && !Main.tile[i + 1, j - 2].HasTile);
-
-						midTex = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowMid").Value;
-						break;
-				}
-
-				if (emptyLeft)
-				{
-					if (emptyRight) //solo
-						spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowSolo").Value, new Vector2(i + 12, j + 7.5f + yOffsetLeft + yOffsetRight) * 16 - Main.screenPosition, overlayColor);
-					else            //left
-						spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLeft").Value, new Vector2(i + 12, j + 7.5f + yOffsetLeft) * 16 - Main.screenPosition, overlayColor);
-				}
-				else if (emptyRight)//right
-				{
-					spriteBatch.Draw(Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowRight").Value, new Vector2(i + 12, j + 7.5f + yOffsetRight) * 16 - Main.screenPosition, overlayColor);
-				}
-				else                //both
-				{
-					spriteBatch.Draw(midTex, new Vector2(i + 12, j + 7.5f) * 16 - Main.screenPosition, overlayColor);
-				}
-
-				Texture2D glowLines = Request<Texture2D>(AssetDirectory.MoonstoneTile + "GlowLines").Value;
-				int realX = i * 16;
-				int realY = (int)((j + yOffsetLeft + yOffsetRight) * 16);
-				int realWidth = glowLines.Width - 1;//1 pixel offset since the texture has a empty row of pixels on the side, this is also accounted for elsewhere below
-				Color drawColor = overlayColor * 0.35f;
-
-				float val = (Main.GameUpdateCount * 0.3333f + realY) % realWidth;
-				int offset = (int)(val + realX % realWidth - realWidth);
-
-				spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, 16, glowLines.Height), new Rectangle(offset + 1, 0, 16, (int)(glowLines.Height * heightScale)), drawColor);
-
-				if (offset < 0)
-				{
-					int rectWidth = Math.Min(-offset, 16);
-					spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, rectWidth, glowLines.Height), new Rectangle(offset + 1 + realWidth, 0, rectWidth, (int)(glowLines.Height * heightScale)), drawColor);
-				}
+			if (offset < 0)
+			{
+				int rectWidth = Math.Min(-offset, 16);
+				spriteBatch.Draw(glowLines, new Rectangle(realX + 192 - (int)Main.screenPosition.X, realY + 102 - (int)Main.screenPosition.Y, rectWidth, glowLines.Height), new Rectangle(offset + 1 + realWidth, 0, rectWidth, (int)(glowLines.Height * heightScale)), drawColor);
 			}
 
 			return true;
@@ -111,13 +69,13 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		{
 			Vector2 pos = new Vector2(i, j) * 16;
 			Lighting.AddLight(pos, new Vector3(0.1f, 0.32f, 0.5f) * 0.35f);
-			//Dust.NewDustDirect(pos, 16, 16, ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), 0, 0, 0, Color.White, 0.05f);
+
 			if (Main.rand.NextBool(50))
 			{
 				if (!Main.tile[i, j - 1].HasTile)
 				{
-					Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-16, -8)),
-						DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.05f, 0.18f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
+					Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(0, 16), Main.rand.NextFloat(-32, -16)),
+						ModContent.DustType<Content.Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.02f, 0.02f), -Main.rand.NextFloat(0.1f, 0.36f)), 0, new Color(0.2f, 0.2f, 0.25f, 0f), Main.rand.NextFloat(0.25f, 0.5f));
 				}
 			}
 		}
