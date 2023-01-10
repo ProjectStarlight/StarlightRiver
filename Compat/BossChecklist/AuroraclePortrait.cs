@@ -25,34 +25,66 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Timer--;
 		});
 
+		/*
+		 				if (k == 4)
+				{
+					float opacity = Math.Min(Opacity, 1);
+
+					color.A = 0;
+					spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.2f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.26f, 0, 0);
+					spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.075f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.28f, 0, 0);
+				}
+
+				if (!OpaqueJelly)
+				{
+					color.A = 0;
+
+					spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
+						new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
+
+					spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
+						new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
+				}
+		 */
+
 		public static void DrawAuroraclePortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
-			if (Main.rand.NextBool(5))
-				auroracleSystem.AddParticle(new Particle(rect.Center() + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100), Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(6.28f), Main.rand.NextFloat(0.25f, 0.45f), new Color(200, 200, 0), 300, Vector2.Zero, new Rectangle(0, 0, 100, 100)));
+			if (Main.rand.NextBool(3))
+				auroracleSystem.AddParticle(new Particle(rect.Center() + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(120), Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(6.28f), Main.rand.NextFloat(0.25f, 0.45f), new Color(200, 200, 0), 300, Vector2.Zero, new Rectangle(0, 0, 100, 100)));
 
-			float sin = 0.8f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.1f;
+			//float sin = 0.8f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.1f;
 
-			Texture2D tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBoss").Value;
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossGlow").Value;
-			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			spriteBatch.Draw(tex2, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
+			Texture2D body = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBoss").Value;
+			Texture2D glow = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossGlow").Value;
+			Texture2D blur = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossGlowBlur").Value;
+			Texture2D specular = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/SquidBossSpecular").Value;
+			Texture2D circleGlow = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+
+			spriteBatch.Draw(circleGlow, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
+
+			uint GlobalTimer = Main.GameUpdateCount;
+
+			float sin = 1 + (float)Math.Sin(GlobalTimer / 10f * 0.5f);
+			float sin2 = 1 + (float)Math.Sin(GlobalTimer / 10f * 0.5f + 1.5f);
+			float cos = 1 + (float)Math.Cos(GlobalTimer / 10f * 0.5f);
+
+			var glowColor = new Color(0.5f + cos * 0.25f, 0.8f, 0.5f + sin * 0.25f);
+
+			spriteBatch.Draw(glow, rect.Center(), null, glowColor, 0, glow.Size() / 2, 1, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.UIScaleMatrix);
 
-			float r = 0.25f * (1f + (float)Math.Sin(Main.GameUpdateCount * 0.1f * 0.2));
-			float g = 0.35f * (1f + (float)Math.Cos(Main.GameUpdateCount * 0.1f));
-			float b = 0.45f;
+			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.55f, 0, blur.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(blur, rect.Center(), null, glowColor * 0.3f, 0, blur.Size() / 2, 1.05f, 0, 0);
 
-			Color glowColor = new Color(r, g, b) * sin;
-
-			spriteBatch.Draw(tex, rect.Center(), null, glowColor, 0, tex.Size() / 2, 1, 0, 0);
 			auroracleSystem.DrawParticles(spriteBatch);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-			spriteBatch.Draw(tex0, rect.Center(), null, color, 0, tex0.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(body, rect.Center(), null, color, 0, body.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(specular, rect.Center(), null, Color.White, 0, specular.Size() / 2, 1, 0, 0);
 
 			auroracleSystem.SetTexture(ModContent.Request<Texture2D>("StarlightRiver/Assets/Dusts/Aurora").Value);
 		}
