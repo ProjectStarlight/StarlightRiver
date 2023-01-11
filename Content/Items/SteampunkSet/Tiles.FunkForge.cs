@@ -1,7 +1,7 @@
 //TODO on funk forge:
 //Glowmask
 //Animations
-//Make reforge mechanic actually work
+//Add lighting
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using System.Linq;
