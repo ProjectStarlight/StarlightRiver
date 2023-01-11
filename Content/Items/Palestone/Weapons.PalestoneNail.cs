@@ -91,7 +91,6 @@ namespace StarlightRiver.Content.Items.Palestone
 		public const int validZoneHeight = 24;
 		public const int minionSpacing = 24;
 
-		public const int enemyCheckDelay = 30;
 		public const int maxMinionChaseRange = 2000;
 
 		public const int MaxVelocity = 7;
@@ -128,8 +127,6 @@ namespace StarlightRiver.Content.Items.Palestone
 
 			Projectile.tileCollide = true;
 
-			//Projectile.friendly = true;
-
 			Projectile.minion = true;
 
 			Projectile.minionSlots = 1f;
@@ -142,21 +139,9 @@ namespace StarlightRiver.Content.Items.Palestone
 			return false;
 		}
 
-		//public override bool MinionContactDamage() => true;	// This is mandatory if your minion deals contact damage (further related stuff in AI() in the Movement region)
-
-		public override void PostDraw(Color lightColor)
-		{
-			/*SpriteBatch spriteBatch = Main.spriteBatch;
-			Utils.DrawBorderString(spriteBatch, EnemyWhoAmI.ToString(), Projectile.position + new Vector2(0, -60) - Main.screenPosition, Color.LightCoral);
-			Utils.DrawBorderString(spriteBatch, AttackState.ToString(), Projectile.position + new Vector2(0, -40) - Main.screenPosition, Color.LightGoldenrodYellow);
-			Utils.DrawBorderString(spriteBatch, Projectile.velocity.Length().ToString(), Projectile.position + new Vector2(0, -20) - Main.screenPosition, Color.LightBlue);
-			if (EnemyWhoAmI >= 0)
-				Utils.DrawLine(spriteBatch, Projectile.Center, Main.npc[(int)EnemyWhoAmI].Center, Color.LightBlue, Color.IndianRed, 2f);*/
-		}
-
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			EnemyWhoAmI = target.whoAmI;//TODO: possible desync, needs testing
+			EnemyWhoAmI = target.whoAmI; //TODO: possible desync, needs testing
 		}
 
 		public override void AI()
