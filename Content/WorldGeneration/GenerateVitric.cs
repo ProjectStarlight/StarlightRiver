@@ -23,6 +23,8 @@ namespace StarlightRiver.Core
 
 		private readonly static int forgeSide = 0;
 		private static int crystalsPlaced = 0;
+
+		private static int chestsPlaced = 0;
 		private static Mod instance => StarlightRiver.Instance;
 
 		private static int[] ValidGround;
@@ -755,6 +757,43 @@ namespace StarlightRiver.Core
 
 				if (Framing.GetTileSafely(posX, posY).TileType == instance.Find<ModTile>("VitricSand").Type)
 					TileRunner(posX, posY, genRand.Next(1, 4), 8, instance.Find<ModTile>("VitricSoftSand").Type, false, 0, 0, true, true);
+			}
+
+			//Place chests if needed
+			if (chestsPlaced <= vitricBiome.Width / 400 + 2 && !small)
+			{
+				int tries = 0;
+				while (true)
+				{
+					int cX = x + genRand.Next((int)(wid * -0.60f), (int)(wid * 0.60f)) - 3;
+					int cY = y - 5;
+
+					while (Main.tile[cX, cY].HasTile)
+					{
+						cY--;
+					}
+
+					cY = Math.Max(
+						FindType(cX, cY, -1, ValidGround),
+						FindType(cX + 1, cY, -1, ValidGround)
+						);
+
+					if (ValidGround.Any(v => v == Main.tile[cX, cY].TileType) && ValidGround.Any(v => v == Main.tile[cX + 1, cY].TileType) && ScanRectangle(cX, cY - 2, 2, 2) == 0)
+					{
+						if (WorldGen.PlaceChest(cX, cY - 1, (ushort)ModContent.TileType<Content.Tiles.Vitric.CeramicChest>(), false, 0) != -1)
+							if (Framing.GetTileSafely(cX, cY - 1).TileType == ModContent.TileType<Content.Tiles.Vitric.CeramicChest>())
+							{
+								chestsPlaced++;
+								break;
+							}
+						tries++;
+					}
+					else
+						if (tries++ >= 20)
+					{
+						break;
+					}
+				}
 			}
 
 			//Place crystal if needed
