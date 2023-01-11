@@ -120,9 +120,9 @@ namespace StarlightRiver.Core
 			{
 				if (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock)
 				{
-					StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(center, y - 12), Mod);
-					(TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
-					break;
+					//StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(center, y - 12), Mod);
+					//(TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity).targetPoint = oldPos;
+					//break;
 				}
 
 				if (Main.tile[center, y].HasTile && Main.tileSolid[Main.tile[center, y].TileType])

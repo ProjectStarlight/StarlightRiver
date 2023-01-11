@@ -1,6 +1,6 @@
 ﻿//TODO on salt:
-//Make it generate
 //Make it so you can place tiles on top of it
+//Make it unslope blocks it generates on
 
 using StarlightRiver.Content.Items.Food;
 using System;
