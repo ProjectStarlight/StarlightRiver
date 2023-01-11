@@ -1,3 +1,7 @@
+//TODO on funk forge:
+//Glowmask
+//Animations
+//Make reforge mechanic actually work
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using System.Linq;
@@ -72,48 +76,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 	public class FunkForgeModifiers : GlobalItem
 	{
+		#region Code if bug is fixed
+		//Uncomment when TML bug is fixed
+		/*
 		public static int[] badReforges = new int[] { PrefixID.Broken, PrefixID.Damaged, PrefixID.Shoddy, PrefixID.Weak, PrefixID.Ruthless, PrefixID.Slow, PrefixID.Sluggish, PrefixID.Lazy, PrefixID.Annoying, PrefixID.Tiny, PrefixID.Terrible, PrefixID.Small, PrefixID.Dull, PrefixID.Unhappy, PrefixID.Bulky, PrefixID.Shameful, PrefixID.Heavy, PrefixID.Awful, PrefixID.Lethargic, PrefixID.Awkward, PrefixID.Powerful, PrefixID.Frenzying,PrefixID.Inept, PrefixID.Ignorant, PrefixID.Deranged, PrefixID.Deranged, PrefixID.Intense, PrefixID.Taboo, PrefixID.Manic, 0};
 
 		public static int tries = 0;
-
-		public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
-		{
-			//if (Main.reforgeItem == item || pre != -1)
-				return base.PrefixChance(item, pre, rand);
-
-			Player player = Main.LocalPlayer;
-			int x = (int)(player.Center.X / 16);
-			int y = (int)(player.Center.Y / 16);
-			for (int i = -6; i < 6; i++)
-				for (int j = -6; j < 6; j++)
-				{
-					Tile tile = Framing.GetTileSafely(x + i, y + j);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<FunkForgeTile>())
-					{
-						return true;
-					}
-				}
-
-			return base.PrefixChance(item, pre, rand);
-		}
-
-		public override int ChoosePrefix(Item item, UnifiedRandom rand)
-		{
-			Player player = Main.LocalPlayer;
-			int x = (int)(player.Center.X / 16);
-			int y = (int)(player.Center.Y / 16);
-			for (int i = -6; i < 6; i++)
-				for (int j = -6; j < 6; j++)
-				{
-					Tile tile = Framing.GetTileSafely(x + i, y + j);
-					if (tile.HasTile && tile.TileType == ModContent.TileType<FunkForgeTile>())
-					{
-						return -3;
-					}
-				}
-			return base.ChoosePrefix(item, rand);
-		}
-
 
 		public override bool AllowPrefix(Item item, int pre)
 		{
@@ -150,6 +118,62 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				}
 			tries = 0;
 			return true;
+		}*/
+
+		#endregion
+
+		public override bool? PrefixChance(Item item, int pre, UnifiedRandom rand)
+		{
+			Player player = Main.LocalPlayer;
+			int x = (int)(player.Center.X / 16);
+			int y = (int)(player.Center.Y / 16);
+			for (int i = -6; i < 6; i++)
+				for (int j = -6; j < 6; j++)
+				{
+					Tile tile = Framing.GetTileSafely(x + i, y + j);
+					if (tile.HasTile && tile.TileType == ModContent.TileType<FunkForgeTile>())
+					{
+						return true;
+					}
+				}
+
+			return base.PrefixChance(item, pre, rand);
+		}
+
+		public override int ChoosePrefix(Item item, UnifiedRandom rand)
+		{
+			Player player = Main.LocalPlayer;
+			int x = (int)(player.Center.X / 16);
+			int y = (int)(player.Center.Y / 16);
+			for (int i = -6; i < 6; i++)
+				for (int j = -6; j < 6; j++)
+				{
+					Tile tile = Framing.GetTileSafely(x + i, y + j);
+					if (tile.HasTile && tile.TileType == ModContent.TileType<FunkForgeTile>())
+					{
+						return BestPrefix(item);
+					}
+				}
+			return base.ChoosePrefix(item, rand);
+		}
+
+		private int BestPrefix(Item item)
+		{
+			if (item.axe > 0 || item.hammer > 0 || item.pick > 0)
+				return PrefixID.Light;
+			if (item.DamageType == DamageClass.Melee) //Can't be a switch statement because damage classes aren't constant
+				return PrefixID.Legendary;
+			if (item.DamageType == DamageClass.Magic || item.DamageType == DamageClass.MagicSummonHybrid || item.DamageType == DamageClass.Summon)
+				return PrefixID.Mythical;
+			if (item.DamageType == DamageClass.Ranged)
+				return PrefixID.Unreal;
+			if (item.DamageType == DamageClass.SummonMeleeSpeed)
+				return PrefixID.Legendary;
+
+			if (item.accessory)
+				return Main.rand.NextBool() ? PrefixID.Warding : PrefixID.Menacing;
+
+			return 0;
 		}
 	}
 }
