@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void SafeSetDefaults()
 		{
-			Item.createTile = TileType<Tiles.Cooking.SeaSalt>();
+			Item.createTile = TileType<Tiles.Cooking.PinkSeaSalt>();
 			Item.rare = ItemRarityID.Blue;
 		}
 

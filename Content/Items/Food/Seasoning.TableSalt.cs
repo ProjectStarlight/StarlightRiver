@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void SafeSetDefaults()
 		{
+			Item.createTile = ModContent.TileType<Tiles.Cooking.TableSalt>();
 			Item.value = 400;
 			Item.rare = ItemRarityID.White;
 		}
