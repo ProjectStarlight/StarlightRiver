@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (item.accessory)
 				return Main.rand.NextBool() ? PrefixID.Warding : PrefixID.Menacing;
 
-			return 0;
+			return -3;
 		}
 	}
 }
