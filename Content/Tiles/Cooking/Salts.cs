@@ -30,6 +30,13 @@ namespace StarlightRiver.Content.Tiles.Cooking
 			Main.tileLighted[Type] = true;
 			Main.tileBlockLight[Type] = false;
 		}
+
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+			if (Main.tile[i, j].LiquidAmount > 0)
+				Main.tile[i, j].ClearTile();
+		}
+
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 		{
 			if (WorldGen.noTileActions)
