@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			Fleeing
 		}
 
-		public const float MAX_BUFF_RADIUS = 350;
+		public const float MAX_BUFF_RADIUS = 332;
 
 		public List<NPC> targets = new();
 
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 					if (Main.rand.NextBool(2))
 					{
 						var d = Dust.NewDustPerfect(NPC.Center, DustType<BannerBuffDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150), 0), Main.rand.NextFloat(0.3f));
-						d.customData = (NPC, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(BuffRadius * 0.3f));
+						d.customData = (NPC, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(BuffRadius * 0.45f));
 					}
 
 					for (int k = 0; k < targets.Count; k++)
@@ -244,7 +244,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 		{
 			Texture2D auraTex = Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRingTransparent").Value;
 			Texture2D ballTex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			float maxScale = MAX_BUFF_RADIUS / auraTex.Width;
+			float maxScale = auraTex.Width / MAX_BUFF_RADIUS;
 
 			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.4f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
 
@@ -252,17 +252,17 @@ namespace StarlightRiver.Content.NPCs.Forest
 			{
 				for (int i = 0; i < 40; i++)
 				{
-					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + i * 0.04f) * 332 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.9f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.45f - i * 0.005f, 0, 0);
+					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + i * 0.04f) * 320 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.9f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.45f - i * 0.005f, 0, 0);
 
-					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.032f + k * 3.14f + i * 0.04f) * 306 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2, 0.8f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2, 0.4f - i * 0.005f, 0, 0);
+					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.032f + k * 3.14f + i * 0.04f) * 294 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2f, 0.8f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2f, 0.4f - i * 0.005f, 0, 0);
 
-					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.068f + k * 3.14f + i * 0.04f) * 280 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.7f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.35f - i * 0.005f, 0, 0);
+					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.068f + k * 3.14f + i * 0.04f) * 268 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.7f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.35f - i * 0.005f, 0, 0);
 				}
 			}
 		}
