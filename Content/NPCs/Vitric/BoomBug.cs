@@ -1,11 +1,4 @@
-﻿//TODO on firebug:
-//Bestiary
-//Money dropping
-//Drops
-
-//TODO on lesser firebug
-//Bestiary
-using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
@@ -119,15 +112,19 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.spriteDirection = NPC.direction;
 
 			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 0.8f);
+
 			if (dying)
 			{
 				chargingMagma = false;
 				NPC.velocity.Y += 0.1f;
 				NPC.velocity.X += Math.Sign(NPC.velocity.X) * 0.08f;
+
 				if (NPC.collideX || NPC.collideY)
 					NPC.Kill();
+
 				return;
 			}
+
 			if (chargingMagma)
 			{
 				bugTimer = 0;
@@ -158,10 +155,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				if (++bugTimer % 190 == 0)
 					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
+
 				if (TileGapDown() < 15 && TileGapUp() > 5)
 					NPC.velocity.Y -= 0.1f;
 				else
 					NPC.velocity.Y += 0.1f;
+
 				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -4, 4);
 
 				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
@@ -429,6 +428,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 	public class FirebugMagma : ModProjectile, IDrawAdditive
 	{
 		private List<Vector2> oldPos = new List<Vector2>();
+
 		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
 
 		public override void SetDefaults()
