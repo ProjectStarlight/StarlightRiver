@@ -1,4 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,22 +18,23 @@ namespace StarlightRiver.Content.NPCs.Forest
 			Fleeing
 		}
 
-		public const float MAX_BUFF_RADIUS = 500;
+		public const float MAX_BUFF_RADIUS = 350;
 
 		public List<NPC> targets = new();
+
+		private VerletChain chain;
+
+		private VerletChain miniChain0;
+		private VerletChain miniChain1;
 
 		public ref float State => ref NPC.ai[0];
 		public ref float GlobalTimer => ref NPC.ai[1];
 		public ref float BuffRadius => ref NPC.ai[2];
+		public ref float VisualTimer => ref NPC.ai[3];
 
 		public float VFXAlpha => BuffRadius / MAX_BUFF_RADIUS;
 
 		public override string Texture => AssetDirectory.ForestNPC + Name;
-
-		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
-		{
-			return false; //harmless
-		}
 
 		public override void SetStaticDefaults()
 		{
@@ -51,11 +54,60 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath2;
 			NPC.chaseable = true;
+
+			chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
+			{
+				constraintRepetitions = 2,
+				drag = 1.2f,
+				forceGravity = new Vector2(0f, 0.55f),
+				scale = 16f,
+				parent = NPC
+			};
+
+			miniChain0 = new RectangularBanner(10, false, NPC.Center + new Vector2(22, -48), 8)
+			{
+				constraintRepetitions = 2,
+				drag = 1.35f,
+				forceGravity = new Vector2(0f, 0.55f),
+				scale = 4f,
+				parent = NPC
+			};
+
+			miniChain1 = new RectangularBanner(10, false, NPC.Center + new Vector2(-22, -48), 8)
+			{
+				constraintRepetitions = 2,
+				drag = 1.35f,
+				forceGravity = new Vector2(0f, 0.55f),
+				scale = 4f,
+				parent = NPC
+			};
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false; //harmless
 		}
 
 		public override void AI()
 		{
 			GlobalTimer++;
+			VisualTimer++;
+
+			chain.UpdateChain(NPC.Center + Vector2.UnitY * -40);
+			miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
+			miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
+
+			chain.IterateRope(ColorBanner);
+			miniChain0.IterateRope(ColorBannerSmall);
+			miniChain1.IterateRope(ColorBannerSmall);
+
+			Lighting.AddLight(NPC.Center, new Vector3(1.25f, 0.4f, 0.2f) * VFXAlpha * 0.7f);
+
+			for (int k = 0; k < 2; k++)
+			{
+				Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + 1.6f) * 332 * VFXAlpha * 0.5f;
+				Lighting.AddLight(pos, new Vector3(0.9f, 0.4f, 0.2f) * VFXAlpha * 0.6f);
+			}
 
 			if (Main.dayTime)
 			{
@@ -96,6 +148,12 @@ namespace StarlightRiver.Content.NPCs.Forest
 					if (BuffRadius < MAX_BUFF_RADIUS)
 						BuffRadius++;
 
+					if (Main.rand.NextBool(2))
+					{
+						var d = Dust.NewDustPerfect(NPC.Center, DustType<BannerBuffDust>(), Vector2.UnitY * Main.rand.NextFloat(-4, -1), 0, new Color(255, Main.rand.Next(150), 0), Main.rand.NextFloat(0.3f));
+						d.customData = (NPC, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(BuffRadius * 0.3f));
+					}
+
 					for (int k = 0; k < targets.Count; k++)
 					{
 						NPC toCheck = targets[k];
@@ -115,10 +173,13 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 					Vector2 target = Helper.Centeroid(targets) + new Vector2(0, -100);
 
-					NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.2f; //accelerate towards the centeroid of it's supported NPCs
+					if (Vector2.Distance(NPC.Center, target) > 32)
+						NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.2f; //accelerate towards the centeroid of it's supported NPCs
 
-					if (NPC.velocity.Length() > 2) //speed cap
-						NPC.velocity = Vector2.Normalize(NPC.velocity) * 1.9f;
+					if (NPC.velocity.Length() > 3) //speed cap
+						NPC.velocity = Vector2.Normalize(NPC.velocity) * 2.99f;
+
+					NPC.velocity *= 0.95f;
 
 					if (GlobalTimer % 60 == 0) //periodically check for more targets
 					{
@@ -144,20 +205,125 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 		}
 
+		private void ColorBanner(VerletChain rope, int index)
+		{
+			int x = (int)rope.ropeSegments[index].posNow.X / 16;
+			int y = (int)rope.ropeSegments[index].posNow.Y / 16;
+			Color light = Lighting.GetColor(x, y);
+
+			rope.ropeSegments[index].color = new Color(255, 80 - index * 2, 40 - index).MultiplyRGB(light);
+
+			rope.ropeSegments[index].posNow += Vector2.UnitX * (float)System.Math.Sin(Main.GameUpdateCount * 0.05f + index * 0.4f) * 0.15f;
+
+			if (index == 1)
+				rope.ropeSegments[index].posNow = rope.ropeSegments[0].posNow + Vector2.UnitY;
+		}
+
+		private void ColorBannerSmall(VerletChain rope, int index)
+		{
+			int x = (int)rope.ropeSegments[index].posNow.X / 16;
+			int y = (int)rope.ropeSegments[index].posNow.Y / 16;
+			Color light = Lighting.GetColor(x, y);
+
+			rope.ropeSegments[index].color = new Color(180, 30, 10).MultiplyRGB(light);
+
+			rope.ropeSegments[index].posNow += Vector2.UnitX * (float)System.Math.Sin(Main.GameUpdateCount * 0.05f + index * 0.4f) * 0.15f;
+
+			if (index == 1)
+				rope.ropeSegments[index].posNow = rope.ropeSegments[0].posNow + Vector2.UnitY;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			spriteBatch.Draw(tex, NPC.Center + new Vector2(0, -64) - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+			return false;
+		}
+
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			Texture2D auraTex = Request<Texture2D>(AssetDirectory.VitricBoss + "BombTell").Value;
+			Texture2D auraTex = Request<Texture2D>("StarlightRiver/Assets/Misc/GlowRingTransparent").Value;
+			Texture2D ballTex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 			float maxScale = MAX_BUFF_RADIUS / auraTex.Width;
 
-			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.8f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
+			spriteBatch.Draw(auraTex, NPC.Center - Main.screenPosition, null, Color.Red * VFXAlpha * 0.4f, 0, auraTex.Size() / 2, VFXAlpha * maxScale, 0, 0);
+
+			for (int k = 0; k < 2; k++)
+			{
+				for (int i = 0; i < 40; i++)
+				{
+					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + i * 0.04f) * 332 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.9f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.45f - i * 0.005f, 0, 0);
+
+					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.032f + k * 3.14f + i * 0.04f) * 306 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2, 0.8f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2, 0.4f - i * 0.005f, 0, 0);
+
+					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.068f + k * 3.14f + i * 0.04f) * 280 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.7f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2, 0.35f - i * 0.005f, 0, 0);
+				}
+			}
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
-			if (spawnInfo.Player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type)) //they should only spawn at night in the forest after EoC is dead, and one max
+			//they should only spawn at night in the forest after EoC is dead, and one max
+			if (spawnInfo.Player.ZoneForest() && !Main.dayTime && NPC.downedBoss1 && !Main.npc.Any(n => n.active && n.type == NPC.type))
 				return 0.25f;
 
 			return 0;
+		}
+
+		public override void OnKill()
+		{
+			VerletChainSystem.toDraw.Remove(chain);
+			VerletChainSystem.toDraw.Remove(miniChain0);
+			VerletChainSystem.toDraw.Remove(miniChain1);
+		}
+	}
+
+	internal class BannerBuffDust : ModDust
+	{
+		public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.fadeIn = 0;
+			dust.noLight = false;
+			dust.frame = new Rectangle(0, 0, 8, 128);
+			dust.scale = 1;
+
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.customData is (NPC, Vector2))
+			{
+				var data = ((NPC, Vector2))dust.customData;
+				dust.position = data.Item1.Center + data.Item2;
+
+				dust.customData = (data.Item1, data.Item2 + dust.velocity);
+			}
+
+			dust.rotation = dust.velocity.ToRotation() + 1.57f;
+
+			dust.velocity *= 0.98f;
+			dust.color *= 0.97f;
+
+			if (dust.fadeIn <= 2)
+				dust.shader.UseColor(Color.Transparent);
+			else
+				dust.shader.UseColor(dust.color);
+
+			dust.fadeIn++;
+
+			if (dust.fadeIn > 60)
+				dust.active = false;
+
+			return false;
 		}
 	}
 }
