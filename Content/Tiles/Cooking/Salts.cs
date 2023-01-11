@@ -1,6 +1,5 @@
 ﻿//TODO on salt:
 //Make it so you can place tiles on top of it
-//Make it unslope blocks it generates on
 
 using StarlightRiver.Content.Items.Food;
 using System;
@@ -21,7 +20,6 @@ namespace StarlightRiver.Content.Tiles.Cooking
 
 		public override void SetStaticDefaults()
 		{
-			Main.tileMerge[Type][TileID.Sand] = true;
 			Main.tileMerge[TileID.Sand][Type] = true;
 			this.QuickSet(0, DustType, SoundID.Dig, Color.White, ItemDrop);
 			Main.tileSolid[Type] = false;

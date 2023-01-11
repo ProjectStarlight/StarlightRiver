@@ -48,14 +48,18 @@ namespace StarlightRiver.Core
 					int xOff = x > size / 2 ? size - x : x;
 
 					float noisePre = genNoise.GetPerlin(x % 1000 * 10, x % 1000 * 10);
-					int noise = (int)(noisePre * 15);
+					int noise = (int)(noisePre * 3);
 
-					for (int y = surface - (int)MathHelper.Clamp(xOff / 2 + noise + 2, 0, 3); true; y++)
+					for (int y = surface - (int)MathHelper.Clamp(xOff / 2 + noise, 0, 4); true; y++)
 					{
 						WorldGen.PlaceTile(i + x, y, TileType<PinkSeaSalt>());
 
-						if (y - surface > 20 || !WorldGen.InWorld(i + x, y + 1) || (Main.tile[i + x, y + 1].HasTile && Main.tileSolid[Main.tile[i + x, y + 1].TileType]))
+						Tile toCheck = Framing.GetTileSafely(i + x, y + 1);
+						if (y - surface > 20 || !WorldGen.InWorld(i + x, y + 1) || (toCheck.HasTile && Main.tileSolid[toCheck.TileType]))
+						{ 
+							toCheck.BlockType = BlockType.Solid;
 							break;
+						}
 					}
 				}
 			}
