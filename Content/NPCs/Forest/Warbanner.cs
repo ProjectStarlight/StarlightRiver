@@ -316,7 +316,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			if (dust.fadeIn <= 2)
 				dust.shader.UseColor(Color.Transparent);
 			else
-				dust.shader.UseColor(dust.color);
+				dust.shader.UseColor(dust.color * 0.5f);
 
 			dust.fadeIn++;
 
