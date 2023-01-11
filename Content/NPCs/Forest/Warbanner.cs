@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override void SetDefaults()
 		{
-			NPC.width = 32;
-			NPC.height = 32;
+			NPC.width = 80;
+			NPC.height = 200;
 			NPC.knockBackResist = 0.1f;
 			NPC.lifeMax = 100;
 			NPC.noGravity = true;
