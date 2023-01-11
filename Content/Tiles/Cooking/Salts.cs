@@ -1,20 +1,20 @@
-﻿//TODO on salt:
-//Make it so you can place tiles on top of it
-
-using StarlightRiver.Content.Items.Food;
-using System;
+﻿using System;
+using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
+using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Cooking
 {
 	class TableSalt : ModTile
 	{
-		public virtual int DustType => DustID.Marble;
+		public new virtual int DustType => DustID.Marble;
 
 		public virtual int ProjectileType => ModContent.ProjectileType<TableSaltProjectile>();
 
-		public virtual int ItemDrop => ModContent.ItemType<Items.Food.TableSalt>();
+		public new virtual int ItemDrop => ModContent.ItemType<Items.Food.TableSalt>();
+
+		public virtual int TileType => ModContent.TileType<TableSalt>();
 
 		public override string Texture => AssetDirectory.CookingTile + Name;
 
@@ -27,6 +27,32 @@ namespace StarlightRiver.Content.Tiles.Cooking
 			Main.tileNoAttach[Type] = false;
 			Main.tileLighted[Type] = true;
 			Main.tileBlockLight[Type] = false;
+
+			TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+			TileObjectData.newTile.UsesCustomCanPlace = true;
+			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.None, 0, 0);
+			TileObjectData.addTile(Type);
+		}
+
+		public override bool CanPlace(int i, int j)
+		{
+			Tile tile = Framing.GetTileSafely(i, j + 1);
+			if (tile.HasTile && (tile.TileType == TileType || Main.tileSolid[tile.TileType]))
+				return true;
+
+			Tile tile2 = Framing.GetTileSafely(i, j - 1);
+			if (tile2.HasTile && (tile2.TileType == TileType || Main.tileSolid[tile2.TileType]))
+				return true;
+
+			Tile tile3 = Framing.GetTileSafely(i + 1, j);
+			if (tile3.HasTile && (tile3.TileType == TileType || Main.tileSolid[tile3.TileType]))
+				return true;
+
+			Tile tile4 = Framing.GetTileSafely(i - 1, j);
+			if (tile4.HasTile && (tile4.TileType == TileType || Main.tileSolid[tile.TileType]))
+				return true;
+
+			return false;
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
@@ -219,6 +245,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
 	{
 		public override int DustType => DustID.Orichalcum;
 
+		public override int TileType => ModContent.TileType<PinkSeaSalt>();
 
 		public override int ProjectileType => ModContent.ProjectileType<PinkSeaSaltProjectile>();
 

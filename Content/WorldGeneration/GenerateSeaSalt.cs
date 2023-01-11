@@ -1,28 +1,21 @@
-﻿using StarlightRiver.Content.Items.Beach;
-using StarlightRiver.Content.Tiles.Cooking;
-using StarlightRiver.Content.Tiles.Forest;
-using StarlightRiver.Helpers;
-using System;
-using Terraria;
-using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Tiles.Cooking;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.ModLoader;
 using Terraria.WorldBuilding;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
-    {
-        private void SeaSaltPass(GenerationProgress progress, GameConfiguration configuration)
-        {
-            progress.Message = "Adding Salt";
+	{
+		private void SeaSaltPass(GenerationProgress progress, GameConfiguration configuration)
+		{
+			progress.Message = "Adding Salt";
 			PlaceSeaSalt(100, 600);
 			PlaceSeaSalt(Main.maxTilesX - 600, Main.maxTilesX - 100);
 		}
 
-		private bool PlaceSeaSalt(int xStart, int xEnd)
+		private void PlaceSeaSalt(int xStart, int xEnd)
 		{
 			for (int i = xStart; i < xEnd; i++)
 			{
@@ -35,7 +28,6 @@ namespace StarlightRiver.Core
 					{
 						break;
 					}
-
 				}
 
 				if (!Main.rand.NextBool(30) || j > Main.rockLayer)
@@ -55,16 +47,14 @@ namespace StarlightRiver.Core
 						WorldGen.PlaceTile(i + x, y, TileType<PinkSeaSalt>());
 
 						Tile toCheck = Framing.GetTileSafely(i + x, y + 1);
-						if (y - surface > 20 || !WorldGen.InWorld(i + x, y + 1) || (toCheck.HasTile && Main.tileSolid[toCheck.TileType]))
-						{ 
+						if (y - surface > 20 || !WorldGen.InWorld(i + x, y + 1) || toCheck.HasTile && Main.tileSolid[toCheck.TileType])
+						{
 							toCheck.BlockType = BlockType.Solid;
 							break;
 						}
 					}
 				}
 			}
-
-			return false;
 		}
 	}
 }
