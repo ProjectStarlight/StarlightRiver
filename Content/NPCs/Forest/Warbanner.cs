@@ -105,7 +105,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 			for (int k = 0; k < 2; k++)
 			{
-				Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + 1.6f) * 332 * VFXAlpha * 0.5f;
+				Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.012f + k * 3.14f + 1.6f) * 332 * VFXAlpha * 0.5f;
 				Lighting.AddLight(pos, new Vector3(0.9f, 0.4f, 0.2f) * VFXAlpha * 0.6f);
 			}
 
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 					Vector2 target = Helper.Centeroid(targets) + new Vector2(0, -100);
 
 					if (Vector2.Distance(NPC.Center, target) > 32)
-						NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.2f; //accelerate towards the centeroid of it's supported NPCs
+						NPC.velocity += Vector2.Normalize(NPC.Center - target) * -0.12f; //accelerate towards the centeroid of it's supported NPCs
 
 					if (NPC.velocity.Length() > 3) //speed cap
 						NPC.velocity = Vector2.Normalize(NPC.velocity) * 2.99f;
@@ -252,17 +252,17 @@ namespace StarlightRiver.Content.NPCs.Forest
 			{
 				for (int i = 0; i < 40; i++)
 				{
-					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.017f + k * 3.14f + i * 0.04f) * 320 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.9f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.45f - i * 0.005f, 0, 0);
+					Vector2 pos = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.012f + k * 3.14f + i * 0.04f) * 320 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, new Color(255, 50, 0) * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.9f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.5f, 0, ballTex.Size() / 2f, 0.45f - i * 0.005f, 0, 0);
 
-					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.032f + k * 3.14f + i * 0.04f) * 294 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2f, 0.8f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.8f, 0, ballTex.Size() / 2f, 0.4f - i * 0.005f, 0, 0);
+					Vector2 pos2 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.023f + k * 3.14f + i * 0.04f) * 294 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, new Color(255, 80, 0) * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.8f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos2 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.47f, 0, ballTex.Size() / 2f, 0.4f - i * 0.005f, 0, 0);
 
-					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.068f + k * 3.14f + i * 0.04f) * 268 * VFXAlpha * 0.5f;
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.7f - i * 0.01f, 0, 0);
-					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.7f, 0, ballTex.Size() / 2f, 0.35f - i * 0.005f, 0, 0);
+					Vector2 pos3 = NPC.Center + Vector2.One.RotatedBy(VisualTimer * 0.043f + k * 3.14f + i * 0.04f) * 268 * VFXAlpha * 0.5f;
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, new Color(255, 120, 0) * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.7f - i * 0.01f, 0, 0);
+					spriteBatch.Draw(ballTex, pos3 - Main.screenPosition, null, Color.White * VFXAlpha * (i / 40f) * 0.4f, 0, ballTex.Size() / 2f, 0.35f - i * 0.005f, 0, 0);
 				}
 			}
 		}
