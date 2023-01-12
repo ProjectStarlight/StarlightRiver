@@ -19,8 +19,8 @@ namespace StarlightRiver.Core
 			if (ShiniesIndex != -1)
 			{
 				tasks.Insert(DesertIndex + 1, new PassLegacy("Starlight River Temples", UndergroundTempleGen));
-				tasks.Insert(DesertIndex + 2, new PassLegacy("Starlight River Permafrost", PermafrostGen));
-				tasks.Insert(DesertIndex + 4, new PassLegacy("Starlight River Vitric Desert", VitricGen));
+				//tasks.Insert(DesertIndex + 2, new PassLegacy("Starlight River Permafrost", PermafrostGen));
+				//tasks.Insert(DesertIndex + 4, new PassLegacy("Starlight River Vitric Desert", VitricGen));
 				tasks.Insert(DesertIndex + 5, new PassLegacy("Starlight River Artifacts", ArtifactGen));
 				tasks.Insert(DesertIndex + 6, new PassLegacy("Starlight River Codex", BookAltarGen));
 
