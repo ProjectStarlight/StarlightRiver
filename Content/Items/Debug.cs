@@ -48,6 +48,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			for (int i = 0; i < 8; i++)
+				WorldGen.dropMeteor();
 			return true;
 		}
 	}
