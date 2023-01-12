@@ -1,13 +1,20 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Vitric.IgnitionGauntlets;
+using System;
+using Terraria.ID;
+using Terraria.ModLoader;
+using static Humanizer.In;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
 	class TemplePick : ModItem
 	{
-		private int charge;
+		public int charge;
 		private bool spinning;
 		private int direction;
+
+		private int dustCounter = 0;
 
 		public override string Texture => AssetDirectory.CaveTempleItem + Name;
 
@@ -59,14 +66,24 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void UpdateInventory(Player Player) //strange hook to be doing this in but it seemeed the best solution at the time.
 		{
+			dustCounter++;
 			if (Player.HeldItem == Item) //bleghhh
 			{
-				if (Main.mouseRight && charge < 120) //this is gonna go to shiiittt in MPPPPP
+				if (Main.mouseRight && !spinning) //this is gonna go to shiiittt in MPPPPP
 				{
-					var d = Dust.NewDustPerfect(Player.Center, DustType<Dusts.PickCharge>(), Vector2.UnitY.RotatedBy(charge / 120f * 6.28f) * 30, 0, Color.LightYellow, 2);
-					d.customData = Player.whoAmI;
+					if (dustCounter % 5 == 0)
+					{
+						var dust = Dust.NewDustPerfect(Player.Center, ModContent.DustType<TemplePickDust1>(), default, default, Color.Gold);
+						dust.customData = Player.whoAmI;
+						dust.scale = Main.rand.NextFloat(0.55f, 0.75f) * (charge / 120f);
+						dust.alpha = Main.rand.Next(100);
+						if (charge > 60)
+							dust.alpha += 100;
+						if (charge == 120)
+							dust.alpha += 100;
+					}
 
-					if (charge == 119)
+				if (charge == 119)
 					{
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
 
@@ -110,6 +127,29 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			if (Main.mouseRight && Player.HeldItem == Item && charge < 120)
 				charge++;
+		}
+	}
+
+	class TemplePickDust1 : IgnitionChargeDustPassive
+	{
+		public override bool Update(Dust dust)
+		{
+			dust.fadeIn += 0.5f;
+
+			dust.scale *= 0.99f;
+			Player owner = Main.player[(int)dust.customData];
+
+			dust.shader.UseColor(Color.Gold);
+			dust.position = owner.Center + new Vector2(0, 15 + dust.alpha % 100 * 0.1f - (float)Math.Pow(dust.fadeIn / 3, 1.75f)) + new Vector2((15 + 3 * (dust.alpha / 100)) * (float)Math.Sin((dust.fadeIn + dust.alpha) * 0.1f), 0) - dust.scale * new Vector2(32, 32);
+
+			if (dust.fadeIn >= 15 && dust.alpha < 100)
+				dust.active = false;
+			else if (dust.fadeIn >= 18 && dust.alpha < 200)
+				dust.active = false;
+			else if (dust.fadeIn >= 22)
+				dust.active = false;
+
+			return false;
 		}
 	}
 }
