@@ -468,9 +468,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (target.life <= 0)
+			if (target.life <= 0 && Main.rand.NextBool(2))
 				SpawnScrap(target.Center);
-			else if (Main.rand.NextBool(5))
+			else if (Main.rand.NextBool(8))
 				SpawnScrap(target.Center);
 		}
 
