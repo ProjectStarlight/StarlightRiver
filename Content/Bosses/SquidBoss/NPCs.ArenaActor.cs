@@ -37,6 +37,25 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			DisplayName.SetDefault("");
 		}
 
+		public override void SetDefaults()
+		{
+			NPC.dontTakeDamage = true;
+			NPC.dontCountMe = true;
+			NPC.immortal = true;
+			NPC.noGravity = true;
+			NPC.lifeMax = 10;
+
+			fakeBoss = new NPC();
+			fakeBoss.SetDefaults(NPCType<SquidBoss>());
+			fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
+			(fakeBoss.ModNPC as SquidBoss).QuickSetup();
+		}
+
+		public override bool NeedSaving()
+		{
+			return true;
+		}
+
 		public override bool? CanBeHitByItem(Player Player, Item Item)
 		{
 			return false;
@@ -50,20 +69,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override bool CheckActive()
 		{
 			return false;
-		}
-
-		public override void SetDefaults()
-		{
-			NPC.dontTakeDamage = true;
-			NPC.dontCountMe = true;
-			NPC.immortal = true;
-			NPC.noGravity = true;
-			NPC.lifeMax = 10;
-
-			fakeBoss = new NPC();
-			fakeBoss.SetDefaults(NPCType<SquidBoss>());
-			fakeBoss.Center = StarlightWorld.squidBossArena.Center() * 16 + new Vector2(0, -500);
-			(fakeBoss.ModNPC as SquidBoss).QuickSetup();
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
