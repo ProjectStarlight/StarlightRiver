@@ -52,7 +52,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 					UpdateWindowSize(Main.screenWidth, Main.screenHeight);
 			}
 
-			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
+			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && !Main.gameMenu)
 				Actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
 
 			orig();
