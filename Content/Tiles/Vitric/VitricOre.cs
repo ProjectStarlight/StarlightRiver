@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool SpawnConditions(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return tile.TileFrameY == 0 && tile.TileFrameX % 32 == 0;
+			return tile.TileFrameY == 0 && tile.TileFrameX % 36 == 0;
 		}
 	}
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			int texNum = 1 + Parent.TileFrameY / 56;
+			int texNum = 1 + Parent.TileFrameX / 36;
 			Texture2D tex = Request<Texture2D>(Texture + texNum).Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
