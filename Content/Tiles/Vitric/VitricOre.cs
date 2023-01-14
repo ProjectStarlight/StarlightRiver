@@ -18,13 +18,12 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.RandomStyleRange = 3;
-			TileObjectData.newTile.DrawYOffset = -2;
+			TileObjectData.newTile.StyleHorizontal = true;
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
-			//chest = "Vitric Crystal";//this makes the game think this is a chest, and prevents the tiles below from being broken (as well as meteors avoiding it)
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
-			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 20, false, false, "Vitric Ore", bottomAnchor);
+			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool SpawnConditions(int i, int j)
 		{
 			Tile tile = Main.tile[i, j];
-			return tile.TileFrameX == 0 && (tile.TileFrameY == 0 || tile.TileFrameY == 58 || tile.TileFrameY == 116);
+			return tile.TileFrameY == 0 && tile.TileFrameX % 36 == 0;
 		}
 	}
 
@@ -111,13 +110,15 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			int texNum = 1 + (Parent.TileFrameY / 56);
+			int texNum = 1 + Parent.TileFrameX / 36;
 			Texture2D tex = Request<Texture2D>(Texture + texNum).Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-			Vector2 offset = -new Vector2(1, 3);
+			var offset = new Vector2(-1, -1);
+
 			if (texNum > 1)
 				offset.Y -= 2;
+
 			Main.spriteBatch.Draw(tex, Projectile.position + offset - Main.screenPosition, color);
 		}
 	}
@@ -155,7 +156,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1,5) - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 5) - Main.screenPosition, color);
 		}
 	}
 
