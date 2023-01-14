@@ -116,7 +116,7 @@ namespace StarlightRiver.Core
 				oldPos = new Vector2(xTarget + 11, yTarget + 9) * 16;
 			}
 
-			for (int y = 0; y < Main.maxTilesY - 200; y++)
+			for (int y = 100; y < Main.maxTilesY - 200; y++)
 			{
 				if (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock)
 				{
