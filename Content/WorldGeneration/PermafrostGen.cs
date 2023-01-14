@@ -90,9 +90,9 @@ namespace StarlightRiver.Core
 			Vector2 oldPos = new Vector2(squidBossArena.Center.X, squidBossArena.Y) * 16;
 
 			//Find locations for and place the touchstone altars which lead to the boss' arena
-			for (int k = 1; k <= 2; k++)
+			for (int k = 1; k <= 3; k++)
 			{
-				float fraction = k / 3f;
+				float fraction = k / 4f;
 				int yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
 
 				for (int x = 0; x < Main.maxTilesX; x++)
@@ -116,14 +116,14 @@ namespace StarlightRiver.Core
 				int iceCenter = iceLeft + (iceRight - iceLeft) / 2;
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
-				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos);
+				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos) * 16;
 			}
 
 			for (int y = 40; y < Main.maxTilesY - 200; y++)
 			{
 				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
-					PlaceShrine(new Point16(center, y - 12), 0, oldPos, true);
+					PlaceShrine(new Point16(center, y - 32), 0, oldPos, true);
 					break;
 				}
 
