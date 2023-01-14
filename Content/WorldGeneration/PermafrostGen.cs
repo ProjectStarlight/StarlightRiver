@@ -119,7 +119,7 @@ namespace StarlightRiver.Core
 				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos);
 			}
 
-			for (int y = 14; y < Main.maxTilesY - 200; y++)
+			for (int y = 40; y < Main.maxTilesY - 200; y++)
 			{
 				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
