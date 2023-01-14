@@ -18,11 +18,14 @@ namespace StarlightRiver.Core
 				if (chest != null)
 				{
 					int frameX = Framing.GetTileSafely(chest.x, chest.y).TileFrameX / 36;
-					if ((frameX == 11 || frameX == 1))
+					if (frameX == 11 || frameX == 1)
 					{
 						NPC npc = NPC.NewNPCDirect(new EntitySource_Misc("Loot Wraith"), chest.x * 16, chest.y * 16, ModContent.NPCType<LootWraith>());
-						(npc.ModNPC as LootWraith).xTile = chest.x;
-						(npc.ModNPC as LootWraith).yTile = chest.y;
+						if (npc.ModNPC is LootWraith wraith)
+						{
+							wraith.xTile = chest.x;
+							wraith.yTile = chest.y;
+						}
 					}
 				}
 

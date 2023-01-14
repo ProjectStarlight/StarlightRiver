@@ -1,21 +1,24 @@
 ﻿//TODO on loot wraith:
-//Make it aggro
 //Bestiary entry
-//Basic balance
-//Sound effects
+//Hitsound
+//Deathsound
 //Death effect
 //Money dropping
 //Loot dropping
 //Hypothetical animations
-//Make them screech
 //Make them not a garaunteed spawn
+//Make them nettablea
+//Charge sound effects
 
 using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -32,14 +35,25 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private int yFrame = 0;
 		private int frameCounter = 0;
 
+		private bool takenKnockback = false;
+		private int chargeCounter = 0;
+		private Vector2 chargeVel = Vector2.Zero;
+
 		public bool enraged = false;
 		public int xTile = 0;
 		public int yTile = 0;
+
+		private List<Vector2> oldPos = new List<Vector2>();
+
+		private int screechTimer = 31;
+
+		private float chargeupCounter = 0f;
 
 		public VerletChain chain;
 
 		private List<Vector2> cache;
 		private Trail trail;
+		private Trail trail2;
 
 		private Player Target => Main.player[NPC.target];
 
@@ -53,19 +67,26 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.npcFrameCount[NPC.type] = 1;
 		}
 
+		public override void Load()
+		{
+			GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, AssetDirectory.MiscNPC + "LootWraith_Chain");
+		}
+
 		public override void SetDefaults()
 		{
 			NPC.width = 62;
 			NPC.height = 46;
 			NPC.damage = 0;
-			NPC.defense = 5;
-			NPC.lifeMax = 150;
+			NPC.defense = 0;
+			NPC.lifeMax = 50;
 			NPC.value = 100f;
-			NPC.knockBackResist = 0f;
+			NPC.knockBackResist = 1f;
 			NPC.HitSound = SoundID.Grass;
 			NPC.DeathSound = SoundID.Grass;
 			NPC.noGravity = true;
 			NPC.noTileCollide= true;
+			NPC.dontCountMe = true;
+			NPC.dontTakeDamage = true;
 		}
 
 		public override bool NeedSaving()
@@ -99,15 +120,109 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.TargetClosest(true);
 			if (!enraged)
 			{
-				NPC.velocity += NPC.DirectionTo(Target.Center) * 0.2f;
+				screechTimer++;
+
+				if (screechTimer < 30)
+					CameraSystem.shake++;
+
+				if (screechTimer > 300 && Target.Distance(NPC.Center) < 60 && chargeupCounter == 0)
+				{
+					SoundEngine.PlaySound(SoundID.DD2_BetsyScream, NPC.Center);
+					//CameraSystem.shake += 7;
+
+					Vector2 screamPos = NPC.Center + new Vector2(12 * NPC.spriteDirection, -8);
+					DistortionPointHandler.AddPoint(screamPos, 1, 0.5f,
+					(intensity, ticksPassed) => 1 + (MathF.Sin(ticksPassed * 3.14f / 15f)),
+					(progress, ticksPassed) => 1 - (ticksPassed / 15f),
+					(progress, intensity, ticksPassed) => ticksPassed <= 15);
+
+					for (int i = 0; i < 14; i++)
+					{
+						Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+						Dust.NewDustPerfect(screamPos + dir * 25, ModContent.DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
+					}
+					Target.velocity -= Target.DirectionTo(NPC.Center) * 15;
+					screechTimer = 0;
+				}
+				if (NPC.Distance(Target.Center - NPC.DirectionTo(Target.Center) * 60) > 10)
+					NPC.velocity += NPC.DirectionTo(Target.Center - NPC.DirectionTo(Target.Center) * 60) * 0.2f;
+
 				if (NPC.velocity.Length() > 10)
 				{
 					NPC.velocity.Normalize();
 					NPC.velocity *= 10;
 				}
 				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(ChainStart), NPC.Distance(ChainStart) * 0.001f);
+
+				Tile tile = Framing.GetTileSafely(xTile, yTile);
+				Chest chest = Main.chest.Where(n => n != null && n.x == xTile && n.y == yTile).FirstOrDefault();
+				if (ChainStart.Distance(Target.Center) < 500 && (!tile.HasTile || chest.frame > 0 || chargeupCounter > 0))
+				{
+					chargeupCounter += 0.01f;
+					if (chargeupCounter >= 1)
+					{
+						if (NPC.velocity == Vector2.Zero)
+						{
+							SoundEngine.PlaySound(SoundID.DeerclopsScream with { Pitch = 0.6f }, NPC.Center);
+						}
+						xFrame = 1;
+						NPC.rotation = 0;
+						NPC.velocity.Y = -8;
+						if (NPC.Distance(ChainStart) > 100)
+						{
+							Helper.PlayPitched("Impacts/GlassExplodeShort", 1, Main.rand.NextFloat(0.1f, 0.3f), NPC.Center);
+							chargeupCounter = 0;
+							NPC.damage = 25;
+							NPC.dontTakeDamage = false;
+							chain.useEndPoint = false;
+							enraged = true;
+							NPC.rotation = 0;
+							CameraSystem.shake += 6;
+
+							for (int i = 0; i < 14; i++)
+							{
+								Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+								Dust.NewDustPerfect(NPC.Center + dir * 25, ModContent.DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
+							}
+
+							ChainGores();
+						}
+					}
+					else
+					{
+						Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
+						Dust.NewDustPerfect(NPC.Center + (dustDir * 15), ModContent.DustType<Dusts.Glow>(), dustDir * Main.rand.NextFloat(5), 0, Color.Cyan, chargeupCounter * 0.5f);
+						NPC.rotation = NPC.rotation + Main.rand.NextFloat(chargeupCounter * -0.1f, chargeupCounter * 0.1f);
+						NPC.velocity = Vector2.Zero;
+					}
+				}
 			}
-			if (chain is null)
+			else
+			{
+				xFrame = 1;
+				if (++chargeCounter % 150 == 0)
+				{
+					takenKnockback= false;
+					chargeVel = NPC.DirectionTo(Target.Center) * 15;
+				}
+				chargeVel *= 0.96f;
+				if (chargeVel.Length() > 1 && !takenKnockback)
+					NPC.velocity = chargeVel;
+				else
+				{
+					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
+					Dust.NewDustPerfect(NPC.Center - (dir * 25), ModContent.DustType<GlowLineFast>(), dir * 4, 0, Color.MediumPurple, MathHelper.Min(((chargeCounter % 150) - 50) / 100f, 0.7f));
+					NPC.velocity *= 0.96f;
+				}
+			}
+
+			if (xFrame == 1)
+			{
+				oldPos.Add(NPC.Center);
+				if (oldPos.Count > 10)
+					oldPos.RemoveAt(0);
+			}
+			if (chain is null || NPC.DistanceSQ(Target.Center) > 4000000 || enraged)
 				return;
 
 			UpdateChain();
@@ -117,6 +232,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 				ManageCache();
 				ManageTrail();
 			}
+		}
+
+		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+		{
+			if (knockback > 0)
+				takenKnockback = true;
+		}
+
+		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+		{
+			if (knockback > 0)
+				takenKnockback = true;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -129,12 +256,21 @@ namespace StarlightRiver.Content.NPCs.Misc
 			if (NPC.spriteDirection != 1)
 				effects = SpriteEffects.FlipHorizontally;
 
-			DrawChain();
+			if (!enraged)
+				DrawChain();
 
 			var slopeOffset = new Vector2(0, NPC.gfxOffY);
 
 			for (int i = 0; i < 2; i++)
 				Main.spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
+
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+
+			for (int i = 0; i < oldPos.Count; i++)
+			{
+				float opacity = i / (float)oldPos.Count;
+				Main.spriteBatch.Draw(glowTex, slopeOffset + oldPos[i]  - screenPos, NPC.frame, Color.White * opacity * 0.75f, NPC.rotation, origin, NPC.scale * opacity, effects, 0f);
+			}
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
@@ -149,8 +285,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private void UpdateChain()
 		{
+			if (!enraged)
+				chain.endPoint = ChainStart;
+			else
+				chain.endPoint = GetChainPoints()[NUM_SEGMENTS - 1];
 
-			chain.endPoint = ChainStart;
 			chain.startPoint = NPC.Center;
 			chain.UpdateChain();
 		}
@@ -164,7 +303,10 @@ namespace StarlightRiver.Content.NPCs.Misc
 			float pointCounter = 0;
 
 			int presision = 30; //This normalizes length between points so it doesnt squash super weirdly on certain parts
-			for (int i = 0; i < NUM_SEGMENTS - 1; i++)
+			int iMax = NUM_SEGMENTS - 1;
+			if (enraged)
+				iMax--;
+			for (int i = 0; i < iMax; i++)
 			{
 				for (int j = 0; j < presision; j++)
 				{
@@ -181,7 +323,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			while (cache.Count < NUM_SEGMENTS)
 			{
-				cache.Add(chain.ropeSegments[NUM_SEGMENTS - 1].posNow);
+				cache.Add(chain.ropeSegments[iMax].posNow);
 			}
 
 			while (cache.Count > NUM_SEGMENTS)
@@ -198,6 +340,12 @@ namespace StarlightRiver.Content.NPCs.Misc
 			trail.NextPosition = NPC.Center;
 
 			trail.Positions = positions.ToArray();
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, NUM_SEGMENTS, new TriangularTip(1), factor => 7, factor => Color.White * chargeupCounter * MathF.Sqrt(1 - factor.X));
+
+			trail2.NextPosition = NPC.Center;
+
+			trail2.Positions = positions.ToArray();
 		}
 
 
@@ -216,6 +364,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain").Value);
 			effect.Parameters["flip"].SetValue(false);
+			effect.Parameters["alpha"].SetValue(1);
 
 			List<Vector2> points;
 
@@ -230,6 +379,10 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.graphics.GraphicsDevice.BlendState = BlendState.Additive;
 			trail?.Render(effect);
 			Main.graphics.GraphicsDevice.BlendState = oldState;
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(Texture + "_Chain_White").Value);
+
+			//trail2?.Render(effect);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
@@ -256,5 +409,13 @@ namespace StarlightRiver.Content.NPCs.Misc
 			return ret;
 		}
 
+		private void ChainGores()
+		{
+			foreach (RopeSegment segment in chain.ropeSegments)
+			{
+				if (Main.rand.NextBool(2))
+					Gore.NewGoreDirect(NPC.GetSource_Death(), segment.posNow, Main.rand.NextVector2Circular(1, 1), Mod.Find<ModGore>("LootWraith_Chain").Type);
+			}
+		}
 	}
 }

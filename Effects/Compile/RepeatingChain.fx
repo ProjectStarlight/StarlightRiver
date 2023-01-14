@@ -1,4 +1,5 @@
-﻿float repeats;
+﻿float alpha;
+float repeats;
 matrix transformMatrix;
 bool flip;
 
@@ -39,7 +40,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
      uv.x *= repeats;
 
     float4 color = tex2D(samplerTex, uv);
-    return color * input.Color;
+    return color * input.Color * alpha;
 }
 
 technique Technique1
