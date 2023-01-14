@@ -48,6 +48,21 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			/*
+			int x = (int)player.Center.X / 16;
+			int y = (int)player.Center.Y / 16;
+
+			for (int x1 = 0; x1 < 100; x1++)
+			{
+				for (int y1 = 0; y1 < 100; y1++)
+				{
+					Tile tile = Framing.GetTileSafely(x + x1, y + y1);
+
+					if (tile.WallType == ModContent.WallType<Tiles.Permafrost.AuroraBrickWall>())
+						tile.WallType = (ushort)ModContent.WallType<Tiles.Permafrost.AuroraBrickWallFriendly>();
+				}
+			}*/
+
 			return true;
 		}
 	}
@@ -111,6 +126,7 @@ namespace StarlightRiver.Content.Items
 		{
 			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
 				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+
 			return true;
 		}
 	}

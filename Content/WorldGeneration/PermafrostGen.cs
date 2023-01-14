@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Helpers;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
@@ -12,7 +13,7 @@ namespace StarlightRiver.Core
 	{
 		public static int permafrostCenter;
 
-		public static Vector2 oldPos;
+		private static Vector2 oldPos;
 
 		public void PermafrostGen(GenerationProgress progress, GameConfiguration configuration)
 		{
@@ -115,24 +116,14 @@ namespace StarlightRiver.Core
 				int iceCenter = iceLeft + (iceRight - iceLeft) / 2;
 				int xTarget = iceCenter + WorldGen.genRand.Next(-100, 100);
 
-				StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(xTarget, yTarget), Mod);
-
-				var te = TileEntity.ByPosition[new Point16(xTarget + 9, yTarget + 6)] as TouchstoneTileEntity;
-				te.targetPoint = oldPos;
-
-				oldPos = new Vector2(xTarget + 11, yTarget + 9) * 16;
+				oldPos = PlaceShrine(new Point16(xTarget, yTarget), Main.rand.Next(1, 4), oldPos);
 			}
 
 			for (int y = 14; y < Main.maxTilesY - 200; y++)
 			{
 				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
-					StructureHelper.Generator.GenerateStructure("Structures/TouchstoneAltar", new Point16(center, y - 12), Mod);
-
-					var te = TileEntity.ByPosition[new Point16(center + 9, y - 12 + 6)] as TouchstoneTileEntity;
-					te.targetPoint = oldPos;
-					te.hasWisp = true;
-
+					PlaceShrine(new Point16(center, y - 12), 0, oldPos, true);
 					break;
 				}
 
@@ -168,6 +159,10 @@ namespace StarlightRiver.Core
 			}
 		}
 
+		/// <summary>
+		/// Places a randomly sized chunk of aurora ice ore, centered at the given coordinates
+		/// </summary>
+		/// <param name="center">Where to place the ore, in tile coordinates</param>
 		private void PlaceOre(Point16 center)
 		{
 			int radius = Main.rand.Next(2, 5);
@@ -208,6 +203,12 @@ namespace StarlightRiver.Core
 			}
 		}
 
+		/// <summary>
+		/// Checks if it is safe to place a sphere of aurora water at a given position and size
+		/// </summary>
+		/// <param name="center">The center of the prospective sphere, in tile coordinates</param>
+		/// <param name="radius">The radius of the prospective sphere, in tiles</param>
+		/// <returns></returns>
 		private bool SafeForWater(Point16 center, int radius)
 		{
 			for (int x = -radius; x < radius; x++)
@@ -228,6 +229,11 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
+		/// <summary>
+		/// Places a sphere of aurora water in the world
+		/// </summary>
+		/// <param name="center">The center of the sphere, in tile coordinates</param>
+		/// <param name="radius">The radius of the sphere, in tiles</param>
 		private void PlaceWater(Point16 center, int radius)
 		{
 			for (int x = -radius; x < radius; x++)
@@ -239,6 +245,47 @@ namespace StarlightRiver.Core
 					if (Vector2.Distance(center.ToVector2(), pos.ToVector2()) <= radius)
 						AuroraWaterSystem.PlaceAuroraWater(pos.X, pos.Y);
 				}
+			}
+		}
+
+		/// <summary>
+		/// Places a shrine in the world. Returns the position of the touchstone of that shrine
+		/// </summary>
+		/// <param name="topLeft">The position of the top left of the shrine</param>
+		/// <param name="variant">Which variant of the shrine structure to generate</param>
+		/// <param name="targetPoint">Where the shrine's touchstone should lead the player when clicked</param>
+		/// <param name="hasWisp">If the shrine should spawn with it's touchstone pre-charged</param>
+		/// <returns>The position that the next shrines touchstone should lead to</returns>
+		private Vector2 PlaceShrine(Point16 topLeft, int variant, Vector2 targetPoint, bool hasWisp = false)
+		{
+			var touchstonePos = new Point16();
+
+			switch (variant)
+			{
+				case 0: touchstonePos = topLeft + new Point16(11, 19); break;
+				case 1: touchstonePos = topLeft + new Point16(8, 11); break;
+				case 2: touchstonePos = topLeft + new Point16(11, 15); break;
+				case 3: touchstonePos = topLeft + new Point16(10, 15); break;
+				case 4: touchstonePos = topLeft + new Point16(13, 16); break;
+			}
+
+			bool genned = StructureHelper.Generator.GenerateMultistructureSpecific("Structures/TouchstoneAltar", topLeft, Mod, variant);
+
+			if (genned)
+			{
+				var te = TileEntity.ByPosition[touchstonePos] as TouchstoneTileEntity;
+
+				if (te is null)
+					return touchstonePos.ToVector2();
+
+				te.targetPoint = targetPoint;
+				te.hasWisp = hasWisp;
+
+				return touchstonePos.ToVector2();
+			}
+			else
+			{
+				throw new Exception("Failed to generate an altar...");
 			}
 		}
 	}
