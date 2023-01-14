@@ -1,13 +1,9 @@
 ﻿//TODO on loot wraith:
 //Bestiary entry
-//Hitsound
-//Deathsound
-//Death effect
-//Money dropping
 //Loot dropping
-//Hypothetical animations
-//Make them not a garaunteed spawn
-//Make them nettablea
+//[]Hypothetical animations
+//[]Make them not a garaunteed spawn
+//[]Make them nettable 
 //Charge sound effects
 
 using Microsoft.Xna.Framework.Graphics;
@@ -81,8 +77,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.lifeMax = 50;
 			NPC.value = 100f;
 			NPC.knockBackResist = 1f;
-			NPC.HitSound = SoundID.Grass;
-			NPC.DeathSound = SoundID.Grass;
+			NPC.HitSound = SoundID.NPCHit54;
+			NPC.DeathSound = SoundID.NPCDeath6;
 			NPC.noGravity = true;
 			NPC.noTileCollide= true;
 			NPC.dontCountMe = true;
@@ -132,7 +128,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 					Vector2 screamPos = NPC.Center + new Vector2(12 * NPC.spriteDirection, -8);
 					DistortionPointHandler.AddPoint(screamPos, 1, 0.5f,
-					(intensity, ticksPassed) => 1 + (MathF.Sin(ticksPassed * 3.14f / 15f)),
+					(intensity, ticksPassed) => 1 + (MathF.Sin(ticksPassed * 3.14f / 15f)) - (ticksPassed / 30f),
 					(progress, ticksPassed) => 1 - (ticksPassed / 15f),
 					(progress, intensity, ticksPassed) => ticksPassed <= 15);
 
@@ -211,7 +207,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				else
 				{
 					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-					Dust.NewDustPerfect(NPC.Center - (dir * 25), ModContent.DustType<GlowLineFast>(), dir * 4, 0, Color.MediumPurple, MathHelper.Min(((chargeCounter % 150) - 50) / 100f, 0.7f));
+					Dust.NewDustPerfect(NPC.Center + new Vector2(5 * NPC.spriteDirection, -6) - (dir * 25), ModContent.DustType<GlowLineFast>(), dir * 4, 0, Color.MediumPurple, MathHelper.Min(((chargeCounter % 150) - 50) / 100f, 0.7f));
 					NPC.velocity *= 0.96f;
 				}
 			}
@@ -275,6 +271,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			return false;
+		}
+
+		public override void OnKill()
+		{
+			if (!enraged)
+				ChainGores();
+
+			for (int i = 0; i < 3; i++)
+			{
+				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke1, Main.rand.NextFloat(0.5f,2));
+				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke2, Main.rand.NextFloat(0.5f, 2));
+				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), GoreID.Smoke3, Main.rand.NextFloat(0.5f, 2));
+			}
 		}
 
 		public override void FindFrame(int frameHeight)
