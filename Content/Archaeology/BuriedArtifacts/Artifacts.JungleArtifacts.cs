@@ -31,4 +31,19 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 
 		public override Color BeamColor => Color.LimeGreen;
 	}
+
+	public class OvergrownCrateArtifact : JungleArtifact
+	{
+		public override Vector2 Size => new(68, 84);
+
+		public override float SpawnChance => 0.5f;
+
+		public override int ItemType => ModContent.ItemType<OvergrownCrate>();
+
+		public override int SparkleDust => ModContent.DustType<Dusts.ArtifactSparkles.LimeArtifactSparkle>();
+
+		public override int SparkleRate => 40;
+
+		public override Color BeamColor => Color.LimeGreen;
+	}
 }
