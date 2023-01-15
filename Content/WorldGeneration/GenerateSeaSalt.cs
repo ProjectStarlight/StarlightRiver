@@ -18,8 +18,7 @@ namespace StarlightRiver.Core
 		{
 			for (int i = xStart; i < xEnd; i++)
 			{
-				int j = 100;
-				for (; j < Main.maxTilesY; j++)
+				for (int j = 100; j < Main.maxTilesY; j++)
 				{
 					Tile tile = Framing.GetTileSafely(i, j);
 
@@ -27,6 +26,7 @@ namespace StarlightRiver.Core
 					{
 						if (!Main.rand.NextBool(60) || j > Main.rockLayer)
 							continue;
+
 						int size = WorldGen.genRand.Next(5, 8);
 						int surface = j - 1;
 

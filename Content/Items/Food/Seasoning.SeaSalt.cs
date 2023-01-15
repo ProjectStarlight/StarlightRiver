@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Items.Food
 		public override void SafeSetDefaults()
 		{
 			Item.createTile = TileType<Tiles.Cooking.PinkSeaSalt>();
+			Item.consumable = true;
 			Item.rare = ItemRarityID.Blue;
 		}
 
