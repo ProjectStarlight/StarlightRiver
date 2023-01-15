@@ -34,31 +34,52 @@ namespace StarlightRiver.Content.Tiles.Cooking
 			TileObjectData.addTile(Type);
 		}
 
+		//It's stupid, but this is nessecary to make nonsolid tiles able to be placed next to other nonsolid tiles
+		#region tilehacking
 		public override bool CanPlace(int i, int j)
 		{
 			Tile tile = Framing.GetTileSafely(i, j + 1);
 			if (tile.HasTile && (tile.TileType == TileType || Main.tileSolid[tile.TileType]))
+			{
+				Main.tileSolid[tile.TileType] = true;
 				return true;
+			}
 
 			Tile tile2 = Framing.GetTileSafely(i, j - 1);
 			if (tile2.HasTile && (tile2.TileType == TileType || Main.tileSolid[tile2.TileType]))
+			{
+				Main.tileSolid[tile2.TileType] = true;
 				return true;
+			}
 
 			Tile tile3 = Framing.GetTileSafely(i + 1, j);
 			if (tile3.HasTile && (tile3.TileType == TileType || Main.tileSolid[tile3.TileType]))
+			{
+				Main.tileSolid[tile3.TileType] = true;
 				return true;
+			}
 
 			Tile tile4 = Framing.GetTileSafely(i - 1, j);
 			if (tile4.HasTile && (tile4.TileType == TileType || Main.tileSolid[tile.TileType]))
+			{
+				Main.tileSolid[tile4.TileType] = true;
 				return true;
+			}
 
 			return false;
 		}
 
+		public override void PlaceInWorld(int i, int j, Item item)
+		{
+			Tile tile = Framing.GetTileSafely(i, j);
+			Main.tileSolid[tile.TileType] = false;
+		}
+		#endregion
+
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
 			if (Main.tile[i, j].LiquidAmount > 0)
-				Main.tile[i, j].ClearTile();
+				WorldGen.KillTile(i, j, default, default, true);
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
