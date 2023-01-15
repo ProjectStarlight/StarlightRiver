@@ -67,8 +67,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation &&
-				downwardDrawDistance > 48;
+			return false;
 		}
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
@@ -287,6 +286,41 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return false;
 		}
 
+		private bool CalculateColission(Player player)
+		{
+			//Dont collide if its a cutscene or the tentacle is too short
+			if (Parent.Phase == (int)SquidBoss.AIStates.SpawnAnimation || Parent.Phase == (int)SquidBoss.AIStates.DeathAnimation || downwardDrawDistance <= 48)
+				return false;
+
+			//Stalk
+			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
+			{
+				if (intersect.X < player.Center.X)
+					player.velocity.X = Math.Max(6.5f, player.velocity.X * -1.05f);
+				else
+					player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
+
+				player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
+				return true;
+			}
+
+			//Head
+			float rot = (basePoint - NPC.Center).ToRotation() - 1.57f;
+			float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
+
+			rot += tentacleSin * 0.5f;
+
+			Vector2 visibleCenter = NPC.Center + new Vector2(tentacleSin * 30, -32).RotatedBy(rot) + Vector2.UnitY * 36;
+
+			if (Helpers.Helper.CheckCircularCollision(visibleCenter, 32, player.Hitbox))
+			{
+				player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
+				return true;
+			}
+
+			return false;
+		}
+
 		public override void AI()
 		{
 			/* AI fields:
@@ -354,26 +388,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Timer >= 60 && Timer < 120)
 				NPC.Center = Vector2.SmoothStep(basePoint, movementTarget, (Timer - 60) / 60f); //Spawn animation
 
-			//Colission for the stalks since tmod... dosent have a hook for this?
-			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation)
+			//Colission loop since CanHitPlayer is predicated on intersecting the hitbox which isnt what we want here
+			foreach (Player player in Main.player.Where(n => n.active))
 			{
-				foreach (Player player in Main.player.Where(n => n.active))
-				{
-					int useless = 0;
-
-					if (!CanHitPlayer(player, ref useless))
-						continue;
-
-					if (Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
-					{
-						if (intersect.X < player.Center.X)
-							player.velocity.X = Math.Max(6.5f, player.velocity.X * -1.05f);
-						else
-							player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
-
-						player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
-					}
-				}
+				CalculateColission(player);
 			}
 		}
 

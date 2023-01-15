@@ -19,7 +19,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public float SwimSpeed { get; set; }
 
-		private void CheckAuroraSwimming() //checks for if hte Player should be swimming
+		private void CheckAuroraSwimming() //checks for if the Player should be swimming
 		{
 			bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
 
@@ -41,7 +41,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						{
 							Tile tile = Framing.GetTileSafely(realX, realY);
 
-							if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
+							if (tile.Get<AuroraWaterData>().HasAuroraWater)
 								swimming = true;
 						}
 					}
@@ -150,6 +150,8 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			Player.wingTime = -1;
 
 			emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
+
+			Player.fallStart = (int)Player.position.Y; //Reset fall damage constantly while swimming
 
 			if (Player.itemAnimation == 0)
 				Player.bodyFrame = new Rectangle(0, 56 * (int)(1 + Main.GameUpdateCount / 10 % 5), 40, 56);
