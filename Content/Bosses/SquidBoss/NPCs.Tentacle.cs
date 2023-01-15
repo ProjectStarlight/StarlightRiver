@@ -65,6 +65,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossLifeScale) : (int)(750 * bossLifeScale);
 		}
 
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation;
+		}
+
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
 			if (Parent != null)
