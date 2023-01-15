@@ -3,6 +3,10 @@
 //Sellprice
 //Rarity
 //Balance
+//Lightning visuals
+//Fix collision issues
+//Lighting
+//Dust
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.Audio;
@@ -109,6 +113,7 @@ namespace StarlightRiver.Content.Items.Misc
 			ableToHit = false;
 			if (!embedded)
 			{
+				Projectile.ownerHitCheck = false;
 				this.target = target;
 				embedded = true;
 			}
