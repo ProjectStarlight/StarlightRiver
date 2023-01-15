@@ -1,8 +1,4 @@
-﻿//TODO:
-//Obtainment
-//Sellprice
-//Rarity
-using log4net.Core;
+﻿using log4net.Core;
 using ReLogic.Content;
 using StarlightRiver.Helpers;
 using System;
@@ -15,15 +11,15 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using StarlightRiver.Content.Dusts;
 using System.Runtime.InteropServices;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Magnet
 {
 	public class ThunderBeads : ModItem
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.MagnetItem + Name;
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Thunder Beads");
+			DisplayName.SetDefault("Magnet Beads");
 			Tooltip.SetDefault("Whip enemies to stick the beads in them \nRepeatedly click to shock affected enemies");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
@@ -31,8 +27,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetDefaults()
 		{
 			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeads_Whip>(), 15, 1.2f, 5f, 25);
-			Item.value = Item.sellPrice(0, 1, 0, 0);
-			Item.rare = ItemRarityID.Green;
+			Item.value = Item.sellPrice(0, 2, 0, 0);
+			Item.rare = ItemRarityID.Orange;
 		}
 	}
 
@@ -59,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Player Owner => Main.player[Projectile.owner];
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.MagnetItem + Name;
 
 		public ThunderBeads_Whip() : base("Thunder Beads", 15, 0.87f, Color.Transparent)
 		{
