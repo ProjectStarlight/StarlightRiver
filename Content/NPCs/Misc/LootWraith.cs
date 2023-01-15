@@ -1,6 +1,5 @@
 ﻿//TODO on loot wraith:
-//Bestiary entry
-//Loot dropping
+//[]Loot dropping
 //[]Hypothetical animations
 //[]Make them not a garaunteed spawn
 //[]Make them nettable 
@@ -83,6 +82,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.noTileCollide= true;
 			NPC.dontCountMe = true;
 			NPC.dontTakeDamage = true;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Underground,
+				new FlavorTextBestiaryInfoElement("The tortured souls of adventurers obsessed with treasure, forever cursed in death to protect the only thing they cared about in life")
+			});
 		}
 
 		public override bool NeedSaving()
