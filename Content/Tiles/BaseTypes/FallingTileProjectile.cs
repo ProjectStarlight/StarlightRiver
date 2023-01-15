@@ -4,7 +4,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Content.Tiles.Cooking
+namespace StarlightRiver.Content.Tiles.BaseTypes
 {
 	internal abstract class FallingTileProjectile : ModProjectile
 	{
