@@ -407,9 +407,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (AttackTimer % 40 == 0)
 				{
-					Vector2 vel = Vector2.UnitX * (Main.rand.NextBool() ? -4.5f : 4.5f);
+					int rand = Main.rand.Next(3);
+
+					Vector2 vel = Vector2.UnitX * (rand == 0 ? -5f : rand == 1 ? 5f : 0);
 					int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), savedPoint + new Vector2(0, 50), vel, ModContent.ProjectileType<SpewBlob>(), 20, 1, Main.myPlayer);
-					Main.projectile[i].scale = 1.5f;
 
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item9, NPC.Center);
 
