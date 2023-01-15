@@ -25,28 +25,6 @@ namespace StarlightRiver.Compat.BossChecklist
 			n.Timer--;
 		});
 
-		/*
-		 				if (k == 4)
-				{
-					float opacity = Math.Min(Opacity, 1);
-
-					color.A = 0;
-					spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.2f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.26f, 0, 0);
-					spriteBatch.Draw(headBlobBlur, NPC.Center - Main.screenPosition, null, color * (0.075f * ((opacity - 0.5f) / 0.5f)), NPC.rotation, headBlobBlur.Size() / 2, 0.28f, 0, 0);
-				}
-
-				if (!OpaqueJelly)
-				{
-					color.A = 0;
-
-					spriteBatch.Draw(headBlobGlow, NPC.Center + off - Main.screenPosition, frame, color * 0.6f, NPC.rotation,
-						new Vector2(frame.Width / 2, frame.Height), scale, 0, 0);
-
-					spriteBatch.Draw(headBlobSpecular, NPC.Center + off - Main.screenPosition, frame, Color.White * Opacity, NPC.rotation,
-						new Vector2(frame.Width / 2, frame.Height), scale2, 0, 0);
-				}
-		 */
-
 		public static void DrawAuroraclePortrait(SpriteBatch spriteBatch, Rectangle rect, Color color)
 		{
 			if (Main.rand.NextBool(3))
