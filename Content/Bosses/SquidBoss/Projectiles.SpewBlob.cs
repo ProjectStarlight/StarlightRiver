@@ -16,8 +16,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 32;
-			Projectile.height = 32;
+			Projectile.width = 42;
+			Projectile.height = 42;
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 300;
 			Projectile.hostile = true;
@@ -27,6 +27,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			if (Projectile.ai[1] == 0)
+			{
+				Projectile.width = (int)(42 * Projectile.scale);
+				Projectile.height = (int)(42 * Projectile.scale);
+			}
+
 			Projectile.velocity.Y -= 0.025f;
 			Projectile.velocity.X *= 0.9f;
 
