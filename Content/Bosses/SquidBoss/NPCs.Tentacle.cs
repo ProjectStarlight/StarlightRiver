@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation &&
-				downwardDrawDistance > 64;
+				downwardDrawDistance > 48;
 		}
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
@@ -359,6 +359,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				foreach (Player player in Main.player.Where(n => n.active))
 				{
+					int useless = 0;
+
+					if (!CanHitPlayer(player, ref useless))
+						continue;
+
 					if (Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
 					{
 						if (intersect.X < player.Center.X)

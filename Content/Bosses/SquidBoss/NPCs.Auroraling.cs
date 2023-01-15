@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.width = 26;
 			NPC.height = 30;
 			NPC.lifeMax = 40;
-			NPC.damage = 10;
+			NPC.damage = 25;
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 3f;
@@ -42,9 +42,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.TargetClosest();
 			Player Player = Main.player[NPC.target];
 
-			NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.15f;
+			NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.175f;
 
-			if (NPC.velocity.LengthSquared() > 4)
+			if (NPC.velocity.LengthSquared() > 6)
 				NPC.velocity *= 0.95f;
 
 			if (NPC.ai[0] % 15 == 0)
@@ -61,6 +61,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
 		{
 			target.noKnockback = true;
+
+			for (int i = 0; i < 20; i++)
+			{
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(8, 8), 0, new Color(150, 200, 255) * 0.5f);
+			}
+
+			Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1, 0.2f, NPC.Center);
+
+			NPC.active = false;
 		}
 
 		public override void HitEffect(int hitDirection, double damage)
