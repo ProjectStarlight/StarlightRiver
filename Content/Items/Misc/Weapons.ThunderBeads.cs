@@ -2,10 +2,6 @@
 //Obtainment
 //Sellprice
 //Rarity
-//Balance
-//Fix collision issues
-//Lighting
-//Dust
 using log4net.Core;
 using ReLogic.Content;
 using StarlightRiver.Helpers;
@@ -16,6 +12,8 @@ using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.Graphics.Effects;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using StarlightRiver.Content.Dusts;
+using System.Runtime.InteropServices;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -59,6 +57,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private List<Vector2> cache2;
 
+		public Player Owner => Main.player[Projectile.owner];
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public ThunderBeads_Whip() : base("Thunder Beads", 15, 0.87f, Color.Transparent)
@@ -67,21 +67,38 @@ namespace StarlightRiver.Content.Items.Misc
 			yFrames = 5;
 		}
 
+		public override void Load()
+		{
+			On.Terraria.Projectile.FillWhipControlPoints += OverrideWhipControlPoints;
+			base.Load();
+		}
+
 		public override int SegmentVariant(int segment)
 		{
 			return 1;
 		}
 
+		public override void SafeSetDefaults()
+		{
+			Projectile.localNPCHitCooldown = 1;
+		}
+
 		public override bool PreAI()
 		{
-			Projectile.ownerHitCheck = false;
-			Projectile.localNPCHitCooldown = 1;
-
+			ManageCache();
 			if (!Main.dedServ)
-			{
-				ManageCache();
 				ManageTrails();
+
+			for (int i = 0; i < cache.Count - 1; i++)
+			{
+				if (i % 3 != 0)
+					continue;
+
+				Lighting.AddLight(cache[i], Color.Cyan.ToVector3() * fade * 0.5f);
 			}
+
+			if (fade > 0.1f)
+				fade -= 0.05f;
 
 			if (embedded)
 			{
@@ -94,15 +111,13 @@ namespace StarlightRiver.Content.Items.Misc
 				if (!Main.mouseLeft)
 					leftClick = false;
 
-				Player player = Main.player[Projectile.owner];
-				flyTime = player.itemAnimationMax * Projectile.MaxUpdates;
+				flyTime = Owner.itemAnimationMax * Projectile.MaxUpdates;
 				Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-				Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
 				Projectile.spriteDirection = (!(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f)) ? 1 : -1;
 
-				player.heldProj = Projectile.whoAmI;
-				player.itemAnimation = player.itemAnimationMax - (int)(Projectile.ai[0] / Projectile.MaxUpdates);
-				player.itemTime = player.itemAnimation;
+				Owner.heldProj = Projectile.whoAmI;
+				Owner.itemAnimation = Owner.itemAnimationMax - (int)(Projectile.ai[0] / Projectile.MaxUpdates);
+				Owner.itemTime = Owner.itemAnimation;
 
 				embedTimer--;
 				if (embedTimer < 0 || !target.active)
@@ -112,9 +127,7 @@ namespace StarlightRiver.Content.Items.Misc
 					return false;
 				}
 
-				if (fade > 0.1f)
-					fade -= 0.05f;
-
+				Projectile.Center = target.Center;
 				Projectile.WhipPointsForCollision.Clear();
 				SetPoints(Projectile.WhipPointsForCollision);
 				return false;
@@ -138,17 +151,26 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!embedded)
 			{
 				Projectile.ownerHitCheck = false;
+				Projectile.damage /= 2;
 				this.target = target;
 				embedded = true;
 			}
 			else
+			{
+				Helper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
 				fade = 1;
+				for (int i = 2; i < cache.Count - 2; i++)
+				{
+					Dust.NewDustPerfect(cache[i] + Main.rand.NextVector2Circular(6,6), ModContent.DustType<GlowLineFast>(), cache[i].DirectionTo(Owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1, 2), 0, Color.Cyan, 0.4f);
+				}
+			}
 		}
 
 		public override bool? CanHitNPC(NPC target)
-		{
+		{ 
 			if (embedded)
 				return target == this.target && ableToHit;
+
 			return base.CanHitNPC(target);
 		}
 
@@ -156,8 +178,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (embedded)
 			{
-				Player player = Main.player[Projectile.owner];
-				Item heldItem = player.HeldItem;
 				Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile);
 				for (int i = 0; i < segments + 1; i++)
 				{
@@ -166,22 +186,28 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 			else
+			{
 				base.SetPoints(controlPoints);
+			}
 		}
 
 		public override void DrawBehindWhip(ref Color lightColor)
 		{
 			DrawPrimitives();
-			Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
-			for (int i = 0; i < cache.Count - 1; i++)
+			if (embedded)
 			{
-				if (i % 3 != 0)
-					continue;
+				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
+				for (int i = 0; i < cache.Count - 1; i++)
+				{
+					if (i % 3 != 0)
+						continue;
 
-				Main.spriteBatch.Draw(bloomTex, cache[i] - Main.screenPosition, null, Color.White * 0.7f, 0, bloomTex.Size() / 2, fade * 0.4f, SpriteEffects.None, 0f);
+					Main.spriteBatch.Draw(bloomTex, cache[i] - Main.screenPosition, null, Color.White * 0.7f, 0, bloomTex.Size() / 2, fade * 0.4f, SpriteEffects.None, 0f);
+				}
+
+				Main.spriteBatch.End();
 			}
-
-			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
@@ -243,8 +269,16 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 			trail2?.Render(effect);
+		}
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+		private void OverrideWhipControlPoints(On.Terraria.Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)
+		{
+			orig(proj, controlPoints);
+			if (proj.ModProjectile is ThunderBeads_Whip modProj && modProj.embedded)
+			{
+				proj.WhipPointsForCollision.Clear();
+				modProj.SetPoints(proj.WhipPointsForCollision);
+			}
 		}
 	}
 }

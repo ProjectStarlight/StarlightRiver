@@ -44,6 +44,7 @@ namespace StarlightRiver.Core
 		public override void SetDefaults()
 		{
 			Projectile.DefaultToWhip();
+			SafeSetDefaults();
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -93,6 +94,8 @@ namespace StarlightRiver.Core
 		public Vector2 EndPoint => Projectile.WhipPointsForCollision[segments - 1] + new Vector2(Projectile.width * 0.5f, Projectile.height * 0.5f);
 
 		public virtual void ArcAI() { }
+
+		public virtual void SafeSetDefaults() { }
 
 		public override void CutTiles()
 		{
