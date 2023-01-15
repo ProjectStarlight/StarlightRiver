@@ -105,7 +105,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public void SetPoints(List<Vector2> controlPoints)
+		public virtual void SetPoints(List<Vector2> controlPoints)
 		{
 			float time = Projectile.ai[0] / flyTime;
 			float timeModified = time * 1.5f;
