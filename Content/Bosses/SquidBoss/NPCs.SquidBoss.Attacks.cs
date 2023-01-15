@@ -145,7 +145,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						tentacle.State = 0;
 
 						for (int i = 0; i < 20; i++)
+						{
 							Dust.NewDustPerfect(tentacle.NPC.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 1, new Color(255, Main.rand.Next(0, 155), 0), 0.5f);
+						}
 					}
 
 					CameraSystem.shake += 20; //TODO: Find the right player instances
@@ -365,6 +367,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				tentacleL.zSpin = 0;
 				tentacleR.zSpin = 0;
 
+				if (Main.rand.NextBool())
+					tentacleL.State = 0;
+				else
+					tentacleR.State = 0;
+
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(platforms[0].Center.X, spawnPoint.Y - 1000), Vector2.Zero, ModContent.ProjectileType<SqueezeTell>(), 0, 0, Main.myPlayer);
 			}
 
@@ -443,13 +450,21 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			if (AttackTimer == 660)
+			{
+				tentacleL.State = 1;
+				tentacleR.State = 1;
+
 				ResetAttack();
+			}
 		}
 
 		private void ArenaSweep()
 		{
 			if (AttackTimer == 1)
+			{
 				savedPoint = NPC.Center;
+				ShufflePlatforms();
+			}
 
 			if (AttackTimer > 1 && AttackTimer < 120)
 				NPC.Center = Vector2.SmoothStep(savedPoint, spawnPoint + new Vector2(0, -1300), AttackTimer / 120f);
@@ -484,6 +499,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						tentacle.shouldDrawPortal = true;
 						tentacle.stalkWaviness = 0.5f;
+
+						if (k == 3)
+							tentacle.State = 0;
 					}
 
 					if (AttackTimer > 150 + k * 10 && AttackTimer < 180 + k * 10)
@@ -499,7 +517,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 						tentacle.downwardDrawDistance--;
 
 					if (AttackTimer == 430 + k * 10)
+					{
 						tentacle.shouldDrawPortal = false;
+
+						if (k == 3)
+							tentacle.State = 1;
+					}
 				}
 				else
 				{

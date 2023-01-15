@@ -245,6 +245,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
+			damage = (int)(damage * 0.65f);
+
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life -= damage;
 
@@ -254,6 +256,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
+			damage = (int)(damage * 0.65f);
+
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life -= damage;
 
