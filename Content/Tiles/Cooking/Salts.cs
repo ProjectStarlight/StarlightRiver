@@ -6,7 +6,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Cooking
 {
-	class TableSalt : ModTile
+	internal class TableSalt : ModTile
 	{
 		public new virtual int DustType => DustID.Marble;
 
@@ -136,13 +136,15 @@ namespace StarlightRiver.Content.Tiles.Cooking
 					NetMessage.SendTileSquare(-1, i, j, 1);
 					WorldGen.SquareTileFrame(i, j);
 				}
+
 				return false;
 			}
+
 			return true;
 		}
 	}
 
-	class TableSaltProjectile : ModProjectile
+	internal class TableSaltProjectile : ModProjectile
 	{
 		protected bool falling = true;
 
@@ -192,7 +194,9 @@ namespace StarlightRiver.Content.Tiles.Cooking
 					}
 				}
 				else
+				{
 					Projectile.velocity.Y += 0.41f;
+				}
 			}
 			else if (Projectile.ai[0] == 2f)
 			{
@@ -259,10 +263,13 @@ namespace StarlightRiver.Content.Tiles.Cooking
 			}
 		}
 
-		public override bool? CanDamage() => Projectile.localAI[1] != -1f;
+		public override bool? CanDamage()
+		{
+			return Projectile.localAI[1] != -1f;
+		}
 	}
 
-	class PinkSeaSalt : TableSalt
+	internal class PinkSeaSalt : TableSalt
 	{
 		public override int DustType => DustID.Orichalcum;
 
@@ -273,7 +280,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
 		public override int ItemDrop => ModContent.ItemType<Items.Food.SeaSalt>();
 	}
 
-	class PinkSeaSaltProjectile : TableSaltProjectile
+	internal class PinkSeaSaltProjectile : TableSaltProjectile
 	{
 		protected override int TileType => ModContent.TileType<PinkSeaSalt>();
 

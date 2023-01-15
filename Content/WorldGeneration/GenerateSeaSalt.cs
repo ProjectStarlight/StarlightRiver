@@ -2,7 +2,6 @@
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
