@@ -67,7 +67,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation;
+			return Parent.Phase != (int)SquidBoss.AIStates.SpawnAnimation &&
+				downwardDrawDistance > 64;
 		}
 
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
