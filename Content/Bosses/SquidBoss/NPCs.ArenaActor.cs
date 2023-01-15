@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				(fakeBoss.ModNPC as SquidBoss).OpaqueJelly = true;
 				(fakeBoss.ModNPC as SquidBoss).Animate(6, 0, 8);
 
-				var followBox = new Rectangle((int)NPC.Center.X - 500, (int)NPC.Center.Y - 2000, 1000, 2500);
+				var followBox = new Rectangle((int)NPC.Center.X - 800, (int)NPC.Center.Y - 2000, 1600, 2500);
 
 				if (followBox.Contains(Main.LocalPlayer.Center.ToPoint()))
 					fakeBoss.Center += (Main.LocalPlayer.Center + new Vector2(0, -50) - fakeBoss.Center) * 0.01f;
