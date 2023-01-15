@@ -123,7 +123,7 @@ namespace StarlightRiver.Core
 			{
 				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
-					PlaceShrine(new Point16(center, y - 32), 0, oldPos, true);
+					PlaceShrine(new Point16(center, y - 24), 0, oldPos, true);
 					break;
 				}
 
