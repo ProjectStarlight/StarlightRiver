@@ -28,6 +28,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public float WaterLevelWorld => NPC.Center.Y + 35 * 16 - WaterLevel;
 
+		public bool WaterGoingDown => !Main.npc.Any(n => n.active && n.ModNPC is SquidBoss) && WaterLevel > 150;
+
 		public override string Texture => AssetDirectory.Invisible;
 
 		private int WhitelistID => WallType<AuroraBrickWall>();
@@ -114,7 +116,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (WaterLevel < 150)
 				WaterLevel = 150; //water clamping and return logic
 
-			if (!Main.npc.Any(n => n.active && n.ModNPC is SquidBoss) && WaterLevel > 150)
+			if (WaterGoingDown)
 				WaterLevel--;
 
 			if (VisualTimerA > 6.28f)

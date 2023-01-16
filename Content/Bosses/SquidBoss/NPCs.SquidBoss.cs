@@ -762,7 +762,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					if (AttackPhase != 3)
 					{
-						NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, -300))) * -0.3f;
+						Vector2 moveTarget = Main.player[NPC.target].Center;
+
+						if (moveTarget.Y < arenaActor.Center.Y - 1500)
+							moveTarget.Y = arenaActor.Center.Y - 1500;
+
+						NPC.velocity += Vector2.Normalize(NPC.Center - (moveTarget + new Vector2(0, -300))) * -0.3f;
 
 						if (NPC.velocity.LengthSquared() > 36)
 							NPC.velocity = Vector2.Normalize(NPC.velocity) * 6;

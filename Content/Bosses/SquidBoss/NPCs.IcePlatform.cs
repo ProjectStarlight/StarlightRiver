@@ -45,6 +45,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				{
 					NPC.rotation = 0;
 					State = 0;
+					NPC.velocity *= 0;
+
+					NPC.position.Y = HomeYPosition;
 				}
 
 				if (NPC.position.Y + 18 >= actor.WaterLevelWorld)
@@ -52,7 +55,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (State == 1 && (!Main.tile[(int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 - 5].HasTile || actor.WaterLevelWorld - 18 > NPC.position.Y))
 				{
-					NPC.position.Y = actor.WaterLevelWorld - 18;
+					bool blockedByTiles = false;
+
+					for (int x = -1; x < NPC.width / 16 + 1; x++)
+					{
+						Tile tile = Framing.GetTileSafely((int)NPC.position.X / 16 + x, (int)NPC.position.Y / 16 - 2);
+
+						if (tile.HasTile && Main.tileSolid[tile.TileType])
+							blockedByTiles = true;
+					}
+
+					if (!blockedByTiles || actor.WaterGoingDown && (actor.WaterLevelWorld - 18) >= NPC.position.Y)
+						NPC.position.Y = actor.WaterLevelWorld - 18;
 
 					if ((beingStoodOn || bobTime > 0) && bobTime < 30)
 						bobTime++;
