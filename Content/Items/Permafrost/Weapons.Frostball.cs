@@ -44,9 +44,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private int visualTimer;
 
-		private int AuroraRadius => auroraPower * 3;
+		private int AuroraRadius => auroraPower * 6;
 
-		private float AuroraPercent => auroraPower / 15f;
+		private float AuroraPercent => auroraPower / 7f;
 
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
 
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			{
 				if (Helpers.Helper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
 				{
-					player.lifeRegen += auroraPower / 4;
+					player.lifeRegen += auroraPower;
 				}
 			}
 		}
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Player player = Main.player[Projectile.owner];
 			player.AddBuff(BuffID.Regeneration, auroraPower * 120);
 
-			if (auroraPower > 5)
+			if (auroraPower > 2)
 			{
 				for (int k = 0; k < 20; k++)
 				{
@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (auroraPower < 15)
+			if (auroraPower < 7)
 				auroraPower++;
 		}
 
