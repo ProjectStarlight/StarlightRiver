@@ -1,10 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.Abilities.Faewhip;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StarlightRiver.Content.Abilities.Faewhip;
 
 namespace StarlightRiver.Content.Abilities
 {
@@ -48,6 +42,9 @@ namespace StarlightRiver.Content.Abilities
 		/// Should only be implemented on ModNPCs. Determines if the default hitbox colission and grabbing should be used.
 		/// </summary>
 		/// <returns>If the default colission and binding behavior for NPCs should apply to this NPC.</returns>
-		public bool NormalNPCInteraction() => false;
+		public bool NormalNPCInteraction()
+		{
+			return false;
+		}
 	}
 }

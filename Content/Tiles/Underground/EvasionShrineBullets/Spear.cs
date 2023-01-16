@@ -1,14 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
@@ -22,9 +12,9 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		public int holdTime;
 		public EvasionShrineDummy parent;
 
-		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
-
 		public float Alpha => 1 - Projectile.alpha / 255f;
+
+		public override string Texture => AssetDirectory.Assets + "Tiles/Underground/" + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -84,18 +74,19 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 		{
 			parent.lives--;
 
-			if (Main.rand.Next(10000) == 0)
+			if (Main.rand.NextBool(10000))
 				Main.NewText("Skill issue.");
 		}
 
 		public override void PostDraw(Color lightColor)
 		{
-			var glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(100, 0, 255) * Alpha, Projectile.rotation, glowTex.Size() / 2, 1, 0, 0);
 
-			var dist = Vector2.Distance(Projectile.Center, startPoint);
-			var bodyTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/SpearBody").Value;
-			for(int k = bodyTex.Height; k < dist; k += bodyTex.Height)
+			float dist = Vector2.Distance(Projectile.Center, startPoint);
+			Texture2D bodyTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/SpearBody").Value;
+
+			for (int k = bodyTex.Height; k < dist; k += bodyTex.Height)
 			{
 				var pos = Vector2.Lerp(Projectile.Center, startPoint, k / dist);
 				Main.spriteBatch.Draw(bodyTex, pos - Main.screenPosition, null, new Color(100, 0, 255) * Alpha, Projectile.rotation, bodyTex.Size() / 2, 1, 0, 0);
@@ -104,7 +95,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var spriteBatch = Main.spriteBatch;
+			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -113,18 +104,16 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 
 			if (timer > teleTime)
 			{
-				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
-				var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 
 				float opacity;
 
 				if (timer < teleTime + timeToRise)
 					opacity = (timer - teleTime) / (float)timeToRise;
-
 				else if (timer < teleTime + timeToRise + holdTime)
 					opacity = 1;
-
-				else 
+				else
 					opacity = 1 - (timer - timeToRise - teleTime - holdTime) / (float)timeToRetract;
 
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(150, 50, 255), Projectile.rotation + 3.14f, new Vector2(tex.Width / 2, 70), 2.8f * opacity, 0, 0);
@@ -137,18 +126,18 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			}
 			else
 			{
-				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
-				var opacity = (float)Math.Sin(timer / (float)teleTime * 3.14f) * 0.5f;
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value;
+				float opacity = (float)Math.Sin(timer / (float)teleTime * 3.14f) * 0.5f;
 
-				var pos = Projectile.Center - Main.screenPosition;
-				var dist = Vector2.Distance(Projectile.Center, endPoint) - 4;
-				Rectangle target = new Rectangle((int)pos.X, (int)pos.Y, (int)dist, 40);
+				Vector2 pos = Projectile.Center - Main.screenPosition;
+				float dist = Vector2.Distance(Projectile.Center, endPoint) - 4;
+				var target = new Rectangle((int)pos.X, (int)pos.Y, (int)dist, 40);
 
 				spriteBatch.Draw(tex, target, null, new Color(150, 150, 155) * opacity * 0.5f, Projectile.rotation + 1.57f, new Vector2(tex.Width, tex.Height / 2), 0, 0);
 				target.Height = 16;
 				spriteBatch.Draw(tex, target, null, Color.White * opacity * 0.7f, Projectile.rotation + 1.57f, new Vector2(tex.Width, tex.Height / 2), 0, 0);
 
-				var tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+				Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 				spriteBatch.Draw(tex2, endPoint - Main.screenPosition, null, Color.White * opacity, Projectile.rotation, new Vector2(tex2.Width / 2, tex2.Height - 5), 1.0f, 0, 0);
 			}
 
