@@ -48,12 +48,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
-<<<<<<< HEAD
 				for (int x1 = 0; x1 < 5; x1++)
-=======
-				for (int x1 = 0; x1 < 3; x1++)
-				{
->>>>>>> master
 					for (int y1 = 0; y1 < 6; y1++)
 					{
 						int realX = x1 + x;
@@ -61,7 +56,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 5 * 18;
 					}
-				}
 
 				(dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
 				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
@@ -103,12 +97,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State == 0 && Parent.TileFrameX > 5 * 18)
 			{
-<<<<<<< HEAD
 				for (int x = 0; x < 5; x++)
-=======
-				for (int x = 0; x < 3; x++)
-				{
->>>>>>> master
 					for (int y = 0; y < 6; y++)
 					{
 						int realX = ParentX - 2 + x;
@@ -118,7 +107,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Main.NewText(Framing.GetTileSafely(realX, realY).ToString());
 					}
-				}
 
 				Timer = 0;
 			}
