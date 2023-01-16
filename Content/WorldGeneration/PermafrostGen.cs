@@ -221,6 +221,9 @@ namespace StarlightRiver.Core
 					if (tile.HasTile && tile.TileType == ModContent.TileType<AuroraBrick>())
 						return false;
 
+					if (tile.WallType == ModContent.WallType<AuroraBrickWall>())
+						return false;
+
 					if (tile.TileType == TileID.BlueDungeonBrick || tile.TileType == TileID.GreenDungeonBrick || tile.TileType == TileID.PinkDungeonBrick)
 						return false;
 				}
