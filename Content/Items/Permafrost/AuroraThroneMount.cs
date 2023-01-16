@@ -1,16 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -31,23 +23,23 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void PostUpdate(Player player)
 		{
-			var mp = player.GetModPlayer<CombatMountPlayer>();
-			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+			CombatMountPlayer mp = player.GetModPlayer<CombatMountPlayer>();
+			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
 			float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
 			float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
-			Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+			var rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
 
 			if (progress < 1)
 			{
 				for (int k = 0; k < 3; k++)
 				{
-					var pos = player.Center + new Vector2(0, 12 - (int)(progress * 68));
+					Vector2 pos = player.Center + new Vector2(0, 12 - (int)(progress * 68));
 					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-20, 20), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, rainbowColor, 0.65f);
 				}
 			}
 
-			if(Main.rand.NextBool(2))
+			if (Main.rand.NextBool(2))
 				Dust.NewDustPerfect(player.Center + new Vector2(-6 * player.direction + Main.rand.NextFloat(-20, 20), 0), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * Main.rand.NextFloat(1, 2), 0, rainbowColor, 0.25f);
 
 			player.Hitbox.Offset(new Point(0, -32));
@@ -55,27 +47,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 			player.fullRotation = (1 - mp.mountingTime / 60f) * (-0.2f * player.direction + player.velocity.X * -0.03f);
 			player.fullRotationOrigin = new Vector2(player.width / 2, player.height);
 
-			if(mp.mountingTime <= 0)
+			if (mp.mountingTime <= 0)
 				player.gfxOffY = (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 4f;
 
 			if (player.velocity.Y > 0 && !player.controlDown)
 				player.velocity.Y *= 0.92f;
 
-			/*if (player.controlJump && player.rocketTime > 0)
-			{
-				player.rocketTime--;
-				player.velocity.Y -= 0.55f;
-
-				for(int k = 0; k < 3; k++)
-					Dust.NewDustPerfect(player.Center + new Vector2(-6 * player.direction, -16), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY.RotatedByRandom(0.6f) * Main.rand.NextFloat(3, 6), 0, Main.DiscoColor, 0.65f);
-			}*/
-
 			Lighting.AddLight(player.Center, Color.Lerp(Color.White, rainbowColor, 0.5f).ToVector3());
-		}
-
-		public override void OnStartPrimaryAction(Player player)
-		{
-
 		}
 
 		public override void PrimaryAction(int timer, Player player)
@@ -86,26 +64,21 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (timer == check)
 				{
-					var vel = Vector2.Normalize(Main.MouseWorld - player.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(7, 9);
+					Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(7, 9);
 					Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, vel, ModContent.ProjectileType<AuroraThroneMountWhip>(), damageCoefficient / 4, 10, player.whoAmI, Main.rand.Next(80, 120), Main.rand.NextBool() ? 1 : -1);
 				}
 			}
 		}
 
-		public override void OnStartSecondaryAction(Player player)
-		{
-
-		}
-
 		public override void SecondaryAction(int timer, Player player)
 		{
-			for(int k = 0; k < 10; k++)
+			for (int k = 0; k < 10; k++)
 			{
 				int check = (int)(k / 10f * secondarySpeedCoefficient);
 
 				if (timer == check)
 				{
-					var vel = Vector2.UnitY.RotateRandom(1) * -Main.rand.NextFloat(6, 22);
+					Vector2 vel = Vector2.UnitY.RotateRandom(1) * -Main.rand.NextFloat(6, 22);
 					Projectile.NewProjectile(player.GetSource_FromThis(), player.Center, vel, ModContent.ProjectileType<AuroraThroneMountMinion>(), damageCoefficient / 2, 10, player.whoAmI);
 				}
 
@@ -113,9 +86,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 				{
 					float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
 					float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
-					Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+					var rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
 
-					var dir = -Vector2.UnitY.RotatedByRandom(0.7f);
+					Vector2 dir = -Vector2.UnitY.RotatedByRandom(0.7f);
 					Dust.NewDustPerfect(player.Center + dir * 120, ModContent.DustType<Dusts.GlowLine>(), dir * Main.rand.NextFloat(8), 0, rainbowColor);
 				}
 			}
@@ -133,6 +106,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void Dismount(Player player, ref bool skipDust)
 		{
+			player.gfxOffY = 0;
 			skipDust = true;
 		}
 
@@ -140,31 +114,31 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			SetStaticDefaults();
 
-			var tex = ModContent.Request<Texture2D>(Texture).Value;
-			var tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
-			var tex3 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-			var tex4 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
-			var mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
-			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Texture2D tex3 = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+			Texture2D tex4 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
+			CombatMountPlayer mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
+			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount * 0.1f);
-			var frameNumber = (int)(Main.GameUpdateCount * 0.15f) % 6;
-			var pos = drawPlayer.Center - Main.screenPosition + new Vector2(-12 * drawPlayer.direction, 76 - (int)(progress * 68));
+			int frameNumber = (int)(Main.GameUpdateCount * 0.15f) % 6;
+			Vector2 pos = drawPlayer.Center - Main.screenPosition + new Vector2(-12 * drawPlayer.direction, 76 - (int)(progress * 68));
 			var source = new Rectangle(0, frameNumber * 58 + 58 - (int)(progress * 58), 64, (int)(progress * 58));
 			var source2 = new Rectangle(0, frameNumber * 58 + 58 - (int)(progress * 58), 64, 2);
 
 			float sin2 = 1 + (float)Math.Sin(Main.GameUpdateCount * 0.1f);
 			float cos = 1 + (float)Math.Cos(Main.GameUpdateCount * 0.1f);
-			Color rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
+			var rainbowColor = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin2 * 0.2f);
 
 			if (mp.mountingTime <= 0)
-			{ 
+			{
 				pos.Y += drawPlayer.gfxOffY;
 
-				var color = rainbowColor;
+				Color color = rainbowColor;
 				color.A = 0;
 
-				var glowRot = 3.14f + 0.2f * drawPlayer.direction;
+				float glowRot = 3.14f + 0.2f * drawPlayer.direction;
 				playerDrawData.Add(new DrawData(tex3, pos, null, color * (0.25f + 0.05f * sin), glowRot, tex3.Size() / 2, 0.32f + 0.025f * sin, spriteEffects, 0));
 			}
 
