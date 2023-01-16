@@ -1,178 +1,191 @@
-global using Microsoft.Xna.Framework;
-global using Microsoft.Xna.Framework.Graphics;
-global using StarlightRiver.Core;
-global using Terraria;
-global using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Bestiary;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Content.Items.Breacher;
+using StarlightRiver.Core;
 using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems.LightingSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using Terraria;
+using Terraria.Graphics;
+using Terraria.ModLoader;
+using Terraria.UI;
+using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Bestiary;
 
 namespace StarlightRiver
 {
-	public class TemporaryFix : PreJITFilter
+    public class TemporaryFix : PreJITFilter
 	{
-		public override bool ShouldJIT(MemberInfo member)
-		{
-			return false;
-		}
+        public override bool ShouldJIT(MemberInfo member) => false;
 	}
 
 	public partial class StarlightRiver : Mod
-	{
-		private List<IOrderedLoadable> loadCache;
+    {
+        public AbilityHotkeys AbilityKeys { get; private set; }
 
-		private List<IRecipeGroup> recipeGroupCache;
+        private List<IOrderedLoadable> loadCache;
 
-		public static bool debugMode = false;
+        private List<IRecipeGroup> recipeGroupCache;
 
-		public static LightingBuffer lightingBufferInstance = null;
+        public static float Rotation;
 
-		//debug hook to view RTs
-		//public override void PostDrawInterface(SpriteBatch spriteBatch)
-		//{
-		//    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringMapTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Purple * 0.5f);
-		//    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringShineTarget, new Rectangle(Main.screenWidth - (Main.screenWidth / 4), 0, Main.screenWidth / 4, Main.screenHeight / 4), Color.White * 0.5f);
-		//}
+        public static bool DebugMode = false;
 
-		public static StarlightRiver Instance { get; set; }
+        public static LightingBuffer LightingBufferInstance = null;
 
-		public AbilityHotkeys AbilityKeys { get; private set; }
+        //debug hook to view RTs
+        //public override void PostDrawInterface(SpriteBatch spriteBatch)
+        //{
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringMapTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Purple * 0.5f);
+        //    spriteBatch.Draw(Content.CustomHooks.HotspringMapTarget.hotspringShineTarget, new Rectangle(Main.screenWidth - (Main.screenWidth / 4), 0, Main.screenWidth / 4, Main.screenHeight / 4), Color.White * 0.5f);
+        //}
 
-		public StarlightRiver()
-		{
-			Instance = this;
-			PreJITFilter = new TemporaryFix();
-		}
+        public static StarlightRiver Instance { get; set; }
 
-		public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
+        public StarlightRiver()
+        {
+            Instance = this;
+            PreJITFilter = new TemporaryFix();
+        }
 
-		private Vector2 lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
+        public bool useIntenseMusic = false; //TODO: Make some sort of music handler at some point for this
 
-		public static void SetLoadingText(string text)
-		{
-			FieldInfo Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
-			MethodInfo UIProgress_set_SubProgressText = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.UIProgress")!.GetProperty("SubProgressText", BindingFlags.Public | BindingFlags.Instance)!.GetSetMethod()!;
+        private Vector2 _lastScreenSize; //Putting these in StarlightRiver incase anything else wants to use them (which is likely)
 
-			UIProgress_set_SubProgressText.Invoke(Interface_loadMods.GetValue(null), new object[] { text });
-		}
+        private Vector2 _lastViewSize;
 
-		public override void Load()
-		{
-			loadCache = new List<IOrderedLoadable>();
+        private Viewport _lastViewPort;
 
-			foreach (Type type in Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IOrderedLoadable)))
-				{
-					object instance = Activator.CreateInstance(type);
-					loadCache.Add(instance as IOrderedLoadable);
-				}
+        public static void SetLoadingText(string text)
+        {
+            var Interface_loadMods = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.Interface")!.GetField("loadMods", BindingFlags.NonPublic | BindingFlags.Static)!;
+            var UIProgress_set_SubProgressText = typeof(Mod).Assembly.GetType("Terraria.ModLoader.UI.UIProgress")!.GetProperty("SubProgressText", BindingFlags.Public | BindingFlags.Instance)!.GetSetMethod()!;
 
-				loadCache.Sort((n, t) => n.Priority.CompareTo(t.Priority));
-			}
+            UIProgress_set_SubProgressText.Invoke(Interface_loadMods.GetValue(null), new object[] { text });
+        }
 
-			for (int k = 0; k < loadCache.Count; k++)
-			{
-				loadCache[k].Load();
-				SetLoadingText("Loading " + loadCache[k].GetType().Name);
-			}
+        public override void Load()
+        {
+            loadCache = new List<IOrderedLoadable>();
 
-			recipeGroupCache = new List<IRecipeGroup>();
+            foreach (Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IOrderedLoadable)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    loadCache.Add(instance as IOrderedLoadable);
+                }
 
-			foreach (Type type in Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
-				{
-					object instance = Activator.CreateInstance(type);
-					recipeGroupCache.Add(instance as IRecipeGroup);
-				}
+                loadCache.Sort((n, t) => n.Priority.CompareTo(t.Priority));
+            }
 
-				recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
-			}
+            for (int k = 0; k < loadCache.Count; k++)
+            {
+                loadCache[k].Load();
+                SetLoadingText("Loading " + loadCache[k].GetType().Name);
+            }
 
-			if (!Main.dedServ)
-			{
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+            recipeGroupCache = new List<IRecipeGroup>();
 
-				lightingBufferInstance = new LightingBuffer();
+            foreach (Type type in Code.GetTypes())
+            {
+                if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IRecipeGroup)))
+                {
+                    var instance = Activator.CreateInstance(type);
+                    recipeGroupCache.Add(instance as IRecipeGroup);
+                }
 
-				//Hotkeys
-				AbilityKeys = new AbilityHotkeys(this);
-				AbilityKeys.LoadDefaults();
-			}
-		}
+                recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
+            }
 
-		public override void Unload()
-		{
-			foreach (IOrderedLoadable loadable in loadCache)
-			{
-				loadable.Unload();
-			}
+            if (!Main.dedServ)
+            {
+                _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+                _lastViewSize = Main.ViewSize;
+                _lastViewPort = Main.graphics.GraphicsDevice.Viewport;
 
-			loadCache = null;
+                LightingBufferInstance = new LightingBuffer();
 
-			if (!Main.dedServ)
-			{
-				Instance = null;
-				AbilityKeys.Unload();
-				lightingBufferInstance = null;
+                //Hotkeys
+                AbilityKeys = new AbilityHotkeys(this);
+                AbilityKeys.LoadDefaults();
+            }
+        }
 
-				SLRSpawnConditions.Unload();
-			}
-		}
+        public override void Unload()
+        {
+            foreach (var loadable in loadCache)
+            {
+                loadable.Unload();
+            }
 
-		public override void AddRecipeGroups()/* tModPorter Note: Removed. Use ModSystem.AddRecipeGroups */
-		{
-			foreach (IRecipeGroup group in recipeGroupCache)
-			{
-				group.AddRecipeGroups();
-			}
-		}
+            loadCache = null;
 
-		public void CheckScreenSize()
-		{
-			if (!Main.dedServ && !Main.gameMenu)
-			{
-				if (lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
-				{
-					if (TileDrawOverLoader.projTarget != null)
-						TileDrawOverLoader.ResizeTarget();
+            if (!Main.dedServ)
+            {
+                Instance = null;
+                AbilityKeys.Unload();
+                LightingBufferInstance = null;
+                chestItems = null;
 
-					if (BreacherArmorHelper.NPCTarget != null)
-						BreacherArmorHelper.ResizeTarget();
-				}
+                SLRSpawnConditions.Unload();
+            }
+        }
 
-				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-			}
-		}
+        public override void AddRecipeGroups()
+        {
+            foreach (var group in recipeGroupCache)
+            {
+                group.AddRecipeGroups();
+            }
+        }
 
-		public override void PostSetupContent()
-		{
-			Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
+        public void CheckScreenSize()
+        {
+            if (!Main.dedServ && !Main.gameMenu)
+            {
+                if (_lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
+                {
+                    if (TileDrawOverLoader.projTarget != null)
+                        TileDrawOverLoader.ResizeTarget();
+                    if (BreacherArmorHelper.NPCTarget != null)
+                        BreacherArmorHelper.ResizeTarget();
+                }
+                _lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
+                _lastViewSize = Main.ViewSize;
+                _lastViewPort = Main.graphics.GraphicsDevice.Viewport;
+            }
+        }
 
-			NetEasy.NetEasy.Register(this);
+        public override void PostSetupContent()
+        {
+            Compat.BossChecklist.BossChecklistCalls.CallBossChecklist();
 
-			foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
-				{
-					object toLoad = Activator.CreateInstance(type);
+            NetEasy.NetEasy.Register(this);
 
-					((IPostLoadable)toLoad).PostLoad();
-				}
-			}
-		}
+            AutoloadChestItems();
 
-		public override void HandlePacket(BinaryReader reader, int whoAmI)
-		{
-			NetEasy.NetEasy.HandleModule(reader, whoAmI);
-		}
-	}
+            foreach(var type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if(!type.IsAbstract && type.GetInterfaces().Contains(typeof(IPostLoadable)))
+                {
+                    object toLoad = Activator.CreateInstance(type);
+
+                    ((IPostLoadable)toLoad).PostLoad();
+                }
+            }
+        }
+
+        public override void HandlePacket(BinaryReader reader, int whoAmI)
+        {
+            NetEasy.NetEasy.HandleModule(reader, whoAmI);
+        }
+    }
 }

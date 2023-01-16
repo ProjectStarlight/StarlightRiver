@@ -1,46 +1,50 @@
-﻿using StarlightRiver.Content.Tiles;
-using StarlightRiver.Core.Systems.NPCUpgradeSystem;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Tiles;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.NPCs.TownUpgrade
+namespace StarlightRiver.NPCs.TownUpgrade
 {
 	public abstract class TownUpgrade
-	{
-		public readonly string buttonName;
-		public readonly string NPCName;
-		public readonly string questName;
-		public readonly string questTip;
-		public readonly string title;
-		public readonly Texture2D icon;
+    {
+        public readonly string _buttonName; //TODO: Why did I name these like privates?
+        public readonly string _NPCName;
+        public readonly string _questName;
+        public readonly string _questTip;
+        public readonly string _title;
+        public readonly Texture2D icon;
 
-		public bool Unlocked => NPCUpgradeSystem.townUpgrades.TryGetValue(NPCName, out bool unlocked) && unlocked;
+        protected TownUpgrade(string NPCName, string questName, string questTip, string buttonName, string title)
+        {
+            _buttonName = buttonName;
+            _NPCName = NPCName;
+            _questName = questName;
+            _questTip = questTip;
+            _title = title;
 
-		public virtual List<Loot> Requirements => new() { new Loot(ItemID.DirtBlock, 1) };
+            icon = Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value;
+        }
 
-		protected TownUpgrade(string NPCName, string questName, string questTip, string buttonName, string title)
-		{
-			this.buttonName = buttonName;
-			this.NPCName = NPCName;
-			this.questName = questName;
-			this.questTip = questTip;
-			this.title = title;
+        public bool Unlocked => StarlightWorld.TownUpgrades.TryGetValue(_NPCName, out bool unlocked) && unlocked;
 
-			icon = Request<Texture2D>("StarlightRiver/Assets/NPCs/TownUpgrade/" + NPCName + "Icon").Value;
-		}
+        public virtual List<Loot> Requirements => new List<Loot>() { new Loot(ItemID.DirtBlock, 1) };
 
-		public virtual void ClickButton() { }
+        public virtual void ClickButton() { }
 
-		public static TownUpgrade FromString(string input)
-		{
-			TownUpgrade town = input switch
-			{
-				"Guide" => new GuideUpgrade(),
-				"Merchant" => new MerchantUpgrade(),
-				_ => null,
-			};
-			return town;
-		}
-	}
+        public static TownUpgrade FromString(string input)
+        {
+            TownUpgrade town;
+
+            switch (input)
+            {
+                case "Guide": town = new GuideUpgrade(); break;
+                case "Merchant": town = new MerchantUpgrade(); break;
+                default: town = null; break;
+            }
+
+            return town;
+        }
+    }
 }

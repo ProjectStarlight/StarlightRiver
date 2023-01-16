@@ -1,8 +1,17 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using StarlightRiver.Core;
+using Microsoft.Xna.Framework;
+using Terraria.ObjectData;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.ID;
-using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
@@ -14,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			ModTranslation name = CreateMapEntryName();
 			name.SetDefault("Large Tree");
-
+			
 			Main.tileAxe[Type] = true;
 			AddMapEntry(new Color(169, 125, 93), name);
 
@@ -28,31 +37,31 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
-			if (right && !up && down || !up && !down)
+			if ((right && !up && down) || (!up && !down))
 				Main.instance.TilesRenderer.AddSpecialLegacyPoint(new Point(i, j));
 		}
 
 		public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
 			if (right && !up && down)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
-				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+				var tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
+				var pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
 
-				Color color = Lighting.GetColor(i, j);
+				var color = Lighting.GetColor(i, j);
 
 				spriteBatch.Draw(tex, pos - Main.screenPosition, null, color, GetLeafSway(3, 0.05f, 0.008f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 
-				Texture2D tex2 = ModContent.Request<Texture2D>(AssetDirectory.ForestTile + "Godray").Value;
+				var tex2 = ModContent.Request<Texture2D>(AssetDirectory.ForestTile + "Godray").Value;
 				var godrayColor = new Color();
 				float godrayRot = 0;
 
@@ -73,7 +82,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 				pos += new Vector2(0, -100);
 
-				int daySeed = i + (int)Main.GetMoonPhase();
+				var daySeed = (i + ((int)Main.GetMoonPhase()));
 
 				if (daySeed % 3 == 0)
 					spriteBatch.Draw(tex2, pos - Main.screenPosition, null, godrayColor, godrayRot, Vector2.Zero, 0.85f, 0, 0);
@@ -92,30 +101,34 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			if (!up && !down)
 			{
-				Texture2D sideTex = Terraria.GameContent.TextureAssets.TreeTop[0].Value;
-				Vector2 sidePos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+				var sideTex = Terraria.GameContent.TextureAssets.TreeTop[0].Value;
+				var sidePos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
 
 				if (left)
+				{
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(20, 0) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
+				}
 
 				if (right)
+				{
 					spriteBatch.Draw(sideTex, sidePos + new Vector2(0, 20) - Main.screenPosition, null, Color.White, 0, Vector2.Zero, 1, 0, 0);
+				}
 			}
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
-			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
 			if (right && !up && down)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
-				Vector2 pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
+				var tex = ModContent.Request<Texture2D>(Texture + "Top").Value;
+				var pos = (new Vector2(i + 1, j) + Helpers.Helper.TileAdj) * 16;
 
-				Color color = Lighting.GetColor(i, j);
+				var color = Lighting.GetColor(i, j);
 
 				spriteBatch.Draw(tex, pos + new Vector2(50, 40) - Main.screenPosition, null, color.MultiplyRGB(Color.Gray), GetLeafSway(0, 0.05f, 0.01f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
 				spriteBatch.Draw(tex, pos + new Vector2(-30, 80) - Main.screenPosition, null, color.MultiplyRGB(Color.DarkGray), GetLeafSway(2, 0.025f, 0.012f), new Vector2(tex.Width / 2, tex.Height), 1, 0, 0);
@@ -126,16 +139,16 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
 			if (Main.rand.NextBool(20) && right && !up && down)
 			{
 				if (Main.dayTime && Main.time > 10000 && Main.time < 44000)
-				{
-					float godrayRot = (float)Main.time / 54000f * 3.14f;
+				{					
+					var godrayRot = (float)Main.time / 54000f * 3.14f;
 					Dust.NewDustPerfect(new Vector2(i, j) * 16 + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(100), ModContent.DustType<Dusts.GoldSlowFade>(), Vector2.UnitX.RotatedBy(godrayRot) * Main.rand.NextFloat(0.25f, 0.5f), 255, default, 0.75f);
 				}
 			}
@@ -148,19 +161,15 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 			Framing.GetTileSafely(i, j).HasTile = false;
 
-			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
-			if (left)
-				WorldGen.KillTile(i - 1, j);
-			if (right)
-				WorldGen.KillTile(i + 1, j);
-			if (up)
-				WorldGen.KillTile(i, j - 1);
-			if (down)
-				WorldGen.KillTile(i, j - 1);
+			if (left) WorldGen.KillTile(i - 1, j);
+			if (right) WorldGen.KillTile(i + 1, j);
+			if (up) WorldGen.KillTile(i, j - 1);
+			if (down) WorldGen.KillTile(i, j - 1);
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -168,16 +177,15 @@ namespace StarlightRiver.Content.Tiles.Forest
 			short x = 0;
 			short y = 0;
 
-			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
-			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			var left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
+			var right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
+			var up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+			var down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
 
-			if (up || down)
+			if ((up || down))
 			{
 				if (right)
 					x = 0;
-
 				if (left)
 					x = 18;
 
@@ -187,7 +195,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 					x += 18 * 2;
 			}
 
-			Tile tile = Framing.GetTileSafely(i, j);
+			var tile = Framing.GetTileSafely(i, j);
 			tile.TileFrameX = x;
 			tile.TileFrameY = y;
 
@@ -206,4 +214,5 @@ namespace StarlightRiver.Content.Tiles.Forest
 			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
 		}
 	}
+
 }

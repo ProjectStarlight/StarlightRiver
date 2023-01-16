@@ -1,11 +1,17 @@
-﻿namespace StarlightRiver.Core
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+
+namespace StarlightRiver.Core
 {
 	public abstract class PlayerTicker : IOrderedLoadable
 	{
 		public float Priority => 1;
 
 		public abstract bool Active(Player Player);
-
 		public abstract int TickFrequency { get; }
 
 		public void Load()

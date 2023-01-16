@@ -1,76 +1,85 @@
-﻿using MonoMod.Cil;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoMod.Cil;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.NPCs.BaseTypes;
+using StarlightRiver.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
+using Terraria.Graphics.Effects;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class DrawUnderCathedralWater : HookGroup
-	{
-		//Rare method to hook but not the best finding logic, but its really just some draws so nothing should go terribly wrong.
-		public override void Load()
-		{
-			if (Main.dedServ)
-				return;
+    {
+        //Rare method to hook but not the best finding logic, but its really just some draws so nothing should go terribly wrong.
+        public override SafetyLevel Safety => SafetyLevel.Fragile;
 
-			IL.Terraria.Main.DoDraw_WallsTilesNPCs += DrawWater;
-		}
+        public override void Load()
+        {
+            if (Main.dedServ)
+                return;
 
-		public override void Unload()
-		{
-			IL.Terraria.Main.DoDraw_WallsTilesNPCs -= DrawWater;
-		}
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs += DrawWater;
+        }
 
-		private void DrawWater(ILContext il)
-		{
-			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsBehindNonSolidTiles"));
-			//c.Index--;
+        public override void Unload()
+        {
+            IL.Terraria.Main.DoDraw_WallsTilesNPCs -= DrawWater;
+        }
 
-			c.EmitDelegate<DrawWaterDelegate>(DrawWater);
-		}
+        private void DrawWater(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            c.TryGotoNext(n => n.MatchLdfld<Main>("DrawCacheNPCsBehindNonSolidTiles"));
+            //c.Index--;
 
-		private delegate void DrawWaterDelegate();
+            c.EmitDelegate<DrawWaterDelegate>(DrawWater);
+        }
 
-		public static void DrawWater()
-		{
-			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+        private delegate void DrawWaterDelegate();
 
-			NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
+        public static void DrawWater()
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			if (NPC != null && NPC.active)
-			{
-				if (ReflectionTarget.canUseTarget)
-					(NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
+            NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 
-				int boss = -1;
-				var drawCache = new List<NPC>();
+            if(NPC != null && NPC.active)
+            {
+                if(ReflectionTarget.canUseTarget)
+                    (NPC.ModNPC as ArenaActor).DrawBigWindow(Main.spriteBatch);
 
-				for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
-				{
-					NPC NPC2 = Main.npc[k];
+                int boss = -1;
+                List<NPC> drawCache = new List<NPC>();
 
-					if (NPC2.active && NPC2.ModNPC is IUnderwater)
-					{
-						if (NPC2.type == ModContent.NPCType<SquidBoss>())
-							boss = k;
-						else
-							drawCache.Add(NPC2);
-					}
-				}
+                for (int k = 0; k < Main.maxNPCs; k++) //draw NPCs and find boss
+                {
+                    var NPC2 = Main.npc[k];
 
-				drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0));
+                    if (NPC2.active && NPC2.ModNPC is IUnderwater)
+                    {
+                        if (NPC2.type == ModContent.NPCType<SquidBoss>())
+                            boss = k;
+                        else
+                            drawCache.Add(NPC2);                          
+                    }
+                }
 
-				foreach (Projectile proj in Main.projectile.Where(n => n.active && n.ModProjectile is IUnderwater)) //draw all Projectiles
-					(proj.ModProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch, 0);
+                drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0));
+               
+                foreach (Projectile proj in Main.projectile.Where(n => n.active && n.ModProjectile is IUnderwater)) //draw all Projectiles
+                    (proj.ModProjectile as IUnderwater).DrawUnderWater(Main.spriteBatch, 0);
 
-				if (boss != -1 && Main.npc[boss].ModNPC is IUnderwater)
-					(Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0); //draw boss ontop if extant
+                if (boss != -1 && Main.npc[boss].ModNPC is IUnderwater)
+                   (Main.npc[boss].ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 0); //draw boss ontop if extant
 
-				drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 1)); //draw layer for NPCs over bosses, used for the front part of tentacles
-			}
-		}
-	}
+                drawCache.ForEach(n => (n.ModNPC as IUnderwater).DrawUnderWater(Main.spriteBatch, 1)); //draw layer for NPCs over bosses, used for the front part of tentacles
+            }
+        }
+    }
 }

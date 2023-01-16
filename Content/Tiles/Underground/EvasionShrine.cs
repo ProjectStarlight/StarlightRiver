@@ -1,9 +1,16 @@
-﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.ModLoader;
 using Terraria.ID;
+using Terraria;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -20,11 +27,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
 		{
-			Tile tile = Framing.GetTileSafely(i, j);
+			var tile = Framing.GetTileSafely(i, j);
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
-				Projectile dummy = Dummy(i, j);
+				var dummy = Dummy(i, j);
 
 				if (dummy is null)
 					return;
@@ -39,21 +46,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override bool RightClick(int i, int j)
 		{
-			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
+			var tile = (Tile)(Framing.GetTileSafely(i, j).Clone());
 
 			int x = i - tile.TileFrameX / 18;
 			int y = j - tile.TileFrameY / 18;
 
-			Projectile dummy = Dummy(x, y);
+			var dummy = Dummy(x, y);
 
 			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
-<<<<<<< HEAD
 				for (int x1 = 0; x1 < 5; x1++)
-=======
-				for (int x1 = 0; x1 < 3; x1++)
-				{
->>>>>>> master
 					for (int y1 = 0; y1 < 6; y1++)
 					{
 						int realX = x1 + x;
@@ -61,7 +63,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX += 5 * 18;
 					}
-				}
 
 				(dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
 				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
@@ -88,7 +89,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
+			var color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
 
 			Lighting.AddLight(Projectile.Center + new Vector2(240, 0), color);
 			Lighting.AddLight(Projectile.Center + new Vector2(-240, 0), color);
@@ -103,12 +104,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State == 0 && Parent.TileFrameX > 5 * 18)
 			{
-<<<<<<< HEAD
 				for (int x = 0; x < 5; x++)
-=======
-				for (int x = 0; x < 3; x++)
-				{
->>>>>>> master
 					for (int y = 0; y < 6; y++)
 					{
 						int realX = ParentX - 2 + x;
@@ -118,7 +114,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Main.NewText(Framing.GetTileSafely(realX, realY).ToString());
 					}
-				}
 
 				Timer = 0;
 			}
@@ -132,23 +127,21 @@ namespace StarlightRiver.Content.Tiles.Underground
 				{
 					Timer++;
 
-					if (attackOrder is null)
+					if(attackOrder is null)
 					{
 						attackOrder = new List<int>();
-
 						for (int k = 0; k < 15; k++)
-						{
 							attackOrder.Add(k);
-						}
 
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
 					}
 
 					if (State > maxAttacks)
 					{
-						if (Timer > 600)
+						if(Timer > 600)
+						{
 							State = -1;
-
+						}
 						return;
 					}
 
@@ -156,7 +149,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				}
 			}
 
-			if (State == -1 || lives <= 0 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
+			if (State == -1 || lives <= 0 || (!Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500))) //"fail" conditions, no living Players in radius or already failing
 			{
 				State = -1;
 
@@ -177,7 +170,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public void SpawnObstacles(int timer)
 		{
-			switch (attackOrder[(int)State - 1])
+			switch(attackOrder[(int)State - 1])
 			{
 				case 0: VerticalSawJaws(timer); break;
 				case 1: HorizontalSawJaws(timer); break;
@@ -197,7 +190,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void SpawnBlade(Vector2 start, Vector2 vel, int time)
 		{
 			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, vel, ModContent.ProjectileType<SawbladeSmall>(), 10, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as SawbladeSmall;
+			var mp = (Main.projectile[i].ModProjectile as SawbladeSmall);
 			Main.projectile[i].timeLeft = time;
 			mp.parent = this;
 		}
@@ -205,7 +198,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void SpawnDart(Vector2 start, Vector2 mid, Vector2 end, int duration)
 		{
 			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Dart>(), 7, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as Dart;
+			var mp = (Main.projectile[i].ModProjectile as Dart);
 			mp.endPoint = end;
 			mp.midPoint = mid;
 			mp.duration = duration;
@@ -215,7 +208,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void SpawnSpear(Vector2 start, Vector2 end, int teleTime, int riseTime, int retractTime, int holdTime = 0)
 		{
 			int i = Projectile.NewProjectile(Projectile.GetSource_FromThis(), start, Vector2.Zero, ModContent.ProjectileType<Spear>(), 15, 0, Main.myPlayer);
-			var mp = Main.projectile[i].ModProjectile as Spear;
+			var mp = (Main.projectile[i].ModProjectile as Spear);
 			mp.endPoint = end;
 			mp.timeToRise = riseTime;
 			mp.timeToRetract = retractTime;
@@ -245,15 +238,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			if (State != 0)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
+				var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.visualTimer), 0, origin, 3.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
-				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, 60), default, GetBeamColor(StarlightWorld.rottime), 0, origin, 3.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.rottime + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
+				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.rottime + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
 				if (State > 0)
 				{
-					Texture2D fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
+					var fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
 
 					Vector2 leftPos = Projectile.Center - Main.screenPosition + new Vector2(-248, -220);
@@ -303,8 +296,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		private Color GetBeamColor(float time)
 		{
-			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
-			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
+			var sin = (0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f);
+			var sin2 = (0.5f + (float)Math.Sin(time) * 0.5f);
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
 		}
 	}

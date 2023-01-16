@@ -1,6 +1,10 @@
-﻿using StarlightRiver.Content.Foregrounds;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Foregrounds;
 using System;
+using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
@@ -29,14 +33,9 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		{
 			Variant = Main.rand.Next(3);
 
-			if (Variant == 0)
-				NPC.width = 66;
-
-			if (Variant == 1)
-				NPC.width = 58;
-
-			if (Variant == 2)
-				NPC.width = 64;
+			if (Variant == 0) NPC.width = 66;
+			if (Variant == 1) NPC.width = 58;
+			if (Variant == 2) NPC.width = 64;
 
 			NPC.height = NPC.width;
 
@@ -50,13 +49,13 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public override void AI()
 		{
-			if (root is null) //scan to find a valid root tile under where it spawned
+			if(root is null) //scan to find a valid root tile under where it spawned
 			{
 				NPC.Center = NPC.Center - new Vector2(NPC.Center.X % 16, NPC.Center.Y % 16);
 
-				for (int k = 0; root is null; k++)
+				for(int k = 0; root is null; k++)
 				{
-					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
+					var tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
 
 					if (tile.HasTile && tile.BlockType == BlockType.Solid)
 					{
@@ -68,7 +67,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				}
 			}
 
-			if (!root.Value.HasTile) //should automatically activate if the tile under it is killed
+			if(!root.Value.HasTile) //should automatically activate if the tile under it is killed
 			{
 				State = (int)States.Transforming;
 				Timer = 0;
@@ -76,12 +75,12 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 			Timer++;
 
-			switch (State)
+			switch(State)
 			{
 				case (int)States.Idle:
 
 					//clientside vignette effect
-					float distance = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center + Vector2.UnitY * Height);
+					var distance = Vector2.Distance(Main.LocalPlayer.Center, NPC.Center + Vector2.UnitY * Height);
 
 					if (distance < 500)
 					{
@@ -92,7 +91,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.TargetClosest();
 
-					float yOff = Target.Center.Y - NPC.Center.Y;
+					var yOff = Target.Center.Y - NPC.Center.Y;
 
 					if (Timer > 60 && Math.Abs(Target.Center.X - NPC.Center.X) < 32 && yOff < (Height - 16) && yOff > 0) //under the tree
 					{
@@ -104,14 +103,14 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 				case (int)States.Transforming:
 
-					if (Timer == 100)
+					if(Timer == 100)
 					{
 						NPC.noGravity = false;
 
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, NPC.Center);
 					}
 
-					if (Timer > 60)
+					if(Timer > 60)
 					{
 						for (int k = 0; k < 5; k++)
 						{
@@ -120,7 +119,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 						}
 					}
 
-					if (Timer >= 100)
+					if(Timer >= 100)
 					{
 						if (NPC.velocity.Y == 0)
 						{
@@ -138,28 +137,26 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.velocity.X += Target.Center.X > NPC.Center.X ? 0.1f : -0.1f;
 
-					if (NPC.velocity.X > 3)
-						NPC.velocity.X = 2.9f;
-
-					if (NPC.velocity.X < -3)
-						NPC.velocity.X = -2.9f;
+					if (NPC.velocity.X > 3) NPC.velocity.X = 2.9f;
+					if (NPC.velocity.X < -3) NPC.velocity.X = -2.9f;
 
 					NPC.rotation += NPC.velocity.X / (NPC.width / 2f);
 
 					break;
 			}
+
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			var rand = new Random(NPC.GetHashCode());
+			Random rand = new Random(NPC.GetHashCode());
 
-			switch (State)
+			switch(State)
 			{
 				case (int)States.Transforming: //fall-through moment
 				case (int)States.Idle:
 
-					Texture2D barkTex = Request<Texture2D>("Terraria/Tiles_5_0").Value; //corruption tree bark 
+					var barkTex = Request<Texture2D>("Terraria/Tiles_5_0").Value; //corruption tree bark 
 
 					for (int k = 0; k < Height; k += 16)
 					{
@@ -174,34 +171,34 @@ namespace StarlightRiver.Content.NPCs.Corruption
 								continue;
 						}
 
-						var source = new Rectangle(rand.Next(2) * 22, rand.Next(6) * 22, 20, 16);
+						Rectangle source = new Rectangle(rand.Next(2) * 22, rand.Next(6) * 22, 20, 16);
 						Color color = Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16);
 
 						spriteBatch.Draw(barkTex, pos - screenPos, source, color);
 
-						if (rand.Next(6) == 0 && k > 48 && k < Height - 48)
+						if(rand.Next(6) == 0 && k > 48 && k < Height - 48)
 						{
-							Texture2D branchTex = Request<Texture2D>(Texture + "Branches").Value;
+							var branchTex = Request<Texture2D>(Texture + "Branches").Value;
 
 							bool right = rand.Next(2) == 0;
 							Vector2 branchPos = pos + new Vector2(right ? 16 : -branchTex.Width / 2 + 6, -16);
-							var branchSource = new Rectangle(right ? branchTex.Width / 2 : 0, rand.Next(3) * branchTex.Height / 3, 42, 42);
+							Rectangle branchSource = new Rectangle(right ? branchTex.Width / 2 : 0, rand.Next(3) * branchTex.Height / 3, 42, 42);
 							Color branchColor = Lighting.GetColor((int)branchPos.X / 16, (int)branchPos.Y / 16);
 
 							spriteBatch.Draw(branchTex, branchPos - screenPos, branchSource, branchColor);
 						}
 
-						if (k == Height - 16)
+						if(k == Height - 16)
 						{
 							bool rightRoot = rand.Next(2) == 0;
 							spriteBatch.Draw(barkTex, pos - screenPos + Vector2.UnitX * (rightRoot ? 14 : -14), new Rectangle(rightRoot ? 22 : 44, 6 * 22 + rand.Next(3) * 22, 22, 22), color);
 						}
 					}
 
-					Texture2D topperTex = Request<Texture2D>(Texture + "Tops").Value;
+					var topperTex = Request<Texture2D>(Texture + "Tops").Value;
 
 					Vector2 topperPos = NPC.Center - new Vector2(NPC.Center.X % 16, NPC.Center.Y % 16) + new Vector2(11, 8);
-					var topperSource = new Rectangle((int)Variant * 82, 0, 82, 82);
+					Rectangle topperSource = new Rectangle((int)Variant * 82, 0, 82, 82);
 
 					if (State == (int)States.Transforming)
 						topperSource.Y = (int)(Timer < 30 ? Timer / 30 * 5 : Timer % 10 < 5 ? 3 : 4) * 84;

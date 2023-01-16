@@ -1,4 +1,7 @@
-﻿namespace StarlightRiver.Core
+﻿using Terraria;
+using Terraria.ModLoader;
+
+namespace StarlightRiver.Core
 {
 	class CritMultiPlayer : ModPlayer //TODO: Make compatible with new damage type hoo-hah
 	{
@@ -9,24 +12,19 @@
 
 		public override void Load()
 		{
-			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;
+			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;		
 		}
 
 		private void AddCritToProjectiles(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (crit)
 			{
-				CritMultiPlayer mp = Main.player[Projectile.owner].GetModPlayer<CritMultiPlayer>();
+				var mp = Main.player[Projectile.owner].GetModPlayer<CritMultiPlayer>();
 				float toMult = mp.AllCritMult;
 
-				if (Projectile.DamageType.Type == DamageClass.Melee.Type)
-					toMult += mp.MeleeCritMult;
-
-				if (Projectile.DamageType.Type == DamageClass.Ranged.Type)
-					toMult += mp.RangedCritMult;
-
-				if (Projectile.DamageType.Type == DamageClass.Magic.Type)
-					toMult += mp.MagicCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Melee.Type) toMult += mp.MeleeCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Ranged.Type) toMult += mp.RangedCritMult;
+				if (Projectile.DamageType.Type == DamageClass.Magic.Type) toMult += mp.MagicCritMult;
 
 				float multiplier = 1 + toMult / 2;
 				damage = (int)(damage * multiplier);
@@ -35,18 +33,13 @@
 
 		public override void ModifyHitNPC(Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
-			if (crit)
+			if(crit)
 			{
 				float toMult = AllCritMult;
 
-				if (Item.DamageType.Type == DamageClass.Melee.Type)
-					toMult += MeleeCritMult;
-
-				if (Item.DamageType.Type == DamageClass.Ranged.Type)
-					toMult += RangedCritMult;
-
-				if (Item.DamageType.Type == DamageClass.Magic.Type)
-					toMult += MagicCritMult;
+				if (Item.DamageType.Type == DamageClass.Melee.Type) toMult += MeleeCritMult;
+				if (Item.DamageType.Type == DamageClass.Ranged.Type) toMult += RangedCritMult;
+				if (Item.DamageType.Type == DamageClass.Magic.Type) toMult += MagicCritMult;
 
 				float multiplier = 1 + toMult / 2;
 				damage = (int)(damage * multiplier);
@@ -63,38 +56,28 @@
 
 		public static float GetMultiplier(Projectile Projectile)
 		{
-			Player Player = Main.player[Projectile.owner];
-			CritMultiPlayer mp = Player.GetModPlayer<CritMultiPlayer>();
+			var Player = Main.player[Projectile.owner];
+			var mp = Player.GetModPlayer<CritMultiPlayer>();
 
 			float multiplier = mp.AllCritMult;
 
-			if (Projectile.DamageType.Type == DamageClass.Melee.Type)
-				multiplier += mp.MeleeCritMult;
-
-			if (Projectile.DamageType.Type == DamageClass.Ranged.Type)
-				multiplier += mp.RangedCritMult;
-
-			if (Projectile.DamageType.Type == DamageClass.Magic.Type)
-				multiplier += mp.MagicCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Melee.Type) multiplier += mp.MeleeCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Ranged.Type) multiplier += mp.RangedCritMult;
+			if (Projectile.DamageType.Type == DamageClass.Magic.Type) multiplier += mp.MagicCritMult;
 
 			return multiplier;
 		}
 
 		public static float GetMultiplier(Item Item)
 		{
-			Player Player = Main.player[Item.playerIndexTheItemIsReservedFor];
-			CritMultiPlayer mp = Player.GetModPlayer<CritMultiPlayer>();
+			var Player = Main.player[Item.playerIndexTheItemIsReservedFor];
+			var mp = Player.GetModPlayer<CritMultiPlayer>();
 
 			float multiplier = mp.AllCritMult;
 
-			if (Item.DamageType.Type == DamageClass.Melee.Type)
-				multiplier += mp.MeleeCritMult;
-
-			if (Item.DamageType.Type == DamageClass.Ranged.Type)
-				multiplier += mp.RangedCritMult;
-
-			if (Item.DamageType.Type == DamageClass.Magic.Type)
-				multiplier += mp.MagicCritMult;
+			if (Item.DamageType.Type == DamageClass.Melee.Type) multiplier += mp.MeleeCritMult;
+			if (Item.DamageType.Type == DamageClass.Ranged.Type) multiplier += mp.RangedCritMult;
+			if (Item.DamageType.Type == DamageClass.Magic.Type) multiplier += mp.MagicCritMult;
 
 			return multiplier;
 		}

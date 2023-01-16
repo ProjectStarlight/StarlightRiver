@@ -1,9 +1,13 @@
-﻿using StarlightRiver.Content.Items.Food;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.Food;
 using StarlightRiver.Content.Items.Food.Special;
 using StarlightRiver.Content.Items.Utility;
-using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -18,22 +22,19 @@ namespace StarlightRiver.Content.GUI
 		public static ChefBag openBag = null;
 		public static bool visible;
 
-		public static UIGrid grid = new();
-		public static UIImageButton SortButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/SortButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
-		public static UIImageButton OwnedButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButtonOff", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIGrid grid = new UIGrid();
+		public static UIImageButton SortButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/SortButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton OwnedButton = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButtonOff", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
-		public static UIImageButton IngredientTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/IngredientButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
-		public static UIImageButton RecipieTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/MealButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton IngredientTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/IngredientButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+		public static UIImageButton RecipieTab = new UIImageButton(Request<Texture2D>("StarlightRiver/Assets/GUI/MealButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 
 		public static string sortMode = "Rarity";
 		public static bool hideUnowned = false;
 
 		public override bool Visible => visible;
 
-		public override int InsertionIndex(List<GameInterfaceLayer> layers)
-		{
-			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
-		}
+		public override int InsertionIndex(List<GameInterfaceLayer> layers) => layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 
 		public override void OnInitialize()
 		{
@@ -49,6 +50,7 @@ namespace StarlightRiver.Content.GUI
 
 			Append(grid);
 
+
 			SortButton.Left.Set(-260, 0.5f);
 			SortButton.Top.Set(-220, 0.5f);
 			SortButton.Width.Set(32, 0);
@@ -56,6 +58,7 @@ namespace StarlightRiver.Content.GUI
 			SortButton.OnClick += ChangeSortMode;
 
 			Append(SortButton);
+
 
 			OwnedButton.Left.Set(-260, 0.5f);
 			OwnedButton.Top.Set(-180, 0.5f);
@@ -65,6 +68,7 @@ namespace StarlightRiver.Content.GUI
 
 			Append(OwnedButton);
 
+
 			IngredientTab.Left.Set(-220, 0.5f);
 			IngredientTab.Top.Set(-256, 0.5f);
 			IngredientTab.Width.Set(50, 0);
@@ -72,6 +76,7 @@ namespace StarlightRiver.Content.GUI
 			IngredientTab.OnClick += (a, b) => RebuildGrid();
 
 			Append(IngredientTab);
+
 
 			RecipieTab.Left.Set(-160, 0.5f);
 			RecipieTab.Top.Set(-256, 0.5f);
@@ -102,7 +107,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			grid.UpdateOrder();
-			UILoader.GetUIState<ChefBagUI>().Recalculate();
+			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void Move(Vector2 moveTarget)
@@ -122,7 +127,7 @@ namespace StarlightRiver.Content.GUI
 			RecipieTab.Left.Set(moveTarget.X + 60, 0);
 			RecipieTab.Top.Set(moveTarget.Y - 36, 0);
 
-			UILoader.GetUIState<ChefBagUI>().Recalculate();
+			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void RebuildGrid()
@@ -149,7 +154,7 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			grid.UpdateOrder();
-			UILoader.GetUIState<ChefBagUI>().Recalculate();
+			Core.Loaders.UILoader.GetUIState<ChefBagUI>().Recalculate();
 		}
 
 		public static void RebuildRecipies()
@@ -169,13 +174,13 @@ namespace StarlightRiver.Content.GUI
 			if (grid._items.Count() == 0)
 				RebuildGrid();
 
-			if (SortButton.IsMouseHovering)
+			if(SortButton.IsMouseHovering)
 				Main.hoverItemName = "Sort mode:\n" + sortMode;
 
 			if (OwnedButton.IsMouseHovering)
 				Main.hoverItemName = "Hide unowned:\n" + hideUnowned;
 
-			if (IngredientTab.IsMouseHovering)
+			if(IngredientTab.IsMouseHovering)
 				Main.hoverItemName = "Ingredients";
 
 			if (RecipieTab.IsMouseHovering)
@@ -208,18 +213,18 @@ namespace StarlightRiver.Content.GUI
 		{
 			Main.instance.LoadItem(Item.type);
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
-			Texture2D ItemTex = TextureAssets.Item[Item.type].Value;
-			Vector2 pos = GetDimensions().Center();
+			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
+			var texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
+			var ItemTex = TextureAssets.Item[Item.type].Value;
+			var pos = GetDimensions().Center();
 
-			List<Item> items = ChefBagUI.openBag.Items;
-			Item heldItem = items.FirstOrDefault(n => n.type == Item.type);
-			int count = heldItem is null ? 0 : heldItem.stack;
+			var items = ChefBagUI.openBag.Items;
+			var heldItem = items.FirstOrDefault(n => n.type == Item.type);
+			var count = heldItem is null ? 0 : heldItem.stack;
 
-			Color color = count == 0 ? Color.LightGray * 0.5f : Color.White;
+			var color = (count == 0 ? Color.LightGray * 0.5f : Color.White);
 
-			Color color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
+			var color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
 			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, scale, 0, 0);
@@ -227,7 +232,7 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, scale, 0, 0);
 			Utils.DrawBorderString(spriteBatch, count.ToString(), pos + Vector2.One * 14, color, 0.8f * scale, 1, 0.5f);
 
-			if (IsMouseHovering && count > 0)
+			if(IsMouseHovering && count > 0)
 			{
 				Main.LocalPlayer.mouseInterface = true;
 				Main.HoverItem = Item.Clone();
@@ -246,7 +251,7 @@ namespace StarlightRiver.Content.GUI
 			{
 				Main.mouseItem.TurnToAir();
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
-			}
+			}		
 		}
 
 		public override void RightClick(UIMouseEvent evt)
@@ -258,29 +263,30 @@ namespace StarlightRiver.Content.GUI
 			}
 			else if (Main.mouseItem.type == Item.type && Main.mouseItem.stack < Main.mouseItem.maxStack)
 			{
-				Item removal = ChefBagUI.openBag.RemoveItem(Item.type, 1);
+				var removal = ChefBagUI.openBag.RemoveItem(Item.type, 1);
 
 				if (removal != null)
 					Main.mouseItem.stack += removal.stack;
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
-			}
+			}		
 		}
 
 		public override int CompareTo(object obj)
 		{
 			var other = obj as IngredientStorageSlot;
 
-			return ChefBagUI.sortMode switch
+			switch(ChefBagUI.sortMode)
 			{
-				"Rarity" => CompareRarity(other),
-				"Type" => CompareType(other),
-				"Alphabetical" => CompareAlphabetical(other),
-				"Rarity Reverse" => CompareRarity(other) * -1,
-				"Type Reverse" => CompareType(other) * -1,
-				"Alphabetical Reverse" => CompareAlphabetical(other) * -1,
-				_ => CompareRarity(other),//use rarity sort as a default
-			};
+				case "Rarity": return CompareRarity(other);
+				case "Type": return CompareType(other);
+				case "Alphabetical": return CompareAlphabetical(other);
+				case "Rarity Reverse": return CompareRarity(other) * -1;
+				case "Type Reverse": return CompareType(other) * -1;
+				case "Alphabetical Reverse": return CompareAlphabetical(other) * -1;
+			}
+
+			return CompareRarity(other); //use rarity sort as a default
 		}
 
 		private int CompareRarity(IngredientStorageSlot other)
@@ -323,11 +329,11 @@ namespace StarlightRiver.Content.GUI
 			Left.Set(index % 2 * 240, 0);
 			Top.Set(index / 2 * 54, 0);
 
-			for (int k = 0; k < 4; k++)
+			for(int k = 0; k < 4; k++)
 			{
 				var item = new Item();
 				item.SetDefaults(Result.Recipie().AsList()[k]);
-				var slot = new IngredientStorageSlot(item, k + 1, 0.8f);
+				IngredientStorageSlot slot = new IngredientStorageSlot(item, k + 1, 0.8f);
 				slot.Left.Set(50 + k * 42, 0);
 				slot.Top.Set(8, 0);
 				Append(slot);
@@ -338,18 +344,18 @@ namespace StarlightRiver.Content.GUI
 		{
 			Main.instance.LoadItem(Item.type);
 
-			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
-			Texture2D texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
-			Texture2D ItemTex = TextureAssets.Item[Item.type].Value;
-			Vector2 pos = GetDimensions().Center();
+			var tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
+			var texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
+			var ItemTex = TextureAssets.Item[Item.type].Value;
+			var pos = GetDimensions().Center();
 			pos.X = GetDimensions().X + 25;
 
-			List<Item> items = ChefBagUI.openBag.Items;
-			Item heldItem = items.FirstOrDefault(n => n.type == Item.type);
+			var items = ChefBagUI.openBag.Items;
+			var heldItem = items.FirstOrDefault(n => n.type == Item.type);
 
-			Color color = Color.White;
+			var color = Color.White;
 
-			Color color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
+			var color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
 			float scale = ItemTex.Width > ItemTex.Height ? 32f / ItemTex.Width : 32f / ItemTex.Height;
@@ -367,7 +373,7 @@ namespace StarlightRiver.Content.GUI
 				Main.hoverItemName = "a";
 			}
 
-			foreach (UIElement child in Children)
+			foreach (var child in Children)
 				child.Draw(spriteBatch);
 		}
 
@@ -377,7 +383,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (hitbox.Contains(Main.MouseScreen.ToPoint()) && CookingUI.visible)
 			{
-				CookingUI cooking = UILoader.GetUIState<CookingUI>();
+				var cooking = UILoader.GetUIState<CookingUI>();
 
 				if (!cooking.MainSlot.Item.IsAir)
 					ChefBagUI.openBag.InsertItem(cooking.MainSlot.Item.Clone());

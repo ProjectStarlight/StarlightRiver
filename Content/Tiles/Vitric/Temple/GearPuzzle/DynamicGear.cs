@@ -1,10 +1,20 @@
-﻿using Terraria.DataStructures;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
-	class DynamicGear : GearTile
-	{
-		public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
+    class DynamicGear : GearTile
+    {
+        public override int DummyType => ModContent.ProjectileType<DynamicGearDummy>();
 
 		public override void MouseOver(int i, int j)
 		{
@@ -16,7 +26,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 		public override bool RightClick(int i, int j)
 		{
-			var dummy = Dummy(i, j).ModProjectile as GearTileDummy;
+			var dummy = (Dummy(i, j).ModProjectile as GearTileDummy);
 
 			var entity = TileEntity.ByPosition[new Point16(i, j)] as GearTileEntity;
 
@@ -38,9 +48,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
-	class DynamicGearDummy : GearTileDummy
-	{
-		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
+    class DynamicGearDummy : GearTileDummy
+    {
+        public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
 
 		public override void Update()
 		{
@@ -55,25 +65,29 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
 
-			Texture2D tex = Size switch
+			Texture2D tex;
+
+			switch (Size)
 			{
-				0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
-				1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-				2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value,
-				3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
-				_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-			};
+				case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+				case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+				case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
+				case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
+				default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+			}
 
 			if (gearAnimation > 0) //switching between sizes animation
 			{
-				Texture2D texOld = oldSize switch
+				Texture2D texOld;
+
+				switch (oldSize)
 				{
-					0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
-					1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-					2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value,
-					3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value,
-					_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value,
-				};
+					case 0: texOld = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
+					case 1: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+					case 2: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearMid").Value; break;
+					case 3: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearLarge").Value; break;
+					default: texOld = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MagicalGearSmall").Value; break;
+				}
 
 				if (gearAnimation > 20)
 				{

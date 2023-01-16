@@ -1,11 +1,13 @@
-﻿using Terraria.DataStructures;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
 	public abstract class InworldItem : ModItem
 	{
 		public InworldItemNPC inWorldNPC;
-
 		public NPC NPC => inWorldNPC?.NPC;
 
 		public virtual bool VisibleInUI => true;
@@ -13,7 +15,7 @@ namespace StarlightRiver.Core
 
 		public static NPC CreateItem<T>(Vector2 pos) where T : InworldItem
 		{
-			var Item = new Item();
+			Item Item = new Item();
 			Item.SetDefaults(ModContent.ItemType<T>());
 			var inworldItem = Item.ModItem as InworldItem;
 
@@ -31,15 +33,14 @@ namespace StarlightRiver.Core
 
 			if (Player.HeldItem.type != Item.type)
 				inWorldNPC?.Release(true);
-		}
+		}	
 	}
 
 	public abstract class InworldItemNPC : ModNPC
 	{
 		public InworldItem inWorldItem;
 		public Player owner;
-
-		public bool Held => owner != null;
+		public bool held => owner != null;
 
 		public Item Item => inWorldItem.Item;
 
@@ -49,10 +50,7 @@ namespace StarlightRiver.Core
 
 		protected virtual void PutDownNatural(Player Player) { }
 
-		public virtual bool CanPickup(Player Player)
-		{
-			return false;
-		}
+		public virtual bool CanPickup(Player Player) => false;
 
 		public void Release(bool natural)
 		{
@@ -69,7 +67,7 @@ namespace StarlightRiver.Core
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			if (CanPickup(target) && !Held && target.Hitbox.Intersects(NPC.Hitbox))
+			if (CanPickup(target) && !held && target.Hitbox.Intersects(NPC.Hitbox))
 			{
 				target.inventory[58] = Item;
 				Main.mouseItem = Item;
@@ -87,7 +85,7 @@ namespace StarlightRiver.Core
 			if (inWorldItem is null)
 				NPC.active = false;
 
-			if (Held && owner.HeldItem.type != Item.type)
+			if (held && owner.HeldItem.type != Item.type)
 				Release(true);
 		}
 	}

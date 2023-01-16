@@ -1,175 +1,161 @@
-﻿using StarlightRiver.Content.CustomHooks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Configs;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Shaders;
+using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Core
 {
-	public delegate void MapRender(SpriteBatch spriteBatch);
+    public delegate void MapRender(SpriteBatch spriteBatch);
 
-	public class Map
-	{
-		internal Dictionary<string, MapPass> MapPasses = new();
+    public class Map
+    {
+        internal Dictionary<string, MapPass> MapPasses = new Dictionary<string, MapPass>();
 
-		public void OrderedRenderPassBatched(SpriteBatch sb, GraphicsDevice graphics)
-		{
-			RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
-			int i = 0;
+        public void OrderedRenderPassBatched(SpriteBatch sb, GraphicsDevice GD, bool Batched = true)
+        {
+            RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
+            int i = 0;
 
-			Matrix matrix = Main.GameViewMatrix.ZoomMatrix;
+            Matrix matrix = Main.GameViewMatrix.ZoomMatrix;
 
-			for (int a = 0; a < MapPasses.Count; a++)
-			{
-				foreach (KeyValuePair<string, MapPass> Map in MapPasses)
-				{
-					MapPass Pass = Map.Value;
+            for (int a = 0; a < MapPasses.Count; a++)
+            {
+                foreach (KeyValuePair<string, MapPass> Map in MapPasses)
+                {
+                    var Pass = Map.Value;
 
-					if (Pass.Priority != i)
-						continue;
+                    if (Pass.Priority != i) continue;
 
-					if (Pass.ManualTarget == null)
-					{
-						graphics.SetRenderTarget(Pass.mapTarget);
-						graphics.Clear(Color.Transparent);
+                    if (Pass.ManualTarget == null)
+                    {
+                        GD.SetRenderTarget(Pass.MapTarget);
+                        GD.Clear(Color.Transparent);
 
-						sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
-						Pass.RenderBatched(sb);
-						sb.End();
+                        sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
+                        Pass.RenderBatched(sb);
+                        sb.End();
 
-						Pass.RenderPrimitive(sb);
-					}
-				}
+                        Pass.RenderPrimitive(sb);
+                    }
+                }
 
-				i++;
-			}
+                i++;
+            }
 
-			Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
-		}
+            Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
+        }
 
-		public void OrderedShaderPass()
-		{
-			int i = 0;
+        public void OrderedShaderPass()
+        {
+            int i = 0;
 
-			for (int a = 0; a < MapPasses.Count; a++)
-			{
-				foreach (KeyValuePair<string, MapPass> Map in MapPasses)
-				{
-					MapPass Pass = Map.Value;
+            for (int a = 0; a < MapPasses.Count; a++)
+            {
+                foreach (KeyValuePair<string, MapPass> Map in MapPasses)
+                {
+                    var Pass = Map.Value;
 
-					if (Pass.Priority != i)
-						continue;
+                    if (Pass.Priority != i) continue;
 
-					Pass.ApplyShader();
-				}
+                    Pass.ApplyShader();
+                }
 
-				i++;
-			}
-		}
+                i++;
+            }
+        }
+        public void DrawToMap(string Map, MapRender MR) => MapPasses[Map].DrawToBatchedTarget(MR);
 
-		public void DrawToMap(string Map, MapRender MR)
-		{
-			MapPasses[Map].DrawToBatchedTarget(MR);
-		}
+        public void AddMap(string MapName, MapPass MP)
+        {
+            MP.Parent = this;
+            MapPasses.Add(MapName, MP);
+        }
 
-		public void AddMap(string MapName, MapPass MP)
-		{
-			MP.Parent = this;
-			MapPasses.Add(MapName, MP);
-		}
+        public MapPass Get(string MapName) => MapPasses[MapName];
 
-		public MapPass Get(string MapName)
-		{
-			return MapPasses[MapName];
-		}
+        public MapPass Get<T>() where T : MapPass
+        {
+            //TODO: Support for multiple Passes with different ID's
 
-		public MapPass Get<T>() where T : MapPass
-		{
-			//TODO: Support for multiple Passes with different ID's
+            foreach (MapPass pass in MapPasses.Values)
+            {
+                if (pass is T) return (T)pass;
+            }
 
-			foreach (MapPass pass in MapPasses.Values)
-			{
-				if (pass is T)
-					return (T)pass;
-			}
+            throw new System.Exception("Pass does not exist");
+        }
 
-			throw new System.Exception("Pass does not exist");
-		}
-	}
+    }
 
-	public abstract class MapPass
-	{
-		internal event MapRender batchedCalls;
+    public abstract class MapPass
+    {
+        internal event MapRender BatchedCalls;
 
-		internal event MapRender primitiveCalls;
+        internal event MapRender PrimitiveCalls;
 
-		public RenderTarget2D mapTarget;
+        public RenderTarget2D MapTarget;
 
-		public abstract int Priority { get; }
+        public virtual RenderTarget2D ManualTarget => null;
 
-		protected abstract string MapEffectName { get; }
+        public abstract int Priority { get; }
 
-		public virtual RenderTarget2D ManualTarget => null;
+        protected abstract string MapEffectName { get; }
 
-		protected ScreenShaderData MapEffect => Helpers.Helpers.GetScreenShader(MapEffectName);
+        protected ScreenShaderData MapEffect => Helpers.Helpers.GetScreenShader(MapEffectName);
 
-		internal virtual void OnApplyShader() { }
+        internal virtual void OnApplyShader() { }
+        public virtual void Load() => MapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
 
-		public virtual void Load()
-		{
-			mapTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-		}
 
-		public void ApplyShader()
-		{
-			if (ManualTarget != null)
-				mapTarget = ManualTarget;
+        public void ApplyShader()
+        {
+            if (ManualTarget != null) MapTarget = ManualTarget;
 
-			if (MapEffectName != "")
-			{
-				//always here jic
-				MapEffect?.Shader?.Parameters["Noise"]?.SetValue(Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoise").Value);
-				MapEffect?.Shader?.Parameters["TileTarget"]?.SetValue(PlayerTarget.ScaledTileTarget);
-				MapEffect?.Shader?.Parameters["Map"]?.SetValue(mapTarget);
+            if (MapEffectName != "")
+            {
+                //always here jic
+                MapEffect?.Shader?.Parameters["Noise"]?.SetValue(Request<Texture2D>(AssetDirectory.Assets + "Noise/ShaderNoise").Value);
+                MapEffect?.Shader?.Parameters["TileTarget"]?.SetValue(PlayerTarget.ScaledTileTarget);
+                MapEffect?.Shader?.Parameters["Map"]?.SetValue(MapTarget);
 
-				//change to something better
-				MapEffect?.UseIntensity(Main.GameUpdateCount);
-			}
+                //change to something better
+                MapEffect?.UseIntensity(Main.GameUpdateCount);
+            }
 
-			OnApplyShader();
+            OnApplyShader();
 
-			if (MapEffectName != "")
-			{
-				Helpers.Helpers.ActivateScreenShader(MapEffectName);
-			}
-		}
+            if (MapEffectName != "")
+            {
+                Helpers.Helpers.ActivateScreenShader(MapEffectName);
+            }
 
-		public void DrawToBatchedTarget(MapRender method)
-		{
-			batchedCalls += method;
-		}
+        }
 
-		public void DrawToPrimitiveTarget(MapRender method)
-		{
-			primitiveCalls += method;
-		}
+        public void DrawToBatchedTarget(MapRender method) => BatchedCalls += method;
 
-		public void RenderBatched(SpriteBatch spriteBatch)
-		{
-			batchedCalls?.Invoke(spriteBatch);
-			batchedCalls = null;
-		}
+        public void DrawToPrimitiveTarget(MapRender method) => PrimitiveCalls += method;
 
-		public void RenderPrimitive(SpriteBatch spriteBatch)
-		{
-			primitiveCalls?.Invoke(spriteBatch);
-			primitiveCalls = null;
-		}
+        public void RenderBatched(SpriteBatch spriteBatch)
+        {
+            BatchedCalls?.Invoke(spriteBatch);
+            BatchedCalls = null;
+        }
 
-		public Map Parent;
-		public MapPass()
-		{
-			Load();
-		}
-	}
+        public void RenderPrimitive(SpriteBatch spriteBatch)
+        {
+            PrimitiveCalls?.Invoke(spriteBatch);
+            PrimitiveCalls = null;
+        }
+
+        public Map Parent;
+        public MapPass() => Load();
+
+    }
 }
 

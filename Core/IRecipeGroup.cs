@@ -1,8 +1,8 @@
 ﻿namespace StarlightRiver.Core
 {
 	interface IRecipeGroup
-	{
-		void AddRecipeGroups();
-		float Priority { get; }
-	}
+    {
+        void AddRecipeGroups();
+        float Priority { get; }
+    }
 }

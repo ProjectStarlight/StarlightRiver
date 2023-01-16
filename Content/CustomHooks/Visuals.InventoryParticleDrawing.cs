@@ -1,23 +1,26 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class InventoryParticleDrawing : HookGroup
-	{
-		//Just drawing some ParticleSystems over the inventory UI. Nothing bad.
-		public override void Load()
-		{
-			if (Main.dedServ)
-				return;
+    {
+        //Just drawing some ParticleSystems over the inventory UI. Nothing bad.
+        public override SafetyLevel Safety => SafetyLevel.Safe;
 
-			On.Terraria.Main.DrawInterface_27_Inventory += DrawInventoryParticles;
-		}
+        public override void Load()
+        {
+            if (Main.dedServ)
+                return;
 
-		private void DrawInventoryParticles(On.Terraria.Main.orig_DrawInterface_27_Inventory orig, Main self)
-		{
-			orig(self);
-			CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);
-			CursedAccessory.ShardsSystem.DrawParticles(Main.spriteBatch);
-		}
-	}
+            On.Terraria.Main.DrawInterface_27_Inventory += DrawInventoryParticles;
+        }
+
+        private void DrawInventoryParticles(On.Terraria.Main.orig_DrawInterface_27_Inventory orig, Main self)
+        {
+            orig(self);
+            CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);
+            CursedAccessory.ShardsSystem.DrawParticles(Main.spriteBatch);
+        }
+    }
 }

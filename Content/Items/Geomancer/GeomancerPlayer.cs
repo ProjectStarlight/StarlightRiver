@@ -1,149 +1,164 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Core;
+using StarlightRiver.Helpers;
+using StarlightRiver.Content.Dusts;
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using Terraria.Graphics.Effects;
+using Terraria;
+using Terraria.Graphics.Shaders;
+using Terraria.GameContent.Dyes;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
+using Microsoft.Xna.Framework;
+using Terraria.UI;
+using Microsoft.Xna.Framework.Graphics;
+
+using ReLogic.Graphics;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
-	public enum StoredGem
-	{
-		Diamond,
-		Ruby,
-		Sapphire,
-		Emerald,
-		Amethyst,
-		Topaz,
-		None,
-		All
-	}
+    public enum StoredGem
+    {
+        Diamond,
+        Ruby,
+        Sapphire,
+        Emerald,
+        Amethyst,
+        Topaz,
+        None,
+        All
+    }
 
-	public class GeomancerPlayer : ModPlayer
-	{
-		public bool SetBonusActive = false;
+    public class GeomancerPlayer : ModPlayer
+    {
+        public bool SetBonusActive = false;
 
-		public StoredGem storedGem = StoredGem.None;
+        public StoredGem storedGem = StoredGem.None;
 
-		public bool DiamondStored = false;
-		public bool RubyStored = false;
-		public bool EmeraldStored = false;
-		public bool SapphireStored = false;
-		public bool TopazStored = false;
-		public bool AmethystStored = false;
+        public bool DiamondStored = false;
+        public bool RubyStored = false;
+        public bool EmeraldStored = false;
+        public bool SapphireStored = false;
+        public bool TopazStored = false;
+        public bool AmethystStored = false;
 
-		public int timer = -1;
-		public int rngProtector = 0;
+        public int timer = -1;
+        public int rngProtector = 0;
 
-		public int allTimer = 150;
-		public float ActivationCounter = 0;
+        public int allTimer = 150;
+        public float ActivationCounter = 0;
 
-		static Item rainbowDye;
-		static bool rainbowDyeInitialized = false;
-		public static int shaderValue = 0;
-		public static int shaderValue2 = 0;
+        static Item rainbowDye;
+        static bool rainbowDyeInitialized = false;
+        public static int shaderValue = 0;
+        public static int shaderValue2 = 0;
 
-		public override void Load()
-		{
-			StarlightPlayer.PreDrawEvent += PreDrawGlowFX;
-		}
+
+        public override void Load()
+        {
+            StarlightPlayer.PreDrawEvent += PreDrawGlowFX;          
+        }
 
 		public override void Unload()
 		{
-			rainbowDye = null;
+            rainbowDye = null;
 		}
 
 		private void PreDrawGlowFX(Player Player, SpriteBatch spriteBatch)
-		{
-			if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
-				return;
+        {
+            if (!Player.GetModPlayer<GeomancerPlayer>().SetBonusActive)
+                return;
 
-			if (!CustomHooks.PlayerTarget.canUseTarget)
-				return;
+            if (!CustomHooks.PlayerTarget.canUseTarget)
+                return;
 
-			float fadeOut = 1;
-			if (allTimer < 60)
-				fadeOut = allTimer / 60f;
 
-			spriteBatch.End();
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
+            float fadeOut = 1;
+            if (allTimer < 60)
+                fadeOut = allTimer / 60f;
 
-			Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
+            spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
-			{
+            Effect effect = Filters.Scene["RainbowAura"].GetShader().Shader;
 
-				float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
-				float opacity = 1.25f - (sin / 2 + 0.5f) * 0.8f;
+            if (Player.GetModPlayer<GeomancerPlayer>().storedGem == StoredGem.All)
+            {
 
-				effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.03f);
-				effect.Parameters["uOpacity"].SetValue(opacity);
-				effect.CurrentTechnique.Passes[0].Apply();
+                float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
+                float opacity = 1.25f - (((sin / 2) + 0.5f) * 0.8f);
 
-				for (int k = 0; k < 6; k++)
-				{
-					Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
-					Color color = Color.White * (opacity - sin * 0.1f) * 0.9f;
+                effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.03f);
+                effect.Parameters["uOpacity"].SetValue(opacity);
+                effect.CurrentTechnique.Passes[0].Apply();
 
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
-				}
-			}
-			else if (Player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
-			{
-				float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
-				float opacity = 1.5f - sin;
+                for (int k = 0; k < 6; k++)
+                {
+                    Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (5.5f + sin * 2.2f);
+                    var color = Color.White * (opacity - sin * 0.1f) * 0.9f;
 
-				Color color = GetArmorColor(Player) * (opacity - sin * 0.1f) * 0.9f;
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color * 0.25f * fadeOut);
+                }
+            }
+            else if (Player.GetModPlayer<GeomancerPlayer>().ActivationCounter > 0)
+            {
+                float sin = Player.GetModPlayer<GeomancerPlayer>().ActivationCounter;
+                float opacity = 1.5f - sin;
 
-				effect.Parameters["uColor"].SetValue(color.ToVector3());
-				effect.Parameters["uOpacity"].SetValue(sin);
-				effect.CurrentTechnique.Passes[1].Apply();
+                Color color = GetArmorColor(Player) * (opacity - sin * 0.1f) * 0.9f;
 
-				for (int k = 0; k < 6; k++)
-				{
-					Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
+                effect.Parameters["uColor"].SetValue(color.ToVector3());
+                effect.Parameters["uOpacity"].SetValue(sin);
+                effect.CurrentTechnique.Passes[1].Apply();
 
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
-				}
-			}
+                for (int k = 0; k < 6; k++)
+                {
+                    Vector2 dir = Vector2.UnitX.RotatedBy(k / 6f * 6.28f) * (sin * 8f);
 
-			spriteBatch.End();
+                    spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White * 0.25f);
+                }
+            }
 
-			SamplerState samplerState = Main.DefaultSamplerState;
+            spriteBatch.End();
 
-			if (Player.mount.Active)
-				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
+            SamplerState samplerState = Main.DefaultSamplerState;
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
-		}
+            if (Player.mount.Active)
+                samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
-		public override void ResetEffects()
-		{
-			if (!rainbowDyeInitialized)
-			{
-				rainbowDyeInitialized = true;
-				rainbowDye = new Item();
-				rainbowDye.SetDefaults(ModContent.ItemType<RainbowCycleDye>());
-				shaderValue = rainbowDye.dye;
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+        }
 
-				var rainbowDye2 = new Item();
-				rainbowDye2.SetDefaults(ModContent.ItemType<RainbowCycleDye2>());
-				shaderValue2 = rainbowDye2.dye;
-			}
+        public override void ResetEffects()
+        {
+            if (!rainbowDyeInitialized)
+            {
+                rainbowDyeInitialized = true;
+                rainbowDye = new Item();
+                rainbowDye.SetDefaults(ModContent.ItemType<RainbowCycleDye>());
+                shaderValue = rainbowDye.dye;
 
-			if (!SetBonusActive)
-			{
-				storedGem = StoredGem.None;
-				DiamondStored = false;
-				RubyStored = false;
-				EmeraldStored = false;
-				SapphireStored = false;
-				TopazStored = false;
-				AmethystStored = false;
-			}
+                Item rainbowDye2 = new Item();
+                rainbowDye2.SetDefaults(ModContent.ItemType<RainbowCycleDye2>());
+                shaderValue2 = rainbowDye2.dye;
+            }
 
-			SetBonusActive = false;
+            if (!SetBonusActive)
+            {
+                storedGem = StoredGem.None;
+                DiamondStored = false;
+                RubyStored = false;
+                EmeraldStored = false;
+                SapphireStored = false;
+                TopazStored = false;
+                AmethystStored = false;
+            }
+            SetBonusActive = false;
 
-			/*if (DiamondStored && RubyStored && EmeraldStored && SapphireStored && TopazStored && AmethystStored)
+            /*if (DiamondStored && RubyStored && EmeraldStored && SapphireStored && TopazStored && AmethystStored)
             {
                 DiamondStored = false;
                 RubyStored = false;
@@ -156,204 +171,213 @@ namespace StarlightRiver.Content.Items.Geomancer
 
                 allTimer = 150;
             }*/
-		}
+        }
 
-		public override void PreUpdate()
-		{
-			if (!SetBonusActive)
-				return;
 
-			timer--;
+        public override void PreUpdate()
+        {
+            if (!SetBonusActive)
+                return;
 
-			BarrierPlayer shieldPlayer = Player.GetModPlayer<BarrierPlayer>();
-			if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.maxBarrier - shieldPlayer.barrier < 100)
-				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
+            timer--;
 
-			if (storedGem == StoredGem.All)
-			{
-				allTimer--;
-				if (allTimer < 0)
-					storedGem = StoredGem.None;
-			}
+            BarrierPlayer shieldPlayer = Player.GetModPlayer<BarrierPlayer>();
+            if ((storedGem == StoredGem.Topaz || storedGem == StoredGem.All) && Player.ownedProjectileCounts[ModContent.ProjectileType<TopazShield>()] == 0 && shieldPlayer.MaxBarrier - shieldPlayer.Barrier < 100)
+                Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Vector2.Zero, ModContent.ProjectileType<TopazShield>(), 10, 7, Player.whoAmI);
 
-			ActivationCounter -= 0.03f;
-			Lighting.AddLight(Player.Center, GetArmorColor(Player).ToVector3());
-		}
+            if (storedGem == StoredGem.All)
+            {
+                allTimer--;
+                if (allTimer < 0)
+                    storedGem = StoredGem.None;
+            }
 
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
-		{
-			if (!SetBonusActive)
-				return;
+            ActivationCounter -= 0.03f;
+            Lighting.AddLight(Player.Center, (GetArmorColor(Player)).ToVector3());
+        }
 
-			if (proj.DamageType != DamageClass.Magic)
-				return;
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            if (!SetBonusActive)
+                return;
 
-			int odds = Math.Max(1, 15 - rngProtector);
-			if ((crit || target.life <= 0) && storedGem != StoredGem.All)
-			{
-				rngProtector++;
-				if (Main.rand.NextBool(odds))
-				{
-					rngProtector = 0;
-					SpawnGem(target, Player.GetModPlayer<GeomancerPlayer>());
-				}
-			}
+            if (proj.DamageType != DamageClass.Magic)
+                return;
 
-			int critRate = Math.Min(Player.HeldItem.crit, 4);
-			critRate += (int)(100 * Player.GetCritChance(DamageClass.Magic));
+            int odds = Math.Max(1, 15 - rngProtector);
+            if ((crit || target.life <= 0) && storedGem != StoredGem.All)
+            {
+                rngProtector++;
+                if (Main.rand.NextBool(odds))
+                {
+                    rngProtector = 0;
+                    SpawnGem(target, Player.GetModPlayer<GeomancerPlayer>());
+                }
+            }
 
-			if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All))
-			{
-				int numStars = Main.rand.Next(3) + 1;
-				for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
-				{
-					Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
-				}
-			}
 
-			if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && crit)
-			{
-				int extraDamage = target.defense / 2;
-				extraDamage += (int)(proj.damage * 0.2f * (target.life / (float)target.lifeMax));
-				CombatText.NewText(target.Hitbox, new Color(200, 200, 255), extraDamage);
-				if (target.type != NPCID.TargetDummy)
-					target.life -= extraDamage;
-				target.HitEffect(0, extraDamage);
-			}
+            int critRate = Math.Min(Player.HeldItem.crit, 4);
+            critRate += (int)(100 * Player.GetCritChance(DamageClass.Magic));
 
-			if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
-			{
-				Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
-			}
+            if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Sapphire || storedGem == StoredGem.All)) 
+            {
+                int numStars = Main.rand.Next(3) + 1;
+                for (int i = 0; i < numStars; i++) //Doing a loop so they spawn separately
+                {
+                    Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<SapphireStar>());
+                }
+            }
 
-			if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
-			{
-				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI);
-			}
+            if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && crit)
+            {
+                int extraDamage = target.defense / 2;
+                extraDamage += (int)(proj.damage * 0.2f * (target.life / (float)target.lifeMax));
+                CombatText.NewText(target.Hitbox, new Color(200, 200, 255), extraDamage);
+                if (target.type != NPCID.TargetDummy)
+                    target.life -= extraDamage;
+                target.HitEffect(0, extraDamage);
+            }
 
-			if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
-			{
-				if (Main.rand.Next(Math.Max(10 / Player.HeldItem.useTime * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f) / 2, 1)) == 0)
-				{
-					Projectile.NewProjectile(
-						Player.GetSource_ItemUse(Player.armor[0]),
-						target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
-						Vector2.Zero,
-						ModContent.ProjectileType<AmethystShard>(),
-						0,
-						0,
-						Player.whoAmI,
-						target.GetGlobalNPC<GeoNPC>().amethystDebuff,
-						target.whoAmI);
-					target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
-				}
-			}
-		}
+            if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
+            {
+                Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
+            }
 
-		private static void SpawnGem(NPC target, GeomancerPlayer modPlayer)
-		{
-			int ItemType = -1;
-			var ItemTypes = new List<int>();
+            if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
+            {
+                Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI); 
+            }
 
-			if (!modPlayer.AmethystStored)
-				ItemTypes.Add(ModContent.ItemType<GeoAmethyst>());
+            if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
+            {
+                if (Main.rand.Next(Math.Max(((10 / Player.HeldItem.useTime) * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f)) / 2, 1)) == 0)
+                {
+                    Projectile.NewProjectile(
+                        Player.GetSource_ItemUse(Player.armor[0]),
+                        target.position + new Vector2(Main.rand.Next(target.width), Main.rand.Next(target.height)),
+                        Vector2.Zero,
+                        ModContent.ProjectileType<AmethystShard>(),
+                        0,
+                        0,
+                        Player.whoAmI,
+                        target.GetGlobalNPC<GeoNPC>().amethystDebuff,
+                        target.whoAmI);
+                    target.GetGlobalNPC<GeoNPC>().amethystDebuff += 100;
+                }
+            }
+        }
 
-			if (!modPlayer.TopazStored)
-				ItemTypes.Add(ModContent.ItemType<GeoTopaz>());
+        private static void SpawnGem(NPC target, GeomancerPlayer modPlayer)
+        {
+            int ItemType = -1;
+            List<int> ItemTypes = new List<int>();
 
-			if (!modPlayer.EmeraldStored)
-				ItemTypes.Add(ModContent.ItemType<GeoEmerald>());
+            if (!modPlayer.AmethystStored)
+                ItemTypes.Add(ModContent.ItemType<GeoAmethyst>());
 
-			if (!modPlayer.SapphireStored)
-				ItemTypes.Add(ModContent.ItemType<GeoSapphire>());
+            if (!modPlayer.TopazStored)
+                ItemTypes.Add(ModContent.ItemType<GeoTopaz>());
 
-			if (!modPlayer.RubyStored)
-				ItemTypes.Add(ModContent.ItemType<GeoRuby>());
+            if (!modPlayer.EmeraldStored)
+                ItemTypes.Add(ModContent.ItemType<GeoEmerald>());
 
-			if (!modPlayer.DiamondStored)
-				ItemTypes.Add(ModContent.ItemType<GeoDiamond>());
+            if (!modPlayer.SapphireStored)
+                ItemTypes.Add(ModContent.ItemType<GeoSapphire>());
 
-			if (ItemTypes.Count == 0)
-				return;
+            if (!modPlayer.RubyStored)
+                ItemTypes.Add(ModContent.ItemType<GeoRuby>());
 
-			ItemType = ItemTypes[Main.rand.Next(ItemTypes.Count)];
+            if (!modPlayer.DiamondStored)
+                ItemTypes.Add(ModContent.ItemType<GeoDiamond>());
 
-			Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
-		}
+            if (ItemTypes.Count == 0)
+                return;
 
-		public static void PickOldGem(Player Player)
-		{
-			GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
-			var gemTypes = new List<StoredGem>();
+            ItemType = ItemTypes[Main.rand.Next(ItemTypes.Count)];
 
-			if (modPlayer.AmethystStored)
-				gemTypes.Add(StoredGem.Amethyst);
+            Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ItemType, 1);
+        }
 
-			if (modPlayer.TopazStored)
-				gemTypes.Add(StoredGem.Topaz);
+        public static void PickOldGem(Player Player)
+        {
+            GeomancerPlayer modPlayer = Player.GetModPlayer<GeomancerPlayer>();
+            List<StoredGem> gemTypes = new List<StoredGem>();
 
-			if (modPlayer.SapphireStored)
-				gemTypes.Add(StoredGem.Sapphire);
+            if (modPlayer.AmethystStored)
+                gemTypes.Add(StoredGem.Amethyst);
 
-			if (modPlayer.RubyStored)
-				gemTypes.Add(StoredGem.Ruby);
+            if (modPlayer.TopazStored)
+                gemTypes.Add(StoredGem.Topaz);
 
-			if (modPlayer.EmeraldStored)
-				gemTypes.Add(StoredGem.Emerald);
+            if (modPlayer.SapphireStored)
+                gemTypes.Add(StoredGem.Sapphire);
 
-			if (modPlayer.DiamondStored)
-				gemTypes.Add(StoredGem.Diamond);
+            if (modPlayer.RubyStored)
+                gemTypes.Add(StoredGem.Ruby);
 
-			if (gemTypes.Count == 0)
-				modPlayer.storedGem = StoredGem.None;
-			else
-				modPlayer.storedGem = gemTypes[Main.rand.Next(gemTypes.Count)];
-		}
+            if (modPlayer.EmeraldStored)
+                gemTypes.Add(StoredGem.Emerald);
 
-		public static Color GetArmorColor(Player Player)
-		{
-			StoredGem storedGem = Player.GetModPlayer<GeomancerPlayer>().storedGem;
+            if (modPlayer.DiamondStored)
+                gemTypes.Add(StoredGem.Diamond);
 
-			return storedGem switch
-			{
-				StoredGem.All => Main.hslToRgb((float)Main.timeForVisualEffects * 0.005f % 1, 1f, 0.5f),
-				StoredGem.Amethyst => Color.Purple,
-				StoredGem.Topaz => Color.Yellow,
-				StoredGem.Emerald => Color.Green,
-				StoredGem.Sapphire => Color.Blue,
-				StoredGem.Diamond => Color.Cyan,
-				StoredGem.Ruby => Color.Red,
-				_ => Color.White,
-			};
-		}
-	}
+            if (gemTypes.Count == 0)
+                modPlayer.storedGem = StoredGem.None;
+            else
+                modPlayer.storedGem = gemTypes[Main.rand.Next(gemTypes.Count)];
+        }
 
-	public class GeoNPC : GlobalNPC
-	{
-		public override bool InstancePerEntity => true;
+        public static Color GetArmorColor(Player Player)
+        {
+            StoredGem storedGem = Player.GetModPlayer<GeomancerPlayer>().storedGem;
 
-		public int amethystDebuff;
+            switch (storedGem)
+            {
+                case StoredGem.All:
+                    return Main.hslToRgb(((float)Main.timeForVisualEffects * 0.005f) % 1, 1f, 0.5f);
+                case StoredGem.Amethyst:
+                    return Color.Purple;
+                case StoredGem.Topaz:
+                    return Color.Yellow;
+                case StoredGem.Emerald:
+                    return Color.Green;
+                case StoredGem.Sapphire:
+                    return Color.Blue;
+                case StoredGem.Diamond:
+                    return Color.Cyan;
+                case StoredGem.Ruby:
+                    return Color.Red;
+                default:
+                    return Color.White;
+            }
+        }
+    }
 
-		public override bool PreAI(NPC NPC)
-		{
-			if (amethystDebuff > 0)
-				amethystDebuff--;
+    public class GeoNPC : GlobalNPC
+    {
+        public override bool InstancePerEntity => true;
 
-			return base.PreAI(NPC);
-		}
+        public int amethystDebuff;
 
-		public override void UpdateLifeRegen(NPC NPC, ref int damage)
-		{
-			if (NPC.lifeRegen > 0)
-			{
-				NPC.lifeRegen = 0;
-			}
+        public override bool PreAI(NPC NPC)
+        {
+            if (amethystDebuff > 0)
+                amethystDebuff--;
 
-			NPC.lifeRegen -= amethystDebuff / 50;
-			if (damage < amethystDebuff / 150)
-			{
-				damage = amethystDebuff / 150;
-			}
-		}
-	}
+            return base.PreAI(NPC);
+        }
+
+        public override void UpdateLifeRegen(NPC NPC, ref int damage)
+        {
+            if (NPC.lifeRegen > 0)
+            {
+                NPC.lifeRegen = 0;
+            }
+            NPC.lifeRegen -= amethystDebuff / 50;
+            if (damage < amethystDebuff / 150)
+            {
+                damage = amethystDebuff / 150;
+            }
+        }
+    }
 }

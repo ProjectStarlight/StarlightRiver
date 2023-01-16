@@ -1,24 +1,29 @@
-using StarlightRiver.Content.Buffs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.DataStructures;
+using Terraria;
 using Terraria.ID;
+using Terraria.DataStructures;
+using Terraria.ModLoader;
+using StarlightRiver.Core;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Helpers;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
 	public class Cogwheel : ModItem
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
-
-		public override void SetStaticDefaults()
-		{
+		public override void SetStaticDefaults() {
 			DisplayName.SetDefault("Cogwheel");
 			Tooltip.SetDefault("Summons a ridable Cogwheel mount");
 		}
 
-		public override void SetDefaults()
-		{
+		public override void SetDefaults() {
 			Item.width = 20;
 			Item.height = 30;
 			Item.useTime = 20;
@@ -26,11 +31,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.useStyle = ItemUseStyleID.Swing;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.rare = ItemRarityID.Green;
-			Item.UseSound = SoundID.Item79;
-			Item.noMelee = true;
+			Item.UseSound = SoundID.Item79; 
+			Item.noMelee = true; 
 			Item.mountType = ModContent.MountType<CogwheelMount>();
 		}
-
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
@@ -44,7 +48,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe2.AddTile(TileID.Anvils);
 		}
 	}
-
 	public class CogwheelMount : ModMount
 	{
 		// Since only a single instance of ModMountData ever exists, we can use player.mount._mountSpecificData to store additional data related to a specific mount.
@@ -89,24 +92,22 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			MountData.playerHeadOffset = 52;
 		}
 
-		public override void Dismount(Player player, ref bool skipDust)
-		{
+        public override void Dismount(Player player, ref bool skipDust)
+        {
 			for (int j = 0; j < 17; j++)
 			{
 				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-				Dust.NewDustPerfect(player.Center + direction * 6 + new Vector2(0, 40) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+				Dust.NewDustPerfect((player.Center + (direction * 6) + new Vector2(0, 40)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
 			}
-
 			skipDust = true;
-		}
-
-		public override void UpdateEffects(Player player)
+        }
+        public override void UpdateEffects(Player player)
 		{
 			CogwheelPlayer modPlayer = player.GetModPlayer<CogwheelPlayer>();
 			MountData.playerYOffsets = Enumerable.Repeat(38 - (int)(2 * Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 2)), 1).ToArray(); // Fills an array with values for less repeating code
-			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += modPlayer.climbing ? player.velocity.Y * Math.Sign(modPlayer.oldSpeed) / -40f : player.velocity.X / 40f;
+			((CogWheelSpecificData)player.mount._mountSpecificData).rotation += modPlayer.climbing ? (player.velocity.Y * Math.Sign(modPlayer.oldSpeed)) / -40f : player.velocity.X / 40f;
 
-			modPlayer.armLerper = EaseFunction.EaseQuadIn.Ease(0.5f + 0.5f * (float)Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 1.1f));
+			modPlayer.armLerper = EaseFunction.EaseQuadIn.Ease(0.5f + (0.5f * (float)Math.Sin(((CogWheelSpecificData)player.mount._mountSpecificData).rotation * 1.1f)));
 		}
 
 		public override void SetMount(Player player, ref bool skipDust)
@@ -114,9 +115,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			for (int j = 0; j < 17; j++)
 			{
 				Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-				Dust.NewDustPerfect(player.Center + direction * 6 + new Vector2(0, 40) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
+				Dust.NewDustPerfect((player.Center + (direction * 6) + new Vector2(0, 40)) + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f); 
 			}
-
 			skipDust = true;
 			player.mount._mountSpecificData = new CogWheelSpecificData();
 
@@ -130,29 +130,27 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Texture2D platformTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount").Value;
 				Texture2D wheelTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Wheel").Value;
 				Texture2D baseTex = ModContent.Request<Texture2D>(AssetDirectory.SteampunkItem + "CogwheelMount_Base").Value;
-				Vector2 drawPos = drawPosition;
-				playerDrawData.Add(new DrawData(baseTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, baseTex.Size() / 2 / new Vector2(1, 3) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
+				var drawPos = drawPosition;
+				playerDrawData.Add(new DrawData(baseTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, ((baseTex.Size() / 2) / new Vector2(1, 3)) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
 				playerDrawData.Add(new DrawData(wheelTex, drawPos + new Vector2(0, 17 + (int)(1 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, wheelTex.Width, wheelTex.Height), drawColor, ((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation, wheelTex.Size() / 2, drawScale, SpriteEffects.None, 0));
-				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, platformTex.Size() / 2 / new Vector2(1, 3) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
+				playerDrawData.Add(new DrawData(platformTex, drawPos + new Vector2(0, 17 + (int)(2 * Math.Sin(((CogWheelSpecificData)drawPlayer.mount._mountSpecificData).rotation * 2))), new Rectangle(0, 0, platformTex.Width, platformTex.Height), drawColor, drawPlayer.fullRotation, ((platformTex.Size() / 2) / new Vector2(1, 3)) + new Vector2(0, 17), drawScale, SpriteEffects.None, 0));
 			}
 
 			// by returning true, the regular drawing will still happen.
 			return false;
 		}
 	}
-
 	class CogwheelBuff : SmartBuff
 	{
 		public override string Texture => AssetDirectory.SteampunkItem + Name;
 
 		public CogwheelBuff() : base("Cogwheel", "They see me rollin'", false, true) { }
 
-		public override void SafeSetDefaults()
-		{
+        public override void SafeSetDetafults()
+        {
 			Main.buffNoTimeDisplay[Type] = true;
-		}
-
-		public override void Update(Player player, ref int buffIndex)
+        }
+        public override void Update(Player player, ref int buffIndex)
 		{
 			player.mount.SetMount(ModContent.MountType<CogwheelMount>(), player);
 			player.buffTime[buffIndex] = 10; // reset buff time
@@ -161,15 +159,19 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	}
 
 	class CogwheelPlayer : ModPlayer
-	{
+    {
 		public bool mounted = false;
+
 		public bool climbing = false;
 
 		public float climbSpeed;
+
 		public float oldSpeed;
 
 		public float armLerper;
+
 		private float armRotFront = 0f;
+
 		private float armRotBack = 0f;
 
 		public static float Acceleration = 0.17f;
@@ -177,33 +179,30 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		private bool rotationReset = true;
 
-		public override void ResetEffects()
-		{
+        public override void ResetEffects()
+        {
 			mounted = false;
-		}
+        }
 
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
-		{
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
+        {
 			if (damageSource.SourceOtherIndex == 3 && mounted)
 				return false;
+			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource);
+        }
 
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
-		}
-
-		public override void PostUpdate()
-		{
+        public override void PostUpdate()
+        {
 			if (!mounted)
 			{
 				if (!rotationReset)
-				{
+                {
 					Player.fullRotationOrigin = new Vector2(Player.Size.X / 2, Player.Size.Y / 2);
 					Player.fullRotation = 0;
 					rotationReset = true;
 				}
-
 				return;
 			}
-
 			rotationReset = false;
 
 			Player.legFrame = new Rectangle(0, 56 * 3, 40, 56);
@@ -212,34 +211,30 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.NewProjectile(Player.GetSource_None(), Player.Center, Vector2.Zero, ModContent.ProjectileType<CogwheelHitbox>(), 15, 2, Player.whoAmI);
 
 			Vector2 dustPos = Player.Center + new Vector2(Player.velocity.X * 2, 64);
-			var direction = new Vector2(Player.direction, 0);
-
+			Vector2 direction = new Vector2(Player.direction, 0);
 			if (climbing)
 			{
 				direction = new Vector2(0, -1);
-				dustPos = Player.Center + new Vector2(Player.direction * 15, 45 + Player.velocity.Y * 2);
+				dustPos = Player.Center + new Vector2(Player.direction * 15, 45 + (Player.velocity.Y * 2));
 			}
-
-			if (Player.velocity.X == 0 && climbing || Player.velocity.Y == 0)
+			if ((Player.velocity.X == 0 && climbing) || Player.velocity.Y == 0)
 			{
 				for (int j = 0; j < Player.velocity.Length() * 0.05f; j++)
 				{
-					direction = Vector2.Normalize(-direction).RotatedByRandom(0.6f).RotatedBy(1.57f + 0.6f * Player.direction);
+					direction = Vector2.Normalize(-direction).RotatedByRandom(0.6f).RotatedBy(1.57f + (0.6f * Player.direction));
 					Dust.NewDustPerfect(dustPos + new Vector2(0, 15), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 5), 0, new Color(255, 255, 60) * 0.8f, 1.3f);
 				}
 			}
 
 			if (oldSpeed == 0)
-			{
+            {
 				if (Player.controlLeft)
 					oldSpeed = -0.01f;
-
 				if (Player.controlRight)
 					oldSpeed = 0.01f;
 			}
-
-			armRotFront = MathHelper.Lerp(armRotFront, 0.105f * MathHelper.Min(Player.velocity.Length(), 11), 0.2f);
-			armRotBack = MathHelper.Lerp(armRotBack, 0.105f * MathHelper.Min(Player.velocity.Length(), 11), 0.2f);
+			armRotFront = MathHelper.Lerp(armRotFront, (0.105f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
+			armRotBack = MathHelper.Lerp(armRotBack, (0.105f * MathHelper.Min(Player.velocity.Length(), 11)), 0.2f);
 
 			if (Player.itemAnimation == 0)
 			{
@@ -255,7 +250,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				if (!climbing)
 					climbSpeed = MathHelper.Max(-(Math.Abs(oldSpeed) + Acceleration), -RunSpeed);
 				else
-					climbSpeed = MathHelper.Max(climbSpeed - Acceleration, -RunSpeed);
+					climbSpeed = MathHelper.Max((climbSpeed - Acceleration), -RunSpeed);
 
 				Player.velocity.Y = climbSpeed;
 				climbing = true;
@@ -263,7 +258,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			else
 			{
 				if (climbing)
-				{
+                {
 					Player.velocity.Y *= 0.75f;
 					/*if (Player.controlLeft)
 						Player.velocity.X = climbSpeed;
@@ -271,31 +266,26 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 						Player.velocity.X = -climbSpeed;*/
 				}
 				else
-				{
+                {
 					oldSpeed = Player.velocity.X;
-				}
-
+                }
 				climbSpeed = 0;
 				climbing = false;
 			}
-
 			base.PostUpdate();
-		}
-	}
+        }
+    }
 
 	public class CogwheelCollisionGNPC : GlobalNPC
-	{
-		public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
-		{
+    {
+        public override bool CanHitPlayer(NPC npc, Player target, ref int cooldownSlot)
+        {
 			CogwheelPlayer modPlayer = target.GetModPlayer<CogwheelPlayer>();
-
-			if (modPlayer.mounted && !npc.Hitbox.Intersects(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height - 34)))
+			if (modPlayer.mounted && !(npc.Hitbox.Intersects(new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height - 34))))
 				return false;
-
-			return base.CanHitPlayer(npc, target, ref cooldownSlot);
-		}
-	}
-
+            return base.CanHitPlayer(npc, target, ref cooldownSlot);
+        }
+    }
 	public class CogwheelHitbox : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
@@ -319,29 +309,30 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.hide = true;
 		}
 
-		public override void AI()
-		{
+        public override void AI()
+        {
 			CogwheelPlayer modPlayer = Player.GetModPlayer<CogwheelPlayer>();
 
 			if (modPlayer.mounted && !Player.dead)
+			{
 				Projectile.Center = Player.Bottom - new Vector2(0, 17);
+			}
 			else
 				Projectile.active = false;
-		}
+        }
 
-		public override bool? CanHitNPC(NPC target)
-		{
+        public override bool? CanHitNPC(NPC target)
+        {
 			if (Player.velocity.Length() < 1)
 				return false;
+            return base.CanHitNPC(target);
+        }
 
-			return base.CanHitNPC(target);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
 			hitDirection = Math.Sign(Player.direction);
 			damage = (int)(damage * MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f));
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
-		}
-	}
+            base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+        }
+    }
 }

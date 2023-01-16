@@ -1,22 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using StarlightRiver.Content.Tiles.Vitric;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+
 
 namespace StarlightRiver.Core
 {
 	class StatusTrackingNPC : GlobalNPC
 	{
 		private Player attacker;
-		private readonly int[] storedBuffs = new int[5];
-		private readonly int[] storedTimes = new int[5];
+		private int[] storedBuffs = new int[5];
+		private int[] storedTimes = new int[5];
 		private bool compareBuffs;
 
 		public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;
 
 		public override bool InstancePerEntity => true;
 
-		public StatusTrackingNPC Tracker(NPC NPC)
-		{
-			return NPC.GetGlobalNPC<StatusTrackingNPC>();
-		}
+		public StatusTrackingNPC Tracker(NPC NPC) => NPC.GetGlobalNPC<StatusTrackingNPC>();
 
 		public override bool PreAI(NPC NPC)
 		{

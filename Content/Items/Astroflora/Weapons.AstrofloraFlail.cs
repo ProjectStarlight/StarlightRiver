@@ -1,7 +1,13 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
 using System;
 using System.Linq;
+using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Astroflora
 {
@@ -33,28 +39,25 @@ namespace StarlightRiver.Content.Items.Astroflora
 
 		public AstrofloraProj() : base(new Vector2(0.7f, 1.3f), new Vector2(0.5f, 3f)) { }
 
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Astroflora Flail");
-		}
+		public override void SetStaticDefaults() => DisplayName.SetDefault("Astroflora Flail");
 
 		public override void SpinExtras(Player Player)
 		{
-			if (++Projectile.localAI[0] % 4 == 0)
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1) + Main.player[Projectile.owner].velocity / 5, ModContent.ProjectileType<AstrofloraGas>(), Projectile.damage * 3, 0, Projectile.owner);
+			if(++Projectile.localAI[0] % 4 == 0)
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(1, 1) + (Main.player[Projectile.owner].velocity / 5), ModContent.ProjectileType<AstrofloraGas>(), Projectile.damage * 3, 0, Projectile.owner);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (released)
 			{
-				spriteBatch.End();
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
 				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
 				spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.LightGoldenrodYellow * 0.5f, Projectile.rotation, bloom.Size() / 2, Projectile.scale * 1.2f, SpriteEffects.None, 0);
-
-				spriteBatch.End();
+				
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default);
 			}
 		}
@@ -64,7 +67,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 			Lighting.AddLight(Projectile.Center, Color.LightGoldenrodYellow.ToVector3());
 			Rectangle hitbox = Projectile.Hitbox;
 			hitbox.Inflate(hitbox.Width / 2, hitbox.Height / 2);
-			System.Collections.Generic.IEnumerable<Projectile> gasclouds = Main.projectile.Where(x => x.type == ModContent.ProjectileType<AstrofloraGas>() && x.active && x.owner == Projectile.owner && x.Hitbox.Intersects(hitbox));
+			var gasclouds = Main.projectile.Where(x => x.type == ModContent.ProjectileType<AstrofloraGas>() && x.active && x.owner == Projectile.owner && x.Hitbox.Intersects(hitbox));
 			if (gasclouds.Any())
 			{
 				foreach (Projectile proj in gasclouds)
@@ -76,7 +79,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 						proj.velocity += Projectile.velocity.RotatedByRandom(MathHelper.Pi / 8) / 3;
 						for (int i = 0; i < 4; i++)
 						{
-							var dust = Dust.NewDustDirect(proj.Center + Main.rand.NextVector2Circular(proj.width / 2, proj.height / 2), 0, 0, DustID.GoldCoin);
+							Dust dust = Dust.NewDustDirect(proj.Center + Main.rand.NextVector2Circular(proj.width / 2, proj.height / 2), 0, 0, DustID.GoldCoin);
 							dust.noGravity = true;
 							dust.velocity *= 4f;
 							dust.scale = 1.6f;
@@ -113,8 +116,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 		}
 
 		private bool Ignited => Projectile.ai[0] == 1;
-		private static Color green = new(228, 255, 196);
-		private static Color gray = new(209, 209, 209);
+		private static Color green = new Color(228, 255, 196);
+		private static Color gray = new Color(209, 209, 209);
 		private static Color orange = new Color(252, 139, 45) * 1.2f;
 		private static Color white = new Color(255, 255, 255) * 1.2f;
 		private static readonly float chargetime = 50;
@@ -123,9 +126,8 @@ namespace StarlightRiver.Content.Items.Astroflora
 		{
 			Projectile.velocity *= 0.97f;
 			if (!Ignited)
-			{
 				Dustcloud(green);
-			}
+
 			else
 			{
 				if (++Projectile.ai[1] < chargetime)
@@ -137,14 +139,13 @@ namespace StarlightRiver.Content.Items.Astroflora
 					Projectile.timeLeft = 20;
 					if (Main.rand.NextBool(3))
 					{
-						var dust = Dust.NewDustDirect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), 0, 0, DustID.GoldCoin);
+						Dust dust = Dust.NewDustDirect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), 0, 0, DustID.GoldCoin);
 						dust.noGravity = true;
 						dust.velocity = Vector2.Normalize(Projectile.Center - dust.position);
 						dust.scale = 1.2f;
 						dust.fadeIn = 0.5f;
 					}
-
-					if (Main.rand.NextBool(5))
+					if(Main.rand.NextBool(5))
 						Dustcloud(Color.Lerp(green, white, Math.Min(Projectile.ai[1] / (chargetime / 2), 1)));
 				}
 				else
@@ -153,23 +154,21 @@ namespace StarlightRiver.Content.Items.Astroflora
 					{
 						Projectile.scale = 1.2f;
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.Item14 with { Volume = 0.4f, PitchVariance = 0.1f }, Projectile.Center);
-						CameraSystem.shake = 8;
+						Core.Systems.CameraSystem.Shake = 8;
 					}
-
 					Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3());
 					if (Main.rand.NextBool())
 					{
 						Dustcloud(orange, 4);
 						Dustcloud(gray, 8);
-						var dust = Dust.NewDustDirect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), 0, 0, 6);
+						Dust dust = Dust.NewDustDirect(Projectile.Center + Main.rand.NextVector2Circular(Projectile.width / 2, Projectile.height / 2), 0, 0, 6);
 						//dust.noGravity = true;
 						dust.velocity *= 4f;
 						dust.scale = 0.65f;
 					}
-
-					if (Main.rand.NextBool(3))
+					if(Main.rand.NextBool(3))
 					{
-						var gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(2, 2), GoreID.ChimneySmoke1);
+						Gore gore = Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, Main.rand.NextVector2Circular(2, 2), GoreID.ChimneySmoke1);
 						gore.rotation = Main.rand.NextFloatDirection();
 						gore.timeLeft = 10;
 
@@ -202,55 +201,45 @@ namespace StarlightRiver.Content.Items.Astroflora
 			{
 				if (target.Hitbox.Intersects(Projectile.Hitbox) && target.CanBeChasedBy(this))
 					target.AddBuff(BuffID.Poisoned, 30);
-
 				return false;
 			}
 			else if (Projectile.ai[1] < chargetime)
-			{
 				return false;
-			}
-
 			return null;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{
-			target.AddBuff(BuffID.OnFire, 90);
-		}
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit) => target.AddBuff(BuffID.OnFire, 90);
 
-		public override void ModifyDamageHitbox(ref Rectangle hitbox)
-		{
-			hitbox.Inflate(hitbox.Width, hitbox.Height);
-		}
+		public override void ModifyDamageHitbox(ref Rectangle hitbox) => hitbox.Inflate(hitbox.Width, hitbox.Height);
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
 			if (Ignited && Projectile.ai[1] < chargetime)
 			{
-				spriteBatch.End();
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
-
+				
 				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
-				float opacity = Projectile.ai[1] / chargetime * 0.75f;
+				float opacity = (Projectile.ai[1] / chargetime) * 0.75f;
 				Color color = (Projectile.ai[1] < chargetime / 2) ? Color.White : Color.Lerp(Color.White, Color.Orange, (Projectile.ai[1] - chargetime / 2) / (chargetime / 2));
-				spriteBatch.Draw(bloom, Projectile.Center - 2 * Projectile.velocity - Main.screenPosition, null, color * opacity,
+				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,
 					Projectile.rotation, bloom.Size() / 2, MathHelper.Lerp(Projectile.scale, 1, 0.15f) * 1.2f, SpriteEffects.None, 0);
-
-				spriteBatch.End();
+				
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 			}
 			else if (Ignited)
 			{
-				spriteBatch.End();
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 
 				Texture2D bloom = ModContent.Request<Texture2D>(Texture + "_bloom").Value;
-				float opacity = Projectile.timeLeft / 20f * 2f;
+				float opacity = (Projectile.timeLeft / 20f) * 2f;
 				Color color = Color.Orange;
-				spriteBatch.Draw(bloom, Projectile.Center - 2 * Projectile.velocity - Main.screenPosition, null, color * opacity,
-					Projectile.rotation, bloom.Size() / 2, 0.2f + (20 - Projectile.timeLeft) / 20f * 2.5f, SpriteEffects.None, 0);
-
-				spriteBatch.End();
+				spriteBatch.Draw(bloom, Projectile.Center - (2 * Projectile.velocity) - Main.screenPosition, null, color * opacity,
+					Projectile.rotation, bloom.Size() / 2, 0.2f + (((20 - Projectile.timeLeft) / 20f) * 2.5f), SpriteEffects.None, 0);
+				
+				spriteBatch.End(); 
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
 			}
 		}
@@ -276,7 +265,7 @@ namespace StarlightRiver.Content.Items.Astroflora
 				Projectile.ai[1] *= -1;
 
 			Projectile.velocity = basevel.RotatedBy(Projectile.ai[1] * MathHelper.Pi / 6);
-			var dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldCoin, Vector2.Zero);
+			Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.GoldCoin, Vector2.Zero);
 			dust.noGravity = true;
 		}
 	}

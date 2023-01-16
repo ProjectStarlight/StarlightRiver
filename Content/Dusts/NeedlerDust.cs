@@ -1,261 +1,267 @@
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
+
 namespace StarlightRiver.Content.Dusts
 {
 	public class NeedlerDust : ModDust
-	{
-		public override string Texture => AssetDirectory.Dust + Name;
+    {
+        public override string Texture => AssetDirectory.Dust + Name;
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+            dust.frame = new Rectangle(0, 0, 34, 36);
+        }
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-			dust.frame = new Rectangle(0, 0, 34, 36);
-		}
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            Color gray = new Color(25, 25, 25);
+            Color ret;
+            if (dust.alpha < 80)
+            {
+                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
+            }
+            else if (dust.alpha < 140)
+            {
+                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
+            }
+            else
+                ret = gray;
+            return ret * ((255 - dust.alpha) / 255f);
+        }
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			var gray = new Color(25, 25, 25);
-			Color ret;
-			if (dust.alpha < 80)
-				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
-			else if (dust.alpha < 140)
-				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
-			else
-				ret = gray;
+        public override bool Update(Dust dust)
+        {
+            if (dust.velocity.Length() > 3)
+                dust.velocity *= 0.85f;
+            else
+                dust.velocity *= 0.92f;
+            if (dust.alpha > 100)
+            {
+                dust.scale += 0.01f;
+                dust.alpha += 2;
+            }
+            else
+            {
+                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+                dust.scale *= 0.985f;
+                dust.alpha += 4;
+            }
+            dust.position += dust.velocity;
+            if (dust.alpha >= 255)
+                dust.active = false;
 
-			return ret * ((255 - dust.alpha) / 255f);
-		}
+            return false;
+        }
+    }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.velocity.Length() > 3)
-				dust.velocity *= 0.85f;
-			else
-				dust.velocity *= 0.92f;
+    public class NeedlerDustTwo : ModDust
+    {
+        public override string Texture => AssetDirectory.Dust + Name;
 
-			if (dust.alpha > 100)
-			{
-				dust.scale += 0.01f;
-				dust.alpha += 2;
-			}
-			else
-			{
-				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-				dust.scale *= 0.985f;
-				dust.alpha += 4;
-			}
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+            dust.frame = new Rectangle(0, 0, 34, 36);
+        }
 
-			dust.position += dust.velocity;
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            Color gray = new Color(25, 25, 25);
+            Color ret;
+            if (dust.alpha < 80)
+            {
+                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
+            }
+            else if (dust.alpha < 140)
+            {
+                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
+            }
+            else
+                ret = gray;
+            return ret * ((255 - dust.alpha) / 255f);
+        }
 
-			if (dust.alpha >= 255)
-				dust.active = false;
+        public override bool Update(Dust dust)
+        {
+            if (dust.velocity.Length() > 3)
+                dust.velocity *= 0.85f;
+            else
+                dust.velocity *= 0.92f;
 
-			return false;
-		}
-	}
+            if (dust.alpha > 100)
+            {
+                dust.scale *= 0.975f;
+                dust.alpha += 2;
+            }
+            else
+            {
+                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+                dust.scale *= 0.985f;
+                dust.alpha += 4;
+            }
+            dust.position += dust.velocity;
 
-	public class NeedlerDustSlowFade : ModDust
-	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+            if (dust.alpha >= 255)
+                dust.active = false;
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-			dust.frame = new Rectangle(0, 0, 34, 36);
-		}
+            return false;
+        }
+    }
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			var gray = new Color(25, 25, 25);
-			Color ret;
-			if (dust.alpha < 80)
-				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
-			else if (dust.alpha < 140)
-				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 80) / 80f);
-			else
-				ret = gray;
+    public class NeedlerDustThree : ModDust
+    {
+        public override string Texture => AssetDirectory.Dust + Name;
 
-			return ret * ((255 - dust.alpha) / 255f);
-		}
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = true;
+            dust.scale *= Main.rand.NextFloat(0.8f, 2f);
+            dust.frame = new Rectangle(0, 0, 34, 36);
+        }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.velocity.Length() > 3)
-				dust.velocity *= 0.85f;
-			else
-				dust.velocity *= 0.92f;
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            Color gray = new Color(25, 25, 25);
+            Color ret;
+            if (dust.alpha < 40)
+                ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
+            else if (dust.alpha < 80)
+                ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 40) / 40f);
+            else
+                ret = gray;
 
-			if (dust.alpha > 100)
-			{
-				dust.scale *= 0.975f;
-				dust.alpha += 2;
-			}
-			else
-			{
-				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-				dust.scale *= 0.985f;
-				dust.alpha += 4;
-			}
+            return ret * ((255 - dust.alpha) / 255f);
+        }
 
-			dust.position += dust.velocity;
+        public override bool Update(Dust dust)
+        {
+            if (dust.velocity.Length() > 3)
+                dust.velocity *= 0.85f;
+            else
+                dust.velocity *= 0.92f;
 
-			if (dust.alpha >= 255)
-				dust.active = false;
+            if (dust.alpha > 60)
+            {
+                dust.scale += 0.01f;
+                dust.alpha += 6;
+            }
+            else
+            {
+                Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
+                dust.scale *= 0.985f;
+                dust.alpha += 4;
+            }
 
-			return false;
-		}
-	}
+            dust.position += dust.velocity;
 
-	public class NeedlerDustFastFade : ModDust
-	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
+            if (dust.alpha >= 255)
+                dust.active = false;
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.noGravity = true;
-			dust.scale *= Main.rand.NextFloat(0.8f, 2f);
-			dust.frame = new Rectangle(0, 0, 34, 36);
-		}
+            return false;
+        }
+    }
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			var gray = new Color(25, 25, 25);
-			Color ret;
-			if (dust.alpha < 40)
-				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 40f);
-			else if (dust.alpha < 80)
-				ret = Color.Lerp(Color.Orange, gray, (dust.alpha - 40) / 40f);
-			else
-				ret = gray;
+    class NeedlerDustFour : ModDust
+    {
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
-			return ret * ((255 - dust.alpha) / 255f);
-		}
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            var curveOut = Curve(1 - dust.fadeIn / 40f);
+            var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
+            dust.color = color * (curveOut + 0.4f);
+            return dust.color;
+        }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.velocity.Length() > 3)
-				dust.velocity *= 0.85f;
-			else
-				dust.velocity *= 0.92f;
+        float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
+        {
+            return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
+        }
 
-			if (dust.alpha > 60)
-			{
-				dust.scale += 0.01f;
-				dust.alpha += 6;
-			}
-			else
-			{
-				Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.1f);
-				dust.scale *= 0.985f;
-				dust.alpha += 4;
-			}
+        public override void OnSpawn(Dust dust)
+        {
+            dust.color = Color.Transparent;
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.scale *= 0.3f;
+            dust.frame = new Rectangle(0, 0, 64, 64);
+            dust.velocity *= 2;
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+        }
 
-			dust.position += dust.velocity;
+        public override bool Update(Dust dust)
+        {
+            if (dust.color == Color.Transparent)
+                dust.position -= Vector2.One * 32 * dust.scale;
 
-			if (dust.alpha >= 255)
-				dust.active = false;
+            //dust.rotation += dust.velocity.Y * 0.1f;
+            dust.position += dust.velocity;
+            dust.velocity *= 0.95f;
+            dust.shader.UseColor(dust.color);
+            dust.scale *= 0.97f;
+            dust.fadeIn++;
 
-			return false;
-		}
-	}
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
 
-	class NeedlerDustGlow : ModDust
-	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+            if (dust.fadeIn > 40)
+                dust.active = false;
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			float curveOut = Curve(1 - dust.fadeIn / 40f);
-			var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
-			dust.color = color * (curveOut + 0.4f);
-			return dust.color;
-		}
+            return false;
+        }
+    }
+    class NeedlerDustFive : ModDust
+    {
+        public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
 
-		float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
-		{
-			return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
-		}
+        public override Color? GetAlpha(Dust dust, Color lightColor)
+        {
+            var curveOut = Curve(1 - dust.fadeIn / 40f);
+            var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
+            dust.color = color * (curveOut + 0.4f);
+            return dust.color;
+        }
 
-		public override void OnSpawn(Dust dust)
-		{
-			dust.color = Color.Transparent;
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.scale *= 0.3f;
-			dust.frame = new Rectangle(0, 0, 64, 64);
-			dust.velocity *= 2;
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-		}
+        float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
+        {
+            return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
+        }
 
-		public override bool Update(Dust dust)
-		{
-			if (dust.color == Color.Transparent)
-				dust.position -= Vector2.One * 32 * dust.scale;
+        public override void OnSpawn(Dust dust)
+        {
+            dust.color = Color.Transparent;
+            dust.fadeIn = 0;
+            dust.noLight = false;
+            dust.scale *= 0.3f;
+            dust.frame = new Rectangle(0, 0, 64, 64);
+            dust.velocity *= 2;
+            dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+        }
 
-			//dust.rotation += dust.velocity.Y * 0.1f;
-			dust.position += dust.velocity;
-			dust.velocity *= 0.95f;
-			dust.shader.UseColor(dust.color);
-			dust.scale *= 0.97f;
-			dust.fadeIn++;
+        public override bool Update(Dust dust)
+        {
+            if (dust.color == Color.Transparent)
+                dust.position -= Vector2.One * 32 * dust.scale;
 
-			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
+            //dust.rotation += dust.velocity.Y * 0.1f;
+            dust.position += dust.velocity;
+            dust.velocity *= 1.12f;
+            dust.shader.UseColor(dust.color);
+            dust.fadeIn++;
 
-			if (dust.fadeIn > 40)
-				dust.active = false;
+            if (dust.scale < 0.5f)
+                dust.scale += 0.02f;
 
-			return false;
-		}
-	}
+            Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
 
-	class NeedlerDustGlowGrowing : ModDust
-	{
-		public override string Texture => "StarlightRiver/Assets/Keys/GlowVerySoft";
+            if (dust.fadeIn > 70)
+                dust.active = false;
 
-		public override Color? GetAlpha(Dust dust, Color lightColor)
-		{
-			float curveOut = Curve(1 - dust.fadeIn / 40f);
-			var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 30f);
-			dust.color = color * (curveOut + 0.4f);
-			return dust.color;
-		}
-
-		float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
-		{
-			return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
-		}
-
-		public override void OnSpawn(Dust dust)
-		{
-			dust.color = Color.Transparent;
-			dust.fadeIn = 0;
-			dust.noLight = false;
-			dust.scale *= 0.3f;
-			dust.frame = new Rectangle(0, 0, 64, 64);
-			dust.velocity *= 2;
-			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
-		}
-
-		public override bool Update(Dust dust)
-		{
-			if (dust.color == Color.Transparent)
-				dust.position -= Vector2.One * 32 * dust.scale;
-
-			//dust.rotation += dust.velocity.Y * 0.1f;
-			dust.position += dust.velocity;
-			dust.velocity *= 1.12f;
-			dust.shader.UseColor(dust.color);
-			dust.fadeIn++;
-
-			if (dust.scale < 0.5f)
-				dust.scale += 0.02f;
-
-			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
-
-			if (dust.fadeIn > 70)
-				dust.active = false;
-
-			return false;
-		}
-	}
+            return false;
+        }
+    }
 }

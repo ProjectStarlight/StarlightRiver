@@ -1,75 +1,88 @@
-﻿using StarlightRiver.Content.Tiles.Underground;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Tiles.Underground;
+using Terraria;
 using static Terraria.Utils;
+using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class HotspringMapTarget : HookGroup
 	{
-		public static RenderTarget2D hotspringMapTarget;
-		public static RenderTarget2D hotspringShineTarget;
+        public static RenderTarget2D hotspringMapTarget;
+        public static RenderTarget2D hotspringShineTarget;
 
-		public static Vector2 oldScreenPos;
+        public static Vector2 oldScreenPos;
 
-		//Creates a RenderTarget for the hotpsring water shader.
-		public override void Load()
-		{
-			if (Main.dedServ)
-				return;
+        //Creates a RenderTarget for the hotpsring water shader.
+        public override SafetyLevel Safety => SafetyLevel.Safe;
 
-			On.Terraria.Main.CheckMonoliths += HotspringTarget;
-		}
+        public override void Load()
+        {
+            if (Main.dedServ)
+                return;
 
-		public override void Unload()
-		{
-			hotspringMapTarget = null;
-		}
+            On.Terraria.Main.CheckMonoliths += HotspringTarget;
+        }
 
-		private void HotspringTarget(On.Terraria.Main.orig_CheckMonoliths orig)
-		{
-			orig();
+        public override void Unload()
+        {
+            hotspringMapTarget = null;
+        }
 
-			if (Main.gameMenu || !HotspringFountainDummy.AnyOnscreen)
-				return;
+        private void HotspringTarget(On.Terraria.Main.orig_CheckMonoliths orig)
+        {
+            orig();
 
-			Effect effect = Terraria.Graphics.Effects.Filters.Scene["HotspringWater"].GetShader().Shader;
-			effect.Parameters["offset"].SetValue((Main.screenPosition - oldScreenPos) * -1);
-			effect.Parameters["sampleTexture2"].SetValue(HotspringMapTarget.hotspringMapTarget);
-			effect.Parameters["sampleTexture3"].SetValue(HotspringMapTarget.hotspringShineTarget);
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
+            if (Main.gameMenu || !HotspringFountainDummy.AnyOnscreen) 
+                return;
 
-			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
+            var effect = Terraria.Graphics.Effects.Filters.Scene["HotspringWater"].GetShader().Shader;
+            effect.Parameters["offset"].SetValue((Main.screenPosition - oldScreenPos) * -1);
+            effect.Parameters["sampleTexture2"].SetValue(HotspringMapTarget.hotspringMapTarget);
+            effect.Parameters["sampleTexture3"].SetValue(HotspringMapTarget.hotspringShineTarget);
+            effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			if (hotspringMapTarget is null || hotspringMapTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
-				hotspringMapTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
+            var graphics = Main.graphics.GraphicsDevice;
 
-			if (hotspringShineTarget is null || hotspringShineTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
-				hotspringShineTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
+            if (hotspringMapTarget is null || hotspringMapTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
+                hotspringMapTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
 
-			graphics.SetRenderTarget(hotspringMapTarget);
+            if (hotspringShineTarget is null || hotspringShineTarget.Size() != new Vector2(Main.screenWidth, Main.screenHeight))
+                hotspringShineTarget = new RenderTarget2D(graphics, Main.screenWidth, Main.screenHeight, default, default, default, default, RenderTargetUsage.PreserveContents);
 
-			graphics.Clear(Color.Transparent);
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default);
+            graphics.SetRenderTarget(hotspringMapTarget);
 
-			for (int k = 0; k < Main.maxProjectiles; k++)
-			{
-				Projectile proj = Main.projectile[k];
-				if (proj.active && proj.ModProjectile is HotspringFountainDummy)
-					(proj.ModProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
-			}
+            graphics.Clear(Color.Transparent);
+            Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default);
 
-			Main.spriteBatch.End();
-			graphics.SetRenderTarget(null);
+            for (int k = 0; k < Main.maxProjectiles; k++)
+            {
+                var proj = Main.projectile[k];
+                if (proj.active && proj.ModProjectile is HotspringFountainDummy)
+                    (proj.ModProjectile as HotspringFountainDummy).DrawMap(Main.spriteBatch);
+            }
 
-			//if (Main.renderCount == 3)//
-			//{
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
+            Main.spriteBatch.End();
+            graphics.SetRenderTarget(null);
 
-			Main.graphics.GraphicsDevice.SetRenderTarget(hotspringShineTarget);
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+            //if (Main.renderCount == 3)//
+            //{
+            Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default);
 
-			/*Vector2 screenSize = Helpers.Helper.ScreenSize;
+            Main.graphics.GraphicsDevice.SetRenderTarget(hotspringShineTarget);
+            Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+            Texture2D tex2 = Terraria.ModLoader.ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/HotspringWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+            /*Vector2 screenSize = Helpers.Helper.ScreenSize;
             Vector2 textureSize = tex2.Size();
 
             Vector2 texWrapCount = (screenSize / textureSize).Round().TwoValueMax(Vector2.One);
@@ -85,28 +98,26 @@ namespace StarlightRiver.Content.CustomHooks
                     Main.spriteBatch.Draw(tex2, new Rectangle((int)(pos.X - off.X), (int)(pos.Y - off.Y), (int)texOutSize.X, (int)texOutSize.Y), null, Color.White);
                 }*/
 
-			//The seam issue is not in this file, See StarlightRiver.cs and enable the commented out PostDrawInterface hook to view RTs
-			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
-			{
-				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
-				{
-					//the divide by 1.3 and 1.5 are what keep the tile tied to the world location, seems to be tied to the 2 magic numbers in HotspringAddon.cs
-					var pos = new Vector2(i, j);
-					Main.spriteBatch.Draw(tex2, pos - new Vector2(Main.screenPosition.X % tex2.Width, Main.screenPosition.Y % tex2.Height), null, Color.White);
+            //The seam issue is not in this file, See StarlightRiver.cs and enable the commented out PostDrawInterface hook to view RTs
+            for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+                for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
+                {
+                    //the divide by 1.3 and 1.5 are what keep the tile tied to the world location, seems to be tied to the 2 magic numbers in HotspringAddon.cs
+                    Vector2 pos = (new Vector2(i, j));
+                    Main.spriteBatch.Draw(tex2, pos - new Vector2(Main.screenPosition.X % tex2.Width, Main.screenPosition.Y % tex2.Height), null, Color.White);
 
-					//Vector2 debugSize = new Vector2(32, 156);
+                    //Vector2 debugSize = new Vector2(32, 156);
 
-					//float posOffY = (float)Math.Sin(Main.GameUpdateCount / 15f) * (Main.screenHeight / 2.2f);
-					//Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, Main.screenHeight / 2 + (int)posOffY, (int)debugSize.X, (int)debugSize.Y), Color.Red);
+                    //float posOffY = (float)Math.Sin(Main.GameUpdateCount / 15f) * (Main.screenHeight / 2.2f);
+                    //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(0, Main.screenHeight / 2 + (int)posOffY, (int)debugSize.X, (int)debugSize.Y), Color.Red);
 
-					//float posOffY2 = (float)Math.Sin(Main.GameUpdateCount / 13.33f) * (Main.screenHeight / 2.2f);
-					//Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(Main.screenWidth - (int)debugSize.X, Main.screenHeight / 2 + (int)posOffY2, (int)debugSize.X, (int)debugSize.Y), Color.Red);
-				}
-			}
+                    //float posOffY2 = (float)Math.Sin(Main.GameUpdateCount / 13.33f) * (Main.screenHeight / 2.2f);
+                    //Main.spriteBatch.Draw(Main.blackTileTexture, new Rectangle(Main.screenWidth - (int)debugSize.X, Main.screenHeight / 2 + (int)posOffY2, (int)debugSize.X, (int)debugSize.Y), Color.Red);
+                }
 
-			Main.spriteBatch.End();
+            Main.spriteBatch.End();
 
-			Main.graphics.GraphicsDevice.SetRenderTarget(null);
-		}
-	}
+            Main.graphics.GraphicsDevice.SetRenderTarget(null);
+        }
+    }
 }

@@ -1,8 +1,17 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria.Graphics.Effects;
+using Terraria;
+using MonoMod.Cil;
+using Mono.Cecil.Cil;
+using Terraria.GameContent.UI;
+using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Core;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
@@ -37,9 +46,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 	class WaterAddonHandler : HookGroup
 	{
-		public static List<WaterAddon> addons = new();
+		public static List<WaterAddon> addons = new List<WaterAddon>();
 
-		public static WaterAddon activeAddon;
+		public static WaterAddon activeAddon; 
 
 		public override float Priority => 1.1f;
 
@@ -75,7 +84,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private Texture2D LavaBlockBody(Texture2D arg, int x, int y)
 		{
-			Tile tile = Framing.GetTileSafely(x, y);
+			var tile = Framing.GetTileSafely(x, y);
 
 			if (tile.LiquidType != LiquidID.Water)
 				return arg;
@@ -89,7 +98,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void AddWaterShader(ILContext il)
 		{
-			var c = new ILCursor(il);
+			ILCursor c = new ILCursor(il);
 
 			//back target
 			c.TryGotoNext(n => n.MatchLdfld<Main>("backWaterTarget"));
@@ -119,7 +128,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void NewDrawBack()
 		{
-			SpriteBatch sb = Main.spriteBatch;
+			var sb = Main.spriteBatch;
 
 			if (activeAddon != null)
 			{
@@ -138,7 +147,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 		private void NewDraw()
 		{
-			SpriteBatch sb = Main.spriteBatch;
+			var sb = Main.spriteBatch;
 
 			if (activeAddon != null)
 			{

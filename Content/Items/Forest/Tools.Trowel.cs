@@ -1,7 +1,12 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -29,7 +34,8 @@ namespace StarlightRiver.Content.Items.Forest
 
 		private Point16 FindNextTile(Player Player)
 		{
-			if (Math.Abs(Player.tileTargetX - Player.Center.X / 16) > Player.tileRangeX || Math.Abs(Player.tileTargetY - Player.Center.Y / 16) > Player.tileRangeY)
+			if (Math.Abs(Player.tileTargetX - (Player.Center.X / 16)) > Player.tileRangeX ||
+				Math.Abs(Player.tileTargetY - (Player.Center.Y / 16)) > Player.tileRangeY)
 				return default;
 
 			Tile tile = Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
@@ -43,11 +49,11 @@ namespace StarlightRiver.Content.Items.Forest
 				float angle = (new Vector2(Player.tileTargetX, Player.tileTargetY) * 16 + Vector2.One * 8 - Player.Center).ToRotation();
 				angle = Helpers.Helper.ConvertAngle(angle);
 
-				if (angle < Math.PI / 4 || angle > Math.PI / 4 * 7)
+				if (angle < Math.PI / 4 || angle > (Math.PI / 4) * 7)
 					nextX -= k * direction;
-				else if (angle >= Math.PI / 4 && angle <= Math.PI / 4 * 3)
+				else if (angle >= Math.PI / 4 && angle <= (Math.PI / 4) * 3)
 					nextY += k * direction;
-				else if (angle > Math.PI / 4 * 3 && angle < Math.PI / 4 * 5)
+				else if (angle > (Math.PI / 4) * 3 && angle < (Math.PI / 4) * 5)
 					nextX += k * direction;
 				else
 					nextY -= k * direction;
@@ -56,6 +62,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 				if (!nextTile.HasTile)
 					return new Point16(nextX, nextY);
+
 				else if (nextTile.TileType != tile.TileType)
 					return default;
 			}
@@ -73,7 +80,7 @@ namespace StarlightRiver.Content.Items.Forest
 
 			for (int k = 0; k < Player.inventory.Length; k++)  //find the Item to place the tile
 			{
-				Item thisItem = Player.inventory[k];
+				var thisItem = Player.inventory[k];
 
 				if (!thisItem.IsAir && thisItem.createTile == tile.TileType)
 					Item = Player.inventory[k];
@@ -105,7 +112,7 @@ namespace StarlightRiver.Content.Items.Forest
 			if (!tile.HasTile || Main.tileFrameImportant[tile.TileType])
 				return;
 
-			Vector2 pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
+			var pos = FindNextTile(Main.LocalPlayer).ToVector2() * 16 - Main.screenPosition;
 
 			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, pos, new Rectangle(162, 54, 16, 16), Helpers.Helper.IndicatorColor * 0.5f);
 		}

@@ -1,4 +1,15 @@
-﻿namespace StarlightRiver.Content.Bosses.VitricBoss
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.ModLoader;
+using StarlightRiver.Core;
+using Terraria.Localization;
+using System.IO;
+
+namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	class BrickGode : IOrderedLoadable
 	{

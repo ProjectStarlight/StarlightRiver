@@ -1,4 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Helpers;
+using Terraria;
+using Terraria.ID;
+using Terraria.Enums;
+using Terraria.ModLoader;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Terraria.Graphics.Effects;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
@@ -7,7 +24,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		public static int oldScreenWidth = 0;
 		public static int oldScreenHeight = 0;
 
-		public static List<MetaballActor> Actors = new();
+		public static List<MetaballActor> Actors = new List<MetaballActor>();
 
 		public float Priority => 1;
 
@@ -30,7 +47,10 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void UpdateWindowSize(int width, int height)
 		{
-			Main.QueueMainThreadAction(() => Actors.ForEach(n => n.ResizeTarget(width, height)));
+			Main.QueueMainThreadAction(() =>
+			{
+				Actors.ForEach(n => n.ResizeTarget(width, height));
+			});
 
 			oldScreenWidth = width;
 			oldScreenHeight = height;
@@ -52,7 +72,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 					UpdateWindowSize(Main.screenWidth, Main.screenHeight);
 			}
 
-			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && !Main.gameMenu)
+			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
 				Actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
 
 			orig();

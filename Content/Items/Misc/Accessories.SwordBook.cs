@@ -1,12 +1,17 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.GameContent;
+using System.Text;
+using System.Threading.Tasks;
+using Terraria;
 using Terraria.Graphics.Effects;
-using Terraria.ID;
+using Terraria.GameContent;
+using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -30,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeSetDefaults()
 		{
-			Item.rare = ItemRarityID.Orange;
+			Item.rare = Terraria.ID.ItemRarityID.Orange;
 		}
 
 		private bool OverrideSwordEffects(Item item, Player player)
@@ -40,13 +45,13 @@ namespace StarlightRiver.Content.Items.Misc
 				if (item != player.HeldItem)
 					return true;
 
-				if (item.DamageType.Type == DamageClass.Melee.Type && item.pick <= 0 && item.axe <= 0 && item.hammer <= 0 && item.shoot <= ProjectileID.None && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
+				if (item.DamageType.Type == DamageClass.Melee.Type && item.pick <= 0 && item.axe <= 0 && item.hammer <= 0 && item.shoot <= 0 && item.useStyle == Terraria.ID.ItemUseStyleID.Swing && !item.noMelee)
 				{
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SwordBookProjectile>() && n.owner == player.whoAmI))
 						return false;
 
 					int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SwordBookProjectile>(), item.damage, item.knockBack, player.whoAmI);
-					Projectile proj = Main.projectile[i];
+					var proj = Main.projectile[i];
 
 					proj.timeLeft = item.useAnimation * 4;
 					proj.scale = item.scale;
@@ -120,7 +125,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void DoSwingAnimation(Player Player)
 		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is SwordBookProjectile && n.owner == Player.whoAmI);
+			var instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is SwordBookProjectile && n.owner == Player.whoAmI);
 
 			if (instance != null && instance.active)
 			{
@@ -192,12 +197,12 @@ namespace StarlightRiver.Content.Items.Misc
 						lifeSpan += 40;
 					}
 
-					Projectile.rotation = baseAngle + Direction + Helpers.Helper.BezierEase(Progress) * 6.28f * Direction;
+					Projectile.rotation = baseAngle + Direction + (Helpers.Helper.BezierEase(Progress) * 6.28f * Direction);
 					holdOut = Progress * 32;
 
-					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+					var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
-					if (Main.rand.NextBool(6))
+					if (Main.rand.Next(6) == 0)
 					{
 						var pos = Vector2.Lerp(Owner.Center, Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut), Main.rand.NextFloat());
 						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraFast>(), Vector2.Zero, 0, new Color(Main.rand.Next(255), 0, Main.rand.Next(255)), Main.rand.NextFloat(0.5f, 1));
@@ -217,10 +222,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+			var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
-			Vector2 start = Owner.Center;
-			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
+			var start = Owner.Center;
+			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length + holdOut);
 
 			if (Helpers.Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
@@ -238,17 +243,17 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Helpers.Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
-			CameraSystem.shake += 3;
+			Core.Systems.CameraSystem.Shake += 3;
 
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
-		{
-			Vector2 origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
-			SpriteEffects effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			float rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
-			Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * (flipSprite ? Direction * -1 : Direction);
+		{		
+			var origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
+			var effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			var rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
+			var pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * (flipSprite ? Direction * -1 : Direction);
 
 			Main.spriteBatch.Draw(texture, pos, default, lightColor, rot, origin, Projectile.scale, effects, 0);
 			return false;
@@ -276,7 +281,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 0.75f, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
@@ -284,9 +289,9 @@ namespace StarlightRiver.Content.Items.Misc
 				return trailColor * (float)Math.Min(factor.X, Progress) * 0.5f * (float)Math.Sin(Progress * 3.14f);
 			});
 
-			var realCache = new Vector2[50];
+			Vector2[] realCache = new Vector2[50];
 
-			for (int k = 0; k < 50; k++)
+			for(int k = 0; k < 50; k++)
 			{
 				realCache[k] = cache[k] + Owner.Center;
 			}
@@ -298,9 +303,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(8f);

@@ -1,4 +1,21 @@
-﻿using Terraria.Graphics.Effects;
+﻿using StarlightRiver.Core;
+using StarlightRiver.Core.Loaders;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Helpers;
+using Terraria;
+using Terraria.ID;
+using Terraria.Enums;
+using Terraria.ModLoader;
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using Terraria.Graphics.Effects;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
@@ -12,7 +29,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		/// <summary>
 		/// The color of the outline of your metaball system
 		/// </summary>
-		public virtual Color OutlineColor => Color.Black;
+		public virtual Color outlineColor => Color.Black;
 
 		/// <summary>
 		/// When your metaball system should be active and creating it's rendertargets
@@ -31,7 +48,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void ResizeTarget(int width, int height)
 		{
-			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
+			var graphics = Main.graphics.GraphicsDevice;
 			Target = new RenderTarget2D(graphics, width, height);
 			Target2 = new RenderTarget2D(graphics, width, height);
 		}
@@ -90,7 +107,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 			spriteBatch.Begin();
 
-			if (PreDraw(spriteBatch, Target))
+			if(PreDraw(spriteBatch, Target))
 				spriteBatch.Draw(Target, position: Vector2.Zero, color: Color.White);
 
 			spriteBatch.End();
@@ -101,7 +118,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			Effect metaballEdgeDetection = Filters.Scene["MetaballEdgeDetection"].GetShader().Shader;
 			metaballEdgeDetection.Parameters["width"].SetValue((float)Main.screenWidth / 2);
 			metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-			metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
+			metaballEdgeDetection.Parameters["border"].SetValue(outlineColor.ToVector4());
 
 			//metaballEdgeDetection.CurrentTechnique.Passes[0].Apply();
 
@@ -125,7 +142,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			if (PostDraw(spriteBatch, Target))
+			if(PostDraw(spriteBatch, Target))
 				spriteBatch.Draw(Target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
 
 			spriteBatch.End();

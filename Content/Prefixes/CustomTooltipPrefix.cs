@@ -1,29 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core;
+using Terraria;
+using Terraria.ModLoader;
 
-namespace StarlightRiver.Content.Prefixes
+namespace StarlightRiver.Prefixes
 {
 	public abstract class CustomTooltipPrefix : ModPrefix
-	{
-		public virtual void Update(Item Item, Player Player) { }
+    {
+        public readonly string _tooltip;
 
-		public virtual void SafeApply(Item Item) { }
+        protected CustomTooltipPrefix(string tooltip) => _tooltip = tooltip;
 
-		public virtual void ModifyTooltips(Item item, List<TooltipLine> tooltips) { }
+        public virtual void Update(Item Item, Player Player) { }
 
-		public override void Apply(Item Item)
-		{
-			SafeApply(Item);
-		}
-	}
+        public virtual void SafeApply(Item Item) { }
 
-	public class CustomTooltipItem : GlobalItem
-	{
-		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-		{
-			ModPrefix prefix = PrefixLoader.GetPrefix(item.prefix);
-
-			if (prefix is CustomTooltipPrefix)
-				(prefix as CustomTooltipPrefix).ModifyTooltips(item, tooltips);
-		}
-	}
+        public override void Apply(Item Item)
+        {
+            Item.GetGlobalItem<StarlightItem>().prefixLine = _tooltip;
+            SafeApply(Item);
+        }
+    }
 }

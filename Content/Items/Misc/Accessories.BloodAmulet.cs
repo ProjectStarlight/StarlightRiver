@@ -1,17 +1,24 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Core;
 using StarlightRiver.Helpers;
+
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
+using Terraria.Graphics.Effects;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.Graphics.Effects;
-using Terraria.ID;
+using StarlightRiver.Content.Items.Gravedigger;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	public class BloodAmulet : SmartAccessory
-	{
-		public int storedDamage;
+    public class BloodAmulet : SmartAccessory
+    {
+		public int StoredDamage;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -30,16 +37,16 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		public override void SafeSetDefaults()
-		{
-			Item.value = Item.sellPrice(0, 2, 0, 0);
-			Item.rare = ItemRarityID.LightRed;
-		}
+        {
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.LightRed;
+        }
 
 		public void BloodAmuletOnhit(Player player, NPC NPC, ref int damage, ref bool crit)
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
 				SpawnBolts(player);
 			}
 		}
@@ -48,16 +55,16 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).StoredDamage += damage;
 				SpawnBolts(player);
 			}
 		}
 
 		private void SpawnBolts(Player player)
 		{
-			while ((GetEquippedInstance(player) as BloodAmulet).storedDamage > 25)
+			while (StoredDamage > 25)
 			{
-				(GetEquippedInstance(player) as BloodAmulet).storedDamage -= 25;
+				StoredDamage -= 25;
 				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Main.rand.NextVector2Circular(10, 10), ModContent.ProjectileType<BloodAmuletBolt>(), 25, 0, player.whoAmI);
 			}
 		}
@@ -79,32 +86,32 @@ namespace StarlightRiver.Content.Items.Misc
 	}
 
 	public class BloodAmuletGNPC : GlobalNPC
-	{
+    {
 		public override bool InstancePerEntity => true;
 
 		public bool dropHeart = false;
 
 		public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
-		{
+        {
+            if (dropHeart && NPC.life <= 0)
+				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
+		}
+        public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
+        {
 			if (dropHeart && NPC.life <= 0)
 				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
 		}
+    }
 
-		public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
-		{
-			if (dropHeart && NPC.life <= 0)
-				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
-		}
-	}
 
 	public class BloodAmuletBolt : ModProjectile, IDrawPrimitive
-	{
+    {
+        public override string Texture => AssetDirectory.Assets + "Invisible";
+
+        private List<Vector2> cache;
+        private Trail trail;
+
 		const int TRAILLENGTH = 25;
-
-		private List<Vector2> cache;
-		private Trail trail;
-
-		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public float fade => Math.Min(1, Projectile.timeLeft / 15f);
 
@@ -137,9 +144,10 @@ namespace StarlightRiver.Content.Items.Misc
 			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
 			Projectile.friendly = false;
-
 			if (Projectile.timeLeft > 15)
+            {
 				Projectile.timeLeft = 15;
+            }				
 		}
 
 		private void Movement()
@@ -153,7 +161,6 @@ namespace StarlightRiver.Content.Items.Misc
 				direction *= 10;
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, direction, 0.03f);
 			}
-
 			if (fade < 1)
 				Projectile.velocity = Vector2.Zero;
 		}
@@ -179,7 +186,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => 20 * factor * fade, factor => Color.Lerp(Color.Black, Color.Red, factor.X));
+			trail = trail ?? new Trail(Main.instance.GraphicsDevice, TRAILLENGTH, new TriangularTip(1), factor => 20 * factor * fade, factor =>
+			{
+				return Color.Lerp(Color.Black, Color.Red, factor.X);
+			});
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -189,9 +199,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount);
 			effect.Parameters["repeats"].SetValue(2f);
@@ -200,5 +210,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 		}
+
 	}
 }

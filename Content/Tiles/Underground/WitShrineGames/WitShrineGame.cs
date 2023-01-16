@@ -1,4 +1,11 @@
-﻿namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace StarlightRiver.Content.Tiles.Underground.WitShrineGames
 {
 	public abstract class WitShrineGame
 	{
@@ -10,10 +17,7 @@
 			this.parent = parent;
 		}
 
-		protected int Clamp(float input)
-		{
-			return (int)MathHelper.Clamp(input, 0, 5);
-		}
+		protected int Clamp(float input) => (int)MathHelper.Clamp(input, 0, 5);
 
 		public virtual void SetupBoard()
 		{
