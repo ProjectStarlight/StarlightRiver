@@ -55,6 +55,8 @@ namespace StarlightRiver.Content.Menus
 
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
+			logoScale = 0.8f;
+
 			Main.screenPosition = Vector2.Zero;
 
 			Vector2 center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);

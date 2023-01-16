@@ -305,7 +305,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			Vector2 visibleCenter = NPC.Center + new Vector2(tentacleSin * 30, -32).RotatedBy(rot) + Vector2.UnitY * 36;
 
-			return new Rectangle((int)visibleCenter.X - 32, (int)visibleCenter.Y - 32, 64, 64);
+			return new Rectangle((int)visibleCenter.X - 40, (int)visibleCenter.Y - 40, 80, 80);
 		}
 
 		public override void AI()
