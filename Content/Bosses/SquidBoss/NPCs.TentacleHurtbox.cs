@@ -14,12 +14,17 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			NPC.width = 80;
 			NPC.height = 80;
-			NPC.lifeMax = 999999999;
+			NPC.lifeMax = 500;
 			NPC.damage = 0;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
+		}
+
+		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		{
+			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossLifeScale) : (int)(750 * bossLifeScale);
 		}
 
 		public override void AI()
