@@ -44,6 +44,7 @@ namespace StarlightRiver.Core
 		public override void SetDefaults()
 		{
 			Projectile.DefaultToWhip();
+			SafeSetDefaults();
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -94,6 +95,8 @@ namespace StarlightRiver.Core
 
 		public virtual void ArcAI() { }
 
+		public virtual void SafeSetDefaults() { }
+
 		public override void CutTiles()
 		{
 			var value = new Vector2(Projectile.width * Projectile.scale * 0.5f, 0f);
@@ -105,7 +108,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public void SetPoints(List<Vector2> controlPoints)
+		public virtual void SetPoints(List<Vector2> controlPoints)
 		{
 			float time = Projectile.ai[0] / flyTime;
 			float timeModified = time * 1.5f;

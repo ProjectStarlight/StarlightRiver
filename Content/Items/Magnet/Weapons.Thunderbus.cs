@@ -9,13 +9,13 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.SpaceEvent
+namespace StarlightRiver.Content.Items.Magnet
 {
 	class Thunderbuss : ModItem
 	{
 		public Projectile ball;
 
-		public override string Texture => "StarlightRiver/Assets/Items/SpaceEvent/Thunderbuss";
+		public override string Texture => AssetDirectory.MagnetItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -165,14 +165,6 @@ namespace StarlightRiver.Content.Items.SpaceEvent
 			}
 
 			return false;
-		}
-
-		public override void AddRecipes()
-		{
-			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Astroscrap>(), 12);
-			recipe.AddTile(TileID.Anvils);
-			recipe.Register();
 		}
 
 		private List<NPC> FindTargets(Player Player)
