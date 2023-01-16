@@ -85,6 +85,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			anchorPoint = Projectile.Center - Main.screenPosition;
 			Owner.heldProj = Projectile.whoAmI;
 			rotVel = 0f;
+
 			if (zapTarget != default && !Main.dedServ)
 			{
 				if (originCounter % 20 == 0)
@@ -114,8 +115,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				{
 					midPoint = CalculateMidpoint(zapTarget);
 					midPointDirection = Main.rand.NextFloat(0.5f) * Projectile.DirectionTo(midPoint);
+
 					midPoint2 = CalculateMidpointBranch(zapTarget);
 					midPointDirection2 = Main.rand.NextFloat(0.25f) * Projectile.DirectionTo(midPoint2);
+
 					midPoint3 = CalculateMidpointBranch(zapTarget);
 					midPointDirection3 = Main.rand.NextFloat(0.25f) * Projectile.DirectionTo(midPoint3);
 				}
@@ -133,6 +136,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		private void ManageCaches()
 		{
 			cache = new List<Vector2>();
+
 			var curve = new BezierCurve(lightningOrigin, midPoint, zapTarget.Center);
 			cache = curve.GetPoints(15);
 
@@ -143,11 +147,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			cache5 = curve3.GetPoints(7);
 
 			cache2 = new List<Vector2>();
+
 			for (int i = 0; i < cache.Count; i++)
 			{
 				Vector2 point = cache[i];
 				Vector2 nextPoint = i == cache.Count - 1 ? zapTarget.Center : cache[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache.Count - 3 || dir == Vector2.Zero)
 					cache2.Add(point);
 				else
@@ -155,11 +161,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			}
 
 			cache4 = new List<Vector2>();
+
 			for (int i = 0; i < cache3.Count; i++)
 			{
 				Vector2 point = cache3[i];
 				Vector2 nextPoint = i == cache3.Count - 1 ? zapTarget.Center : cache3[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache3.Count - 1 || dir == Vector2.Zero)
 					cache4.Add(point);
 				else
@@ -167,11 +175,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			}
 
 			cache6 = new List<Vector2>();
+
 			for (int i = 0; i < cache5.Count; i++)
 			{
 				Vector2 point = cache5[i];
 				Vector2 nextPoint = i == cache5.Count - 1 ? zapTarget.Center : cache5[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache5.Count - 1 || dir == Vector2.Zero)
 					cache6.Add(point);
 				else
@@ -257,6 +267,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			{
 				if (target == zapTarget && hitCounter > 100)
 					return true;
+
 				return false;
 			}
 
@@ -266,6 +277,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			base.OnHitNPC(target, damage, knockback, crit);
+
 			if (rightClicked)
 				CameraSystem.shake -= 2;
 		}
@@ -275,6 +287,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (rightClicked)
 			{
 				knockback = 0;
+
 				for (int i = 0; i < 5; i++)
 					Dust.NewDustPerfect(target.Center, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.Purple, Main.rand.NextFloat(0.45f, 0.85f));
 			}
@@ -286,7 +299,9 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		{
 			if (!rightClicked || zapTarget == default)
 				return;
+
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
+
 			for (int k = 0; k < 9; k++)
 			{
 				spriteBatch.Draw(tex, lightningOrigin - Main.screenPosition, null, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), 0, tex.Size() / 2, Projectile.scale * 0.2f, SpriteEffects.None, 0f);
