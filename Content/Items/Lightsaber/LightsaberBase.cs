@@ -365,6 +365,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
 
+			//X = pitch, Y = yaw of drawn projectile (regular rotation is roll)
 			Vector2 scaleVec;
 			Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
 			effect.Parameters["color"].SetValue(Color.White.ToVector4());

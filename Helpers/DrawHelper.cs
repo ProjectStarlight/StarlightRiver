@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 
 namespace StarlightRiver.Helpers
@@ -165,6 +166,49 @@ namespace StarlightRiver.Helpers
 					num34 = num226;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Draws a texture with perspective according to a passed pitch yaw and roll. Useful for creating things such as swords with perspective slashes.
+		/// </summary>
+		/// <param name="spriteBatch">The spritebatch to draw this texture with. Note this will be restarted back to default values after invocation.</param>
+		/// <param name="texture">The texture to draw</param>
+		/// <param name="pos">Position on the screen of which to draw the texture</param>
+		/// <param name="color">Color to draw the texture with</param>
+		/// <param name="scale">Scale of the drawn texture</param>
+		/// <param name="rotation">Rotation of the drawn texture</param>
+		/// <param name="pitch">Simulated pitch of the drawn texture, accomplished via squishing</param>
+		/// <param name="yaw">Simulated yaw of the drawn texture, accomplished via squishing</param>
+		/// <param name="roll">Simulated roll of the drawn texture, calculaed via the shader</param>
+		/// <param name="diagonalOriginPercent">How far the rotational origin should be up the texture. Only works with diagonal sprites!</param>
+		/// <param name="blendState">The blend state to start the spritebatch to draw the texture.</param>
+		public static void DrawWithPerspective(SpriteBatch spriteBatch, Texture2D texture, Vector2 pos, Color color, float scale, float rotation, float pitch, float yaw, float roll, float diagonalOriginPercent = 0, BlendState blendState = default)
+		{
+			pitch = -(float)Math.Sin(pitch / 3.14f) * 0.5f + 0.5f;
+			yaw = -(float)Math.Sin(yaw / 3.14f) * 0.5f + 0.5f;
+
+			SpriteEffects effects = SpriteEffects.None;
+
+			if (pitch % 6.28f > 3.14f)
+				effects |= SpriteEffects.FlipHorizontally;
+
+			if (yaw % 6.28f > 3.14f)
+				effects |= SpriteEffects.FlipVertically;
+
+			//X = pitch, Y = yaw of drawn projectile (regular rotation is roll)
+			Vector2 scaleVec = new Vector2(pitch, yaw) * 4;
+			Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
+			effect.Parameters["color"].SetValue(color.ToVector4());
+			effect.Parameters["rotation"].SetValue(0);
+			effect.Parameters["pommelToOriginPercent"].SetValue(diagonalOriginPercent);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, blendState, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(texture, pos, null, Color.White, roll, texture.Size() / 2, scaleVec * scale, effects, 0f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }
