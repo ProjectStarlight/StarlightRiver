@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.height = 1;
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 140;
+			Projectile.tileCollide = false;
 		}
 
 		public override void AI()
