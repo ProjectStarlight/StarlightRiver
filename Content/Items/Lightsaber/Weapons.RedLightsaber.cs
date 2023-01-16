@@ -1,19 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Lightsaber
 {
@@ -35,7 +24,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		private Vector2 launchVector = Vector2.Zero;
 		protected override void RightClickBehavior()
-        {
+		{
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			owner.heldProj = Projectile.whoAmI;
@@ -54,6 +43,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 						targetNoGrav = pullTarget.noGravity;
 						pullTarget.noGravity = true;
 					}
+
 					pullDirection = owner.DirectionTo(pullTarget.Center);
 					pullTarget.velocity = -pullDirection * EaseFunction.EaseQuinticIn.Ease(MathHelper.Clamp(pullTimer / 150f, 0, 1)) * 12;
 					Projectile.rotation = pullDirection.ToRotation();
@@ -62,18 +52,21 @@ namespace StarlightRiver.Content.Items.Lightsaber
 						releasedRight = true;
 
 					Vector2 dustVel = pullDirection.RotatedByRandom(0.8f) * Main.rand.NextFloat();
-					Dust.NewDustPerfect(pullTarget.Center - (dustVel * 45), ModContent.DustType<Dusts.Glow>(), dustVel * 3, 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.25f, 0.45f));
+					Dust.NewDustPerfect(pullTarget.Center - dustVel * 45, ModContent.DustType<Dusts.Glow>(), dustVel * 3, 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.25f, 0.45f));
 				}
 				else
+				{
 					Projectile.rotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+				}
+
 				pullTimer++;
 			}
 			else
 			{
 				if (pullTarget != default)
-                {
+				{
 					pullTarget.noGravity = targetNoGrav;
-                }
+				}
 
 				if (!releasedRight)
 				{
@@ -89,7 +82,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					hide = false;
 
 					anchorPoint = Vector2.Zero;
-					endRotation = rot - (2f * owner.direction);
+					endRotation = rot - 2f * owner.direction;
 
 					oldRotation = new List<float>();
 					oldPositionDrawing = new List<Vector2>();
@@ -103,7 +96,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
 					startMidRotation = midRotation;
 					endSquish = 0.3f;
-					endRotation = rot + (3f * owner.direction);
+					endRotation = rot + 3f * owner.direction;
 					attackDuration = 65;
 					//Projectile.ai[0] += 30f / attackDuration;
 				}
@@ -113,10 +106,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					Projectile.timeLeft = 50;
 					if (pauseTime-- <= 0)
 						Projectile.ai[0] += 1f / attackDuration;
-					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - (1f / attackDuration))) * 2;
+					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - 1f / attackDuration)) * 2;
 				}
 				else
+				{
 					rotVel = 0f;
+				}
 
 				float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
 
@@ -129,11 +124,11 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					}
 				}*/
 
-				Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + (rotVel * 4)), 1.3f);
+				Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + rotVel * 4), 1.3f);
 
 				Projectile.rotation = MathHelper.Lerp(startRotation, endRotation, progress);
 				midRotation = MathHelper.Lerp(startMidRotation, endMidRotation, progress);
-				squish = MathHelper.Lerp(startSquish, endSquish, progress) + (0.35f * (float)Math.Sin(3.14f * progress));
+				squish = MathHelper.Lerp(startSquish, endSquish, progress) + 0.35f * (float)Math.Sin(3.14f * progress);
 				anchorPoint = Projectile.Center - Main.screenPosition;
 
 				owner.ChangeDir(facingRight ? 1 : -1);
@@ -153,23 +148,23 @@ namespace StarlightRiver.Content.Items.Lightsaber
 						pullTarget.velocity = Vector2.Zero;
 					}
 					else if (pauseTime == 0)
-                    {
+					{
 						pullTarget.velocity = launchVector * 8 * pullTarget.knockBackResist;
-                    }
+					}
 				}
 			}
-        }
+		}
 
-        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-        {
-            if (target == pullTarget)
-            {
-				Core.Systems.CameraSystem.Shake += 5;
+		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		{
+			if (target == pullTarget)
+			{
+				CameraSystem.shake += 5;
 				launchVector = pullTarget.DirectionTo(Main.MouseWorld);
 				damage = (int)(damage * 2.5f);
 				target.velocity = Vector2.Zero;
 				pauseTime = 40;
-            }
-        }
-    }
+			}
+		}
+	}
 }

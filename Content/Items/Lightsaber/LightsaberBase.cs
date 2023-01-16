@@ -25,25 +25,16 @@
 //Better effect
 //Better description
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Helpers;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using Terraria.GameContent;
 
 namespace StarlightRiver.Content.Items.Lightsaber
-{ 
+{
 	public class Lightsabers : GlobalItem
 	{
 		public static int[] phaseblades = new int[]
@@ -57,8 +48,8 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			ItemID.OrangePhaseblade
 		};
 
-        public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
-        {
+		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+		{
 			if (!Main.Configuration.Get<bool>("Lightsabers", true))
 				return;
 
@@ -86,15 +77,15 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					tooltips.Add(new TooltipLine(Mod, "Lightsaber Description", "Right click throw to the cursor \nHold right click to leave it there\n'[Insert star wars quote]'"));
 					break;
 			}
-        }
+		}
 
-        public override void SetDefaults(Item item)
-        {
+		public override void SetDefaults(Item item)
+		{
 			if (!Main.Configuration.Get<bool>("Lightsabers", true))
 				return;
 
 			switch (item.type)
-            {
+			{
 				case ItemID.RedPhaseblade:
 					item.shoot = ModContent.ProjectileType<LightsaberProj_Red>();
 					break;
@@ -119,7 +110,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			}
 
 			if (phaseblades.Contains(item.type))
-            {
+			{
 				item.damage = 16;
 				item.noUseGraphic = true;
 				item.noMelee = true;
@@ -131,7 +122,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				item.knockBack = 2.5f;
 				item.shootSpeed = 14f;
 			}
-        }
+		}
 		public override bool AltFunctionUse(Item item, Player player)
 		{
 			if (!Main.Configuration.Get<bool>("Lightsabers", true))
@@ -150,11 +141,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 				if (phaseblades.Contains(item.type))
 				{
-					Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+					var proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
 					(proj.ModProjectile as LightsaberProj).rightClicked = player.altFunctionUse == 2;
 					return false;
 				}
 			}
+
 			return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
 		}
 	}
@@ -171,7 +163,6 @@ namespace StarlightRiver.Content.Items.Lightsaber
 	public abstract class LightsaberProj : ModProjectile
 	{
 		public override string Texture => AssetDirectory.LightsaberItem + "LightsaberProj";
-
 
 		private CurrentAttack currentAttack = CurrentAttack.Slash1;
 
@@ -218,13 +209,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		protected int growCounter = 0;
 
-		protected List<float> oldRotation = new List<float>();
-		protected List<Vector2> oldPositionDrawing = new List<Vector2>();
-		protected List<float> oldSquish = new List<float>();
+		protected List<float> oldRotation = new();
+		protected List<Vector2> oldPositionDrawing = new();
+		protected List<float> oldSquish = new();
 
-		protected List<Vector2> oldPositionCollision = new List<Vector2>();
+		protected List<Vector2> oldPositionCollision = new();
 
-		protected List<NPC> hit = new List<NPC>();
+		protected List<NPC> hit = new();
 
 		protected ref float nonEasedProgress => ref Projectile.ai[0];
 
@@ -232,10 +223,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		protected virtual Vector3 BladeColor => Color.Green.ToVector3();
 
-		private bool FirstTickOfSwing
-		{
-			get => Projectile.ai[0] == 0;
-		}
+		private bool FirstTickOfSwing => Projectile.ai[0] == 0;
 
 		public override void SetStaticDefaults()
 		{
@@ -294,29 +282,31 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				oldPositionCollision.RemoveAt(0);
 
 			if (thrown)
-			{ 
+			{
 				for (int i = 0; i < oldPositionDrawing.Count; i++)
 				{
 					oldPositionCollision[i] += Projectile.velocity;
 					oldPositionDrawing[i] += Projectile.velocity;
 					oldSquish[i] = squish;
 				}
-            }
+			}
+
 			if (thrown && throwTimer % Projectile.extraUpdates == Projectile.extraUpdates - 1)
-			{ 
+			{
 				for (int i = 0; i < oldPositionDrawing.Count; i++)
 				{
 					oldPositionDrawing[i] += (oldScreenPos - Main.screenPosition);
 				}
 			}
+
 			oldScreenPos = Main.screenPosition;
 		}
 
-        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			float collisionPoint = 0f;
 
-			for (int i = 0; i < oldPositionCollision.Count; i++) 
+			for (int i = 0; i < oldPositionCollision.Count; i++)
 			{
 				if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), oldPositionCollision[i], GetCollisionPoint(i) + oldPositionCollision[i], 40, ref collisionPoint))
 				{
@@ -326,11 +316,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					{
 						float speed = Main.rand.NextFloat();
 						int dir = Main.rand.NextBool() ? 1 : -1;
-						Dust.NewDustPerfect(dustPos, ModContent.DustType<LightsaberGlow>(), dustVel * dir * speed * 5, default, new Color(BladeColor.X * 2, BladeColor.Y * 2, BladeColor.Z * 2), MathHelper.Lerp(0.95f,0.55f, speed));
+						Dust.NewDustPerfect(dustPos, ModContent.DustType<LightsaberGlow>(), dustVel * dir * speed * 5, default, new Color(BladeColor.X * 2, BladeColor.Y * 2, BladeColor.Z * 2), MathHelper.Lerp(0.95f, 0.55f, speed));
 					}
+
 					return true;
 				}
 			}
+
 			return false;
 		}
 
@@ -345,18 +337,18 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		{
 			Projectile.penetrate++;
 			hit.Add(target);
-			
-			if (Core.Systems.CameraSystem.Shake < 20)
-				Core.Systems.CameraSystem.Shake += 2;
+
+			if (CameraSystem.shake < 20)
+				CameraSystem.shake += 2;
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			hitDirection = Math.Sign(target.Center.X - owner.Center.X);
-        }
+		}
 
-        public override bool PreDraw(ref Color lightColor)
-        {
+		public override bool PreDraw(ref Color lightColor)
+		{
 			if (hide)
 				return false;
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -365,8 +357,8 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			Texture2D smallGlowTex = ModContent.Request<Texture2D>(Texture + "_SmallGlow").Value;
 
 			Vector2 scaleVec;
-            Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
-            effect.Parameters["color"].SetValue(Color.White.ToVector4());
+			Effect effect = Filters.Scene["3DSwing"].GetShader().Shader;
+			effect.Parameters["color"].SetValue(Color.White.ToVector4());
 			effect.Parameters["rotation"].SetValue(Projectile.rotation - midRotation);
 			for (int i = 0; i < oldPositionDrawing.Count; i++) //disgusting amount of spritebatch restarts but I can't figure out another way to do it
 			{
@@ -379,7 +371,6 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(glowTex, oldPositionDrawing[i], null, Color.White, midRotation, (glowTex.Size() / 2f), scaleVec, SpriteEffects.None, 0f);
-
 
 				Main.spriteBatch.End();
 				effect.Parameters["color"].SetValue(new Vector4(BladeColor * 40, 0) * MathHelper.Max(rotVel * 0.25f, 0.0025f));
@@ -394,6 +385,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 				Main.spriteBatch.Draw(whiteTex, oldPositionDrawing[i], null, Color.White, midRotation, whiteTex.Size() / 2f, scaleVec, SpriteEffects.None, 0f);
 			}
+
 			scaleVec = new Vector2(1, squish) * 4;
 			Main.spriteBatch.End();
 
@@ -406,11 +398,11 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
-            return false;
-        }
+			return false;
+		}
 
 		private Vector2 GetCollisionPoint(int i)
-        {
+		{
 			float angleShift = oldRotation[i] - midRotation;
 
 			//Get the coordinates of the angle shift.
@@ -434,7 +426,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		}
 
 		protected virtual void ThrownBehavior()
-        {
+		{
 			rotVel = 0.04f;
 			squish = MathHelper.Lerp(squish, 0.6f - (Projectile.velocity.Length() * 0.08f), 0.1f);
 			anchorPoint = Projectile.Center - Main.screenPosition;
@@ -447,12 +439,14 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (goingBack)
 			{
 				if (!turnedAround)
-                {
-                    turnedAround = true;
+				{
+					turnedAround = true;
 					hit = new List<NPC>();
-                }
-                thrownDirection = owner.DirectionTo(Projectile.Center);
+				}
+
+				thrownDirection = owner.DirectionTo(Projectile.Center);
 			}
+
 			Projectile.velocity = (progress) * 5 * thrownDirection;
 			midRotation = Projectile.velocity.ToRotation();
 
@@ -461,10 +455,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			if (Projectile.Distance(owner.Center) < 20 && goingBack)
 				Projectile.active = false;
-        }
+		}
 
 		protected virtual void HeldBehavior()
-        {
+		{
 			Projectile.velocity = Vector2.Zero;
 			if (frontHand)
 				Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
