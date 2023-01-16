@@ -1,12 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
-using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -19,6 +12,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			On.Terraria.Player.AddBuff += Player_AddBuff;
+			StarlightItem.GetHealLifeEvent += AlchemistLifeModify;
+			StarlightItem.GetHealManaEvent += AlchemistManaModify;
 		}
 
 		public override void Unload()
@@ -29,51 +24,35 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alchemist's Shackles");
-			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nPotion sickness effects last 15 seconds longer");
-		}
-
-		public override void SafeUpdateEquip(Player Player)
-		{
-			Player.GetModPlayer<AlchemistShacklesPlayer>().equipped = true;
+			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nCursed : Potion sickness effects last 15 seconds longer");
 		}
 
 		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
-        {
-			if (self.GetModPlayer<AlchemistShacklesPlayer>().equipped && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
-			{
+		{
+			SmartAccessory instance = GetEquippedInstance(self, ModContent.ItemType<AlchemistShackles>());
+
+			if (instance != null && instance.Equipped(self) && (type == BuffID.PotionSickness || type == BuffID.ManaSickness))
 				orig(self, type, time1 + 900, quiet, foodHack);
-			}
 			else
 				orig(self, type, time1, quiet, foodHack);
 		}
-	}
-	class AlchemistShacklesPlayer : ModPlayer
-	{
-		public bool equipped = false;
 
-		public override void ResetEffects()
+		private void AlchemistLifeModify(Item Item, Player player, bool quickHeal, ref int healValue)
 		{
-			equipped = false;
-		}
-	}
-	class AlchemistShackleGItem : GlobalItem
-    {
-        public override void GetHealLife(Item Item, Player Player, bool quickHeal, ref int healValue)
-        {
-			float mult = 2 - ((float)Player.statLife / (float)Player.statLifeMax2);
-            if (Player.GetModPlayer<AlchemistShacklesPlayer>().equipped)
-            {
-				healValue = (int)(healValue * mult);
-            }
-        }
-
-        public override void GetHealMana(Item Item, Player Player, bool quickHeal, ref int healValue)
-        {
-			float mult = 2 - ((float)Player.statMana / (float)Player.statManaMax2);
-			if (Player.GetModPlayer<AlchemistShacklesPlayer>().equipped)
+			if (Equipped(player))
 			{
+				float mult = 2 - player.statLife / (float)player.statLifeMax2;
 				healValue = (int)(healValue * mult);
 			}
 		}
-    }
+
+		private void AlchemistManaModify(Item item, Player player, bool quickHeal, ref int healValue)
+		{
+			if (Equipped(player))
+			{
+				float mult = 2 - player.statMana / (float)player.statManaMax2;
+				healValue = (int)(healValue * mult);
+			}
+		}
+	}
 }

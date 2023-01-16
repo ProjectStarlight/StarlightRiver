@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -38,7 +34,10 @@ namespace StarlightRiver.Content.Items.Misc
 					CombatText.NewText(self.Hitbox, Color.Orange, rageToAdd / 10);
 				}
 			}
-			else orig(self, healAmount, broadcast);
+			else
+			{
+				orig(self, healAmount, broadcast);
+			}
 		}
 
 		public override void SetStaticDefaults()
@@ -47,10 +46,10 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("+100 Maximum Barrier" +
 				"\nUnaffected by damage over time" +
 				"\nBarrier absorbs ALL damage" +
-				"\nYou can survive without life"+
-				"\nYou cannot have life" +
-				"\nSlightly reduced barrier recharge" +
-				"\nHealing grants a decaying damage boost instead of life" +
+				"\nYou can survive without life" +
+				"\nCursed : You cannot have life" +
+				"\n Slightly reduced barrier recharge" +
+				"\n Healing grants a decaying damage boost instead of life" +
 				"\n'Leave your flesh behind, for your rage is all you need'");
 		}
 
@@ -58,16 +57,16 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Player.GetDamage(DamageClass.Generic) += rage / 2000f;
 
-			if(rage > 0)
+			if (rage > 0)
 				rage--;
 
 			if (rage > 800)
 				rage = 800;
 
-			Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 100;
-			Player.GetModPlayer<BarrierPlayer>().BarrierDamageReduction = 1;
-			Player.GetModPlayer<BarrierPlayer>().PlayerCanLiveWithOnlyBarrier = true;
-			Player.GetModPlayer<BarrierPlayer>().RechargeRate -= 10;
+			Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
+			Player.GetModPlayer<BarrierPlayer>().barrierDamageReduction = 1;
+			Player.GetModPlayer<BarrierPlayer>().playerCanLiveWithOnlyBarrier = true;
+			Player.GetModPlayer<BarrierPlayer>().rechargeRate -= 10;
 			Player.statLife = 0;
 			Player.lifeRegen = 0;
 			Player.lifeRegenCount = 0;
