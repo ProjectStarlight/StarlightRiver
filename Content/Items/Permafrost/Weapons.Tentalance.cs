@@ -35,6 +35,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.autoReuse = true;
 		}
 
+		public override ModItem Clone(Item newEntity)
+		{
+			ModItem clone = base.Clone(newEntity);
+			(clone as Tentalance).charge = charge;
+
+			return clone;
+		}
+
 		public Color GetColor(float off)
 		{
 			float sin = 1 + (float)Math.Sin(off);
