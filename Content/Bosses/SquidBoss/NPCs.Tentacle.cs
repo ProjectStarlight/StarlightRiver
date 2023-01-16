@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public float zSpin = 0;
 		public int downwardDrawDistance = 28;
 
+		private NPC hurtboxActor;
+
 		public SquidBoss Parent { get; set; }
 
 		public ref float State => ref NPC.ai[0];
@@ -50,14 +52,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SetDefaults()
 		{
-			NPC.width = 80;
-			NPC.height = 100;
+			NPC.width = 1;
+			NPC.height = 1;
 			NPC.lifeMax = 500;
 			NPC.damage = 20;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.knockBackResist = 0f;
 			NPC.HitSound = SoundID.NPCHit1;
+			NPC.dontTakeDamage = true;
 		}
 
 		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -243,38 +246,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
-		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
-		{
-			damage = (int)(damage * 0.65f);
-
-			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damage;
-
-			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
-		}
-
-		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			damage = (int)(damage * 0.65f);
-
-			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damage;
-
-			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
-		}
-
-		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
-		{
-			NPC.life = NPC.lifeMax;
-		}
-
-		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
-		{
-			NPC.life = NPC.lifeMax;
-		}
-
 		public override bool CheckDead()
 		{
 			NPC.life = 1;
@@ -325,6 +296,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return false;
 		}
 
+		public Rectangle GetDamageHitbox()
+		{
+			float rot = (basePoint - NPC.Center).ToRotation() - 1.57f;
+			float tentacleSin = (float)Math.Sin(Timer / 20f) * stalkWaviness;
+
+			rot += tentacleSin * 0.5f;
+
+			Vector2 visibleCenter = NPC.Center + new Vector2(tentacleSin * 30, -32).RotatedBy(rot) + Vector2.UnitY * 36;
+
+			return new Rectangle((int)visibleCenter.X - 32, (int)visibleCenter.Y - 32, 64, 64);
+		}
+
 		public override void AI()
 		{
 			/* AI fields:
@@ -334,10 +317,18 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (Parent == null || !Parent.NPC.active)
 				NPC.active = false;
 
-			NPC.dontTakeDamage = State != 0;
+			if (hurtboxActor is null || !hurtboxActor.active)
+			{
+				int i = NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<TentacleHurtbox>());
+				hurtboxActor = Main.npc[i];
 
-			if (Parent.NPC.ai[0] == (int)SquidBoss.AIStates.SpawnAnimation)
-				NPC.dontTakeDamage = true;
+				var actor = Main.npc[i].ModNPC as TentacleHurtbox;
+
+				if (actor != null)
+					actor.tentacle = this;
+				else
+					hurtboxActor = null;
+			}
 
 			if ((State == 0 || State == 1) && Timer == 0)
 				basePoint = NPC.Center;
