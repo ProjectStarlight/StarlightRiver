@@ -98,6 +98,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Times.NightTime,
 				new FlavorTextBestiaryInfoElement("An artifact from battles past, this cursed sign still inspires others with the enraging spirit of battle to this day.")
 			});
 		}
@@ -252,8 +253,35 @@ namespace StarlightRiver.Content.NPCs.Forest
 				rope.ropeSegments[index].posNow = rope.ropeSegments[0].posNow + Vector2.UnitY;
 		}
 
+		private void DrawBestiary(SpriteBatch spriteBatch, Vector2 screenPos)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			spriteBatch.Draw(tex, NPC.Center + new Vector2(0, -32) - screenPos, null, Color.White, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+
+			var target = new Rectangle((int)NPC.Center.X - 14, (int)NPC.Center.Y - 16, 28, 100);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, 0);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(200, 30, 30));
+
+			target = new Rectangle((int)NPC.Center.X - 22 - 4, (int)NPC.Center.Y - 16, 8, 100);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, 0);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(160, 20, 20));
+
+			target = new Rectangle((int)NPC.Center.X + 22 - 4, (int)NPC.Center.Y - 16, 8, 100);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(55, 0, 0));
+			target.Inflate(-2, 0);
+			spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, target, new Color(160, 20, 20));
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			if (NPC.IsABestiaryIconDummy)
+			{
+				DrawBestiary(spriteBatch, screenPos);
+				return false;
+			}
+
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			spriteBatch.Draw(tex, NPC.Center + new Vector2(0, -64) - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
 			return false;
