@@ -4,6 +4,7 @@ using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -62,6 +63,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath2;
 			NPC.chaseable = true;
+			NPC.value = 100;
 
 			chain = new RectangularBanner(15, false, NPC.Center + Vector2.UnitY * -40, 8)
 			{
@@ -89,6 +91,15 @@ namespace StarlightRiver.Content.NPCs.Forest
 				scale = 4f,
 				parent = NPC
 			};
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.Surface,
+				new FlavorTextBestiaryInfoElement("An artifact from battles past, this cursed sign still inspires others with the enraging spirit of battle to this day.")
+			});
 		}
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
@@ -286,9 +297,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override void OnKill()
 		{
-			for (int k = 0; k <= 6; k++)
+			for (int k = 0; k <= 12; k++)
 			{
-				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + k).Type;
+				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + Main.rand.Next(7)).Type;
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
 			}
 		}
