@@ -16,41 +16,41 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (!jumped)
 			{
 				jumped = true;
-				owner.velocity = owner.DirectionTo(Main.MouseWorld) * 20;
-				owner.GetModPlayer<LightsaberPlayer>().jumping = true;
+				Owner.velocity = Owner.DirectionTo(Main.MouseWorld) * 20;
+				Owner.GetModPlayer<LightsaberPlayer>().jumping = true;
 			}
 
 			if (soundTimer++ % 100 == 0)
 			{
 				hit = new List<NPC>();
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Owner.Center);
 			}
 
-			owner.itemTime = owner.itemAnimation = 2;
+			Owner.itemTime = Owner.itemAnimation = 2;
 			Projectile.timeLeft = 200;
 			afterImageLength = 30;
-			Projectile.rotation += 0.06f * owner.direction;
+			Projectile.rotation += 0.06f * Owner.direction;
 			rotVel = 0.02f;
-			midRotation = owner.velocity.ToRotation();
+			midRotation = Owner.velocity.ToRotation();
 			squish = 0.7f;
 			hide = false;
 			canHit = true;
-			anchorPoint = owner.Center - Main.screenPosition;
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			anchorPoint = Owner.Center - Main.screenPosition;
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
-			owner.heldProj = Projectile.whoAmI;
+			Projectile.Center = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			Owner.heldProj = Projectile.whoAmI;
 
-			if (!owner.GetModPlayer<LightsaberPlayer>().jumping)
+			if (!Owner.GetModPlayer<LightsaberPlayer>().jumping)
 			{
 				CameraSystem.shake += 10;
 				for (int i = 0; i < 30; i++)
-					Dust.NewDustPerfect(owner.Bottom, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1.95f, 2.35f));
+					Dust.NewDustPerfect(Owner.Bottom, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(10, 10), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1.95f, 2.35f));
 				Projectile.active = false;
-				Tile tile = Main.tile[(owner.Bottom / 16 + new Vector2(0, 1)).ToPoint()];
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI, 0, 10);
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * -1, ModContent.ProjectileType<Lightsaber_GreenShockwave>(), (int)(Projectile.damage * 1.3f), 0, owner.whoAmI, tile.TileType, -10);
-				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), owner.Bottom, Vector2.Zero, ModContent.ProjectileType<LightsaberImpactRing>(), 0, 0, owner.whoAmI, 160, 1.57f);
+				Tile tile = Main.tile[(Owner.Bottom / 16 + new Vector2(0, 1)).ToPoint()];
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX, ModContent.ProjectileType<GreenLightsaberShockwave>(), (int)(Projectile.damage * 1.3f), 0, Owner.whoAmI, 0, 10);
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.UnitX * -1, ModContent.ProjectileType<GreenLightsaberShockwave>(), (int)(Projectile.damage * 1.3f), 0, Owner.whoAmI, tile.TileType, -10);
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Owner.Bottom, Vector2.Zero, ModContent.ProjectileType<LightsaberImpactRing>(), 0, 0, Owner.whoAmI, 160, 1.57f);
 				(proj.ModProjectile as LightsaberImpactRing).outerColor = new Color(BladeColor.X, BladeColor.Y, BladeColor.Z);
 				(proj.ModProjectile as LightsaberImpactRing).ringWidth = 40;
 				(proj.ModProjectile as LightsaberImpactRing).timeLeftStart = 50;

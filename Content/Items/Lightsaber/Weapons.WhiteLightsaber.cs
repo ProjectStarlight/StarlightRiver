@@ -25,10 +25,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
         protected override void RightClickBehavior()
         {
-			owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 1200;
-			if (nonEasedProgress > 0.5f && !spawnedSecond)
+			Owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 1200;
+			if (UneasedProgress > 0.5f && !spawnedSecond)
 			{
-				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), owner.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_White>(), Projectile.damage, Projectile.knockBack, owner.whoAmI);
+				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_White>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 				(proj.ModProjectile as LightsaberProj_White).frontHand = false;
 				(proj.ModProjectile as LightsaberProj_White).spawnedSecond = true;
 				(proj.ModProjectile as LightsaberProj_White).rightClicked = true;

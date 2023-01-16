@@ -34,15 +34,15 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			float progressMult = 0.0075f;
 
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, owner.DirectionTo(Projectile.Center).ToRotation() - 1.57f);
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Owner.DirectionTo(Projectile.Center).ToRotation() - 1.57f);
 			if (hitTimer++ % ((Projectile.extraUpdates + 1) * 6) == 0)
 				hit = new List<NPC>();
 			if (throwTimer == 0)
 			{
-				Vector2 mouseOffset = Main.MouseWorld - owner.Center;
+				Vector2 mouseOffset = Main.MouseWorld - Owner.Center;
 				int max = 400 + (int)MathHelper.Max(0, (mouseOffset.Length() - 400) * 0.2f);
-				mouseStart = owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
-				playerStart = owner.Center;
+				mouseStart = Owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
+				playerStart = Owner.Center;
 				midRotation = Projectile.DirectionTo(mouseStart).ToRotation();
 			}
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			squish = MathHelper.Lerp(squish, 0.8f - (Projectile.velocity.Length() * 0.04f), 0.1f);
 			anchorPoint = Projectile.Center - Main.screenPosition;
 			Projectile.timeLeft = 50;
-			owner.itemTime = owner.itemAnimation = 2;
+			Owner.itemTime = Owner.itemAnimation = 2;
 
 			if ((!Main.mouseLeft || releaseTimer++ > 1600) && !released && Math.Cos((throwTimer + 50) * progressMult) <= 0)
 			{
@@ -61,14 +61,14 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			if (released)
 			{
-				playerStart = owner.Center;
+				playerStart = Owner.Center;
 				midRotation = Projectile.DirectionTo(playerStart).ToRotation();
 			}
 			else
 			{
-				Vector2 mouseOffset = Main.MouseWorld - owner.Center;
+				Vector2 mouseOffset = Main.MouseWorld - Owner.Center;
 				int max = 400 + (int)MathHelper.Max(0, (mouseOffset.Length() - 400) * 0.2f);
-				mouseStart = owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
+				mouseStart = Owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
 			}
 
 			float progress = EaseFunction.EaseQuadOut.Ease((float)Math.Sin(throwTimer * progressMult));
@@ -82,10 +82,10 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				throwTimer++;
 			else
 			{
-				Vector2 mouseOffset = Main.MouseWorld - owner.Center;
+				Vector2 mouseOffset = Main.MouseWorld - Owner.Center;
 
 				int max = 400 + (int)MathHelper.Max(0, (mouseOffset.Length() - 400) * 0.2f);
-				Vector2 positionToBe = owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
+				Vector2 positionToBe = Owner.Center + (Vector2.Normalize(mouseOffset) * MathHelper.Min(mouseOffset.Length(), max));
 				Projectile.velocity = Projectile.DirectionTo(positionToBe) * 0.45f * MathHelper.Clamp((float)Math.Pow((Projectile.Center - positionToBe).Length(), 0.6f), 1, 30);
 				midRotation = Projectile.velocity.ToRotation();
 			}
@@ -93,7 +93,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			Projectile.extraUpdates = 8;
 			Projectile.rotation += 0.06f;
 
-			if ((Projectile.Distance(owner.Center) < 20 || Math.Sin(throwTimer * progressMult) < 0) && released)
+			if ((Projectile.Distance(Owner.Center) < 20 || Math.Sin(throwTimer * progressMult) < 0) && released)
 				Projectile.active = false;
 
 			updatePoints = true;
