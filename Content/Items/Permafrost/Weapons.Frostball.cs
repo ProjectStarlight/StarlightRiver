@@ -28,6 +28,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.useTime = 30;
 			Item.useAnimation = 30;
 
+			Item.rare = ItemRarityID.Green;
+			Item.value = 10000;
+
 			Item.shoot = ModContent.ProjectileType<FrostballProjectile>();
 			Item.shootSpeed = 14;
 			Item.channel = true;
