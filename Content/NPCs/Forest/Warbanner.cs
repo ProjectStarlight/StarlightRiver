@@ -36,6 +36,14 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override string Texture => AssetDirectory.ForestNPC + Name;
 
+		public override void Load()
+		{
+			for (int k = 0; k <= 6; k++)
+			{
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(StarlightRiver.Instance, AssetDirectory.ForestNPC + "Gore/WarbannerGore" + k);
+			}
+		}
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Haunted Warbanner");
@@ -97,9 +105,9 @@ namespace StarlightRiver.Content.NPCs.Forest
 			miniChain0.UpdateChain(NPC.Center + new Vector2(22, -48));
 			miniChain1.UpdateChain(NPC.Center + new Vector2(-22, -48));
 
-			chain.IterateRope(ColorBanner);
-			miniChain0.IterateRope(ColorBannerSmall);
-			miniChain1.IterateRope(ColorBannerSmall);
+			chain.IterateRope(UpdateBanner);
+			miniChain0.IterateRope(UpdateBannerSmall);
+			miniChain1.IterateRope(UpdateBannerSmall);
 
 			Lighting.AddLight(NPC.Center, new Vector3(1.25f, 0.4f, 0.2f) * VFXAlpha * 0.7f);
 
@@ -205,7 +213,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 		}
 
-		private void ColorBanner(VerletChain rope, int index)
+		private void UpdateBanner(VerletChain rope, int index)
 		{
 			int x = (int)rope.ropeSegments[index].posNow.X / 16;
 			int y = (int)rope.ropeSegments[index].posNow.Y / 16;
@@ -219,7 +227,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 				rope.ropeSegments[index].posNow = rope.ropeSegments[0].posNow + Vector2.UnitY;
 		}
 
-		private void ColorBannerSmall(VerletChain rope, int index)
+		private void UpdateBannerSmall(VerletChain rope, int index)
 		{
 			int x = (int)rope.ropeSegments[index].posNow.X / 16;
 			int y = (int)rope.ropeSegments[index].posNow.Y / 16;
@@ -278,9 +286,11 @@ namespace StarlightRiver.Content.NPCs.Forest
 
 		public override void OnKill()
 		{
-			VerletChainSystem.toDraw.Remove(chain);
-			VerletChainSystem.toDraw.Remove(miniChain0);
-			VerletChainSystem.toDraw.Remove(miniChain1);
+			for (int k = 0; k <= 6; k++)
+			{
+				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + k).Type;
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
+			}
 		}
 	}
 
