@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void OnSpawn(NPC npc, IEntitySource source)
 		{
-			if (npc.boss)
+			if (npc.boss || npc.immortal || npc.dontTakeDamage || npc.friendly || npc.townNPC)
 				return;
 
 			if (source is EntitySource_SpawnNPC spawnSource)
