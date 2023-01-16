@@ -1,11 +1,10 @@
 ﻿//TODO:
 //Negative attack
 //Positive attack
-//Good Sparks
-//Make stuff craftable with said magnets
-//Make uncharged magnets drop from crescent casters
 //Magnet display above head
+//Make it a 1 in 50 chance
 
+using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Content.Items.Magnet;
 using System.Linq;
 using Terraria;
@@ -39,7 +38,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 					charge = Main.rand.NextBool() ? 1 : -1;
 					npc.lifeMax *= 4;
 					npc.life = npc.lifeMax;
-					npc.scale *= 1.3f;
 				}
 			}
 		}
@@ -47,7 +45,21 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public override void AI(NPC npc)
 		{
 			if (charge != 0 && Main.rand.NextBool(6))
-				Dust.NewDust(npc.position, npc.width, npc.height, DustID.Electric);
+			{
+				Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
+				Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), npc.height / 2);
+
+				float smalLCharge = 0.5f;
+
+				var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center + offset, dir.RotatedBy(Main.rand.NextFloat(-1, 1)) * 5, ModContent.ProjectileType<CloudstrikeShot>(), 0, 0, chargedPlayer.whoAmI, smalLCharge, 2);
+				var mp = proj.ModProjectile as CloudstrikeShot;
+				mp.velocityMult = Main.rand.Next(1, 4);
+
+				mp.thickness = 0.45f;
+				mp.host = npc;
+
+				mp.baseColor = (charge == -1) ? Color.OrangeRed : Color.Cyan;
+			}
 		}
 
 		public override void OnKill(NPC npc)

@@ -210,6 +210,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the Player
 		private float oldRotation = 0f;
 
+		public NPC host = default;
+
 		private float Charge => Projectile.ai[0];
 
 		private float ChargeSqrt => (float)Math.Sqrt(Charge);
@@ -523,7 +525,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (Miniature)
 			{
-				Vector2 dir2 = Player.Center + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
+				Vector2 hostCenter = host == default ? Player.Center : host.Center;
+				Vector2 dir2 = hostCenter + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
 				distance = dir2.Length();
 				rotToBe = Vector2.Normalize(dir2).RotatedBy(curve * 3);
 			}
