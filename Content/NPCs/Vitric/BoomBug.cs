@@ -1,33 +1,294 @@
 ﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Helpers;
 using System;
-using System.IO;
+using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class BoomBug : ModNPC, IDrawAdditive
+	internal class BoomBug : ModNPC
 	{
-		public ref float Timer => ref NPC.ai[0];
-		public ref float State => ref NPC.ai[1];
-		public ref float SavedRotation => ref NPC.ai[2];
+		private int yFrame = 0;
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/BoomBug";
+		private int bugTimer = 0;
+
+		public bool dying = false;
+
+		private bool chargingMagma = false;
+		private float magmaCharge = 0;
+
+		private Player Target => Main.player[NPC.target];
+
+		public override string Texture => AssetDirectory.VitricNpc + Name;
 
 		public override void SetStaticDefaults()
 		{
 			Main.npcFrameCount[NPC.type] = 3;
-			DisplayName.SetDefault("Fire Fly");
+			DisplayName.SetDefault("Firebug");
 		}
 
 		public override void SetDefaults()
 		{
 			NPC.width = 34;
 			NPC.height = 40;
+			NPC.knockBackResist = 1f;
+			NPC.lifeMax = 150;
+			NPC.noGravity = true;
+			NPC.noTileCollide = false;
+			NPC.damage = 10;
+			NPC.aiStyle = -1;
+			NPC.value = 200;
+			NPC.HitSound = SoundID.NPCHit1;
+			NPC.DeathSound = SoundID.NPCDeath4;
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				Bestiary.SLRSpawnConditions.VitricDesert,
+				new FlavorTextBestiaryInfoElement("[PH] Entry")
+			});
+		}
+
+		public override bool CheckDead()
+		{
+			if (dying)
+			{
+				Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+				for (int i = 0; i < 8; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+					dust.velocity = Main.rand.NextVector2Circular(3, 3);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = 70 + Main.rand.Next(60);
+					dust.rotation = Main.rand.NextFloat(6.28f);
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+					Dust.NewDustPerfect(NPC.Center + dir * 45, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.85f, 1.45f));
+				}
+
+				for (int i = 0; i < 8; i++)
+				{
+					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+					dust.velocity = Main.rand.NextVector2Circular(3, 3);
+					dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+					dust.alpha = Main.rand.Next(80) + 40;
+					dust.rotation = Main.rand.NextFloat(6.28f);
+
+					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+				}
+
+				for (int i = 0; i < 3; i++)
+				{
+					Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(2, 3);
+					var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+					proj.friendly = false;
+					proj.hostile = true;
+					proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
+				}
+				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
+				return true;
+			}
+
+			NPC.life = 1;
+			NPC.immortal = true;
+			NPC.dontTakeDamage = true;
+			dying = true;
+			return false;
+		}
+
+		public override void AI()
+		{
+			NPC.TargetClosest(true);
+			NPC.spriteDirection = NPC.direction;
+
+			Lighting.AddLight(NPC.Center, Color.OrangeRed.ToVector3() * 0.8f);
+
+			if (dying)
+			{
+				chargingMagma = false;
+				NPC.velocity.Y += 0.1f;
+				NPC.velocity.X += Math.Sign(NPC.velocity.X) * 0.08f;
+
+				if (NPC.collideX || NPC.collideY)
+					NPC.Kill();
+
+				return;
+			}
+
+			if (chargingMagma)
+			{
+				bugTimer = 0;
+				magmaCharge += 0.01f;
+				NPC.velocity.Y += TileGapDown() * 0.0005f;
+				NPC.velocity.X *= 0.95f;
+
+				Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
+
+				if (magmaCharge < 1)
+					Dust.NewDustPerfect(new Vector2(NPC.spriteDirection * -8, 14) + NPC.Center + dustDir * 40, ModContent.DustType<Dusts.Glow>(), dustDir * -2, 0, Color.OrangeRed, magmaCharge);
+
+				if (magmaCharge > 1.75f)
+				{
+					SoundEngine.PlaySound(SoundID.Item45, NPC.Center);
+					Vector2 projVel = ArcVelocityHelper.GetArcVel(NPC.Center, Target.Center, 0.2f, 100, 400, 12);
+					NPC.velocity = projVel * -1;
+					magmaCharge = 0;
+					chargingMagma = false;
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, projVel, ModContent.ProjectileType<FirebugMagma>(), 70, 4);
+				}
+			}
+			else
+			{
+
+				if (bugTimer < 20)
+					NPC.velocity *= 0.9f;
+
+				if (++bugTimer % 190 == 0)
+					NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<LesserFirebug>(), 0, NPC.whoAmI);
+
+				if (TileGapDown() < 15 && TileGapUp() > 5)
+					NPC.velocity.Y -= 0.1f;
+				else
+					NPC.velocity.Y += 0.1f;
+
+				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -4, 4);
+
+				NPC.velocity.X += Math.Sign(Target.Center.X - NPC.Center.X) * 0.1f;
+				NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -6, 6);
+
+				if (bugTimer > 700)
+				{
+					NPC.velocity.Y = 0;
+					chargingMagma = true;
+				}
+			}
+		}
+		public override void FindFrame(int frameHeight)
+		{
+			if (!chargingMagma)
+			{
+				NPC.frameCounter++;
+
+				if (NPC.frameCounter % 4 == 0)
+					yFrame++;
+			}
+
+			yFrame %= Main.npcFrameCount[NPC.type];
+			NPC.frame = new Rectangle(0, frameHeight * yFrame, NPC.width, frameHeight);
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D magmaTex = Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
+
+			Vector2 magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
+			SpriteEffects effects = SpriteEffects.None;
+			if (NPC.spriteDirection == 1)
+				effects = SpriteEffects.FlipHorizontally;
+
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+
+			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
+			{
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				for (int i = 0; i < 6; i++)
+				{
+					float angle = (i / 6f) * MathHelper.TwoPi;
+
+					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+					float distance = 1.5f + cos;
+
+					float opacity = 0.6f + (0.2f * cos);
+
+					Vector2 offset = angle.ToRotationVector2() * distance;
+					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+				}
+
+				for (int j = 0; j < 4; j++)
+				{
+					spriteBatch.Draw(magmaTex, magmaOffset + NPC.Center - screenPos, null, Color.OrangeRed, NPC.rotation, magmaTex.Size() / 2, NPC.scale * magmaCharge, effects, 0f);
+				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+
+			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
+		}
+
+		private int TileGapDown()
+		{
+			int i = 0;
+			for (; i < 50; i++)
+			{
+				int x = (int)(NPC.Center.X / 16);
+				int y = (int)(NPC.Center.Y / 16);
+				Tile tile = Framing.GetTileSafely(x, y + i);
+				if (tile.HasTile && Main.tileSolid[tile.TileType])
+					break;
+			}
+			return i;
+		}
+
+		private int TileGapUp()
+		{
+			int i = 0;
+			for (; i < 50; i++)
+			{
+				int x = (int)(NPC.Center.X / 16);
+				int y = (int)(NPC.Center.Y / 16);
+				Tile tile = Framing.GetTileSafely(x, y - i);
+				if (tile.HasTile && Main.tileSolid[tile.TileType])
+					break;
+			}
+			return i;
+		}
+	}
+
+	internal class LesserFirebug : ModNPC
+	{
+		private int yFrame = 0;
+
+		private bool parentless = false;
+
+		private int timer = 0;
+
+		private Player Target => Main.player[NPC.target];
+
+		private NPC Parent => Main.npc[(int)NPC.ai[0]];
+
+		public override string Texture => AssetDirectory.VitricNpc + Name;
+
+		public override void SetStaticDefaults()
+		{
+			Main.npcFrameCount[NPC.type] = 2;
+			DisplayName.SetDefault("Lesser Firebug");
+		}
+
+		public override void SetDefaults()
+		{
+			NPC.width = 16;
+			NPC.height = 16;
 			NPC.knockBackResist = 1.5f;
-			NPC.lifeMax = 20;
+			NPC.lifeMax = 5;
 			NPC.noGravity = true;
 			NPC.noTileCollide = false;
 			NPC.damage = 10;
@@ -47,169 +308,178 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void AI()
 		{
-			Timer++;
+			if (timer == 0)
+				NPC.velocity.Y = 10;
+			NPC.TargetClosest(true);
+			NPC.spriteDirection = NPC.direction;
 
-			switch (State)
+			if (NPC.Distance(Target.Center) < 600 && timer++ > 600)
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 9, 0.05f);
+			else if (Parent.active && !parentless)
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Parent.Center) * 6, 0.045f);
+			else
 			{
-				case 0: //wander
-
-					if (Timer == 1) //dont spawn on the ground
-						NPC.position.Y -= 32;
-
-					NPC.spriteDirection = NPC.direction;
-
-					if (Timer % 30 == 0 && (Main.netMode == NetmodeID.Server || Main.netMode == NetmodeID.SinglePlayer))
-					{
-						NPC.direction = Main.rand.NextBool() ? 1 : -1;
-						SavedRotation = Main.rand.NextFloat(-0.7f, 0.3f);
-						NPC.netUpdate = true;
-					}
-
-					float maxSpeed = 4.0f;
-					NPC.velocity = (Vector2.UnitX * NPC.spriteDirection).RotatedBy(SavedRotation) * 0.15f + NPC.velocity;
-
-					if (NPC.velocity.Length() > maxSpeed)
-					{
-						NPC.velocity.Normalize();
-						NPC.velocity = NPC.velocity * maxSpeed;
-					}
-
-					NPC.TargetClosest(false);
-					Player Player = Main.player[NPC.target];
-
-					if (Vector2.DistanceSquared(NPC.Center, Player.Center) <= Math.Pow(400, 2) && Collision.CanHitLine(NPC.position, NPC.width, NPC.height, Player.position, Player.width, Player.height))
-					{
-						Timer = 0;
-						State = 1;
-						NPC.netUpdate = true;
-					}
-
-					break;
-
-				case 1: //attack
-
-					if (Timer < 60)
-						NPC.velocity *= 0.95f;
-
-					if (Timer == 20)
-					{
-						SavedRotation = (Main.player[NPC.target].Center - NPC.Center).ToRotation();
-
-						NPC.direction = (Main.player[NPC.target].Center - NPC.Center).X > 0 ? 1 : -1;
-						NPC.spriteDirection = NPC.direction;
-					}
-
-					if (Timer == 60)
-						NPC.velocity = Vector2.UnitX.RotatedBy(SavedRotation) * 5;
-
-					if (Timer > 66)
-					{
-						if (NPC.velocity.Length() < 10)
-							NPC.velocity *= 1.05f;
-
-						if (NPC.velocity == Vector2.Zero)
-						{
-							Explode();
-							return;
-						}
-
-						for (int x = -2; x <= 2; x++)
-						{
-							for (int y = -2; y <= 2; y++)
-							{
-								Tile tile = Framing.GetTileSafely((int)(NPC.Center.X / 16) + x, (int)(NPC.Center.Y / 16) + y);
-
-								if (Main.tileSolid[tile.TileType])
-								{
-									Explode();
-									return;
-								}
-							}
-						}
-					}
-
-					break;
+				timer = 601;
+				parentless = true;
 			}
-		}
 
-		public override void SendExtraAI(BinaryWriter writer)
-		{
-			writer.Write(NPC.direction == 1);
-			writer.Write(SavedRotation);
-			writer.Write(NPC.target);
-		}
+			if (Parent.ModNPC is BoomBug modNPC && modNPC.dying)
+			{
+				timer = 601;
+				parentless = true;
+			}
 
-		public override void ReceiveExtraAI(BinaryReader reader)
-		{
-			NPC.direction = reader.ReadBoolean() ? 1 : -1;
-			SavedRotation = reader.ReadSingle();
-			NPC.target = reader.ReadInt32();
-		}
-
-		public override void FindFrame(int frameHeight)
-		{
-			NPC.frame = new Rectangle(0, frameHeight * (int)(Timer / 3 % 3), NPC.width, frameHeight);
+			if (NPC.collideX || NPC.collideY)
+				NPC.Kill();
 		}
 
 		public override void OnHitPlayer(Player target, int damage, bool crit)
 		{
-			Explode();
+			NPC.Kill();
 		}
 
-		private void Explode()
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
-			NPC.active = false;
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 
-			for (int k = 0; k < 20; k++)
+			SpriteEffects effects = SpriteEffects.None;
+			if (NPC.spriteDirection == 1)
+				effects = SpriteEffects.FlipHorizontally;
+
+			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
+
+			if (!NPC.IsABestiaryIconDummy || drawColor == Color.White)
 			{
-				var d = Dust.NewDustPerfect(NPC.Center, DustType<Bosses.VitricBoss.LavaSpew>(), null, 0, default, 1.3f);
-				d.rotation = Main.rand.NextFloat(6.28f);
-			}
-
-			for (int k = 0; k < Main.maxPlayers; k++)
-			{
-				Player Player = Main.player[k];
-
-				if (!Player.active)
-					return;
-
-				StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
-
-				if (CameraSystem.shake < 60)
-					CameraSystem.shake += (int)Math.Max(0, 20 - Vector2.Distance(NPC.Center, Player.Center) / 8f);
-			}
-		}
-
-		public void DrawAdditive(SpriteBatch sb)
-		{
-			Texture2D glowTex = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
-			float sin = (float)Math.Sin(Timer / 5f);
-			float sin2 = (float)Math.Sin(Timer / 7f);
-
-			sb.Draw(glowTex, NPC.Center + new Vector2(-12 * NPC.spriteDirection, 16) - Main.screenPosition, null, new Color(255, 200, 100), 0, glowTex.Size() / 2, 0.5f + 0.1f * sin, 0, 0);
-			sb.Draw(glowTex, NPC.Center + new Vector2(-12 * NPC.spriteDirection, 16) - Main.screenPosition, null, new Color(255, 100, 20), 0, glowTex.Size() / 2, 0.7f + 0.1f * sin2, 0, 0);
-
-			if (State == 1 && Timer > 20 && Timer <= 60)
-			{
-				Texture2D tex = Request<Texture2D>(AssetDirectory.MiscTextures + "DirectionalBeam").Value;
-				var origin = new Vector2(0, tex.Height / 2);
-
-				for (int k = 0; k < 10; k++)
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				for (int i = 0; i < 6; i++)
 				{
-					Vector2 pos = NPC.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(SavedRotation) * k * 32;
-					var color = new Color(255, (int)(185 * (float)Math.Sin(k / 10f * 3.14f)), 50);
-					float colorMult = (float)Math.Sin(k / 10f * 3.14f) * (float)Math.Sin((Timer - 20) / 40f * 3.14f);
-					var source = new Rectangle((int)((Timer - 20) / 10f * -tex.Width), 0, tex.Width, tex.Height);
+					float angle = (i / 6f) * MathHelper.TwoPi;
 
-					sb.Draw(tex, pos, source, color * colorMult, SavedRotation, origin, 1, 0, 0);
+					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
+					float distance = 1.5f + cos;
+
+					float opacity = 0.6f + (0.2f * cos);
+
+					Vector2 offset = angle.ToRotationVector2() * distance;
+					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
 				}
+
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			}
+
+			return false;
+		}
+
+		public override void OnKill()
+		{
+			SoundEngine.PlaySound(SoundID.Item14, NPC.Center);
+
+			for (int i = 0; i < 4; i++)
+			{
+				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
+				dust.velocity = Main.rand.NextVector2Circular(2, 2);
+				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+				dust.alpha = 70 + Main.rand.Next(60);
+				dust.rotation = Main.rand.NextFloat(6.28f);
+			}
+
+			for (int i = 0; i < 8; i++)
+			{
+				Vector2 dir = Main.rand.NextVector2CircularEdge(0.5f, 0.5f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
+				Dust.NewDustPerfect(NPC.Center + dir * 24, ModContent.DustType<Dusts.GlowLineFast>(), dir * 12, 0, Color.OrangeRed, Main.rand.NextFloat(0.65f, 1.15f));
+			}
+
+			for (int i = 0; i < 4; i++)
+			{
+				var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDustTwo>());
+				dust.velocity = Main.rand.NextVector2Circular(2, 2);
+				dust.scale = Main.rand.NextFloat(0.8f, 1.4f);
+				dust.alpha = Main.rand.Next(80) + 40;
+				dust.rotation = Main.rand.NextFloat(6.28f);
+
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), ModContent.DustType<CoachGunDustGlow>()).scale = 0.9f;
+			}
+
+			for (int i = 0; i < 2; i++)
+			{
+				Vector2 velocity = Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(1, 2);
+				var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, velocity, ModContent.ProjectileType<CoachGunEmber>(), 0, 0, 255);
+				proj.friendly = false;
+				proj.hostile = true;
+				proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
 			}
 		}
 
-		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		public override void FindFrame(int frameHeight)
 		{
-			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
+			NPC.frameCounter++;
+
+			if (NPC.frameCounter % 4 == 0)
+				yFrame++;
+
+			yFrame %= Main.npcFrameCount[NPC.type];
+			NPC.frame = new Rectangle(0, frameHeight * yFrame, NPC.width, frameHeight);
+		}
+	}
+
+	public class FirebugMagma : ModProjectile, IDrawAdditive
+	{
+		private List<Vector2> oldPos = new List<Vector2>();
+
+		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
+
+		public override void SetDefaults()
+		{
+			Projectile.hostile = true;
+			Projectile.width = 22;
+			Projectile.height = 22;
+			Projectile.penetrate = 1;
+			Projectile.timeLeft = 180;
+			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
+			Projectile.damage = 5;
+			Projectile.hide = true;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Molten glass");
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity.Y += 0.2f;
+
+			oldPos.Add(Projectile.Center);
+			if (oldPos.Count > 16)
+				oldPos.RemoveAt(0);
+		}
+
+		public override void Kill(int timeLeft)
+		{
+			SoundEngine.PlaySound(SoundID.Item45, Projectile.Center);
+			for (int k = 0; k <= 10; k++)
+			{
+				var d = Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(5), 0, new Color(255, 150, 50), 0.5f);
+				d.noGravity = false;
+			}
+		}
+
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = Request<Texture2D>(Texture).Value;
+
+			for (int i = 0; i < oldPos.Count; i++)
+			{
+				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
+					Color.OrangeRed * (i / (float)oldPos.Count), 0, tex.Size() / 2, 1.5f, 0, 0);
+
+				spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, tex.Frame(),
+					Color.White * (i / (float)oldPos.Count) * 0.5f, 0, tex.Size() / 2, 0.75f, 0, 0);
+			}
 		}
 	}
 }

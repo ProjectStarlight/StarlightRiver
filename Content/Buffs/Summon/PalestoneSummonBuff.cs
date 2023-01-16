@@ -4,7 +4,7 @@
 	{
 		public override string Texture => AssetDirectory.Buffs + Name;
 
-		public PalestoneSummonBuff() : base("Little lad", "His goal: to kill.", false, true) { }
+		public PalestoneSummonBuff() : base("Pale Knight", "The Pale Knight Will Protect You!", false, true) { }
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
