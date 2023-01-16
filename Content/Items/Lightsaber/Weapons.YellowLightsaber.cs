@@ -42,18 +42,18 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (Main.mouseRight && !dashing)
 			{
 				dashing = true;
-				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_YellowDash>(), Projectile.damage * 2, 0, owner.whoAmI);
-				owner.GetModPlayer<LightsaberPlayer>().dashing = true;
+				Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<YellowLightsaberDashProjectile>(), Projectile.damage * 2, 0, Owner.whoAmI);
+				Owner.GetModPlayer<LightsaberPlayer>().dashing = true;
 			}
 
 			if (dashing)
             {
 				Projectile.velocity = Vector2.Zero;
-				if (owner.Distance(Projectile.Center) < 80 || !owner.GetModPlayer<LightsaberPlayer>().dashing && !caughtUp)
+				if (Owner.Distance(Projectile.Center) < 80 || !Owner.GetModPlayer<LightsaberPlayer>().dashing && !caughtUp)
                 {
-					owner.Center = Projectile.Center;
-					owner.velocity = Vector2.Zero;
-					owner.GetModPlayer<LightsaberPlayer>().dashing = false;
+					Owner.Center = Projectile.Center;
+					Owner.velocity = Vector2.Zero;
+					Owner.GetModPlayer<LightsaberPlayer>().dashing = false;
 					Projectile.active = true;
 					caughtUp = true;
 				}
@@ -67,12 +67,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				}
 				else
 				{
-					owner.velocity = owner.DirectionTo(Projectile.Center) * 60;
-					Dust dust = Dust.NewDustPerfect(owner.Center + Main.rand.NextVector2Circular(45, 45) + owner.velocity, ModContent.DustType<Dusts.GlowLine>(), owner.DirectionTo(Projectile.Center) * Main.rand.NextFloat(2), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1f, 1.5f));
+					Owner.velocity = Owner.DirectionTo(Projectile.Center) * 60;
+					Dust dust = Dust.NewDustPerfect(Owner.Center + Main.rand.NextVector2Circular(45, 45) + Owner.velocity, ModContent.DustType<Dusts.GlowLine>(), Owner.DirectionTo(Projectile.Center) * Main.rand.NextFloat(2), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(1f, 1.5f));
 					dust.fadeIn = 20;
 
-					Dust.NewDustPerfect(owner.Center + owner.velocity + Main.rand.NextVector2Circular(30, 30), ModContent.DustType<LightsaberGlow>(), Vector2.Normalize(owner.velocity).RotatedBy(Main.rand.NextFloat(2.5f, 3f)) * Main.rand.NextFloat(3), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.5f, 0.85f));
-					Dust.NewDustPerfect(owner.Center + owner.velocity + Main.rand.NextVector2Circular(30, 30), ModContent.DustType<LightsaberGlow>(), Vector2.Normalize(owner.velocity).RotatedBy(-Main.rand.NextFloat(2.5f, 3f)) * Main.rand.NextFloat(3), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.5f, 0.85f));
+					Dust.NewDustPerfect(Owner.Center + Owner.velocity + Main.rand.NextVector2Circular(30, 30), ModContent.DustType<LightsaberGlow>(), Vector2.Normalize(Owner.velocity).RotatedBy(Main.rand.NextFloat(2.5f, 3f)) * Main.rand.NextFloat(3), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.5f, 0.85f));
+					Dust.NewDustPerfect(Owner.Center + Owner.velocity + Main.rand.NextVector2Circular(30, 30), ModContent.DustType<LightsaberGlow>(), Vector2.Normalize(Owner.velocity).RotatedBy(-Main.rand.NextFloat(2.5f, 3f)) * Main.rand.NextFloat(3), 0, new Color(BladeColor.X, BladeColor.Y, BladeColor.Z), Main.rand.NextFloat(0.5f, 0.85f));
 				}
 			}
         }

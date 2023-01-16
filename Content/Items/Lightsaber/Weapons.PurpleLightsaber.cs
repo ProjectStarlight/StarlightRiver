@@ -62,28 +62,28 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 			updatePoints = true;
 			Projectile.ownerHitCheck = false;
-			owner.ChangeDir((Main.MouseWorld.X > owner.Center.X) ? 1 : -1);
+			Owner.ChangeDir((Main.MouseWorld.X > Owner.Center.X) ? 1 : -1);
 			midPoint += midPointDirection;
 			midPoint2 += midPointDirection2;
 			hitCounter++;
-			owner.itemTime = owner.itemAnimation = 2;
+			Owner.itemTime = Owner.itemAnimation = 2;
 			hide = false;
 			canHit = false;
-			backRotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+			backRotation = Owner.DirectionTo(Main.MouseWorld).ToRotation();
 			Projectile.velocity = Vector2.Zero;
-			lightningOrigin = owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
-			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
+			lightningOrigin = Owner.GetBackHandPosition(Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
+			Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, backRotation - 1.57f);
 
-			float rotationOffset = Math.Sign(owner.velocity.X) * EaseFunction.EaseQuadIn.Ease(MathHelper.Min(Math.Abs(owner.velocity.X * 0.1f), 0.65f));
-			Projectile.rotation = (owner.direction == 1 ? 3.4f : 1.2f) + rotationOffset;
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, owner.direction + rotationOffset) + new Vector2(owner.direction * 15, -2 - owner.direction);
-			owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, owner.direction + rotationOffset);
-			owner.heldProj = Projectile.whoAmI;
+			float rotationOffset = Math.Sign(Owner.velocity.X) * EaseFunction.EaseQuadIn.Ease(MathHelper.Min(Math.Abs(Owner.velocity.X * 0.1f), 0.65f));
+			Projectile.rotation = (Owner.direction == 1 ? 3.4f : 1.2f) + rotationOffset;
+			Projectile.Center = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Owner.direction + rotationOffset) + new Vector2(Owner.direction * 15, -2 - Owner.direction);
+			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Owner.direction + rotationOffset);
+			Owner.heldProj = Projectile.whoAmI;
 			squish = 0.7f;
-			zapTarget = Main.npc.Where(x => x.active && !x.townNPC && x.Distance(owner.Center) < 300).OrderBy(x => x.Distance(owner.Center)).FirstOrDefault();
+			zapTarget = Main.npc.Where(x => x.active && !x.townNPC && x.Distance(Owner.Center) < 300).OrderBy(x => x.Distance(Owner.Center)).FirstOrDefault();
 			midRotation = 0;
 			anchorPoint = Projectile.Center - Main.screenPosition;
-			owner.heldProj = Projectile.whoAmI;
+			Owner.heldProj = Projectile.whoAmI;
 			rotVel = 0f;
 			if (zapTarget != default && !Main.dedServ)
 			{

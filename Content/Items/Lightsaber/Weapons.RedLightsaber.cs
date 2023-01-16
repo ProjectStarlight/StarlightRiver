@@ -26,15 +26,15 @@ namespace StarlightRiver.Content.Items.Lightsaber
 		protected override void RightClickBehavior()
 		{
 			Projectile.velocity = Vector2.Zero;
-			Projectile.Center = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
-			owner.heldProj = Projectile.whoAmI;
+			Projectile.Center = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+			Owner.heldProj = Projectile.whoAmI;
 			if (!releasedRight && Main.mouseRight)
 			{
 				Projectile.timeLeft = 30;
 				hide = true;
 				canHit = false;
 				if (pullTimer == 0)
-					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200 && x.Distance(owner.Center) < 500).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
+					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200 && x.Distance(Owner.Center) < 500).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
 
 				if (pullTarget != default)
 				{
@@ -44,11 +44,11 @@ namespace StarlightRiver.Content.Items.Lightsaber
 						pullTarget.noGravity = true;
 					}
 
-					pullDirection = owner.DirectionTo(pullTarget.Center);
+					pullDirection = Owner.DirectionTo(pullTarget.Center);
 					pullTarget.velocity = -pullDirection * EaseFunction.EaseQuinticIn.Ease(MathHelper.Clamp(pullTimer / 150f, 0, 1)) * 12;
 					Projectile.rotation = pullDirection.ToRotation();
 
-					if (pullTarget.Distance(owner.Center) < 5)
+					if (pullTarget.Distance(Owner.Center) < 5)
 						releasedRight = true;
 
 					Vector2 dustVel = pullDirection.RotatedByRandom(0.8f) * Main.rand.NextFloat();
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				}
 				else
 				{
-					Projectile.rotation = owner.DirectionTo(Main.MouseWorld).ToRotation();
+					Projectile.rotation = Owner.DirectionTo(Main.MouseWorld).ToRotation();
 				}
 
 				pullTimer++;
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				if (!releasedRight)
 				{
 					float rot = Projectile.rotation;
-					if (owner.direction == 1)
+					if (Owner.direction == 1)
 						facingRight = true;
 					else
 						facingRight = false;
@@ -82,21 +82,21 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					hide = false;
 
 					anchorPoint = Vector2.Zero;
-					endRotation = rot - 2f * owner.direction;
+					endRotation = rot - 2f * Owner.direction;
 
 					oldRotation = new List<float>();
 					oldPositionDrawing = new List<Vector2>();
 					oldSquish = new List<float>();
 					oldPositionCollision = new List<Vector2>();
 
-					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, owner.Center);
+					Terraria.Audio.SoundEngine.PlaySound(SoundID.Item15 with { Pitch = Main.rand.NextFloat(-0.1f, 0.1f) }, Owner.Center);
 
 					startRotation = endRotation;
 					startSquish = endSquish;
 					endMidRotation = rot + Main.rand.NextFloat(-0.45f, 0.45f);
 					startMidRotation = midRotation;
 					endSquish = 0.3f;
-					endRotation = rot + 3f * owner.direction;
+					endRotation = rot + 3f * Owner.direction;
 					attackDuration = 65;
 					//Projectile.ai[0] += 30f / attackDuration;
 				}
@@ -131,12 +131,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				squish = MathHelper.Lerp(startSquish, endSquish, progress) + 0.35f * (float)Math.Sin(3.14f * progress);
 				anchorPoint = Projectile.Center - Main.screenPosition;
 
-				owner.ChangeDir(facingRight ? 1 : -1);
+				Owner.ChangeDir(facingRight ? 1 : -1);
 
-				owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
-				owner.itemAnimation = owner.itemTime = 5;
+				Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
+				Owner.itemAnimation = Owner.itemTime = 5;
 
-				if (owner.direction != 1)
+				if (Owner.direction != 1)
 					Projectile.rotation += 0.78f;
 
 				updatePoints = pauseTime <= 0;
