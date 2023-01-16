@@ -83,6 +83,7 @@ namespace StarlightRiver.Core
 		public const string ForestItem = Assets + "Items/Forest/";
 		public const string SteampunkItem = Assets + "Items/SteampunkSet/";
 		public const string SnowItem = Assets + "Items/Snow/";
+		public const string LightsaberItem = Assets + "Items/Lightsaber/";
 
 		public const string CraftingTile = Assets + "Tiles/Crafting/";
 
