@@ -10,6 +10,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public int direction = -1;
 		public Vector2 endpoint = Vector2.Zero;
 
+		public float aimOffset = 0;
+		public FinalLaser copyDirection = null;
+
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float LaserRotation => ref Projectile.ai[1];
 
@@ -85,10 +88,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				if (LaserTimer == 140)
 					direction = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
 
+				if (LaserTimer == 141 && copyDirection != null)
+					direction = copyDirection.direction;
+
 				if (LaserTimer > 30 && LaserTimer <= 75)
 				{
 					Projectile.netUpdate = true;
-					LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation();
+					LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() + aimOffset;
 
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
 					Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
