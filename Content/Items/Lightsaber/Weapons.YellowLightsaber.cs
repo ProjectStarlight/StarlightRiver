@@ -63,4 +63,36 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			}
 		}
 	}
+
+	public class YellowLightsaberDashProjectile : ModProjectile
+	{
+		private Player Owner => Main.player[Projectile.owner];
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Lightsaber");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = Projectile.height = 120;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Melee;
+			Projectile.aiStyle = -1;
+			Projectile.friendly = true;
+			Projectile.penetrate = -1;
+			Projectile.tileCollide = false;
+			Projectile.hide = true;
+		}
+
+		public override void AI()
+		{
+			Projectile.Center = Owner.Center;
+
+			if (!Owner.GetModPlayer<LightsaberPlayer>().dashing)
+				Projectile.active = false;
+		}
+	}
 }

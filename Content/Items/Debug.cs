@@ -35,6 +35,41 @@ namespace StarlightRiver.Content.Items
 			Item.accessory = true;
 		}
 
+		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+		{
+			Vector2 pos = new(Main.screenWidth / 2, Main.screenHeight / 2);
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Permafrost/WaterStaff").Value;
+
+			DrawHelper.DrawWithPerspective(spriteBatch, tex, pos, Color.White, 1, d, a, b, c, 0.1f);
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.I))
+				a += 0.3f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.U))
+				a -= 0.3f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.K))
+				b += 0.3f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.J))
+				b -= 0.3f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.M))
+				c += 0.1f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.N))
+				c -= 0.1f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.P))
+				d += 0.1f;
+
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.O))
+				d -= 0.1f;
+		}
+
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
 
