@@ -37,8 +37,13 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				//int Type = Main.rand.Next(new int[] { ModContent.ItemType<>(), ModContent.ItemType<>(), ModContent.ItemType<>(), ModContent.ItemType<>() });
 				int Type = ModContent.ItemType<OvergrownCrateLifeLeaf>();
 
-				Item dropped = Main.item[Item.NewItem(player.GetSource_OnHurt(attacker), player.getRect(), Type)];
+
+				Vector2 offset = new Vector2(-10f, -10f) * player.direction;
+				Rectangle pos = new Rectangle(player.getRect().X + (int)offset.X, player.getRect().Y + (int)offset.Y, player.getRect().Width, player.getRect().Height);
+				Item dropped = Main.item[Item.NewItem(player.GetSource_OnHurt(attacker), pos, Type)];
 				dropped.noGrabDelay = 60;
+
+				SoundEngine.PlaySound(SoundID.DoorOpen, player.Center);
 			}
 		}
 
@@ -54,6 +59,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.Size = new Vector2(32);
 			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Green;
+		}
+
+		public override void UpdateEquip(Player player)
+		{
+			player.GetModPlayer<OvergrownCratePlayer>().equipped = true;
 		}
 	}
 
@@ -109,6 +119,67 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Player.AddBuff(buffID, 480);
 
 			return false;
+		}
+	}
+
+	internal class OvergrownCratePlayer: ModPlayer
+	{
+		public bool equipped;
+
+		public int frame;
+		public int frameCounter;
+		public override void ResetEffects()
+		{
+			if (!equipped)
+				frameCounter = 0;
+			else
+			{
+				frameCounter++;
+
+				if ((int)(frameCounter * Math.Abs(Player.velocity.X)) >= 30)
+				{
+					frameCounter = 0;
+					frame++;
+				}
+
+				if (frame >= 4 || frame < 0)
+					frame = 0;
+
+				if (Player.velocity.Length() < 0.1f)
+				{
+					frame = 0;
+					frameCounter = 0;
+				}
+			}
+
+			equipped = false;
+		}
+
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+			if (drawInfo.shadow != 0f)
+				return;
+
+			Texture2D tankTexture = ModContent.Request<Texture2D>(AssetDirectory.ArtifactItem + "OvergrownCrate_BackOpening").Value;
+
+			Player drawplayer = drawInfo.drawPlayer;
+
+			Item heldItem = drawplayer.HeldItem;
+
+			if (equipped && !drawplayer.frozen && !drawplayer.dead && (!drawplayer.wet || !heldItem.noWet) && drawplayer.wings <= 0)
+			{
+				SpriteEffects spriteEffects = drawplayer.direction == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+				var drawPos = new Vector2((int)(drawplayer.position.X - Main.screenPosition.X + drawplayer.width / 2 - 12 * drawplayer.direction),
+					(int)(drawplayer.position.Y - Main.screenPosition.Y + drawplayer.height / 2 + 2f * drawplayer.gravDir - 2f * drawplayer.gravDir + drawplayer.gfxOffY + 50));
+
+				Rectangle rect = tankTexture.Frame(verticalFrames: 4, frameY: frame);
+
+				var tankData = new DrawData(tankTexture, drawPos, rect,
+					drawInfo.colorArmorBody, drawplayer.bodyRotation, tankTexture.Size() / 2f, 1f, spriteEffects, 0);
+
+				drawInfo.DrawDataCache.Add(tankData);
+			}
 		}
 	}
 
