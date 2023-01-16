@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -7,9 +6,7 @@ using Terraria.Audio;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
 using Terraria.Graphics.Effects;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 using StarlightRiver.Content.Dusts;
-using System.Runtime.InteropServices;
 
 namespace StarlightRiver.Content.Items.Magnet
 {
@@ -20,19 +17,19 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magnet Beads");
-			Tooltip.SetDefault("Whip enemies to stick the beads in them \nRepeatedly click to shock affected enemies");
+			Tooltip.SetDefault("Whip enemies to stick the beads to them \nRepeatedly click to shock affected enemies");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
 
 		public override void SetDefaults()
 		{
-			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeads_Whip>(), 15, 1.2f, 5f, 25);
+			Item.DefaultToWhip(ModContent.ProjectileType<ThunderBeadsProj>(), 30, 1.2f, 5f, 25);
 			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Orange;
 		}
 	}
 
-	public class ThunderBeads_Whip : BaseWhip
+	public class ThunderBeadsProj : BaseWhip
 	{
 		public NPC target = default;
 
@@ -57,7 +54,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override string Texture => AssetDirectory.MagnetItem + Name;
 
-		public ThunderBeads_Whip() : base("Thunder Beads", 15, 0.87f, Color.Transparent)
+		public ThunderBeadsProj() : base("Thunder Beads", 15, 1.2f, Color.Transparent)
 		{
 			xFrames = 1;
 			yFrames = 5;
@@ -155,9 +152,11 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				Helper.PlayPitched("Magic/LightningShortest1", 0.5f, Main.rand.NextFloat(0f, 0.2f), target.Center);
 				fade = 1;
+
 				for (int i = 2; i < cache.Count - 2; i++)
 				{
-					Dust.NewDustPerfect(cache[i] + Main.rand.NextVector2Circular(6,6), ModContent.DustType<GlowLineFast>(), cache[i].DirectionTo(Owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1, 2), 0, Color.Cyan, 0.4f);
+					Vector2 vel = cache[i].DirectionTo(Owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1, 2);
+					Dust.NewDustPerfect(cache[i] + Main.rand.NextVector2Circular(6,6), ModContent.DustType<GlowLineFast>(), vel, 0, Color.Cyan, 0.4f);
 				}
 			}
 		}
@@ -219,6 +218,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				Vector2 endPoint = embedded ? target.Center : cache[i];
 				Vector2 nextPoint = i == cache.Count - 1 ? endPoint : cache[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache.Count - 3 || dir == Vector2.Zero)
 					cache2.Add(point);
 				else
@@ -239,6 +239,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = endPoint;
+
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, segments + 1, new TriangularTip(4), factor => 3 * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
@@ -270,7 +271,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		private void OverrideWhipControlPoints(On.Terraria.Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)
 		{
 			orig(proj, controlPoints);
-			if (proj.ModProjectile is ThunderBeads_Whip modProj && modProj.embedded)
+			if (proj.ModProjectile is ThunderBeadsProj modProj && modProj.embedded)
 			{
 				proj.WhipPointsForCollision.Clear();
 				modProj.SetPoints(proj.WhipPointsForCollision);
