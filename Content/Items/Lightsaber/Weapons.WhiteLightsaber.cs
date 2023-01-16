@@ -1,21 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
-using StarlightRiver.Content.Items.Gravedigger;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
-using Terraria.ID;
-using Terraria.ModLoader;
-using static Terraria.ModLoader.ModContent;
-using Terraria.GameContent;
-
-namespace StarlightRiver.Content.Items.Lightsaber
+﻿namespace StarlightRiver.Content.Items.Lightsaber
 {
 	public class LightsaberProj_White : LightsaberProj
 	{
@@ -23,19 +6,22 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		private bool spawnedSecond = false;
 
-        protected override void RightClickBehavior()
-        {
+		protected override void RightClickBehavior()
+		{
 			Owner.GetModPlayer<LightsaberPlayer>().whiteCooldown = 1200;
+
 			if (UneasedProgress > 0.5f && !spawnedSecond)
 			{
-				Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_White>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
+				var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Owner.Center, Vector2.Zero, ModContent.ProjectileType<LightsaberProj_White>(), Projectile.damage, Projectile.knockBack, Owner.whoAmI);
 				(proj.ModProjectile as LightsaberProj_White).frontHand = false;
 				(proj.ModProjectile as LightsaberProj_White).spawnedSecond = true;
 				(proj.ModProjectile as LightsaberProj_White).rightClicked = true;
 				spawnedSecond = true;
 			}
+
 			hide = false;
 			canHit = true;
+
 			if (thrown)
 				ThrownBehavior();
 			else
@@ -44,5 +30,5 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			if (Projectile.ai[0] >= 1 && Main.mouseRight)
 				Projectile.ai[0] = 0;
 		}
-    }
+	}
 }

@@ -8,31 +8,32 @@ namespace StarlightRiver.Content.Items.Lightsaber
 {
 	public class LightsaberProj_Red : LightsaberProj
 	{
-		protected override Vector3 BladeColor => Color.DarkRed.ToVector3() * 1.3f;
-
 		bool releasedRight = false;
 
 		int pullTimer = 0;
-
 		NPC pullTarget;
 
 		private bool targetNoGrav = false;
 
 		private Vector2 pullDirection = Vector2.Zero;
+		private Vector2 launchVector = Vector2.Zero;
 
 		private int pauseTime = 0;
 
-		private Vector2 launchVector = Vector2.Zero;
+		protected override Vector3 BladeColor => Color.DarkRed.ToVector3() * 1.3f;
+
 		protected override void RightClickBehavior()
 		{
 			Projectile.velocity = Vector2.Zero;
 			Projectile.Center = Owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, Projectile.rotation - 1.57f);
 			Owner.heldProj = Projectile.whoAmI;
+
 			if (!releasedRight && Main.mouseRight)
 			{
 				Projectile.timeLeft = 30;
 				hide = true;
 				canHit = false;
+
 				if (pullTimer == 0)
 					pullTarget = Main.npc.Where(x => x.active && x.knockBackResist > 0 && !x.boss && !x.townNPC && x.Distance(Main.MouseWorld) < 200 && x.Distance(Owner.Center) < 500).OrderBy(x => x.Distance(Main.MouseWorld)).FirstOrDefault();
 
@@ -64,13 +65,12 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			else
 			{
 				if (pullTarget != default)
-				{
 					pullTarget.noGravity = targetNoGrav;
-				}
 
 				if (!releasedRight)
 				{
 					float rot = Projectile.rotation;
+
 					if (Owner.direction == 1)
 						facingRight = true;
 					else
@@ -98,14 +98,15 @@ namespace StarlightRiver.Content.Items.Lightsaber
 					endSquish = 0.3f;
 					endRotation = rot + 3f * Owner.direction;
 					attackDuration = 65;
-					//Projectile.ai[0] += 30f / attackDuration;
 				}
 
 				if (Projectile.ai[0] < 1)
 				{
 					Projectile.timeLeft = 50;
+
 					if (pauseTime-- <= 0)
 						Projectile.ai[0] += 1f / attackDuration;
+
 					rotVel = Math.Abs(EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]) - EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0] - 1f / attackDuration)) * 2;
 				}
 				else
@@ -114,15 +115,6 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				}
 
 				float progress = EaseFunction.EaseQuadInOut.Ease(Projectile.ai[0]);
-
-				/*if (Main.netMode != NetmodeID.Server)
-				{
-					if (trailCounter % 5 == 0 || (progress > 0.1f && progress < 0.9f))
-					{
-						ManageCaches();
-						ManageTrail();
-					}
-				}*/
 
 				Projectile.scale = MathHelper.Min(MathHelper.Min(growCounter++ / 30f, 1 + rotVel * 4), 1.3f);
 
@@ -144,13 +136,9 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				if (pullTarget != null && pullTarget.active)
 				{
 					if (pauseTime > 0)
-					{
 						pullTarget.velocity = Vector2.Zero;
-					}
 					else if (pauseTime == 0)
-					{
 						pullTarget.velocity = launchVector * 8 * pullTarget.knockBackResist;
-					}
 				}
 			}
 		}
