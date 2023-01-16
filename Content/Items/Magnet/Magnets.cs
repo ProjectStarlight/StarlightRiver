@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Magnet
 {
 	class UnchargedMagnet : ModItem
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.MagnetItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -26,12 +26,13 @@ namespace StarlightRiver.Content.Items.Magnet
 
 	class ChargedMagnet : ModItem
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public override string Texture => AssetDirectory.MagnetItem + Name;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Charged Magnet");
 			Tooltip.SetDefault("'Pulsing with magnetic power'");
+			Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 7));
 		}
 
 		public override void SetDefaults()
