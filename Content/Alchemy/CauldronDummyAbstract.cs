@@ -1,249 +1,240 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using System;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Alchemy
 {
-    public abstract class CauldronDummyAbstract : Dummy
-    {
-        //This serves as the core logic driver of the alchemy system
-        //any inputs and outputs will be routed through here
-        //and this will execute the calls to any ingredient logic and visuals
-        //Abstract so this can be overridden by more specific cauldrons if later there are multiple cauldrons with similar logic but different visuals
+	public abstract class CauldronDummyAbstract : Dummy
+	{
+		//This serves as the core logic driver of the alchemy system
+		//any inputs and outputs will be routed through here
+		//and this will execute the calls to any ingredient logic and visuals
+		//Abstract so this can be overridden by more specific cauldrons if later there are multiple cauldrons with similar logic but different visuals
 
-        protected List<AlchemyIngredient> currentIngredients = new List<AlchemyIngredient>();
-        protected List<int> currentModifiers = new List<int>();
+		protected List<AlchemyIngredient> currentIngredients = new();
+		protected List<int> currentModifiers = new();
 
-        List<AlchemyRecipe> possibleRecipes = AlchemyRecipeSystem.recipeList;
+		List<AlchemyRecipe> possibleRecipes = AlchemyRecipeSystem.recipeList;
 
-        AlchemyRecipe currentRecipe = null;
-        
+		AlchemyRecipe currentRecipe = null;
 
-        AlchemyIngredient mostRecentIngredient = null;
+		AlchemyIngredient mostRecentIngredient = null;
+		readonly AlchemyWrapper wrapper = new();
 
-        AlchemyWrapper wrapper = new AlchemyWrapper();
+		protected bool isCrafting = false; //true when the ingredients are finalized and recipe is doing visuals/crafting
 
-        protected bool isCrafting = false; //true when the ingredients are finalized and recipe is doing visuals/crafting
+		public const int bubbleAnimationFrameTime = 8;
+		public const int bubbleAnimationFrames = 10;
+		public const int bubbleYOffset = 10; //bubble animation is centered in their frames so we need an offset to find bottom
 
-        public const int bubbleAnimationFrameTime = 8;
-        public const int bubbleAnimationFrames = 10;
-        public const int bubbleYOffset = 10; //bubble animation is centered in their frames so we need an offset to find bottom
+		public int inputCooldown = 0; //if this is greater than 0, the cauldron will not take inputs until it reaches 0 again
 
-        public int inputCooldown = 0; //if this is greater than 0, the cauldron will not take inputs until it reaches 0 again
+		protected CauldronDummyAbstract(int validType, int width, int height) : base(validType, width, height)
+		{
+		}
 
-        protected CauldronDummyAbstract(int validType, int width, int height) : base(validType, width, height)
-        {
-        }
+		public override void Update()
+		{
+			if (!isCrafting && inputCooldown <= 0)
+			{
+				foreach (Item eachWorldItem in Main.item)
+				{
+					if (eachWorldItem.active && Projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
+					{
+						if (AttemptAddItem(eachWorldItem.Clone()))
+						{
+							//todo: mp logic
+							eachWorldItem.active = false;
+							eachWorldItem.TurnToAir();
+						}
+					}
+				}
+			}
 
-        public override void Update()
-        {
-            if (!isCrafting && inputCooldown <= 0)
-            {
-                foreach (Item eachWorldItem in Main.item)
-                {
-                    if (eachWorldItem.active && Projectile.Hitbox.Contains(eachWorldItem.Center.ToPoint()))
-                    {
-                        if (AttemptAddItem(eachWorldItem.Clone()))
-                        {
-                            //todo: mp logic
-                            eachWorldItem.active = false;
-                            eachWorldItem.TurnToAir();
-                        }
-                    }
-                }
-            }
+			wrapper.bubbleColor = new Color(127, 127, 127);
+			wrapper.cauldronRect = Projectile.Hitbox;
 
-            wrapper.bubbleColor = new Color(127, 127, 127);
-            wrapper.cauldronRect = Projectile.Hitbox;
+			bool skipIngredientLogic = false;
+			if (currentRecipe != null)
+			{
+				if (isCrafting)
+				{
+					skipIngredientLogic = currentRecipe.UpdateCrafting(wrapper, currentIngredients, this);
+				}
+				else if (wrapper.currentBatchSize > 0)
+				{
+					skipIngredientLogic = currentRecipe.UpdateReady(wrapper);
+				}
+				else
+				{
+					skipIngredientLogic = currentRecipe.UpdateAlmostReady(wrapper);
+				}
+			}
 
-            bool skipIngredientLogic = false;
-            if (currentRecipe != null)
-            {
-                if(isCrafting)
-                {
-                    skipIngredientLogic = currentRecipe.UpdateCrafting(wrapper, currentIngredients, this);
-                } else if (wrapper.currentBatchSize > 0)
-                {
-                    skipIngredientLogic = currentRecipe.UpdateReady(wrapper);
-                } else
-                {
-                    skipIngredientLogic = currentRecipe.updateAlmostReady(wrapper);
-                }
+			if (mostRecentIngredient != null && !skipIngredientLogic)
+			{
+				bool ignoreRegularVisuals = mostRecentIngredient.MostRecentUpdate(wrapper);
 
-            }
+				foreach (AlchemyIngredient ingredient in currentIngredients)
+				{
+					ingredient.Update(wrapper);
+					if (!ignoreRegularVisuals)
+						ingredient.VisualUpdate(wrapper);
+					ingredient.IncrementTimer();
+				}
 
+				mostRecentIngredient.MostRecentPostUpdate(wrapper);
+			}
 
-            if (mostRecentIngredient != null && !skipIngredientLogic)
-            {
-                bool ignoreRegularVisuals = mostRecentIngredient.mostRecentUpdate(wrapper);
+			IncrementWrapperTimers();
 
-                foreach (AlchemyIngredient ingredient in currentIngredients)
-                {
-                    ingredient.Update(wrapper);
-                    if (!ignoreRegularVisuals)
-                        ingredient.visualUpdate(wrapper);
-                    ingredient.incrementTimer();
-                }
+			if (inputCooldown > 0)
+				inputCooldown--;
+		}
 
-                mostRecentIngredient.mostRecentPostUpdate(wrapper);
-            }
+		protected virtual void IncrementWrapperTimers()
+		{
+			wrapper.bubbleAnimationTimer++;
+			wrapper.timeSinceCraftStarted++;
+			wrapper.timeSinceCraftReady++;
 
+			if (wrapper.bubbleAnimationTimer >= bubbleAnimationFrameTime)
+			{
+				wrapper.bubbleAnimationTimer = 0;
+				wrapper.bubbleAnimationFrame++;
+				wrapper.bubbleAnimationFrame %= bubbleAnimationFrames;
+			}
+		}
 
-            incrementWrapperTimers();
+		public override bool PreDraw(ref Color lightColor)
+		{
+			if (mostRecentIngredient != null && wrapper.bubbleOpacity > 0f)
+			{
+				Texture2D bubbleSheet = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheet").Value;
+				Texture2D bubbleGlow = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheetGlow").Value;
+				int frameHeight = bubbleSheet.Height / bubbleAnimationFrames;
 
-            if (inputCooldown > 0)
-                inputCooldown--;
-        }
+				if (wrapper.bubbleOpacity > 1f)
+					wrapper.bubbleOpacity = 1f;
 
-        protected virtual void incrementWrapperTimers()
-        {
-            wrapper.bubbleAnimationTimer++;
-            wrapper.timeSinceCraftStarted++;
-            wrapper.timeSinceCraftReady++;
+				wrapper.bubbleColor.A = (byte)(wrapper.bubbleColor.A * wrapper.bubbleOpacity);
+				SpriteBatch spriteBatch = Main.spriteBatch;
+				spriteBatch.Draw(bubbleSheet, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
 
-            if (wrapper.bubbleAnimationTimer >= bubbleAnimationFrameTime)
-            {
-                wrapper.bubbleAnimationTimer = 0;
-                wrapper.bubbleAnimationFrame++;
-                wrapper.bubbleAnimationFrame %= bubbleAnimationFrames;
-            }
-        }
+				spriteBatch.End();
+				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-        public override bool PreDraw(ref Color lightColor)
-        {
-            if (mostRecentIngredient != null && wrapper.bubbleOpacity > 0f)
-            {
-                Texture2D bubbleSheet = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheet").Value;
-                Texture2D bubbleGlow = Request<Texture2D>(AssetDirectory.Alchemy + "BubbleSheetGlow").Value;
-                int frameHeight = bubbleSheet.Height / bubbleAnimationFrames;
+				spriteBatch.Draw(bubbleGlow, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
 
-                if (wrapper.bubbleOpacity > 1f)
-                    wrapper.bubbleOpacity = 1f;
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			}
 
-                wrapper.bubbleColor.A = (byte)(wrapper.bubbleColor.A * wrapper.bubbleOpacity);
-                SpriteBatch spriteBatch = Main.spriteBatch;
-                spriteBatch.Draw(bubbleSheet, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor);
+			return false;
+		}
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+		/// <summary>
+		/// empties out cauldron and dumps Items into the world and resets any data like possible recipes
+		/// </summary>
+		public void DumpIngredients()
+		{
+			possibleRecipes = AlchemyRecipeSystem.recipeList;
+			mostRecentIngredient = null;
+			currentRecipe = null;
+			isCrafting = false;
+			wrapper.currentBatchSize = 0;
 
-                spriteBatch.Draw(bubbleGlow, Projectile.position - Main.screenPosition - new Vector2(0, frameHeight - bubbleYOffset), new Rectangle(0, frameHeight * wrapper.bubbleAnimationFrame, bubbleSheet.Width, frameHeight), wrapper.bubbleColor * wrapper.bubbleOpacity);
+			foreach (AlchemyIngredient ingredient in currentIngredients)
+			{
+				ingredient.Dump(wrapper.cauldronRect);
+			}
 
-                spriteBatch.End();
-                spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-            }
+			currentIngredients.Clear();
+			inputCooldown = 120;
+		}
 
-            return false;
-        }
+		public void ConsumeAndDumpIngredients()
+		{
 
-        /// <summary>
-        /// empties out cauldron and dumps Items into the world and resets any data like possible recipes
-        /// </summary>
-        public void dumpIngredients()
-        {
-            possibleRecipes = AlchemyRecipeSystem.recipeList;
-            mostRecentIngredient = null;
-            currentRecipe = null;
-            isCrafting = false;
-            wrapper.currentBatchSize = 0;
+		}
 
-            foreach (AlchemyIngredient ingredient in currentIngredients)
-            {
-                ingredient.dump(wrapper.cauldronRect);
-            }
+		/// <summary>
+		/// attempts to insert a specific Item into the cauldron. if cannot be added returns false and performs no additional logic.
+		/// if can be added will create and add ingredient to the current ingredients, and update possibleRecipes, returning true
+		/// </summary>
+		/// <param name="Item"></param>
+		/// <returns></returns>
+		public bool AttemptAddItem(Item Item)
+		{
+			List<AlchemyRecipe> newPossibilities = AlchemyRecipeSystem.GetRemainingPossiblities(Item, possibleRecipes);
+			if (newPossibilities != null && newPossibilities.Count >= 1)
+			{
+				//first attempts to stack into an existing ingredient stack
+				bool hasStack = false;
+				for (int i = 0; i < currentIngredients.Count; i++)
+				{
+					AlchemyIngredient eachIngredient = currentIngredients[i];
+					if (eachIngredient.GetItemID() == Item.type)
+					{
+						if (eachIngredient.AddToStack(Item))
+						{
+							mostRecentIngredient = eachIngredient;
 
-            currentIngredients.Clear();
-            inputCooldown = 120;
-        }
+							//move to end of list
+							currentIngredients.RemoveAt(i);
+							currentIngredients.Add(eachIngredient);
 
+							hasStack = true;
+							break;
+						}
+						else
+						{
+							//if an ingredient stack is found but not stackable we can skip and return false
+							return false;
+						}
+					}
+				}
 
-        public void consumeAndDumpIngredients()
-        {
+				if (!hasStack)
+				{
+					AlchemyIngredient newIngredient = AlchemyRecipeSystem.InstantiateIngredient(Item);
 
-        }
+					mostRecentIngredient = newIngredient;
 
-        /// <summary>
-        /// attempts to insert a specific Item into the cauldron. if cannot be added returns false and performs no additional logic.
-        /// if can be added will create and add ingredient to the current ingredients, and update possibleRecipes, returning true
-        /// </summary>
-        /// <param name="Item"></param>
-        /// <returns></returns>
-        public bool AttemptAddItem(Item Item)
-        {
-            List<AlchemyRecipe> newPossibilities =  AlchemyRecipeSystem.getRemainingPossiblities(Item, possibleRecipes);
-            if (newPossibilities != null && newPossibilities.Count >= 1)
-            {
-                //first attempts to stack into an existing ingredient stack
-                bool hasStack = false;
-                for (int i = 0; i < currentIngredients.Count; i++)
-                {
-                    AlchemyIngredient eachIngredient = currentIngredients[i];
-                    if (eachIngredient.getItemId() == Item.type)
-                    {
-                        if (eachIngredient.addToStack(Item))
-                        {
-                            mostRecentIngredient = eachIngredient;
+					currentIngredients.Add(newIngredient);
+				}
 
-                            //move to end of list
-                            currentIngredients.RemoveAt(i);
-                            currentIngredients.Add(eachIngredient);
+				possibleRecipes = newPossibilities;
 
-                            hasStack = true;
-                            break;
-                        } else
-                        {
-                            //if an ingredient stack is found but not stackable we can skip and return false
-                            return false;
-                        }
-                    }
-                }
+				//TODO: mp logic here ?
+				//if it reaches here, means that Items were successfully added to the cauldron, so we check for full validation on the recipes to see if theres only 1 and its ready
+				if (possibleRecipes.Count == 1)
+				{
+					currentRecipe = possibleRecipes[0];
+					wrapper.currentBatchSize = currentRecipe.GetCraftBatchSize(currentIngredients, currentModifiers);
+				}
+				else
+				{
+					currentRecipe = null;
+					wrapper.currentBatchSize = 0;
+				}
 
-                if (!hasStack)
-                {
-                    AlchemyIngredient newIngredient = AlchemyRecipeSystem.instantiateIngredient(Item);
+				return true;
+			}
 
-                    mostRecentIngredient = newIngredient;
+			return false;
+		}
 
-                    currentIngredients.Add(newIngredient);
-                }
+		public bool AttemptStartCraft()
+		{
+			if (currentRecipe != null && wrapper.currentBatchSize > 0 && !isCrafting)
+			{
+				wrapper.timeSinceCraftStarted = 0;
+				isCrafting = true;
+				return true;
+			}
 
-                possibleRecipes = newPossibilities;
-
-                //TODO: mp logic here ?
-                //if it reaches here, means that Items were successfully added to the cauldron, so we check for full validation on the recipes to see if theres only 1 and its ready
-                if (possibleRecipes.Count == 1)
-                {
-                    currentRecipe = possibleRecipes[0];
-                    wrapper.currentBatchSize = currentRecipe.getCraftBatchSize(currentIngredients, currentModifiers);
-                } else
-                {
-                    currentRecipe = null;
-                    wrapper.currentBatchSize = 0;
-                }
-
-                return true;
-            }
-            
-            return false;
-        }
-
-        public bool AttemptStartCraft()
-        {
-            if (currentRecipe != null && wrapper.currentBatchSize > 0 && !isCrafting)
-            {
-                wrapper.timeSinceCraftStarted = 0;
-                isCrafting = true;
-                return true;
-            }
-            return false;
-        }
-    }
+			return false;
+		}
+	}
 }

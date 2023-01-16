@@ -1,26 +1,12 @@
-﻿using Terraria.ModLoader;
-using Terraria;
+﻿using System.Collections.Generic;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Core
 {
-	class LearnableRecipe : GlobalRecipe 
-    {
-		public override bool RecipeAvailable(Recipe recipe)
-		{
-			if (recipe.createItem.ModItem is null)
-				return base.RecipeAvailable(recipe);
-
-			return !RecipeSystem.allHiddenRecipes.Contains(recipe.createItem.ModItem.Name) || RecipeSystem.knownRecipies.Contains(recipe.createItem.ModItem.Name); //TODO: This is probably an optimization nightmare, figure something out
-		}
-    }
-
-    class RecipeSystem : ModSystem
+	class RecipeSystem : ModSystem
 	{
-		public static List<string> allHiddenRecipes = new List<string>();
-		public static List<string> knownRecipies = new List<string>();
+		public static List<string> knownRecipies = new();
 
 		public override void OnWorldLoad()
 		{
@@ -45,6 +31,11 @@ namespace StarlightRiver.Core
 				knownRecipies.Add(key);
 				CombatText.NewText(Main.LocalPlayer.Hitbox, Color.Tan, "Learned Recipie: " + key);
 			}
+		}
+
+		public static Recipe.Condition GetCondition(Item result)
+		{
+			return new Recipe.Condition(NetworkText.FromLiteral("Must be unlocked"), n => RecipeSystem.knownRecipies.Contains(result.Name));
 		}
 	}
 }
