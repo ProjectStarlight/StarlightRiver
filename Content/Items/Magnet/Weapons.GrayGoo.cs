@@ -5,6 +5,8 @@
 //Obtainment
 //Make the goo multiply
 //Make the dust better tied to the projectile
+//Item sprite
+//Better use style
 
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StarlightRiver.Content.Buffs.Summon;
