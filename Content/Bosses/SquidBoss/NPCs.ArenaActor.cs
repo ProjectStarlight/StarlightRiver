@@ -373,6 +373,15 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			target.Y -= 240;
 			spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
 
+			Texture2D fill = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+
+			target.Y += 1260;
+			target.Height = 200;
+			spriteBatch.Draw(fill, target, new Color(7, 14, 37).MultiplyRGB(color));
+
+			target.Y -= 1460;
+			spriteBatch.Draw(fill, target, new Color(2, 11, 19).MultiplyRGB(color));
+
 			//Draw our fake boss           
 			(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
 			(fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);

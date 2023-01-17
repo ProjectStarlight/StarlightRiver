@@ -34,40 +34,29 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 				var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
-				if (entity.hasWisp)
+				Color auroraColor;
+
+				float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+				float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+				auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+
+				Texture2D portalGlow = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
+
+				Color portalGlowColor = auroraColor;
+				portalGlowColor.A = 0;
+
+				for (int k = 0; k < 5; k++)
 				{
-					Color auroraColor;
+					float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f + k * 0.5f);
+					var target = new Rectangle((i + 1) * 16, (int)((j + 4.5f) * 16), (int)(portalGlow.Width * (1.2f - k * 0.2f + 0.05f * sin)), (int)(portalGlow.Height * (0.1f + 0.15f * k + 0.05f * sin)));
 
-					float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-					float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
-					auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+					target.Offset((-Main.screenPosition + Helper.TileAdj * 16).ToPoint());
 
-					Texture2D portalGlow = ModContent.Request<Texture2D>(AssetDirectory.SquidBoss + "PortalGlow").Value;
-
-					Color portalGlowColor = auroraColor;
-					portalGlowColor.A = 0;
-
-					for (int k = 0; k < 5; k++)
-					{
-						float sin = (float)Math.Sin(Main.GameUpdateCount * 0.05f + k * 0.5f);
-						var target = new Rectangle((i + 1) * 16, (int)((j + 4.5f) * 16), (int)(portalGlow.Width * (1.2f - k * 0.2f + 0.05f * sin)), (int)(portalGlow.Height * (0.1f + 0.15f * k + 0.05f * sin)));
-
-						target.Offset((-Main.screenPosition + Helper.TileAdj * 16).ToPoint());
-
-						spriteBatch.Draw(portalGlow, target, null, portalGlowColor * 0.4f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
-					}
+					spriteBatch.Draw(portalGlow, target, null, portalGlowColor * 0.4f, 0, new Vector2(portalGlow.Width / 2, portalGlow.Height), 0, 0);
 				}
 			}
 
 			return true;
-		}
-
-		public override void MouseOver(int i, int j)
-		{
-			Player Player = Main.LocalPlayer;
-			Player.cursorItemIconID = ModContent.ItemType<Items.Permafrost.SquidBossSpawn>();
-			Player.noThrow = 2;
-			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
@@ -79,15 +68,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
-			if (entity.hasWisp)
-			{
-				float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-				float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+			float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+			float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
 
-				float bright = 1f;
+			float bright = 1f;
 
-				(r, g, b) = ((0.5f + cos1 * 0.2f) * bright, 0.8f * bright, (0.5f + sin1 * 0.2f) * bright);
-			}
+			(r, g, b) = ((0.5f + cos1 * 0.2f) * bright, 0.8f * bright, (0.5f + sin1 * 0.2f) * bright);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
@@ -103,21 +89,19 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 				var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
-				if (entity.hasWisp)
+				float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
+				float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
+				var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
+
+				if (Main.rand.NextBool(10))
 				{
-					float sin1 = 1 + (float)Math.Sin(Main.GameUpdateCount / 10f);
-					float cos1 = 1 + (float)Math.Cos(Main.GameUpdateCount / 10f);
-					var auroraColor = new Color(0.5f + cos1 * 0.2f, 0.8f, 0.5f + sin1 * 0.2f);
-
-					if (Main.rand.NextBool(10))
-					{
-						var d = Dust.NewDustPerfect(new Vector2(i * 16 + 16 + Main.rand.NextFloat(-64, 64), j * 16 + 64), ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * -Main.rand.NextFloat(3, 5), 0, auroraColor);
-						d.customData = Main.rand.NextFloat(1, 1.2f);
-					}
-
-					if (Main.rand.NextBool(20))
-						Dust.NewDustPerfect(new Vector2(i * 16 + 16 + Main.rand.NextFloat(-96, 96), j * 16 + 60), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.Zero, 0, auroraColor, 0.75f);
+					var d = Dust.NewDustPerfect(new Vector2(i * 16 + 16 + Main.rand.NextFloat(-64, 64), j * 16 + 64), ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * -Main.rand.NextFloat(3, 5), 0, auroraColor);
+					d.customData = Main.rand.NextFloat(1, 1.2f);
 				}
+
+				if (Main.rand.NextBool(20))
+					Dust.NewDustPerfect(new Vector2(i * 16 + 16 + Main.rand.NextFloat(-96, 96), j * 16 + 60), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.Zero, 0, auroraColor, 0.75f);
+
 			}
 		}
 
@@ -134,14 +118,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			var entity = (TouchstoneTileEntity)TileEntity.ByID[index];
 
-			if (entity.hasWisp)
-			{
-				int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
-				(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
-				(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
-
-				entity.hasWisp = false;
-			}
+			int NPCIndex = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16, j * 16, ModContent.NPCType<TouchstoneWisp>());
+			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).targetPos = entity.targetPoint;
+			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
 
 			return true;
 		}
@@ -150,7 +129,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	internal sealed class TouchstoneTileEntity : ModTileEntity
 	{
 		public Vector2 targetPoint;
-		public bool hasWisp;
 
 		public override bool IsTileValidForEntity(int i, int j)
 		{
@@ -173,13 +151,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public override void SaveData(TagCompound tag)
 		{
 			tag["Point"] = targetPoint;
-			tag["hasWisp"] = hasWisp;
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			targetPoint = tag.Get<Vector2>("Point");
-			hasWisp = tag.GetBool("hasWisp");
 		}
 	}
 
@@ -214,6 +190,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			NPC.friendly = true;
 			NPC.lifeMax = 10;
 			NPC.noGravity = true;
+			NPC.dontTakeDamage = true;
 
 			owner = Main.LocalPlayer;
 		}
@@ -269,7 +246,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 						if (entity.type == ModContent.TileEntityType<TouchstoneTileEntity>() && Vector2.Distance(NPC.Center, entity.Position.ToVector2() * 16) < 120)
 						{
 							NPC.active = false;
-							(entity as TouchstoneTileEntity).hasWisp = true;
 
 							for (int n = 0; n < 50; n++)
 							{

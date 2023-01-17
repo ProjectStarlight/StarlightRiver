@@ -123,7 +123,7 @@ namespace StarlightRiver.Core
 			{
 				if (Main.tile[center, y].HasTile && (Main.tile[center, y].TileType == TileID.SnowBlock || Main.tile[center, y].TileType == TileID.IceBlock))
 				{
-					PlaceShrine(new Point16(center, y - 24), 0, oldPos, true);
+					PlaceShrine(new Point16(center, y - 24), 0, oldPos);
 					break;
 				}
 
@@ -257,9 +257,8 @@ namespace StarlightRiver.Core
 		/// <param name="topLeft">The position of the top left of the shrine</param>
 		/// <param name="variant">Which variant of the shrine structure to generate</param>
 		/// <param name="targetPoint">Where the shrine's touchstone should lead the player when clicked</param>
-		/// <param name="hasWisp">If the shrine should spawn with it's touchstone pre-charged</param>
 		/// <returns>The position that the next shrines touchstone should lead to</returns>
-		private Vector2 PlaceShrine(Point16 topLeft, int variant, Vector2 targetPoint, bool hasWisp = false)
+		private Vector2 PlaceShrine(Point16 topLeft, int variant, Vector2 targetPoint)
 		{
 			var touchstonePos = new Point16();
 
@@ -282,7 +281,6 @@ namespace StarlightRiver.Core
 					return touchstonePos.ToVector2();
 
 				te.targetPoint = targetPoint;
-				te.hasWisp = hasWisp;
 
 				return touchstonePos.ToVector2();
 			}
