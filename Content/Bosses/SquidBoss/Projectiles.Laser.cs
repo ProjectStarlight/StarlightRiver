@@ -14,16 +14,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			return false;
-		}
-
-		public override bool PreDraw(ref Color drawColor)
-		{
-			return false;
-		}
-
 		public override void SetDefaults()
 		{
 			Projectile.width = 60;
@@ -32,6 +22,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.hostile = true;
 			Projectile.timeLeft = Main.masterMode ? 360 : Main.expertMode ? 510 : 660;
 			Projectile.aiStyle = -1;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return false;
+		}
+
+		public override bool PreDraw(ref Color drawColor)
+		{
+			return false;
 		}
 
 		public override void AI()
