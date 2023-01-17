@@ -383,8 +383,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			spriteBatch.Draw(fill, target, new Color(2, 11, 19).MultiplyRGB(color));
 
 			//Draw our fake boss           
-			(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
-			(fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
+			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned))
+			{
+				(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
+				(fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
+			}
 
 			bubblesSystem.DrawParticles(spriteBatch);
 
