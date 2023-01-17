@@ -1,22 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems.CombatMountSystem;
+﻿using StarlightRiver.Core.Systems.CombatMountSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Items.Forest
 {
 	internal class FeralWolfMount : CombatMount
 	{
-		List<Projectile> buffedMinions = new List<Projectile>();
+		List<Projectile> buffedMinions = new();
 
 		public override string PrimaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountPrimary";
 		public override string SecondaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountSecondary";
@@ -33,14 +26,14 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void PostUpdate(Player player)
 		{
-			var mp = player.GetModPlayer<CombatMountPlayer>();
-			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+			CombatMountPlayer mp = player.GetModPlayer<CombatMountPlayer>();
+			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
 			if (progress < 1)
 			{
 				for (int k = 0; k < 2; k++)
 				{
-					var pos = player.Center + new Vector2(0, 40 - (int)(progress * 40));
+					Vector2 pos = player.Center + new Vector2(0, 40 - (int)(progress * 40));
 					Dust.NewDustPerfect(pos + Vector2.UnitX * Main.rand.NextFloat(-20, 20), ModContent.DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(1, 1), 0, new Color(255, 255, 200), 0.5f);
 				}
 			}
@@ -68,8 +61,8 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void SecondaryAction(int timer, Player player)
 		{
-			var animTime = secondarySpeedCoefficient / 4f;
-			var time = Math.Max(0, (timer - animTime * 3) / (animTime));
+			float animTime = secondarySpeedCoefficient / 4f;
+			float time = Math.Max(0, (timer - animTime * 3) / animTime);
 
 			if (time > 0)
 				Filters.Scene.Activate("Shockwave", player.Center).GetShader().UseProgress(2f).UseIntensity(100 - time * 100).UseDirection(new Vector2(0.1f - time * 0.1f, 0.02f - time * 0.02f));
@@ -107,12 +100,12 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override bool Draw(List<DrawData> playerDrawData, int drawType, Player drawPlayer, ref Texture2D texture, ref Texture2D glowTexture, ref Vector2 drawPosition, ref Rectangle frame, ref Color drawColor, ref Color glowColor, ref float rotation, ref SpriteEffects spriteEffects, ref Vector2 drawOrigin, ref float drawScale, float shadow)
 		{
-			var tex = ModContent.Request<Texture2D>(Texture).Value;
-			var tex2 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
-			var mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
-			var progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D tex2 = ModContent.Request<Texture2D>(Texture + "Shape").Value;
+			CombatMountPlayer mp = drawPlayer.GetModPlayer<CombatMountPlayer>();
+			float progress = 1 - Math.Max(0, (mp.mountingTime - 15) / 15f);
 
-			var pos = drawPlayer.Center - Main.screenPosition + new Vector2(0, 52 - (int)(progress * 40));
+			Vector2 pos = drawPlayer.Center - Main.screenPosition + new Vector2(0, 52 - (int)(progress * 40));
 			var source = new Rectangle(0, 40 - (int)(progress * 40), 60, (int)(progress * 40));
 			var source2 = new Rectangle(0, 40 - (int)(progress * 40), 60, 2);
 
@@ -131,10 +124,10 @@ namespace StarlightRiver.Content.Items.Forest
 		{
 			MountData.jumpHeight = 6;
 			MountData.acceleration = 0.1f;
-			MountData.jumpSpeed = 10f; 
-			MountData.blockExtraJumps = false; 
-			MountData.heightBoost = 14; 
-			MountData.runSpeed = 6f; 
+			MountData.jumpSpeed = 10f;
+			MountData.blockExtraJumps = false;
+			MountData.heightBoost = 14;
+			MountData.runSpeed = 6f;
 
 			// Frame data and player offsets
 			MountData.totalFrames = 1;
