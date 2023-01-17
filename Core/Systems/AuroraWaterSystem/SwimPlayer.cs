@@ -3,29 +3,32 @@ using StarlightRiver.Helpers;
 using System;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewhere else? not sure.
+namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 {
 	class SwimPlayer : ModPlayer
 	{
 		int boostCD = 0;
 		float targetRotation = 0;
 		float realRotation = 0;
+		float armRotation;
 		int emergeTime = 0;
 
+		public bool wasSwimming;
+
 		public bool ShouldSwim { get; set; }
+
 		public float SwimSpeed { get; set; }
 
-		private void CheckAuroraSwimming() //checks for if hte Player should be swimming
+		private void CheckAuroraSwimming() //checks for if the Player should be swimming
 		{
 			bool canSwim = Player.grapCount <= 0 && !Player.mount.Active;
 
 			if (canSwim)
 			{
+				bool swimming = false;
+
 				if (Player.HasBuff(BuffType<PrismaticDrown>())) //TODO: Change this to be set on the arena instead of checking for this buff probably
-				{
-					ShouldSwim = true;
-					SwimSpeed *= 0.7f;
-				}
+					swimming = true;
 
 				for (int x = 0; x < 2; x++)
 				{
@@ -38,13 +41,28 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 						{
 							Tile tile = Framing.GetTileSafely(realX, realY);
 
-							if (tile.Get<AuroraWaterData>().HasAuroraWater) //TODO: Integrate with properly ported aurora water system
-							{
-								ShouldSwim = true;
-								SwimSpeed *= 0.7f;
-							}
+							if (tile.Get<AuroraWaterData>().HasAuroraWater)
+								swimming = true;
 						}
 					}
+				}
+
+				if (swimming)
+				{
+					if (!wasSwimming)
+					{
+						Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+
+						for (int k = 0; k < 20; k++)
+						{
+							Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+						}
+
+						wasSwimming = true;
+					}
+
+					ShouldSwim = true;
+					SwimSpeed *= 0.7f;
 				}
 			}
 		}
@@ -53,7 +71,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 		{
 			CheckAuroraSwimming();
 
-			if (emergeTime == 19) //reset jumps
+			if (emergeTime == 18) //reset jumps
 			{
 				Player.canJumpAgain_Fart = true;
 				Player.canJumpAgain_Sail = true;
@@ -62,6 +80,15 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 				Player.canJumpAgain_Sandstorm = true;
 				Player.rocketTime = Player.rocketTimeMax;
 				Player.wingTime = Player.wingTimeMax;
+
+				Helper.PlayPitched("Magic/WaterWoosh", 0.8f, 0, Player.Center);
+
+				for (int k = 0; k < 20; k++)
+				{
+					Dust.NewDustPerfect(Player.Center, DustType<Content.Dusts.AuroraWaterFast>(), Main.rand.NextVector2Circular(2, 2), 0, new Color(200, 220, 255) * 0.4f, Main.rand.NextFloat(0.2f, 0.8f));
+				}
+
+				wasSwimming = false;
 			}
 
 			if (!ShouldSwim) //reset stuff when the Player isnt swimming
@@ -114,8 +141,17 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 				return;
 			}
 
+			Player.canJumpAgain_Fart = false;
+			Player.canJumpAgain_Sail = false;
+			Player.canJumpAgain_Cloud = false;
+			Player.canJumpAgain_Blizzard = false;
+			Player.canJumpAgain_Sandstorm = false;
+			Player.rocketTime = -1;
 			Player.wingTime = -1;
+
 			emergeTime = 20; //20 frames for the Player to rotate back, reset while swimming
+
+			Player.fallStart = (int)Player.position.Y; //Reset fall damage constantly while swimming
 
 			if (Player.itemAnimation == 0)
 				Player.bodyFrame = new Rectangle(0, 56 * (int)(1 + Main.GameUpdateCount / 10 % 5), 40, 56);
@@ -126,40 +162,49 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 
 			if (Player.controlRight)
 				Player.velocity.X += speed; //there should probably be a better way of doing this?
+
 			if (Player.controlLeft)
 				Player.velocity.X -= speed;
+
 			if (Player.controlDown)
 				Player.velocity.Y += speed;
+
 			if (Player.controlUp)
 				Player.velocity.Y -= speed;
 
-			//Player.velocity.Y -= 0.4125f; //this combats vanilla gravity.
-			//so does this!
 			Player.gravity = 0;
 			Player.velocity *= 0.95f;
 
 			if (Player.controlJump && boostCD <= 0)
+			{
+				Helper.PlayPitched("SquidBoss/MagicSplash", 1f, -0.5f, Player.Center);
+				Helper.PlayPitched("SquidBoss/MagicSplash", 1f, 0f, Player.Center);
+
 				boostCD = 60;
+			}
 
 			if (boostCD > 40)
 			{
-				float timer = (60 - boostCD - 40) / 20f;
+				float timer = (boostCD - 40) / 20f;
 				float angle = timer * 6.28f;
-				var off = new Vector2((float)Math.Cos(angle) * 18, (float)Math.Sin(angle) * 4);
-				Vector2 vel = -Player.velocity * 0.5f;
+				Vector2 vel = -Player.velocity * 0f;
 				Player.UpdateRotation(angle);
-				var l = Dust.NewDustPerfect(Player.Center + off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
-				var r = Dust.NewDustPerfect(Player.Center - off.RotatedBy(Player.fullRotation), Terraria.ID.DustID.Cloud, vel, 0, new Color(255, 255, 255, 10), 1 + Main.rand.NextFloat());
-				l.noGravity = true;
-				r.noGravity = true;
 
-				Player.bodyFrame = new Rectangle(0, 0, 40, 56);
-				Player.legFrame = new Rectangle(0, 0, 40, 56);
+				for (int k = 0; k < 2; k++)
+				{
+					float prog = k / 2f;
+					var off = new Vector2((float)Math.Cos(angle + 1 / 20f * 6.28f * prog) * 18, (float)Math.Sin(angle + 1 / 20f * 6.28f * prog) * 4);
+
+					var l = Dust.NewDustPerfect(Player.Center + Player.velocity * prog + off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
+					var r = Dust.NewDustPerfect(Player.Center + Player.velocity * prog - off.RotatedBy(Player.fullRotation), DustType<Content.Dusts.Cinder>(), vel, 0, new Color(1 - timer, timer, 1), Main.rand.NextFloat(0.4f, 0.7f));
+					l.noGravity = true;
+					r.noGravity = true;
+				}
 
 				if (Player.velocity == Vector2.Zero)
 					Player.velocity = new Vector2(0, -0.01f);
 
-				Player.velocity += Vector2.Normalize(Player.velocity) * 0.38f * SwimSpeed;
+				Player.velocity += Vector2.Normalize(Player.velocity) * 0.8f * SwimSpeed;
 				Player.AddBuff(Terraria.ID.BuffID.Cursed, 1, true);
 			}
 			else
@@ -172,6 +217,19 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem //TODO: Move this somewh
 
 			if (emergeTime > 0)
 				emergeTime--;
+		}
+
+		public override void PostUpdate()
+		{
+			if (emergeTime > 0)
+			{
+				armRotation += 0.04f + Player.velocity.Length() * 0.1f * (float)Math.Sin((armRotation + 1.57f) % 3.14f);
+
+				Player.SetCompositeArmFront(true, 0, armRotation * Player.direction);
+				Player.SetCompositeArmBack(true, 0, armRotation * Player.direction + 3.14f);
+
+				Player.legFrame = new Rectangle(0, 56 * (6 + (int)(Main.GameUpdateCount * 0.35f) % 14), 40, 56);
+			}
 		}
 
 		public override void ResetEffects()

@@ -1,12 +1,9 @@
-﻿using ReLogic.Content;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
-using System;
 using System.Collections.Generic;
-using Terraria.Audio;
 using Terraria.GameContent.Creative;
-using Terraria.ID;
 using Terraria.Graphics.Effects;
-using StarlightRiver.Content.Dusts;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Magnet
 {
@@ -56,8 +53,8 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public ThunderBeadsProj() : base("Thunder Beads", 15, 1.2f, Color.Transparent)
 		{
-			xFrames = 1;
-			yFrames = 5;
+			//xFrames = 1;
+			//yFrames = 5;
 		}
 
 		public override void Load()
@@ -125,12 +122,13 @@ namespace StarlightRiver.Content.Items.Magnet
 				SetPoints(Projectile.WhipPointsForCollision);
 				return false;
 			}
+
 			return base.PreAI();
 		}
 
 		public override void ArcAI()
 		{
-			xFrame = 0;
+			//xFrame = 0;
 		}
 
 		public override bool ShouldDrawSegment(int segment)
@@ -156,13 +154,13 @@ namespace StarlightRiver.Content.Items.Magnet
 				for (int i = 2; i < cache.Count - 2; i++)
 				{
 					Vector2 vel = cache[i].DirectionTo(Owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1, 2);
-					Dust.NewDustPerfect(cache[i] + Main.rand.NextVector2Circular(6,6), ModContent.DustType<GlowLineFast>(), vel, 0, Color.Cyan, 0.4f);
+					Dust.NewDustPerfect(cache[i] + Main.rand.NextVector2Circular(6, 6), ModContent.DustType<GlowLineFast>(), vel, 0, Color.Cyan, 0.4f);
 				}
 			}
 		}
 
 		public override bool? CanHitNPC(NPC target)
-		{ 
+		{
 			if (embedded)
 				return target == this.target && ableToHit;
 
@@ -203,6 +201,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 				Main.spriteBatch.End();
 			}
+
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
