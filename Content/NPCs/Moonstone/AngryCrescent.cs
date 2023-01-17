@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.Moonstone,
-				new FlavorTextBestiaryInfoElement("A chunk of the moon possessed with hatred for you for trying to exploit their beloved shard, these creatures will stop at nothing to protect their home.")
+				new FlavorTextBestiaryInfoElement("A chunk of the moon possessed with hatred for you. These creatures will stop at nothing to protect their home.")
 			});
 		}
 
