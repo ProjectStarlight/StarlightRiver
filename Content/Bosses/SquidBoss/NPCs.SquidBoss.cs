@@ -181,6 +181,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			StarlightWorld.Flag(WorldFlags.SquidBossDowned);
 		}
 
+		public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+		{
+			position.Y += 160;
+			scale = 1.5f;
+			return true;
+		}
+
 		public void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer)
 		{
 			Texture2D ring = Request<Texture2D>(AssetDirectory.SquidBoss + "BodyRing").Value;
