@@ -73,7 +73,7 @@ namespace StarlightRiver.Core
 						if (oldSurface != 0 && Math.Abs(oldSurface - surface) > 2)
 							break;
 
-						for (int j = 50; j < Main.worldSurface; j++) //Wall Bushes
+						for (int j = (int)(Main.worldSurface * 0.35f); j < Main.worldSurface; j++) //Wall Bushes
 						{
 							if (Main.tile[k + x, j].WallType != 0 && Main.tile[k, j].WallType != WallType<LeafWall>())
 							{
@@ -130,7 +130,7 @@ namespace StarlightRiver.Core
 
 		private static bool AnyGrass(int x)
 		{
-			for (int y = 10; y < Main.maxTilesY; y++)
+			for (int y = (int)(Main.worldSurface * 0.35f); y < Main.rockLayer; y++)
 			{
 				if (Main.tile[x, y].TileType == TileID.Grass)
 					return true;

@@ -826,7 +826,7 @@ namespace StarlightRiver.Core
 
 					// Success! Halve the spawnAttempts count so we don't spam crystals.
 					PlaceTile(cX + 1, cY, Framing.GetTileSafely(cX, cY).TileType, true, true);
-					Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>());
+					Helper.PlaceMultitile(new Point16(cX, cY - 3), TileType<VitricOre>(), Main.rand.Next(3));
 					spawnAttempts /= 2;
 				}
 			}

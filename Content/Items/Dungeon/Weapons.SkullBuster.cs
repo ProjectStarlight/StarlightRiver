@@ -386,6 +386,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 				var origin = new Vector2(10, tex.Height * 0.75f);
 				SpriteEffects effects = SpriteEffects.None;
+
 				if (Owner.direction != 1)
 				{
 					rot += 3.14f;
@@ -466,7 +467,9 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			crosshairSin = MathHelper.Min(crosshairSin, 1);
 			crosshairRotation += 0.05f * crosshairSin;
+
 			float progress = 1 - Projectile.timeLeft / 150f;
+
 			for (int i = 0; i < 2; i++)
 			{
 				var sparks = Dust.NewDustPerfect(Projectile.Center + (Projectile.rotation - 1.57f).ToRotationVector2() * 12, ModContent.DustType<CoachGunSparks>(), (Projectile.rotation + Main.rand.NextFloat(-0.6f, 0.6f)).ToRotationVector2() * Main.rand.NextFloat(0.4f, 1.2f));
@@ -475,6 +478,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			var Hitbox = new Rectangle((int)Projectile.Center.X - 50, (int)Projectile.Center.Y - 50, 100, 100);
 			IEnumerable<Projectile> list = Main.projectile.Where(x => x.Hitbox.Intersects(Hitbox));
+
 			foreach (Projectile proj in list)
 			{
 				if (proj.type == ModContent.ProjectileType<SkullBusterBullet>() && (proj.ModProjectile as SkullBusterBullet).target == Projectile.whoAmI && Projectile.timeLeft > 2 && proj.active && proj.velocity.Length() > 1)
@@ -549,6 +553,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			float progress = 1 - Projectile.timeLeft / 150f;
 			Color overlayColor = Color.White;
+
 			if (progress < 0.5f)
 				overlayColor = Color.Lerp(new Color(0, 0, 0, 0), Color.Gray * 0.5f, progress * 2);
 			else
@@ -688,6 +693,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < 15; i++)
 				{
 					cache.Add(Projectile.Center);

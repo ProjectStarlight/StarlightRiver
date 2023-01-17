@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -41,6 +41,7 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+
 			return true;
 		}
 	}
@@ -104,6 +105,7 @@ namespace StarlightRiver.Content.Items
 		{
 			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
 				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+
 			return true;
 		}
 	}

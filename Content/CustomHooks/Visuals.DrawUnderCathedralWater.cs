@@ -1,4 +1,5 @@
 ﻿using MonoMod.Cil;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.NPCs.BaseTypes;
 using System.Collections.Generic;
@@ -35,6 +36,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public static void DrawWater()
 		{
+			if (!Main.LocalPlayer.InModBiome<PermafrostTempleBiome>())
+				return;
+
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 

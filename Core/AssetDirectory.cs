@@ -39,14 +39,19 @@ namespace StarlightRiver.Core
 		public const string CaveTempleItem = Assets + "Items/UndergroundTemple/";
 		public const string DungeonItem = Assets + "Items/Dungeon/";
 		public const string HellItem = Assets + "Items/Hell/";
+		public const string MagnetItem = Assets + "Items/Magnet/";
 		public const string GravediggerItem = Assets + "Items/Gravedigger/";
 		public const string DemonItem = Assets + "Items/Demon/";
 		public const string GeomancerItem = Assets + "Items/Geomancer/";
 
 		public const string SpaceEventItem = Assets + "Items/SpaceEvent/";
 		public const string SpaceEventNPC = Assets + "NPCs/SpaceEvent/";
+		public const string MiscNPC = Assets + "NPCs/Misc/";
 
+    public const string DungeonTile = Assets + "Tiles/Dungeon/";
 		public const string DungeonNPC = Assets + "NPCs/Dungeon/";
+
+		public const string MoonstoneNPC = Assets + "NPCs/Moonstone/";
 
 		public const string OvergrowTile = Assets + "Tiles/Overgrow/";
 		public const string OvergrowItem = Assets + "Items/Overgrow/";
