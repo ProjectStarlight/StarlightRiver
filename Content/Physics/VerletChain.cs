@@ -85,6 +85,18 @@ namespace StarlightRiver.Content.Physics
 		public int simStartOffset = 0;
 		public int simEndOffset = 0;//if zero this gets set to the segment count on start
 
+		//terraria specific stuff
+
+		/// <summary>
+		/// The parent object for this verlet chain. The chain will be removed from the draw pool if this is null, or if it is one of the following special types and meets a condition <br/>
+		///		<br/>
+		///		Terraria.NPC: if Terraria.NPC.active is false <br/>
+		///		Terraria.Projectile: if Terraria.Projectile.active is false  <br/>
+		///		Terraria.Player: if Terraria.Player.active is false
+		/// 
+		/// </summary>
+		public object parent;
+
 		public VerletChain(int SegCount, bool specialDraw, Vector2 StartPoint, int SegDistance, bool CollideWithTiles = false)
 		{
 			segmentCount = SegCount;
@@ -259,6 +271,15 @@ namespace StarlightRiver.Content.Physics
 					ropeSegments[i + 1].posNow += TileCollision(ropeSegments[i + 1].posNow, changeAmount);
 					ropeSegments[i + 1] = ropeSegments[i + 1];
 				}
+			}
+		}
+
+		public void IterateRope(Action<VerletChain, int> iterateMethod)
+		{
+			if (this.active)
+			{
+				for (int i = simStartOffset; i < simEndOffset; i++)
+					iterateMethod(this, i);
 			}
 		}
 

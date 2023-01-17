@@ -60,10 +60,29 @@ namespace StarlightRiver.Content.CustomHooks
 
 			graphics.BlendState = BlendState.Opaque;
 
+			VerletChainSystem.toDraw.RemoveAll(n => IsBannerDead(n));
+
 			foreach (VerletChain i in VerletChainSystem.toDraw)
 				i.DrawStrip(i.scale);
 
 			graphics.SetRenderTarget(null);
+		}
+
+		private bool IsBannerDead(VerletChain chain)
+		{
+			if (chain.parent is null)
+				return true;
+
+			if (chain.parent is NPC)
+				return !(chain.parent as NPC).active;
+
+			if (chain.parent is Projectile)
+				return !(chain.parent as Projectile).active;
+
+			if (chain.parent is Player)
+				return !(chain.parent as Player).active;
+
+			return false;
 		}
 	}
 }

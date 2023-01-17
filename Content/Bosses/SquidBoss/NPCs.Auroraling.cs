@@ -8,14 +8,16 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class Auroraling : ModNPC
 	{
+		public ref float Timer => ref NPC.ai[0];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override void SetDefaults()
 		{
 			NPC.width = 26;
 			NPC.height = 30;
-			NPC.lifeMax = 40;
-			NPC.damage = 10;
+			NPC.lifeMax = 8;
+			NPC.damage = 25;
 			NPC.noGravity = true;
 			NPC.aiStyle = -1;
 			NPC.knockBackResist = 3f;
@@ -34,27 +36,40 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			NPC.ai[0]++;
-			NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
+			Timer++;
+			NPC.frame = new Rectangle(26 * ((int)(Timer / 5) % 3), 0, 26, 30);
 
 			NPC.TargetClosest();
 			Player Player = Main.player[NPC.target];
 
-			NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.15f;
-			if (NPC.velocity.LengthSquared() > 4)
+			NPC.velocity += Vector2.Normalize(NPC.Center - Player.Center) * -0.175f;
+
+			if (NPC.velocity.LengthSquared() > 6)
 				NPC.velocity *= 0.95f;
+
 			if (NPC.ai[0] % 15 == 0)
 				NPC.velocity.Y -= 0.5f;
 
 			NPC.rotation = NPC.velocity.X * 0.25f;
 
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.type == Type && Vector2.Distance(n.Center, NPC.Center) < 32))
+			{
 				npc.velocity += (npc.Center - NPC.Center) * 0.05f;
+			}
 		}
 
 		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
 		{
 			target.noKnockback = true;
+
+			for (int i = 0; i < 20; i++)
+			{
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(8, 8), 0, new Color(150, 200, 255) * 0.5f);
+			}
+
+			Helpers.Helper.PlayPitched("SquidBoss/MagicSplash", 1, 0.2f, NPC.Center);
+
+			NPC.active = false;
 		}
 
 		public override void HitEffect(int hitDirection, double damage)
@@ -62,7 +77,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			if (NPC.life <= 0)
 			{
 				for (int i = 0; i < 8; i++)
+				{
 					Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(8, 8), DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5, 5), 0, new Color(150, 200, 255) * 0.5f);
+				}
 			}
 		}
 
@@ -70,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (NPC.IsABestiaryIconDummy)
 			{
-				NPC.ai[0]++;
+				Timer++;
 				NPC.frame = new Rectangle(26 * ((int)(NPC.ai[0] / 5) % 3), 0, 26, 30);
 			}
 

@@ -1,4 +1,4 @@
-﻿namespace StarlightRiver.Helpers
+namespace StarlightRiver.Helpers
 {
 	public static partial class Helper
 	{
@@ -13,6 +13,19 @@
 			NPC.checkDead();
 			NPC.HitEffect();
 			NPC.active = false;
+		}
+
+		public static NPC FindNearestNPC(Vector2 position, bool hostile)
+		{
+			NPC npc = null;
+
+			for (int k = 0; k < Main.maxNPCs; k++)
+			{
+				if (Main.npc[k] != null && Main.npc[k].active && !Main.npc[k].immortal && !Main.npc[k].dontTakeDamage && Main.npc[k].friendly == !hostile && (npc == null || Vector2.DistanceSquared(position, Main.player[k].Center) < Vector2.DistanceSquared(position, npc.Center)))
+					npc = Main.npc[k];
+			}
+
+			return npc;
 		}
 
 		public static void NpcVertical(NPC NPC, bool jump, int slot = 1, int jumpheight = 2) //idea: could be seperated farther

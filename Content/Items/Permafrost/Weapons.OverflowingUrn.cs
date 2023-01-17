@@ -264,7 +264,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						sound = soundInstance?.Sound;
 						sound.Volume *= 4;
 					}
-					//Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, Main.rand.NextFloat(-0.5f, -0.2f), Projectile.Center);
+
 					for (int i = 0; i < freezeTimer / 100 + 1; i++)
 					{
 						if (attackCounter % 2 == 0)
@@ -391,6 +391,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Main.spriteBatch.Draw(topTex, capPos, null, lightColor * opacity * capOpacity, Projectile.rotation + rot, new Vector2(topTex.Width / 2, tex.Height / 2 + 10), Projectile.scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.Draw(tex, urnPos, null, lightColor * opacity, Projectile.rotation + rot, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 

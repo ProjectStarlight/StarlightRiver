@@ -5,6 +5,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class ArenaBlocker : ModNPC
 	{
+		public ref float Timer => ref NPC.ai[0];
+		public ref float State => ref NPC.ai[1];
+
 		public override string Texture => AssetDirectory.Invisible;
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -14,7 +17,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
-			return NPC.ai[1] == 0;
+			return State == 0;
 		}
 
 		public override bool CheckActive()
@@ -35,20 +38,21 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			if (NPC.ai[1] == 1 && NPC.ai[0] > 0)
-				NPC.ai[0] -= 4;
+			if (State == 1 && Timer > 0)
+				Timer -= 4;
+
 			NPC.friendly = false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			if (NPC.ai[0] > 150)
+			if (Timer > 150)
 			{
 				Texture2D top = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleTop").Value;
 				Texture2D glow = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleGlow").Value;
 				Texture2D body = Request<Texture2D>(AssetDirectory.SquidBoss + "TentacleBody").Value;
 
-				for (int k = 0; k < NPC.ai[0] - top.Height; k += body.Height + 2)
+				for (int k = 0; k < Timer - top.Height; k += body.Height + 2)
 				{
 					Vector2 pos2 = NPC.position + Vector2.UnitY * 96 + new Vector2(k, 4 + (float)Math.Sin(StarlightWorld.visualTimer + k / 25f) * 10);
 					spriteBatch.Draw(body, pos2 - screenPos, body.Frame(), Lighting.GetColor((int)pos2.X / 16, (int)pos2.Y / 16), 1.57f, body.Size() / 2, 1, 0, 0);
