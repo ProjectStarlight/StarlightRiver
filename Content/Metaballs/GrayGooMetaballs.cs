@@ -58,6 +58,8 @@ namespace StarlightRiver.Content.Metaballs
             Effect effect = Filters.Scene["GrayGooShader"].GetShader().Shader;
             effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget);
             effect.Parameters["threshhold"].SetValue(0.99f);
+            effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
+            effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
 
             spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect);

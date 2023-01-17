@@ -1,3 +1,11 @@
+//TODO:
+//Balance
+//Sellprice
+//Rarity
+//Obtainment
+//Make the goo multiply
+//Make the dust better tied to the projectile
+
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.CustomHooks;
@@ -231,7 +239,7 @@ namespace StarlightRiver.Content.Items.Magnet
 					KillDust();
 				}
 
-				Projectile.velocity = Projectile.DirectionTo(actualTarget.Center) * 5;
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(actualTarget.Center) * 6, 0.07f);
 				if (!Main.dedServ && foundTarget && lerper < 1)
 				{
 					for (int i = 0; i < 5; i++)
