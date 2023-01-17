@@ -49,6 +49,7 @@ namespace StarlightRiver.Core
 		public override void SetDefaults()
 		{
 			Projectile.DefaultToWhip();
+			SafeSetDefaults();
 		}
 
 		public override bool PreAI()
@@ -91,6 +92,8 @@ namespace StarlightRiver.Core
 		}
 
 		public virtual void ArcAI() { }
+
+		public virtual void SafeSetDefaults() { }
 
 		public override void CutTiles()
 		{

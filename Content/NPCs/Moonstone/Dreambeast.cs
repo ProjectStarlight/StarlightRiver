@@ -58,7 +58,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 						constraintRepetitions = 5,//defaults to 2, raising this lowers stretching at the cost of performance
 						drag = 1.2f,//This number defaults to 1, Is very sensitive
 						forceGravity = new Vector2(0f, 0.8f),//gravity x/y
-						scale = 0.6f
+						scale = 0.6f,
+						parent = NPC
 					};
 				}
 			}
