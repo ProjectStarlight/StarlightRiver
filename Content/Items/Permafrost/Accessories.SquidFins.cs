@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using Terraria.Enums;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
 {
@@ -18,6 +19,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.width = 24;
 			Item.height = 24;
 			Item.accessory = true;
+			Item.rare = ItemRarityID.Expert;
+			Item.expert = true;
 			Item.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(0, 2));
 		}
 

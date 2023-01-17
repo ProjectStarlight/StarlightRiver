@@ -159,6 +159,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ItemType<AuroraThroneMountItem>(),
 				ItemType<Tentalance>(),
 				ItemType<Octogun>(),
+				ItemType<TentacleHook>()
 			});
 
 			npcLoot.Add(normalMode);

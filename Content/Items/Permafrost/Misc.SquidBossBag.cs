@@ -54,7 +54,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ItemType<AuroraBell>(),
 				ItemType<AuroraThroneMountItem>(),
 				ItemType<Tentalance>(),
-				ItemType<Octogun>()
+				ItemType<Octogun>(),
+				ItemType<TentacleHook>()
 			}, 2);
 
 			masterMode.ConditionalFewFromOptions(new int[] //drop three items in master mode
@@ -63,7 +64,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ItemType<AuroraBell>(),
 				ItemType<AuroraThroneMountItem>(),
 				ItemType<Tentalance>(),
-				ItemType<Octogun>()
+				ItemType<Octogun>(),
+				ItemType<TentacleHook>()
 			}, 3);
 
 			itemLoot.Add(notMasterMode);
