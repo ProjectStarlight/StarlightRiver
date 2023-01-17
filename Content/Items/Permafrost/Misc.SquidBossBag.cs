@@ -1,5 +1,6 @@
 using StarlightRiver.Content.DropRules;
 using Terraria.GameContent;
+using Terraria.GameContent.Creative;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -9,13 +10,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 	class SquidBossBag : ModItem
 	{
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
-
-		public override int BossBagNPC => NPCType<Bosses.SquidBoss.SquidBoss>();
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
 
 		public override Color? GetAlpha(Color lightColor)
 		{
@@ -28,6 +22,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			ItemID.Sets.BossBag[Type] = true;
 			ItemID.Sets.PreHardmodeLikeBossBag[Type] = true;
+
+			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 3;
 		}
 
 		public override void SetDefaults()
@@ -42,27 +38,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.maxStack = 999;
 		}
 
-		public override void OpenBossBag(Player Player)
+		public override bool CanRightClick()
 		{
-			int weapon = Main.rand.Next(6);
-
-			for (int k = 0; k < 2; k++) //PORT: k < Main.MasterMode ? 3 : 2
-			{
-				switch (weapon % 4)
-				{
-					case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<OverflowingUrn>()); break;
-					case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraBell>()); break;
-					case 2: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraThroneMountItem>()); break;
-					case 3: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<Tentalance>()); break;
-						//TODO: Add drops as they're implemented
-				}
-
-				weapon++;
-			}
-
-			if (Main.rand.NextBool(3))
-				Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<SquidFins>());
-			//Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<ShatteredAegis>()); Expert item?
+			return true;
 		}
 
 		public override void ModifyItemLoot(ItemLoot itemLoot)
