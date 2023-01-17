@@ -70,7 +70,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 				Helper.PlayPitched("MagicAttack", 1, 1, player.Center);
 
 				for (int k = 0; k < 40; k++)
+				{
 					Dust.NewDustPerfect(player.Center, ModContent.DustType<Dusts.Cinder>(), Vector2.One.RotatedBy(k / 40f * 6.28f) * 1.5f, 0, GetColor(k / 40f * 6.28f * 3), Main.rand.NextFloat(0.5f, 1));
+				}
 			}
 
 			if (player.channel && charge < 30)
@@ -218,9 +220,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		private void ManageCaches()
 		{
-			if (cache == null)
+			if (cache is null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < 60; i++)
 				{
 					cache.Add(Vector2.Zero);

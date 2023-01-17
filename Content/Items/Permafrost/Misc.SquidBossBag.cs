@@ -69,6 +69,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			var notMasterMode = new LeadingConditionRule(new Conditions.NotMasterMode());
 			var masterMode = new LeadingConditionRule(new Conditions.IsMasterMode());
+
 			notMasterMode.ConditionalFewFromOptions(new int[] //drop two items in expert mode
 			{
 				ItemType<OverflowingUrn>(),
