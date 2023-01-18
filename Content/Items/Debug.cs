@@ -51,6 +51,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+
 			int cX = (int)Main.MouseWorld.X / 16;
 			int cY = (int)Main.MouseWorld.Y / 16;
 
@@ -119,6 +120,7 @@ namespace StarlightRiver.Content.Items
 		{
 			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
 				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+
 			return true;
 		}
 	}

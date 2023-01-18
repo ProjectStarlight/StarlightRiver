@@ -31,6 +31,7 @@ namespace StarlightRiver.Core
 				tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Big Trees", BigTreeGen));
 				tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Bouncy Mushrooms", BouncyMushroomGen));
 				tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Twisted Greatsword", TwistSwordGen));
+				tasks.Insert(EndIndex + 1, new PassLegacy("Starlight River Salt Gen", SeaSaltPass));
 			}
 		}
 

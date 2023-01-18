@@ -16,8 +16,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void SetDefaults()
 		{
-			Projectile.width = 32;
-			Projectile.height = 32;
+			Projectile.width = 42;
+			Projectile.height = 42;
 			Projectile.aiStyle = -1;
 			Projectile.timeLeft = 300;
 			Projectile.hostile = true;
@@ -27,6 +27,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			if (Projectile.ai[1] == 0)
+			{
+				Projectile.width = (int)(42 * Projectile.scale);
+				Projectile.height = (int)(42 * Projectile.scale);
+			}
+
 			Projectile.velocity.Y -= 0.025f;
 			Projectile.velocity.X *= 0.9f;
 
@@ -66,13 +72,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				if (Main.masterMode)
 					color = new Color(1, 0.5f + sin * 0.25f, 0.25f) * (1 - k / (float)Projectile.oldPos.Length);
 
-				Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, 0.85f - k / (float)Projectile.oldPos.Length * 0.85f, default, default);
+				Main.spriteBatch.Draw(tex, Projectile.oldPos[k] + Projectile.Size / 2 - Main.screenPosition, null, color, Projectile.oldRot[k], tex.Size() / 2, Projectile.scale * (0.85f - k / (float)Projectile.oldPos.Length * 0.85f), default, default);
 
 				if (k == 0)
 				{
-					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], star.Size() / 2, 0.65f, default, default);
-					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1] * -0.2f, star.Size() / 2, 0.85f, default, default);
-					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, 1.15f, default, default);
+					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], star.Size() / 2, Projectile.scale * 0.65f, default, default);
+					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1] * -0.2f, star.Size() / 2, Projectile.scale * 0.85f, default, default);
+					Main.spriteBatch.Draw(star, Projectile.Center - Main.screenPosition, null, color * 0.6f, Projectile.ai[1] * -0.6f, star.Size() / 2, Projectile.scale * 1.15f, default, default);
 				}
 			}
 		}
