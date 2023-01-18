@@ -25,7 +25,9 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			BarrierPlayer barrierPlayer = localPlayer.GetModPlayer<BarrierPlayer>();
 
 			if (barrierPlayer.maxBarrier <= 0)
+			{
 				orig.Invoke();
+			}
 			else if (!Main.mouseText)
 			{
 				localPlayer.cursorItemIconEnabled = false;

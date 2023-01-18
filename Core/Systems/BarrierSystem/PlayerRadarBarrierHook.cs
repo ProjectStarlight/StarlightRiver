@@ -34,9 +34,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 						var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY) - Main.screenPosition;
 						
 						if (Main.LocalPlayer.gravDir == -1f)
-						{
 							pos.Y = Main.screenHeight - pos.Y;
-						}
 
 						BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 						DrawBarrierBar(pos, mp.barrier, mp.maxBarrier, Color.White * Lighting.Brightness((int)Player.Center.X / 16, (int)Player.Center.Y / 16));
@@ -107,13 +105,19 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		private void DrawAllyRadarBarrierIL(ILContext il)
 		{
 			Type playerOffScreenCacheType = typeof(Mod).Assembly.GetType("Terraria.GameContent.UI.NewMultiplayerClosePlayersOverlay")!.GetNestedType("PlayerOffScreenCache", BindingFlags.NonPublic);
-			var playerAccessor = playerOffScreenCacheType.GetField("player", BindingFlags.NonPublic | BindingFlags.Instance)!;
-			var distanceDrawPositionAccessor = playerOffScreenCacheType.GetField("distanceDrawPosition", BindingFlags.NonPublic | BindingFlags.Instance);
+			FieldInfo playerAccessor = playerOffScreenCacheType.GetField("player", BindingFlags.NonPublic | BindingFlags.Instance)!;
+			FieldInfo distanceDrawPositionAccessor = playerOffScreenCacheType.GetField("distanceDrawPosition", BindingFlags.NonPublic | BindingFlags.Instance);
 
-			StarlightRiver.Instance.Logger.Debug(distanceDrawPositionAccessor);
-			StarlightRiver.Instance.Logger.Debug(playerAccessor);
 			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchRet()); //put it inside of the draw block that has already checked the health logic
+			bool callsFound = true;
+			callsFound = callsFound && c.TryGotoNext(n => n.MatchCallvirt<Main>("DrawHealthBar"));
+			callsFound = callsFound && c.TryGotoNext(n => n.MatchRet()); //put it inside of the draw block that has already checked the health logic AFTER drawing the base health bar
+
+			if (!callsFound)
+			{
+				StarlightRiver.Instance.Logger.Debug("Failed to inject DrawAllyRadarBarrierIL. Was not able to find instructions");
+				return;
+			}
 
 			c.Emit(OpCodes.Ldarg_0);
 			c.Emit(OpCodes.Ldfld, distanceDrawPositionAccessor);
@@ -150,7 +154,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 			var target = new Rectangle((int)position.X, (int)position.Y, (int)(factor * tex.Width * horizontalScale), (int)(tex.Height * horizontalScale));
 
-			Main.spriteBatch.Draw(tex, target, source, Color.White);
+			Main.spriteBatch.Draw(tex, target, source, color);
 
 			if (barrier < maxBarrier && barrier > 0)
 			{
