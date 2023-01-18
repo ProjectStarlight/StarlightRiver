@@ -7,6 +7,8 @@ float2 screenSize;
 float threshhold;
 
 float time;
+float min;
+float max;
 
 float random (float2 st) {
     return frac(sin(time + dot(st.xy,
@@ -31,7 +33,7 @@ float4 White(float2 coords : TEXCOORD0) : COLOR0
 
     float2 pixelSize = float2(2,2) / screenSize;
     float2 pixelCoords = floor(coords / pixelSize) * pixelSize;
-    float ret = random(pixelCoords);
+    float ret = lerp(min, max, random(pixelCoords));
     return float4(ret,ret,ret,1);
 }
 

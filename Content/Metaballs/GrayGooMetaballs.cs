@@ -72,6 +72,8 @@ namespace StarlightRiver.Content.Metaballs
             effect.Parameters["threshhold"].SetValue(0.95f);
             effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
             effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
+			effect.Parameters["min"].SetValue(0f);
+			effect.Parameters["max"].SetValue(1);
 
             spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect);
