@@ -61,10 +61,16 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			effect.Parameters["drawOriginal"].SetValue(false);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
 			Rectangle rect = CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI);
-			spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), rect, Color.White);
+
+			Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
+
+			if (Main.LocalPlayer.gravDir == -1f)
+				spriteBatch.Draw(tex, drawPos, rect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
+			else
+				spriteBatch.Draw(tex, drawPos, rect, Color.White);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
