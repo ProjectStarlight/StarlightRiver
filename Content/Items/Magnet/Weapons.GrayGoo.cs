@@ -239,6 +239,8 @@ namespace StarlightRiver.Content.Items.Magnet
 
             if (!Main.dedServ && lerper < 1)
             {
+				if (lerper == 0)
+					KillDust();
                 for (int i = 0; i < 5; i++)
                 {
                     Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
@@ -287,21 +289,32 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 		}
 
-		private void ReadjustDust()
-		{
-			NPC target = Main.npc[(int)EnemyWhoAmI];
+        private void ReadjustDust()
+        {
+            NPC target = Main.npc[(int)EnemyWhoAmI];
             foreach (Dust dust in Main.dust)
             {
                 if (dust.type == ModContent.DustType<GrayGooDust>() && dust.customData is GrayGooDustData data && data.proj == Projectile)
                 {
                     Vector2 offset = Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
-					data.x = (int)offset.X;
-					data.y = (int)offset.Y;
+                    data.x = (int)offset.X;
+                    data.y = (int)offset.Y;
                 }
             }
         }
 
-		private static void DrawGooTarget(Projectile goo, SpriteBatch spriteBatch)
+        private void KillDust()
+        {
+            foreach (Dust dust in Main.dust)
+            {
+                if (dust.type == ModContent.DustType<GrayGooDust>() && dust.customData is GrayGooDustData data && data.proj == Projectile)
+                {
+					dust.active = false;
+                }
+            }
+        }
+
+        private static void DrawGooTarget(Projectile goo, SpriteBatch spriteBatch)
 		{
             if (goo == default)
                 return;
