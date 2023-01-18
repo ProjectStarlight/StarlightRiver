@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Tiles.Permafrost;
+using System;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
@@ -38,6 +39,14 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.noMelee = true;
 			Item.noUseGraphic = true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<AuroraIceBar>(), 8);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
