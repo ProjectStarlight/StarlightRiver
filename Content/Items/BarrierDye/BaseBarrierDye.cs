@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			float opacity = barrier.rechargeAnimationTimer;
 
@@ -73,7 +73,10 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
-				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
+				if (Main.LocalPlayer.gravDir == -1f)
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
+				else
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
 			}
 
 			spriteBatch.End();
