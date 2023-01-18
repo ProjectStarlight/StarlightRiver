@@ -29,6 +29,9 @@ namespace StarlightRiver.Content.NPCs.Misc
 
         public int attackCycleLength = 400;
 
+        public float flashOpacityPreEase = 0;
+        public float flashOpacity = 0f;
+
         public Vector2 lightningDirection = Vector2.Zero;
 
         public Vector2 endPoint = Vector2.Zero;
@@ -109,6 +112,16 @@ namespace StarlightRiver.Content.NPCs.Misc
                         break;
                     }
                 }
+
+                if (attackCounter % attackCycleLength > 250 && attackCounter % attackCycleLength < 260)
+                    flashOpacityPreEase += 0.1f;
+                else if (attackCounter % attackCycleLength > 260 && attackCounter % attackCycleLength < 270)
+                    flashOpacityPreEase -= 0.1f;
+
+                flashOpacityPreEase = MathHelper.Clamp(flashOpacityPreEase, 0, 1);
+
+                flashOpacity = EaseFunction.EaseCircularIn.Ease(flashOpacityPreEase);
+
 
                 if (attackCounter % attackCycleLength == 300)
                 {
@@ -194,12 +207,12 @@ namespace StarlightRiver.Content.NPCs.Misc
         private void ManageTrails(NPC npc)
         {
             Vector2 endPoint = cache[SEGMENTS];
-            trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1), factor =>
+            trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.5f, flashOpacity), factor =>
             {
                 if (factor.X > 0.99f)
                     return Color.Transparent;
 
-                return new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X);
+                return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity);
             });
 
             trail.Positions = cache.ToArray();
@@ -208,7 +221,7 @@ namespace StarlightRiver.Content.NPCs.Misc
             trail2 ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 3 * (fade > 1 ? Main.rand.NextFloat(0.55f, 1.45f) : 1) * Math.Max(fade, 1), factor =>
             {
                 float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
-                return Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)) * ((fade - 0.5f) * 0.3f) * progress;
+                return Color.Lerp(Color.Lerp(baseColor, endColor, EaseFunction.EaseCubicIn.Ease(1 - progress)), Color.White, flashOpacity) * ((fade - 0.5f) * 0.3f) * progress;
             });
 
             trail2.Positions = cache2.ToArray();
