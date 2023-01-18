@@ -207,12 +207,12 @@ namespace StarlightRiver.Content.NPCs.Misc
         private void ManageTrails(NPC npc)
         {
             Vector2 endPoint = cache[SEGMENTS];
-            trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.5f, flashOpacity), factor =>
+            trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
             {
                 if (factor.X > 0.99f)
                     return Color.Transparent;
 
-                return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity);
+                return Color.Lerp(new Color(160, 220, 255) * ((fade - 0.5f) * 0.3f) * 0.1f * EaseFunction.EaseCubicOut.Ease(1 - factor.X), Color.White, flashOpacity * 0.5f);
             });
 
             trail.Positions = cache.ToArray();
