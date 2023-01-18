@@ -71,9 +71,15 @@ namespace StarlightRiver.Content.Metaballs
             effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget);
             effect.Parameters["threshhold"].SetValue(0.95f);
             effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
-            effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
+            effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
 			effect.Parameters["min"].SetValue(0f);
-			effect.Parameters["max"].SetValue(1);
+			effect.Parameters["max"].SetValue(1f);
+
+			effect.Parameters["noisiness"].SetValue(143.578348f);
+
+			effect.Parameters["eyeThreshhold"].SetValue(0.1f);
+            effect.Parameters["eyeColor"].SetValue(new Vector4(0, 1,1,1));
+            effect.Parameters["eyeChangeRate"].SetValue(0.1f);
 
             spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect);

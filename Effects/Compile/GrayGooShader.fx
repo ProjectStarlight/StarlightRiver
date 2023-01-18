@@ -10,10 +10,16 @@ float time;
 float min;
 float max;
 
-float random (float2 st) {
-    return frac(sin(time + dot(st.xy,
-                         float2(12.9898f,78.233f)))*
-        43758.5453123f);
+float noisiness;
+
+float eyeThreshhold;
+float4 eyeColor;
+float eyeChangeRate;
+
+float random (float2 st, float localTime) {
+    return frac(sin(localTime + dot(st.xy,
+                         float2(72.9898f,78.233f)))*
+        noisiness);
 }
 
 sampler tent = sampler_state
@@ -33,7 +39,11 @@ float4 White(float2 coords : TEXCOORD0) : COLOR0
 
     float2 pixelSize = float2(2,2) / screenSize;
     float2 pixelCoords = floor(coords / pixelSize) * pixelSize;
-    float ret = lerp(min, max, random(pixelCoords));
+    float ret = lerp(min, max, random(pixelCoords, time));
+
+    float floorTime = floor(time / eyeChangeRate) * eyeChangeRate;
+    if (random(pixelCoords, floorTime) < eyeThreshhold)
+        return eyeColor;
     return float4(ret,ret,ret,1);
 }
 

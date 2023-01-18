@@ -1,10 +1,3 @@
-//TODO:
-//Balance
-//Item sprite
-//Better use style
-//Move RT to iresizable when done
-//Buff sprite
-
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StarlightRiver.Content.Buffs.Summon;
@@ -44,7 +37,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 	public class GrayGoo : ModItem
 	{
-		public override string Texture => AssetDirectory.PalestoneItem + "PalestoneNail";
+		public override string Texture => AssetDirectory.MagnetItem + "GrayGoo";
 
 		public override void SetStaticDefaults()
 		{
@@ -72,6 +65,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.buffType = BuffType<GrayGooSummonBuff>();
 			Item.shoot = ProjectileType<GrayGooProj>();
 			Item.knockBack = 0;
+			Item.noUseGraphic = true;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
