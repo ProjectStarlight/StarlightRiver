@@ -12,13 +12,15 @@ namespace StarlightRiver.Content.Metaballs
 	{
 		public RenderTarget2D touchingNPCs;
 
-		public override bool Active => Main.dust.Any(x => x.active && x.type == DustType);
+		public override bool Active => Main.dust.Any(x => x.active && (x.type == DustType || x.type == DustType2));
 
-		public override Color OutlineColor => Color.DarkGray;
+        public int DustType => ModContent.DustType<GrayGooDust>();
+
+        public int DustType2 => ModContent.DustType<GrayGooSplashDust>();
+
+        public override Color OutlineColor => Color.DarkGray;
 
 		public virtual Color InteriorColor => Color.Gray;
-
-		public virtual int DustType => ModContent.DustType<GrayGooDust>();
 
 		public override bool OverEnemies => true;
 
@@ -26,9 +28,10 @@ namespace StarlightRiver.Content.Metaballs
 		{
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
 
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowVerySoft").Value;
+            Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowVerySoft").Value;
+            Texture2D harshTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
 
-			if (borderNoise is null)
+            if (borderNoise is null)
 				return;
 
 			borderNoise.Parameters["offset"].SetValue((float)Main.time / 100f);
@@ -39,12 +42,21 @@ namespace StarlightRiver.Content.Metaballs
 
 			foreach (Dust dust in Main.dust)
 			{
-				if (dust.active && dust.type == DustType)
+                if (dust.active && dust.type == DustType)
+                {
+                    borderNoise.Parameters["offset"].SetValue(dust.rotation);
+                    spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.White * 0.9f, dust.rotation, tex.Size() / 2, dust.scale * 0.25f, SpriteEffects.None, 0);
+                }
+
+				if (dust.active && dust.type == DustType2)
 				{
 					borderNoise.Parameters["offset"].SetValue(dust.rotation);
-					spriteBatch.Draw(tex, (dust.position - Main.screenPosition) / 2, null, Color.White * 0.9f, dust.rotation, tex.Size() / 2, dust.scale * 0.25f, SpriteEffects.None, 0);
+					for (int i = 0; i < 5; i++)
+					{
+						spriteBatch.Draw(harshTex, (dust.position - Main.screenPosition) / 2, null, Color.White, dust.rotation, harshTex.Size() / 2, dust.scale * 0.25f, SpriteEffects.None, 0);
+					}
 				}
-			}
+            }
 
 			spriteBatch.End();
             spriteBatch.Begin();
@@ -57,7 +69,7 @@ namespace StarlightRiver.Content.Metaballs
 			
             Effect effect = Filters.Scene["GrayGooShader"].GetShader().Shader;
             effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget);
-            effect.Parameters["threshhold"].SetValue(0.99f);
+            effect.Parameters["threshhold"].SetValue(0.95f);
             effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
             effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.01f);
 

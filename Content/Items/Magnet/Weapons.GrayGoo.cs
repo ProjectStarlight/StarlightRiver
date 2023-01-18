@@ -1,13 +1,11 @@
 //TODO:
 //Balance
-//Sellprice
-//Rarity
-//Obtainment
-//Make the goo multiply
-//Make the dust better tied to the projectile
 //Item sprite
 //Better use style
+//Move RT to iresizable when done
+//Buff sprite
 
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Graphics.PackedVector;
 using StarlightRiver.Content.Buffs.Summon;
 using StarlightRiver.Content.CustomHooks;
@@ -15,6 +13,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Breacher;
 using StarlightRiver.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,7 +21,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Magnet
 {
-	public struct GrayGooDustData
+	public class GrayGooDustData //Has to be a class so we can pass by reference
 	{
 		public int x;
 
@@ -50,7 +49,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gray Goo");
-			Tooltip.SetDefault("Summons the Pale Knight");
+			Tooltip.SetDefault("Summons a swarm of nanomachines to devour enemies");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
@@ -64,9 +63,9 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.useTime = 36;
 			Item.useAnimation = 36;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.value = Item.buyPrice(0, 0, 12, 0);
-			Item.rare = ItemRarityID.White;
-			Item.UseSound = SoundID.Item44;
+            Item.value = Item.sellPrice(0, 2, 0, 0);
+            Item.rare = ItemRarityID.Orange;
+            Item.UseSound = SoundID.Item44;
 
 			Item.noMelee = true;
 			Item.DamageType = DamageClass.Summon;
@@ -146,6 +145,8 @@ namespace StarlightRiver.Content.Items.Magnet
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 5000;
 			Projectile.friendly = true;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 15;
 		}
 
 		public override bool? CanCutTiles()
@@ -177,8 +178,13 @@ namespace StarlightRiver.Content.Items.Magnet
 			Vector2 targetCenter = Projectile.Center;
 			foundTarget = EnemyWhoAmI >= 0;
 
-			// This code is required if your minion weapon has the targeting feature
-			if (Owner.HasMinionAttackTargetNPC)
+			List<NPC> alreadyTargetted = new List<NPC>();
+            var goos = Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<GrayGooProj>() && n != Projectile && (n.ModProjectile as GrayGooProj).foundTarget).ToList();
+			goos.ForEach(n => alreadyTargetted.Add(Main.npc[(int)(n.ModProjectile as GrayGooProj).EnemyWhoAmI]));
+			
+
+            // This code is required if your minion weapon has the targeting feature
+            if (Owner.HasMinionAttackTargetNPC)
 			{
 				NPC NPC = Main.npc[Owner.MinionAttackTargetNPC];
 				float between = Vector2.Distance(NPC.Center, Projectile.Center);
@@ -208,7 +214,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			else if (!Owner.HasMinionAttackTargetNPC)
 			{
-				NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < maxMinionChaseRange && Collision.CanHitLine(Projectile.position, 0, 0, n.position, 0, 0)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+				NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < maxMinionChaseRange && Collision.CanHitLine(Projectile.position, 0, 0, n.position, 0, 0) && !alreadyTargetted.Contains(n)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
 				if (target != default)
 				{
 					targetCenter = target.Center;
@@ -224,111 +230,163 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			if (EnemyWhoAmI != oldEnemyWhoAmI)
 			{
-				lerper = 0;
+				if (foundTarget)
+					ReadjustDust();
 				oldEnemyWhoAmI = EnemyWhoAmI;
 			}
 
-			#endregion
+            #endregion
 
-			if (foundTarget)
+            if (!Main.dedServ && lerper < 1)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
+                    Vector2 offset = Main.rand.NextVector2Circular(20, 20);
+                    Dust dust = Dust.NewDustPerfect(startPos, ModContent.DustType<GrayGooDust>(), Vector2.Zero, 0, Color.Transparent, 1);
+                    dust.customData = new GrayGooDustData((int)offset.X, (int)offset.Y, Projectile, Main.rand.NextFloat(0.07f, 0.17f), Main.rand.NextFloat(9, 20));
+                }
+                lerper += 0.1f;
+            }
+
+            if (foundTarget)
 			{
 				NPC actualTarget = Main.npc[(int)EnemyWhoAmI];
 
 				if (!actualTarget.active)
 				{
-					Projectile.velocity = Vector2.Zero;
-					lerper = 0;
-					KillDust();
+                    EnemyWhoAmI = -1;
+					foundTarget = false;
+                    Projectile.velocity = Vector2.Zero;
 				}
 
-				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(actualTarget.Center) * 6, 0.07f);
-				if (!Main.dedServ && foundTarget && lerper < 1)
-				{
-					for (int i = 0; i < 5; i++)
-					{
-						Vector2 startPos = Projectile.Center + Main.rand.NextVector2Circular(20, 20);
-						Vector2 offset = Main.rand.NextVector2Circular(actualTarget.width / 2, actualTarget.height / 2);
-						Dust dust = Dust.NewDustPerfect(startPos, ModContent.DustType<GrayGooDust>(), startPos.DirectionTo(actualTarget.Center), 0, Color.Transparent, 1);
-						dust.customData = new GrayGooDustData((int)offset.X, (int)offset.Y, Projectile, Main.rand.NextFloat(0.02f, 0.07f), Main.rand.NextFloat(3, 8));
-					}
-					lerper += 0.1f;
-				}
+				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(actualTarget.Center) * 16, 0.07f);
 			}
 			else
 			{
-                Projectile.velocity = Vector2.Zero;
-                lerper = 0;
-                KillDust();
+                Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Owner.Center) * 16, 0.02f);
+				EnemyWhoAmI = -1;
             }
 		}
 
-		private void KillDust()
+		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
+			float scale = 1;
+			int amount = 5;
+
+			if (target.life <= 0)
+			{
+				amount = 12;
+				scale = 1.5f;
+			}
+
+			for (int i = 0; i < amount; i++)
+			{
+				Vector2 dir = Main.rand.NextVector2Circular(6, 6);
+				Dust.NewDustPerfect(target.Center + dir, ModContent.DustType<GrayGooSplashDust>(), dir, default, default, scale);
+			}
+		}
+
+		private void ReadjustDust()
+		{
+			NPC target = Main.npc[(int)EnemyWhoAmI];
             foreach (Dust dust in Main.dust)
             {
                 if (dust.type == ModContent.DustType<GrayGooDust>() && dust.customData is GrayGooDustData data && data.proj == Projectile)
                 {
-                    dust.active = false;
+                    Vector2 offset = Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
+					data.x = (int)offset.X;
+					data.y = (int)offset.Y;
                 }
             }
         }
 
+		private static void DrawGooTarget(Projectile goo, SpriteBatch spriteBatch)
+		{
+            if (goo == default)
+                return;
+
+            GrayGooProj modproj = goo.ModProjectile as GrayGooProj;
+
+            if (!modproj.foundTarget)
+                return;
+
+            NPC NPC = Main.npc[(int)modproj.EnemyWhoAmI];
+
+            if (!NPC.active)
+                return;
+
+            if (NPC.active)
+            {
+                if (NPC.ModNPC != null)
+                {
+                    if (NPC.ModNPC is ModNPC ModNPC)
+					{
+                        if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
+                            Main.instance.DrawNPC((int)modproj.EnemyWhoAmI, false);
+
+                        ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
+                    }
+                }
+                else
+                {
+                    Main.instance.DrawNPC((int)modproj.EnemyWhoAmI, false);
+                }
+            }
+        }
 		private void DrawNPCtarget(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
 			orig();
 
-			Projectile localGoo = Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<GrayGooProj>()).OrderByDescending(n => n.timeLeft).FirstOrDefault();
-			if (localGoo == default)
+            var goos = Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<GrayGooProj>()).ToList();
+			if (goos.Count == 0)
 				return;
 
-			GrayGooProj modproj = localGoo.ModProjectile as GrayGooProj;
+            GraphicsDevice gD = Main.graphics.GraphicsDevice;
+            SpriteBatch spriteBatch = Main.spriteBatch;
 
-			if (!modproj.foundTarget)
-				return;
+            if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null)
+                return;
 
-			NPC NPC = Main.npc[(int)modproj.EnemyWhoAmI];
+            RenderTargetBinding[] bindings = gD.GetRenderTargets();
+            gD.SetRenderTarget(NPCTarget);
+            gD.Clear(Color.Transparent);
 
-			if (!NPC.active)
-				return;
+            spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
-			GraphicsDevice gD = Main.graphics.GraphicsDevice;
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null)
-				return;
-
-			RenderTargetBinding[] bindings = gD.GetRenderTargets();
-			gD.SetRenderTarget(NPCTarget);
-			gD.Clear(Color.Transparent);
-
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
-
-			if (NPC.active)
-			{
-				if (NPC.ModNPC != null)
-				{
-					if ( NPC.ModNPC is ModNPC ModNPC)
-					{
-						if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
-							Main.instance.DrawNPC((int)modproj.EnemyWhoAmI, false);
-
-						ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
-					}
-				}
-				else
-				{
-					Main.instance.DrawNPC((int)modproj.EnemyWhoAmI, false);
-				}
-			}
+			goos.ForEach(n => DrawGooTarget(n, spriteBatch));
 			spriteBatch.End();
             gD.SetRenderTargets(bindings);
 		}
 	}
+	public class GrayGooSplashDust : ModDust
+	{
+		public override string Texture => AssetDirectory.Invisible;
 
-    public class GrayGooDust : Glow
-    {
+        public override void OnSpawn(Dust dust)
+        {
+            dust.noGravity = false;
+            dust.noLight = false;
+        }
+
         public override bool Update(Dust dust)
         {
+            dust.position += dust.velocity;
+            dust.velocity.Y += 0.2f;
+			if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].TileType])
+				dust.active = false;
+
+            dust.rotation = dust.velocity.ToRotation();
+            dust.scale *= 0.99f;
+            if (dust.scale < 0.5f)
+                dust.active = false;
+            return false;
+        }
+    }
+    public class GrayGooDust : Glow
+    {
+		public override bool Update(Dust dust)
+		{
 			GrayGooDustData data = (GrayGooDustData)dust.customData;
 			if (!data.proj.active)
 			{
@@ -337,22 +395,21 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			var MP = data.proj.ModProjectile as GrayGooProj;
+            float lerper = data.lerp / 3;
 
-			if (!MP.foundTarget)
-            {
-                dust.active = false;
-                return false;
-            }
+            Vector2 entityCenter = MP.Owner.Center;
+			if (MP.foundTarget)
+			{ 
+				var npc = Main.npc[(int)MP.EnemyWhoAmI];
 
-            var npc = Main.npc[(int)MP.EnemyWhoAmI];
+				if (npc.active)
+				{
+					entityCenter = npc.Center;
+					lerper *= 3;
+				}
+			}
 
-			if (!npc.active)
-            {
-                dust.active = false;
-                return false;
-            }
-
-            Vector2 posToBe = npc.Center + new Vector2(data.x, data.y);
+            Vector2 posToBe = entityCenter + new Vector2(data.x, data.y);
             dust.shader.UseColor(dust.color);
 
             if ((posToBe - dust.position).Length() < 5)
@@ -363,8 +420,9 @@ namespace StarlightRiver.Content.Items.Magnet
             }
 
             Vector2 direction = dust.position.DirectionTo(posToBe);
+
 			if (posToBe.Distance(dust.position) > 20)
-				dust.velocity = Vector2.Lerp(dust.velocity, direction * data.speed, data.lerp);
+				dust.velocity = Vector2.Lerp(dust.velocity, direction * data.speed, lerper);
             dust.position += dust.velocity;
             return false;
         }
