@@ -9,6 +9,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrick";
 
+		public override void Load()
+		{
+			On.Terraria.Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
+		}
+
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSet(this, int.MaxValue, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
@@ -24,6 +29,14 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			float mult = Lighting.Brightness(i, j);
 
 			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
+		}
+
+		private bool StopGrappling(On.Terraria.Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, Tile theTile)
+		{
+			if (theTile.TileType == TileType<AuroraBrick>())
+				return false;
+
+			return orig(self, theTile);
 		}
 	}
 
