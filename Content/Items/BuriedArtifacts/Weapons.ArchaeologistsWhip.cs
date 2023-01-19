@@ -27,15 +27,16 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 	public class ArchaeologistsWhip_Whip : BaseWhip
 	{
+		const int X_FRAMES = 1;
+		const int Y_FRAMES = 5;
+
+		int xFrame;
+
 		protected bool Empowered => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<ArchaeologistsBuff>());
 
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
-		public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97))
-		{
-			xFrames = 1;
-			yFrames = 5;
-		}
+		public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97)) { }
 
 		public override int SegmentVariant(int segment)
 		{
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			points.Clear();
 			SetPoints(points);
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture + "_Glow");
-			Rectangle whipFrame = texture.Frame(xFrames, yFrames, xFrame, 0);
+			Rectangle whipFrame = texture.Frame(X_FRAMES, Y_FRAMES, xFrame, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
 
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				}
 				else if (i == points.Count - 2)
 				{
-					whipFrame.Y = height * (yFrames - 1);
+					whipFrame.Y = height * (Y_FRAMES - 1);
 				}
 				else
 				{

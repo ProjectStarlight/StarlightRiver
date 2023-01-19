@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Helpers;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -113,6 +116,7 @@ namespace StarlightRiver.Content.Items
 		{
 			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
 				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+
 			return true;
 		}
 	}

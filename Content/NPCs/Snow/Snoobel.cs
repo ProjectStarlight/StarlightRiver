@@ -80,7 +80,8 @@ namespace StarlightRiver.Content.NPCs.Snow
 			trunkChain = new VerletChain(NUM_SEGMENTS, true, TrunkStart, 2, true)
 			{
 				forceGravity = new Vector2(0, 0.1f),
-				simStartOffset = 0
+				simStartOffset = 0,
+				parent = NPC
 			};
 
 			var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<SnoobelCollider>(), (int)(40 * (Main.expertMode ? 0.5f : 1f)), 0);

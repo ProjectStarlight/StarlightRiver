@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					constraintRepetitions = 2,
 					drag = 1.5f,
 					forceGravity = new Vector2(0f, 0.25f),
+					parent = parent.NPC
 				};
 			}
 		}

@@ -1,10 +1,13 @@
-﻿namespace StarlightRiver.Core.Systems.CombatMountSystem
+﻿using System;
+
+namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
 	internal class CombatMountPlayer : ModPlayer
 	{
 		public CombatMount activeMount;
 
 		public int mountingTime;
+		public Vector2 startPoint;
 
 		public override void Load()
 		{
@@ -59,6 +62,9 @@
 			if (activeMount is null)
 				return;
 
+			if (mountingTime > 0)
+				mountingTime--;
+
 			if (Player.HeldItem.IsAir && Main.mouseRight && !Player.releaseUseItem && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0) //special case for shooting while holding air
 				activeMount.StartSecondaryAction(Player);
 
@@ -81,6 +87,12 @@
 			}
 
 			activeMount.PostUpdate(Player);
+		}
+
+		public override void PostUpdate()
+		{
+			if (mountingTime > 0)
+				Player.gfxOffY = Helpers.Helper.LerpFloat(Player.mount.PlayerOffset, 0, 1 - mountingTime / 30f) - (float)Math.Sin(3.14f * (1 - mountingTime / 30f)) * 64;
 		}
 
 		public void Dismount()
