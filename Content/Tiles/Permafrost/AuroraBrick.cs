@@ -25,6 +25,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
 		}
+
+		private bool StopGrappling(On.Terraria.Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, Tile theTile)
+		{
+			if (theTile.TileType == TileType<AuroraBrick>())
+			{
+				self.tileCollide = true;
+				return false;
+			}
+
+			return orig(self, theTile);
+		}
 	}
 
 	class AuroraBrickDoor : AuroraBrick
