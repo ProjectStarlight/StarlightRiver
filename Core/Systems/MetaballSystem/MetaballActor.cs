@@ -14,6 +14,9 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		/// </summary>
 		public virtual Color OutlineColor => Color.Black;
 
+		/// <summary>
+		/// When your metaball system should draw over enemies
+		/// </summary>
 		public virtual bool OverEnemies => false;
 
 		/// <summary>

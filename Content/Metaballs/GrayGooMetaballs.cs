@@ -8,17 +8,18 @@ namespace StarlightRiver.Content.Metaballs
 {
 	internal class GrayGooMetaballs : MetaballActor
 	{
-		public override bool Active => Main.dust.Any(x => x.active && (x.type == DustType || x.type == DustType2));
 
 		public int DustType => ModContent.DustType<GrayGooDust>();
 
 		public int DustType2 => ModContent.DustType<GrayGooSplashDust>();
 
+		public Color InteriorColor => Color.Gray;
+
 		public override Color OutlineColor => Color.DarkGray;
 
-		public virtual Color InteriorColor => Color.Gray;
-
 		public override bool OverEnemies => true;
+
+		public override bool Active => Main.dust.Any(x => x.active && (x.type == DustType || x.type == DustType2));
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{

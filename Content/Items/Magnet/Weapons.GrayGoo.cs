@@ -11,7 +11,6 @@ namespace StarlightRiver.Content.Items.Magnet
 	public class GrayGooDustData //Has to be a class so we can pass by reference
 	{
 		public int x;
-
 		public int y;
 
 		public Projectile proj;
@@ -19,6 +18,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public float speed;
 
 		public float lerp;
+
 		public GrayGooDustData(int x, int y, Projectile proj, float lerp, float speed)
 		{
 			this.x = x;
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			DisplayName.SetDefault("Gray Goo");
 			Tooltip.SetDefault("Summons a swarm of nanomachines to devour enemies");
-			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; // This lets the Player target anywhere on the whole screen while using a controller.
+			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; 
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
@@ -64,10 +64,8 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
-			// This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
 			player.AddBuff(Item.buffType, 2);
 
-			// Here you can change where the minion is spawned. Most vanilla minions spawn at the cursor position.
 			position = Main.MouseWorld;
 
 			var proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
@@ -78,7 +76,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 	public class GrayGooProj : ModProjectile
 	{
-		public const int maxMinionChaseRange = 2000;
+		public const int MAX_MINION_RANGE = 2000;
 
 		public float lerper;
 
@@ -100,10 +98,10 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			DisplayName.SetDefault("Gray Goo");
 
-			Main.projPet[Projectile.type] = true; // Denotes that this Projectile is a pet or minion
-			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true; // This is necessary for right-click targeting
-			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; // This is needed so your minion can properly spawn when summoned and replaced when other minions are summoned			 
-			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; // Don't mistake this with "if this is true, then it will automatically home". It is just for damage reduction for certain NPCs
+			Main.projPet[Projectile.type] = true; 
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
+			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; 		 
+			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
 		}
 
 		public override void Load()
@@ -151,21 +149,18 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			if (target.whoAmI != (int)EnemyWhoAmI)
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 
 		public override void AI()
 		{
-			#region Active check
-			if (Owner.dead || !Owner.active) // This is the "active check", makes sure the minion is alive while the Player is alive, and despawns if not
+			if (Owner.dead || !Owner.active)
 				Owner.ClearBuff(BuffType<GrayGooSummonBuff>());
 
 			if (Owner.HasBuff(BuffType<GrayGooSummonBuff>()))
 				Projectile.timeLeft = 2;
-			#endregion
 
-			#region Find target
-			// Starting search distance
 			Vector2 targetCenter = Projectile.Center;
 			foundTarget = EnemyWhoAmI >= 0;
 
@@ -174,13 +169,11 @@ namespace StarlightRiver.Content.Items.Magnet
 			goos.ForEach(n => alreadyTargetted.Add(Main.npc[(int)(n.ModProjectile as GrayGooProj).EnemyWhoAmI]));
 
 
-			// This code is required if your minion weapon has the targeting feature
 			if (Owner.HasMinionAttackTargetNPC)
 			{
 				NPC NPC = Main.npc[Owner.MinionAttackTargetNPC];
 				float between = Vector2.Distance(NPC.Center, Projectile.Center);
-				// Reasonable distance away so it doesn't target across multiple screens
-				if (between < maxMinionChaseRange)
+				if (between < MAX_MINION_RANGE)
 				{
 					targetCenter = NPC.Center;
 					EnemyWhoAmI = NPC.whoAmI;
@@ -192,7 +185,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				NPC NPC = Main.npc[(int)EnemyWhoAmI];
 				float betweenPlayer = Vector2.Distance(NPC.Center, Owner.Center);
 
-				if (NPC.active && NPC.CanBeChasedBy() && betweenPlayer < maxMinionChaseRange)
+				if (NPC.active && NPC.CanBeChasedBy() && betweenPlayer < MAX_MINION_RANGE)
 				{
 					targetCenter = NPC.Center;
 				}
@@ -205,7 +198,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			else if (!Owner.HasMinionAttackTargetNPC)
 			{
-				NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < maxMinionChaseRange && Collision.CanHitLine(Projectile.position, 0, 0, n.position, 0, 0) && !alreadyTargetted.Contains(n)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
+				NPC target = Main.npc.Where(n => n.CanBeChasedBy() && n.Distance(Owner.Center) < MAX_MINION_RANGE && Collision.CanHitLine(Projectile.position, 0, 0, n.position, 0, 0) && !alreadyTargetted.Contains(n)).OrderBy(n => Vector2.Distance(n.Center, Projectile.Center)).FirstOrDefault();
 				if (target != default)
 				{
 					targetCenter = target.Center;
@@ -225,8 +218,6 @@ namespace StarlightRiver.Content.Items.Magnet
 					ReadjustDust();
 				oldEnemyWhoAmI = EnemyWhoAmI;
 			}
-
-			#endregion
 
 			if (!Main.dedServ && lerper < 1)
 			{
@@ -300,9 +291,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			foreach (Dust dust in Main.dust)
 			{
 				if (dust.type == ModContent.DustType<GrayGooDust>() && dust.customData is GrayGooDustData data && data.proj == Projectile)
-				{
 					dust.active = false;
-				}
 			}
 		}
 
@@ -339,6 +328,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				}
 			}
 		}
+
 		private void DrawNPCtarget(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
 			orig();
@@ -364,6 +354,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			gD.SetRenderTargets(bindings);
 		}
 	}
+
 	public class GrayGooSplashDust : ModDust
 	{
 		public override string Texture => AssetDirectory.Invisible;
@@ -378,16 +369,20 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			dust.position += dust.velocity;
 			dust.velocity.Y += 0.2f;
-			if (Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].HasTile && Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[Main.tile[(int)dust.position.X / 16, (int)dust.position.Y / 16].TileType])
+
+			Tile tile = Framing.GetTileSafely((int)dust.position.X / 16, (int)dust.position.Y / 16);
+			if (tile.HasTile && tile.BlockType == Terraria.ID.BlockType.Solid && Main.tileSolid[tile.TileType])
 				dust.active = false;
 
 			dust.rotation = dust.velocity.ToRotation();
 			dust.scale *= 0.99f;
+
 			if (dust.scale < 0.5f)
 				dust.active = false;
 			return false;
 		}
 	}
+
 	public class GrayGooDust : Glow
 	{
 		public override bool Update(Dust dust)
