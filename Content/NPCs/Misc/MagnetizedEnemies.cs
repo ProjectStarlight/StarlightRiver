@@ -1,9 +1,4 @@
-﻿//TODO:
-//Negative attack
-//Magnet display above head
-//Make it a 1 in 50 chance
-
-using StarlightRiver.Content.Items.Dungeon;
+﻿using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Content.Items.Magnet;
 using StarlightRiver.Core;
 using StarlightRiver.Helpers;
@@ -15,7 +10,6 @@ using Terraria.ID;
 using Terraria.Graphics.Effects;
 using System;
 using StarlightRiver.Content.Dusts;
-using static Humanizer.In;
 
 namespace StarlightRiver.Content.NPCs.Misc
 {
@@ -23,7 +17,7 @@ namespace StarlightRiver.Content.NPCs.Misc
     {
         public const int SEGMENTS = 20;
 
-        public int charge = 0;
+		public bool charged = false;
 
         public int attackCounter = 0;
 
@@ -57,16 +51,19 @@ namespace StarlightRiver.Content.NPCs.Misc
             if (npc.boss || npc.immortal || npc.dontTakeDamage || npc.friendly || npc.townNPC)
                 return;
 
+			if (!Main.rand.NextBool(50))
+				return;
+
             if (source is EntitySource_SpawnNPC spawnSource)
             {
-                if (Main.npc.Any(n => n.active && n.GetGlobalNPC<MagnetizedEnemies>().charge != 0))
+                if (Main.npc.Any(n => n.active && n.GetGlobalNPC<MagnetizedEnemies>().charged))
                     return;
 
                 Player player = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.DistanceSQ(npc.Center)).FirstOrDefault();
                 if (player != default && player.HasItem(ModContent.ItemType<Items.Magnet.UnchargedMagnet>()))
                 {
                     chargedPlayer = player;
-                    charge = Main.rand.NextBool() ? 1 : -1;
+					charged = true;
                     npc.lifeMax *= 4;
                     npc.life = npc.lifeMax;
                 }
@@ -75,7 +72,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
         public override void AI(NPC npc)
         {
-            if (charge != 0 && Main.rand.NextBool(6))
+            if (charged && Main.rand.NextBool(6))
             {
                 Vector2 dir = Main.rand.NextFloat(6.28f).ToRotationVector2();
                 Vector2 offset = Main.rand.NextBool(4) ? dir * Main.rand.NextFloat(30) : new Vector2(Main.rand.Next(-35, 35), npc.height / 2);
@@ -89,10 +86,10 @@ namespace StarlightRiver.Content.NPCs.Misc
                 mp.thickness = 0.45f;
                 mp.host = npc;
 
-                mp.baseColor = (charge == -1) ? Color.OrangeRed : Color.Cyan;
+                mp.baseColor = Color.Cyan;
             }
 
-            if (charge == 1)
+            if (charged)
             {
                 if (attackCounter++ % attackCycleLength < 200)
                     lightningDirection = npc.DirectionTo(chargedPlayer.Center);
@@ -175,7 +172,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
         public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (charge == 1)
+            if (charged)
                 DrawPrimitives();
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
