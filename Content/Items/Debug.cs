@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Stick");
-			Tooltip.SetDefault("Dont use this if you're not me.\nGrants a bunch of maximum barrier when you are swag\nYou have no stamina without good drip\nYou probably play cornhole");
+			Tooltip.SetDefault("Has whatever effects are needed");
 		}
 
 		public override void SetDefaults()
@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
 
 			return true;
 		}
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables debug mode which does... stuff!\nHold Y to make bosses go at ludicrous speed.");
+			Tooltip.SetDefault("Enables debug mode");
 		}
 
 		public override void SetDefaults()

@@ -47,18 +47,10 @@ namespace StarlightRiver.Content.GUI
 			{
 				boxTimer++;
 			}
-			else
+			else if (textTimer < message.Length)
 			{
-				if (textDelay < 2)
-					textDelay++;
-				else
-					textDelay = 0;
-
-				if (textDelay == 0 && textTimer < message.Length)
-				{
-					Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
-					textTimer++;
-				}
+				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
+				textTimer++;
 			}
 
 			Vector2 target = talking.Center + new Vector2(0, 50 + talking.height * 0.5f);
@@ -165,7 +157,7 @@ namespace StarlightRiver.Content.GUI
 
 			talking = NPC;
 			title = newTitle;
-			message = Helpers.Helper.WrapString(newMessage, 500, Terraria.GameContent.FontAssets.MouseText.Value, 1);
+			message = Helpers.Helper.WrapString(newMessage, 450, Terraria.GameContent.FontAssets.MouseText.Value, 1);
 		}
 
 		public static void ClearButtons()
