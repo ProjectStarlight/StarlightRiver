@@ -21,7 +21,6 @@ namespace StarlightRiver.Content.GUI
 
 		public static int boxTimer;
 
-		private static int textDelay;
 		private static int textTimer;
 
 		private static float widthOff = 0;
