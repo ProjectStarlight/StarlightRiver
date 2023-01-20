@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Magnet
 {
-	public class GrayGooDustData //Has to be a class so we can pass by reference
+	public class GrayGooDustData 
 	{
 		public int x;
 		public int y;

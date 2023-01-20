@@ -4,7 +4,7 @@ using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Metaballs
+namespace StarlightRiver.Content.Items.Magnet
 {
 	internal class GrayGooMetaballs : MetaballActor
 	{
