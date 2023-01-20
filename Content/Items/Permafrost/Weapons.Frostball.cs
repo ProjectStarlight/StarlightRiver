@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			DisplayName.SetDefault("Frostball");
 			Tooltip.SetDefault("Strike enemies to build aurora power\n" +
-				"Heals enemies near the yoyo based on aurora power\n" +
+				"Heals players near the yoyo based on aurora power\n" +
 				"Gives you regeneration when retrieved based on aurora power");
 
 			ItemID.Sets.Yoyo[Item.type] = true;
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.useAnimation = 30;
 
 			Item.rare = ItemRarityID.Green;
-			Item.value = 10000;
+			Item.value = Item.sellPrice(0, 1, 0, 0);
 
 			Item.shoot = ModContent.ProjectileType<FrostballProjectile>();
 			Item.shootSpeed = 14;
@@ -89,9 +89,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			foreach (Player player in Main.player)
 			{
 				if (Helpers.Helper.CheckCircularCollision(Projectile.Center, AuroraRadius, player.Hitbox))
-				{
 					player.lifeRegen += auroraPower;
-				}
 			}
 		}
 
