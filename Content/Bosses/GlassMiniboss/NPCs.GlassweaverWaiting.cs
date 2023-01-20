@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Timer++;
 			VisualTimer++;
 
-			if (State == 0 || State == 2)
+			if (State == 0 || State >= 2)
 			{
 				NPC.direction = 1;
 
@@ -209,7 +209,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 							else
 							{
 								Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleEntranceKey>());
-								RichTextBox.CloseDialogue();
 							}
 						});
 
