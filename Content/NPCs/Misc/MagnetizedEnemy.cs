@@ -13,7 +13,7 @@ using StarlightRiver.Content.Dusts;
 
 namespace StarlightRiver.Content.NPCs.Misc
 {
-    public class MagnetizedEnemies : GlobalNPC
+    public class MagnetizedEnemy : GlobalNPC
     {
         public const int SEGMENTS = 20;
 
@@ -43,7 +43,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 
         public float fade = 1f;
 
-
         public override bool InstancePerEntity => true;
 
         public override void OnSpawn(NPC npc, IEntitySource source)
@@ -56,7 +55,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
             if (source is EntitySource_SpawnNPC spawnSource)
             {
-                if (Main.npc.Any(n => n.active && n.GetGlobalNPC<MagnetizedEnemies>().charged))
+                if (Main.npc.Any(n => n.active && n.GetGlobalNPC<MagnetizedEnemy>().charged))
                     return;
 
                 Player player = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.DistanceSQ(npc.Center)).FirstOrDefault();
@@ -70,7 +69,7 @@ namespace StarlightRiver.Content.NPCs.Misc
             }
         }
 
-        public override void AI(NPC npc)
+        public override void PostAI(NPC npc)
         {
             if (charged && Main.rand.NextBool(6))
             {
@@ -105,9 +104,7 @@ namespace StarlightRiver.Content.NPCs.Misc
                     Tile testTile = Main.tile[i, j];
 
                     if (testTile.HasTile && Main.tileSolid[testTile.TileType] && !TileID.Sets.Platforms[testTile.TileType])
-                    {
                         break;
-                    }
                 }
 
                 if (attackCounter % attackCycleLength > 250 && attackCounter % attackCycleLength < 260)
@@ -155,6 +152,7 @@ namespace StarlightRiver.Content.NPCs.Misc
         {
             if (chargedPlayer == default)
                 return;
+
             for (int index = 0; index < 54; ++index)
             {
                 if (chargedPlayer.inventory[index].type == ModContent.ItemType<UnchargedMagnet>() && chargedPlayer.inventory[index].stack > 0)
@@ -174,6 +172,7 @@ namespace StarlightRiver.Content.NPCs.Misc
         {
             if (charged)
                 DrawPrimitives();
+
             return base.PreDraw(npc, spriteBatch, screenPos, drawColor);
         }
 

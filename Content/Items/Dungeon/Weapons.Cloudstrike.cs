@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the Player
 		private float oldRotation = 0f;
 
-		public NPC host = default;
+		public NPC host = default; //Magnetized enemies use this class for the little sparks around them. If this isn't default, the charge is drawn to the enemy
 
 		private float Charge => Projectile.ai[0];
 
