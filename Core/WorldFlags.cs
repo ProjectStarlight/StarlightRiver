@@ -10,13 +10,14 @@ namespace StarlightRiver.Core
 		SquidBossOpen = 1 << 1,
 		SquidBossDowned = 1 << 2,
 
-		VitricBossOpen = 1 << 3,
-		VitricBossDowned = 1 << 4,
+		GlassweaverOpen = 1 << 3,
+		GlassweaverDowned = 1 << 4,
 
-		OvergrowBossOpen = 1 << 5,
-		OvergrowBossFree = 1 << 6,
-		OvergrowBossDowned = 1 << 7,
+		VitricBossOpen = 1 << 5,
+		VitricBossDowned = 1 << 6,
 
-		SealOpen = 1 << 8,
+		OvergrowBossOpen = 1 << 7,
+		OvergrowBossFree = 1 << 8,
+		OvergrowBossDowned = 1 << 9,
 	}
 }

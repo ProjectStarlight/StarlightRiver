@@ -214,6 +214,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						RichTextBox.AddButton("See you later", () =>
 						{
+							StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
+
 							RichTextBox.CloseDialogue();
 							State = 4;
 							Timer = 0;
