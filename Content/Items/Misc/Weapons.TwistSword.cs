@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -23,11 +24,6 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Twisted Greatsword");
 			Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to accelerate upward");
-		}
-
-		public override void Load()
-		{
-			On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += DrawChargeBar;
 		}
 
 		public override void SetDefaults()
@@ -177,10 +173,19 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
+	}
 
-		private void DrawChargeBar(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+	class TwistSwordChargeBarLayer : PlayerDrawLayer
+	{
+		public override Position GetDefaultPosition()
 		{
-			orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+			return new AfterParent(PlayerDrawLayers.IceBarrier);
+		}
+
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+
+			Player drawPlayer = drawInfo.drawPlayer;
 
 			if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
 			{
