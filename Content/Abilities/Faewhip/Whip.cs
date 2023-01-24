@@ -44,6 +44,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
         public float endScale;
 
         public NPC attachedNPC; //if the whip is attached to an NPC, what is it attached to?
+        public IFaeWhippable attachedWhippable; //if the whip is attached to an entity with custom whip behavior
 
         public override void Reset()
         {
@@ -87,6 +88,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                 attached = false;
                 attachedNPC = null;
 
+                attachedWhippable?.OnRelease(this);
+                attachedWhippable = null;
+
                 Deactivate();
 
                 extraVelocity = Main.MouseScreen;
@@ -104,9 +108,34 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                     if (dist < 700)
                         tipsPosition += Vector2.UnitX.RotatedBy(targetRot) * tipVelocity;
 
+                    //Check VS NPC interactions
                     for (int i = 0; i < Main.maxNPCs; i++)
                     {
-                        if (Main.npc[i].active && Main.npc[i].Hitbox.Contains(tipsPosition.ToPoint()))
+                        var npc = Main.npc[i];
+
+                        //First check the special case of custom whip interaction implementation
+                        if (npc.ModNPC is IFaeWhippable)
+                        {
+                            if ((npc.ModNPC as IFaeWhippable).IsWhipColliding(tipsPosition))
+                            {
+                                attachedWhippable = npc.ModNPC as IFaeWhippable;
+                                attachedWhippable.OnAttach(this);
+                                attached = true;
+
+                                //If the object still wants the regular NPC binding to run
+                                if (attachedWhippable.NormalNPCInteraction())
+                                {
+                                    attachedNPC = Main.npc[i];
+
+                                    if (attachedNPC.knockBackResist == 0)
+                                        endRooted = true;
+                                }
+                            }
+                            return;
+                        }
+
+                        //Next check the normal case for NPCs (hitbox colission)
+                        if (npc.active && npc.Hitbox.Contains(tipsPosition.ToPoint()))
                         {
                             attachedNPC = Main.npc[i];
                             attached = true;
@@ -118,6 +147,21 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                         }
                     }
 
+                    //Check VS Projectile interactions
+                    for (int i = 0; i < Main.maxProjectiles; i++)
+					{
+                        //we only want to handle special cases for projectiles
+                        var whippable = Main.projectile[i].ModProjectile as IFaeWhippable;
+
+                        if (whippable != null && whippable.IsWhipColliding(tipsPosition))
+						{
+                            attachedWhippable = whippable;
+                            attachedWhippable.OnAttach(this);
+                            attached = true;
+                        }
+					}
+
+                    //Check VS Tile interactions
                     var tile = Framing.GetTileSafely((int)tipsPosition.X / 16, (int)tipsPosition.Y / 16);
 
                     if (tile.HasTile && Main.tileSolid[tile.TileType]) //debug
@@ -126,7 +170,12 @@ namespace StarlightRiver.Content.Abilities.Faewhip
                         attached = true;
 
                         for (int i = 0; i < 50; i++)
-                            Dust.NewDustPerfect(tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), DustType<Dusts.Glow>(), Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4), 1, new Color(255, 190, 50), 0.3f);
+                        {
+                            var pos = tipsPosition + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4);
+                            var vel = Vector2.Normalize(Main.MouseWorld - Player.Center).RotatedByRandom(6.28f) * Main.rand.NextFloat(0, 4);
+
+                            Dust.NewDustPerfect(pos, DustType<Dusts.Glow>(), vel, 1, new Color(255, 190, 50), 0.3f);
+                        }
 
                         return;
                     }
@@ -146,6 +195,21 @@ namespace StarlightRiver.Content.Abilities.Faewhip
             {
                 if (endScale < 1.5f)
                     endScale += 0.1f;
+
+                if (attachedWhippable != null)
+                {
+                    attachedWhippable.UpdateWhileWhipped(this);
+
+                    if (attachedWhippable.DetachCondition())
+                    {
+                        attachedWhippable.OnRelease(this);
+                        attachedWhippable = null;
+                        attached = false;
+                        Deactivate();
+                    }
+
+                    return;
+                }
 
                 if (endRooted)
                 {
@@ -310,7 +374,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
         public override bool HotKeyMatch(TriggersSet triggers, AbilityHotkeys abilityKeys)
         {
-            return abilityKeys.Get<Whip>().Current;
+            return abilityKeys.Get<Whip>().JustPressed;
         }
     }
 }
