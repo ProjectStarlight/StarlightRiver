@@ -44,32 +44,32 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{
 			damage = (int)(damage * 1.25f);
-
-			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damage;
-
-			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
 		}
 
 		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			damage = (int)(damage * 1.25f);
+		}
 
+		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+		{
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life -= damage;
 
 			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
-		}
 
-		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
-		{
 			NPC.life = NPC.lifeMax;
 		}
 
 		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
 		{
+			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
+				Parent.NPC.life -= damage;
+
+			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
+				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
+
 			NPC.life = NPC.lifeMax;
 		}
 	}
