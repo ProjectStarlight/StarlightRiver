@@ -77,6 +77,10 @@ namespace StarlightRiver.Content.Items.Misc
 					mp.CreateGlob(position2, direction);
 				}
 			}
+			else
+			{
+				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+			}
 
 			return false;
 		}
