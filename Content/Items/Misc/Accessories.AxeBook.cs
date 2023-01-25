@@ -6,22 +6,20 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria;
-using Terraria.Graphics.Effects;
 using Terraria.GameContent;
+using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-	class AxeBook : SmartAccessory
+	internal class AxeBook : SmartAccessory
 	{
 		public int comboState;
 
-		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemy armor\nRight click to throw your axe") { }
-
 		public override string Texture => AssetDirectory.MiscItem + "AxeBook";
+
+		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemy armor\nRight click to throw your axe") { }
 
 		public override void Load()
 		{
@@ -75,19 +73,19 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<AxeBookProjectile>() || n.type == ModContent.ProjectileType<ThrownAxeProjectile>()) && n.owner == player.whoAmI))
 						return false;
 
-					if(Main.mouseRight)
+					if (Main.mouseRight)
 					{
-						var vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
+						Vector2 vel = Vector2.Normalize(Main.MouseWorld - player.Center) * Math.Clamp(item.damage * 0.12f, 5, 6.5f);
 
 						int thrownAxeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, vel, ModContent.ProjectileType<ThrownAxeProjectile>(), item.damage, item.knockBack, player.whoAmI);
-						var thrownAxe = Main.projectile[thrownAxeIndex];
+						Projectile thrownAxe = Main.projectile[thrownAxeIndex];
 
 						thrownAxe.timeLeft = 300;
 						thrownAxe.scale = item.scale * 1.25f;
 
 						if (thrownAxe.ModProjectile is ThrownAxeProjectile)
 						{
-							var modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
+							ThrownAxeProjectile modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
 							modProj.trailColor = ItemColorUtility.GetColor(item.type);
 							modProj.texture = TextureAssets.Item[item.type].Value;
 							modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
@@ -98,14 +96,14 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 
 					int axeIndex = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<AxeBookProjectile>(), item.damage * 2, item.knockBack, player.whoAmI);
-					var proj = Main.projectile[axeIndex];
+					Projectile proj = Main.projectile[axeIndex];
 
 					proj.timeLeft = item.useAnimation * 5;
 					proj.scale = item.scale * (1.2f + comboState * 0.3f);
 
 					if (proj.ModProjectile is AxeBookProjectile)
 					{
-						var modProj = proj.ModProjectile as AxeBookProjectile;
+						AxeBookProjectile modProj = proj.ModProjectile as AxeBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
 						modProj.texture = TextureAssets.Item[item.type].Value;
 						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
@@ -138,7 +136,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class AxeBookProjectile : ModProjectile, IDrawPrimitive
+	internal class AxeBookProjectile : ModProjectile, IDrawPrimitive
 	{
 		public float length;
 		public int comboState;
@@ -176,8 +174,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void DoSwingAnimation(Player Player)
 		{
-			var instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == Player.whoAmI);
-			var modProj = instance.ModProjectile as AxeBookProjectile;
+			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == Player.whoAmI);
+			AxeBookProjectile modProj = instance.ModProjectile as AxeBookProjectile;
 
 			if (modProj != null && instance.active)
 				Player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
@@ -217,8 +215,8 @@ namespace StarlightRiver.Content.Items.Misc
 						Projectile.damage *= 2;
 					}
 
-					var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
-					var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * .75f;
+					float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+					Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * .75f;
 					Dust.NewDust(end - Vector2.One * 5, 10, 10, ModContent.DustType<Dusts.Cinder>(), 0, 0, 0, GetSwingColor(Progress));
 
 					Projectile.rotation = baseAngle + (SwingEase(Progress) * 3f - 1.5f) * Direction;
@@ -226,7 +224,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					break;
 			}
-			
+
 			ManageTrail();
 
 			if (freeze > 1)
@@ -241,15 +239,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public float SwingEase(float progress)
 		{
-			return (float)(11.904f * Math.Pow(progress, 4) -30.9524f * Math.Pow(progress, 3) + 25.5952f * Math.Pow(progress, 2) - 5.54762f * progress);
+			return (float)(11.904f * Math.Pow(progress, 4) - 30.9524f * Math.Pow(progress, 3) + 25.5952f * Math.Pow(progress, 2) - 5.54762f * progress);
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			var rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+			float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
 
-			var start = Owner.Center;
-			var end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * 1.15f;
+			Vector2 start = Owner.Center;
+			Vector2 end = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut) * 1.15f;
 
 			if (freeze <= 1 && Helper.CheckLinearCollision(start, end, targetHitbox, out Vector2 colissionPoint))
 			{
@@ -280,16 +278,16 @@ namespace StarlightRiver.Content.Items.Misc
 			target.velocity += Vector2.Normalize(target.Center - Owner.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 			target.immune[0] += 22;
 
-			if(freeze == 0)
+			if (freeze == 0)
 				freeze += 24;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
-		{		
-			var origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
-			var effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-			var rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
-			var pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * Projectile.scale * (flipSprite ? Direction * -1 : Direction);
+		{
+			Vector2 origin = Direction == 1 ^ flipSprite ? new Vector2(0, texture.Height) : new Vector2(texture.Width, texture.Height);
+			SpriteEffects effects = Direction == 1 ^ flipSprite ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+			float rot = Projectile.rotation + (Direction == 1 ^ flipSprite ? 0 : (float)Math.PI / 2f);
+			Vector2 pos = Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * holdOut * Projectile.scale * (flipSprite ? Direction * -1 : Direction);
 
 			Main.spriteBatch.Draw(texture, pos, default, lightColor * FadeOut, rot, origin, Projectile.scale, effects, 0);
 			return false;
@@ -367,7 +365,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class ThrownAxeProjectile : ModProjectile, IDrawPrimitive
+	internal class ThrownAxeProjectile : ModProjectile, IDrawPrimitive
 	{
 		public float length;
 		public Texture2D texture;
@@ -404,7 +402,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Projectile.timeLeft % 40 == 0 && Projectile.friendly)
 				Helper.PlayPitched("Effects/HeavyWhoosh", 0.45f, 0.5f, Projectile.Center);
-			
+
 			if (Progress < 0.2f)
 			{
 				Projectile.Center = Owner.Center;
@@ -478,8 +476,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool PreDraw(ref Color lightColor)
 		{
-			var rot = Projectile.rotation;
-			var pos = Projectile.Center - Main.screenPosition;
+			float rot = Projectile.rotation;
+			Vector2 pos = Projectile.Center - Main.screenPosition;
 
 			Main.spriteBatch.Draw(texture, pos, default, lightColor * FadeOut, rot, texture.Size() / 2, Projectile.scale, 0, 0);
 			return false;
@@ -497,7 +495,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			if(Projectile.friendly)
+			if (Projectile.friendly)
 				cache.Add(Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
 			else
 				cache.Add(freezePoint + Vector2.UnitX.RotatedBy(Projectile.rotation - Math.PI / 4f) * length / 2 * Projectile.scale * 0.7f);
