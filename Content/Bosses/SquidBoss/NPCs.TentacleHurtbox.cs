@@ -53,6 +53,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
 		{
+			if (crit)
+				damage *= 2; //"But what about the crit damage system?" -- That is calculated in ModifyHitByX, and is thus already accounted for before this.
+
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life -= damage;
 
@@ -64,6 +67,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
 		{
+			if (crit)
+				damage *= 2;
+
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life -= damage;
 
