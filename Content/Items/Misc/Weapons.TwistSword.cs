@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -25,11 +26,6 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("Hold to unleash a whirling slash\nHold jump while slashing to accelerate upward");
 		}
 
-		public override void Load()
-		{
-			On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += DrawChargeBar;
-		}
-
 		public override void SetDefaults()
 		{
 			Item.damage = 28;
@@ -45,6 +41,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Orange;
 			Item.channel = true;
 			Item.noUseGraphic = true;
+			Item.autoReuse = true;
 		}
 
 		public override ModItem Clone(Item Item)
@@ -65,7 +62,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool CanUseItem(Player Player)
 		{
-			return charge > 40;
+			return charge > 40 && !Player.channel;
 		}
 
 		public override bool? UseItem(Player Player)
@@ -176,10 +173,19 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
+	}
 
-		private void DrawChargeBar(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+	class TwistSwordChargeBarLayer : PlayerDrawLayer
+	{
+		public override Position GetDefaultPosition()
 		{
-			orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+			return new AfterParent(PlayerDrawLayers.IceBarrier);
+		}
+
+		protected override void Draw(ref PlayerDrawSet drawInfo)
+		{
+
+			Player drawPlayer = drawInfo.drawPlayer;
 
 			if (drawPlayer != null && !drawPlayer.HeldItem.IsAir && drawPlayer.HeldItem.type == ItemType<TwistSword>() && PlayerTarget.canUseTarget)
 			{
@@ -240,23 +246,29 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			Player Player = Main.player[Projectile.owner];
+			Player player = Main.player[Projectile.owner];
 
-			if (Spinup < 400)
-				Spinup++;
+			float attackSpeedMult = player.GetAttackSpeed<MeleeDamageClass>();
+			float maxSpinup = 400f * attackSpeedMult;
 
-			if (!Player.controlJump && Spinup > 200)
-				Spinup = 200;
+			if (Spinup < maxSpinup)
+				Spinup += attackSpeedMult;
+
+			if (Spinup > maxSpinup)
+				Spinup = maxSpinup;
+
+			if (!player.controlJump && Spinup > 200f)
+				Spinup = 200f;
 
 			Rotation += 0.4f + Spinup * 0.0025f;
 
-			Projectile.Center = Player.Center + new Vector2(0, Player.gfxOffY);
+			Projectile.Center = player.Center + new Vector2(0, player.gfxOffY);
 
-			if (Player.channel && Player.HeldItem.type == ItemType<TwistSword>() && !Player.noItems)
+			if (player.channel && player.HeldItem.type == ItemType<TwistSword>() && !player.noItems)
 				Projectile.timeLeft = 2;
 
-			if (Spinup > 200 && Player.velocity.Y > -4)
-				Player.velocity.Y -= 0.0004f * Spinup;
+			if (Spinup > 200 && player.velocity.Y > -4)
+				player.velocity.Y -= 0.0004f * Spinup;
 
 			//visuals
 			float rot = Rotation % 80 / 80f * 6.28f;
@@ -265,18 +277,18 @@ namespace StarlightRiver.Content.Items.Misc
 			var off = new Vector2(x, y);
 
 			if (rot > 3.14f)
-				Player.heldProj = Projectile.whoAmI;
+				player.heldProj = Projectile.whoAmI;
 
 			if (Main.rand.NextBool(3))
-				Dust.NewDustPerfect(Player.Center + off, DustType<Dusts.Glow>(), off * Main.rand.NextFloat(0.01f), 0, new Color(10, 30, 255), Main.rand.NextFloat(0.2f, 0.4f));
+				Dust.NewDustPerfect(player.Center + off, DustType<Dusts.Glow>(), off * Main.rand.NextFloat(0.01f), 0, new Color(10, 30, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-			if (Main.rand.NextBool(25))
-				Dust.NewDustPerfect(Player.Center + off, DustType<Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
+			if (Main.rand.NextBool((int)Math.Round(25.0 / attackSpeedMult)))
+				Dust.NewDustPerfect(player.Center + off, DustType<Dusts.WaterBubble>(), off * Main.rand.NextFloat(0.01f), 0, new Color(160, 180, 255), Main.rand.NextFloat(0.2f, 0.4f));
 
-			if (Player.channel && Player.HeldItem.type == ItemType<TwistSword>() && !Player.noItems)
-				Player.UpdateRotation(rot);
+			if (player.channel && player.HeldItem.type == ItemType<TwistSword>() && !player.noItems)
+				player.UpdateRotation(rot);
 			else
-				Player.UpdateRotation(0);
+				player.UpdateRotation(0);
 
 			Lighting.AddLight(Projectile.Center + off, new Vector3(0.1f, 0.25f, 0.6f));
 
@@ -293,8 +305,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Kill(int timeLeft)
 		{
 			//have to reset rotation in multiPlayer when proj is gone
-			Player Player = Main.player[Projectile.owner];
-			Player.UpdateRotation(0);
+			Player player = Main.player[Projectile.owner];
+			player.UpdateRotation(0);
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
