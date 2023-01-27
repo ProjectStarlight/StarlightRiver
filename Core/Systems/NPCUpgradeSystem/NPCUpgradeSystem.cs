@@ -25,7 +25,9 @@ namespace StarlightRiver.Core.Systems.NPCUpgradeSystem
 		{
 			short recievedCount = reader.ReadInt16();
 			for (int i = 0; i < recievedCount; i++)
+			{
 				townUpgrades[reader.ReadString()] = reader.ReadBoolean();
+			}
 		}
 
 		public override void OnWorldLoad()
