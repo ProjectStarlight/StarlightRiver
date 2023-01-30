@@ -28,36 +28,47 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			HitEffects(target);
+			HitEffects(player, target);
 		}
 
 		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-			HitEffects(target);
+			HitEffects(player, target);
 		}
 
 		private void StarlightPlayer_OnHitByProjectileEvent(Player player, Projectile projectile, int damage, bool crit)
 		{
-			HurtEffects(damage);
+			HurtEffects(player, damage);
 		}
 
 		private void StarlightPlayer_OnHitByNPCEvent(Player player, NPC npc, int damage, bool crit)
 		{
-			HurtEffects(damage);
+			HurtEffects(player, damage);
 		}
 
-		private void HurtEffects(int damage)
+		public void HitEffects(Player Player, NPC target)
+		{
+			if (target.life <= 0 && charge < MAX_CHARGE)
+				IncreaseCharge(Player);
+		}
+
+		public void HurtEffects(Player Player, int damage)
 		{
 			bool valid = damage >= 10;
 
 			if (charge < MAX_CHARGE && valid)
-				charge++;
+				IncreaseCharge(Player);
 		}
 
-		private void HitEffects(NPC target)
+		public void IncreaseCharge(Player Player)
 		{
-			if (target.life <= 0 && charge < MAX_CHARGE)
-				charge++;
+			for (int i = 0; i < Player.inventory.Length; i++)
+			{
+				Item item = Player.inventory[i];
+
+				if (item.ModItem is AztecDeathSaxophone sax)
+					sax.charge++;
+			}
 		}
 
 		public override void SetStaticDefaults()
@@ -89,7 +100,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool CanUseItem(Player player)
 		{
-			return player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
+			return charge >= MAX_CHARGE && player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
