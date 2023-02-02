@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Items.Food
         public override void SafeSetDefaults() => Item.rare = ItemRarityID.Blue;
         public override void BuffEffects(Player Player, float multiplier)
         {
-            Player.GetModPlayer<BarrierPlayer>().MaxBarrier += 20;
+            Player.GetModPlayer<BarrierPlayer>().maxBarrier += 20;
         }
     }
 }

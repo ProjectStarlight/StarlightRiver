@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Food
@@ -19,14 +18,14 @@ namespace StarlightRiver.Content.Items.Food
             Item.useStyle = ItemUseStyleID.Swing;
             Item.consumable = true;
 
-            Item.createTile = TileType<Tiles.Food.Salt>();
+			Item.createTile = TileType < Tiles.Food.TableSalt>();
             Item.value = Item.sellPrice(0, 0, 4, 0);
             Item.rare = ItemRarityID.White;
         }
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
-            Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.05f;
-        }
-    }
+		public override void BuffEffects(Player Player, float multiplier)
+		{
+			Player.GetModPlayer<FoodBuffHandler>().Multiplier += 0.05f;
+		}
+	}
 }

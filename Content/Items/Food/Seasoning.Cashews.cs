@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Food
@@ -8,7 +7,10 @@ namespace StarlightRiver.Content.Items.Food
     {
         public Cashews() : base("+5% melee damage\n+1 defense", 60, IngredientType.Seasoning) { }
 
-        public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
+		}
 
         public override void BuffEffects(Player Player, float multiplier)
         {

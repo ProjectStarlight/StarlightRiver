@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -7,10 +6,10 @@ namespace StarlightRiver.Content.Items.Food
     {
         public WhippedCream() : base("10% increased movement speed\n-20% duration", 300, IngredientType.Seasoning, 0.8f) { }
 
-        public override void SafeSetDefaults()
-        {
-            Item.rare = ItemRarityID.White;
-        }
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
+		}
 
         public override void BuffEffects(Player Player, float multiplier)
         {

@@ -1,21 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.Enums;
-using Terraria.ModLoader;
-using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
@@ -24,7 +8,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		public static int oldScreenWidth = 0;
 		public static int oldScreenHeight = 0;
 
-		public static List<MetaballActor> Actors = new List<MetaballActor>();
+		public static List<MetaballActor> Actors = new();
 
 		public float Priority => 1;
 
@@ -47,10 +31,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void UpdateWindowSize(int width, int height)
 		{
-			Main.QueueMainThreadAction(() =>
-			{
-				Actors.ForEach(n => n.ResizeTarget(width, height));
-			});
+			Main.QueueMainThreadAction(() => Actors.ForEach(n => n.ResizeTarget(width, height)));
 
 			oldScreenWidth = width;
 			oldScreenHeight = height;
@@ -59,9 +40,18 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		private void DrawTargets(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
 			if (behindTiles)
-				Actors.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			{
+				var toDraw = Actors.Where(n => !n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			}
 
 			orig(self, behindTiles);
+
+			if (!behindTiles)
+			{
+				var toDraw = Actors.Where(n => n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			}
 		}
 
 		private void BuildTargets(On.Terraria.Main.orig_CheckMonoliths orig)
@@ -72,7 +62,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 					UpdateWindowSize(Main.screenWidth, Main.screenHeight);
 			}
 
-			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
+			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && !Main.gameMenu)
 				Actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
 
 			orig();

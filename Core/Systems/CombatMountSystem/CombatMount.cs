@@ -1,13 +1,8 @@
-﻿using StarlightRiver.Prefixes.CombatMountPrefixes;
+﻿using StarlightRiver.Content.Prefixes.CombatMountPrefixes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 using Terraria.Utilities;
-using static Terraria.Mount;
 
 namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
@@ -161,7 +156,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 	}
 
 	public abstract class CombatMountItem : ModItem
-	{		
+	{
 		protected CombatMount mount;
 
 		public override string Texture => AssetDirectory.Debug;
@@ -202,7 +197,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override int ChoosePrefix(UnifiedRandom rand)
 		{
-			var list = CombatMountPrefix.combatMountPrefixTypes;
+			List<int> list = CombatMountPrefix.combatMountPrefixTypes;
 			return list[rand.Next(list.Count())];
 		}
 
@@ -211,12 +206,15 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 			mount.ResetStats();
 			mount.SetDefaults();
 
-			var prefix = PrefixLoader.GetPrefix(Item.prefix);
+			ModPrefix prefix = PrefixLoader.GetPrefix(Item.prefix);
 
 			if (prefix is CombatMountPrefix)
 				(prefix as CombatMountPrefix).ApplyToMount(mount);
 
 			mount.MountUp(player);
+
+			player.GetModPlayer<CombatMountPlayer>().mountingTime = 30;
+			player.GetModPlayer<CombatMountPlayer>().startPoint = player.Center;
 
 			return true;
 		}

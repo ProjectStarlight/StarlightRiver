@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -7,9 +6,9 @@ namespace StarlightRiver.Content.Items.Food
     {
         public Sugar() : base("No additional effects", 2700, IngredientType.Seasoning) { }
 
-        public override void SafeSetDefaults()
-        {
-            Item.rare = ItemRarityID.White;
-        }
-    }
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
+		}
+	}
 }
