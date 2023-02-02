@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
@@ -94,6 +95,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.behindTiles = true;
 		}
 
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				Bestiary.SLRSpawnConditions.Moonstone,
+				new FlavorTextBestiaryInfoElement("These anomalous beings are a collection of previously lifeless rocks possessed by the hopes and dreams of the collective subconscious.")
+			});
+		}
+
 		public override void OnSpawn(IEntitySource source)
 		{
 			rockPosition = NPC.Center;
@@ -108,6 +118,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			if (phase == Phase.slamming || phase == Phase.slammed)
 				DrawTrail();
+
+			if (NPC.IsABestiaryIconDummy)
+				drawColor = NPC.GetBestiaryEntryColor();
 
 			rockPosition = Vector2.Lerp(rockPosition, NPC.Center, 0.45f);
 			Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
@@ -124,7 +137,9 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			DrawRocks(spriteBatch, screenPos, drawColor, true);
 
 			spriteBatch.Draw(texture, slopeOffset + NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, effects, 0f);
-			spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
+
+			if (!NPC.IsABestiaryIconDummy)
+				spriteBatch.Draw(glowTexture, slopeOffset + NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, origin, NPC.scale, effects, 0f);
 
 			DrawRocks(spriteBatch, screenPos, drawColor, false);
 			return false;
@@ -132,17 +147,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override void AI()
 		{
-			rockRotation += rockRotationSpeed;
-			frameCounter += rockRotationSpeed;
-
-			if (frameCounter >= 1)
-			{
-				yFrame++;
-				frameCounter = 0;
-			}
-
-			yFrame %= Main.npcFrameCount[NPC.type];
-
 			Lighting.AddLight(NPC.Center, Color.Cyan.ToVector3() * 1.2f);
 			NPC.TargetClosest(false);
 
@@ -168,6 +172,16 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 
 		public override void FindFrame(int frameHeight)
 		{
+			rockRotation += rockRotationSpeed;
+			frameCounter += rockRotationSpeed;
+
+			if (frameCounter >= 1)
+			{
+				yFrame++;
+				frameCounter = 0;
+			}
+
+			yFrame %= Main.npcFrameCount[NPC.type];
 			NPC.frame = new Rectangle(0, yFrame * frameHeight, NPC.width, frameHeight);
 		}
 
@@ -264,7 +278,8 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 				if (behind && offset.Y < 0 || !behind && offset.Y >= 0)
 				{
 					spriteBatch.Draw(rockTex, offset + rockPosition - screenPos, null, drawColor, NPC.rotation, rockTex.Size() / 2, NPC.scale + offset.Y * 0.02f, SpriteEffects.None, 0f);
-					spriteBatch.Draw(glowTex, offset + rockPosition - screenPos, null, Color.White, NPC.rotation, rockTex.Size() / 2, NPC.scale + offset.Y * 0.02f, SpriteEffects.None, 0f);
+					if (!NPC.IsABestiaryIconDummy)
+						spriteBatch.Draw(glowTex, offset + rockPosition - screenPos, null, Color.White, NPC.rotation, rockTex.Size() / 2, NPC.scale + offset.Y * 0.02f, SpriteEffects.None, 0f);
 				}
 			}
 		}
