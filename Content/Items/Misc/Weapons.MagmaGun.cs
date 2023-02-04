@@ -55,19 +55,31 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item13, position);
 			}
 
-			for (int i = 0; i < 3; i++)
+			if (proj != null && proj.active)
 			{
-				if (proj != null && proj.active)
+				proj.damage = damage / 2;
+				var mp = proj.ModProjectile as MagmaGunPhantomProj;
+
+				if (mp is null)
 				{
-					proj.damage = damage / 2;
-					var mp = proj.ModProjectile as MagmaGunPhantomProj;
+					proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+					return false;
+				}
+
+				for (int i = 0; i < 3; i++)
+				{
 					Vector2 direction = velocity.RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
+
 					Vector2 position2 = position;
 					position2 += Vector2.Normalize(velocity) * 20;
 					position2 += Vector2.Normalize(velocity.RotatedBy(1.57f * -player.direction)) * 5;
 					mp.CreateGlob(position2, direction);
 				}
+			}
+			else
+			{
+				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
 			}
 
 			return false;
