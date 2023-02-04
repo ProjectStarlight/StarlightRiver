@@ -51,6 +51,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		private static void RenderScreens(GameTime time)
 		{
+			if (Main.gameMenu)
+				return;
+
 			foreach (ScreenTarget target in targets)
 			{
 				if (target.drawFunct is null) //allows for RTs which dont draw in the default loop, like the lighting tile buffers
