@@ -15,9 +15,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		public Func<bool> activeFunct;
 
 		/// <summary>
-		/// Optional function that runs when the screen is resized. Returns the size the render target should be. Return Vector2.Zero to prevent resizing.
+		/// Optional function that runs when the screen is resized. Returns the size the render target should be. Return null to prevent resizing.
 		/// </summary>
-		public Func<Vector2, Vector2> onResize;
+		public Func<Vector2, Vector2?> onResize;
 
 		/// <summary>
 		/// Where this render target should fall in the order of rendering. Important if you want to render something to chain into another RT.
@@ -26,7 +26,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public RenderTarget2D RenderTarget { get; set; }
 
-		public ScreenTarget(Action<SpriteBatch> draw, Func<bool> active, float order, Func<Vector2, Vector2> onResize = null)
+		public ScreenTarget(Action<SpriteBatch> draw, Func<bool> active, float order, Func<Vector2, Vector2?> onResize = null)
 		{
 			drawFunct = draw;
 			activeFunct = active;
