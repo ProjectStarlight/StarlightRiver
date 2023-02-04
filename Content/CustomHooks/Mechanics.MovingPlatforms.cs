@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			foreach (NPC NPC in Main.npc)
 			{
-				if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).DontCollide)
+				if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).dontCollide)
 
 					continue;
 
