@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 
 		public bool beingStoodOn;
 
-		public bool DontCollide = false;
+		public bool dontCollide = false;
 
 		public virtual void SafeSetDefaults() { }
 
