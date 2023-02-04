@@ -1,23 +1,64 @@
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Physics
 {
 	public class VerletChainSystem : IOrderedLoadable
 	{
-		public static RenderTarget2D target = Main.dedServ ? null : new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth / 2, Main.screenHeight / 2, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 		public static List<VerletChain> toDraw = new();
+		public static ScreenTarget target = new(DrawVerletBannerTarget, () => toDraw.Count > 0, 1, n => n / 2f);
 
 		public float Priority => 1;
 
-		public void Load() { }
+		public void Load()
+		{
+			On.Terraria.Main.DrawProjectiles += DrawVerletBanners;
+		}
 
 		public void Unload()
 		{
 			target = null;
 			toDraw = null;
+		}
+
+		private void DrawVerletBanners(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
+		{
+			Effect shader = Filters.Scene["Outline"].GetShader().Shader;
+
+			if (shader is null)
+				return;
+
+			shader.Parameters["resolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+			shader.Parameters["outlineColor"].SetValue(new Vector3(0, 0, 0));
+
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["Outline"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+
+			VerletChain.DrawStripsPixelated(Main.spriteBatch);
+
+			Main.spriteBatch.End();
+
+			orig(self);
+		}
+
+		private static void DrawVerletBannerTarget(SpriteBatch sb)
+		{
+			if (Main.gameMenu)
+			{
+				toDraw.Clear();
+				return;
+			}
+
+			GraphicsDevice graphics = Main.instance.GraphicsDevice;
+
+			graphics.Clear(Color.Transparent);
+			graphics.BlendState = BlendState.Opaque;
+
+			foreach (VerletChain i in toDraw)
+				i.DrawStrip(i.scale);
 		}
 	}
 
@@ -371,7 +412,7 @@ namespace StarlightRiver.Content.Physics
 			if (Main.dedServ)
 				return;
 
-			spriteBatch.Draw(VerletChainSystem.target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			spriteBatch.Draw(VerletChainSystem.target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 		}
 
 		public void DrawRope(SpriteBatch spritebatch, Action<SpriteBatch, int, Vector2> drawMethod_curPos) //current position

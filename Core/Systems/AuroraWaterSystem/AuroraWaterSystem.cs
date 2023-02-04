@@ -97,7 +97,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		{
 			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
 
-			if (shader is null)
+			if (shader is null || auroraTarget.RenderTarget is null)
 				return;
 
 			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);

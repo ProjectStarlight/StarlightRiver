@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -808,9 +809,9 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 	}
 
-	public class BreacherArmorHelper : IOrderedLoadable, IResizable
+	public class BreacherArmorHelper : IOrderedLoadable
 	{
-		public static RenderTarget2D NPCTarget;
+		public static ScreenTarget NPCTarget = new(DrawTargeted, () => anyScanned, 1);
 
 		public static bool anyScanned;
 
@@ -818,18 +819,15 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public float Priority => 1.1f;
 
-		public bool IsResizable => NPCTarget != null;
-
 		public void Load()
 		{
 			if (Main.dedServ)
 				return;
 
-			ResizeTarget();
-
-			Main.OnPreDraw += Main_OnPreDraw;
 			On.Terraria.Main.DrawNPCs += DrawBreacherOverlay;
 		}
+
+		public void Unload() { }
 
 		private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
@@ -839,29 +837,12 @@ namespace StarlightRiver.Content.Items.Breacher
 				DrawNPCTarget();
 		}
 
-		public void ResizeTarget()
+		private static void DrawTargeted(SpriteBatch spriteBatch)
 		{
-			Main.QueueMainThreadAction(() => NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
-		}
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-		public void Unload()
-		{
-			Main.OnPreDraw -= Main_OnPreDraw;
-		}
-
-		private void Main_OnPreDraw(GameTime obj)
-		{
-			GraphicsDevice gD = Main.graphics.GraphicsDevice;
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null)
-				return;
-
-			RenderTargetBinding[] bindings = gD.GetRenderTargets();
-			gD.SetRenderTarget(NPCTarget);
-			gD.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -889,7 +870,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			spriteBatch.End();
-			gD.SetRenderTargets(bindings);
+			spriteBatch.Begin();
 		}
 
 		private static void DrawNPCTarget()
@@ -923,7 +904,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			effect.CurrentTechnique.Passes[0].Apply();
-			spriteBatch.Draw(NPCTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);

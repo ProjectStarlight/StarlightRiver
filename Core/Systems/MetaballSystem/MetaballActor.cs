@@ -22,11 +22,8 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void Load()
 		{
-			Main.QueueMainThreadAction(() =>
-			{
-				Target = new(DrawShapes, () => Active, 1);
-				Target2 = new(DrawSecondTarget, () => Active, 1.1f);
-			});
+			Target = new(DrawShapes, () => Active, 1);
+			Target2 = new(DrawSecondTarget, () => Active, 1.1f);
 
 			MetaballSystem.Actors.Add(this);
 		}

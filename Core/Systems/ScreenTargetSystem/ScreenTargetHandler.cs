@@ -34,6 +34,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public static void ResizeScreens(Vector2 obj)
 		{
+			if (Main.gameMenu || Main.dedServ)
+				return;
+
 			targets.ForEach(n =>
 			{
 				Vector2? size = obj;
@@ -43,7 +46,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 				if (size != null)
 				{
-					n.RenderTarget.Dispose();
+					n.RenderTarget?.Dispose();
 					n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size?.X, (int)size?.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 				}
 			});
@@ -51,8 +54,10 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		private static void RenderScreens(GameTime time)
 		{
-			if (Main.gameMenu)
+			if (Main.gameMenu || Main.dedServ)
 				return;
+
+			RenderTargetBinding[] bindings = Main.graphics.GraphicsDevice.GetRenderTargets();
 
 			foreach (ScreenTarget target in targets)
 			{
@@ -67,8 +72,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 					target.drawFunct(Main.spriteBatch);
 
 				Main.spriteBatch.End();
-				Main.graphics.GraphicsDevice.SetRenderTarget(null);
 			}
+
+			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);
 		}
 
 		public override void Unload()
