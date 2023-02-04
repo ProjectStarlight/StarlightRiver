@@ -15,6 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.Blue;
 			Item.value = Item.sellPrice(0, 0, 20, 0);
 		}
+
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCWithProjEvent += OnHitNPCWithProjAccessory;
@@ -32,6 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Equipped(Player) && crit)
 			{
 				BleedStack.ApplyBleedStack(target, 300, true);
+
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 					Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
 			}

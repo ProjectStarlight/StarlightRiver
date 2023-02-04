@@ -1,8 +1,8 @@
 ﻿using StarlightRiver.Helpers;
+using System;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
-using System;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -112,11 +112,11 @@ namespace StarlightRiver.Content.Items.Utility
 			Projectile.penetrate = -1;
 		}
 
-        public override void AI()
-        {
-            Projectile.Center = Owner.Center;
-            LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
-            Owner.heldProj = Projectile.whoAmI;
+		public override void AI()
+		{
+			Projectile.Center = Owner.Center;
+			LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
+			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemAnimation = Owner.itemTime = 2;
 			Owner.ChangeDir(Math.Sign((Main.MouseWorld - Owner.Center).X));
 			Owner.itemRotation = MathHelper.WrapAngle(LaserRotation - ((Owner.direction == 1) ? 0 : MathHelper.Pi));

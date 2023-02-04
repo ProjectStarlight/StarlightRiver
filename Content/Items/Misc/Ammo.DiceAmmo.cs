@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -50,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Stat primaryStat = Stat.none;
 		private Stat secondaryStat = Stat.none;
-		private Stat ternaryStat = Stat.none;
+		private Stat tertiaryStat = Stat.none;
 
 		const int FRAME_COUNT = 6;
 
@@ -65,8 +64,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Color glowColor = Color.White;
 
-		private List<Vector2> oldPos = new List<Vector2>();
-		private List<float> oldRot = new List<float>();
+		private readonly List<Vector2> oldPos = new();
+		private readonly List<float> oldRot = new();
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -108,13 +107,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (Main.rand.NextBool(205))
 				{
-					while (ternaryStat != primaryStat && ternaryStat != secondaryStat)
-						ternaryStat = (Stat)(Main.rand.Next(4) + 1);
+					while (tertiaryStat != primaryStat && tertiaryStat != secondaryStat)
+						tertiaryStat = (Stat)(Main.rand.Next(4) + 1);
 				}
 
 				ApplyStats(primaryStat);
 				ApplyStats(secondaryStat);
-				ApplyStats(ternaryStat);
+				ApplyStats(tertiaryStat);
 
 				Projectile.damage = (int)(Projectile.damage * damageMult);
 				Projectile.knockBack *= knockBackMult;
@@ -131,6 +130,7 @@ namespace StarlightRiver.Content.Items.Misc
 				oldPos.RemoveAt(0);
 				oldRot.RemoveAt(0);
 			}
+
 			Projectile.velocity.X *= 0.995f;
 			Projectile.velocity.Y += gravity;
 		}
@@ -154,6 +154,7 @@ namespace StarlightRiver.Content.Items.Misc
 				float opacity = i / (float)oldPos.Count;
 				Main.spriteBatch.Draw(glowTex, pos - Main.screenPosition, sourceRect, glowColor * opacity, rot, new Vector2(width, tex.Height) / 2, 1f * opacity, default, default);
 			}
+
 			return false;
 		}
 

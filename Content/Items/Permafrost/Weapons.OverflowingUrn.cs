@@ -350,6 +350,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			if (!windBlowing)
 				return false;
+
 			if (base.CanHitNPC(target) == true && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
 			{
 				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);

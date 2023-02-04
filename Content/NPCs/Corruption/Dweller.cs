@@ -11,6 +11,13 @@ namespace StarlightRiver.Content.NPCs.Corruption
 {
 	class Dweller : ModNPC
 	{
+		public enum States
+		{
+			Idle,
+			Transforming,
+			Attacking
+		};
+
 		Tile? root = null;
 
 		public ref float State => ref NPC.ai[0];
@@ -20,19 +27,14 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public Player Target => Main.player[NPC.target];
 
-		public enum States
-		{
-			Idle,
-			Transforming,
-			Attacking
-		};
-
 		public override string Texture => "StarlightRiver/Assets/NPCs/Corruption/Dweller";
 
 		public override void Load()
 		{
 			for (int j = 1; j <= 7; j++)
+			{
 				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, "StarlightRiver/Assets/NPCs/Corruption/DwellerGore" + j);
+			}
 		}
 
 		public override void SetDefaults()
@@ -184,7 +186,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			var rand = new Random(NPC.GetHashCode());
-			int frameHeight = (Request<Texture2D>(Texture + Variant).Value.Height / 4);
+			int frameHeight = Request<Texture2D>(Texture + Variant).Value.Height / 4;
 			int frameWidth = Request<Texture2D>(Texture + Variant).Value.Width;
 
 			if (NPC.IsABestiaryIconDummy)

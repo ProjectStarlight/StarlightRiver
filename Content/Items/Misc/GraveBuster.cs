@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -56,7 +55,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
 
-		private float Progress => 1 - (Owner.itemTime / 80f);
+		private float Progress => 1 - Owner.itemTime / 80f;
 
 		public override void SetStaticDefaults()
 		{
@@ -88,7 +87,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Projectile.active = false;
 			}
 
-			if (Projectile.timeLeft % 6 == 0 && Owner.itemTime > 15 && false)
+			if (Projectile.timeLeft % 6 == 0 && Owner.itemTime > 15)
 			{
 				var range = new Vector2(25, 25);
 				Vector2 startPos = Projectile.Center / 16 - range;
@@ -105,7 +104,6 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
 							Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-							//Projectile.NewProjectile(Projectile.GetSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
 						}
 					}
 				}
@@ -139,6 +137,7 @@ namespace StarlightRiver.Content.Items.Misc
 			var range = new Vector2(25, 25);
 			Vector2 startPos = Projectile.Center / 16 - range;
 			Vector2 endPos = Projectile.Center / 16 + range;
+
 			for (int i = (int)startPos.X; i < (int)endPos.X; i++)
 			{
 				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
@@ -148,7 +147,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
-						Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+						Texture2D tex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
 
 						Color color = Color.White * Progress * 0.3f;
@@ -175,7 +174,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
 					{
-						Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+						Texture2D tex = TextureAssets.MagicPixel.Value;
 						Vector2 drawPos = new Vector2(i, j) * 16;
 						spriteBatch.Draw(tex, drawPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), Color.White * Progress, 0, Vector2.Zero, 32, SpriteEffects.None, 0f);
 					}
