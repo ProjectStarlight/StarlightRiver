@@ -15,7 +15,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		public Func<bool> activeFunct;
 
 		/// <summary>
-		/// Optional function that runs when the screen is resized. Returns the size the render target should be.
+		/// Optional function that runs when the screen is resized. Returns the size the render target should be. Return Vector2.Zero to prevent resizing.
 		/// </summary>
 		public Func<Vector2, Vector2> onResize;
 
@@ -34,6 +34,16 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			this.onResize = onResize;
 
 			ScreenTargetHandler.AddTarget(this);
+		}
+
+		/// <summary>
+		/// Foribly resize a target to a new size
+		/// </summary>
+		/// <param name="size"></param>
+		public void ForceResize(Vector2 size)
+		{
+			RenderTarget.Dispose();
+			RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 		}
 	}
 }

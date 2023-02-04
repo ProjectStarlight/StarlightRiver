@@ -38,8 +38,11 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			{
 				Vector2 size = n.onResize != null ? obj : n.onResize(obj);
 
-				n.RenderTarget.Dispose();
-				n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+				if (size != Vector2.Zero)
+				{
+					n.RenderTarget.Dispose();
+					n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+				}
 			});
 		}
 

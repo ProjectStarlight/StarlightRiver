@@ -5,9 +5,6 @@ global using Terraria;
 global using Terraria.ModLoader;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
-using StarlightRiver.Content.Items.Breacher;
-using StarlightRiver.Content.Items.UndergroundTemple;
-using StarlightRiver.Core.Loaders;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
@@ -28,8 +25,6 @@ namespace StarlightRiver
 	public partial class StarlightRiver : Mod
 	{
 		private List<IOrderedLoadable> loadCache;
-
-		private List<IResizable> resizableCache;
 
 		private List<IRecipeGroup> recipeGroupCache;
 
@@ -100,17 +95,6 @@ namespace StarlightRiver
 				recipeGroupCache.Sort((n, t) => n.Priority > t.Priority ? 1 : -1);
 			}
 
-			resizableCache = new List<IResizable>();
-
-			foreach (Type type in Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.GetInterfaces().Contains(typeof(IResizable)))
-				{
-					object instance = Activator.CreateInstance(type);
-					resizableCache.Add(instance as IResizable);
-				}
-			}
-
 			if (!Main.dedServ)
 			{
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
@@ -153,18 +137,7 @@ namespace StarlightRiver
 		public void CheckScreenSize()
 		{
 			if (!Main.dedServ && !Main.gameMenu)
-			{
-				if (lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
-				{
-					foreach (IResizable resizable in resizableCache)
-					{
-						if (resizable.IsResizable)
-							resizable.ResizeTarget();
-					}
-				}
-
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-			}
 		}
 
 		public override void PostSetupContent()
