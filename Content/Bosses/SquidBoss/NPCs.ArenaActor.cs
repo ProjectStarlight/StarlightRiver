@@ -254,7 +254,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			ApplyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
 			ApplyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);
-			ApplyEffect.Parameters["light"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			ApplyEffect.Parameters["light"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 			ApplyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
 			ApplyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
 			ApplyEffect.Parameters["zoom"].SetValue(zoom);

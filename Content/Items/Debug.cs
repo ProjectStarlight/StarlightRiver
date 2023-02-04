@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Core.Systems.BarrierSystem;
+using StarlightRiver.Core.Systems.LightingSystem;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -174,8 +175,6 @@ namespace StarlightRiver.Content.Items
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			return;
-
 			var target = new Rectangle(50, 160, Main.screenWidth / 10, Main.screenHeight / 10);
 			var target2 = new Rectangle(50, 160 + Main.screenHeight / 10 * 1 + 20, Main.screenWidth / 10, Main.screenHeight / 10);
 			var target3 = new Rectangle(50, 160 + Main.screenHeight / 10 * 2 + 40, Main.screenWidth / 10, Main.screenHeight / 10);
@@ -188,10 +187,10 @@ namespace StarlightRiver.Content.Items
 			spriteBatch.Draw(Main.screenTarget, target, Color.White);
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO2, Color.Black);
-			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.screenLightingTarget, target2, Color.White);
+			spriteBatch.Draw(LightingBuffer.screenLightingTarget.RenderTarget, target2, Color.White);
 
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, targetO3, Color.Black);
-			spriteBatch.Draw(StarlightRiver.lightingBufferInstance.tileLightingTarget, target3, Color.White);
+			spriteBatch.Draw(LightingBuffer.tileLightingTarget.RenderTarget, target3, Color.White);
 		}
 
 		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)

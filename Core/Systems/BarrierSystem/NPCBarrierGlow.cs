@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.LightingSystem;
+using System;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
@@ -134,7 +135,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
 			effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
-			effect.Parameters["lightingTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			effect.Parameters["lightingTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 
 			effect.CurrentTechnique.Passes[0].Apply();
 

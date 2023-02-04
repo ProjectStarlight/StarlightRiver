@@ -5,7 +5,6 @@ global using Terraria;
 global using Terraria.ModLoader;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
-using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,8 +28,6 @@ namespace StarlightRiver
 		private List<IRecipeGroup> recipeGroupCache;
 
 		public static bool debugMode = false;
-
-		public static LightingBuffer lightingBufferInstance = null;
 
 		//debug hook to view RTs
 		//public override void PostDrawInterface(SpriteBatch spriteBatch)
@@ -99,8 +96,6 @@ namespace StarlightRiver
 			{
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 
-				lightingBufferInstance = new LightingBuffer();
-
 				//Hotkeys
 				AbilityKeys = new AbilityHotkeys(this);
 				AbilityKeys.LoadDefaults();
@@ -120,7 +115,6 @@ namespace StarlightRiver
 			{
 				Instance = null;
 				AbilityKeys.Unload();
-				lightingBufferInstance = null;
 
 				SLRSpawnConditions.Unload();
 			}

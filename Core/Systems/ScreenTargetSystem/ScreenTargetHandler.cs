@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public override void Load()
 		{
-			On.Terraria.Main.CheckMonoliths += RenderScreens;
+			Main.OnPreDraw += RenderScreens;
 			Main.OnResolutionChanged += ResizeScreens;
 		}
 
@@ -32,7 +32,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			targets.Sort((a, b) => a.order - b.order > 0 ? 1 : -1);
 		}
 
-		private void ResizeScreens(Vector2 obj)
+		public static void ResizeScreens(Vector2 obj)
 		{
 			targets.ForEach(n =>
 			{
@@ -49,10 +49,13 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			});
 		}
 
-		private void RenderScreens(On.Terraria.Main.orig_CheckMonoliths orig)
+		private static void RenderScreens(GameTime time)
 		{
 			foreach (ScreenTarget target in targets)
 			{
+				if (target.drawFunct is null) //allows for RTs which dont draw in the default loop, like the lighting tile buffers
+					continue;
+
 				Main.spriteBatch.Begin();
 				Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
 				Main.graphics.GraphicsDevice.Clear(Color.Transparent);

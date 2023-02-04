@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.AuroraWaterSystem;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;
@@ -90,7 +91,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
 			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 			effect.Parameters["speed"].SetValue(50f);
-			effect.Parameters["lightTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			effect.Parameters["lightTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);

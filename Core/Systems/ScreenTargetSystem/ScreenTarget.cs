@@ -2,7 +2,7 @@
 
 namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 {
-	internal class ScreenTarget
+	public class ScreenTarget
 	{
 		/// <summary>
 		/// What gets rendered to this screen target. Spritebatch is automatically started and RT automatically set, you only need to write the code for what you are rendering.
