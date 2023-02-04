@@ -24,7 +24,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		/// </summary>
 		public float order;
 
-		public RenderTarget2D RenderTarget { get; set; }
+		public RenderTarget2D RenderTarget { get; set; } = new RenderTarget2D(Main.instance.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
 		public ScreenTarget(Action<SpriteBatch> draw, Func<bool> active, float order, Func<Vector2, Vector2?> onResize = null)
 		{

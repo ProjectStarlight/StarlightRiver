@@ -36,7 +36,10 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		{
 			targets.ForEach(n =>
 			{
-				Vector2? size = n.onResize != null ? obj : n.onResize(obj);
+				Vector2? size = obj;
+
+				if (n.onResize != null)
+					size = n.onResize(obj);
 
 				if (size != null)
 				{
@@ -48,20 +51,18 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		private void RenderScreens(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
-			Main.spriteBatch.Begin();
-
 			foreach (ScreenTarget target in targets)
 			{
+				Main.spriteBatch.Begin();
 				Main.graphics.GraphicsDevice.SetRenderTarget(target.RenderTarget);
 				Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 				if (target.activeFunct())
 					target.drawFunct(Main.spriteBatch);
 
+				Main.spriteBatch.End();
 				Main.graphics.GraphicsDevice.SetRenderTarget(null);
 			}
-
-			Main.spriteBatch.End();
 		}
 
 		public override void Unload()

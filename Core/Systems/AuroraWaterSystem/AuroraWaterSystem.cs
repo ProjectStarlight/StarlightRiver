@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Core.Systems.AuroraWaterSystem
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+
+namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 {
 	struct AuroraWaterData : ITileData
 	{
@@ -25,52 +27,13 @@
 
 	class AuroraWaterSystem : ModSystem, IOrderedLoadable
 	{
-		public static RenderTarget2D auroraTarget;
-		public static RenderTarget2D auroraBackTarget;
+		public static ScreenTarget auroraTarget = new(DrawAuroraTarget, () => !Main.dedServ && !Main.gameMenu, 1);
+		public static ScreenTarget auroraBackTarget = new(DrawAuroraBackTarget, () => !Main.dedServ && !Main.gameMenu, 1);
 
 		public float Priority => 1;
 
-		new public void Load()
+		private static void DrawAuroraTarget(SpriteBatch sb)
 		{
-			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
-			On.Terraria.Main.CheckMonoliths += DrawAuroraTarget;
-
-			if (!Main.dedServ)
-			{
-				Main.QueueMainThreadAction(() =>
-				{
-					auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-					auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-				});
-			}
-		}
-
-		new public void Unload() { }
-
-		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
-		{
-			if (Main.dedServ)
-				return;
-
-			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-			{
-				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
-				auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
-			}
-
-			orig(width, height, fullscreen);
-		}
-
-		private void DrawAuroraTarget(On.Terraria.Main.orig_CheckMonoliths orig)
-		{
-			orig();
-
-			if (Main.dedServ || Main.gameMenu)
-				return;
-
-			Main.spriteBatch.Begin();
-
-			Main.graphics.GraphicsDevice.SetRenderTarget(auroraTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			for (int i = -2 + (int)Main.screenPosition.X / 16; i <= 2 + (int)(Main.screenPosition.X + Main.screenWidth) / 16; i++)
@@ -86,18 +49,18 @@
 						{
 							var target = new Rectangle((int)(i * 16 - Main.screenPosition.X), (int)(j * 16 - Main.screenPosition.Y), 16, 16);
 							Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Misc/AuroraWater").Value;
-							Main.spriteBatch.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White * 0.5f);
+							sb.Draw(tex, target, new Rectangle(tileData.AuroraWaterFrameX * 18, tileData.AuroraWaterFrameY * 18, 16, 16), Color.White * 0.5f);
 						}
 					}
 				}
 			}
+		}
 
-			Main.spriteBatch.End();
-			Main.graphics.GraphicsDevice.SetRenderTarget(null);
+		private static void DrawAuroraBackTarget(SpriteBatch sb)
+		{
+			sb.End();
+			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-			Main.graphics.GraphicsDevice.SetRenderTarget(auroraBackTarget);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
@@ -106,7 +69,7 @@
 			{
 				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
 				{
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
+					sb.Draw(tex2, new Vector2(i, j),
 						new Rectangle(
 							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
 							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
@@ -115,7 +78,7 @@
 							),
 						Color.White * 0.7f, default, default, 1, 0, 0);
 
-					Main.spriteBatch.Draw(tex2, new Vector2(i, j),
+					sb.Draw(tex2, new Vector2(i, j),
 						new Rectangle(
 							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
 							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
@@ -126,8 +89,8 @@
 				}
 			}
 
-			Main.spriteBatch.End();
-			Main.graphics.GraphicsDevice.SetRenderTarget(null);
+			sb.End();
+			sb.Begin();
 		}
 
 		public override void PostDrawTiles()
@@ -140,11 +103,11 @@
 			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
 			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-			shader.Parameters["sampleTexture2"].SetValue(auroraBackTarget);
+			shader.Parameters["sampleTexture2"].SetValue(auroraBackTarget.RenderTarget);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
 
-			Main.spriteBatch.Draw(auroraTarget, Vector2.Zero, Color.White);
+			Main.spriteBatch.Draw(auroraTarget.RenderTarget, Vector2.Zero, Color.White);
 
 			Main.spriteBatch.End();
 		}

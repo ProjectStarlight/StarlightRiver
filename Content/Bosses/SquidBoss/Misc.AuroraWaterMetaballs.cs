@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			effect.Parameters["uTime"].SetValue((float)Main.timeForVisualEffects * 0.02f);
 			effect.Parameters["power"].SetValue(0.01f);
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * -0.5f, Main.screenPosition.Y / Main.screenHeight * -0.5f));
-			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget);
+			effect.Parameters["sampleTexture"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 			effect.Parameters["speed"].SetValue(50f);
 			effect.Parameters["lightTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
 
