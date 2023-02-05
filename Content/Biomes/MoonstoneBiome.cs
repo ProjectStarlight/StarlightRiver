@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Biomes
 			particleSystemLarge = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesLarge", UpdateMoonParticles);
 
 			target = new(DrawTargetOne, () => opacity > 0, 1);
-			backgroundTarget = new(DrawTargetTwo, () => opacity > 0, 1);
+			backgroundTarget = new(DrawTargetTwo, () => opacity > 0 || distortion > 0, 1);
 
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
 			On.Terraria.Main.DrawSurfaceBG += DistortBG;
@@ -160,6 +160,8 @@ namespace StarlightRiver.Content.Biomes
 		private void DrawTargetTwo(SpriteBatch sb)
 		{
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			Main.NewText("Drawing to target!");
 
 			sb.End();
 			sb.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
