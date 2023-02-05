@@ -1,5 +1,6 @@
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -51,6 +52,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			ScreenTargetHandler.ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
 			return true;
 		}
 

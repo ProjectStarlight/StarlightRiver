@@ -6,7 +6,6 @@ using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -141,8 +140,6 @@ namespace StarlightRiver.Core
 		public override void OnEnterWorld(Player Player)
 		{
 			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
-
-			ScreenTargetHandler.ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
 
 			rotation = 0;
 

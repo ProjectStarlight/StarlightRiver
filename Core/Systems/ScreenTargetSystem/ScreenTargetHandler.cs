@@ -3,20 +3,22 @@ using System.Threading;
 
 namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 {
-	internal class ScreenTargetHandler : IOrderedLoadable
+	internal class ScreenTargetHandler : ModSystem, IOrderedLoadable
 	{
 		public static List<ScreenTarget> targets = new();
 		public static Semaphore targetSem = new(1, 1);
 
+		private static int firstResizeTime = 0;
+
 		public float Priority => 1;
 
-		public void Load()
+		new public void Load() //We want to use IOrderedLoadable's load here to preserve our load order
 		{
 			On.Terraria.Main.CheckMonoliths += RenderScreens;
 			Main.OnResolutionChanged += ResizeScreens;
 		}
 
-		public void Unload()
+		new public void Unload()
 		{
 			On.Terraria.Main.CheckMonoliths -= RenderScreens;
 			Main.OnResolutionChanged -= ResizeScreens;
@@ -107,6 +109,17 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);
 
 			targetSem.Release();
+		}
+
+		public override void PostUpdateEverything()
+		{
+			if (Main.gameMenu)
+				firstResizeTime = 0;
+			else
+				firstResizeTime++;
+
+			if (firstResizeTime == 20)
+				ResizeScreens(new Vector2(Main.screenWidth, Main.screenHeight));
 		}
 	}
 }
