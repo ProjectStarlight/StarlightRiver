@@ -9,8 +9,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 	{
 		public static bool anyEnemiesWithBarrier = false;
 
-		public static ScreenTarget NPCTarget = new(n => DrawAllNPCS(n, false), () => anyEnemiesWithBarrier, 1);
-		public static ScreenTarget NPCTargetBehindTiles = new(n => DrawAllNPCS(n, true), () => anyEnemiesWithBarrier, 1);
+		public static ScreenTarget NPCTarget;
+		public static ScreenTarget NPCTargetBehindTiles;
 
 		public static Vector2 oldScreenPos = Vector2.Zero;
 
@@ -20,6 +20,9 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		{
 			if (Main.dedServ)
 				return;
+
+			NPCTarget ??= new(n => DrawAllNPCS(n, false), () => anyEnemiesWithBarrier, 1);
+			NPCTargetBehindTiles ??= new(n => DrawAllNPCS(n, true), () => anyEnemiesWithBarrier, 1);
 
 			On.Terraria.Main.DrawNPCs += DrawBarrierOverlay;
 		}

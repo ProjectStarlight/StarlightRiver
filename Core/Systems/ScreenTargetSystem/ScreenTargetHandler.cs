@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 
 namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 {
 	internal class ScreenTargetHandler : ModSystem
 	{
 		public static List<ScreenTarget> targets = new();
+		public static Semaphore targetSem = new(1, 1);
 
 		public override void Load()
 		{
@@ -18,8 +20,12 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		/// <param name="toAdd"></param>
 		public static void AddTarget(ScreenTarget toAdd)
 		{
+			targetSem.WaitOne();
+
 			targets.Add(toAdd);
 			targets.Sort((a, b) => a.order - b.order > 0 ? 1 : -1);
+
+			targetSem.Release();
 		}
 
 		/// <summary>
@@ -28,14 +34,20 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		/// <param name="toRemove"></param>
 		public static void RemoveTarget(ScreenTarget toRemove)
 		{
+			targetSem.WaitOne();
+
 			targets.Remove(toRemove);
 			targets.Sort((a, b) => a.order - b.order > 0 ? 1 : -1);
+
+			targetSem.Release();
 		}
 
 		public static void ResizeScreens(Vector2 obj)
 		{
 			if (Main.gameMenu || Main.dedServ)
 				return;
+
+			targetSem.WaitOne();
 
 			targets.ForEach(n =>
 			{
@@ -50,6 +62,8 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 					n.RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size?.X, (int)size?.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 				}
 			});
+
+			targetSem.Release();
 		}
 
 		private static void RenderScreens(GameTime time)
@@ -58,6 +72,8 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 				return;
 
 			RenderTargetBinding[] bindings = Main.graphics.GraphicsDevice.GetRenderTargets();
+
+			targetSem.WaitOne();
 
 			foreach (ScreenTarget target in targets)
 			{
@@ -75,6 +91,8 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			}
 
 			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);
+
+			targetSem.Release();
 		}
 
 		public override void Unload()
