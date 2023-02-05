@@ -23,9 +23,12 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			On.Terraria.Main.CheckMonoliths -= RenderScreens;
 			Main.OnResolutionChanged -= ResizeScreens;
 
-			targets.ForEach(n => n.RenderTarget.Dispose());
-			targets.Clear();
-			targets = null;
+			Main.QueueMainThreadAction(() =>
+			{
+				targets.ForEach(n => n.RenderTarget.Dispose());
+				targets.Clear();
+				targets = null;
+			});
 		}
 
 		/// <summary>
