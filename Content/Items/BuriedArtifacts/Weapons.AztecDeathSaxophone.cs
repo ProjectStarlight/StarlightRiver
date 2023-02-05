@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,8 +83,8 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.damage = 30;
 			Item.DamageType = DamageClass.Magic;
 			Item.knockBack = 3f;
-			Item.useTime = 150;
-			Item.useAnimation = 150;
+			Item.useTime = 75;
+			Item.useAnimation = 75;
 
 			Item.value = Item.sellPrice(gold: 3);
 			Item.rare = ItemRarityID.Green;
@@ -100,7 +101,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool CanUseItem(Player player)
 		{
-			return charge >= MAX_CHARGE && player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
+			return player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -182,11 +183,61 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			}
 			else
 			{
-				if (Projectile.timeLeft % ((int)(originalTimeleft * 0.65f) / 10) == 0)
+				if (Projectile.timeLeft % ((int)(originalTimeleft * 0.65f) / 5) == 0)
 				{
 					CameraSystem.shake += 7;
+
+					Vector2 pos = Owner.Center + new Vector2(30f * Owner.direction, 10f) + (Owner.direction == -1 ? Vector2.UnitX * 3f : Vector2.Zero);
+
+					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<AztecDeathSaxophoneSoundwave>(), Projectile.damage, Projectile.knockBack, Projectile.owner).rotation = Main.rand.NextFloat(6.28f);
 				}
 			}
+		}
+	}
+
+	class AztecDeathSaxophoneSoundwave : ModProjectile
+	{
+		public float Radius => 100 * Projectile.scale;
+		public override string Texture => AssetDirectory.ArtifactItem + Name;
+
+		public override void SetDefaults()
+		{
+			Projectile.DamageType = DamageClass.Magic;
+			Projectile.friendly = true;
+
+			Projectile.width = 50;
+			Projectile.height = 50;
+			Projectile.tileCollide = false;
+
+			Projectile.timeLeft = 45;
+
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
+		}
+
+		public override void AI()
+		{
+			Projectile.scale += 0.35f;
+
+
+
+		}
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Color color = new Color(255, 0, 0, 0) * 0.45f;
+			if (Projectile.timeLeft < 10)
+				color *= Projectile.timeLeft / 10f;
+
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
+			return false;
 		}
 	}
 }
