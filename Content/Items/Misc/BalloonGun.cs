@@ -90,7 +90,8 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				forceGravity = new Vector2(0, -0.01f),
 				simStartOffset = 0,
-				constraintRepetitions = 6
+				constraintRepetitions = 6,
+				parent = Projectile
 			};
 		}
 

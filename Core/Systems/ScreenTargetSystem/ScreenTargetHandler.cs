@@ -23,7 +23,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			targetSem.WaitOne();
 
 			targets.Add(toAdd);
-			targets.Sort((a, b) => a.order - b.order > 0 ? 1 : -1);
+			targets.Sort((a, b) => a.order.CompareTo(b.order));
 
 			targetSem.Release();
 		}

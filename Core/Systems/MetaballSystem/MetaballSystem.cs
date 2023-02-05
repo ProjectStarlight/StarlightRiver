@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
@@ -28,9 +29,18 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		private void DrawTargets(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
 			if (behindTiles)
-				Actors.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			{
+				var toDraw = Actors.Where(n => !n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			}
 
 			orig(self, behindTiles);
+
+			if (!behindTiles)
+			{
+				var toDraw = Actors.Where(n => n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			}
 		}
 
 		private void BuildTargets(On.Terraria.Main.orig_CheckMonoliths orig)

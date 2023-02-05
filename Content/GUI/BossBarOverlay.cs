@@ -7,23 +7,25 @@ namespace StarlightRiver.Content.GUI
 {
 	public class BossBarOverlay : SmartUIState
 	{
+		public static bool visible;
+
+		public static NPC tracked;
+		public static string text;
+		public static Texture2D texture = Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+		public static Color glowColor = Color.Transparent;
+
+		public static bool? forceInvulnerabilityVisuals = null;
+
+		private readonly BarOverlay bar = new();
+
+		public override bool Visible => visible;
+
+		public float Priority => 1f;
+
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
 			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 		}
-
-		public override bool Visible => visible;
-
-		public static bool visible;
-
-		public static NPC tracked;
-		public static string Text;
-		public static Texture2D Texture = Request<Texture2D>(AssetDirectory.GUI + "BossBarFrame", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-		public static Color glowColor = Color.Transparent;
-
-		private readonly BarOverlay bar = new();
-
-		public float Priority => 1f;
 
 		public override void OnInitialize()
 		{
@@ -50,11 +52,11 @@ namespace StarlightRiver.Content.GUI
 		public static void SetTracked(NPC NPC, string text = "", Texture2D tex = default)
 		{
 			tracked = NPC;
-			Text = text;
+			BossBarOverlay.text = text;
 			visible = true;
 
 			if (tex != default)
-				Texture = tex;
+				texture = tex;
 		}
 	}
 
@@ -65,10 +67,12 @@ namespace StarlightRiver.Content.GUI
 			NPC NPC = BossBarOverlay.tracked;
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(0, 1);
 			var off = new Vector2(30, 12);
+			bool shouldDrawChains = BossBarOverlay.forceInvulnerabilityVisuals != false && (NPC.dontTakeDamage || NPC.immortal) || BossBarOverlay.forceInvulnerabilityVisuals == true;
 
 			if (NPC is null || !NPC.active || !Main.LocalPlayer.active)
 			{
 				BossBarOverlay.visible = false;
+				BossBarOverlay.forceInvulnerabilityVisuals = null;
 				return;
 			}
 
@@ -76,7 +80,7 @@ namespace StarlightRiver.Content.GUI
 
 			int progress = (int)(BossBarOverlay.tracked?.life / (float)BossBarOverlay.tracked?.lifeMax * 456);
 
-			if (NPC.dontTakeDamage || NPC.immortal)
+			if (shouldDrawChains)
 			{
 				Texture2D texFill = Request<Texture2D>(AssetDirectory.GUI + "BossbarFillImmune").Value;
 				Texture2D texEdge = Request<Texture2D>(AssetDirectory.GUI + "BossbarEdgeImmune").Value;
@@ -94,11 +98,11 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-			Utils.DrawBorderString(spriteBatch, NPC.FullName + BossBarOverlay.Text + ": " + NPC.life + "/" + NPC.lifeMax, pos + new Vector2(516 / 2, -20), Color.White, 1, 0.5f, 0);
+			Utils.DrawBorderString(spriteBatch, NPC.FullName + BossBarOverlay.text + ": " + NPC.life + "/" + NPC.lifeMax, pos + new Vector2(516 / 2, -20), Color.White, 1, 0.5f, 0);
 
 			//spriteBatch.Draw(BossBarOverlay.Texture, pos, Color.White);           
 
-			if (NPC.dontTakeDamage || NPC.immortal)
+			if (shouldDrawChains)
 				spriteBatch.Draw(Request<Texture2D>(AssetDirectory.GUI + "BossbarChains").Value, pos, Color.White);
 		}
 	}

@@ -1,9 +1,6 @@
-﻿using StarlightRiver.Content.WorldGeneration.DungeonGen.OvergrowDungeon;
-using StarlightRiver.Core.Systems.AuroraWaterSystem;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -54,123 +51,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			Archaeology.BuriedArtifacts.PerfectlyGenericArtifact instance = ModContent.GetInstance<Archaeology.BuriedArtifacts.PerfectlyGenericArtifact>();
-			instance.Place((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
 			return true;
-			var dungeon = new OvergrowMaker((Main.MouseWorld / 16).ToPoint16() - new Point16(30 * 8, 30 * 8));
-			dungeon.GenerateDungeon(new Point16(30, 30), 8);
-			return true;
-
-			return true;
-			var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
-
-			Tile tile = Framing.GetTileSafely(center.X, center.Y);
-			ref AuroraWaterData tileData = ref tile.Get<AuroraWaterData>();
-
-			if (tileData.HasAuroraWater)
-				Main.NewText(tileData.AuroraWaterFrameX + " | " + tileData.AuroraWaterFrameY);
-			;
-
-			return true;
-
-			/*
-            var center = new Point16((int)(Main.MouseWorld.X / 16), (int)(Main.MouseWorld.Y / 16));
-            var radius = Main.rand.Next(2, 5);
-
-            int frameStartX = radius == 4 ? 5 : radius == 3 ? 2 : 0;
-            int frameStartY = radius == 4 ? 0 : radius == 3 ? 1 : 2;
-
-            for (int x = center.X; x < center.X + radius; x++)
-                for (int y = center.Y; y < center.Y + radius; y++)
-                {
-                    int xRel = x - center.X;
-                    int yRel = y - center.Y;
-
-                    Tile tile = Framing.GetTileSafely(x, y);
-                    tile.HasTile = true;
-                    tile.TileType = (ushort)ModContent.TileType<AuroraIce>();
-                    tile.TileFrameX = (short)((frameStartX + xRel) * 18);
-                    tile.TileFrameY = (short)((frameStartY + yRel) * 18);
-
-                    int r = radius - 1;
-                    if (xRel == 0 && yRel == 0) tile.Slope = SlopeType.SlopeDownRight;
-                    if (xRel == 0 && yRel == r) tile.Slope = SlopeType.SlopeUpRight;
-                    if (xRel == r && yRel == 0) tile.Slope = SlopeType.SlopeDownLeft;
-                    if (xRel == r && yRel == r) tile.Slope = SlopeType.SlopeUpLeft;
-
-                    var dum = false;
-                    ModContent.GetInstance<AuroraIce>().TileFrame(x, y, ref dum, ref dum);
-                }
-
-            return true;
-
-            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
-            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.Faewhip.Whip>();
-            return true;
-
-            StarlightWorld.FlipFlag(WorldFlags.VitricBossDowned);
-            return true;
-
-            player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
-            return true;
-
-            if (ZoomHandler.ExtraZoomTarget == 0.8f)
-            {
-                ZoomHandler.SetZoomAnimation(0.65f);
-                Main.NewText("Zoom: 65%");
-            }
-
-            else if (ZoomHandler.ExtraZoomTarget == 0.65f)
-            {
-                ZoomHandler.SetZoomAnimation(0.5f);
-                Main.NewText("Zoom: 50%");
-            }
-
-            else if (ZoomHandler.ExtraZoomTarget == 0.5f)
-            {
-                ZoomHandler.SetZoomAnimation(1);
-                Main.NewText("Zoom: Default");
-            }
-
-            else
-            {
-                ZoomHandler.SetZoomAnimation(0.8f);
-                Main.NewText("Zoom: 80%");
-            }
-
-            return true;
-
-            for (int x = 0; x < Main.maxTilesX; x++)
-                for (int y = 0; y < Main.maxTilesY; y++)
-                    Main.tile[x, y].ClearEverything();
-
-            return true;
-
-            Player dummy = new Player();
-            dummy.active = true;
-
-            var Item = new Item();
-            Item.SetDefaults(ModContent.ItemType<UndergroundTemple.TempleRune>());
-
-            dummy.armor[5] = Item;
-            dummy.Center = Main.LocalPlayer.Center;
-
-            Main.player[1] = dummy;
-            dummy.team = Main.LocalPlayer.team;
-            dummy.name = "Johnathan Testicle";
-            dummy.statLife = 400;
-            dummy.statLifeMax = 500;
-
-            return true;
-
-            /*
-            foreach (NPC NPC in Main.npc)
-                NPC.active = false;
-
-            NPC.NewNPC((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
-            Player.Center = new Vector2((StarlightWorld.VitricBiome.X) * 16, (StarlightWorld.VitricBiome.Center.Y + 10) * 16);
-
-            return true;*/
 		}
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
@@ -261,6 +142,7 @@ namespace StarlightRiver.Content.Items
 		{
 			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
 				NPC.StrikeNPC(99999, 0, 0, false, false, false);
+
 			return true;
 		}
 	}

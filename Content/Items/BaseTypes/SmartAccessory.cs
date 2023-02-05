@@ -22,6 +22,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		private readonly string tooltip;
 
 		/// <summary>
+		/// When this is first equipped we want to perform onEquip logic to simulate child accessories or other setup data
+		/// Done this way since most inventory logic is client side (but accessories are synced) and this is easier than trying to hunt down places where equipment is set in multiplayer
+		/// </summary>
+		public bool isDoneOnEquip = false;
+
+		/// <summary>
 		/// Override this and add the types of SmartAccessories you want this one to simulate. Note that simulated accessories are reset on unequip/reload, so you will need to save any persistent data on the parent accessory.
 		/// </summary>
 		public virtual List<int> ChildTypes => new();
@@ -118,6 +124,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Simulate(type, player);
 
 			OnEquip(player, item);
+
+			isDoneOnEquip = true;
 		}
 
 		/// <summary>
@@ -150,6 +158,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public sealed override void UpdateEquip(Player player)
 		{
+			if (!isDoneOnEquip)
+				Equip(player, this.Item);
+
 			if (isChild)
 			{
 				var toRemove = new List<Item>(); //Removes unequipped accessories from parents

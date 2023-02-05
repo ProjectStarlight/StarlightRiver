@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.CustomHooks
 			CameraSystem.shake += 80;
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);
 
-			if (Main.rand.Next(3) > (StarlightWorld.HasFlag(WorldFlags.AluminumMeteors) ? 0 : 1))
+			if (Main.rand.Next(3) > 1)
 			{
 				var target = new Point16();
 

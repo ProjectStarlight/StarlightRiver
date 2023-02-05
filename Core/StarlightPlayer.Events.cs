@@ -172,6 +172,13 @@ namespace StarlightRiver.Core
 			PostUpdateRunSpeedsEvent?.Invoke(Player);
 		}
 
+		public delegate void ModifyDrawInfoDelegate(ref PlayerDrawSet drawInfo);
+		public static event ModifyDrawInfoDelegate ModifyDrawInfoEvent;
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
+		}
+
 		public override void Unload()
 		{
 			CanUseItemEvent = null;
@@ -191,6 +198,7 @@ namespace StarlightRiver.Core
 			PreHurtEvent = null;
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
+			ModifyDrawInfoEvent = null;
 
 			spawners = null;
 		}
