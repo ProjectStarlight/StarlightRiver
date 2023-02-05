@@ -142,6 +142,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activePlayerCount != prevNumPlayers)
 			{
 				prevNumPlayers = activePlayerCount;
+
+				Target.Dispose();
 				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
 
 				int activeCount = 0;
