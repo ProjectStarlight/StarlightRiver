@@ -44,6 +44,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				for (int k = 0; k < 59; k++)
 				{
+					if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
+						continue;
+
 					int x = (int)Projectile.Center.X / 16 + xOff + k;
 					ValidPoints.Add(new Point16(x, y));
 				}
