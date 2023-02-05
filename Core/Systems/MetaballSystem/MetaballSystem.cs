@@ -7,6 +7,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 	{
 		public static List<MetaballActor> Actors = new();
 
+		//We intentionally load after screen targets here so our extra RT swapout applies after the default ones.
 		public float Priority => 1.1f;
 
 		public void Load()
