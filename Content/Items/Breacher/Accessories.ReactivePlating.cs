@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			RenderTarget2D target = PlayerTarget.Target;
+			Texture2D target = PlayerTarget.Target;
 
 			if (Main.dedServ || spriteBatch == null || gD == null || target == null)
 				return;

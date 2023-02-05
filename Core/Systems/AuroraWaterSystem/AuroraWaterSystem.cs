@@ -302,7 +302,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
 
-			RenderTarget2D target = MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
+			Texture2D target = MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 			Main.spriteBatch.End();

@@ -73,7 +73,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			orig(self, behindTiles);
 		}
 
-		private static void DrawNPCTarget(RenderTarget2D target)
+		private static void DrawNPCTarget(Texture2D target)
 		{
 			GraphicsDevice gd = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
