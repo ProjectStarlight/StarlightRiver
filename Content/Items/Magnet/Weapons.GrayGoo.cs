@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public float oldLerper;
 
-		public static ScreenTarget NPCTarget = new(DrawTarget, () => Main.projectile.Any(n => n.active && n.type == ProjectileType<GrayGooProj>()), 1);
+		public static ScreenTarget NPCTarget;
 
 		public bool foundTarget;
 
@@ -94,6 +94,11 @@ namespace StarlightRiver.Content.Items.Magnet
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.Invisible;
+
+		public override void Load()
+		{
+			NPCTarget = new(DrawTarget, () => Main.projectile.Any(n => n.active && n.type == ProjectileType<GrayGooProj>()), 1);
+		}
 
 		public override void SetStaticDefaults()
 		{
