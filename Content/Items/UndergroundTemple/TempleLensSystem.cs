@@ -1,19 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Items.Breacher;
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Linq;
-using Terraria.ID;
 using Terraria.Graphics.Effects;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.UndergroundTemple
 {
-	public class TempleLensSystem : IOrderedLoadable, IResizable
+	public class TempleLensSystem : IOrderedLoadable
 	{
-		public static RenderTarget2D NPCTarget;
-		public static RenderTarget2D LensTarget;
-
-		public bool IsResizable => NPCTarget != null;
+		public static ScreenTarget NPCTarget = new(DrawNPCTarget, () => Active, 1);
+		public static ScreenTarget LensTarget = new(DrawLensTarget, () => Active, 1);
 
 		public float Priority => 1.1f;
 
@@ -24,10 +18,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (Main.dedServ)
 				return;
 
-			ResizeTarget();
-
 			On.Terraria.Main.DrawNPCs += DrawLens;
-			On.Terraria.Main.CheckMonoliths += Main_CheckMonoliths;
 		}
 
 		public void Unload()
@@ -36,24 +27,14 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				return;
 
 			On.Terraria.Main.DrawNPCs -= DrawLens;
-			On.Terraria.Main.CheckMonoliths -= Main_CheckMonoliths;
 		}
 
-		private void Main_CheckMonoliths(On.Terraria.Main.orig_CheckMonoliths orig)
+		private static void DrawNPCTarget(SpriteBatch spriteBatch)
 		{
-			orig();
-			GraphicsDevice gD = Main.graphics.GraphicsDevice;
-			SpriteBatch spriteBatch = Main.spriteBatch;
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || gD is null || !Active)
-				return;
-
-			#region npctarget
-			RenderTargetBinding[] bindings = gD.GetRenderTargets();
-			gD.SetRenderTarget(NPCTarget);
-			gD.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -63,13 +44,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				{
 					if (NPC.ModNPC != null)
 					{
-						if (NPC.ModNPC != null && NPC.ModNPC is ModNPC ModNPC)
-						{
-							if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
-								Main.instance.DrawNPC(i, false);
+						ModNPC ModNPC = NPC.ModNPC;
 
-							ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
-						}
+						if (ModNPC.PreDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White)))
+							Main.instance.DrawNPC(i, false);
+
+						ModNPC.PostDraw(spriteBatch, Main.screenPosition, NPC.GetAlpha(Color.White));
 					}
 					else
 					{
@@ -77,21 +57,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					}
 				}
 			}
+		}
+
+		private static void DrawLensTarget(SpriteBatch spriteBatch)
+		{
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			#endregion
-
-			#region lenstarget
-
-
-			gD.SetRenderTarget(LensTarget);
-			gD.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			Texture2D bloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 			Color gold = Color.Orange;
 			gold.A = 0;
+
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
 				NPC NPC = Main.npc[i];
@@ -102,10 +80,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (NPC.active && NPC.HasBuff(ModContent.BuffType<Exposed>()))
 					spriteBatch.Draw(bloom, NPC.Center - Main.screenPosition, null, gold, 0, bloom.Size() / 2, 2, SpriteEffects.None, 0f);
 			}
-			spriteBatch.End();
-			gD.SetRenderTargets(bindings);
-
-			#endregion
 		}
 
 		private void DrawLens(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
@@ -120,22 +94,16 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					return;
 
 				Effect effect = Filters.Scene["TempleLens"].GetShader().Shader;
-				effect.Parameters["LensTarget"].SetValue(LensTarget);
+				effect.Parameters["LensTarget"].SetValue(LensTarget.RenderTarget);
 
 				spriteBatch.End();
 				spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, effect);
 
-				spriteBatch.Draw(NPCTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 				spriteBatch.End();
 				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
-		}
-
-		public void ResizeTarget()
-		{
-			Main.QueueMainThreadAction(() => NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
-			Main.QueueMainThreadAction(() => LensTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 		}
 	}
 }

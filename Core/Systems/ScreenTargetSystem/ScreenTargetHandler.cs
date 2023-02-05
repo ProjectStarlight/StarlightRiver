@@ -10,7 +10,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public override void Load()
 		{
-			Main.OnPreDraw += RenderScreens;
+			On.Terraria.Main.CheckMonoliths += RenderScreens;
 			Main.OnResolutionChanged += ResizeScreens;
 		}
 
@@ -66,8 +66,10 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			targetSem.Release();
 		}
 
-		private static void RenderScreens(GameTime time)
+		private void RenderScreens(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
+			orig();
+
 			if (Main.gameMenu || Main.dedServ)
 				return;
 

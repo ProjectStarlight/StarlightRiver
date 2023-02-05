@@ -3,6 +3,7 @@
 //General cleanup of post-shape stuff
 
 using StarlightRiver.Content.Tiles.Moonstone;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Reflection;
 using Terraria.Graphics.Effects;
@@ -45,8 +46,8 @@ namespace StarlightRiver.Content.Biomes
 
 	public class MoonstoneBiomeSystem : ModSystem
 	{
-		public static RenderTarget2D target;
-		public static RenderTarget2D backgroundTarget;
+		public ScreenTarget target;
+		public ScreenTarget backgroundTarget;
 
 		public int moonstoneBlockCount;
 
@@ -78,15 +79,15 @@ namespace StarlightRiver.Content.Biomes
 			if (Main.dedServ)
 				return;
 
-			ResizeTarget();
-
 			particleSystem = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunes", UpdateMoonParticles);
 			particleSystemMedium = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesMedium", UpdateMoonParticles);
 			particleSystemLarge = new ParticleSystem("StarlightRiver/Assets/Tiles/Moonstone/MoonstoneRunesLarge", UpdateMoonParticles);
 
+			target = new(DrawTargetOne, () => opacity > 0, 1);
+			backgroundTarget = new(DrawTargetTwo, () => opacity > 0, 1);
+
 			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
 			On.Terraria.Main.DrawSurfaceBG += DistortBG;
-			Main.OnPreDraw += DrawToParticleTarget;
 		}
 
 		public override void PostUpdateEverything()
@@ -121,20 +122,20 @@ namespace StarlightRiver.Content.Biomes
 				effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.003f);
 				effect.Parameters["noiseTexture1"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/SwirlyNoiseLooping").Value);
 				effect.Parameters["noiseTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "Noise/MiscNoise1").Value);
-				effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.Size());
+				effect.Parameters["screenPosition"].SetValue(Main.screenPosition * new Vector2(0.5f, 0.1f) / backgroundTarget.RenderTarget.Size());
 				effect.Parameters["distortionColor1"].SetValue(Color.DarkBlue.ToVector3());
 				effect.Parameters["distortionColor2"].SetValue(new Color(120, 65, 120).ToVector3());
 				effect.Parameters["colorIntensity"].SetValue(0.03f * distortion);
 				effect.Parameters["color"].SetValue(false);
 
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-				Main.spriteBatch.Draw(backgroundTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 				Main.spriteBatch.End();
 
 				effect.Parameters["color"].SetValue(true);
 
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
-				Main.spriteBatch.Draw(backgroundTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				Main.spriteBatch.Draw(backgroundTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.AnisotropicClamp, DepthStencilState.Default, RasterizerState.CullNone);
 			}
@@ -144,44 +145,24 @@ namespace StarlightRiver.Content.Biomes
 			}
 		}
 
-		public static void ResizeTarget()
+		private void DrawTargetOne(SpriteBatch sb)
 		{
-			Main.QueueMainThreadAction(() =>
-			{
-				target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-				backgroundTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-			});
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			sb.End();
+			sb.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+
+			particleSystem.DrawParticles(sb);
+			particleSystemMedium.DrawParticles(sb);
+			particleSystemLarge.DrawParticles(sb);
 		}
 
-		private void DrawToParticleTarget(GameTime obj)
+		private void DrawTargetTwo(SpriteBatch sb)
 		{
-			if (opacity == 0)
-				return;
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			GraphicsDevice gD = Main.graphics.GraphicsDevice;
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || target is null || gD is null)
-				return;
-
-			RenderTargetBinding[] bindings = gD.GetRenderTargets();
-			gD.SetRenderTarget(target);
-			gD.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
-
-			particleSystem.DrawParticles(Main.spriteBatch);
-			particleSystemMedium.DrawParticles(Main.spriteBatch);
-			particleSystemLarge.DrawParticles(Main.spriteBatch);
-
-			spriteBatch.End();
-			gD.SetRenderTargets(bindings);
-
-			RenderTargetBinding[] bindings2 = gD.GetRenderTargets();
-			gD.SetRenderTarget(backgroundTarget);
-			gD.Clear(Color.Transparent);
-
-			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			sb.End();
+			sb.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
 
 			drawingBGtarget = true;
 
@@ -189,9 +170,6 @@ namespace StarlightRiver.Content.Biomes
 
 			info.Invoke(Main.instance, null);
 			drawingBGtarget = false;
-
-			spriteBatch.End();
-			gD.SetRenderTargets(bindings2);
 		}
 
 		private void DrawParticleTarget(On.Terraria.Main.orig_DrawBackgroundBlackFill orig, Main self)
@@ -212,14 +190,14 @@ namespace StarlightRiver.Content.Biomes
 			effect.Parameters["color2"].SetValue(Color.Cyan.ToVector4());
 			effect.Parameters["opacity"].SetValue(1f);
 
-			effect.Parameters["screenWidth"].SetValue(target.Width);
-			effect.Parameters["screenHeight"].SetValue(target.Height);
+			effect.Parameters["screenWidth"].SetValue(Main.screenWidth);
+			effect.Parameters["screenHeight"].SetValue(Main.screenHeight);
 			effect.Parameters["screenPosition"].SetValue(Main.screenPosition);
 			effect.Parameters["drawOriginal"].SetValue(false);
 
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect);
 
-			Main.spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			if (Main.rand.NextBool(150))
 			{
@@ -242,7 +220,7 @@ namespace StarlightRiver.Content.Biomes
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default);
 
-			Main.spriteBatch.Draw(target, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);
+			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
