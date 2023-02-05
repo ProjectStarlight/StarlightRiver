@@ -3,15 +3,27 @@ using System.Threading;
 
 namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 {
-	internal class ScreenTargetHandler : ModSystem
+	internal class ScreenTargetHandler : IOrderedLoadable
 	{
 		public static List<ScreenTarget> targets = new();
 		public static Semaphore targetSem = new(1, 1);
 
-		public override void Load()
+		public float Priority => 1;
+
+		public void Load()
 		{
 			On.Terraria.Main.CheckMonoliths += RenderScreens;
 			Main.OnResolutionChanged += ResizeScreens;
+		}
+
+		public void Unload()
+		{
+			On.Terraria.Main.CheckMonoliths -= RenderScreens;
+			Main.OnResolutionChanged -= ResizeScreens;
+
+			targets.ForEach(n => n.RenderTarget.Dispose());
+			targets.Clear();
+			targets = null;
 		}
 
 		/// <summary>
@@ -95,13 +107,6 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			Main.graphics.GraphicsDevice.SetRenderTargets(bindings);
 
 			targetSem.Release();
-		}
-
-		public override void Unload()
-		{
-			targets.ForEach(n => n.RenderTarget.Dispose());
-			targets.Clear();
-			targets = null;
 		}
 	}
 }

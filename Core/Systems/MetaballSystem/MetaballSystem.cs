@@ -7,7 +7,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 	{
 		public static List<MetaballActor> Actors = new();
 
-		public float Priority => 1;
+		public float Priority => 1.1f;
 
 		public void Load()
 		{
@@ -45,10 +45,10 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		private void BuildTargets(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
+			orig();
+
 			if (!Main.gameMenu && Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
 				Actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
-
-			orig();
 		}
 	}
 }

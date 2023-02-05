@@ -8,7 +8,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 		public ScreenTarget Target { get; protected set; }
 		private ScreenTarget Target2 { get; set; }
 
-		public float Priority => 1.1f;
+		public float Priority => 1f;
 
 		/// <summary>
 		/// The color of the outline of your metaball system
