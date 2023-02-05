@@ -10,8 +10,6 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public static bool canUseTarget = false;
 
-		public static RenderTarget2D ScaledTileTarget { get; set; }
-
 		public static int sheetSquareX;
 		public static int sheetSquareY;
 
@@ -45,13 +43,8 @@ namespace StarlightRiver.Content.CustomHooks
 			PlayerIndexLookup = new Dictionary<int, int>();
 			prevNumPlayers = -1;
 
-			Main.QueueMainThreadAction(() =>
-			{
-				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-				ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-			});
+			Main.QueueMainThreadAction(() => Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 
-			On.Terraria.Main.SetDisplayMode += RefreshTargets;
 			On.Terraria.Main.CheckMonoliths += DrawTargets;
 			On.Terraria.Lighting.GetColor_int_int += getColorOverride;
 			On.Terraria.Lighting.GetColor_Point += getColorOverride;
@@ -67,6 +60,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
 		}
+
 		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
 		{
 			if (canUseTarget)
@@ -119,18 +113,8 @@ namespace StarlightRiver.Content.CustomHooks
 			return gravPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
 		}
 
-		private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
-		{
-			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-				ScaledTileTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height);
-
-			orig(width, height, fullscreen);
-		}
-
 		private void DrawTargets(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
-			//TODO: this may benefit from adding booleans for other places in the code to check if they're going to use the RTs since we don't necessarily need these generated on every frame for some performance improvements
-
 			orig();
 
 			if (Main.gameMenu)
@@ -141,23 +125,6 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (Main.instance.tileTarget.IsDisposed)
 				return;
-
-			RenderTargetBinding[] oldtargets1 = Main.graphics.GraphicsDevice.GetRenderTargets();
-
-			Matrix matrix = Main.GameViewMatrix.ZoomMatrix;
-
-			GraphicsDevice GD = Main.graphics.GraphicsDevice;
-			SpriteBatch sb = Main.spriteBatch;
-
-			GD.SetRenderTarget(ScaledTileTarget);
-			GD.Clear(Color.Transparent);
-
-			sb.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, matrix);
-			Main.spriteBatch.Draw(Main.instance.tileTarget, Main.sceneTilePos - Main.screenPosition, Color.White);
-			sb.End();
-
-			Main.graphics.GraphicsDevice.SetRenderTargets(oldtargets1);
-
 		}
 
 		public static Vector2 getPositionOffset(int whoAmI)
@@ -176,7 +143,9 @@ namespace StarlightRiver.Content.CustomHooks
 			{
 				prevNumPlayers = activePlayerCount;
 				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
+
 				int activeCount = 0;
+
 				for (int i = 0; i < Main.maxPlayers; i++)
 				{
 					if (Main.player[i].active)
@@ -189,11 +158,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 			RenderTargetBinding[] oldtargets2 = Main.graphics.GraphicsDevice.GetRenderTargets();
 			canUseTarget = false;
+
 			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			Main.spriteBatch.Begin();
-			//Player drawPlayer, Vector2 Position, float rotation, Vector2 rotationOrigin, float shadow = 0f;
+
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
 				Player player = Main.player[i];
