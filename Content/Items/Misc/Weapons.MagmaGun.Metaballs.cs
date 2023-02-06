@@ -39,12 +39,6 @@ namespace StarlightRiver.Content.Items.Misc
 						}
 					}
 				}
-
-				if (proj.active && proj.type == ModContent.ProjectileType<ArrowMagma>())
-				{
-					borderNoise.Parameters["offset"].SetValue((float)Main.time / 1000f + proj.rotation);
-					spriteBatch.Draw(tex, (proj.Center - Main.screenPosition) / 2, null, Color.White, 0f, Vector2.One * 256f, proj.scale / 32f, SpriteEffects.None, 0);
-				}
 			}
 
 			foreach (Dust dust in Main.dust)
