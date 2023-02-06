@@ -270,10 +270,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			//Stalk
 			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
 			{
-				if (intersect.X < player.Center.X)
-					player.velocity.X = Math.Max(6.5f, player.velocity.X * -1.05f);
-				else
-					player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
+				if (!StarlightRiver.debugMode)
+				{
+					if (intersect.X < player.Center.X)
+						player.velocity.X = Math.Max(6.5f, player.velocity.X * -1.05f);
+					else
+						player.velocity.X = Math.Min(-6.5f, player.velocity.X * -1.05f);
+				}
 
 				player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByNPC(NPC.whoAmI), NPC.damage, NPC.Center.X > player.Center.X ? -1 : 1);
 				return true;

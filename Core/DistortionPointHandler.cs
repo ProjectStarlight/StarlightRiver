@@ -54,7 +54,7 @@ namespace StarlightRiver.Core
 
         public override void PostUpdateProjectiles()
         {
-            if (Main.gameMenu)
+            if (Main.gameMenu || Main.dedServ)
                 return;
 
             int pointsFound = 0;
