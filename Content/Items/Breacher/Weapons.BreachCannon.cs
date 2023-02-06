@@ -1,21 +1,6 @@
-﻿
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using Terraria;
-using Terraria.Enums;
+﻿using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
-using Terraria.Graphics.Shaders;
 
 namespace StarlightRiver.Content.Items.Breacher
 {
@@ -97,13 +82,13 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (originTile == Vector2.Zero)
 				return false;
 
-			Projectile proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
+			var proj = Projectile.NewProjectileDirect(source, (originTile - Vector2.UnitX.RotatedBy(minDirection * 1.57f)) * 16, velocity, type, damage, knockback, player.whoAmI, minDirection);
 			var mp = proj.ModProjectile as BreachCannonSentry;
 
 			//Main.NewText("Spawned at (" + ((int)originTile.X).ToString() + "," + ((int)originTile.Y).ToString() + ")");
 			mp.tileOrigin = originTile;
 			proj.originalDamage = Item.damage;
-			proj.rotation = (minDirection * 1.57f) + 3.14f;
+			proj.rotation = minDirection * 1.57f + 3.14f;
 			player.UpdateMaxTurrets();
 
 			return false;
@@ -147,6 +132,7 @@ namespace StarlightRiver.Content.Items.Breacher
 							return Vector2.Zero;
 						ret2 += moveDirection;
 					}
+
 					if (Overlapping(ret2))
 						ret2 = ret;
 					else

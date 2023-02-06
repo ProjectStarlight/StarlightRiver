@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using StarlightRiver.Core;
-using Microsoft.Xna.Framework;
-using Terraria.DataStructures;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems.BarrierSystem;
+using System;
 
 namespace StarlightRiver.Content.Items.BarrierDye
 {
@@ -25,24 +15,26 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
 
-		public override bool CanRightClick() => true;
+		public override bool CanRightClick()
+		{
+			return true;
+		}
 
-        public override void RightClick(Player Player)
-        {
+		public override void RightClick(Player Player)
+		{
 			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
 
 			Item prevBarrierItem = mp.barrierDyeItem;
 			Player.GetModPlayer<BarrierPlayer>().barrierDyeItem = Item.Clone();
 			Item.TurnToAir();
-			mp.RechargeAnimationTimer = 0;
-
+			mp.rechargeAnimationTimer = 0;
 
 			Main.EquipPageSelected = 2;
 
 			if (prevBarrierItem.type != ModContent.ItemType<BaseBarrierDye>())
 				Main.LocalPlayer.GetItem(Main.myPlayer, prevBarrierItem.Clone(), GetItemSettings.ItemCreatedFromItemUsage);
-        }
-    }
+		}
+	}
 
 	class BaseBarrierDye : BarrierDye
 	{
@@ -67,21 +59,24 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			if (!CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			var barrier = Player.GetModPlayer<BarrierPlayer>();
+			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
-			float opacity = barrier.RechargeAnimationTimer;
+			float opacity = barrier.rechargeAnimationTimer;
 
 			float sin = (float)Math.Sin(Main.GameUpdateCount / 10f);
 
 			for (int k = 0; k < 8; k++)
 			{
 				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
-				var color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
+				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
-				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
+				if (Main.LocalPlayer.gravDir == -1f)
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
+				else
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
 			}
 
 			spriteBatch.End();
