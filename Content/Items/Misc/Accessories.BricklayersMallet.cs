@@ -8,6 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	public class BricklayersMallet : SmartAccessory
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
+
 		public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 50% for blocks outside your original range") { }
 
 		public override void Load()
@@ -22,10 +23,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Player Player = player.Player;
 			Player.blockRange *= 2;
+
 			if (Main.myPlayer == Player.whoAmI)
 			{
 				bool outsideXRange = Main.MouseWorld.X < Player.Center.X ? Math.Abs(Player.Left.X - Main.MouseWorld.X) > (Player.tileRangeX - 1) * 16f : Math.Abs(Player.Right.X - Main.MouseWorld.X) > (Player.tileRangeX - 1) * 16f;
 				bool outsideYRange = Main.MouseWorld.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - Main.MouseWorld.Y) > (Player.tileRangeY - 2) * 16f : Math.Abs(Player.Top.Y - Main.MouseWorld.Y) > (Player.tileRangeY - 2) * 16f;
+
 				if (outsideXRange || outsideYRange)
 					Player.pickSpeed *= 1.5f;
 
