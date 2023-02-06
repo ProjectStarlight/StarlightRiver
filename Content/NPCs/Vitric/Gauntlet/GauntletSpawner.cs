@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
+﻿namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
 	public class GauntletSpawner : ModProjectile, IGauntletNPC
 	{

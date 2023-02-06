@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Items.Magnet;
-using StarlightRiver.Core.Systems.LightingSystem;
+﻿using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System.Linq;
 using Terraria.Graphics.Effects;

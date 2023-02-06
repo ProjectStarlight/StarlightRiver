@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void AddRecipes()
 		{
-			Recipe recipe = Recipe.Create(ItemID.LesserHealingPotion,3);
+			var recipe = Recipe.Create(ItemID.LesserHealingPotion, 3);
 			recipe.AddIngredient(ItemID.Bottle, 3);
 			recipe.AddIngredient(ModContent.ItemType<ForestBerries>(), 1);
 			recipe.AddIngredient(ItemID.Gel, 1);

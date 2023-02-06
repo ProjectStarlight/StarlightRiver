@@ -31,8 +31,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 					{
 						int offset = Main.HealthBarDrawSettings == 1 ? 10 : -20;
 
-						var pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY) - Main.screenPosition;
-						
+						Vector2 pos = new Vector2(Player.position.X - 8, Player.position.Y + Player.height + offset + Player.gfxOffY) - Main.screenPosition;
+
 						if (Main.LocalPlayer.gravDir == -1f)
 							pos.Y = Main.screenHeight - pos.Y;
 
@@ -42,7 +42,6 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Adds barrier text to hovering over other players
@@ -54,7 +53,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		private void drawShieldHoverText(On.Terraria.Main.orig_DrawInterface_39_MouseOver orig, Main self)
 		{
 			orig(self);
-			
+
 			if (Main.blockMouse || Main.LocalPlayer.mouseInterface)
 				return;
 
@@ -71,7 +70,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				if (!eachPlayer.active || Main.myPlayer == playerIndex || eachPlayer.dead || eachPlayer.ShouldNotDraw || !(eachPlayer.stealth > 0.5f) || eachPlayer.GetModPlayer<BarrierPlayer>().maxBarrier <= 0)
 					continue;
 
-				Rectangle playerRect = new Rectangle((int)(eachPlayer.position.X + eachPlayer.width * 0.5 - 16.0), (int)(eachPlayer.position.Y + eachPlayer.height - 48.0), 32, 48);
+				var playerRect = new Rectangle((int)(eachPlayer.position.X + eachPlayer.width * 0.5 - 16.0), (int)(eachPlayer.position.Y + eachPlayer.height - 48.0), 32, 48);
 
 				if (playerRect.Contains((int)mouseIntersectPos.X, (int)mouseIntersectPos.Y))
 				{
@@ -87,12 +86,13 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 					if (eachPlayer.hostile)
 					{
-						textString += " " +  Terraria.Localization.Language.GetTextValue("Game.PvPFlag");
+						textString += " " + Terraria.Localization.Language.GetTextValue("Game.PvPFlag");
 					}
 
 					Main.instance.MouseTextHackZoom(textString);
 				}
 			}
+
 			PlayerInput.SetZoom_UI();
 		}
 
@@ -149,7 +149,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ShieldBar1").Value;
 
-			float factor = Math.Min(barrier / (float) maxBarrier, 1);
+			float factor = Math.Min(barrier / (float)maxBarrier, 1);
 
 			var source = new Rectangle(0, 0, (int)(factor * tex.Width), tex.Height);
 			var target = new Rectangle((int)position.X, (int)position.Y, (int)(factor * tex.Width * horizontalScale), (int)(tex.Height * horizontalScale));

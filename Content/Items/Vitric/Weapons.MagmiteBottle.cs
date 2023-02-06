@@ -1,12 +1,7 @@
-using StarlightRiver.Content.Items.Hell;
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items;
 using StarlightRiver.Content.NPCs.Vitric;
 using System.Linq;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.GameContent;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -20,25 +15,25 @@ namespace StarlightRiver.Content.Items.Vitric
 			DisplayName.SetDefault("Magmite in a Bottle");
 			Tooltip.SetDefault("Why would you do this to him?!");
 		}
-        public override void SetDefaults()
-        {
-            Item.damage = 50;
-            Item.DamageType = DamageClass.Ranged;
-            Item.width = 36;
-            Item.height = 38;
-            Item.useTime = 18;
-            Item.useAnimation = 18;
-            Item.useStyle = ItemUseStyleID.Swing;
-            Item.value = 0;
-            Item.rare = ItemRarityID.Orange;
-            Item.UseSound = SoundID.Item1;
-            Item.autoReuse = false;
-            Item.useTurn = true;
-            Item.shoot = ModContent.ProjectileType<MagmiteBottleProjectile>();
-            Item.shootSpeed = 8.5f;
-            Item.consumable = true;
+		public override void SetDefaults()
+		{
+			Item.damage = 50;
+			Item.DamageType = DamageClass.Ranged;
+			Item.width = 36;
+			Item.height = 38;
+			Item.useTime = 18;
+			Item.useAnimation = 18;
+			Item.useStyle = ItemUseStyleID.Swing;
+			Item.value = 0;
+			Item.rare = ItemRarityID.Orange;
+			Item.UseSound = SoundID.Item1;
+			Item.autoReuse = false;
+			Item.useTurn = true;
+			Item.shoot = ModContent.ProjectileType<MagmiteBottleProjectile>();
+			Item.shootSpeed = 8.5f;
+			Item.consumable = true;
 			Item.maxStack = 999;
-        }
+		}
 
 		public override void AddRecipes()
 		{
@@ -92,15 +87,16 @@ namespace StarlightRiver.Content.Items.Vitric
 
 						if (!Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MagmaBottleBurn>() && n.Center == pos))
 							Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<MagmaBottleBurn>(), 25, 0, Projectile.owner);
-						else Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MagmaBottleBurn>() && n.Center == pos).timeLeft = 180;
+						else
+							Main.projectile.FirstOrDefault(n => n.active && n.type == ModContent.ProjectileType<MagmaBottleBurn>() && n.Center == pos).timeLeft = 180;
 					}
 				}
+
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
 			}
 
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, Projectile.Center);
-
 		}
 	}
 
@@ -108,7 +104,10 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override bool OnTileCollide(Vector2 oldVelocity) => false;
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return false;
+		}
 
 		public override void SetDefaults()
 		{
@@ -125,7 +124,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AI()
 		{
 			Tile tile = Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16];
-			if (!tile.HasTile) 
+			if (!tile.HasTile)
 				Projectile.timeLeft = 0;
 
 			Lighting.AddLight(Projectile.Center, new Vector3(1.1f, 0.5f, 0.2f) * (Projectile.timeLeft / 180f));
@@ -133,7 +132,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (target.Hitbox.Intersects(Projectile.Hitbox)) target.GetGlobalNPC<StarlightNPC>().DoT += (int)((float)Projectile.damage * Projectile.timeLeft / 180f);
+			if (target.Hitbox.Intersects(Projectile.Hitbox))
+				target.GetGlobalNPC<StarlightNPC>().DoT += (int)((float)Projectile.damage * Projectile.timeLeft / 180f);
 			return false;
 		}
 
@@ -141,7 +141,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			Tile tile = Main.tile[(int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16];
 			Texture2D tex = TextureAssets.Tile[tile.TileType].Value;
-			Rectangle frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+			var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 			Vector2 pos = Projectile.position + Vector2.One - Main.screenPosition;
 			Color color = new Color(255, 140, 50) * 0.2f * (Projectile.timeLeft / 180f);
 

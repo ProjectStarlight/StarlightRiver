@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Helpers;
-using System.Linq;
-using Terraria.DataStructures;
+﻿using System.Linq;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items

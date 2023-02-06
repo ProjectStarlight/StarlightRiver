@@ -1,15 +1,12 @@
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Buffs.Summon;
-using StarlightRiver.Core;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -56,7 +53,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (stormTimer % 240 < 2)
 			{
-				List<Projectile> toSwoop = Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.ModProjectile is PhoenixStormMinion modProj && modProj.syncItem == Item).ToList();
+				var toSwoop = Main.projectile.Where(n => n.active && n.owner == player.whoAmI && n.ModProjectile is PhoenixStormMinion modProj && modProj.syncItem == Item).ToList();
 				toSwoop.ForEach(n => (n.ModProjectile as PhoenixStormMinion).swoopDelay = Main.rand.Next(10, 40));
 			}
 		}
@@ -67,7 +64,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			position = Main.MouseWorld;
 
-			Projectile proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
+			var proj = Projectile.NewProjectileDirect(source, position, velocity, type, damage, knockback, player.whoAmI);
 			proj.originalDamage = damage;
 			(proj.ModProjectile as PhoenixStormMinion).syncItem = Item;
 			return false;
@@ -95,12 +92,12 @@ namespace StarlightRiver.Content.Items.Vitric
 		private bool swooping = false;
 		private float swoopSpeed = 0.1f;
 
-		private List<NPC> alreadyHit = new List<NPC>();
+		private List<NPC> alreadyHit = new();
 
-		private List<Vector2> oldPos = new List<Vector2>();
-		private List<float> oldRot = new List<float>();
+		private List<Vector2> oldPos = new();
+		private List<float> oldRot = new();
 
-		private List<Vector2> swoopTrajectory = new List<Vector2>();
+		private List<Vector2> swoopTrajectory = new();
 
 		private NPC target;
 
@@ -119,9 +116,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			Main.projFrames[Projectile.type] = 7;
 
 			Main.projPet[Projectile.type] = true;
-			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true; 
-			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; 
-			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true; 
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
+			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
+			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
 		}
 
 		public sealed override void SetDefaults()
@@ -169,18 +166,21 @@ namespace StarlightRiver.Content.Items.Vitric
 				Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * 0.6f);
 			}
 			else if (glowOpacity > 0)
+			{
 				glowOpacity -= 0.05f;
+			}
 
 			if (swooping)
 			{
 				if (Main.rand.NextBool(2))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20, 20), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat()), 0.45f);
-				
+
 				if (swoopTrajectory.Count == 0)
 				{
 					swooping = false;
 					return;
 				}
+
 				while (Projectile.Distance(swoopTrajectory[0]) < 31)
 				{
 					swoopTrajectory.RemoveAt(0);
@@ -191,8 +191,8 @@ namespace StarlightRiver.Content.Items.Vitric
 					}
 				}
 
-				float progress = 1 - ((10 - swoopTrajectory.Count()) / 10f);
-				Projectile.velocity = Projectile.DirectionTo(swoopTrajectory[0]) * (1 + ((0.5f - MathF.Abs(progress - 0.5f)) * 60));
+				float progress = 1 - (10 - swoopTrajectory.Count()) / 10f;
+				Projectile.velocity = Projectile.DirectionTo(swoopTrajectory[0]) * (1 + (0.5f - MathF.Abs(progress - 0.5f)) * 60);
 				Projectile.rotation = Projectile.velocity.ToRotation();
 				Projectile.frame = Main.projFrames[Projectile.type] - 1;
 
@@ -217,7 +217,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Projectile.frame %= Main.projFrames[Projectile.type] - 1;
 
-					swoopDelay--;
+				swoopDelay--;
 				if (swoopDelay == 0)
 					Swoop();
 
@@ -252,12 +252,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			{
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(20, 20), ModContent.DustType<Dusts.Glow>(), Main.rand.NextVector2Circular(5, 5), 0, Color.Lerp(Color.Orange, Color.Red, Main.rand.NextFloat()), 0.55f);
 			}
+
 			alreadyHit.Add(target);
 			target.AddBuff(BuffID.OnFire, 240);
 			Projectile.penetrate++;
 		}
 
-		public override bool MinionContactDamage() => swooping;
+		public override bool MinionContactDamage()
+		{
+			return swooping;
+		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -265,18 +269,18 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D whiteTex = Request<Texture2D>(Texture + "_White").Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 			int frameHeight = tex.Height / Main.projFrames[Projectile.type];
-			Rectangle frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
-			
+			var frame = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+
 			SpriteEffects spriteEffects = SpriteEffects.FlipHorizontally;
 			float rotation = Projectile.rotation;
 
 			if (Projectile.velocity.X < 0)
 				spriteEffects = SpriteEffects.None;
-			
+
 			if (Owner.HasMinionAttackTargetNPC || swooping)
 			{
 				int glowFrameHeight = glowTex.Height / Main.projFrames[Projectile.type];
-				Rectangle glowFrame = new Rectangle(0, glowFrameHeight * Projectile.frame, glowTex.Width, glowFrameHeight);
+				var glowFrame = new Rectangle(0, glowFrameHeight * Projectile.frame, glowTex.Width, glowFrameHeight);
 				Color glowColor = Color.OrangeRed * glowOpacity;
 				glowColor.A = 0;
 				Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, glowFrame, glowColor, rotation, glowFrame.Size() / 2, Projectile.scale * 1.2f, spriteEffects, 0f);
@@ -290,13 +294,14 @@ namespace StarlightRiver.Content.Items.Vitric
 				for (int i = 0; i < oldPos.Count(); i++)
 				{
 					float opacity = i / (float)oldPos.Count();
-					Color color = Color.Lerp(Color.Orange, Color.Red, opacity);
+					var color = Color.Lerp(Color.Orange, Color.Red, opacity);
 					Main.spriteBatch.Draw(tex, oldPos[i] - Main.screenPosition, frame, color * opacity, oldRot[i], frame.Size() / 2, Projectile.scale, spriteEffects, 0f);
 				}
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, rotation, frame.Size() / 2, Projectile.scale, spriteEffects, 0f);
 			return false;
 		}
@@ -322,10 +327,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		private void ManageTrail()
 		{
-			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 13 * factor, factor =>
-			{
-				return Color.OrangeRed;
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 10, new TriangularTip(4), factor => 13 * factor, factor => Color.OrangeRed);
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -342,7 +344,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Vector2 endPoint = Projectile.Center + new Vector2((target.Center.X - Projectile.Center.X) * 3, -70) + Main.rand.NextVector2Circular(50, 25);
 			Vector2 control1 = new Vector2(Projectile.Center.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 55);
 			Vector2 control2 = new Vector2(endPoint.X, target.Center.Y + 100) + Main.rand.NextVector2Circular(50, 55);
-			BezierCurve curve = new BezierCurve(Projectile.Center, control1, control2, endPoint);
+			var curve = new BezierCurve(Projectile.Center, control1, control2, endPoint);
 			swoopTrajectory = curve.GetPoints(10);
 			swooping = true;
 		}

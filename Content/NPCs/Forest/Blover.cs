@@ -152,12 +152,12 @@ namespace StarlightRiver.Content.NPCs.Forest
 			Vector2 dustPos = NPC.Center + new Vector2(60 * Math.Sign(Target.Center.X - NPC.Center.X), Main.rand.Next(-15, 15));
 			Dust.NewDustPerfect(dustPos, ModContent.DustType<Dusts.GlowLine>(), 7 * new Vector2(Math.Sign(Target.Center.X - NPC.Center.X), 0), 0, Color.White * 0.3f, 1.25f);
 
-			var npcTarget = Main.npc.Where(n => n.active && n.knockBackResist > 0 && Math.Abs(n.Center.X - NPC.Center.X) < 300 && Math.Abs(n.Center.Y - NPC.Center.Y) < 30 && Math.Sign(n.Center.X - NPC.Center.X) == NPC.direction).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
+			NPC npcTarget = Main.npc.Where(n => n.active && n.knockBackResist > 0 && Math.Abs(n.Center.X - NPC.Center.X) < 300 && Math.Abs(n.Center.Y - NPC.Center.Y) < 30 && Math.Sign(n.Center.X - NPC.Center.X) == NPC.direction).OrderBy(n => n.Distance(NPC.Center)).FirstOrDefault();
 			if (npcTarget != default)
 			{
 				float npcTargetAcceleration = Math.Sign(npcTarget.Center.X - NPC.Center.X) * (float)((300 - Math.Abs(npcTarget.Center.X - NPC.Center.X)) / 300f) * 0.55f * npcTarget.knockBackResist;
 
-				if ((Math.Abs(npcTarget.velocity.X) < 10 || Math.Sign(npcTarget.velocity.X) != Math.Sign(npcTargetAcceleration)))
+				if (Math.Abs(npcTarget.velocity.X) < 10 || Math.Sign(npcTarget.velocity.X) != Math.Sign(npcTargetAcceleration))
 					npcTarget.velocity.X += npcTargetAcceleration;
 			}
 		}

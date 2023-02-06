@@ -1,18 +1,14 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using Terraria.ID;
-using Terraria;
-using System;
-using Microsoft.Xna.Framework;
 using StarlightRiver.Core.Systems.ChestLootSystem;
-using Terraria.ModLoader;
+using System;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class BricklayersMallet : SmartAccessory
-    {
-        public override string Texture => AssetDirectory.MiscItem + Name;
-        public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 50% for blocks outside your original range") { }
+	public class BricklayersMallet : SmartAccessory
+	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
+		public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 50% for blocks outside your original range") { }
 
 		public override void Load()
 		{
@@ -39,14 +35,17 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		public override void SafeSetDefaults()
-        {
-            Item.rare = ItemRarityID.Green;
-            Item.value = Item.sellPrice(silver: 25);
-        }
-    }
+		{
+			Item.rare = ItemRarityID.Green;
+			Item.value = Item.sellPrice(silver: 25);
+		}
+	}
 
-    class BricklayersMalletPool : LootPool
-    {
-        public override void AddLoot() => AddItem(ModContent.ItemType<BricklayersMallet>(), ChestRegionFlags.Surface, 0.25f, 1, false, -1);
-    }
+	class BricklayersMalletPool : LootPool
+	{
+		public override void AddLoot()
+		{
+			AddItem(ModContent.ItemType<BricklayersMallet>(), ChestRegionFlags.Surface, 0.25f, 1, false, -1);
+		}
+	}
 }
