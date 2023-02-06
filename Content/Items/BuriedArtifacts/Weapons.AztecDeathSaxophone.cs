@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -12,9 +13,13 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
 	public class AztecDeathSaxophone : ModItem
 	{
-		public const int MAX_CHARGE = 5;
+		public const int MAX_CHARGE = 10;
 
 		public int charge;
+
+		public bool flashed;
+
+		public int flashTimer;
 
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
@@ -50,7 +55,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public void HitEffects(Player Player, NPC target)
 		{
 			if (target.life <= 0 && charge < MAX_CHARGE)
-				IncreaseCharge(Player);
+				IncreaseCharge(Player, 1);
 		}
 
 		public void HurtEffects(Player Player, int damage)
@@ -61,14 +66,18 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				IncreaseCharge(Player);
 		}
 
-		public void IncreaseCharge(Player Player)
+		public void IncreaseCharge(Player Player, int increase = 2)
 		{
 			for (int i = 0; i < Player.inventory.Length; i++)
 			{
 				Item item = Player.inventory[i];
 
-				if (item.ModItem is AztecDeathSaxophone sax)
-					sax.charge++;
+				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < 10)
+				{
+					sax.charge += increase;
+					if (sax.charge > 10)
+						sax.charge = 10;
+				}			
 			}
 		}
 
@@ -99,22 +108,46 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.shootSpeed = 1f;
 		}
 
+		public override void UpdateInventory(Player player)
+		{
+			if (flashTimer > 0)
+				flashTimer--;
+
+			if (charge == MAX_CHARGE && !flashed)
+			{
+				flashTimer = 45;
+				flashed = true;
+			}
+		}
+
 		public override bool CanUseItem(Player player)
 		{
-			return player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
+			return charge >= MAX_CHARGE && player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			charge = 0;
+			flashed = false;
 			return base.Shoot(player, source, position, velocity, type, damage, knockback);
 		}
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
 			spriteBatch.Draw(tex, position, frame, drawColor, 0f, origin, scale, 0f, 0f);
+
+			Color color = new Color(200, 0, 0, 0) * MathHelper.Lerp(0f, 1f, charge / (float)MAX_CHARGE);
+
+			if (flashTimer > 0)
+				color = Color.Lerp(new Color(255, 255, 255, 0), new Color(200, 0, 0, 0), 1f - flashTimer / 45f);
+
+			spriteBatch.Draw(texGlow, position + new Vector2(-1), null, color, 0f, origin, scale, 0f, 0f);
+
+			spriteBatch.Draw(glowTex, position + new Vector2(-65, -75), null, color, 0f, origin, 1f, 0f, 0f);
 
 			return false;
 		}
@@ -183,13 +216,29 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			}
 			else
 			{
+				if (Projectile.timeLeft == (int)(originalTimeleft * 0.65f))
+				{
+					SoundStyle style = SoundID.Roar;
+					style.MaxInstances = 0;
+
+					SoundEngine.PlaySound(style with { Pitch = -0.5f }, Owner.Center);
+					SoundEngine.PlaySound(style with { Pitch = -0.15f }, Owner.Center);
+					SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -1f }, Owner.Center);
+				}
+					
+
 				if (Projectile.timeLeft % ((int)(originalTimeleft * 0.65f) / 5) == 0)
 				{
-					CameraSystem.shake += 7;
+					CameraSystem.shake += 10;
 
 					Vector2 pos = Owner.Center + new Vector2(30f * Owner.direction, 10f) + (Owner.direction == -1 ? Vector2.UnitX * 3f : Vector2.Zero);
 
 					Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<AztecDeathSaxophoneSoundwave>(), Projectile.damage, Projectile.knockBack, Projectile.owner).rotation = Main.rand.NextFloat(6.28f);
+
+					for (int i = 0; i < 30; i++)
+					{
+						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(10f, 10f), 0, new Color(255, 0, 0), 0.95f);
+					}
 				}
 			}
 		}
@@ -197,7 +246,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 	class AztecDeathSaxophoneSoundwave : ModProjectile
 	{
-		public float Radius => 100 * Projectile.scale;
+		public float Radius => 50 * Projectile.scale;
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetDefaults()
@@ -219,22 +268,23 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void AI()
 		{
 			Projectile.scale += 0.35f;
-
-
-
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
 		}
-
+		
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Color color = new Color(255, 0, 0, 0) * 0.45f;
+			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blurred").Value;
+
+			Color color = new Color(100, 0, 0, 0);
 			if (Projectile.timeLeft < 10)
 				color *= Projectile.timeLeft / 10f;
+
+			Main.spriteBatch.Draw(texBlur, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, texBlur.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
 			return false;
