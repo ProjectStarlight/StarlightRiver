@@ -42,6 +42,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
 					Fire(player);
+
 				if (player.wingTime > 0)
 				{
 					shotTimer++;
