@@ -1,15 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -85,7 +81,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 						if (thrownAxe.ModProjectile is ThrownAxeProjectile)
 						{
-							ThrownAxeProjectile modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
+							var modProj = thrownAxe.ModProjectile as ThrownAxeProjectile;
 							modProj.trailColor = ItemColorUtility.GetColor(item.type);
 							modProj.texture = TextureAssets.Item[item.type].Value;
 							modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
@@ -103,7 +99,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 					if (proj.ModProjectile is AxeBookProjectile)
 					{
-						AxeBookProjectile modProj = proj.ModProjectile as AxeBookProjectile;
+						var modProj = proj.ModProjectile as AxeBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
 						modProj.texture = TextureAssets.Item[item.type].Value;
 						modProj.length = (float)Math.Sqrt(Math.Pow(modProj.texture.Width, 2) + Math.Pow(modProj.texture.Width, 2)) * item.scale;
@@ -172,13 +168,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.extraUpdates = 3;
 		}
 
-		private void DoSwingAnimation(Player Player)
+		private void DoSwingAnimation(Player player)
 		{
-			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == Player.whoAmI);
-			AxeBookProjectile modProj = instance.ModProjectile as AxeBookProjectile;
+			Projectile instance = Main.projectile.FirstOrDefault(n => n.ModProjectile is AxeBookProjectile && n.owner == player.whoAmI);
+			var modProj = instance?.ModProjectile as AxeBookProjectile;
 
 			if (modProj != null && instance.active)
-				Player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
+				player.bodyFrame = new Rectangle(0, (int)(1 + modProj.Progress * 4) * 56, 40, 56);
 		}
 
 		public override void AI()
@@ -270,7 +266,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
 			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
-			Core.Systems.CameraSystem.Shake += 4;
+			CameraSystem.shake += 4;
 
 			if (comboState == 2 && target.defense > 0)
 				target.defense--;
@@ -326,7 +322,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 1.25f, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * length * 1.25f, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
@@ -336,7 +332,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (cache != null)
 			{
-				Vector2[] realCache = new Vector2[50];
+				var realCache = new Vector2[50];
 
 				for (int k = 0; k < 50; k++)
 				{
@@ -351,9 +347,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
@@ -406,7 +402,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (Progress < 0.2f)
 			{
 				Projectile.Center = Owner.Center;
-				Projectile.rotation += 0.01f + (Progress / 0.2f * 0.11f);
+				Projectile.rotation += 0.01f + Progress / 0.2f * 0.11f;
 
 				Owner.SetCompositeArmFront(true, 0, Owner.direction * 1.57f + Owner.direction * (Progress / 0.2f * 4.71f));
 				Projectile.scale = Progress / 0.2f * storedScale;
@@ -465,7 +461,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
-			Core.Systems.CameraSystem.Shake += 4;
+			CameraSystem.shake += 4;
 
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * Projectile.knockBack * 2 * target.knockBackResist;
 			target.immune[0] += 22;
@@ -513,7 +509,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * 64, factor =>
+			trail ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(40 * 4), factor => (float)Math.Min(factor, Progress) * 64, factor =>
 			{
 				if (factor.X >= 0.98f)
 					return Color.White * 0;
@@ -529,9 +525,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
 			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
 			effect.Parameters["repeats"].SetValue(2f);
