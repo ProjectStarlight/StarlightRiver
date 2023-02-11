@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
 	public class AztecDeathSaxophone : ModItem
 	{
-		public const int MAX_CHARGE = 10;
+		public const int MAX_CHARGE = 30;
 
 		public int charge;
 
@@ -44,26 +44,40 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		private void StarlightPlayer_OnHitByProjectileEvent(Player player, Projectile projectile, int damage, bool crit)
 		{
-			HurtEffects(player, damage);
+			HurtEffects(player, damage, projectile);
 		}
 
 		private void StarlightPlayer_OnHitByNPCEvent(Player player, NPC npc, int damage, bool crit)
 		{
-			HurtEffects(player, damage);
+			HurtEffects(player, damage, npc);
 		}
 
 		public void HitEffects(Player Player, NPC target)
 		{
-			if (target.life <= 0 && charge < MAX_CHARGE)
+			if (target.life <= 0)
+			{
 				IncreaseCharge(Player, 1);
+
+				for (int i = 0; i < 15; i++)
+				{
+					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Player.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 15f), 0, new Color(255, 0, 0), 0.65f);
+				}
+			}			
 		}
 
-		public void HurtEffects(Player Player, int damage)
+		public void HurtEffects(Player Player, int damage, Entity attacker)
 		{
 			bool valid = damage >= 10;
 
-			if (charge < MAX_CHARGE && valid)
+			if (valid)
+			{
 				IncreaseCharge(Player);
+
+				for (int i = 0; i < 15; i++)
+				{
+					Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Player.Center.DirectionTo(attacker.Center).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 10f), 0, new Color(255, 0, 0), 0.45f);
+				}
+			}
 		}
 
 		public void IncreaseCharge(Player Player, int increase = 2)
@@ -72,11 +86,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			{
 				Item item = Player.inventory[i];
 
-				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < 10)
+				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < 30)
 				{
 					sax.charge += increase;
-					if (sax.charge > 10)
-						sax.charge = 10;
+					if (sax.charge > 30)
+						sax.charge = 30;
 				}			
 			}
 		}
@@ -238,9 +252,30 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 					for (int i = 0; i < 30; i++)
 					{
 						Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2CircularEdge(10f, 10f), 0, new Color(255, 0, 0), 0.95f);
+
+						Dust.NewDustPerfect(pos + new Vector2(0, 32f), ModContent.DustType<AztecDeathSaxophoneVelocityLine>(), Main.rand.NextVector2CircularEdge(40f, 40f) * Main.rand.NextFloat(0.5f, 1f), 0, new Color(255, 0, 0), 1.5f);
 					}
 				}
 			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
+			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D texGlow = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+
+			SpriteEffects flip = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : 0f;
+
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, new Color(255, 0, 0, 0), 0f, texGlow.Size() / 2f, Projectile.scale, flip, 0f);
+
+			spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, new Color(255, 0, 0, 0), 0f, glowTex.Size() / 2f, 0.65f, 0f, 0f);
+
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, 0f, tex.Size() / 2f, Projectile.scale, flip, 0f);
+
+			return false;
 		}
 	}
 
@@ -287,6 +322,53 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Main.spriteBatch.Draw(texBlur, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, texBlur.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() / 2f, Projectile.scale, SpriteEffects.None, 0f);
+			return false;
+		}
+	}
+
+	class AztecDeathSaxophoneVelocityLine : ModDust
+	{
+		public override string Texture => AssetDirectory.VitricBoss + "RoarLine";
+
+		public override Color? GetAlpha(Dust dust, Color lightColor)
+		{
+			float curveOut = Curve(1 - dust.fadeIn / 30f);
+			var color = Color.Lerp(dust.color, new Color(255, 0, 0), dust.fadeIn / 45f);
+			dust.color = color * (curveOut + 0.4f);
+			return dust.color;
+		}
+
+		float Curve(float input) //shrug it works, just a cubic regression for a nice looking curve
+		{
+			return -2.65f + 19.196f * input - 32.143f * input * input + 15.625f * input * input * input;
+		}
+
+		public override void OnSpawn(Dust dust)
+		{
+			dust.color = Color.Transparent;		
+			dust.fadeIn = 0;
+			dust.noLight = false;
+			dust.frame = new Rectangle(0, 0, 8, 128);
+
+			dust.shader = new Terraria.Graphics.Shaders.ArmorShaderData(new Ref<Effect>(StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value), "GlowingDustPass");
+		}
+
+		public override bool Update(Dust dust)
+		{
+			if (dust.color == Color.Transparent)
+				dust.position -= new Vector2(4, 32) * dust.scale;
+
+			dust.rotation = dust.velocity.ToRotation() + 1.57f;
+			dust.position += dust.velocity;
+			dust.shader.UseColor(dust.color);
+			dust.fadeIn++;
+
+			Lighting.AddLight(dust.position, dust.color.ToVector3() * 0.6f);
+
+			if (dust.fadeIn > 45)
+				dust.active = false;
+
+			dust.velocity *= 0.95f;
 			return false;
 		}
 	}
