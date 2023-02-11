@@ -13,9 +13,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
 	public class AztecDeathSaxophone : ModItem
 	{
-		public const int MAX_CHARGE = 30;
+		public const float MAX_CHARGE = 60f;
 
-		public int charge;
+		public float charge;
 
 		public bool flashed;
 
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			if (target.life <= 0)
 			{
-				IncreaseCharge(Player, 1);
+				IncreaseCharge(Player, 0.75f);
 
 				for (int i = 0; i < 15; i++)
 				{
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			}
 		}
 
-		public void IncreaseCharge(Player Player, int increase = 2)
+		public void IncreaseCharge(Player Player, float increase = 2)
 		{
 			for (int i = 0; i < Player.inventory.Length; i++)
 			{
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override bool CanUseItem(Player player)
 		{
-			return charge >= MAX_CHARGE && player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
+			return player.ownedProjectileCounts[ModContent.ProjectileType<AztecDeathSaxophoneHoldout>()] <= 0;
 		}
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -221,10 +221,10 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			if (Projectile.timeLeft > (int)(originalTimeleft * 0.65f))
 			{
-				float lerper = MathHelper.Lerp(35f, 1f, 1f - (Projectile.timeLeft - (int)(originalTimeleft * 0.65f)) / (float)(originalTimeleft * 0.35f));
+				float lerper = MathHelper.Lerp(50f, 1f, 1f - (Projectile.timeLeft - (int)(originalTimeleft * 0.65f)) / (float)(originalTimeleft * 0.35f));
 				Vector2 offset = Main.rand.NextVector2CircularEdge(lerper, lerper);
 				Vector2 pos = Owner.Center + new Vector2(30f * Owner.direction, 10f) + (Owner.direction == -1 ? Vector2.UnitX * 3f : Vector2.Zero);
-				Dust.NewDustPerfect(pos + offset, ModContent.DustType<Dusts.GlowFastDecelerate>(), (pos + offset).DirectionTo(pos), 0, new Color(255, 0, 0), 0.55f);
+				Dust.NewDustPerfect(pos + offset, ModContent.DustType<Dusts.GlowFastDecelerate>(), (pos + offset).DirectionTo(pos), 0, new Color(255, 0, 0), 0.75f);
 
 				Dust.NewDustPerfect(pos + offset, ModContent.DustType<Dusts.GlowLineFast>(), (pos + offset).DirectionTo(pos) * 3f, 0, new Color(255, 0, 0), 1f);
 			}
@@ -282,6 +282,8 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	class AztecDeathSaxophoneSoundwave : ModProjectile
 	{
 		public float Radius => 50 * Projectile.scale;
+
+		public float radiusIncrease => 0.15f + 0.35f * EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 45f);
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetDefaults()
@@ -302,7 +304,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void AI()
 		{
-			Projectile.scale += 0.35f;
+			Projectile.scale += radiusIncrease;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
