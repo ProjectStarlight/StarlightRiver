@@ -40,8 +40,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 
-			int x = i - tile.TileFrameX / 16;
-			int y = j - tile.TileFrameY / 16;
+			int x = i - tile.TileFrameX / 18;
+			int y = j - tile.TileFrameY / 18;
 
 			Projectile dummy = Dummy(x, y);
 
@@ -240,11 +240,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void PostDraw(Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			Texture2D debug = TextureAssets.MagicPixel.Value;
-			Rectangle Arena2 = Arena;
-			Arena2.Offset((-Main.screenPosition).ToPoint());
-			spriteBatch.Draw(debug, Arena2, Color.Red * 0.25f);
 
 			for (int k = 0; k < minions.Count; k++)
 			{
