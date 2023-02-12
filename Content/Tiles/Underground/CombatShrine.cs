@@ -66,6 +66,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
+	class CombatShrineItem : QuickTileItem
+	{
+		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
+	}
+
 	class CombatShrineDummy : Dummy, IDrawAdditive
 	{
 		public List<NPC> minions = new();
