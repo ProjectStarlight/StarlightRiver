@@ -314,7 +314,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<CombatShrineDummy>() && (n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox));
+			return Main.projectile.Any(
+				n => n.active &&
+				n.type == ModContent.ProjectileType<CombatShrineDummy>() &&
+				(n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox) &&
+				(n.ModProjectile as CombatShrineDummy).State != 0);
 		}
 	}
 
