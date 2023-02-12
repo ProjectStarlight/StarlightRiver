@@ -32,7 +32,7 @@ namespace StarlightRiver.Helpers
 		/// Checks if an area of the world is most likely safe to generate a structure. By default checks against a reasonable blacklist including dungeon tiles and chests, and makes sure it is not inside a protected region.
 		/// </summary>
 		/// <param name="area">The rectangle to check, in tile coordinates</param>
-		/// <param name="extraConstraints">Any additional conditions that should be checked against, for example if a structure should never be near ice, you can check that a tiles type is not that of ice.</param>
+		/// <param name="extraConstraints">Any additional per-tile conditions that should be checked against, for example if a structure should never be near ice, you can check that a tiles type is not that of ice.</param>
 		/// <param name="extraConstraintsOnly">If the check should only use your custom conditions and throw out the default ones.</param>
 		/// <returns>If a region in the world meets the conditions described for safety.</returns>
 		public static bool IsRectangleSafe(Rectangle area, Func<Tile, Point16, bool> extraConstraints = null, bool extraConstraintsOnly = false)

@@ -83,6 +83,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
+		public Rectangle Arena => new(ParentX * 16 - 50, ParentY * 16 - 20, 100 * 16, 40 * 16);
+
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
 		public override void Update()
@@ -239,6 +241,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
+			Texture2D debug = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+			Rectangle Arena2 = Arena;
+			Arena2.Offset((-Main.screenPosition).ToPoint());
+			spriteBatch.Draw(debug, Arena2, Color.Red * 0.25f);
+
 			for (int k = 0; k < minions.Count; k++)
 			{
 				NPC target = minions[k];
@@ -296,6 +303,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
+		}
+	}
+
+	class CombatShrineBiome : ModBiome
+	{
+		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/WhipAndNaenae");
+
+		public override bool IsBiomeActive(Player player)
+		{
+			return Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<CombatShrineDummy>() && (n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox));
 		}
 	}
 
