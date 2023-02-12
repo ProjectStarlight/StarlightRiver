@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						int realX = x1 + i - tile.TileFrameX / 18;
 						int realY = y1 + j - tile.TileFrameY / 18;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((3 + x1) * 18);
 					}
 				}
 
@@ -96,9 +96,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)(x * 18);
 					}
 				}
+
+				return;
 			}
 
 			if (State != 0)
