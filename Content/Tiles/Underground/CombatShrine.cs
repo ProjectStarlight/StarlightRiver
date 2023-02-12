@@ -83,7 +83,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 50, ParentY * 16 - 20, 100 * 16, 40 * 16);
+		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
 
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
@@ -241,7 +241,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Texture2D debug = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+			Texture2D debug = TextureAssets.MagicPixel.Value;
 			Rectangle Arena2 = Arena;
 			Arena2.Offset((-Main.screenPosition).ToPoint());
 			spriteBatch.Draw(debug, Arena2, Color.Red * 0.25f);
