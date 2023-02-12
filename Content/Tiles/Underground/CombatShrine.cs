@@ -310,7 +310,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 	{
 		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
 
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/WhipAndNaenae");
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/CombatShrine");
 
 		public override bool IsBiomeActive(Player player)
 		{
