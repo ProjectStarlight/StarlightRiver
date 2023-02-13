@@ -97,16 +97,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			if (GearPuzzleHandler.solved) //draws the crystal gear once the puzzle is finished
 			{
-				switch (Size)
+				tex = Size switch
 				{
-					case 0: tex = ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value; break;
-					case 1: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value; break;
-					case 2: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearMid").Value; break;
-					case 3: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearLarge").Value; break;
-					default: tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value; break;
-				}
-
-				var effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
+					0 => ModContent.Request<Texture2D>(AssetDirectory.Invisible).Value,
+					1 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value,
+					2 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearMid").Value,
+					3 => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearLarge").Value,
+					_ => ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "CrystalGearSmall").Value,
+				};
+				Effect effect = Terraria.Graphics.Effects.Filters.Scene["MoltenForm"].GetShader().Shader;
 				effect.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/ShieldMap").Value);
 				effect.Parameters["uTime"].SetValue(GearPuzzleHandler.solveTimer / 180f * 2);
 				effect.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, tex.Width, tex.Height));

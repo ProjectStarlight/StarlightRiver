@@ -5,7 +5,6 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -49,7 +48,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "GruntConstruct";
 
-		public override Vector2 PreviewOffset => new Vector2(8, 6);
+		public override Vector2 PreviewOffset => new(8, 6);
 
 		public override void Load()
 		{
