@@ -38,7 +38,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override bool RightClick(int i, int j)
 		{
-			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			if (tile.TileFrameX >= 18 * 3)
+				return false;
 
 			int x = i - tile.TileFrameX / 18;
 			int y = j - tile.TileFrameY / 18;
