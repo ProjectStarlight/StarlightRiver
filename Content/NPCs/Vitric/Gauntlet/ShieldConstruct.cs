@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override string Texture => AssetDirectory.GauntletNpc + "ShieldConstruct";
 
-		public override Vector2 PreviewOffset => new Vector2(0, 8);
+		public override Vector2 PreviewOffset => new(0, 8);
 
 		public override void SetStaticDefaults()
 		{

@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		private Player Target => Main.player[NPC.target];
 
-		public override Vector2 PreviewOffset => new Vector2(0, 6);
+		public override Vector2 PreviewOffset => new(0, 6);
 
 		public override void SetStaticDefaults()
 		{
