@@ -109,12 +109,14 @@ namespace StarlightRiver.Content.CustomHooks
 
 		/// <summary>
 		/// gets the whoAmI's Player's renderTarget and returns a Vector2 that represents the rendertarget's position overlapping with the Player's position in terms of screen coordinates
+		/// comes preshifted for reverse gravity
 		/// </summary>
 		/// <param name="whoAmI"></param>
 		/// <returns></returns>
 		public static Vector2 getPlayerTargetPosition(int whoAmI)
 		{
-			return Main.player[whoAmI].position - Main.screenPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
+			Vector2 gravPosition = Main.ReverseGravitySupport(Main.player[whoAmI].position - Main.screenPosition);
+			return gravPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
 		}
 
 		private void RefreshTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)

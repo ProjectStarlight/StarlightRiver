@@ -44,6 +44,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				for (int k = 0; k < 59; k++)
 				{
+					if (Main.masterMode && ((k + 1) % 20 <= 5 || (k + 1) % 20 >= 15))
+						continue;
+
 					int x = (int)Projectile.Center.X / 16 + xOff + k;
 					ValidPoints.Add(new Point16(x, y));
 				}
@@ -156,8 +159,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				spriteBatch.Draw(texBeam, target, source1, color * 0.45f, -1.57f, origin, 0, 0);
 				spriteBatch.Draw(texBeam2, target2, source2, color * 0.65f, -1.57f, origin2, 0, 0);
 				spriteBatch.Draw(texBeam2, target3, source2, color * 1.1f, -1.57f, origin2, 0, 0);
-
-				Main.NewText(thisHeight);
 			}
 
 			spriteBatch.Draw(texStar, Projectile.Center - Vector2.UnitY * (this.height - 16) - Main.screenPosition, null, color * 1.1f, Projectile.ai[1] * 0.025f, texStar.Size() / 2, 1, 0, 0);
