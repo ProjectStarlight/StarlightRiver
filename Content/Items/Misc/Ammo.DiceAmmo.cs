@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -38,11 +38,34 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class DiceProj : ModProjectile
 	{
+		private enum Stat
+		{
+			none = 0,
+			damage = 1,
+			knockback = 2,
+			velocity = 3,
+			gravity = 4
+		}
+
+		private Stat primaryStat = Stat.none;
+		private Stat secondaryStat = Stat.none;
+		private Stat tertiaryStat = Stat.none;
+
 		const int FRAME_COUNT = 6;
 
 		private bool initialized = false;
 
 		private float gravity = 0.05f;
+
+		float damageMult = 1;
+		float knockBackMult = 1;
+		float gravityMult = 1;
+		float velocityMult = 1;
+
+		private Color glowColor = Color.White;
+
+		private readonly List<Vector2> oldPos = new();
+		private readonly List<float> oldRot = new();
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
@@ -69,26 +92,43 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AI()
 		{
 			Player player = Main.player[Projectile.owner];
-			DicePlayer mPlayer = player.GetModPlayer<DicePlayer>();
 
 			if (!initialized)
 			{
 				initialized = true;
 
-				mPlayer.damageMult *= Main.rand.NextFloat(0.1f, 2f); //correct these later
-				mPlayer.gravityMult *= Main.rand.NextFloat(0.5f, 1.5f);
-				mPlayer.velocityMult *= Main.rand.NextFloat(0.75f, 2);
-				mPlayer.knockbackMult *= Main.rand.NextFloat(0.5f, 5);
+				primaryStat = (Stat)(Main.rand.Next(4) + 1);
 
-				mPlayer.damageMult /= (float)Math.Sqrt(mPlayer.damageMult);
-				mPlayer.gravityMult /= (float)Math.Sqrt(mPlayer.gravityMult);
-				mPlayer.velocityMult /= (float)Math.Sqrt(mPlayer.velocityMult);
-				mPlayer.knockbackMult /= (float)Math.Sqrt(mPlayer.knockbackMult);
+				if (Main.rand.NextBool(15))
+				{
+					while (secondaryStat != primaryStat)
+						secondaryStat = (Stat)(Main.rand.Next(4) + 1);
+				}
 
-				Projectile.damage = (int)(Projectile.damage * mPlayer.damageMult);
-				gravity *= mPlayer.gravityMult;
-				Projectile.velocity *= mPlayer.velocityMult;
-				Projectile.knockBack *= mPlayer.knockbackMult;
+				if (Main.rand.NextBool(205))
+				{
+					while (tertiaryStat != primaryStat && tertiaryStat != secondaryStat)
+						tertiaryStat = (Stat)(Main.rand.Next(4) + 1);
+				}
+
+				ApplyStats(primaryStat);
+				ApplyStats(secondaryStat);
+				ApplyStats(tertiaryStat);
+
+				Projectile.damage = (int)(Projectile.damage * damageMult);
+				Projectile.knockBack *= knockBackMult;
+				Projectile.velocity *= velocityMult;
+				gravity *= gravityMult;
+				glowColor.A = 0;
+			}
+
+			oldPos.Add(Projectile.Center);
+			oldRot.Add(Projectile.rotation);
+
+			while (oldPos.Count > 8)
+			{
+				oldPos.RemoveAt(0);
+				oldRot.RemoveAt(0);
 			}
 
 			Projectile.velocity.X *= 0.995f;
@@ -98,19 +138,62 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 			int width = tex.Width / FRAME_COUNT;
 			var sourceRect = new Rectangle(Projectile.frame * width, 0, width, tex.Height);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, sourceRect, lightColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, sourceRect, glowColor, Projectile.rotation, new Vector2(width, tex.Height) / 2, 1f, default, default);
+
+			if (oldPos.Count == 0)
+				return false;
+
+			for (int i = 0; i < oldPos.Count; i++)
+			{
+				Vector2 pos = oldPos[i];
+				float rot = oldRot[i];
+				float opacity = i / (float)oldPos.Count;
+				Main.spriteBatch.Draw(glowTex, pos - Main.screenPosition, sourceRect, glowColor * opacity, rot, new Vector2(width, tex.Height) / 2, 1f * opacity, default, default);
+			}
+
 			return false;
 		}
-	}
 
-	//TODO: Going to leave this for now as I dont fully understand how it works, why is this stored on a player?!
-	public class DicePlayer : ModPlayer
-	{
-		public float damageMult = 1f;
-		public float gravityMult = 1f;
-		public float velocityMult = 1f;
-		public float knockbackMult = 1f;
+		private void ApplyStats(Stat stat)
+		{
+			switch (stat)
+			{
+				case Stat.damage:
+					damageMult *= Main.rand.NextFloat(2f, 3f);
+					velocityMult *= Main.rand.NextFloat(0.75f, 0.95f);
+					knockBackMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					gravityMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					glowColor = Color.Multiply(Color.Red, 1);
+					break;
+
+				case Stat.velocity:
+					velocityMult *= Main.rand.NextFloat(1.25f, 1.6f);
+					damageMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					knockBackMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					gravityMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					glowColor = Color.Multiply(Color.Blue, 1);
+					break;
+
+				case Stat.knockback:
+					knockBackMult *= Main.rand.NextFloat(2f, 3f);
+					damageMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					velocityMult *= Main.rand.NextFloat(0.75f, 0.95f);
+					gravityMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					glowColor = Color.Multiply(Color.Yellow, 1);
+					break;
+
+				case Stat.gravity:
+					gravityMult *= Main.rand.NextFloat(2f, 3f);
+					damageMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					velocityMult *= Main.rand.NextFloat(0.75f, 0.95f);
+					knockBackMult *= Main.rand.NextFloat(0.5f, 0.75f);
+					glowColor = Color.Multiply(Color.Green, 1);
+					break;
+			}
+		}
 	}
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
-using Terraria;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss

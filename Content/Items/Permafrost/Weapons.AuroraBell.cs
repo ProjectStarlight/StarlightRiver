@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Helpers;
+using StarlightRiver.Noise;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -244,7 +245,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		private Trail trail;
 		private Trail trail2;
 
-		private Noise.FastNoise noise;
+		private FastNoise noise;
 
 		public List<Projectile> cantHit = new();
 
@@ -274,9 +275,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			if (noise == null)
 			{
-				noise = new Noise.FastNoise(Main.rand.Next(9999))
+				noise = new FastNoise(Main.rand.Next(9999))
 				{
-					NoiseType = Noise.FastNoise.NoiseTypes.Perlin
+					NoiseType = FastNoise.NoiseTypes.Perlin
 				};
 			}
 

@@ -25,10 +25,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magmatic Coach Gun");
-			Tooltip.SetDefault("Press <right> to throw out an unstable crystal bomb\nExplodes shortly after, causing all other crystal bombs to also explode\n" +
-				"Shoot to detonate it early, if detonated early enough, it will explode into a cone of crystal shards\n" +
-				"If a crystal bomb is detonated by another crystal bomb, its damage is increased by 50%\n" +
-				"Explosions and crystal shards increase targets Exposure by 35% and inflict Sweltered\n'Ultrakill style'");
+			Tooltip.SetDefault("Press right click to throw out crystal bombs, bombs explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\nHow does he manage to nuke like that?");
 		}
 
 		public override void SetDefaults()

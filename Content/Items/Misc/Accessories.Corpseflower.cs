@@ -19,9 +19,14 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = true;
 				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
 				crit = false;
 				damage = 0;
+			}
+			else
+			{
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = false;
 			}
 		}
 
@@ -29,9 +34,14 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = true;
 				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
 				crit = false;
 				damage = 0;
+			}
+			else
+			{
+				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = false;
 			}
 		}
 
@@ -57,6 +67,8 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override bool InstancePerEntity => true;
 
+		public bool corpseFlowered = false;
+
 		public List<CorpseflowerDamageInstance> damageAndTimers = new();
 
 		public override void ResetEffects(NPC npc)
@@ -77,6 +89,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
 		{
+			if (!corpseFlowered)
+				return;
+
 			if (damageAndTimers.Count <= 0)
 			{
 				if (npc.lifeRegen < 0)

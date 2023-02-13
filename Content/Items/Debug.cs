@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Helpers;
-using System.Linq;
-using Terraria.DataStructures;
+﻿using System.Linq;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -51,12 +48,8 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-
-			int cX = (int)Main.MouseWorld.X / 16;
-			int cY = (int)Main.MouseWorld.Y / 16;
-
-			Helper.PlaceMultitile(new Point16(cX, cY - 3), ModContent.TileType<VitricOre>(), Main.rand.Next(3));
-
+			for (int i = 0; i < 8; i++)
+				WorldGen.dropMeteor();
 			return true;
 		}
 	}

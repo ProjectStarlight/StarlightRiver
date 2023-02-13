@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using StarlightRiver.Core;
-using Terraria;
+﻿using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
