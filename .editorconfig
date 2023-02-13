@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 # Remove the line below if you want to inherit .editorconfig settings from higher directories
-=======
-﻿# Remove the line below if you want to inherit .editorconfig settings from higher directories
->>>>>>> master
+
 root = true
 
 # C# files
@@ -127,7 +124,7 @@ csharp_style_prefer_range_operator = true:warning
 csharp_style_prefer_tuple_swap = true:warning
 csharp_style_throw_expression = true:warning
 csharp_style_unused_value_assignment_preference = unused_local_variable:silent
-csharp_style_unused_value_expression_statement_preference = unused_local_variable
+csharp_style_unused_value_expression_statement_preference = unused_local_variable:silent
 
 # 'using' directive preferences
 csharp_using_directive_placement = outside_namespace:warning
@@ -224,8 +221,28 @@ dotnet_naming_style.pascal_case.capitalization = pascal_case
 dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 
 dotnet_naming_style.begins_with_i.word_separator = 
-<<<<<<< HEAD
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
-=======
-dotnet_naming_style.begins_with_i.capitalization = pascal_case
->>>>>>> master
+
+[*.{cs,vb}]
+dotnet_style_coalesce_expression = true:warning
+dotnet_style_null_propagation = true:warning
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+dotnet_style_prefer_auto_properties = true:warning
+dotnet_style_object_initializer = true:warning
+dotnet_style_collection_initializer = true:warning
+dotnet_style_prefer_simplified_boolean_expressions = true:warning
+dotnet_style_prefer_conditional_expression_over_assignment = false:warning
+dotnet_style_prefer_conditional_expression_over_return = false:warning
+dotnet_style_explicit_tuple_names = true:warning
+dotnet_style_prefer_inferred_tuple_names = true:warning
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
+dotnet_style_prefer_compound_assignment = true:warning
+dotnet_style_prefer_simplified_interpolation = true:suggestion
+dotnet_style_namespace_match_folder = true:suggestion
+dotnet_style_readonly_field = true:warning
+dotnet_style_predefined_type_for_locals_parameters_members = true:warning
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+tab_width = 4
+indent_size = 4
+end_of_line = crlf
+dotnet_style_predefined_type_for_member_access = true:warning
