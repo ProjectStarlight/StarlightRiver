@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;

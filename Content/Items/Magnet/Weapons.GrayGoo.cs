@@ -8,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Magnet
 {
-	public class GrayGooDustData 
+	public class GrayGooDustData
 	{
 		public int x;
 		public int y;
@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			DisplayName.SetDefault("Gray Goo");
 			Tooltip.SetDefault("Summons a swarm of nanomachines to devour enemies");
-			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true; 
+			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
@@ -98,9 +98,9 @@ namespace StarlightRiver.Content.Items.Magnet
 		{
 			DisplayName.SetDefault("Gray Goo");
 
-			Main.projPet[Projectile.type] = true; 
+			Main.projPet[Projectile.type] = true;
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
-			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true; 		 
+			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
 			ProjectileID.Sets.CultistIsResistantTo[Projectile.type] = true;
 		}
 
@@ -167,7 +167,6 @@ namespace StarlightRiver.Content.Items.Magnet
 			var alreadyTargetted = new List<NPC>();
 			var goos = Main.projectile.Where(n => n.active && n.type == ModContent.ProjectileType<GrayGooProj>() && n != Projectile && (n.ModProjectile as GrayGooProj).foundTarget).ToList();
 			goos.ForEach(n => alreadyTargetted.Add(Main.npc[(int)(n.ModProjectile as GrayGooProj).EnemyWhoAmI]));
-
 
 			if (Owner.HasMinionAttackTargetNPC)
 			{
@@ -410,7 +409,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			Vector2 posToBe = entityCenter + new Vector2(data.x, data.y);
-			var unused = dust.shader.UseColor(dust.color);
+			Terraria.Graphics.Shaders.ArmorShaderData unused = dust.shader.UseColor(dust.color);
 
 			if ((posToBe - dust.position).Length() < 5)
 			{

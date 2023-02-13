@@ -27,9 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bladesaw");
-			Tooltip.SetDefault("Slashes with a combo heavy swings\nSlows down on hit, shredding anything unlucky enough to be caught in the way\n" +
-				"Striking enemies inflicts them with stacks of Shredded, and heats up the blade... er saw\nThe bladesaw does more damage depending on how heated it is, to a maximum of 18%\n" +
-				"<right> to cause the blade to slice through trees\n'What are you, some kind of Chainsaw Man?'");
+			Tooltip.SetDefault("Shreds through enemies \nRepeated hits shred enemies and overheat the saw, increasing damage \nRight click to use as a tool");
 
 			ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
 		}

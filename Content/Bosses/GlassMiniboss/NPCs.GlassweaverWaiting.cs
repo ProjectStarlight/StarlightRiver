@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.CameraSystem;
 using Terraria.ID;
 using Terraria.ModLoader.IO;

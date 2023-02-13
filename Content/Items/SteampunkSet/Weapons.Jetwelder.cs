@@ -21,7 +21,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Item.damage = 20;
 			Item.knockBack = 3f;
-			Item.mana = 10;
 			Item.width = 32;
 			Item.height = 32;
 			Item.useTime = 36;
@@ -32,7 +31,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.UseSound = SoundID.Item44;
 			Item.channel = true;
 			Item.noMelee = true;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = DamageClass.Summon;
 			Item.shoot = ModContent.ProjectileType<JetwelderFlame>();
 			Item.autoReuse = false;
 		}
@@ -469,9 +468,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			if (target.life <= 0 && Main.rand.NextBool(5))
+			if (target.life <= 0 && Main.rand.NextBool(2))
 				SpawnScrap(target.Center);
-			else if (Main.rand.NextBool(30))
+			else if (Main.rand.NextBool(8))
 				SpawnScrap(target.Center);
 		}
 
