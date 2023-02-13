@@ -1,38 +1,44 @@
-﻿namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
+using System;
+
+namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 {
-	public class GauntletSpawner : ModProjectile, IGauntletNPC
+	internal class GauntletSpawner : ConstructSpawner
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		public Vector2 targetPos;
+		public Vector2 startPos;
 
-		public override void SetDefaults()
+		public int moveTimer;
+		private float rand;
+
+		public override bool PreAI()
 		{
-			Projectile.width = 16;
-			Projectile.height = 16;
+			moveTimer++;
+
+			gravity = false;
 			Projectile.tileCollide = false;
-			Projectile.ignoreWater = true;
-			Projectile.penetrate = -1;
-			Projectile.aiStyle = -1;
-		}
 
-		public override void AI()
-		{
-			Projectile.ai[1]++;
+			if (moveTimer == 1)
+				rand = Main.rand.NextFloat(6.28f);
 
-			Vector2 cinderPos = Projectile.Top + Main.rand.NextVector2Circular(95, 95);
-			var cinder = Dust.NewDustPerfect(cinderPos, ModContent.DustType<Dusts.Cinder>(), -Vector2.UnitY.RotatedBy(cinderPos.AngleTo(Projectile.Center)) * Main.rand.NextFloat(-2, 2), 0, Bosses.GlassMiniboss.Glassweaver.GlowDustOrange, 1f);
-			cinder.customData = Projectile.Center + Main.rand.NextVector2Circular(40, 40);
-
-			if (Projectile.ai[1] > 70)
+			if (moveTimer < 60)
 			{
-				NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)Projectile.ai[0]);
-				Projectile.Kill();
+				float offset = (1 - moveTimer / 60f) * ((float)Math.Cos(moveTimer / 8f * 3.14f + rand) * 30 + (float)Math.Sin(moveTimer / 14f * 3.14f + rand) * 20);
+				Projectile.Center = Vector2.SmoothStep(startPos, targetPos, moveTimer / 60f) + new Vector2(0, 32 - (float)Math.Sin(moveTimer / 60f * 3.14f) * (180 + offset));
 			}
+			else if (moveTimer == 60)
+			{
+				Timer = 2;
+			}
+
+			return true;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public override void SpawnNPC()
 		{
-			//do animation here
-			return false;
+			int i = NPC.NewNPC(Entity.GetSource_Misc("SLR:GlassGauntlet"), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCType);
+
+			var mnpc = Main.npc[i].ModNPC as VitricConstructNPC;
+			mnpc.partOfGauntlet = true;
 		}
 	}
 }

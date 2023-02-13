@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -11,7 +12,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		Vector2 origin;
 
+		public bool boundToParent = true;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
 		public override void SetStaticDefaults()
 		{
@@ -29,10 +36,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.hide = true;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
-
 		public override void OnSpawn(IEntitySource source)
 		{
 			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingLong", 1f, 0f, Projectile.Center);
@@ -45,10 +48,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (!Parent.active || Parent.type != NPCType<Glassweaver>())
 				Projectile.Kill();
 
-			float stabLerp = (float)Math.Pow(Utils.GetLerpValue(66, 82, Timer, true), 2f);
-			Projectile.rotation = MathHelper.ToRadians(MathHelper.Lerp(-60, 10, stabLerp)) * Parent.direction - MathHelper.Pi;
+			if (boundToParent)
+			{
+				float stabLerp = (float)Math.Pow(Utils.GetLerpValue(66, 82, Timer, true), 2f);
+				Projectile.rotation = MathHelper.ToRadians(MathHelper.Lerp(-60, -10, stabLerp)) * Parent.direction - MathHelper.Pi;
+			}
+			else
+			{
+				if (Projectile.velocity.Length() > 0)
+					Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
+			}
 
 			Vector2 handPos;
+
 			if (Projectile.velocity.Y != 0)
 				handPos = new Vector2(30, -50);
 			else
@@ -56,9 +68,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			handPos.X *= Parent.direction;
 
-			origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
-			Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
-			Projectile.velocity = Parent.velocity;
+			if (boundToParent)
+			{
+				origin = Parent.Center + handPos.RotatedBy(Parent.rotation);
+				Projectile.Center = origin + new Vector2(0, -25).RotatedBy(Projectile.rotation) * Helpers.Helper.BezierEase(Utils.GetLerpValue(0, 70, Timer, true));
+				Projectile.velocity = Parent.velocity;
+			}
 
 			if (Timer > 170)
 				Projectile.Kill();
@@ -107,10 +122,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 	class LavaLob : ModProjectile
 	{
-		public const int crackTime = 850;
-		public const float explosionRadius = 300f;
+		public const int CRACK_TIME = 850;
+		public const float EXPLOSION_RADIUS = 300f;
+
+		private float speed;
+		public float bounces = 0;
 
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
 
 		public override void SetStaticDefaults()
 		{
@@ -130,30 +150,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.shouldFallThrough = false;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		private List<Vector2> tellPoints;
-
-		private float speed;
-
 		public override void AI()
 		{
 			Timer++;
 
 			Projectile.tileCollide = Timer > 0;
-			speed = 16.5f;
+			speed = Main.expertMode ? 15f : 13f;
 
 			if (Timer > -1)
 			{
-				Projectile.velocity.Y += 0.6f;
+				Projectile.velocity.Y += Main.expertMode ? 0.5f : 0.4f;
+
 				if (Main.rand.NextBool(8))
 					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(18, 18), DustType<Dusts.Cinder>(), -Projectile.velocity.RotatedByRandom(0.5f) * 0.1f, 0, Glassweaver.GlowDustOrange, 1f);
-
 			}
 			else
 			{
 				Projectile.velocity = Vector2.Zero;
-				if (Main.rand.NextBool(3))
+
+				if (Main.rand.NextBool(6))
 				{
 					Vector2 magVel = -Vector2.UnitY.RotatedBy(Projectile.ai[1]).RotatedByRandom(0.2f) * Main.rand.NextFloat(10f, 15f) * Utils.GetLerpValue(-50, 0, Timer, true);
 					var magma = Dust.NewDustPerfect(Projectile.Bottom + Main.rand.NextVector2Circular(10, 2), DustType<Dusts.Cinder>(), magVel, 0, Glassweaver.GlowDustOrange, 1.5f);
@@ -168,6 +183,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			Projectile.frameCounter++;
+
 			if (Projectile.frameCounter > 4)
 			{
 				Projectile.frame++;
@@ -189,13 +205,14 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Timer > 0)
 			{
-				if (Math.Abs(Projectile.velocity.X - oldVelocity.X) > 0 || Math.Abs(Projectile.velocity.Y - oldVelocity.Y) < 3)
+				if (bounces > 2)
 					return true;
 
 				if (Math.Abs(Projectile.velocity.Y - oldVelocity.Y) > 0)
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundExtinguish", 0.4f, 1f, Projectile.Center);
-					Projectile.velocity.Y = -oldVelocity.Y * 0.77f;
+					Projectile.velocity.Y = -oldVelocity.Y * 0.95f;
+					bounces++;
 				}
 			}
 
@@ -232,6 +249,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 
 				Main.EntitySpriteDraw(bloom.Value, Projectile.Center - Main.screenPosition, null, bloomFade * 0.8f, Projectile.rotation, bloom.Size() * 0.5f, (scale + 0.1f) * new Vector2(0.66f, 0.5f), 0, 0);
+			}
+			else //Draw tell before firing
+			{
+				Texture2D line = TextureAssets.Extra[60].Value;
+				Color color = Color.OrangeRed;
+				color.A = 0;
+
+				color *= (float)Math.Sin(-Timer / 44f * 3.14f) * 0.8f;
+
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.1f, 3), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color * 0.75f, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.15f, 2), SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(line, Projectile.Center - Main.screenPosition, null, color * 0.5f, Projectile.ai[1], line.Size() * new Vector2(0.5f, 0.6f), new Vector2(0.2f, 1), SpriteEffects.None, 0);
 			}
 
 			return false;

@@ -8,7 +8,16 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassSword : ModProjectile
 	{
+		private readonly int[] slashTime = new int[] { 70, 125, 160 };
+
+		private Vector2 gripPos;
+		public int variant;
+
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
 		public override void SetStaticDefaults()
 		{
@@ -28,20 +37,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.manualDirectionChange = true;
 		}
 
-		public ref float Timer => ref Projectile.ai[0];
-
-		public ref float Variant => ref Projectile.localAI[0];
-
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
-
-		private Vector2 gripPos;
-
-		private int[] slashTime = new int[] { 70, 105, 120 };
-
 		public override void OnSpawn(IEntitySource source)
 		{
 			Helpers.Helper.PlayPitched("GlassMiniboss/WeavingShort", 1f, 0f, Projectile.Center);
-			slashTime = new int[] { 70, 105, 120 };
 		}
 
 		public override void AI()
@@ -60,11 +58,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Vector2 swordOff = Vector2.Zero;
 			float swordTargetRot = 4.2f;
 			const int rotateOff = -5;
-			switch (Variant)
+
+			switch (variant)
 			{
 				case 0:
 					swordOff = new Vector2(38, 15);
 					swordTargetRot = 4f;
+
 					if (Timer > slashTime[0])
 					{
 						swordOff = new Vector2(32, -55);
@@ -93,6 +93,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					swordOff = new Vector2(-24, 15);
 					swordTargetRot = 4.2f;
 					Projectile.direction = 1;
+
 					if (Timer > slashTime[0])
 						swordOff = new Vector2(24, 5);
 					if (Timer > slashTime[1])
@@ -112,6 +113,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case 2:
 					swordOff = new Vector2(-36, 5);
 					swordTargetRot = 4.4f;
+
 					if (Timer > slashTime[0])
 						swordOff = new Vector2(-36, 20);
 					if (Timer > slashTime[1])
@@ -133,13 +135,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			//swordTargetRot *= Parent.direction;
 
 			gripPos = Parent.Center + swordOff.RotatedBy(Parent.rotation);
-			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, swordTargetRot, 0.15f) + Parent.rotation;
+			Projectile.rotation = MathHelper.Lerp(Projectile.rotation, swordTargetRot, 0.1f) + Parent.rotation;
 
-			if (Timer > slashTime[(int)Variant] && Math.Abs(Projectile.rotation - swordTargetRot) > 0.05f)
-			{
+			if (Timer > slashTime[variant] && Math.Abs(Projectile.rotation - swordTargetRot) > 0.05f)
 				Dust.NewDustPerfect(gripPos + new Vector2(0, -80).RotatedBy(Projectile.rotation * Parent.direction), DustType<Dusts.Cinder>(), Parent.velocity * 0.2f, 0, Glassweaver.GlassColor, 0.7f);
-
-			}
 
 			if (Timer < 60)
 			{
@@ -148,21 +147,24 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			int extraTime = 27;
-			if (Variant == 1)
-				extraTime = 12;
-			if (Timer > extraTime + slashTime[(int)Variant])
+
+			if (variant == 1)
+				extraTime = 22;
+
+			if (Timer > extraTime + slashTime[variant])
 				Projectile.Kill();
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			return Timer > slashTime[(int)Variant] && projHitbox.Intersects(targetHitbox);
+			return Timer > slashTime[variant] && projHitbox.Intersects(targetHitbox);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (Math.Abs(Parent.velocity.X) > 0 && Timer < slashTime[2])
 				Parent.velocity.X = -oldVelocity.X;
+
 			return false;
 		}
 
@@ -189,13 +191,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Rectangle slashFill = slash.Frame(1, 2, 0, 0);
 			Rectangle slashLine = slash.Frame(1, 2, 0, 1);
 
-			Color slashColor = Glassweaver.GlassColor * Utils.GetLerpValue(slashTime[(int)Variant] - 7, slashTime[(int)Variant], Timer, true) * Utils.GetLerpValue(slashTime[(int)Variant] + 10, slashTime[(int)Variant] + 3, Timer, true);
+			Color slashColor = Glassweaver.GlassColor * Utils.GetLerpValue(slashTime[variant] - 8, slashTime[variant] + 1, Timer, true) * Utils.GetLerpValue(slashTime[variant] + 10, slashTime[variant] + 4, Timer, true);
 			slashColor.A = 0;
 
-			Vector2 slashScale = new Vector2(1.2f, 1.5f) + new Vector2(Utils.GetLerpValue(slashTime[(int)Variant] - 7, slashTime[(int)Variant] + 10, Timer, true));
+			Vector2 slashScale = new Vector2(1.2f, 1.5f) + new Vector2(Utils.GetLerpValue(slashTime[variant] - 7, slashTime[variant] + 10, Timer, true));
 
 			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashFill, slashColor * 0.9f, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale, 0, 0);
-			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
+			Main.EntitySpriteDraw(slash.Value, gripPos - Main.screenPosition, slashLine, slashColor * 1.25f, MathHelper.Pi / 3f * Parent.direction + rot * 0.4f, slashFill.Size() * new Vector2(0.5f, 0.33f), slashScale * 0.98f, 0, 0);
 
 			return false;
 		}

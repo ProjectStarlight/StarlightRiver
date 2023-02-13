@@ -43,8 +43,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (Projectile.tileCollide == true)
 			{
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Vector2.UnitX.RotatedBy(Projectile.ai[0]), 0.166f);
-				//acceleration
-				if (Projectile.timeLeft < 80)
+
+				if (Projectile.timeLeft < 80) //acceleration
 					Projectile.velocity *= 0.96f + Utils.GetLerpValue(120, 90, Projectile.timeLeft, true) * 0.33f;
 			}
 			else
@@ -52,9 +52,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.velocity *= 0.2f;
 			}
 
-			if (Projectile.timeLeft > 60)
+			if (Projectile.timeLeft > 60 && Main.rand.NextBool(4))
 				Dust.NewDustPerfect(Projectile.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(2, 2), 0, Glassweaver.GlowDustOrange, 0.6f);
-
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

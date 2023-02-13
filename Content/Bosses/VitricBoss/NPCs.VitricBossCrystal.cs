@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)(NPC.Center.Y + 24) / 16);
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.vitricBiome.Y * 16) //tile collision
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type && NPC.Center.Y > StarlightWorld.vitricBiome.Y * 16) //tile collision
 						Impact();
 
 					break;

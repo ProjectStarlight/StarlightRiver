@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Biomes
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 
+		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Desert");
@@ -24,10 +26,11 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return StarlightWorld.vitricBiome.Contains((player.position / 16).ToPoint());
-		}
+			Rectangle detectionBox = StarlightWorld.vitricBiome;
+			detectionBox.Inflate(Main.screenWidth / 32, Main.screenHeight / 32);
 
-		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
+			return detectionBox.Contains((player.position / 16).ToPoint());
+		}
 
 		public override void OnInBiome(Player player)
 		{
