@@ -30,9 +30,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (dummy is null)
 					return;
-
-				if (((CombatShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
-					tile.TileFrameX -= 3 * 18;
 			}
 		}
 
