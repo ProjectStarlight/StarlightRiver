@@ -48,7 +48,6 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.NonPremultiplied, SamplerState.PointClamp, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-
 			if (Main.LocalPlayer.gravDir == -1f)
 				spriteBatch.Draw(tex, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI), CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
 			else

@@ -3,7 +3,6 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using Terraria.ID;
-using static Humanizer.In;
 
 namespace StarlightRiver.Content.Items.Snow
 {
@@ -37,7 +36,6 @@ namespace StarlightRiver.Content.Items.Snow
 					mp.dontHit = default;
 				}
 			}
-
 		}
 
 		public override void SafeSetDefaults()

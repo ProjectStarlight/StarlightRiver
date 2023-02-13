@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Vitric;
-using StarlightRiver.Helpers;
+
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -13,7 +12,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Stick");
-			Tooltip.SetDefault("Developer item");
+			Tooltip.SetDefault("Has whatever effects are needed");
 		}
 
 		public override void SetDefaults()
@@ -33,30 +32,16 @@ namespace StarlightRiver.Content.Items
 			Item.UseSound = SoundID.Item18;
 			Item.useTurn = true;
 			Item.accessory = true;
-
-			//Item.createTile = ModContent.TileType<Tiles.CrashTech.CrashPod>();
 		}
 
 		public override void UpdateAccessory(Player player, bool hideVisual)
 		{
-			player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(200);
 
-			Main.NewText(WorldGen.worldSurface);
-			Main.NewText(WorldGen.worldSurfaceLow);
-			Main.NewText(WorldGen.worldSurfaceHigh);
-			Main.NewText(player.Center.Y / 16);
-
-			Dust.NewDustPerfect(Main.MouseWorld, ModContent.DustType<Dusts.AuroraWater>(), Vector2.Zero, 0, new Color(200, 220, 255) * 0.4f, 1);
 		}
 
 		public override bool? UseItem(Player player)
 		{
-
-			int cX = (int)Main.MouseWorld.X / 16;
-			int cY = (int)Main.MouseWorld.Y / 16;
-
-			Helper.PlaceMultitile(new Point16(cX, cY - 3), ModContent.TileType<VitricOre>(), Main.rand.Next(3));
-
+			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
 			return true;
 		}
 	}
@@ -68,7 +53,7 @@ namespace StarlightRiver.Content.Items
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Debug Mode");
-			Tooltip.SetDefault("Enables debug mode which does... stuff!\nHold Y to make bosses go at ludicrous speed.");
+			Tooltip.SetDefault("Enables debug mode");
 		}
 
 		public override void SetDefaults()

@@ -1,10 +1,5 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
 using System;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Vanity
 {

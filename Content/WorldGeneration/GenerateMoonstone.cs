@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.Tiles.Moonstone;
 using StarlightRiver.Helpers;
 using System;
