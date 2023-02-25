@@ -1,0 +1,17 @@
+Mods : {
+    StarlightRiver : {
+        BossChecklist : {
+            SquidBossInfo : Drop Auroracle Bait into the prismatic waters of the permafrost shrine.
+            Auroracle : Auroracle
+            SquidBossLossMessage : The permafrost cathedral falls silent.
+            
+            vitricMinibossInfo : Challenge the glassweaver in his forge in the vitric desert.
+            Glassweaver : Glassweaver
+            vitricMinibossLossMessage : The glassweaver claims victory.
+             
+            vitricBossInfo : Use a Glass Idol at cerios' atop the vitric temple, after breaking the crystal covering it.
+            Ceiros : Ceiros
+            vitricBossLossMessage : The vitric forge falls silent.
+        }
+    }
+}
