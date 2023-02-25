@@ -20,9 +20,13 @@ Mods : {
                     SideDish : Side Dish
                     Seasonings : Seasonings
                     BonusEffects : Bonus Effects
-                    FullnessTooltip : adds {0} seconds duration to food
                 }      
             }
         }
     }
+}
+
+CommonItemTooltip : {
+    FullnessBonus : adds {0} seconds duration to food
+    FoodBuffEffectBonus : Food buffs are {0}% more effective
 }
