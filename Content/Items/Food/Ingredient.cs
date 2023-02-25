@@ -132,8 +132,8 @@ namespace StarlightRiver.Content.Items.Food
 			if (ThisType != IngredientType.Bonus)
 			{
 				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness",
-					string.Format(Language.GetTextValue("$Mods.StarlightRiver.Items.Food.Ingredient.FullnessTooltip"),
-						Fill / 60)) { OverrideColor = new Color(110, 235, 255) };
+					Language.GetTextValue("CommonItemTooltip.FullnessBonus", Fill / 60)
+				) { OverrideColor = new Color(110, 235, 255) };
 
 				tooltips.Add(fullLine);
 			}
