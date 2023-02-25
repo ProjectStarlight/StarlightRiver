@@ -1,7 +1,8 @@
-﻿using StarlightRiver.Content.Items.Utility;
+using StarlightRiver.Content.Items.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -86,11 +87,31 @@ namespace StarlightRiver.Content.Items.Food
 
 			switch (ThisType)
 			{
-				case IngredientType.Main: description = "Main Course"; nameColor = new Color(255, 220, 140); descriptionColor = new Color(255, 220, 80); break;
-				case IngredientType.Side: description = "Side Dish"; nameColor = new Color(140, 255, 140); descriptionColor = new Color(80, 255, 80); break;
-				case IngredientType.Seasoning: description = "Seasonings"; nameColor = new Color(140, 200, 255); descriptionColor = new Color(80, 140, 255); break;
-				case IngredientType.Bonus: description = "Bonus Effects"; nameColor = new Color(255, 200, 200); descriptionColor = new Color(255, 140, 140); break;
-				default: description = "ERROR"; nameColor = Color.Black; descriptionColor = Color.Black; break;
+				case IngredientType.Main:
+					description = "$Mods.StarlightRiver.Items.Food.Ingredient.MainCourse";
+					nameColor = new Color(255, 220, 140);
+					descriptionColor = new Color(255, 220, 80);
+					break;
+				case IngredientType.Side:
+					description = "$Mods.StarlightRiver.Items.Food.Ingredient.SideDish";
+					nameColor = new Color(140, 255, 140);
+					descriptionColor = new Color(80, 255, 80);
+					break;
+				case IngredientType.Seasoning:
+					description = "$Mods.StarlightRiver.Items.Food.Ingredient.Seasonings";
+					nameColor = new Color(140, 200, 255);
+					descriptionColor = new Color(80, 140, 255);
+					break;
+				case IngredientType.Bonus:
+					description = "$Mods.StarlightRiver.Items.Food.Ingredient.BonusEffects";
+					nameColor = new Color(255, 200, 200);
+					descriptionColor = new Color(255, 140, 140);
+					break;
+				default:
+					description = "ERROR";
+					nameColor = Color.Black;
+					descriptionColor = Color.Black;
+					break;
 			}
 
 			foreach (TooltipLine line in tooltips)
@@ -110,10 +131,9 @@ namespace StarlightRiver.Content.Items.Food
 
 			if (ThisType != IngredientType.Bonus)
 			{
-				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness", "adds " + Fill / 60 + " seconds duration to food")
-				{
-					OverrideColor = new Color(110, 235, 255)
-				};
+				var fullLine = new TooltipLine(Mod, "StarlightRiver: Fullness",
+					string.Format(Language.GetTextValue("$Mods.StarlightRiver.Items.Food.Ingredient.FullnessTooltip"),
+						Fill / 60)) { OverrideColor = new Color(110, 235, 255) };
 
 				tooltips.Add(fullLine);
 			}
