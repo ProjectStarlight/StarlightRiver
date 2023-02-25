@@ -13,5 +13,16 @@ Mods : {
             Ceiros : Ceiros
             vitricBossLossMessage : The vitric forge falls silent.
         }
+        Items : {
+            Food : {
+                Ingredient : {
+                    MainCourse : Main Course
+                    SideDish : Side Dish
+                    Seasonings : Seasonings
+                    BonusEffects : Bonus Effects
+                    FullnessTooltip : adds {0} seconds duration to food
+                }      
+            }
+        }
     }
 }
