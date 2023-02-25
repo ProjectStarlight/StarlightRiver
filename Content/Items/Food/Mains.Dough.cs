@@ -1,10 +1,11 @@
-﻿using Terraria.ID;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Dough : Ingredient
 	{
-		public Dough() : base("Food buffs are 30% more effective", 1000, IngredientType.Main) { }
+		public Dough() : base( Language.GetTextValue("CommonItemTooltip.FoodBuffEffectBonus",30) , 1000, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
