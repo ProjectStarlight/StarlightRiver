@@ -5,7 +5,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Dough : Ingredient
 	{
-		public Dough() : base( Language.GetTextValue("CommonItemTooltip.FoodBuffEffectBonus",30) , 1000, IngredientType.Main) { }
+		public Dough() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentBonus", 30), 1000, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

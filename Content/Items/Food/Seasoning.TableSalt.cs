@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class TableSalt : Ingredient
 	{
-		public TableSalt() : base("Food buffs are 5% more effective", 2400, IngredientType.Seasoning) { }
+		public TableSalt() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentBonus",5), 2400, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

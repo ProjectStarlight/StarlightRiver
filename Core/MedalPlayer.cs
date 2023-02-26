@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using Terraria.Localization;
 
 namespace StarlightRiver.Core
 {
@@ -44,7 +45,7 @@ namespace StarlightRiver.Core
 				medals.Sort((a, b) => a.order > b.order ? 1 : 0);
 				attemptedMedal = default;
 
-				Main.NewText("Medal earned!", new Color(255, 255, 100));
+				Main.NewText(Language.GetTextValue("Mods.StarlightRiver.Custom.NewText.Medal.MedalEarned"), new Color(255, 255, 100));
 			}
 
 			activeCounter = null;
@@ -159,7 +160,7 @@ namespace StarlightRiver.Core
 
 		public override string ToString()
 		{
-			return name + ": " + (difficulty == 0 ? "Normal" : difficulty == 1 ? "Expert" : difficulty == -1 ? "Journey" : "Master");
+			return name + ": " + (difficulty == 0 ? Language.GetTextValue("Difficulty.Normal")  : difficulty == 1 ? Language.GetTextValue("Difficulty.Expert") : difficulty == -1 ? Language.GetTextValue("Difficulty.Journey") : Language.GetTextValue("Difficulty.Master"));
 		}
 
 		public override bool Equals(object obj)

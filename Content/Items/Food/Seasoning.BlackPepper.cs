@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class BlackPepper : Ingredient
 	{
-		public BlackPepper() : base("Food buffs are 15% more effective", 300, IngredientType.Seasoning) { }
+		public BlackPepper() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentBonus",15), 300, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

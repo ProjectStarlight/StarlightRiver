@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Localization;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -245,7 +246,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (Guarding || stacked)
 				{
 					damage = 1;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, Language.GetTextValue("Mods.StarlightRiver.Custom.CombatText.Blocked"));
 				}
 				else
 				{
@@ -270,7 +271,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				if (Guarding || stacked)
 				{
 					damage = 1;
-					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
+					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, Language.GetTextValue("Mods.StarlightRiver.Custom.CombatText.Blocked"));
 				}
 				else
 				{

@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Cherry : Ingredient
 	{
-		public Cherry() : base("Critical hits may cause explosions", 60, IngredientType.Side) { }
+		public Cherry() : base(Language.GetTextValue("CommonItemTooltip.CriticalHitsMayCauseExplosions"), 60, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

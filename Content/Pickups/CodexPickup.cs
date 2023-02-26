@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -43,9 +44,9 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 119)
 			{
-				string message = "Open the codex from your inventory to learn about the world.";
+				string message = Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.StarlightCodexMessage");
 
-				UILoader.GetUIState<TextCard>().Display("Starlight Codex", message, null, 240);
+				UILoader.GetUIState<TextCard>().Display(Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.StarlightCodexTitle"), message, null, 240);
 				Helper.UnlockCodexEntry<CodexEntry>(Main.LocalPlayer);
 			}
 		}

@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class HoneySyrup : Ingredient
 	{
-		public HoneySyrup() : base("Heal 100 life on use\n5% reduced movement speed", 120, IngredientType.Side) { }
+		public HoneySyrup() : base(Language.GetTextValue("CommonItemTooltip.UseToHealLife",100) + "\n" + Language.GetTextValue("CommonItemTooltip.ReducedMovementSpeedPercent",5), 120, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

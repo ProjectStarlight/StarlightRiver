@@ -1,0 +1,157 @@
+Mods : {
+    StarlightRiver : {
+        BossChecklist : {
+            SquidBossInfo : 将极光巨妖诱饵丢入永冻圣地的折射光的水中。
+            Auroracle : 极光巨妖
+            SquidBossLossMessage : 永冻教堂陷入沉寂。
+            
+            vitricMinibossInfo : 在璃晶质沙漠中璃晶编织者的锻造室里挑战他。
+            Glassweaver : 璃晶编织者
+            vitricMinibossLossMessage : 璃晶编织者宣告胜利。
+             
+            vitricBossInfo : 在打破覆盖它的水晶后，在璃晶神庙顶部的赛里欧斯宿处使用璃晶神像。
+            Ceiros : 赛里欧斯
+            vitricBossLossMessage : 璃晶锻造室沉寂下来。
+        }
+        Custom : {
+            CombatText : {
+                GotOvergrowthKey : "获得: 过度生长钥匙"
+                IngredientAddedToChefsBag : 材料添加到厨师袋中
+                Ouch : 哎哟!
+                Blocked : 格挡!
+                LearnedRecipie : "已学习的食谱: "
+            }
+            Items : {
+                Food : {
+                    Ingredient : {
+                        MainCourse : 主菜
+                        SideDish : 配菜
+                        Seasonings : 调料
+                        BonusEffects : 增益效果
+                    }      
+                }
+                SpecialEffect : {
+                    SlimejellyEffect : "受到伤害时释放一个友好的史莱姆\n史莱姆变得被动"
+                    SupportCookiesEffect : 拾取生命和魔力恢复额外的生命值和法力
+                    
+                }
+            }
+            NewText : {
+                GlassweaverGauntletWave : {
+                    Begin : 开始
+                    Wave2 : 第2波
+                    Wave3 : 第3波
+                    Wave4 : 第4波
+                    Wave5 : 第5波
+                    Wave6 : 第6波
+                    Wave7 : 第7波
+                }
+                Medal : {
+                    MedalEarned : 获得奖章！
+                }
+            }
+            RichTextBox : {
+                GlassweaverWaiting : {
+                    Title : 璃晶编织者
+                    Button : {
+                        TellMeMore : 告诉我更多
+                        ShowMe : 指给我看看
+                        SeeYouLater : 回见
+                        Fight : 战斗
+                        INeedAKey : 我需要一把钥匙
+                    }
+                    IntroDialogue : {
+                        0 : "啊，你终于找到我了。来浏览我的商品？我的委托已满，但如果价格合适，我相信我们可以解决问题。或者...你给我的表情...你是一位粉丝？",
+                        1 : "我——什——什么？你是什么意思，你只是“在这里溜达”？没有人会无缘无故地来看传说中的璃晶编织者，尤其是在我的锻造室之外！一定是...命运！",
+                        2 : "是的，是的，你看，我最近确实遇到了一些麻烦。我知道，很难相信，我遇到了麻烦，对吧，但我确实需要像你这样勇敢的人的帮助。把它想象成...一个任务，或者什么的。冒险家喜欢那些，对吧？",
+                        3 : "我是一名艺术家，水晶是我的媒介，但要正常使用它，我需要一些非常强大的设备，而且，好吧，我该怎么说呢...我可能忘记在我选择的锻造室里维护工具有一会儿了。就几个世纪。别用那种眼神看我。",
+                        4 : "我的设备已经快不行了，我需要更好的设备，所以我一直在努力寻找我们目前正在聊的那个。问题是，它几乎更加年久失修！如果你，善良的探险家，有足够的勇气冒险进入并修复锻造室，我会让你留着你在里面找到的任何东西并为你锻造一些特别的东西。",
+                        5 : "不——等等！你不能随便闯入，你需要一把钥匙。我需要知道我是否将我的信仰和水晶交给了正确的人，所以当你认为自己足够强大时，来我的锻造室，我会适当地测试你。在这儿，我给你指路。",
+                    }
+                    AfterCameraDialogue : {
+                        0 : "很壮观，不是吗？但这还不够。由于缺乏经验，你可能无法判断，但我只给了它几年时间，岩浆通道就会被侵蚀，锻造室就会坍塌。不要让我失望，冒险者。你知道在哪可以找到我。"
+                    }
+                    WaitingDialogue : {
+                        0 : "你终于准备好证明你的价值了吗？说实话我很难说，你们总是那么瘦小。",
+                        1 : "冒险者，你回来了！你是来挑战我的，还是只是看看我的精彩作品？",
+                        2 : "啊，我命中注定的胜利者！来这里是为了从那个卑鄙的哨卫手中解放我的锻造室？呃——忘掉我说过的吧。如果你赢了，我会告诉你的。",
+                    }
+                    WinDialogue : {
+                        0 : "恭喜，你毁掉了我几十年来最优秀的作品！我真的应该更仔细地考虑这个问题。我本来打算让那些东西帮你清理锻造室的，但是...我相信你会搞定的。让我告诉你会发生什么。",
+                        1 : "我宏伟锻造神庙的伟大地图。只是另一件我允许你简要浏览的传奇艺术品，不收取费用。你可以在这里、这里和这里看到锻造室的三个主要房间。这三者很可能都以某种方式被破坏了，如果你想进入底部的保险库，你必须让这三者都处于正常工作状态。",
+                        2 : "如果你进入保险库，哨卫很可能会注意到。它不会很高兴，但大多数冒险家没有对从神圣的锻造神殿盗窃和谋杀宗教监护人的内疚，所以你可能会把它干掉。",
+                        3 : "你为什么那样看着我？我之前不是跟你说过哨卫吗？啊。它只是一条...略微超大的陶制蛇。就这样。如果你逃跑的速度不够快，它无法熔化整个神殿。不。打败那条稍微大一点的蛇后再跟我说话，这样我就可以搬进去了。",
+                        4 : "不管怎样，这是神庙钥匙。你怎么突然看起来这么不安？记住你的职责，冒险家，到达我的锻造神殿！",
+                    }
+                    KeyDialogue : {     
+                        0 : "看起来你并没有清理好锻造室。你站在那里干什么？我站在这里忙着呢！",
+                        1 : "难道你没有更好的事情要做，比如修理我的锻造室？",
+                        2 : "冒险家！你这么快就打败了哨卫？这是一个奇迹！哦。哦，你没有。没关系。走开。",
+                    }
+                }
+            }
+            UI : {
+                Warning : {
+                    WARNING : 提醒
+                    Message1 : 星光之河在大师模式下其Boss有独特的行为。这种行为旨在比其他任何事情都更加困难，并且假设有大量关于
+                    Message2 : 模组和基础游戏的知识。星光之河大师模式不适用于首次通关。星光之河大师模式的本意并不是合理。星光之河大师模式并不是为了让每个人都开心。
+                    Message3 : 请记住，你自己和你周围的人的身心健康远比这款游戏或其中的任何东西重要。
+                }
+                MessageDisplay : {
+                    PleaseBindAKey : "[请绑定一个按键]"
+                    ForbiddenWindsPickupTitle : 禁忌之风
+                    ForbiddenWindsPickupMessage : "按W/A/S/D加{0}以冲刺。"
+                    GlassweaverMessage : 铁砧工作者
+                    AuroracleMessage0 : 卡住的模组
+                    AuroracleMessage1 : 尊者
+                    CeriosMessage0 : 璃晶纳税申报单
+                    CeriosMessage1 : 破碎的哨卫
+                    StarlightCodexTitle : 星光秘典
+                    StarlightCodexMessage : 从你的物品栏中打开秘典以了解这个世界。
+                    MysteriousTechnologyTitle : 神秘技术
+                    MysteriousTechnologyMessage : 它对你做了什么？
+                    StaminaVesselTitle0 : 耐力容器
+                    StaminaVesselMessage0 : 你的最大耐力增加了1
+                    StaminaVesselTitle1 : 耐力容器碎片
+                    StaminaVesselMessage1 : "再收集{0}个以提高你的最大耐力"
+                }
+            }
+        }
+    }
+}
+
+CommonItemTooltip : {
+    Uses : 使用
+    CriticalStrikeDamage : "{0} 暴击伤害"
+    FullnessBonus : "食物持续时间增加{0}秒"
+    FoodBuffEffectPercentBonus : "食物增益效果提升{0}%"
+    FoodBuffEffectPercentReduce : "食物增益效果减弱{0}%"
+    DamageReductionPercentBonus : "+{0}% 伤害减免"
+    CriticalStrikeChanceBonus : "+{0}% 暴击率"
+    DefenseBonus : "+{0} 防御"
+    MeleeDamgePercentBonus : "+{0}% 近战伤害"
+    AllDamagePercentBonus : "+{0}% 全部伤害"
+    DefensePercentBonus : "+{0}% 防御"
+    SlightlyImprovedLifeRegeneration : 小幅提升生命再生
+    BreatheUnderWater : 你可以在水下呼吸
+    NoAdditionalEffects : 无附加效果
+    MaximumLifeBonus : "+{0} 最大生命值"
+    GainDangersense : 你获得危险感
+    CriticalHitsMayCauseExplosions : 暴击可能会引起爆炸
+    ManaRegenerationBonus : "+{0} 魔力再生"
+    UseToHealLife : "使用时治疗{0}生命值"
+    UseToRestoreMana : "使用时恢复{0}魔力"
+    ReducesDurationOfPotionSicknessSlightly : 略微减少药水虚弱持续时间
+    ReducedMovementSpeedPercent : "移动速度降低{0}%"
+    ChanceToPoisionWithAllHits : "所有命中有{0}%的几率下毒"
+    MaximumBarrierBonus : "+{0} 最大护盾值"
+    RegenerateManaPerSecondConstantly : "持续每秒恢复{0}魔力"
+}
+
+
+Difficulty : {
+    Journey : 旅行
+    Normal : 经典
+    Expert : 专家
+    Master : 大师
+}

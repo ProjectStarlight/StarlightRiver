@@ -79,6 +79,8 @@ namespace StarlightRiver.Content.Items.Food
 			SafeSetDefaults();
 		}
 
+		public static string IngredientText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.Items.Food.Ingredient." + text);
+
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
 		{
 			string description;
@@ -88,22 +90,22 @@ namespace StarlightRiver.Content.Items.Food
 			switch (ThisType)
 			{
 				case IngredientType.Main:
-					description = "$Mods.StarlightRiver.Items.Food.Ingredient.MainCourse";
+					description = IngredientText("MainCourse");
 					nameColor = new Color(255, 220, 140);
 					descriptionColor = new Color(255, 220, 80);
 					break;
 				case IngredientType.Side:
-					description = "$Mods.StarlightRiver.Items.Food.Ingredient.SideDish";
+					description = IngredientText("SideDish");
 					nameColor = new Color(140, 255, 140);
 					descriptionColor = new Color(80, 255, 80);
 					break;
 				case IngredientType.Seasoning:
-					description = "$Mods.StarlightRiver.Items.Food.Ingredient.Seasonings";
+					description = IngredientText("Seasonings");
 					nameColor = new Color(140, 200, 255);
 					descriptionColor = new Color(80, 140, 255);
 					break;
 				case IngredientType.Bonus:
-					description = "$Mods.StarlightRiver.Items.Food.Ingredient.BonusEffects";
+					description = IngredientText("BonusEffects");
 					nameColor = new Color(255, 200, 200);
 					descriptionColor = new Color(255, 140, 140);
 					break;

@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Toast : Ingredient
 	{
-		public Toast() : base("+5% all damage\n+5% defense", 400, IngredientType.Main) { }
+		public Toast() : base(Language.GetTextValue("CommonItemTooltip.DefensePercentBonus",5)+"\n"+Language.GetTextValue("CommonItemTooltip.DefensePercentBonus",5), 400, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

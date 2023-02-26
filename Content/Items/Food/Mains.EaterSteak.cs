@@ -1,11 +1,12 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class EaterSteak : Ingredient
 	{
-		public EaterSteak() : base("+10% damage reduction", 900, IngredientType.Main) { }
+		public EaterSteak() : base(Language.GetTextValue("CommonItemTooltip.DamageReductionPercentBonus",10) , 900, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
 	internal class SupportCookies : BonusIngredient
 	{
-		public SupportCookies() : base("Life and mana pickups restore bonus life and mana") { }
+		public SupportCookies() : base(Language.GetTextValue("Mods.StarlightRiver.Custom.Items.Food.SpecialEffect.SupportCookiesEffect")) { }
 
 		public override FoodRecipie Recipie()
 		{

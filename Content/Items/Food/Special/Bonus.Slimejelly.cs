@@ -1,8 +1,10 @@
-﻿namespace StarlightRiver.Content.Items.Food.Special
+﻿using Terraria.Localization;
+
+namespace StarlightRiver.Content.Items.Food.Special
 {
 	internal class Slimejelly : BonusIngredient
 	{
-		public Slimejelly() : base("Release a friendly slime when damaged\nSlimes become passive") { }
+		public Slimejelly() : base(Language.GetTextValue("Mods.StarlightRiver.Custom.Items.Food.SpecialEffect.SlimejellyEffect")) { }
 
 		public override FoodRecipie Recipie()
 		{

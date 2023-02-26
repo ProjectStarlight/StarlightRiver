@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Butter : Ingredient
 	{
-		public Butter() : base("+20 maximum life", 300, IngredientType.Side) { }
+		public Butter() : base(Language.GetTextValue("CommonItemTooltip.MaximumLifeBonus",20), 300, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -46,10 +47,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 		}
 
+		private string GetWaveText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.NewText.GlassweaverGauntletWave."+ text);
+
 		private void GauntletWave0()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Begin", Color.OrangeRed);
+				Main.NewText(GetWaveText("Begin") , Color.OrangeRed);
 
 			if (AttackTimer == 150) //Ground melee
 				SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Grunt, true);
@@ -67,7 +70,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave1()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 2", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 2"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -91,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave2()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 3", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 3"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -119,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave3()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 4", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 4"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -146,7 +149,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave4()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 5", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 5"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -163,7 +166,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave5()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 6", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 6"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -206,7 +209,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave6()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 7", Color.OrangeRed);
+				Main.NewText(GetWaveText("Wave 7"), Color.OrangeRed);
 
 			if (AttackTimer == 20) //Ground melee
 			{

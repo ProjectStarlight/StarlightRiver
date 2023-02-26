@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
@@ -192,7 +193,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				case (int)Phases.ReturnToForeground:
 
 					if (AttackTimer == 1)
-						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
+						UILoader.GetUIState<TextCard>().Display(NPC.FullName, Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.GlassweaverMessage"), null, 240, 1.2f, false);
 
 					JumpBackAnimation();
 

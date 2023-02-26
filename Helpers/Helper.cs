@@ -11,6 +11,9 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Utilities;
+using Terraria.Localization;
+using System.Text.RegularExpressions;
+
 
 namespace StarlightRiver.Helpers
 {
@@ -337,6 +340,12 @@ namespace StarlightRiver.Helpers
 		public static string WrapString(string input, int length, DynamicSpriteFont font, float scale)
 		{
 			string output = "";
+			
+			//this is for language which doesn't use space to divide words such as Chinese
+			if(LanguageManager.Instance.ActiveCulture == GameCulture.FromCultureName(GameCulture.CultureName.Chinese)){
+				//\u4e00-\u9fa5 stands for Chinese char in UTF-8
+				input = Regex.Replace(input, "([\u4e00-\u9fa5])", " $1");
+			}
 			string[] words = input.Split();
 
 			string line = "";
@@ -351,8 +360,15 @@ namespace StarlightRiver.Helpers
 
 				if (font.MeasureString(line).X * scale < length)
 				{
-					output += " " + str;
-					line += " " + str;
+					if(LanguageManager.Instance.ActiveCulture == GameCulture.FromCultureName(GameCulture.CultureName.Chinese)){
+						output += Regex.Replace(" " + str, "( )([\u4e00-\u9fa5])", "$2");
+						line += Regex.Replace(" " + str, "( )([\u4e00-\u9fa5])", "$2");
+					}
+					else
+					{
+						output += " " + str;
+						line += " " + str;
+					}
 				}
 				else
 				{
@@ -361,7 +377,8 @@ namespace StarlightRiver.Helpers
 				}
 			}
 
-			return output[1..];
+			//since the output[0] may not be ' '
+			return output[0] == ' ' ? output[1..] : output;
 		}
 
 		public static List<T> RandomizeList<T>(List<T> input)

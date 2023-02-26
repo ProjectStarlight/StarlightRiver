@@ -6,6 +6,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -101,7 +102,7 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 559)
 			{
-				UILoader.GetUIState<TextCard>().Display("Mysterious Technology", "What has it done to you?", time: 360);
+				UILoader.GetUIState<TextCard>().Display(Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.MysteriousTechnologyTitle"), Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.MysteriousTechnologyMessage"), time: 360);
 				Helper.UnlockCodexEntry<InfusionEntry>(Main.LocalPlayer);
 
 				Player.headPosition = Vector2.Zero;

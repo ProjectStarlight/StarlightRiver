@@ -10,6 +10,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -120,12 +121,12 @@ namespace StarlightRiver.Content.Pickups
 
 			if (timer == 569) //popup + codex entry
 			{
-				string message = StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count > 0 ?
-					"Press W/A/S/D + " + StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] + " to dash." :
-					"Press W/A/S/D + [Please Bind a Key] to dash.";
+				string message = Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.ForbiddenWindsPickupMessage", StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys().Count > 0 ?
+					StarlightRiver.Instance.AbilityKeys.Get<Dash>().GetAssignedKeys()[0] :
+					Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.PleaseBindAKey"));
 
 				Main.LocalPlayer.GetHandler().GetAbility<Dash>(out Dash dash);
-				UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
+				UILoader.GetUIState<TextCard>().Display(Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MessageDisplay.ForbiddenWindsPickupTitle"), message, dash);
 				Helper.UnlockCodexEntry<WindsEntry>(Main.LocalPlayer);
 				Helper.UnlockCodexEntry<StaminaEntry>(Main.LocalPlayer);
 

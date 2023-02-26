@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using System;
+using Terraria.Localization;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Keys
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Keys
 
 		public override void OnPickup()
 		{
-			CombatText.NewText(Hitbox, Color.White, "Got: Overgrowth Key");
+			CombatText.NewText(Hitbox, Color.White, Language.GetTextValue("Mods.StarlightRiver.Custom.CombatText.GotOvergrowthKey"));
 		}
 	}
 }

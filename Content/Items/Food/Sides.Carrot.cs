@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Carrot : Ingredient
 	{
-		public Carrot() : base("You gain dangersense", 60, IngredientType.Side) { }
+		public Carrot() : base(Language.GetTextValue("CommonItemTooltip.GainDangersense"), 60, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{
