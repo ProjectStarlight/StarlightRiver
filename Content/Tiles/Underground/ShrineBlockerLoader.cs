@@ -10,6 +10,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public void Load()
 		{
 			BlockerTileSystem.LoadBarrier("CombatShrineBarrier", () => Main.player.Any(n => n.active && n.InModBiome<CombatShrineBiome>()));
+			BlockerTileSystem.LoadBarrier("EvasionShrineBarrier", () => Main.player.Any(n => n.active && n.InModBiome<EvasionShrineBiome>()));
 		}
 
 		public void Unload() { }
