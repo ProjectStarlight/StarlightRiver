@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class IvySalad : Ingredient
 	{
-		public IvySalad() : base("10% chance to poision with all hits", 60, IngredientType.Side) { }
+		public IvySalad() : base(Language.GetTextValue("CommonItemTooltip.ChanceToPoisionWithAllHits",10), 60, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

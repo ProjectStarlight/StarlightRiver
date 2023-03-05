@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class HealthExtract : Ingredient
 	{
-		public HealthExtract() : base("Heal 50 life on use\nReduces duration of potion sickness slightly", 120, IngredientType.Side) { }
+		public HealthExtract() : base(Language.GetTextValue("CommonItemTooltip.UseToHealLife",50) + "\n" + Language.GetTextValue("CommonItemTooltip.ReducesDurationOfPotionSicknessSlightly"), 120, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

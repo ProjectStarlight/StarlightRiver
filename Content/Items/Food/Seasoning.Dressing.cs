@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Dressing : Ingredient
 	{
-		public Dressing() : base("Food buffs are 10% more effective\nSlightly improved life regeneration", 300, IngredientType.Seasoning) { }
+		public Dressing() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentBonus",10)+"\n" + Language.GetTextValue("CommonItemTooltip.SlightlyImprovedLifeRegeneration"), 300, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

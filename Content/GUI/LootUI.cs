@@ -7,6 +7,7 @@ using System.Linq;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -14,7 +15,20 @@ namespace StarlightRiver.Content.GUI
 	{
 		private Item BigItem = new();
 		internal Item[] Selections = new Item[2];
-		internal List<string> Quotes;
+		private static string LootText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.UI.Loot." + text);
+
+		internal static List<string> Quotes = new List<string>()
+            {
+				LootText("Quotes.0"),
+				LootText("Quotes.1"),
+				LootText("Quotes.2"),
+				LootText("Quotes.3"),
+				LootText("Quotes.4"),
+				LootText("Quotes.5"),
+				LootText("Quotes.6"),
+				LootText("Quotes.7"),
+				LootText("Quotes.8")
+			};
 		private int QuoteID;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -22,21 +36,6 @@ namespace StarlightRiver.Content.GUI
 			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 		}
 
-		public override void OnInitialize()
-		{
-			Quotes = new List<string>() //TODO somthing with localization
-            {
-				"Loot?",
-				"Loot!",
-				"Shiny treasures!",
-				"Shinies!",
-				"Treasure!",
-				"For your troubles...",
-				"This looks valuable...",
-				"Not a mimic!",
-				"Shiny!"
-			};
-		}
 
 		public override void Update(GameTime gameTime)
 		{
@@ -72,8 +71,8 @@ namespace StarlightRiver.Content.GUI
 
 			Utils.DrawBorderStringBig(spriteBatch, Quotes[QuoteID], GetDimensions().Center() + new Vector2(0, -80) - 1.5f * Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(Quotes[QuoteID]) / 2, Color.White, 0.5f);
 
-			string str = "You get:";
-			string str2 = "Pick two:";
+			string str = LootText("Info.0");
+			string str2 = LootText("Info.1");
 
 			Utils.DrawBorderString(spriteBatch, str, GetDimensions().Center() + new Vector2(0, -40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str) / 2, Color.White, 0.8f);
 			Utils.DrawBorderString(spriteBatch, str2, GetDimensions().Center() + new Vector2(0, 40) - Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(str2) / 2, Color.White, 0.8f);

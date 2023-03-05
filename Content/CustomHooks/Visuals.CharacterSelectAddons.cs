@@ -9,6 +9,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
 using Terraria.UI;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -109,7 +110,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (mp.AnyUnlocked)//Draw stamina if any unlocked
 			{
 				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value, origin + new Vector2(115, 68), Color.White);
-				Utils.DrawBorderString(spriteBatch, PlayerStamina + " SP", origin + new Vector2(142, 68), Color.White);
+				Utils.DrawBorderString(spriteBatch, PlayerStamina + Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.CharacterSelectAddons.SP"), origin + new Vector2(142, 68), Color.White);
 			}
 			else//Myserious if locked
 			{
@@ -192,7 +193,7 @@ namespace StarlightRiver.Content.CustomHooks
 						string message = medal.ToString();
 
 						if (medal.difficulty == 2 && Main.time % 4800 > 2400)
-							message = "Deaths: " + mp3.GetDeaths(medal.name);
+							message = Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.CharacterSelectAddons.Deaths")+ ": " + mp3.GetDeaths(medal.name);
 
 						Utils.DrawBorderString(spriteBatch, message, origin + new Vector2(306, 70), Color.White);
 					}

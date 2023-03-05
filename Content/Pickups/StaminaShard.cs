@@ -5,6 +5,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Pickups
 {
@@ -39,9 +40,9 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			if (ah.ShardCount % 3 == 0)
-				UILoader.GetUIState<TextCard>().Display("Stamina Vessel", "Your maximum stamina has increased by 1", null, 240, 0.8f);
+				UILoader.GetUIState<TextCard>().Display(Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.StaminaVesselTitle0"), Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.StaminaVesselMessage0"), null, 240, 0.8f);
 			else
-				UILoader.GetUIState<TextCard>().Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
+				UILoader.GetUIState<TextCard>().Display(Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.StaminaVesselTitle1"), Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.StaminaVesselMessage1", (3 - ah.ShardCount % 3)), null, 240, 0.6f);
 
 			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
 

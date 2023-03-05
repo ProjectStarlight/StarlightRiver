@@ -2,6 +2,7 @@
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {

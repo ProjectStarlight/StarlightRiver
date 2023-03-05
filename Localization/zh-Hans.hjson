@@ -1,0 +1,3267 @@
+Mods : {
+    StarlightRiver : {
+        Custom : {
+			BorderString : {
+				CharacterSelectAddons : {
+					SP : 耐力
+					Deaths : 死亡次数
+				}
+				CodexButton : {
+					Found : 星光秘典
+					UnFound : 在沙漠中发现...
+				}
+				DoorBombShooter : {
+					0 : "          在"
+					1 : 蓝色
+					2 : 方形上放置方块
+				}
+				InfusionImprint : {
+					ImprintedSlate : 印记石板
+					CompleteObjectives : 完成目标以转化为注魔物
+				}
+				Objectives : {
+					StrikeFoes : 攻击敌人
+					LootFallenStars : 收集坠落之星
+				}
+				Stamina : 耐力
+				Submit : 提交
+			}
+			BossChecklist : {
+				SquidBossInfo : 将极光巨妖诱饵丢入永冻圣地的折射光的水中。
+				Auroracle : 极光巨妖
+				SquidBossLossMessage : 永冻教堂陷入沉寂。
+				
+				vitricMinibossInfo : 在璃晶质沙漠中璃晶编织者的锻造室里挑战他。
+				Glassweaver : 璃晶编织者
+				vitricMinibossLossMessage : 璃晶编织者宣告胜利。
+				
+				vitricBossInfo : 在打破覆盖它的水晶后，在璃晶神庙顶部的赛里欧斯宿处使用璃晶神像。
+				Ceiros : 赛里欧斯
+				vitricBossLossMessage : 璃晶锻造室沉寂下来。
+			}
+            CombatText : {
+                GotOvergrowthKey : "获得: 过度生长钥匙"
+                IngredientAddedToChefsBag : 材料添加到厨师袋中
+                Ouch : 哎哟!
+                Blocked : 格挡!
+                LearnedRecipie : "已学习的食谱: "
+            }
+            Items : {
+                Food : {
+                    Ingredient : {
+                        MainCourse : 主菜
+                        SideDish : 配菜
+                        Seasonings : 调料
+                        BonusEffects : 增益效果
+                    }      
+					SpecialEffect : {
+						SlimejellyEffect : 
+							'''
+							受到伤害时释放一个友好的史莱姆
+							史莱姆变得被动
+							'''
+						SupportCookiesEffect : 拾取生命和魔力恢复额外的生命值和法力
+					}
+				}
+            }
+            NewText : {
+                GlassweaverGauntletWave : {
+                    Begin : 开始
+                    Wave2 : 第2波
+                    Wave3 : 第3波
+                    Wave4 : 第4波
+                    Wave5 : 第5波
+                    Wave6 : 第6波
+                    Wave7 : 第7波
+                }
+                Medal : {
+                    MedalEarned : 获得奖章！
+                }
+                InfusionImprint : {
+					ObjectivesComplete : 目标达成！你已获得
+				}
+            }
+            RichTextBox : {
+                GlassweaverWaiting : {
+                    Title : 璃晶编织者
+                    Button : {
+                        TellMeMore : 告诉我更多
+                        ShowMe : 指给我看看
+                        SeeYouLater : 回见
+                        Fight : 战斗
+                        INeedAKey : 我需要一把钥匙
+                    }
+                    IntroDialogue : {
+                        0 : "啊，你终于找到我了。来浏览我的商品？我的委托已满，但如果价格合适，我相信我们可以解决问题。或者...你给我的表情...你是一位粉丝？",
+                        1 : "我——什——什么？你是什么意思，你只是“在这里溜达”？没有人会无缘无故地来看传说中的璃晶编织者，尤其是在我的锻造室之外！一定是...命运！",
+                        2 : "是的，是的，你看，我最近确实遇到了一些麻烦。我知道，很难相信，我遇到了麻烦，对吧，但我确实需要像你这样勇敢的人的帮助。把它想象成...一个任务，或者什么的。冒险家喜欢那些，对吧？",
+                        3 : "我是一名艺术家，水晶是我的媒介，但要正常使用它，我需要一些非常强大的设备，而且，好吧，我该怎么说呢...我可能忘记在我选择的锻造室里维护工具有一会儿了。就几个世纪。别用那种眼神看我。",
+                        4 : "我的设备已经快不行了，我需要更好的设备，所以我一直在努力寻找我们目前正在聊的那个。问题是，它几乎更加年久失修！如果你，善良的探险家，有足够的勇气冒险进入并修复锻造室，我会让你留着你在里面找到的任何东西并为你锻造一些特别的东西。",
+                        5 : "不——等等！你不能随便闯入，你需要一把钥匙。我需要知道我是否将我的信仰和水晶交给了正确的人，所以当你认为自己足够强大时，来我的锻造室，我会适当地测试你。在这儿，我给你指路。",
+                    }
+                    AfterCameraDialogue : {
+                        0 : "很壮观，不是吗？但这还不够。由于缺乏经验，你可能无法判断，但我只给了它几年时间，岩浆通道就会被侵蚀，锻造室就会坍塌。不要让我失望，冒险者。你知道在哪可以找到我。"
+                    }
+                    WaitingDialogue : {
+                        0 : "你终于准备好证明你的价值了吗？说实话我很难说，你们总是那么瘦小。",
+                        1 : "冒险者，你回来了！你是来挑战我的，还是只是看看我的精彩作品？",
+                        2 : "啊，我命中注定的胜利者！来这里是为了从那个卑鄙的哨卫手中解放我的锻造室？呃——忘掉我说过的吧。如果你赢了，我会告诉你的。",
+                    }
+                    WinDialogue : {
+                        0 : "恭喜，你毁掉了我几十年来最优秀的作品！我真的应该更仔细地考虑这个问题。我本来打算让那些东西帮你清理锻造室的，但是...我相信你会搞定的。让我告诉你会发生什么。",
+                        1 : "来看看我宏伟锻造神庙的伟大地图。只是另一件我允许你简要浏览的传奇艺术品，不收取费用。你可以在这里、这里和这里看到锻造室的三个主要房间。这三者很可能都以某种方式被破坏了，如果你想进入底部的保险库，你必须让这三者都处于正常工作状态。",
+                        2 : "如果你进入保险库，哨卫很可能会注意到。它不会很高兴，但大多数冒险家没有对从神圣的锻造神殿盗窃和谋杀宗教监护人的内疚，所以你可能会把它干掉。",
+                        3 : "你为什么那样看着我？我之前不是跟你说过哨卫吗？啊。它只是一条...略微超大的陶制蛇。就这样。如果你逃跑的速度不够快，它无法熔化整个神殿。不。打败那条稍微大一点的蛇后再跟我说话，这样我就可以搬进去了。",
+                        4 : "不管怎样，这是神庙钥匙。你怎么突然看起来这么不安？记住你的职责，冒险家，到达我的锻造神殿！",
+                    }
+                    KeyDialogue : {     
+                        0 : "看起来你并没有清理好锻造室。你站在那里干什么？我站在这里忙着呢！",
+                        1 : "难道你没有更好的事情要做，比如修理我的锻造室？",
+                        2 : "冒险家！你这么快就打败了哨卫？这是一个奇迹！哦。哦，你没有。没关系。走开。",
+                    }
+                }
+            }
+            UI : {
+				ChefBag : {
+					Rarity : 稀有度
+					Type : 类型
+					Alphabetical : 字母顺序
+					RarityReverse : 稀有度逆序
+					TypeReverse : 类型逆序
+					AlphabeticalReverse : 字母逆序
+					SortMode : 排序模式
+					HideUnowned : 隐藏未拥有
+					Ingredients : 原料
+					Cookbook : 烹饪书
+				}
+				Codex : {
+					Categories : {
+						Abilities : 技能
+						Biomes : 群系
+						Crafting : 制作
+						Relics : 圣物
+						Misc : 其他
+					}
+					CodexEntry : {
+						Abilities : {
+							LoreEntry : {
+								Title : 星光秘典
+								Body : 一本包含失落知识的神秘纲要，它似乎会在你旅行时自行书写。单击物品栏中的秘典图标以查看秘典。
+							}
+							WindsEntry : {
+								Title : 禁忌之风
+								Body : 在璃晶沙漠中的一座坟墓深处发现了一组奇怪的能量。这些“风”拥有粉碎某些物体的力量，并以极快的速度推动你前进。
+								Hint : 封存于一座古老的璃晶神庙
+							}
+						}
+						Biomes : {
+							VitricEntry : {
+								Title : 璃晶沙漠
+								Hint : 在地下沙漠之下发现...
+							}
+						}
+						Crafting : {
+							StarlightWaterEntry : {
+								Title : 沐浴星光
+								Body : 你已经发现，如果晚上坠落的星星恰好落入水中，它们似乎会分解成美丽的、闪烁的光，在水面上萦绕。将某些物品浸入这种相当闪亮的水中似乎会以奇怪的方式改变它们，将诸如简单的木制工具之类的东西转变为强大的魔法仪器。 NEWBLOCK当靠近这些波光粼粼的水域时，似乎任何能够进行这种转变的东西都会在你的口袋里发出明亮的光。以此，你认为偶尔访问这些水源并检查你拥有的任何东西是否可以转化可能是一个明智的主意。
+							}
+						}
+						Misc : {
+							StaminaEntry : {
+								Title : 耐力
+								Body : 你所有的技能都使用耐力，耐力是一种资源，由魔力条旁边的橙色钻石表示。随着时间的推移，你的耐力会自行补充。你可以通过解锁新技能和拥有某些装备来获得额外的耐力。
+								Hint : 解锁一个技能...
+							}
+							StaminaShardEntry : {
+								Title : 耐力容器
+								Body : 这些错综复杂的金属装置的碎片似乎散落在世界各地。通过组合其中的3个，可以制作一个完整的耐力容器，使其持有者可以存储额外的耐力单位。不幸的是，这些碎片的奇怪材料和复杂的工具使得你几乎不可能自己重新创造它们。
+								Hint : 找到耐力容器碎片...
+							}
+							InfusionEntry : {
+								Title : 注魔物
+								Body : 注魔物是强大的魔法遗物，可以增强使用者的技能或改变它们的整体运作方式。存在两种主要类型的注魔物，通用注魔物和技能注魔物。 NEWBLOCK通用注魔物通常提供适用于玩家所有技能的一般提升，或者具有足够小的效果，以至于它们不保证技能注魔的技能类型限制。虽然你可以装备与槽位一样多的通用注魔，但您不能装备重复的。 NEWBLOCK技能注魔物特定于你的一项技能，并极大地增强它们或改变它们的整体运作方式。虽然功能强大，但这些注魔物通常比普通注魔物更难获得。你不能为同一个技能装备两个技能注魔物，也不能装备重复的。
+								Hint : 找到一个神秘的祭坛...
+							}
+							BarrierEntry : {
+								Title : 护盾
+								Body : 护盾是一种用魔法能量包裹你的身体，保护它免受物理伤害的方法。虽然通常无法获得，但冒险者可以穿戴魔法饰品或盔甲，让它们在自己身上维持和积累护盾，或者喝下可以提供短暂护盾的药水。 NEWBLOCK虽然强大，但护盾无法完全吸收伤害，普通护盾只能保护约30%的伤害，同时还能承受攻击的全部冲击。护盾也不会保护它的使用者免受全部形式的身体伤害，直接影响它持有者的病痛，如火和毒药，或直接竭尽一个人身体的魔法，如混沌状态将造成完全伤害，通过任何数量的护盾 NEWBLOCK还应注意的是，护盾不能在痛苦中时累积，必须在受到伤害后等待8秒左右，护盾才能开始充能，而无需借助药水或设备来加速效果。
+								Hint : 使用给予护盾的装备或药水...
+							}
+						}
+						Relics : {
+							PlaceholderRelicEntry : {
+								Title : 占位符条目
+								Body : 嗯。好吧，这很尴尬。
+								Hint : 有些事情你在演示版中是无法知道的...
+							}
+						}
+					}
+				}
+				Cooking : {
+					Ingredients : 原料
+					InfoStats : 信息/数据
+					Prepare : 做饭
+					PlaceMainCourse :
+						'''
+						将主菜放置在
+						顶部槽位以开始
+						烹饪
+						'''
+					SecondsDuration : 秒持续时间
+					SecondsFullness : 秒饱腹
+				}
+				Loot : {
+                    Info : {
+						0 : 你得到
+						1 : 选择两个
+					}
+                    Quotes : {
+						0 : 劫掠？
+						1 : 劫掠！
+						2 : 闪闪发光的宝藏！
+						3 : 闪闪发光！
+						4 : 宝藏！
+						5 : 为了你的烦恼...
+						6 : 这看起来很有价值...
+						7 : 不是宝箱怪！
+						8 : 闪亮！
+					}
+				}
+				MasterDeathTicker : {
+					DeathsTo : "死于"
+					Tease : {
+						0 : 或许试试旅行模式...
+						1 : 你不该赢。
+						2 : 哎呀雏菊。
+						3 : 这不是那么地难。
+						4 : 放弃吧。
+						5 : 你试过躲避吗？
+						6 : 技巧问题
+						7 : 你Steam帐户上记录的小时数是否准确？
+						8 : 你确定要这样做吗？
+						9 : 你知道有更简单的困难。
+						10 : 你可以从模组浏览器安装CheatSheet。
+						11 : 击败其他Boss后，你随时可以回来。
+						12 : "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+						13 : 要知道，星光之河没有和平路线。考虑改变你的游戏风格。
+						14 : "按{0}以跳跃。"
+						Default : 你死了很多次你打破了我们讽刺挖苦的引用代码。做得好。
+					}
+				}
+                TextCard : {
+                    PleaseBindAKey : "[请绑定一个按键]"
+                    ForbiddenWindsPickupTitle : 禁忌之风
+                    ForbiddenWindsPickupMessage : "按W/A/S/D加{0}以冲刺。"
+                    GlassweaverMessage : 铁砧工作者
+                    AuroracleMessage0 : 卡住的模组
+                    AuroracleMessage1 : 尊者
+                    CeriosMessage0 : 璃晶纳税申报单
+                    CeriosMessage1 : 破碎哨卫
+                    StarlightCodexTitle : 星光秘典
+                    StarlightCodexMessage : 从你的物品栏中打开秘典以了解这个世界。
+                    MysteriousTechnologyTitle : 神秘技术
+                    MysteriousTechnologyMessage : 它对你做了什么？
+                    StaminaVesselTitle0 : 耐力容器
+                    StaminaVesselMessage0 : 你的最大耐力增加1
+                    StaminaVesselTitle1 : 耐力容器碎片
+                    StaminaVesselMessage1 : "再收集{0}个以提高你的最大耐力"
+                }
+                Warning : {
+                    WARNING : 提醒
+                    Message1 : 星光之河在大师模式下其Boss有独特的行为。这种行为旨在比其他任何事情都更加困难，并且假设有大量关于
+                    Message2 : 模组和基础游戏的知识。星光之河大师模式不适用于首次通关。星光之河大师模式的本意并不是合理。星光之河大师模式并不是为了让每个人都开心。
+                    Message3 : 请记住，你自己和你周围的人的身心健康远比这款游戏或其中的任何东西重要。
+                }
+            }
+        }
+        Items: {
+			Astral: {
+				DisplayName: 彗星冲刺 I
+				Tooltip:
+					'''
+					禁忌之风注魔物
+					冲得更远，速度更快
+					耐力消耗增加至1.3
+					'''
+			}
+
+			Astral2: {
+				DisplayName: 彗星冲刺 II
+				Tooltip:
+					'''
+					禁忌之风注魔物
+					冲得更远，速度甚至更快
+					耐力消耗增加至1.6
+					'''
+			}
+
+			Astral3: {
+				DisplayName: 彗星冲刺 III
+				Tooltip:
+					'''
+					禁忌之风注魔物
+					冲得更远，速度最快
+					耐力消耗增加至2
+					'''
+			}
+
+			AstralImprint: {
+				DisplayName: 彗星冲刺
+				Tooltip: 冲得更远，速度更快
+			}
+
+			Blink: {
+				DisplayName: 烁闪
+				Tooltip:
+					'''
+					禁忌之风注魔物
+					立即传送到前方一小段距离，避开敌人及其的攻击
+					'''
+			}
+
+			BlinkImprint: {
+				DisplayName: 烁闪
+				Tooltip: 立即传送到前方一小段距离，避开敌人及其的攻击
+			}
+
+			Pulse: {
+				DisplayName: 脉冲
+				Tooltip:
+					'''
+					禁忌之风注魔物
+					冲刺被短促、频繁、有力的速度爆发所取代
+					体力消耗减少0.25
+					'''
+			}
+
+			PulseImprint: {
+				DisplayName: 脉冲
+				Tooltip: 冲刺被短促、频繁、有力的速度爆发所取代
+			}
+
+			BasicInfusion: {
+				DisplayName: 空白石板
+				Tooltip:
+					'''
+					空白的石板
+					可以在注魔站刻印挑战印记
+					完成挑战转变为注魔物
+					随着你的进展可获得新的注魔物
+					'''
+			}
+
+			Item: {
+				DisplayName: 大锅
+				Tooltip: 炼金大锅
+			}
+
+			MixingStick: {
+				DisplayName: 搅拌棒
+				Tooltip:
+					'''
+					搅拌用棒
+					用它来最终确定炼金术配方以制作它们。
+					'''
+			}
+
+			AstrofloraFlail: {
+				DisplayName: 星花连枷
+				Tooltip: 旋转连枷会释放出有毒的孢子，当连枷被抛出时这些孢子会被点燃
+			}
+
+			BaseBarrierDye.DisplayName: 基础护盾染料
+
+			MoonstoneBarrierDye: {
+				DisplayName: 月光石染剂
+				Tooltip:
+					'''
+					使护盾反射月光
+					可装备
+					时装物品
+					'''
+			}
+
+			VitricBossBarrierDye: {
+				DisplayName: 哨卫染剂
+				Tooltip:
+					'''
+					使护盾效果模仿破碎哨卫的护盾
+					可装备
+					时装物品
+					'''
+			}
+
+			SeaglassRing: {
+				DisplayName: 海镜戒指
+				Tooltip:
+					'''
+					+10 护盾值
+					护盾充能的开始略微变快
+					“狂风暴雨并没有减弱它的光芒”
+					'''
+			}
+
+			BreachCannon: {
+				DisplayName: Breach Cannon
+				Tooltip:
+					'''
+					召唤一个向光标发射激光的哨兵
+					这些激光器可以结合
+					'''
+			}
+
+			BreacherChest: {
+				DisplayName: 破门手胸甲
+				Tooltip: 提高10%的远程伤害
+			}
+
+			BreacherHead: {
+				DisplayName: 破门手护目镜
+				Tooltip: 提高15%的远程暴击伤害
+			}
+
+			BreacherLegs: {
+				DisplayName: 破门手护腿
+				Tooltip: 基于速度至多提高20%的远程暴击伤害
+			}
+
+			FlareBreacher: {
+				DisplayName: 信号弹破门枪
+				Tooltip: 发射嵌入敌人体内的爆炸性信号弹，并炸开弹片穿至敌人身后
+			}
+
+			ReactivePlating: {
+				DisplayName: 活性护层
+				Tooltip:
+					'''
+					受到几次打击后获得短暂的伤害抵抗
+					“防护罩会激活，但只有在...重复触发后才会激活。”
+					'''
+			}
+
+			ScrappodItem: {
+				DisplayName: 废料发射架
+				Tooltip:
+					'''
+					到达鼠标光标后碎成碎片
+					在短时间后才能破碎
+					'''
+			}
+
+			Scrapshot: {
+				DisplayName: 废料射枪
+				Tooltip:
+					'''
+					右键单击以钩住你的敌人并拉近
+					钩住时开火以减少散播并飞起
+					'''
+			}
+
+			SupplyBeacon: {
+				DisplayName: 补给信标
+				Tooltip:
+					'''
+					承受超过50点伤害会召唤空降补给
+					站在空降补给附近以增强伤害、再生或防御
+					10秒冷却
+					'''
+			}
+
+			Ivy: {
+				DisplayName: 森林常春藤
+				Tooltip: 一种常见但用途广泛的草药
+			}
+
+			IvySeeds: {
+				DisplayName: 森林常春藤种子
+				Tooltip: 可以在悬挂式花盆中种植
+			}
+
+			PotionForest: {
+				DisplayName: 森林补物
+				Tooltip: 提供再生和对毒物的免疫力
+			}
+
+			ArchaeologistsWhip: {
+				DisplayName: 考古学家鞭子
+				Tooltip:
+					'''
+					攻击敌人让他们掉落财宝
+					收集财宝以增强仆从
+					'''
+			}
+
+			AWhip_BlueGem: {
+				DisplayName: 财宝
+			}
+
+			AWhip_Cloud: {
+				DisplayName: 财宝
+			}
+
+			AWhip_Coin: {
+				DisplayName: 财宝
+			}
+
+			AWhip_GreenGem: {
+				DisplayName: 财宝
+			}
+
+			AWhip_Necklace: {
+				DisplayName: 财宝
+			}
+
+			AWhip_RedGem: {
+				DisplayName: 财宝
+			}
+
+			DesertArtifact1Item.DisplayName: 远古化石
+			DesertArtifact2Item.DisplayName: 远古化石
+			DesertArtifact3Item.DisplayName: 远古化石
+			DesertArtifact4Item.DisplayName: 远古化石
+			DesertArtifact5Item.DisplayName: 远古化石
+			DesertArtifact6Item.DisplayName: 远古化石
+			DesertArtifact7Item.DisplayName: 远古化石
+
+			ExoticGeodeArtifactItem: {
+				DisplayName: 奇异晶洞
+				Tooltip: "“令人难以置信的闪亮”"
+			}
+
+			PerfectlyGenericArtifactItem: {
+				DisplayName: 完美泛型物体
+				Tooltip: 召唤一个完美的泛型宠物
+			}
+
+			PirateChestArtifactItem: {
+				DisplayName: 海盗宝箱
+				Tooltip:
+					'''
+					右键打开
+					“持续几个世纪的抢手货”
+					'''
+			}
+
+			RainTotemArtifactItem: {
+				DisplayName: 雨图腾
+				Tooltip: 启动或停止大风暴的力量
+			}
+
+			WindTotemArtifactItem: {
+				DisplayName: 风图腾
+				Tooltip: 开始或停止强风的力量
+			}
+
+			DebugModerEnabler: {
+				DisplayName: Debug Mode
+				Tooltip: Enables debug mode
+			}
+
+			DebugStick: {
+				DisplayName: Debug Stick
+				Tooltip: Has whatever effects are needed
+			}
+
+			DefiledAnkh: {
+				DisplayName: 污秽十字章
+				Tooltip:
+					'''
+					被诅咒的 : 你的护盾可防止的伤害减少25%
+					当护盾处于激活状态时，你无法获得除药水、护盾和法力疾病之外的任何减益效果
+					+40 最大护盾值
+					'''
+			}
+
+			AquaSapphire: {
+				DisplayName: 水色蓝宝石
+				Tooltip:
+					'''
+					护盾额外抵消5%的伤害
+					+10 护盾
+					'''
+			}
+
+			Cloudstrike: {
+				DisplayName: 雷云闪击
+				Tooltip:
+					'''
+					在不发射时积累电荷
+					下一次射击的伤害和射程随着充能而增加
+					“迎接这场喧嚣与狂暴的风暴，直到雷声交响归于沉寂”
+					'''
+			}
+
+			InertStaff: {
+				DisplayName: 惰滞新月法杖
+				Tooltip: “这个破损的神器仍然留存着一些潜在的星体能量”
+			}
+
+			SkullBuster: {
+				DisplayName: 骷髅杀手
+				Tooltip:
+					'''
+					右键单击以投掷4个骷髅炸弹
+					释放右键单击以快速连续射击它们
+					'''
+			}
+
+			StarlightPendant: {
+				DisplayName: 星光吊坠
+				Tooltip:
+					'''
+					当前激活的每点护盾可使法力恢复提高1%
+					过去5秒内每消耗4点法力，消耗法力可使护盾恢复速度提高1%
+					-10 护盾
+					'''
+			}
+
+			ThousandthDegree: {
+				DisplayName: 千级
+				Tooltip:
+					'''
+					融化敌人以产生热量
+					释放会发射炽热的轮子，融化敌人并在返回前在物块上滑动
+					“划裂和撕碎”
+					'''
+			}
+
+			Eraser: {
+				DisplayName: 擦除器
+				Tooltip: 死亡
+			}
+
+			ReplicantCells: {
+				DisplayName: 复制细胞
+				Tooltip:
+					'''
+					+15% 持续抵抗
+					健康恢复开始的速度略微变快
+					'''
+			}
+			
+			BlackPepper.DisplayName: 黑胡椒
+			Butter.DisplayName: 黄油
+			Carrot.DisplayName: 胡萝卜
+			Cherry.DisplayName: 樱桃
+			Dough.DisplayName: 面团
+			Dressing.DisplayName: 调味汁
+			EaterSteak.DisplayName: 噬魂怪排
+			FaceSteak.DisplayName: 脸怪排
+			Gelatine.DisplayName: 吉利丁
+			GelBerry.DisplayName: 凝胶浆果
+			Greens.DisplayName: 青菜
+			HealthExtract.DisplayName: 健康提取物
+			HoneySyrup.DisplayName: 蜂蜜糖浆
+			IvySalad.DisplayName: 常春藤沙拉
+			Lettuce.DisplayName: 莴苣
+			MahoganyRoot.DisplayName: 红木根
+			ManaExtract.DisplayName: 魔力萃取物
+
+			Meal: {
+				DisplayName: 大餐
+				Tooltip: "丰富食物提供这些增益:"
+			}
+
+			Milk.DisplayName: 牛奶
+			Rabbit.DisplayName: 兔子
+			SeaSalt.DisplayName: 海盐
+			Slimejelly.DisplayName: 史莱姆果冻
+			SupportCookies.DisplayName: 支援曲奇
+			StarlightWater.DisplayName: 星光之水
+			Steak.DisplayName: 牛排
+			Sugar.DisplayName: 糖
+			TableSalt.DisplayName: 食盐
+			Toast.DisplayName: 吐司
+			Vinegar.DisplayName: 醋
+			WhippedCream.DisplayName: 搅打奶油
+
+			AcornSprout: {
+				DisplayName: 橡实苗
+				Tooltip: 击杀有召唤标记的敌人召唤橡子落在附近的敌人身上
+			}
+
+			DustyAmulet: {
+				DisplayName: 扬尘护身符
+				Tooltip:
+					'''
+					+20 最大生命值
+					+20 最大魔力值
+					0.8x 暴击率
+					“一件带有铭文的古老传家宝”
+					'''
+			}
+
+			FeralWolfMountItem: {
+				DisplayName: 多汁牛排
+				Tooltip:
+					'''
+					召唤一只野狼战斗坐骑
+					用强力咬伤造成流血
+					右键单击以嚎叫并提高爪牙的速度
+					'''
+			}
+
+			OldWhetstone: {
+				DisplayName: 旧磨刀石
+				Tooltip:
+					'''
+					+1 全部伤害
+					“你为什么要磨尖你的魔杖？！”
+					'''
+			}
+
+			Trowel: {
+				DisplayName: 瓦匠的镘刀
+				Tooltip:
+					'''
+					以直线延伸方块
+					方向取决于你的位置
+					按住SHIFT以反向
+					30方块范围
+					'''
+			}
+
+			Trowel2: {
+				DisplayName: 自动镘刀 9000
+				Tooltip:
+					'''
+					极快地沿直线延伸方块
+					方向取决于你的位置
+					按住SHIFT以反向
+					40方块范围
+					“对于每一位受人尊敬的桥梁建造者来说都是完美的工具！”
+					'''
+			}
+
+			ForestIvyBlowdart: {
+				DisplayName: 森林常春藤吹管
+				Tooltip: 击中时，在敌人身上形成毒藤，造成接触伤害并传播给其他敌人。
+			}
+
+			ForestIvyChest: {
+				DisplayName: 森林常春藤胸甲
+				Tooltip: 增加2%远程暴击率
+			}
+
+			ForestIvyHead: {
+				DisplayName: 森林常春藤头盔
+				Tooltip: 增加2%远程暴击率
+			}
+
+			ForestIvyLegs: {
+				DisplayName: 森林常春藤护腿
+				Tooltip: 略微提高移动速度
+			}
+
+			EmeraldHeart: {
+				DisplayName: 翡翠之心
+			}
+
+			GeoAmethyst: {
+				DisplayName: 紫晶
+			}
+
+			GeoDiamond: {
+				DisplayName: 钻石
+			}
+
+			GeoEmerald: {
+				DisplayName: 翡翠
+			}
+
+			GeomancerHood.DisplayName: 地卜师兜帽
+
+			GeomancerItemDummy: {
+				DisplayName: "不同宝石的效果:"
+				Tooltip:
+					'''
+					钻石: 暴击部分无视护甲，并增加几率以使敌人生命值消失
+					黄玉: +100 护盾。获得一个指向你的光标并消耗护盾阻挡攻击的盾牌
+					翡翠: 立即恢复20点生命值。命中有几率生成5生命值的生命之心
+					蓝玉: 立即重新装满魔力值。命中有几率产生1到3个魔力之星
+					紫晶: 所有攻击都会造成有毒紫晶，一个可叠加的毒药减益
+					红玉: 命中有几率召唤红宝石匕首寻找被击中的敌人，造成命中伤害的20%
+					'''
+			}
+
+			GeomancerPants.DisplayName: 地卜师护胫
+			GeomancerRobe.DisplayName: 地卜师兜帽
+
+			GeoRuby: {
+				DisplayName: 红玉
+			}
+
+			GeoSapphire: {
+				DisplayName: 蓝玉
+			}
+
+			GeoTopaz: {
+				DisplayName: 黄玉
+			}
+
+			RainbowCycleDye.DisplayName: 彩虹循环染料
+			RainbowCycleDye2.DisplayName: 彩虹循环染料
+
+			SapphireStar: {
+				DisplayName: 蓝玉之星
+			}
+
+			SparklingBullet: {
+				DisplayName: 闪亮子弹
+				Tooltip: 成功击中后再生
+			}
+
+			BloodBolter: {
+				DisplayName: 血箭
+				Tooltip:
+					'''
+					将木箭变成血箭
+					血箭刺住死去的肉质敌人，在表面上将其爆炸
+					'''
+			}
+
+			Gluttony: {
+				DisplayName: 贪噬
+				Tooltip: 将敌人的灵魂吸出！
+			}
+
+			GravediggerItem: {
+				DisplayName: 掘墓人
+				Tooltip:
+					'''
+					将敌人击飞到空中
+					击中空中的敌人以造成更多伤害
+					'''
+			}
+
+			LivingBlood.DisplayName: 活血
+
+			PoltergeistChest: {
+				DisplayName: 幽魂胸甲
+				Tooltip:
+					'''
+					增加5%魔法伤害
+					+15% 预防接种
+					'''
+			}
+
+			PoltergeistHead: {
+				DisplayName: 幽魂兜帽
+				Tooltip: 增加15%魔法暴击伤害
+			}
+
+			PoltergeistLegs: {
+				DisplayName: 幽魂长袍
+				Tooltip: +40 最大法力值
+			}
+
+			CharonsObol: {
+				DisplayName: 卡戎的银币
+				Tooltip:
+					'''
+					将所有掉落的钱转化为反光硬币，这些硬币会自行弹射
+					硬币接触任何表面都会失去力量
+					“金钱是一切罪恶的根源”
+					'''
+			}
+
+			GrayGoo: {
+				DisplayName: 灰色黏液
+				Tooltip: 召唤一群纳米机器吞噬敌人
+			}
+
+			ThunderBeads: {
+				DisplayName: 磁电珠串
+				Tooltip:
+					'''
+					鞭打敌人以将珠子粘在他们身上
+					反复点击以电击受影响的敌人
+					'''
+			}
+
+			Thunderbuss: {
+				DisplayName: 讯路雷霆
+				Tooltip:
+					'''
+					向锥形范围内的敌人发射强大的闪电
+					右键单击以发射闪电球
+					向球体射击会攻击它附近的所有敌人
+					球体在撞击时爆炸，并且一次只能激活一个
+					“粉碎阻力最大的路径”
+					'''
+			}
+
+			AlchemistShackles: {
+				DisplayName: 炼金术士的镣铐
+				Tooltip:
+					'''
+					当你的健康和魔力值较低时，魔力和健康药水会更有效
+					被诅咒的: 药水疾病效果持续时间延长15秒
+					'''
+			}
+
+			ArchaeologistsMap: {
+				DisplayName: 考古学家的地图
+				Tooltip: 显示附近一件文物的位置
+			}
+
+			BalloonGun: {
+				DisplayName: 气球炮
+				Tooltip: 把气球附在敌人身上以让他们飘走
+			}
+
+			BalloonInABalloon: {
+				DisplayName: 气球中气球
+				Tooltip:
+					'''
+					增加跳跃高度
+					增加空中机动性
+					按住UP下落得更慢
+					'''
+			}
+
+			BarbedKnife: {
+				DisplayName: 刺刀
+				Tooltip: 暴击会施加最多可叠加五次的流血减益效果
+			}
+
+			BizarrePotion: {
+				DisplayName: 奇异药水
+				Tooltip: 投掷具有随机伤害效果的随机药水
+			}
+
+			Bladesaw: {
+				DisplayName: 刃锯
+				Tooltip:
+					'''
+					粉碎敌人
+					反复攻击撕碎敌人并使锯过热，增加伤害
+					右键单击以用作工具
+					'''
+			}
+
+			BloodAmulet: {
+				DisplayName: 血之护符
+				Tooltip:
+					'''
+					每受到25点伤害就会释放一个追踪血箭
+					这些箭会伤害敌人并使他们在死亡时一定掉落生命之心
+					'''
+			}
+
+			BloodlessAmulet: {
+				DisplayName: Amulet of the Bloodless Warrior
+				Tooltip:
+					'''
+					+100 Maximum Barrier
+					Unaffected by damage over time
+					Barrier absorbs ALL damage
+					You can survive without life
+					Cursed : You cannot have life
+					 Slightly reduced barrier recharge
+					 Healing grants a decaying damage boost instead of life
+					'Leave your flesh behind, for your rage is all you need'
+					'''
+			}
+
+			BricklayersMallet: {
+				DisplayName: Bricklayer's Mallet
+				Tooltip:
+					'''
+					Doubles block placement and tool range
+					Decreases mining speed by 50% for blocks outside your original range
+					'''
+			}
+
+			BuffChalice: {
+				DisplayName: Plexus Chalice
+				Tooltip: Inflicting debuffs temporarily increases debuff resistance
+			}
+
+			CasualMirror: {
+				DisplayName: Causal Mirror
+				Tooltip:
+					'''
+					Regenerate life when you would take damage-over-time.
+					Cursed : take damage-over-time when you would regenerate life.
+					This includes natural regeneration
+					'''
+			}
+
+			Cheapskates: {
+				DisplayName: Cheapskates
+				Tooltip:
+					'''
+					Maximum movement speed is doubled
+					Take up to 25% more damage while moving over default speed
+					Acceleration is reduced by 75% when over default speed
+					'''
+			}
+
+			CoachGun: {
+				DisplayName: Coach Gun
+				Tooltip:
+					'''
+					M2 to throw out a lit bundle of dynamite
+					Explodes in 2.5 seconds, dealing DoT and weakening enemies
+					Shoot it to detonate it early
+					'My business, my rules'
+					'''
+			}
+
+			CopperCoil: {
+				DisplayName: Copper Coil
+				Tooltip: Strikes nearby enemies with static electricity
+			}
+
+			Corpseflower: {
+				DisplayName: Corpseflower
+				Tooltip:
+					'''
+					All damage dealt is converted into damage over time
+					Damage is decreased by 66%
+					You are unable to critically strike while equipped
+					'''
+			}
+
+			CoughDrops: {
+				DisplayName: Cough Drops
+				Tooltip: When debuffs wear off, gain a temporary speed and damage boost
+			}
+
+			CutlassBus: {
+				DisplayName: Cutlassbus
+				Tooltip: egshels update this lol
+			}
+
+			DiceAmmo: {
+				DisplayName: Dice
+				Tooltip: Every shot randomizes
+			}
+
+			DisinfectantKit: {
+				DisplayName: Disinfectant Kit
+				Tooltip:
+					'''
+					Combined effects of the Disinfectant Wipes and Sanitizer Spray
+					10% increased critical strike chance when a debuff is active
+					'''
+			}
+
+			DisinfectantWipes: {
+				DisplayName: Disinfectant Wipes
+				Tooltip:
+					'''
+					Critical strikes have a 10% chance to reduce all debuff durations by 3 seconds
+					Does not affect potion sickness debuffs
+					'''
+			}
+
+			DualCross: {
+				DisplayName: Double Cross
+				Tooltip: Shoots your highest two ammo slots at once
+			}
+
+			DullBlade: {
+				DisplayName: Dull Blade
+				Tooltip: Doesn't seem very sharp... yet
+			}
+
+			ElectroArrow: {
+				DisplayName: Electro Arrow
+				Tooltip:
+					'''
+					Chains to nearby enemies
+					Inflicts overcharge, greatly lowering enemy defense
+					'''
+			}
+
+			FiletGiblet1: {
+				DisplayName: Giblet
+				Tooltip: You shouldn't see this
+			}
+
+			FiletGiblet2: {
+				DisplayName: Giblet
+				Tooltip: You shouldn't see this
+			}
+
+			FiletGiblet3: {
+				DisplayName: Giblet
+				Tooltip: You shouldn't see this
+			}
+
+			FiletKnife: {
+				DisplayName: Filet Knife
+				Tooltip:
+					'''
+					Critical strikes carve chunks of flesh from enemies
+					Devour chunks to heal and gain Blood Frenzy
+					Blood Frenzy grants increased attack speed and decreased critical strike chance
+					'''
+			}
+
+			FryingPan: {
+				DisplayName: Frying Pan
+				Tooltip:
+					'''
+					Attacks in close-range melee before being thrown to ring some chrome domes
+					'Evil-looking runes are inscribed on the bottom'
+					'''
+			}
+
+			GeodeBow: {
+				DisplayName: Geode Bow
+				Tooltip:
+					'''
+					Hit enemies to create crystal growths 
+					Shoot these growths to deal massive damage
+					'''
+			}
+
+			GlassArrowhead: {
+				DisplayName: 璃晶箭头
+				Tooltip: 暴击会使射出的箭粉碎成璃晶碎片
+			}
+
+			GraveBuster: {
+				DisplayName: 掘墓人
+				Tooltip:
+					'''
+					摧毁附近的坟墓
+					“你喜欢大脑的味道，而我们不喜欢僵尸”
+					'''
+			}
+
+			Guillotine: {
+				DisplayName: 黄金断头台
+				Tooltip:
+					'''
+					当你的敌人失去健康时暴击会积攒力量
+					处决低健康的的普通敌人
+					'''
+			}
+
+			Gunchucks.DisplayName: Gunchucks
+
+			GunstrapBoots: {
+				DisplayName: Gunstrap Boots
+				Tooltip:
+					'''
+					All double jumps now shoot out a shotgun blast of bullets below you
+					Using wings fires constant rounds of machine gun fire
+					'''
+			}
+
+			HermesVow: {
+				DisplayName: Hermes' Vow
+				Tooltip:
+					'''
+					Cursed
+					Massively increased acceleration and movement speed
+					Increased jump height and max movement speed
+					You are unable to use wings
+					'''
+			}
+
+			HolyAmulet: {
+				DisplayName: Holy Amulet
+				Tooltip: Releases bursts of homing energy for every 25 HP healed
+			}
+
+			HungryStomach: {
+				DisplayName: Hungry Stomach
+				Tooltip:
+					'''
+					Restore stamina by damaging foes
+					Melee weapons are twice as effective
+					Cursed: Disables natural stamina regenration
+					'''
+			}
+
+			ImpactSMG: {
+				DisplayName: Impact SMG
+				Tooltip:
+					'''
+					Hold <left> to rapidly fire high impact bullets, heating over time
+					Release to boomerang the gun
+					Hitting an enemy while its not overheated grants you a stacking buff to the Impact SMG's damage
+					Hitting an enemy while its overheated causes it to consume all stacks for a deadly explosion
+					'''
+			}
+
+			ImpulseThruster: {
+				DisplayName: Impulse Thruster
+				Tooltip: Converts all wingtime into a burst of energy
+			}
+
+			Ironheart: {
+				DisplayName: Ironheart
+				Tooltip: Melee damage generates decaying barrier and defense
+			}
+
+			LostCollar: {
+				DisplayName: Lost Collar
+				Tooltip:
+					'''
+					+40% Inoculation
+					Debuffs you inflict are inflicted on you
+					+5% movement and attack speed per debuff affecting you
+					Cursed : Lose all debuff immunities
+					'''
+			}
+
+			Magebane: {
+				DisplayName: Magebane
+				Tooltip:
+					'''
+					Mana replenishing items cannot be used
+					Magic attacks have a twenty-five percent chance to leech a large portion of damage as mana on hit
+					'''
+			}
+
+			MagmaGun: {
+				DisplayName: 熔岩流涌
+				Tooltip: 喷出粘在物块和敌人身上的汹涌熔岩流
+			}
+
+			MonkSpade.DisplayName: Monk Spade
+
+			PandorasDagger: {
+				DisplayName: Pandora's Dagger
+				Tooltip: Grazes release Discordant Bolts, that inflict stacks of Volatile
+			}
+
+			PandorasShield: {
+				DisplayName: Pandora's Shield
+				Tooltip: Grazes grant a portion of the projectiles' damage as barrier
+			}
+
+			PhilosophersMortar: {
+				DisplayName: Philosopher's Mortar
+				Tooltip: Life hearts decrease duration of Potion Sickness by 10 seconds, but heal half as much
+			}
+
+			PowerCell: {
+				DisplayName: Power Cell
+				Tooltip: NaN
+			}
+
+			PulseBoots: {
+				DisplayName: Pulse Boots
+				Tooltip: Grants a directionally boosted double jump
+			}
+
+			RhythmicResonator: {
+				DisplayName: Rhythmic Resonator
+				Tooltip:
+					'''
+					Attack in rhythm with your weapon to gradually increase damage and knockback
+					Disables autoswing
+					'''
+			}
+
+			Sandscript: {
+				DisplayName: Sandscript
+				Tooltip:
+					'''
+					Manifests a blade of sand
+					`This lost tablet contains a fragment of the Epic of Yeremy
+					...The writing is sorta ameteurish for an ancient relic`
+					'''
+			}
+
+			SanitizerSpray: {
+				DisplayName: Sanitizer Spray
+				Tooltip: Critical strikes have a 25% chance to transfer partial debuff duration to nearby enemies
+			}
+
+			ShockAbsorber: {
+				DisplayName: Shock Absorber
+				Tooltip:
+					'''
+					Dropping from great heights creates a shockwave
+					Nullifies fall damage
+					'''
+			}
+
+			Sling: {
+				DisplayName: Sling
+				Tooltip:
+					'''
+					Sling seeds, stones, and mushrooms at your enemies
+					Seeds have increase velocity
+					Stones have less velocity but deal more damage and knockback
+					Mushrooms deal less damage but inflict Poisoned
+					75% chance to not consume ammo
+					'''
+			}
+
+			Slitherring: {
+				DisplayName: Slitherring
+				Tooltip: Whips have a chance to shoot out a smaller, snake whip
+			}
+
+			Soilgun: {
+				DisplayName: Soilgun
+				Tooltip:
+					'''
+					Hold <left> to charge up a volley of soil
+					Release to fire the soil at high velocities
+					Can use many different types of soils
+					'Soiled it! SOILED IT!'
+					'''
+			}
+
+			SojournersScarf: {
+				DisplayName: Sojourner's Scarf
+				Tooltip:
+					'''
+					20% increased movement speed
+					50% decreased life regeneration while stationary
+					'''
+			}
+
+			Sorcerwrench: {
+				DisplayName: Sorcerwrench
+				Tooltip:
+					'''
+					Select an area of blocks to be broken
+					Consumes 2 mana per block broken
+					'''
+			}
+
+			SoulOfFrog: {
+				DisplayName: Soul Of Frog
+				Tooltip:
+					'''
+					Frogs are resurrected on death, growing stronger with each return from the brink.
+					Killing other critters has a chance to reveal them as actually being a frog the whole time
+					They will then be resurrected as if they were a frog the whole time, because they were
+					'''
+			}
+
+			SpikedMail: {
+				DisplayName: Spiked Mail
+				Tooltip:
+					'''
+					Barrier damage is applied to attackers as thorns 
+					+20 barrier
+					'''
+			}
+
+			StaminaGel.DisplayName: Stamina Gel
+			StaminaPickup.DisplayName: Stamina Pickup
+
+			StaminaRing: {
+				DisplayName: Band of Endurance
+				Tooltip: Slowly regenerates stamina
+			}
+
+			StaminaUp: {
+				DisplayName: Glass Stamina Vessel
+				Tooltip: Increased maximum stamina by 1
+			}
+
+			StarlightShuriken: {
+				DisplayName: Starlight Shuriken
+				Tooltip:
+					'''
+					Toss a volley of magical shurikens
+					Landing every shuriken decreases the amount thrown by 1
+					Throw a powerful glaive when you would throw only 1 shuriken
+					'''
+			}
+
+			SwordBook: {
+				DisplayName: Mantis Technique
+				Tooltip:
+					'''
+					Allows execution of combos with broadswords
+					Right click to parry with a broadsword
+					'''
+			}
+
+			TaintedGreataxe: {
+				DisplayName: 污腐巨斧
+				Tooltip:
+					'''
+					被诅咒的
+					召唤一把虚无的巨斧，嵌入在刚刚受到暴击的敌人附近
+					巨斧嵌入的敌人会变为聚焦的
+					在巨斧嵌入时在它之上<right>，它会自行取消嵌入 
+					'''
+			}
+
+			TinCoil: {
+				DisplayName: Tin Coil
+				Tooltip: Strikes nearby enemies with static electricity
+			}
+
+			TwistSword: {
+				DisplayName: Twisted Greatsword
+				Tooltip:
+					'''
+					Hold to unleash a whirling slash
+					Hold jump while slashing to accelerate upward
+					'''
+			}
+
+			Ultrapills: {
+				DisplayName: ULTRAPILLS
+				Tooltip:
+					'''
+					Cursed: You cannot restore health by normal means
+					Striking enemies occasionally leeches life
+					Killing enemies causes them to explode into healing blood
+					'''
+			}
+
+			WardedMail: {
+				DisplayName: Warded Mail
+				Tooltip:
+					'''
+					Barrier damage is applied to attackers as thorns 
+					+Barrier negates 10% more damage 
+					+40 barrier
+					'''
+			}
+
+			CrescentQuarterstaff: {
+				DisplayName: Crescent Quarterstaff
+				Tooltip: Update this egshels
+			}
+
+			Datsuzei: {
+				DisplayName: 罪月遁逸
+				Tooltip: 释放月亮
+			}
+
+			DianesPendant: {
+				DisplayName: Diane's Pendant
+				Tooltip:
+					'''
+					Something about a crescent idk 
+					+20 barrier
+					'''
+			}
+
+			Moonfury: {
+				DisplayName: Moonfury
+				Tooltip:
+					'''
+					Call down a shard of moonstone, afflicting enemies with Dreamfire
+					Afflicted enemies take extra damage on hit from Moonfury
+					'''
+			}
+
+			MoonstoneArrow: {
+				DisplayName: Moonlit Arrow
+				Tooltip: Gains speed and power as it travels
+			}
+
+			MoonstoneBarItem: {
+				DisplayName: Moonstone Bar
+				Tooltip: "'Shimmering with Beautiful Light'"
+			}
+
+			MoonstoneChest: {
+				DisplayName: Moonstone Chestpiece
+				Tooltip: +35 Barrier
+			}
+
+			MoonstoneHamaxe: {
+				DisplayName: 月光石锤斧
+				Tooltip: <right>为破坏墙壁的猛击充能
+			}
+
+			MoonstoneHead: {
+				DisplayName: Moonstone Helmet
+				Tooltip:
+					'''
+					2% increased melee critical strike chance
+					+20 Barrier
+					'''
+			}
+
+			MoonstoneLegs: {
+				DisplayName: Moonstone Greaves
+				Tooltip:
+					'''
+					Improved acceleration
+					 +25 Barrier
+					'''
+			}
+
+			MoonstoneOreItem.DisplayName: Moonstone
+			Shaker.DisplayName: The Shaker
+
+			PalestoneNail: {
+				DisplayName: Palenail
+				Tooltip: Summons the Pale Knight
+			}
+
+			AuroraBell: {
+				DisplayName: Aurora Bell
+				Tooltip:
+					'''
+					Summons a sentry bell 
+					Hit the bell with a whip to ring it
+					'''
+			}
+
+			AuroraThroneMountItem: {
+				DisplayName: Aurora Crown
+				Tooltip:
+					'''
+					Summons an aurora throne combat mount
+					Lashes out with whip-like apendages
+					Right click to summon explosive auroralings
+					'''
+			}
+
+			BookOfFrost: {
+				DisplayName: Book Of Frost
+				Tooltip: Melee critical strikes cause an icy explosion
+			}
+
+			Frostball: {
+				DisplayName: Frostball
+				Tooltip:
+					'''
+					Strike enemies to build aurora power
+					Heals players near the yoyo based on aurora power
+					Gives you regeneration when retrieved based on aurora power
+					'''
+			}
+
+			Octogun: {
+				DisplayName: Octogun
+				Tooltip:
+					'''
+					Converts Musket Balls into Auroracle Ink
+					Critical hits and kills cause Tentapistols to sprout out from you, that fire at your cursor
+					'''
+			}
+
+			OverflowingUrn: {
+				DisplayName: Overflowing Urn
+				Tooltip:
+					'''
+					Unleashes a torrent of chilling winds
+					Prolonged use will frostburn you
+					'''
+			}
+
+			SquidBossBag.DisplayName: Treasure Bag (Auroracle)
+
+			SquidBossSpawn: {
+				DisplayName: Suspicious Looking Offering
+				Tooltip: Drop in prismatic waters to summon the one the Squiddites worship
+			}
+
+			SquidBossSpawnEndless: {
+				DisplayName: Gilded Suspicious Looking Offering
+				Tooltip:
+					'''
+					Drop in prismatic waters to summon the one the Squiddites worship
+					Infinite uses
+					'''
+			}
+
+			SquidFins: {
+				DisplayName: Squid Fins
+				Tooltip: Allows you to swim like a jellysquid
+			}
+
+			TentacleHook: {
+				DisplayName: Tentacle Hook
+				Tooltip: Move your mouse to hook around objects
+			}
+
+			Tentalance: {
+				DisplayName: Tentalance
+				Tooltip:
+					'''
+					Launches a shimmering tentacle lance
+					Charge to fire up to 4 more lances at once
+					'''
+			}
+
+			WaterStaff: {
+				DisplayName: Staff of the Waves
+				Tooltip:
+					'''
+					Places and removes aurora water
+					Left click to place
+					Right click to remove
+					'''
+			}
+
+			GreaterBarrierPotion: {
+				DisplayName: Greater Barrier Potion
+				Tooltip:
+					'''
+					Grants 120 barrier
+					Greatly reduces overcharge barrier loss for 5 seconds
+					'''
+			}
+
+			InoculationPotion: {
+				DisplayName: Inoculation Potion
+				Tooltip: +30% Inoculation
+			}
+
+			LesserBarrierPotion: {
+				DisplayName: Lesser Barrier Potion
+				Tooltip:
+					'''
+					Grants 40 barrier
+					Greatly reduces overcharge barrier loss for 3 seconds
+					'''
+			}
+
+			RegularBarrierPotion: {
+				DisplayName: " Barrier Potion"
+				Tooltip:
+					'''
+					Grants 80 barrier
+					Greatly reduces overcharge barrier loss for 4 seconds
+					'''
+			}
+
+			BloodCrystal: {
+				DisplayName: Blood Crystal
+				Tooltip:
+					'''
+					Debuffs you inflict are inflicted onto you 
+					All debuffs you inflict stack and last longer
+					'''
+			}
+
+			AquamarinePendant: {
+				DisplayName: Aquamarine Pendant
+				Tooltip:
+					'''
+					+15 Barrier 
+					Losing all of your barrier releases ice shards
+					'''
+			}
+
+			MeadHorn: {
+				DisplayName: Mead Horn
+				Tooltip: Potions last 50% longer
+			}
+
+			Astroscrap: {
+				DisplayName: Astroscrap
+				Tooltip: ‘Alloy salvaged from the wreckage of your world’s invaders’
+			}
+
+			StarwoodBoomerang: {
+				DisplayName: Starwood Boomerang
+				Tooltip: Hold LMB to channel the boomerang, causing it to release an explosion
+			}
+
+			StarwoodBoots: {
+				DisplayName: Starwood Leggings
+				Tooltip: 5% increased magic critial strike chance
+			}
+
+			StarwoodCharm: {
+				DisplayName: Starwood Charm
+				Tooltip:
+					'''
+					Critical strikes generate mana stars
+					-3% critical strike chance
+					+3% critical strike chance when empowered
+					'''
+			}
+
+			StarwoodChest: {
+				DisplayName: Starwood Robes
+				Tooltip: Increases max mana by 20
+			}
+
+			StarwoodHat: {
+				DisplayName: Starwood Hat
+				Tooltip: 5% increased magic damage
+			}
+
+			StarwoodSlingshot: {
+				DisplayName: Starwood Slingshot
+				Tooltip:
+					'''
+					Weaves together fallen stars 
+					Consumes ammo every 50 shots
+					'''
+			}
+
+			StarwoodStaff: {
+				DisplayName: Starwood Staff
+				Tooltip:
+					'''
+					Creates a burst of small stars
+					Striking an enemy with every star causes a larger star to drop on them
+					'''
+			}
+
+			AncientGear.DisplayName: Ancient Gear
+
+			Buzzsaw: {
+				DisplayName: Steamsaw
+				Tooltip:
+					'''
+					Strike enemies to build up pressure
+					Release to vent the pressure, launching the sawblade
+					'The right tool for the wrong job'
+					'''
+			}
+
+			CogAmmoItem: {
+				DisplayName: Cogshot
+				Tooltip:
+					'''
+					Bounces up to five times
+					Halves damage on hit
+					'''
+			}
+
+			Cogwheel: {
+				DisplayName: Cogwheel
+				Tooltip: Summons a ridable Cogwheel mount
+			}
+
+			Jetwelder: {
+				DisplayName: Jetwelder
+				Tooltip:
+					'''
+					Collect scrap from damaging enemies 
+					Right click to use scrap to summon robots
+					'''
+			}
+
+			JetwelderScrap1: {
+				DisplayName: Scrap
+				Tooltip: You shouldn't see this
+			}
+
+			JetwelderScrap2: {
+				DisplayName: Scrap
+				Tooltip: You shouldn't see this
+			}
+
+			JetwelderScrap3: {
+				DisplayName: Scrap
+				Tooltip: You shouldn't see this
+			}
+
+			JetwelderScrap4: {
+				DisplayName: Scrap
+				Tooltip: You shouldn't see this
+			}
+
+			RebarLauncher: {
+				DisplayName: Rebar Launcher
+				Tooltip:
+					'''
+					Impales enemies 
+					Shoot rebar to drive it deeper into enemies
+					'''
+			}
+
+			RuneStaff: {
+				DisplayName: Ancient Rune Staff
+				Tooltip:
+					'''
+					Hold to summon up to 3 explosive runes
+					Releasing will fire the runes towards your cursor
+					Continuing to hold will detonate them for increased damage around you
+					'''
+			}
+
+			TempleLens: {
+				DisplayName: Ancient Lens
+				Tooltip:
+					'''
+					Critical strikes cause enemies around the struck enemy to glow
+					+3% critical strike chance
+					'''
+			}
+
+			TempleLensUpgrade: {
+				DisplayName: Truestrike Lens
+				Tooltip:
+					'''
+					Critical strikes expose enemies near the struck enemy
+					Exposed enemies take significantly more damage on the first hit
+					+4% critical strike chance
+					+10% critical strike damage
+					'''
+			}
+
+			TemplePick: {
+				DisplayName: Whirlwind Pickaxe
+				Tooltip: Hold right click to charge up a spinning pickaxe dash
+			}
+
+			TempleRune: {
+				DisplayName: Rune of Warding
+				Tooltip: +20 maximum barrier
+			}
+
+			TempleSpear: {
+				DisplayName: Point of Light
+				Tooltip:
+					'''
+					Struck enemies glow
+					Slain enemies leave behind a bright light
+					'''
+			}
+
+			ArmorBag: {
+				DisplayName: Armor Bag
+				Tooltip:
+					'''
+					Stores armor for quick use
+					Contains:
+					'''
+			}
+
+			ChefBag: {
+				DisplayName: Chef's Bag
+				Tooltip: Stores lots of every ingredient
+			}
+
+			CurseRemover: {
+				DisplayName: Scroll of Undoing
+				Tooltip:
+					'''
+					Place over an equipped cursed Item to destroy it
+					'There's no turning back, most of the time'
+					'''
+			}
+
+			AncientStarwoodBoots.DisplayName: Ancient Starwood Leggings
+			AncientStarwoodChest.DisplayName: Ancient Starwood Robes
+			AncientStarwoodHat.DisplayName: Ancient Starwood Hat
+			MechaChest.DisplayName: Mecha Chest
+			MechaHead.DisplayName: Mecha Helmet
+			MechaLegs.DisplayName: Mecha Legs
+
+			WardenHat: {
+				DisplayName: Warden Hat
+				Tooltip: "[c/198E12:???]"
+			}
+
+			WardenRobe: {
+				DisplayName: Warden Robe
+				Tooltip: "[c/198E12:???]"
+			}
+
+			CoachGunUpgrade: {
+				DisplayName: Magmatic Coach Gun
+				Tooltip:
+					'''
+					Press right click to throw out crystal bombs, bombs explode in chain reactions 
+					Firing at a bomb detonates it prematurely for more violent results
+					How does he manage to nuke like that?
+					'''
+			}
+
+			Coalescence: {
+				DisplayName: Coalescence
+				Tooltip:
+					'''
+					Charge for a volley of brilliant magic
+					Fully charged shots leech mana when they collide
+					'''
+			}
+
+			FacetAndLattice: {
+				DisplayName: Facet & Lattice
+				Tooltip:
+					'''
+					Right click to guard
+					Attacks are empowered after a guard
+					Empowerment is more effective with better guard timing
+					'''
+			}
+
+			GlassIdol: {
+				DisplayName: Glass Idol
+				Tooltip: Used to worship a powerful guardian.
+			}
+
+			GlassIdolEndless: {
+				DisplayName: Gilded Glass Idol
+				Tooltip:
+					'''
+					Used to worship a powerful guardian.
+					Infinite uses
+					'''
+			}
+
+			IgnitionGauntlets: {
+				DisplayName: Ignition Gauntlets
+				Tooltip:
+					'''
+					Rapidly barrages enemies with your fists while building Ignition Charge
+					Hold RMB to consume charge, propelling yourself forward at escape velocity
+					Attack while still flying to vent remaining charge in a large blast cone|n'Heroes always arrive from the skies'
+					'''
+			}
+
+			MagmaArrow: {
+				DisplayName: Magma Arrow
+				Tooltip: Becomes more cooled as it travels
+			}
+
+			MagmaCore: {
+				DisplayName: Magmatic Core
+				Tooltip: A sample of the hot stuff.
+			}
+
+			MagmiteBottle: {
+				DisplayName: Magmite in a Bottle
+				Tooltip: Why would you do this to him?!
+			}
+
+			MagmiteVacpack: {
+				DisplayName: Magmite Vacpack
+				Tooltip:
+					'''
+					Blasts out Magmites that stick to enemies
+					For each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites
+					Magmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites
+					'''
+			}
+
+			Needler: {
+				DisplayName: 熔晶刺针枪
+				Tooltip:
+					'''
+					将尖刺钉在敌人身上以增加热量
+					过热的敌人会爆炸，造成巨大伤害
+					'''
+			}
+
+			PhoenixStorm: {
+				DisplayName: 火凤凰
+				Tooltip: 召唤火凤凰周期性地扑向敌人
+			}
+
+			RecursiveFocus: {
+				DisplayName: 归回聚焦
+				Tooltip:
+					'''
+					召唤炼狱水晶
+					炼狱水晶锁定敌人，随着时间的推移增加伤害
+					<right>以使水晶瞄准多个敌人，但代价是所有光束都不会增加，造成更少的伤害
+					'''
+			}
+
+			RefractiveBlade: {
+				DisplayName: Refractive Blade
+				Tooltip:
+					'''
+					Hold RMB down to charge a laser
+					Enemies struck by the laser have 25% increased melee Exposure
+					'''
+			}
+
+			SandstoneChunk.DisplayName: Ancient Ceramic
+
+			ShatteredAegis: {
+				DisplayName: Shattered Aegis
+				Tooltip:
+					'''
+					Releases a burning ring when damaged
+					'Meet your foes head-on, and give them a scorching embrace'
+					'''
+			}
+
+			TempleEntranceKey: {
+				DisplayName: Large forge key
+				Tooltip: Opens a door to the vitric forge.
+			}
+
+			TempleKey: {
+				DisplayName: Small forge key
+				Tooltip: Opens a door inside the vitric forge.
+			}
+
+			VitricBossBag.DisplayName: Treasure Bag (Ceiros)
+
+			VitricBow: {
+				DisplayName: Vitric Bow
+				Tooltip: Could use a rework
+			}
+
+			VitricBulletItem: {
+				DisplayName: Vitric Bullet
+				Tooltip:
+					'''
+					Causes crystals to grow out of hit enemies
+					Strike crystals to shatter them, dealing damage
+					'''
+			}
+
+			VitricChest: {
+				DisplayName: Vitric Chestpiece
+				Tooltip: 5% increased ranged critical strike chance
+			}
+
+			VitricHamaxe: {
+				DisplayName: Vitric Hamaxe
+				Tooltip:
+					'''
+					Right click to charge heat
+					Heat increases speed
+					Heat dissipates over time
+					'''
+			}
+
+			VitricHead: {
+				DisplayName: Vitric Headgear
+				Tooltip: 10% increased ranged damage
+			}
+
+			VitricLegs: {
+				DisplayName: Vitric Greaves
+				Tooltip: Slightly improved stamina regeneration
+			}
+
+			VitricMagicBook: {
+				DisplayName: Vitric Book
+				Tooltip: Summons stabbing spikes on nearby ground
+			}
+
+			VitricOre.DisplayName: Vitric Sliver
+
+			VitricPick: {
+				DisplayName: Vitric Pickaxe
+				Tooltip:
+					'''
+					Hellstone does not drop lava
+					Mining hellstone generates heat
+					 Heat increases speed
+					'''
+			}
+
+			VitricSword: {
+				DisplayName: Ancient Vitric Blade
+				Tooltip:
+					'''
+					Shatters into enchanted glass shards 
+					Unable to be used while shattered
+					'''
+			}
+
+			MagmitePassiveItem: {
+				DisplayName: Magmite
+				Tooltip: Release him!
+			}
+
+			CodexTileItem: {
+				DisplayName: Starlight Codex
+				Tooltip: Debug placer for ability pickup
+			}
+
+			FaeflameTileItem: {
+				DisplayName: Faeflame
+				Tooltip: Debug placer for ability pickup
+			}
+
+			StaminaShardTileItem: {
+				DisplayName: Stamina Shard
+				Tooltip: Debug Item
+			}
+
+			WindsTileItem: {
+				DisplayName: Forbidden Winds
+				Tooltip: Debug placer for ability pickup
+			}
+
+			CookStationItem: {
+				DisplayName: Prep Station
+				Tooltip: Right click to prepare meals
+			}
+
+			InfuserItem: {
+				DisplayName: "[PH]Infuser"
+				Tooltip: Used to imprint infusions
+			}
+
+			AnkhChestItem.DisplayName: Ankh Chest
+			ForestBerries.DisplayName: Forest Berries
+
+			ForestBerryBushItem: {
+				DisplayName: Berry bush
+				Tooltip: Plant to grow your own berries
+			}
+
+			Slimeberry: {
+				DisplayName: Slimeberry
+				Tooltip: Ew.
+			}
+
+			SlimeberryBushItem: {
+				DisplayName: Slimeberry Bush
+				Tooltip: Places a slimeberry bush
+			}
+
+			AncientFruit.DisplayName: Ancient Fruit
+			GoldenRice.DisplayName: Golden Rice
+			Rice.DisplayName: Rice
+
+			GreenhouseGlassItem: {
+				DisplayName: Greenhouse Glass
+				Tooltip:
+					'''
+					Speeds up the growth of any plant below it
+					Needs a clear area above it
+					'''
+			}
+
+			GreenhouseWallItem: {
+				DisplayName: Greenhouse Glass Wall
+				Tooltip: Fancy!
+			}
+
+			BouncerItem: {
+				DisplayName: Vitric Bouncer
+				Tooltip:
+					'''
+					Dash into this to go flying!
+					Resets jump accessories
+					'''
+			}
+
+			StaminaGemItem: {
+				DisplayName: Stamina Gem
+				Tooltip: Restores stamina when hit with an ability
+			}
+
+			StaminaOrbItem: {
+				DisplayName: Stamina Orb
+				Tooltip:
+					'''
+					Pass through this to gain stamina!
+					5 second cooldown
+					'''
+			}
+
+			DisplayCaseFriendlyItem: {
+				DisplayName: Display Case
+				Tooltip: Can hold an Item for glamorous display
+			}
+
+			RatTentItem: {
+				DisplayName: Strange Tent
+				Tooltip: Whats inside?...
+			}
+
+			JellyShroomItem: {
+				DisplayName: Blue Jellyshroom
+				Tooltip: Boing!
+			}
+
+			LumishroomItem: {
+				DisplayName: Lumishroom
+				Tooltip: Glowy...
+			}
+
+			VibeshroomItem: {
+				DisplayName: Vibeshroom
+				Tooltip: Vibin'
+			}
+
+			BlueTorchOvergrowItem: {
+				DisplayName: Blue Faerie Torch
+				Tooltip: Sparkly! and Blue!
+			}
+
+			CrusherOvergrowItem.DisplayName: Crusher Trap
+
+			NoxiousNodeItem: {
+				DisplayName: Noxious Node
+				Tooltip: Debug item
+			}
+
+			OvergrowthLivingWoodItem: {
+				DisplayName: Overgrown Living Wood
+				Tooltip: "[PH] make this a wand and stuffs"
+			}
+
+			Rock2x2Item: {
+				DisplayName: 2x2 rock placer
+				Tooltip: It places... Rocks
+			}
+
+			SkeletonBrickItem.DisplayName: Skeletal Brick
+
+			TorchOvergrowItem: {
+				DisplayName: Faerie Torch
+				Tooltip: Sparkly!
+			}
+
+			WallOvergrowBrickItem.DisplayName: Runic Brick Wall
+			WallOvergrowGrassItem.DisplayName: Overgrowth Grass Wall
+
+			WindowSmallItem: {
+				DisplayName: Smol Window
+				Tooltip: Debug Item
+			}
+
+			WispAltarLItem: {
+				DisplayName: Wisp Altar L Placer
+				Tooltip: Debug Item
+			}
+
+			WispAltarRItem: {
+				DisplayName: Wisp Altar R Placer
+				Tooltip: Debug Item
+			}
+
+			AuroraclePaintingItem: {
+				DisplayName: Prismatic Waters
+				Tooltip: "'K. Ra'"
+			}
+
+			EggCodexPaintingItem: {
+				DisplayName: Codex Genesis
+				Tooltip: "'K. Ra'"
+			}
+
+			RatKingPaintingItem: {
+				DisplayName: Majestic Hoarder
+				Tooltip: "'K. Ra'"
+			}
+
+			PalestoneItem.DisplayName: Palestone
+			AuroraBrickDoorItem.DisplayName: Debug Brick Placer
+
+			AuroraBrickItem: {
+				DisplayName: Aurora Brick
+				Tooltip: Oooh... Preeetttyyy
+			}
+
+			AuroraBrickWallFriendlyItem: {
+				DisplayName: Aurora BrickWall
+				Tooltip: Oooh... Preeetttyyy
+			}
+
+			AuroraBrickWallItem: {
+				DisplayName: Aurora BrickWall
+				Tooltip: Oooh... Preeetttyyy
+			}
+
+			AuroraIceBar: {
+				DisplayName: Frozen Aurora Bar
+				Tooltip: A preserved selection of the night sky
+			}
+
+			AuroraIceItem: {
+				DisplayName: Frozen Aurora Chunk
+				Tooltip: A preserved piece of the night sky
+			}
+
+			DoorBombShooterItem.DisplayName: Debug Shooter Placer
+			PermafrostIceItem.DisplayName: Permafrost Ice
+
+			TouchstoneItem: {
+				DisplayName: Touchstone
+				Tooltip: A guiding light
+			}
+
+			TouchstoneLootboxItem.DisplayName: Touchstone Chest Placer
+			AuroracleTrophyItem.DisplayName: Auroracle Trophy
+			CeirosTrophyItem.DisplayName: Ceiros Trophy
+
+			HotspringFountainItem: {
+				DisplayName: Hotspring Source
+				Tooltip: Transforms nearby water into a hotspring!
+			}
+
+			MagmiteShrineItem: {
+				DisplayName: The Boi
+				Tooltip: It's him!
+			}
+
+			DashBarrierItem: {
+				DisplayName: Dash Barrier
+				Tooltip: Debug Item
+			}
+
+			JarTallItem: {
+				DisplayName: Stamina Jar Placer (Tall)
+				Tooltip: Debug Item
+			}
+
+			TempleChestPlacer.DisplayName: Temple Chest Placer
+			TempleWallBigItem.DisplayName: Large Ancient Temple Brick Wall
+			TempleWallItem.DisplayName: Ancient Temple Brick Wall
+
+			TestBubble: {
+				DisplayName: Bubble
+				Tooltip: Debug Item
+			}
+
+			VerletBannerItem: {
+				DisplayName: Verlet banner
+				Tooltip: Debug Item
+			}
+
+			AncientSandstonePillarWallItem.DisplayName: Ancient Sandstone Wall
+			AncientSandstonePlatformItem.DisplayName: Ancient Sandstone Platform
+
+			AncientSandstoneTorchItem: {
+				DisplayName: Ancient Vitric Illuminator
+				Tooltip: It has an entrancing glow
+			}
+
+			AncientSandstoneWallItem.DisplayName: Ancient Sandstone Wall
+
+			ForgeDoorItem: {
+				DisplayName: Forge Door
+				Tooltip: Debug Item
+			}
+
+			ForgeInnerDoorItem: {
+				DisplayName: Forge Inner Door
+				Tooltip: Debug Item
+			}
+
+			RedBannerShortItem: {
+				DisplayName: Short Flowing Banner
+				Tooltip: Debug Item
+			}
+
+			CrystalSlimeSpawnerItem.DisplayName: NPC Spawner
+
+			DashableDoorItem: {
+				DisplayName: DashableDoor
+				Tooltip: Debug Item
+			}
+
+			DoorGearsItem: {
+				DisplayName: Gear Puzzle Temple Door
+				Tooltip: Temple Door, Opens if gear puzzle is solved
+			}
+
+			DoorVerticalItem: {
+				DisplayName: Vertical Temple Door
+				Tooltip: Temple Door, But what if it was vertical?
+			}
+
+			EntranceDoorItem: {
+				DisplayName: EntranceDoor
+				Tooltip: Debug Item
+			}
+
+			GearPuzzleOriginPlacer: {
+				DisplayName: Gear puzzle origin
+				Tooltip: Debug Item
+			}
+
+			GearTilePlacer: {
+				DisplayName: Gear puzzle
+				Tooltip: Debug Item
+			}
+
+			ObjectiveGearItem: {
+				DisplayName: Gear puzzle Point
+				Tooltip: Debug Item
+			}
+
+			ReflectorItem: {
+				DisplayName: Reflector
+				Tooltip: Debug Item
+			}
+
+			LowWindBannerItem.DisplayName: Rectangular Flowing Banner
+			NPCSpawnerItem.DisplayName: NPC Spawner
+
+			OldCeirosShrineItem: {
+				DisplayName: Old Ceiros Shrine
+				Tooltip: Debug Item
+			}
+
+			TallWindowItem: {
+				DisplayName: Window Actor
+				Tooltip: Debug Item
+			}
+
+			TempleCandleCrystalItem.DisplayName: Temple Crystal Candle
+			TempleCandleItem.DisplayName: Temple Candle
+			TempleCeirosFountainItem.DisplayName: Temple Sentinel Fountain
+			TempleWallCandleItem.DisplayName: Temple Wall Candle
+
+			TutorialDoor1Item: {
+				DisplayName: TutorialDoor1
+				Tooltip: Debug Item
+			}
+
+			TutorialDoor2Item: {
+				DisplayName: TutorialDoor2
+				Tooltip: Debug Item
+			}
+
+			VitricPillarWallItem: {
+				DisplayName: Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
+
+			VitricPillarWallShortItem: {
+				DisplayName: Short Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
+
+			VitricTempleWallItem: {
+				DisplayName: Vitric Forge Brick Wall
+				Tooltip: Sturdy
+			}
+
+			WindsRoomActorItem: {
+				DisplayName: Winds Room Actor
+				Tooltip: Debug Item
+			}
+
+			VitricBannerSmallItem.DisplayName: Short Flowing Banner
+
+			VitricBossAltarItem: {
+				DisplayName: Vitric Boss Altar Item
+				Tooltip: Debug Item
+			}
+
+			VitricBreakableVaseItem: {
+				DisplayName: Vitric Vase Placer
+				Tooltip: Debug Item
+			}
+
+			VitricFountainItem: {
+				DisplayName: Vitric Fountain
+				Tooltip: Debug Item
+			}
+
+			VitricGiantCrystalItem: {
+				DisplayName: Vitric Giant crystal
+				Tooltip: The slot this Item is in changes the type placed
+			}
+
+			VitricLargeCrystalItem: {
+				DisplayName: Large vitric crystal
+				Tooltip: The slot this Item is in changes the type placed
+			}
+
+			VitricLargeFountainItem: {
+				DisplayName: Vitric Large Fountain
+				Tooltip: Debug Item
+			}
+
+			VitricLootBoxItem.DisplayName: Vitric Loot Box Item
+
+			VitricMediumCrystalItem: {
+				DisplayName: Medium vitric crystal
+				Tooltip: The slot this Item is in changes the type placed
+			}
+
+			VitricOreFloatItem.DisplayName: Floating Vitric Ore Crystal Item
+			VitricOreItem.DisplayName: Vitric Ore Crystal Item
+			VitricRockItem.DisplayName: Vitric Rock
+			VitricSandWallItem.DisplayName: Vitric Sand Wall
+
+			VitricSmallCrystalItem: {
+				DisplayName: Small vitric crystal
+				Tooltip: The slot this Item is in changes the type placed
+			}
+
+			VitricSpikeItem: {
+				DisplayName: Vitric Spikes
+				Tooltip: Ouch!
+			}
+
+			VitricBannerItem.DisplayName: Long Flowing Banner
+
+			VitricBossBarrierItem: {
+				DisplayName: VitricBossBarrierItem
+				Tooltip: debug item
+			}
+
+			GlassweaverBossBarrierItem: {
+				DisplayName: GlassweaverBossBarrierItem
+				Tooltip: debug item
+			}
+
+			VitricBathtub.DisplayName: Vitric Bathtub
+			VitricBed.DisplayName: Vitric Bed
+			VitricBookcase.DisplayName: Vitric Bookcase
+			VitricCandelabra.DisplayName: Vitric Candelabra
+			VitricCandle.DisplayName: Vitric Candle
+			VitricChair.DisplayName: Vitric Chair
+			VitricChandelier.DisplayName: Vitric Chandelier
+			VitricClock.DisplayName: Vitric Clock
+			VitricDresser.DisplayName: Vitric Dresser
+			VitricLamp.DisplayName: Vitric Lamp
+			VitricLantern.DisplayName: Vitric Lantern
+			VitricPiano.DisplayName: Vitric Piano
+			VitricSink.DisplayName: Vitric Sink
+			VitricSofa.DisplayName: Vitric Sofa
+			VitricTable.DisplayName: Vitric Table
+			VitricWorkbench.DisplayName: Vitric Workbench
+			VitricDoor.DisplayName: Vitric Door
+			RedLaserPointer.DisplayName: Red Laser Pointer
+			OrangeLaserPointer.DisplayName: Orange Laser Pointer
+			YellowLaserPointer.DisplayName: Yellow Laser Pointer
+			GreenLaserPointer.DisplayName: Green Laser Pointer
+			BlueLaserPointer.DisplayName: Blue Laser Pointer
+			PurpleLaserPointer.DisplayName: Purple Laser Pointer
+			WhiteLaserPointer.DisplayName: White Laser Pointer
+			PinkLaserPointer.DisplayName: Pink Laser Pointer
+			TempleBrickItem.DisplayName: Ancient Bricks
+			VitricBoss1Item.DisplayName: Music Box (Ceiros P1)
+			VitricBoss2Item.DisplayName: Music Box (Ceiros P2)
+			VitricPassiveItem.DisplayName: Music Box (Vitric Desert)
+			VitricTempleItem.DisplayName: Music Box (Vitric Temple)
+			MinibossItem.DisplayName: Music Box (Miniboss)
+			OvergrowItem.DisplayName: Music Box (Overgrow)
+			AuroracleItem.DisplayName: Music Box (Auroracle)
+			TempleChairItem.DisplayName: Temple Chair
+			TempleLargeVaseItem.DisplayName: Temple Large Vase
+			TempleLargeVaseCrystalItem.DisplayName: Temple Large Crystal Vase
+			TempleWorkbenchItem.DisplayName: Temple Workbench
+			TempleThroneItem.DisplayName: Temple Throne
+			TempleFloorWeaponRackItem.DisplayName: Temple Floor Weapon Rack
+			TempleTableItem.DisplayName: Temple Table
+			TempleTableCrystalItem.DisplayName: Temple Crystal Table
+			TempleWeaponRack0Item.DisplayName: Temple Weapon Rack A
+			TempleWeaponRack1Item.DisplayName: Temple Weapon Rack B
+			TempleWeaponRack2Item.DisplayName: Temple Weapon Rack C
+			TempleWeaponRack3Item.DisplayName: Temple Weapon Rack D
+			TempleThingamajigItem.DisplayName: Temple Large Weapon Rack
+			LeafOvergrowItem.DisplayName: Faerie Leaves
+			BrickOvergrowItem.DisplayName: Runic Bricks
+			StoneOvergrowItem.DisplayName: Runic Stone
+			SpringstoneItem.DisplayName: Springstone
+			ShrineBrazierItem.DisplayName: Mysterious Brazier
+			WitTileItem.DisplayName: Tile of Wit
+			AncientSandstoneItem.DisplayName: Ancient Sandstone
+			AncientSandstoneTileItem.DisplayName: Ancient Sandstone Tile
+			VitricBrickItem.DisplayName: Vitric Bricks
+			VitricCactusItem.DisplayName: Crystal Cactus
+			VitricGlassItem.DisplayName: Vitric Glass
+			VitricSandItem.DisplayName: Glassy Sand
+			VitricSoftSandItem.DisplayName: Soft Glassy Sand
+			VitricSandPlainItem.DisplayName: Soft Sand
+		}
+
+		Projectiles: {
+			ArtifactItemProj.DisplayName: Artifact
+			BurningGround.DisplayName: Burning Ground
+			GlassBubble.DisplayName: Volatile Bubble
+			GlassBubbleFragment.DisplayName: Glass Shard
+			GlassHammer.DisplayName: Woven Hammer
+			GlassJavelin.DisplayName: Glass Javelin
+			GlassRaiseSpike.DisplayName: Raised Glass Structure
+			GlassSpear.DisplayName: Woven Hammer
+			GlassSword.DisplayName: Glass Sword
+			GlassweaverDoor.DisplayName: Glassweaver Door
+			LavaLob.DisplayName: Hot Lob
+			Whirlwind.DisplayName: Spinning Blades
+			AuroraWaterSplash.DisplayName: Aurora Water Splash
+			DoorBomb.DisplayName: Door Bomb
+			InkBlob.DisplayName: Rainbow Ink
+			InkBlobGravity.DisplayName: Rainbow Ink
+			Laser.DisplayName: Laser
+			SpewBlob.DisplayName: Aurora Shard
+			SqueezeTell.DisplayName: Tentacle Warning
+			TentacleTell.DisplayName: Tentacle Warning
+			TentacleTrail.DisplayName: Trail
+			CrystalWave.DisplayName: Crystal Wave
+			FinalLaser.DisplayName: Raging Fire
+			FireCone.DisplayName: Fire Cone
+			FireRingHostile.DisplayName: Fire Ring Hostile
+			GlassSpike.DisplayName: Glass Spike
+			GlassVolley.DisplayName: Glass Volley
+			GlassVolleyShard.DisplayName: Glass Volley Shard
+			LavaDart.DisplayName: Magma Shot
+			SpikeMine.DisplayName: Spike Mine
+			TelegraphedGlassSpike.DisplayName: Glass Spike
+			VitricBomb.DisplayName: Vitric Bomb
+			LightningNode.DisplayName: Lightning Node
+			AstrofloraGas.DisplayName: Astroflora Gas
+			AstrofloraProj.DisplayName: Astroflora Flail
+			AstrofloraSpark.DisplayName: Astroflora Spark
+			BreachCannonSentry.DisplayName: Breach Cannon
+			ExplosiveFlare.DisplayName: Explosive Flare
+			FlareShrapnel.DisplayName: Explosive Shrapnel
+			OrbitalStrike.DisplayName: Orbital Strike
+			OrbitalStrikeRing.DisplayName: Orbital Strike
+			ScrappodProjectile.DisplayName: Scrappod
+			ScrappodScrapnel.DisplayName: Scrapnel
+			ScrapshotHook.DisplayName: Scrapshot Hook
+			ScrapshotShrapnel.DisplayName: Explosive Shrapnel
+			SpotterDrone.DisplayName: Breacher Drone
+			SupplyBeaconProj.DisplayName: Supply Beacon
+			ArchaeologistsWhip_Whip.DisplayName: Archaeologist's Whip
+			PerfectlyGenericPet.DisplayName: Perfectly Generic Object
+			CloudstrikeShot.DisplayName: Electro Shock
+			SkullBomb.DisplayName: Skull Bomb
+			SkullBusterBullet.DisplayName: Bullet
+			SkullBusterProj.DisplayName: Skull Buster
+			SkullBusterReload.DisplayName: Skull Buster
+			SkullbusterSkull.DisplayName: Skullbomb
+			ThousandthDegreeProjectile.DisplayName: Thousandth Degree
+			ThousandthDegreeProjectileFired.DisplayName: Blazing Wheel
+			Acorn.DisplayName: Acorn
+			FeralWolfMountBite.DisplayName: Crushing Jaws
+			AmethystShard.DisplayName: Amethyst Shard
+			GeoAmethystProj.DisplayName: Geo Amethyst Proj
+			GeoDiamondProj.DisplayName: Geo Diamond Proj
+			GeoEmeraldProj.DisplayName: Geo Emerald Proj
+			GeoRubyProj.DisplayName: Geo Ruby Proj
+			GeoSapphireProj.DisplayName: Geo Sapphire Proj
+			GeoTopazProj.DisplayName: Geo Topaz Proj
+			RubyDagger.DisplayName: Ruby Dagger
+			SparklingBulletProj.DisplayName: Sparkling Bullet
+			TopazShard.DisplayName: Topaz Shard
+			TopazShield.DisplayName: Topaz Shield
+			TopazShieldFade.DisplayName: Topaz Shield
+			BloodBolt.DisplayName: Blood Bolt
+			BloodBolterExplosion.DisplayName: Blood Bolter
+			BloodBolterHeldProj.DisplayName: Blood bolter
+			GluttonyGhoul.DisplayName: Ghoul
+			GluttonyHandle.DisplayName: Gluttony
+			GravediggerSlam.DisplayName: Grave digger
+			GravediggerSwing.DisplayName: Grave digger
+			PoltergeistMinion.DisplayName: Haunted Weapon
+			CopperObol.DisplayName: Obol
+			GoldObol.DisplayName: Obol
+			ObolImpact.DisplayName: Obol Star
+			PlatinumObol.DisplayName: Obol
+			SilverObol.DisplayName: Obol
+			GrayGooProj.DisplayName: Gray Goo
+			ThunderBeadsProj.DisplayName: Thunder Beads
+			ThunderbussBall.DisplayName: Thunderbuss Ball
+			ThunderbussShot.DisplayName: Electro Shock
+			BalloonGunBalloon.DisplayName: Balloon
+			BizarreIce.DisplayName: Bizarre Potion
+			BizarreLightning.DisplayName: Bizarre Lightning
+			BizarreLightningOrb.DisplayName: Bizarre Lightning Orb
+			BizarrePotionPoisonCloud.DisplayName: Bizarre Potion Poison Cloud
+			BizarrePotionProj.DisplayName: Bizarre Potion
+			BladesawSwungBlade.DisplayName: Bladesaw
+			BloodAmuletBolt.DisplayName: Ghoul
+			CoachGunBomb.DisplayName: Dynamite
+			CoachGunEmber.DisplayName: Ember
+			CoachGunMuzzleFlash.DisplayName: Muzzle Flash
+			CoachGunRing.DisplayName: Coach Bomb
+			CoilStaticShock.DisplayName: Static Shock
+			CopperCoilWhip.DisplayName: Copper Coil
+			CutlassBusFlash.DisplayName: Cutlassbus
+			CutlassBusHeldProj.DisplayName: Cutlassbus
+			CutlassBusProj.DisplayName: Cutlassbus
+			DiceProj.DisplayName: Dice
+			DiscordantBolt.DisplayName: Discordant Bolt
+			DualCrossHeld.DisplayName: Double Cross
+			ElectroArrowProjectile.DisplayName: Electro Arrow
+			FiletSlash.DisplayName: Slash
+			FryingPanBonk.DisplayName: Frying Pan
+			FryingPanProj.DisplayName: Frying Pan
+			FryingPanThrownProj.DisplayName: Frying Pan Thrown Proj
+			GeodeBowExplosion.DisplayName: Geode Explosion
+			GeodeBowGrowth.DisplayName: Geode Growth
+			GeodeBowProj.DisplayName: Geode Bow
+			GeodeBowShrapnel.DisplayName: Geode Shrapnel
+			GraveBusterHeld.DisplayName: Grave Buster
+			GraveSlash.DisplayName: Slash
+			GuillotineVFX.DisplayName: Guillotine V F X
+			GunchuckProj.DisplayName: Sanguine Flayer
+			HolyAmuletOrb.DisplayName: Holy Amulet Orb
+			ImpactSMGExplosion.DisplayName: Explosion
+			ImpactSMGHoldout.DisplayName: Impact SMG
+			ImpactSMGShot.DisplayName: Impact SMG Shot
+			MagmaGunPhantomProj.DisplayName: Magma Glob
+			MonkSpadeProjectile.DisplayName: Monk Spade Projectile
+			SandSlash.DisplayName: Sand Slash
+			SlingHeldProjectile.DisplayName: Sling
+			SlingMushroomProjectile.DisplayName: Shroom
+			SlingSeedProjectile.DisplayName: Seed
+			SlingStoneProjectile.DisplayName: Stone
+			SlitherringWhip.DisplayName: Slither Whip
+			HauntedSoul.DisplayName: Soul
+			SoilgunCoinsProjectile.DisplayName: Coin
+			SoilgunCrimsandSoil.DisplayName: Soil
+			SoilgunDirtSoil.DisplayName: Soil
+			SoilgunEbonsandSoil.DisplayName: Soil
+			SoilgunExplosion.DisplayName: Explosion
+			SoilgunHoldout.DisplayName: Soilgun
+			SoilgunIcicleProj.DisplayName: Icicle
+			SoilgunLifeSteal.DisplayName: Lifesteal Orb
+			SoilgunMudSoil.DisplayName: Soil
+			SoilgunPearlsandSoil.DisplayName: Soil
+			SoilgunSandGrain.DisplayName: Sand Grain
+			SoilgunSandSoil.DisplayName: Soil
+			SoilgunSiltSoil.DisplayName: Soil
+			SoilgunSlushSoil.DisplayName: Soil
+			SoilgunVitricCrystals.DisplayName: Volatile Crystal
+			SoilgunVitricSandSoil.DisplayName: Soil
+			SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+			StarGlaive.DisplayName: Star Glaive
+			StarShuriken.DisplayName: Star Shuriken
+			SwordBookProjectile.DisplayName: Sword Book Projectile
+			TaintedGreataxeProjectile.DisplayName: Ethereal Greataxe
+			ThrusterEmber.DisplayName: Thruster
+			TinCoilWhip.DisplayName: Tin Coil
+			TwistSwordProjectile.DisplayName: Twist Sword Projectile
+			UltrapillBlood.DisplayName: Ultrapill Blood
+			CrescentQuarterstaffProj.DisplayName: Crescent Quarterstaff
+			DatsuzeiProjectile.DisplayName: Datsuzei Projectile
+			DianeCrescant.DisplayName: Crescant
+			MoonfuryProj.DisplayName: Moonfury Spike
+			MoonfuryRing.DisplayName: Orbital Strike
+			MoonstoneArrowProj.DisplayName: Moonlit Arrow
+			MoonstoneArrowRing.DisplayName: Orbital Strike
+			MoonstoneHamaxeHoldout.DisplayName: Moonstone Hamaxe
+			MoonstoneHamaxeRing.DisplayName: Explosion
+			QuarterOrb.DisplayName: Lunar Orb
+			ShakerBall.DisplayName: Shaker
+			PaleKnight.DisplayName: Pale Knight
+			PalestoneSlash.DisplayName: Pale Slash
+			AuroraBellProj.DisplayName: Aurora Bell
+			AuroraBellRing.DisplayName: Aurora Bell
+			AuroraBellRingSmall.DisplayName: Aurora Bell
+			AuroracleInkBullet.DisplayName: Auroracle Ink
+			AuroraThroneMountMinion.DisplayName: Aurora Throne Mount Minion
+			AuroraThroneMountWhip.DisplayName: Tentacle
+			FrostballProjectile.DisplayName: Frostball Projectile
+			FrostExplosion.DisplayName: Frost Explosion
+			OctogunTentapistol.DisplayName: Tentapistol
+			OverflowingUrnProj.DisplayName: Overflowing Urn
+			TentacleHookProj.DisplayName: Tentacle Hook
+			TentalanceProjectile.DisplayName: Tentalance Projectile
+			StarwoodBoomerangProjectile.DisplayName: Starwood Boomerang
+			StarwoodSlingshotFragment.DisplayName: Star Fragment
+			StarwoodSlingshotProj.DisplayName: Starwood Slingshot Proj
+			StarwoodSlingshotStar.DisplayName: Shooting Star
+			StarwoodStaffFallingStar.DisplayName: Falling Star
+			StarwoodStaffProjectile.DisplayName: Starshot
+			BuzzsawBlood1.DisplayName: Buzzsaw
+			BuzzsawProj.DisplayName: Steamsaw
+			BuzzsawProj2.DisplayName: Buzzsaw
+			CogAmmoProjectile.DisplayName: Cog
+			CogwheelHitbox.DisplayName: Cogwheel
+			JetwelderCrawler.DisplayName: Crawler
+			JetwelderFinal.DisplayName: Bomber
+			JetwelderFinalMissle.DisplayName: Rocket
+			JetwelderFlame.DisplayName: Jetwelder
+			JetwelderGatler.DisplayName: Gatler
+			JetwelderJumper.DisplayName: Jumper
+			JetwelderJumperExplosion.DisplayName: Rocket
+			JetwelderJumperMissle.DisplayName: Grenade
+			JetwelderSelector.DisplayName: Jetwelder
+			PhantomBuzzsaw.DisplayName: Buzzsaw
+			RebarProj.DisplayName: Rebar
+			RuneStaffExplosion.DisplayName: Rune Staff Explosion
+			RuneStaffProjectile.DisplayName: Rune Staff Projectile
+			TempleSpearLight.DisplayName: Temple Spear Light
+			TempleSpearProjectile.DisplayName: Temple Spear Projectile
+			LaserPointerProjectile.DisplayName: Laser Pointer Projectile
+			ArrowMagma.DisplayName: Magma Arrow
+			CoachGunUpgradeBomb.DisplayName: Crystal Bomb
+			CoachGunUpgradeExplosion.DisplayName: Coach Gun Upgrade Explosion
+			CoachGunUpgradeShards.DisplayName: Crystal Shards
+			FacetProjectile.DisplayName: Facet
+			FireRing.DisplayName: Fire Ring
+			IgnitionGauntletCharge.DisplayName: Ignition Gauntlets
+			IgnitionGauntletCone.DisplayName: Ignition Gauntlets
+			IgnitionGauntletLaunch.DisplayName: Ignition Gauntlets
+			IgnitionGauntletsImpactRing.DisplayName: Ignition Gauntlets
+			IgnitionPunch.DisplayName: Ignition Gauntlets
+			IgnitionPunchPhantom.DisplayName: Ignition Gauntlets
+			LatticeProjectile.DisplayName: Lattice
+			MagmaArrowProj.DisplayName: Magma Arrow
+			MagmaBottleBurn.DisplayName: Magma Bottle Burn
+			MagmiteBottleProjectile.DisplayName: Magmite Bottle Projectile
+			MagmiteVacpackHoldout.DisplayName: Magmite Vacpack
+			MagmiteVacpackProjectile.DisplayName: Bouncy Magmite
+			NeedlerEmber.DisplayName: Needle
+			NeedlerExplosion.DisplayName: Needle
+			NeedlerProj.DisplayName: Needle
+			PhoenixStormMinion.DisplayName: Phoenix
+			RecursiveFocusProjectile.DisplayName: Infernal Crystal
+			RefractiveBladeLaser.DisplayName: Refractive Blade Laser
+			RefractiveBladeProj.DisplayName: Refractive Blade Proj
+			VitricArmorProjectile.DisplayName: Enchanted Glass
+			VitricArmorProjectileIdle.DisplayName: Enchanted Glass
+			VitricBookProjectile.DisplayName: Vitric Book 1
+			VitricBookProjectiletileCheck.DisplayName: Vitric Book 2
+			VitricBookSpikeTrap.DisplayName: Vitric Spike Trap
+			VitricBowProjectile.DisplayName: Vitric Bow Projectile
+			VitricBowShard.DisplayName: Vitric Bow Shard
+			VitricBulletCrystalExplosion.DisplayName: Explosion
+			VitricBulletCrystalProjectile.DisplayName: Vitric Crystal
+			VitricBulletProjectile.DisplayName: Vitric Bullet
+			VitricSwordProjectile.DisplayName: Enchanted Glass
+			AngryCrescentDeathProjectile.DisplayName: Crescent Shard
+			DreamprismSlam.DisplayName: Slam
+			SnoobelCollider.DisplayName: Snoobel
+			FirebugMagma.DisplayName: Molten glass
+			ConstructRing.DisplayName: Explosion
+			ConstructSpawner.DisplayName: Construct Spawner
+			GauntletSpawner.DisplayName: Gauntlet Spawner
+			PelterConstructArrow.DisplayName: Glass Arrow
+			PelterConstructArrowLarge.DisplayName: Glass Arrow
+			KettleMortar.DisplayName: Magma Shot
+			SnakeSpit.DisplayName: Molten glass
+			PinkSeaSaltProjectile.DisplayName: Sea Salt
+			TableSaltProjectile.DisplayName: Table Salt
+			Dart.DisplayName: Cursed Dart
+			SawbladeSmall.DisplayName: Cursed Sawblade
+			Spear.DisplayName: Cursed Spear
+			SpawnEgg.DisplayName: Spawn Egg
+		}
+
+		Biomes: {
+			HotspringBiome.DisplayName: 温泉
+			MoonstoneBiome.DisplayName: 月光石
+			OvergrowBiome.DisplayName: 过度生长
+			PermafrostTempleBiome.DisplayName: 极光圣殿
+			VitricDesertBiome.DisplayName: 璃晶沙漠
+			VitricTempleBiome.DisplayName: 璃晶锻造室
+		}
+
+		NPCs: {
+			Glassweaver.DisplayName: Glassweaver
+			GlassweaverWaiting.DisplayName: Glassweaver
+			ArenaBlocker.DisplayName: Arena Blocker
+			Auroraborn.DisplayName: Auroraborn
+			Auroraling.DisplayName: Auroraling
+			SquidBoss.DisplayName: Auroracle
+			Tentacle.DisplayName: Tentacle
+			TentacleHurtbox.DisplayName: Tentacle Hurtbox
+			VitricBoss.DisplayName: Ceiros
+			VitricBossCrystal.DisplayName: Resonant Crystal
+			StarlightWaterActor.DisplayName: Starlight Water Actor
+			GravityOrbTest.DisplayName: Gravity Orb Test
+			Dweller.DisplayName: Dweller
+			Stalker.DisplayName: Stalker
+			CrescentCaster.DisplayName: Crescent Caster
+			Blover.DisplayName: Blover
+			TreeBat.DisplayName: Tree Bat
+			Warbanner.DisplayName: Haunted Warbanner
+			Fogbinder.DisplayName: Fogbinder
+			AngryCrescent.DisplayName: Angry Crescent
+			Dreambeast.DisplayName: Dreambeast
+			Dreamprism.DisplayName: Dreamprism
+			Crusher.DisplayName: Masher
+			WaterCube.DisplayName: Water Cube
+			Snoobel.DisplayName: Snoobel
+			SwordEnemy.DisplayName: Sky Splicer
+			EnchantNPC.DisplayName: Enchant N P C
+			Voidsmith.DisplayName: Voidsmith
+			BoomBug.DisplayName: Firebug
+			CrystalPopper.DisplayName: Sand Bat
+			CrystalSlime.DisplayName: Crystal Slime
+			DesertWisp.DisplayName: Desert Wisp
+			DesertWisp2.DisplayName: Desert Wisp2
+			FlyingGruntConstruct.DisplayName: Flying Grunt Construct
+			FlyingPelterConstruct.DisplayName: Flying Pelter Construct
+			GruntConstruct.DisplayName: Grunt Construct
+			JuggernautConstruct.DisplayName: Juggernaut Construct
+			PelterConstruct.DisplayName: Pelter Construct
+			ShieldConstruct.DisplayName: Shield Construct
+			SupporterConstruct.DisplayName: Supporter Construct
+			KettleCreature.DisplayName: Kettle Kreature
+			LesserFirebug.DisplayName: Lesser Firebug
+			MagmitePassive.DisplayName: Small Magmite
+			Snake.DisplayName: Spittin' Snek
+			CodexPickup.DisplayName: Starlight Codex
+			FaeflamePickup.DisplayName: Faeflame
+			ForbiddenWindsPickup.DisplayName: Forbidden Winds
+			InfusionSlotPickup.DisplayName: Unnerving Device
+			StaminaShardPickup.DisplayName: Stamina Shard Pickup
+			BerrySlime.DisplayName: Slimeberry
+			TouchstoneWisp.DisplayName: Aurora Spirit
+		}
+
+		Buffs: {
+			GlassweaverDot: {
+				DisplayName: Incineration
+				Description: Burning incredibly fast!
+			}
+
+			Claustrophobia: {
+				DisplayName: Claustrophobia
+				Description: Stuck in wisp form!
+			}
+
+			CoughDropsBuff: {
+				DisplayName: Cough Drops
+				Description: Your speed and damage are boosted
+			}
+
+			FerrofluidDraftBuff: {
+				DisplayName: Ferrofluid Draft
+				Description: Nearby Items gravitate towards you
+			}
+
+			FoodBuff: {
+				DisplayName: Nourished
+				Description:
+					'''
+					Nourised by rich food, granting:
+
+					'''
+			}
+
+			ForestTonic: {
+				DisplayName: Forest Tonic
+				Description:
+					'''
+					Immunity to poision
+					Slowly regenerate life
+					'''
+			}
+
+			Full: {
+				DisplayName: Stuffed
+				Description: Cannot consume any more rich food
+			}
+
+			HotspringHeal: {
+				DisplayName: Refreshing Dip
+				Description: The hot springs restore your body and mind
+			}
+
+			Illuminant: {
+				DisplayName: Illuminant
+				Description: Glowing brightly!
+			}
+
+			Ivy: {
+				DisplayName: Ivy
+				Description: It's rooted in you!
+			}
+
+			IvySnare: {
+				DisplayName: Snared
+				Description: You've been caught!
+			}
+
+			MossRegen: {
+				DisplayName: Mending Moss
+				Description: Regenerating life quickly!
+			}
+
+			Overcharge: {
+				DisplayName: Overcahrged
+				Description: Greatly reduced armor, shocking nearby enemies!
+			}
+
+			PrismaticDrown: {
+				DisplayName: Prismatic Drown
+				Description: You are drowning in prismatic waters!
+			}
+
+			ProtectiveShard: {
+				DisplayName: Protective Shards
+				Description: Incoming Damage reduced by 25%
+			}
+
+			Rage: {
+				DisplayName: Rage
+				Description: Increased damage and greatly increased knockback
+			}
+
+			Slimed: {
+				DisplayName: Slimed
+				Description: eww
+			}
+
+			Squash: {
+				DisplayName: Pancaked
+				Description: You're flat now.
+			}
+
+			StaticShock: {
+				DisplayName: Static Shock
+				Description: Lowered Defense
+			}
+
+			GrayGooSummonBuff: {
+				DisplayName: Gray Goo
+				Description: Nanomachines, son!
+			}
+
+			PalestoneSummonBuff: {
+				DisplayName: Pale Knight
+				Description: The Pale Knight Will Protect You!
+			}
+
+			SupplyBeaconDamage: {
+				DisplayName: Supply Beacon
+				Description: Damage increased
+			}
+
+			SupplyBeaconDefense: {
+				DisplayName: Supply Beacon
+				Description: Defense increased
+			}
+
+			SupplyBeaconHeal: {
+				DisplayName: Supply Beacon
+				Description: Regeneration increased
+			}
+
+			ArchaeologistsBuff: {
+				DisplayName: Treasure buff
+				Description: Your minions do more damage
+			}
+
+			PerfectlyGenericPetBuff: {
+				DisplayName: Perfectly Generic Pet
+				Description: Made of grist
+			}
+
+			WolfBleeding: {
+				DisplayName: Gored
+				Description: Gored by a wolf
+			}
+
+			ShovelQuickFall: {
+				DisplayName: Quick fall
+				Description: You slammin
+			}
+
+			ShovelSlowFall: {
+				DisplayName: Slow fall
+				Description: Falling Speed Reduced
+			}
+
+			SoulSuck: {
+				DisplayName: Soul Suck
+				Description: You getting sucked
+			}
+
+			BizarrePotionPoisonDebuff: {
+				DisplayName: Bizarre Poison
+				Description: You poisoned
+			}
+
+			CoachDebuff: {
+				DisplayName: Coach Debuff
+				Description: 10% increased damage
+			}
+
+			FiletFrenzyBuff: {
+				DisplayName: Blood Frenzy
+				Description: Increased melee speed, but decreased crit rate on Filet Knife
+			}
+
+			ImpactSMGBuff.DisplayName: Heated Up!
+
+			IronheartBuff: {
+				DisplayName: Ironheart
+				Description: you have decaying extra barrier and defense
+			}
+
+			PlexusChaliceBuff: {
+				DisplayName: Plexus Resistance
+				Description: +30% Inoculation
+			}
+
+			MoonfuryDebuff: {
+				DisplayName: Dreamfire
+				Description: Next Moonfury hit has increased damage
+			}
+
+			AuroraThroneMountMinionDebuff: {
+				DisplayName: Inked
+				Description: You take increased damage
+			}
+
+			UrnFreeze: {
+				DisplayName: Urn Freeze
+				Description: The pot is out of control!
+			}
+
+			InoculationPotionBuff: {
+				DisplayName: Inoculated
+				Description: +30% Inoculation
+			}
+
+			NoShieldPot: {
+				DisplayName: Barrier Sickness
+				Description: Cannot consume more barrier potions
+			}
+
+			ShieldDegenReduction: {
+				DisplayName: Barrier Affinity
+				Description: Barrier sticks to you better
+			}
+
+			CogwheelBuff: {
+				DisplayName: Cogwheel
+				Description: They see me rollin'
+			}
+
+			Exposed: {
+				DisplayName: Exposed
+				Description: Taking extra damage!
+			}
+
+			PhoenixStormSummonBuff: {
+				DisplayName: Phoenix Minion
+				Description: A fiery bird follows you
+			}
+
+			RefractiveBladeBuff: {
+				DisplayName: Melting
+				Description: Taking additional melee damage!
+			}
+
+			SwelteredDeBuff: {
+				DisplayName: Sweltered
+				Description: Damage taken increased by 35%
+			}
+
+			Fogbinded: {
+				DisplayName: Fogbinded
+				Description: Bound to the fogbinder
+			}
+		}
+
+		Prefixes: {
+			DefensivePrefix.DisplayName: 防御
+			DoTResistPrefix1.DisplayName: 健康
+			DoTResistPrefix2.DisplayName: 保护
+			DoTResistPrefix3.DisplayName: 祝福
+			LayeredPrefix.DisplayName: 层叠
+			PlatedPrefix.DisplayName: 护层
+			ReinforcedPrefix.DisplayName: 强化
+			StaminaPrefix1.DisplayName: 弹性
+			StaminaPrefix2.DisplayName: 活力
+			StaminaPrefix3.DisplayName: 增强
+			StaminaPrefix4.DisplayName: 溢能
+			Feral.DisplayName: 野性
+			Jumpy.DisplayName: 跳动
+			Tanklike.DisplayName: 坦克
+		}
+
+		Tiles: {
+			AnkhChest: {
+				ContainerName: Ankh Chest
+				MapEntry: Mods.StarlightRiver.MapObject.AnkhChest
+			}
+			CauldronTile.MapEntry: Alchemic Cauldron
+			CookStation.MapEntry: Cooking Station
+			Infuser.MapEntry: Infuser
+			CrashPod.MapEntry: Crashed Pod
+			AnkhChest_Locked.MapEntry: Ankh Chest
+			TwistSwordTile.MapEntry: Twisted Greatsword
+			MonkSpear.MapEntry: Monk's Spade
+			ThickTree.MapEntry: Large Tree
+			TallAncientFruit.MapEntry: Ancient Fruit
+			TallGoldenRice.MapEntry: Golden Rice
+			TallRice.MapEntry: Rice
+			GreenhouseGlass.MapEntry: Greenhouse Glass
+			DisplayCase.MapEntry: Relic Case
+			DisplayCaseFriendly.MapEntry: Relic Case
+			RatTent.MapEntry: Strange Tent
+			MoonstoneBar.MapEntry: Metal Bar
+			MoonstoneOre.MapEntry: Moonstone Ore
+			JellyShroom.MapEntry: Jelly Shroom
+			OvergrowthLivingWoodTile.MapEntry: Overgrown Living Wood
+			SkeletonBrickTile.MapEntry: Skeleton Brick
+			AuroraclePainting.MapEntry: Painting
+			EggCodexPainting.MapEntry: Painting
+			RatKingPainting.MapEntry: Painting
+			Touchstone.MapEntry: Touchstone
+			AuroracleTrophy.MapEntry: Trophy
+			CeirosTrophy.MapEntry: Trophy
+			CombatShrine.MapEntry: Mysterious Shrine
+			EvasionShrine.MapEntry: Mysterious Shrine
+			MagmiteShrine.MapEntry: The Boi
+			WitShrine.MapEntry: Mysterious Shrine
+			JarTall.MapEntry: Stamina Jar
+			ForgeDoor.MapEntry: Forge Door
+			ForgeInnerDoor.MapEntry: Forge Door
+			EntranceDoor.MapEntry: Vitric Temple Door
+			TempleCandle.MapEntry: Candle
+			TempleCandleCrystal.MapEntry: Candle
+			TempleCeirosFountain.MapEntry: Fountain
+			TempleWallCandle.MapEntry: Candle
+			VitricBossAltar.MapEntry: Ceiro's Altar
+			VitricBreakableVases.MapEntry: Pot
+			VitricOre.MapEntry: Vitric Ore
+			VitricOreFloat.MapEntry: Vitric Ore
+			VitricBoss1.MapEntry: Music Box
+			VitricBoss2.MapEntry: Music Box
+			VitricPassive.MapEntry: Music Box
+			VitricTemple.MapEntry: Music Box
+			Miniboss.MapEntry: Music Box
+			Overgrow.MapEntry: Music Box
+			Auroracle.MapEntry: Music Box
+			TempleChair.MapEntry: Chair
+			TempleLargeVase.MapEntry: Large Vase
+			TempleLargeVaseCrystal.MapEntry: Large Vase
+			TempleWorkbench.MapEntry: Workbench
+			TempleThrone.MapEntry: Throne
+			TempleFloorWeaponRack.MapEntry: Weapon Rack
+			TempleTable.MapEntry: Table
+			TempleTableCrystal.MapEntry: Table
+			TempleWeaponRack0.MapEntry: Weapon Rack
+			TempleWeaponRack1.MapEntry: Weapon Rack
+			TempleWeaponRack2.MapEntry: Weapon Rack
+			TempleWeaponRack3.MapEntry: Weapon Rack
+			TempleThingamajig.MapEntry: Weapon Rack
+		}
+    }
+}
+
+CommonItemTooltip : {
+    Uses : 使用
+    CriticalStrikeDamage : "{0} 暴击伤害"
+    FullnessBonus : "食物持续时间增加{0}秒"
+    FoodBuffEffectPercentBonus : "食物增益效果提升{0}%"
+    FoodBuffEffectPercentReduce : "食物增益效果减弱{0}%"
+    DamageReductionPercentBonus : "+{0}%伤害减免"
+    CriticalStrikeChanceBonus : "+{0}%暴击率"
+    DefenseBonus : "+{0} 防御"
+    MeleeDamgePercentBonus : "+{0}%近战伤害"
+    AllDamagePercentBonus : "+{0}%全部伤害"
+    DefensePercentBonus : "+{0}% 防御"
+    SlightlyImprovedLifeRegeneration : 小幅提升生命再生
+    BreatheUnderWater : 你可以在水下呼吸
+    NoAdditionalEffects : 无附加效果
+    MaximumLifeBonus : "+{0}最大生命值"
+    GainDangersense : 你获得危险感
+    CriticalHitsMayCauseExplosions : 暴击可能会引起爆炸
+    ManaRegenerationBonus : "+{0}魔力再生"
+    UseToHealLife : "使用时治疗{0}生命值"
+    UseToRestoreMana : "使用时恢复{0}魔力"
+    ReducesDurationOfPotionSicknessSlightly : 略微减少药水疾病持续时间
+    ReducedMovementSpeedPercent : "移动速度降低{0}%"
+    ChanceToPoisionWithAllHits : "所有命中有{0}%的几率下毒"
+    MaximumBarrierBonus : "+{0}最大护盾值"
+    RegenerateManaPerSecondConstantly : "持续每秒恢复{0}魔力"
+	KeywordInfo : 按UP获取更多信息
+	StaminaRegenerationBonus : "+{0}耐力恢复"
+	BarrierBonus : "+{0}护盾"
+	InoculationPercentBonus : "+{0}%预防接种"
+	AttackSpeedPercentBonus : "+{0}%攻击速度"
+	SecondaryCooldownRecoveryPercentIncrease : "+{0}%二次冷却回复"
+	SecondaryCooldownRecoveryPercentDecrease : "-{0}%二次冷却回复"
+	MovementSpeedPercentIncrease : "+{0}%移动速度"
+	MovementSpeedPercentDecrease : "-{0}%移动速度"
+}
+
+
+Difficulty : {
+    Journey : 旅行
+    Normal : 经典
+    Expert : 专家
+    Master : 大师
+}

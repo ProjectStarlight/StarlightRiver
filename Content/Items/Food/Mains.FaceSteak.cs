@@ -1,11 +1,12 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class FaceSteak : Ingredient
 	{
-		public FaceSteak() : base("+3% critical strike chance", 900, IngredientType.Main) { }
+		public FaceSteak() : base(Language.GetTextValue("CommonItemTooltip.CriticalStrikeChanceBonus",3), 900, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -1,11 +1,12 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Rabbit : Ingredient
 	{
-		public Rabbit() : base("+5% melee damage", 600, IngredientType.Main) { }
+		public Rabbit() : base(Language.GetTextValue("CommonItemTooltip.MeleeDamgePercentBonus",5), 600, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

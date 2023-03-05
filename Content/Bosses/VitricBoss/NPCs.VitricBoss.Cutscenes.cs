@@ -10,6 +10,7 @@ using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
@@ -129,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (checkSpecificTime(454))
 			{
 				if (Main.netMode != NetmodeID.Server)
-					UILoader.GetUIState<TextCard>().Display(NPC.FullName, Main.rand.NextBool(10000) ? "Glass tax returns" : "Shattered Sentinel", null, 310, 1.25f); //intro text
+					UILoader.GetUIState<TextCard>().Display(NPC.FullName, Main.rand.NextBool(10000) ? Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.CeriosMessage0") : Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.CeriosMessage1"), null, 310, 1.25f); //intro text
 
 				if (IsInsideArena())
 				{

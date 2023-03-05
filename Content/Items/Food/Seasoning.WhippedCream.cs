@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class WhippedCream : Ingredient
 	{
-		public WhippedCream() : base("Food buffs are 20% less effective\n 10% increased movement speed", 300, IngredientType.Seasoning) { }
+		public WhippedCream() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentReduce",20)+"\n" + Language.GetTextValue("CommonItemTooltip.PercentIncreasedMovementSpeed",10), 300, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -7,6 +7,8 @@ using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
+using System.Text.RegularExpressions;
 
 namespace StarlightRiver.Content.Abilities.Infusions
 {
@@ -75,7 +77,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			{
 				Item.SetDefaults(TransformTo);
 				Item.newAndShiny = true;
-				Main.NewText("Objectives Complete! You've obtained: " + Item.Name);
+				Main.NewText(Language.GetTextValue("Mods.StarlightRiver.Custom.NewText.InfusionImprint.ObjectivesComplete") + ": " + Item.Name);
 			}
 		}
 
@@ -83,10 +85,10 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		{
 			var pos = new Vector2(x, y);
 
-			Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.MouseTextColorReal));
+			Utils.DrawBorderString(Main.spriteBatch, Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.InfusionImprint.ImprintedSlate") + ": " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.MouseTextColorReal));
 			pos.Y += 28;
 
-			Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.MouseTextColorReal);
+			Utils.DrawBorderString(Main.spriteBatch, Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.InfusionImprint.CompleteObjectives"), pos, Main.MouseTextColorReal);
 			pos.Y += 28;
 
 			foreach (InfusionObjective objective in objectives)
@@ -169,9 +171,11 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			sb.Draw(tex, pos, Color.White);
 		}
 
+		private string ObjectivesText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.Objectives." + Regex.Replace(text, "( )", ""));
+
 		public float DrawText(SpriteBatch sb, Vector2 pos)
 		{
-			string wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
+			string wrapped = Helpers.Helper.WrapString(ObjectivesText(text) + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
 			sb.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, wrapped, pos, Color.White, 0, Vector2.Zero, 0.8f, 0, 0);
 
 			return Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(wrapped).Y * 0.8f;
@@ -179,7 +183,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 
 		public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
 		{
-			string wrapped = ">  " + text + ": " + progress + "/" + maxProgress;
+			string wrapped = ">  " + ObjectivesText(text) + ": " + progress + "/" + maxProgress;
 			Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.MouseTextColorReal) : Main.MouseTextColorReal);
 			pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
 			pos.Y += 2;

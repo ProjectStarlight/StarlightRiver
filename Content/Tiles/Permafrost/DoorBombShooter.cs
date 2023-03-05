@@ -4,6 +4,7 @@ using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
@@ -27,9 +28,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossOpen))
 			{
 				Vector2 pos = (new Vector2(i, j) + Helper.TileAdj) * 16 - Main.screenPosition + new Vector2(18, -42);
-				Utils.DrawBorderString(spriteBatch, "Place blocks on", pos, Color.White, 0.7f);
-				Utils.DrawBorderString(spriteBatch, "BLUE", pos + new Vector2(90, 0), Color.DeepSkyBlue, 0.7f);
-				Utils.DrawBorderString(spriteBatch, "squares", pos + new Vector2(130, 0), Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch,Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.DoorBombShooter.0"), pos, Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch,Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.DoorBombShooter.1"), pos + new Vector2(90, 0), Color.DeepSkyBlue, 0.7f);
+				Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.DoorBombShooter.2"), pos + new Vector2(130, 0), Color.White, 0.7f);
 			}
 		}
 	}

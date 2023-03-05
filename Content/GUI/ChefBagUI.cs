@@ -10,6 +10,8 @@ using Terraria.ID;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
+using System.Text.RegularExpressions;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -24,6 +26,8 @@ namespace StarlightRiver.Content.GUI
 
 		public static UIImageButton IngredientTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/IngredientButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
 		public static UIImageButton RecipieTab = new(Request<Texture2D>("StarlightRiver/Assets/GUI/MealButton", ReLogic.Content.AssetRequestMode.ImmediateLoad));
+
+		private static string ChefBagText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.UI.ChefBag." + text);
 
 		public static string sortMode = "Rarity";
 		public static bool hideUnowned = false;
@@ -170,16 +174,16 @@ namespace StarlightRiver.Content.GUI
 				RebuildGrid();
 
 			if (SortButton.IsMouseHovering)
-				Main.hoverItemName = "Sort mode:\n" + sortMode;
+				Main.hoverItemName = ChefBagText("SortMode") + ":\n" + ChefBagText(Regex.Replace(sortMode, " ", ""));
 
 			if (OwnedButton.IsMouseHovering)
-				Main.hoverItemName = "Hide unowned:\n" + hideUnowned;
+				Main.hoverItemName = ChefBagText("HideUnowned") + ":\n" + hideUnowned;
 
 			if (IngredientTab.IsMouseHovering)
-				Main.hoverItemName = "Ingredients";
+				Main.hoverItemName = ChefBagText("Ingredients");
 
 			if (RecipieTab.IsMouseHovering)
-				Main.hoverItemName = "Cookbook";
+				Main.hoverItemName = ChefBagText("Cookbook");
 
 			if (!Main.playerInventory)
 				visible = false;

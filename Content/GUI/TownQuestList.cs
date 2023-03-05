@@ -9,6 +9,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -155,7 +156,7 @@ namespace StarlightRiver.Content.GUI
 				Texture2D back = Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButton").Value;
 
 				spriteBatch.Draw(back, pos, back.Frame(), Color.White * (IsMouseHovering ? 1 : 0.7f), 0, back.Size() / 2, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, "Submit", pos, Color.White, 0.7f, 0.5f, 0.4f);
+				Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.Submit"), pos, Color.White, 0.7f, 0.5f, 0.4f);
 			}
 		}
 

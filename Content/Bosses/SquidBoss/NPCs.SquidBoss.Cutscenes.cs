@@ -5,6 +5,7 @@ using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
@@ -51,8 +52,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			if (GlobalTimer == 100)
 			{
-				string title = Main.rand.NextBool(10000) ? "Jammed Mod" : "The Venerated";
-				UILoader.GetUIState<TextCard>().Display("Auroracle", title, null, 440);
+				string title = Main.rand.NextBool(10000) ? Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.AuroracleMessage0") : Language.GetTextValue("Mods.StarlightRiver.Custom.UI.TextCard.AuroracleMessage1");
+				UILoader.GetUIState<TextCard>().Display(NPC.FullName, title, null, 440);
 				CameraSystem.DoPanAnimation(440, NPC.Center + new Vector2(0, -600));
 			}
 

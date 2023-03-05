@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class StarlightWater : Ingredient
 	{
-		public StarlightWater() : base("Regenerate 4 mana per second constantly", 360, IngredientType.Side) { }
+		public StarlightWater() : base(Language.GetTextValue("CommonItemTooltip.RegenerateManaPerSecondConstantly",4), 360, IngredientType.Side) { }
 
 		public override void SafeSetDefaults()
 		{

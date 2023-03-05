@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.UI;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -10,7 +11,24 @@ namespace StarlightRiver.Content.GUI
 		private static string name;
 		private static int deaths;
 		private static string tease;
-
+		private static List<string> teases = new (){
+			MasterDeathTickerText("Tease.0"),
+			MasterDeathTickerText("Tease.1"),
+			MasterDeathTickerText("Tease.2"),
+			MasterDeathTickerText("Tease.3"),
+			MasterDeathTickerText("Tease.4"),
+			MasterDeathTickerText("Tease.5"),
+			MasterDeathTickerText("Tease.6"),
+			MasterDeathTickerText("Tease.7"),
+			MasterDeathTickerText("Tease.8"),
+			MasterDeathTickerText("Tease.9"),
+			MasterDeathTickerText("Tease.10"),
+			MasterDeathTickerText("Tease.11"),
+			MasterDeathTickerText("Tease.12"),
+			MasterDeathTickerText("Tease.13"),
+			Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MasterDeathTicker.Tease.14", Main.cJump),
+			MasterDeathTickerText("Tease.Default"),
+		};
 		public override bool Visible { get => animationTimer < 480; set => base.Visible = value; }
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -18,12 +36,14 @@ namespace StarlightRiver.Content.GUI
 			return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 		}
 
+		private static string MasterDeathTickerText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.UI.MasterDeathTicker." + text);
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			animationTimer++;
 
 			var pos = new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 120);
-			string message = "Deaths to " + name + ": " + (animationTimer < 60 ? (deaths - 1) : deaths);
+			string message = MasterDeathTickerText("DeathsTo") + name + ": " + (animationTimer < 60 ? (deaths - 1) : deaths);
 
 			Color color = new Color(255, 100, 100) * (animationTimer > 420 ? 1 - (animationTimer - 420) / 60f : 1);
 
@@ -51,22 +71,22 @@ namespace StarlightRiver.Content.GUI
 			{
 				tease = Main.rand.Next(14) switch
 				{
-					0 => "Maybe try Journey Mode...",
-					1 => "You're not supposed to win.",
-					2 => "Whoopsie daisy.",
-					3 => "It's not THAT hard.",
-					4 => "Give up.",
-					5 => "Have you tried dodging?",
-					6 => "skill issue",
-					7 => "Are the logged hours on your Steam account accurate?",
-					8 => "You sure you wanna do this?",
-					9 => "There are easier difficulties you know.",
-					10 => "You can install CheatSheet from the mod browser.",
-					11 => "You can always come back after beating other bosses.",
-					12 => "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-					13 => "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle.",
-					14 => "Press " + Main.cJump + " to jump.",
-					_ => "You died so many times you broke our snarky quote code. Great job.",
+					0 => teases[0],
+					1 => teases[1],
+					2 => teases[2],
+					3 => teases[3],
+					4 => teases[4],
+					5 => teases[5],
+					6 => teases[6],
+					7 => teases[7],
+					8 => teases[8],
+					9 => teases[9],
+					10 => teases[10],
+					11 => teases[11],
+					12 => teases[12],
+					13 => teases[13],
+					14 => teases[14],
+					_ => teases[15], //if something new is added, don't forget to add this index
 				};
 			}
 		}

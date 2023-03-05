@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -95,7 +96,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				alreadyHit = true;
 
-				CombatText.NewText(Projectile.Hitbox, new Color(255, 230, 100), "Ouch!", true);
+				CombatText.NewText(Projectile.Hitbox, new Color(255, 230, 100), Language.GetTextValue("Mods.StarlightRiver.Custom.CombatText.Ouch"), true);
 
 				NPC NPC = Main.npc[(int)HitNpcIndex];
 				NPC.StrikeNPCNoInteraction(9999, 1, 0, false, true);

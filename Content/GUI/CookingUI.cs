@@ -9,6 +9,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -97,6 +98,8 @@ namespace StarlightRiver.Content.GUI
 			scrollStart = (int)MathHelper.Clamp(scrollStart, 0, lineCount - 5);
 		}
 
+		private static string CookingText(string text) => Language.GetTextValue("Mods.StarlightRiver.Custom.UI.Cooking." + text);
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			var backDims = new Rectangle((int)Basepos.X - 10, (int)Basepos.Y - 10, 376, 266);
@@ -110,14 +113,14 @@ namespace StarlightRiver.Content.GUI
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, backDims, new Color(25, 25, 25) * 0.5f);
 
 			base.Draw(spriteBatch);
-			Utils.DrawBorderString(spriteBatch, "Ingredients", Basepos + new Vector2(38, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Info/Stats", Basepos + new Vector2(202, 8), Color.White, 0.8f);
-			Utils.DrawBorderString(spriteBatch, "Prepare", Basepos + new Vector2(212, 210), Color.White, 1.1f);
+			Utils.DrawBorderString(spriteBatch,CookingText("Ingredients"), Basepos + new Vector2(38, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, CookingText("InfoStats"), Basepos + new Vector2(202, 8), Color.White, 0.8f);
+			Utils.DrawBorderString(spriteBatch, CookingText("Prepare"), Basepos + new Vector2(212, 210), Color.White, 1.1f);
 
 			int drawY = 0;
 			if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
 			{
-				Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
+				Utils.DrawBorderString(spriteBatch, CookingText("PlaceMainCourse"), Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
 			}
 			else
 			{
@@ -157,8 +160,8 @@ namespace StarlightRiver.Content.GUI
 					drawY += (int)(FontAssets.ItemStack.Value.MeasureString(line.Item1).Y * 0.65f) + 2;
 				}
 
-				Utils.DrawBorderString(spriteBatch, duration / 60 + " seconds duration", Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
-				Utils.DrawBorderString(spriteBatch, cooldown / 60 + " seconds fullness", Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
+				Utils.DrawBorderString(spriteBatch, duration / 60 + Language.GetTextValue("SecondsDuration"), Basepos + new Vector2(186, 150), new Color(110, 235, 255), 0.65f);
+				Utils.DrawBorderString(spriteBatch, cooldown / 60 + Language.GetTextValue("SecondsFullness"), Basepos + new Vector2(186, 164), new Color(255, 170, 120), 0.65f);
 
 				if (lineCount > 5)
 				{

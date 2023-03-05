@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Terraria.UI.Chat;
+using Terraria.Localization;
 
 namespace StarlightRiver.Core.Systems.KeywordSystem
 {
@@ -37,7 +39,17 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
-			Stream stream = Mod.GetFileStream("Keywords.txt");
+			string fileName;
+			if (LanguageManager.Instance.ActiveCulture == GameCulture.FromCultureName(GameCulture.CultureName.Chinese))
+			{
+				fileName = "KeywordsZh.txt";
+			} //add else if here to add other language, KeywordsEn is the default.
+			else
+			{
+				fileName = "KeywordsEn.txt";
+			}
+
+			Stream stream = Mod.GetFileStream("Keywords/" + fileName);
 
 			var reader = new StreamReader(stream);
 			string[] lines = reader.ReadToEnd().Split('\n');
@@ -47,7 +59,8 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			foreach (string line in lines)
 			{
 				string[] split = line.Split(" | ");
-				keywords.Add(new Keyword(split[0], Helpers.Helper.WrapString(split[1], 200, font, 1), new Color(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]))));
+				keywords.Add(new Keyword(split[0], Helpers.Helper.WrapString(split[1], 200, font, 1),
+					new Color(int.Parse(split[2]), int.Parse(split[3]), int.Parse(split[4]))));
 			}
 		}
 
@@ -85,20 +98,23 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 				if (Main.MouseScreen.X < Main.screenWidth / 2)
 				{
-					string widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last().Text;
+					string widest = lines.OrderBy(n => ChatManager.GetStringSize(font, n.Text, Vector2.One).X).Last()
+						.Text;
 					width = ChatManager.GetStringSize(font, widest, Vector2.One).X;
 
 					pos = new Vector2(x, y) + new Vector2(width + 30, 0);
 				}
 				else
 				{
-					Keyword widest = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
+					Keyword widest = thisKeywords
+						.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
 					width = ChatManager.GetStringSize(font, widest.message, Vector2.One).X + 20;
 
 					pos = new Vector2(x, y) - new Vector2(width + 30, 0);
 				}
 
-				Keyword widest2 = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X).Last();
+				Keyword widest2 = thisKeywords.OrderBy(n => ChatManager.GetStringSize(font, n.message, Vector2.One).X)
+					.Last();
 				width = ChatManager.GetStringSize(font, widest2.message, Vector2.One).X + 20;
 
 				foreach (Keyword keyword in thisKeywords)
@@ -106,11 +122,15 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 					height += ChatManager.GetStringSize(font, "{Dummy}\n" + keyword.message, Vector2.One).Y + 16;
 				}
 
-				Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(25, 20, 55) * 0.925f);
+				Utils.DrawInvBG(Main.spriteBatch,
+					new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20),
+					new Color(25, 20, 55) * 0.925f);
 
 				foreach (Keyword keyword in thisKeywords)
 				{
-					Utils.DrawBorderString(Main.spriteBatch, BuildKeyword(keyword) + ":\n[c/AAAAAA: " + keyword.message.Replace("\n", "]\n [c/AAAAAA:") + "]", pos, Color.White);
+					Utils.DrawBorderString(Main.spriteBatch,
+						BuildKeyword(keyword) + ":\n[c/AAAAAA: " + keyword.message.Replace("\n", "]\n [c/AAAAAA:") +
+						"]", pos, Color.White);
 					pos.Y += ChatManager.GetStringSize(font, "{Dummy}\n" + keyword.message, Vector2.One).Y + 16;
 				}
 			}
@@ -129,55 +149,38 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 			}
 
 			if (thisKeywords.Count > 0 && !Main.LocalPlayer.controlUp)
-				tooltips.Add(new TooltipLine(Mod, "KeywordInfo", "[c/AAAAAA:Press UP for more info]"));
+				tooltips.Add(new TooltipLine(Mod, "KeywordInfo",
+					"[c/AAAAAA:" + Language.GetTextValue("CommonItemTooltip.KeywordInfo") + "]"));
 		}
 
 		public string ScanLine(string input)
 		{
-			string[] strings = input.Split(' ');
 
-			for (int k = 0; k < strings.Length; k++)
+			string regexCoreText;
+			if (LanguageManager.Instance.ActiveCulture == GameCulture.FromCultureName(GameCulture.CultureName.Chinese))
 			{
-				string word = strings[k];
+				//this is for languages which don't use spaces to devide words
+				regexCoreText = "()({0})()";
+			}
+			else
+			{
+				input = " " + input + " "; //to make sure that the first and the last word can be matched
+				regexCoreText = "(\\W)({0})(\\W)"; //the \\W stands for non-word char
+			}
 
-				if (word.Length < 1)
-					continue;
-
-				if (word[0] == '\\')
+			string regexText;
+			foreach (Keyword keywordObjective in keywords)
+			{
+				regexText = string.Format(regexCoreText, keywordObjective.keyword);
+				if (Regex.Match(input, regexText, RegexOptions.IgnoreCase).Success)
 				{
-					strings[k] = word[1..];
-					continue;
-				}
-
-				if (keywords.Any(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase)))
-				{
-					Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word, StringComparison.OrdinalIgnoreCase));
-
-					if (!thisKeywords.Contains(keyword))
-						thisKeywords.Add(keyword);
-
-					strings[k] = BuildKeyword(keyword);
-					continue;
-				}
-
-				string suffix = word[^1..];
-
-				if (suffix == ":" || suffix == "," || suffix == "." || suffix == ";") //Common punctuation that shouldnt invalidate a keyword.
-				{
-					if (keywords.Any(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase)))
-					{
-						Keyword keyword = keywords.FirstOrDefault(n => string.Equals(n.keyword, word[..^1], StringComparison.OrdinalIgnoreCase));
-
-						if (!thisKeywords.Contains(keyword))
-							thisKeywords.Add(keyword);
-
-						strings[k] = BuildKeyword(keyword) + suffix;
-						continue;
-					}
+					if (!thisKeywords.Contains(keywordObjective))
+						thisKeywords.Add(keywordObjective);
+					input = Regex.Replace(input, regexText, "$1" + BuildKeyword(keywordObjective) + "$3", RegexOptions.IgnoreCase);
 				}
 			}
 
-			return string.Join(' ', strings);
+			return input.Trim();
 		}
 	}
 }

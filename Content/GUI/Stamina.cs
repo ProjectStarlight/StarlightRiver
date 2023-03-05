@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using static Terraria.ModLoader.ModContent;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.GUI
 {
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.GUI
 				AbilityHandler mp = Main.LocalPlayer.GetHandler();
 				double stamina = Math.Round(mp.Stamina, 1);
 				double staminaMax = Math.Round(mp.StaminaMax, 1);
-				string text = $"Stamina: {stamina}/{staminaMax}";
+				string text = Language.GetTextValue("Mods.StarlightRiver.Custom.BorderString.Stamina") + $": {stamina}/{staminaMax}";
 				Vector2 pos = Main.MouseScreen + Vector2.One * 16;
 				pos.X = Math.Min(Main.screenWidth - Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(text).X - 6, pos.X);
 				Utils.DrawBorderString(spriteBatch, text, pos, Main.MouseTextColorReal);

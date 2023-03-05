@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Vinegar : Ingredient
 	{
-		public Vinegar() : base("Food buffs are 40% less effective", 4800, IngredientType.Seasoning) { }
+		public Vinegar() : base(Language.GetTextValue("CommonItemTooltip.FoodBuffEffectPercentReduce", 40), 4800, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

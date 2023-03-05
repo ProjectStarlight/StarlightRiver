@@ -1,10 +1,11 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Steak : Ingredient
 	{
-		public Steak() : base("+5% all damage", 400, IngredientType.Main) { }
+		public Steak() : base(Language.GetTextValue("CommonItemTooltip.AllDamagePercentBonus",5), 400, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{

@@ -3,6 +3,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Utility
@@ -62,7 +63,7 @@ namespace StarlightRiver.Content.Items.Utility
 			{
 				if ((bag.ModItem as ChefBag).InsertItem(Item))
 				{
-					CombatText.NewText(Player.Hitbox, Microsoft.Xna.Framework.Color.White, "Ingredient added to chefs bag");
+					CombatText.NewText(Player.Hitbox, Microsoft.Xna.Framework.Color.White, Language.GetTextValue("Mods.StarlightRiver.Custom.CombatText.IngredientAddedToChefsBag"));
 					Helpers.Helper.PlayPitched("Effects/PickupGeneric", 1, 0.5f, Player.Center);
 
 					return false;

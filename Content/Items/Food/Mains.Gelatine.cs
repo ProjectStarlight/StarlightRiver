@@ -1,11 +1,12 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.Food
 {
 	internal class Gelatine : Ingredient
 	{
-		public Gelatine() : base("+6% damage reduction\n+3 defense", 1600, IngredientType.Main) { }
+		public Gelatine() : base(Language.GetTextValue("CommonItemTooltip.DamageReductionPercentBonus", 6) + "\n" + Language.GetTextValue("CommonItemTooltip.DefenseBonus", 3), 1600, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
