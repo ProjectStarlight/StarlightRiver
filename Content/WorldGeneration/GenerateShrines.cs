@@ -22,7 +22,6 @@ namespace StarlightRiver.Core
 			TileID.MushroomGrass,
 			TileID.Marble,
 			TileID.Granite,
-			StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type
 		};
 
 		public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
@@ -47,6 +46,10 @@ namespace StarlightRiver.Core
 
 		public static bool ShrineCondition(Tile a, Point16 b)
 		{
+			//we dont want shrines on shrines...
+			if (a.TileType == StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type)
+				return false;
+
 			if (InvalidShrineTiles.Contains(a.TileType))
 				return false;
 
