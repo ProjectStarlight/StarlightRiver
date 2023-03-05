@@ -26,6 +26,12 @@ namespace StarlightRiver.Core
 
 		public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
 		{
+			ShrinePass("Structures/CombatShrine");
+			ShrinePass("Structures/EvasionShrine");
+		}
+
+		public static void ShrinePass(string structure)
+		{
 			for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
 			{
 				for (int retry = 0; retry < 40; retry++)
@@ -33,11 +39,11 @@ namespace StarlightRiver.Core
 					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
 
 					Point16 dims = new();
-					StructureHelper.Generator.GetDimensions("Structures/CombatShrine", StarlightRiver.Instance, ref dims);
+					StructureHelper.Generator.GetDimensions(structure, StarlightRiver.Instance, ref dims);
 
 					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), ShrineCondition))
 					{
-						StructureHelper.Generator.GenerateStructure("Structures/CombatShrine", new Point16(x, y), StarlightRiver.Instance);
+						StructureHelper.Generator.GenerateStructure(structure, new Point16(x, y), StarlightRiver.Instance);
 						break;
 					}
 				}
