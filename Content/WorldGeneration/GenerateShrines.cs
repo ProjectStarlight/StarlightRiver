@@ -19,21 +19,41 @@ namespace StarlightRiver.Core
 			TileID.Sandstone,
 			TileID.JungleGrass,
 			TileID.Mud,
-			TileID.MushroomGrass
+			TileID.MushroomGrass,
+			TileID.Marble,
+			TileID.Granite,
+			StarlightRiver.Instance.Find<ModTile>("TempleBrick").Type
 		};
 
 		public static void ShrineGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			for (int x = 0; x < Main.maxTilesX - 200; x += WorldGen.genRand.Next(200, 300))
+			for (int x = 350; x < Main.maxTilesX - 350; x += WorldGen.genRand.Next(100, 350))
 			{
-				int y = WorldGen.genRand.Next((int)Main.worldSurface + 50, (int)Main.rockLayer);
+				for (int retry = 0; retry < 40; retry++)
+				{
+					int y = WorldGen.genRand.Next((int)Main.worldSurface + 100, Main.UnderworldLayer - 100);
 
-				Point16 dims = new();
-				StructureHelper.Generator.GetDimensions("Structures/CombatShrine", StarlightRiver.Instance, ref dims);
+					Point16 dims = new();
+					StructureHelper.Generator.GetDimensions("Structures/CombatShrine", StarlightRiver.Instance, ref dims);
 
-				if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), (a, b) => !InvalidShrineTiles.Contains(a.TileType)))
-					StructureHelper.Generator.GenerateStructure("Structures/CombatShrine", new Point16(x, y), StarlightRiver.Instance);
+					if (WorldGen.InWorld(x, y) && WorldGenHelper.IsRectangleSafe(new Rectangle(x, y, dims.X, dims.Y), ShrineCondition))
+					{
+						StructureHelper.Generator.GenerateStructure("Structures/CombatShrine", new Point16(x, y), StarlightRiver.Instance);
+						break;
+					}
+				}
 			}
+		}
+
+		public static bool ShrineCondition(Tile a, Point16 b)
+		{
+			if (InvalidShrineTiles.Contains(a.TileType))
+				return false;
+
+			if (vitricBiome.Contains(b.ToPoint()))
+				return false;
+
+			return true;
 		}
 	}
 }

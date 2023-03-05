@@ -29,6 +29,27 @@ namespace StarlightRiver.Helpers
 		};
 
 		/// <summary>
+		/// Common walls that would set off that world generation shouldnt occur there
+		/// </summary>
+		public static readonly List<int> invalidWalls = new()
+		{
+			WallID.BlueDungeon,
+			WallID.BlueDungeonSlabUnsafe,
+			WallID.BlueDungeonTileUnsafe,
+			WallID.GreenDungeon,
+			WallID.GreenDungeonSlabUnsafe,
+			WallID.GreenDungeonTileUnsafe,
+			WallID.PinkDungeon,
+			WallID.PinkDungeonSlabUnsafe,
+			WallID.PinkDungeonTileUnsafe,
+			WallID.LihzahrdBrickUnsafe,
+			WallID.EbonstoneUnsafe,
+			WallID.CrimstoneUnsafe,
+			StarlightRiver.Instance.Find<ModWall>("VitricTempleWall").Type,
+			StarlightRiver.Instance.Find<ModWall>("AuroraBrickWall").Type,
+		};
+
+		/// <summary>
 		/// Checks if an area of the world is most likely safe to generate a structure. By default checks against a reasonable blacklist including dungeon tiles and chests, and makes sure it is not inside a protected region.
 		/// </summary>
 		/// <param name="area">The rectangle to check, in tile coordinates</param>
@@ -63,6 +84,10 @@ namespace StarlightRiver.Helpers
 		{
 			//We shouldnt generate over one of these blacklisted tile types
 			if (invalidTypes.Contains(tile.TileType))
+				return false;
+
+			//We shouldnt generate over one of these blacklisted wall types
+			if (invalidWalls.Contains(tile.WallType))
 				return false;
 
 			//If there is a tile entity there, we shouldnt generate over it!
