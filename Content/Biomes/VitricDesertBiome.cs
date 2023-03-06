@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Waters;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using Terraria.Graphics.Effects;
 
@@ -43,7 +44,7 @@ namespace StarlightRiver.Content.Biomes
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)
 						.UseProgress(6)
-						.UseImage(StarlightRiver.lightingBufferInstance.screenLightingTarget, 0);
+						.UseImage(LightingBuffer.screenLightingTarget.RenderTarget, 0);
 				}
 			}
 			else

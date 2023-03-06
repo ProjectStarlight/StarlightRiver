@@ -1,4 +1,6 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems.LightingSystem;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
@@ -7,9 +9,8 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 	{
 		public static bool anyEnemiesWithBarrier = false;
 
-		public static RenderTarget2D NPCTarget;
-
-		public static RenderTarget2D NPCTargetBehindTiles;
+		public static ScreenTarget NPCTarget;
+		public static ScreenTarget NPCTargetBehindTiles;
 
 		public static Vector2 oldScreenPos = Vector2.Zero;
 
@@ -20,61 +21,20 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			if (Main.dedServ)
 				return;
 
-			ResizeTarget();
+			NPCTarget ??= new(n => DrawAllNPCS(n, false), () => anyEnemiesWithBarrier, 1);
+			NPCTargetBehindTiles ??= new(n => DrawAllNPCS(n, true), () => anyEnemiesWithBarrier, 1);
 
-			Main.OnPreDraw += Main_OnPreDraw;
 			On.Terraria.Main.DrawNPCs += DrawBarrierOverlay;
 		}
 
 		public override void Unload()
 		{
-			Main.OnPreDraw -= Main_OnPreDraw;
 			On.Terraria.Main.DrawNPCs -= DrawBarrierOverlay;
 		}
 
 		public override void PreUpdateNPCs()
 		{
 			anyEnemiesWithBarrier = false;
-		}
-
-		public static void ResizeTarget()
-		{
-			Main.QueueMainThreadAction(() =>
-			{
-				NPCTargetBehindTiles = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-				NPCTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight);
-			});
-		}
-
-		private void Main_OnPreDraw(GameTime obj)
-		{
-			GraphicsDevice gd = Main.graphics.GraphicsDevice;
-			SpriteBatch spriteBatch = Main.spriteBatch;
-
-			if (Main.gameMenu || Main.dedServ || spriteBatch is null || NPCTarget is null || NPCTargetBehindTiles is null || gd is null || !anyEnemiesWithBarrier)
-				return;
-
-			oldScreenPos = Main.screenPosition;
-
-			RenderTargetBinding[] bindings = gd.GetRenderTargets();
-			gd.SetRenderTarget(NPCTarget);
-			gd.Clear(Color.Transparent);
-
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
-
-			DrawAllNPCS(spriteBatch, false);
-
-			spriteBatch.End();
-
-			gd.SetRenderTarget(NPCTargetBehindTiles);
-			gd.Clear(Color.Transparent);
-
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
-
-			DrawAllNPCS(spriteBatch, true);
-
-			spriteBatch.End();
-			gd.SetRenderTargets(bindings);
 		}
 
 		private static void DrawAllNPCS(SpriteBatch spriteBatch, bool behindTiles)
@@ -105,7 +65,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		private void DrawBarrierOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			if (anyEnemiesWithBarrier)
-				DrawNPCTarget(behindTiles ? NPCTargetBehindTiles : NPCTarget);
+				DrawNPCTarget(behindTiles ? NPCTargetBehindTiles.RenderTarget : NPCTarget.RenderTarget);
 
 			if (!behindTiles)
 				oldScreenPos = Main.screenPosition;
@@ -113,7 +73,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			orig(self, behindTiles);
 		}
 
-		private static void DrawNPCTarget(RenderTarget2D target)
+		private static void DrawNPCTarget(Texture2D target)
 		{
 			GraphicsDevice gd = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
@@ -134,7 +94,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 			Effect effect = Filters.Scene["NPCBarrier"].GetShader().Shader;
 			effect.Parameters["barrierColor"].SetValue(BarrierColor.ToVector4() * opacity);
-			effect.Parameters["lightingTexture"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			effect.Parameters["lightingTexture"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 
 			effect.CurrentTechnique.Passes[0].Apply();
 

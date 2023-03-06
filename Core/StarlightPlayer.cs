@@ -140,7 +140,6 @@ namespace StarlightRiver.Core
 		public override void OnEnterWorld(Player Player)
 		{
 			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
-			StarlightRiver.lightingBufferInstance.ResizeBuffers(Main.screenWidth, Main.screenHeight);
 
 			rotation = 0;
 

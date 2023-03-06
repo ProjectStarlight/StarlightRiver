@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				return false;
 
 			Effect effect = Filters.Scene["GrayGooShader"].GetShader().Shader;
-			effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget);
+			effect.Parameters["NPCTarget"].SetValue(GrayGooProj.NPCTarget.RenderTarget);
 			effect.Parameters["threshhold"].SetValue(0.95f);
 			effect.Parameters["screenSize"].SetValue(Main.ScreenSize.ToVector2() * 2);
 			effect.Parameters["time"].SetValue((float)Main.timeForVisualEffects * 0.1f);
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect);
 
-			spriteBatch.Draw(Target, position: Vector2.Zero, color: Color.White);
+			spriteBatch.Draw(Target.RenderTarget, position: Vector2.Zero, color: Color.White);
 
 			spriteBatch.End();
 			spriteBatch.Begin();
