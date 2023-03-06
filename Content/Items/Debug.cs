@@ -1,11 +1,14 @@
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
 {
 	class DebugStick : ModItem
 	{
+		public NPC target;
+		public Projectile target2;
+		public Player owner;
+
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
 		public override void SetStaticDefaults()
@@ -40,7 +43,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			NPC.NewNPC(new EntitySource_WorldGen(), (StarlightWorld.vitricBiome.Center.X - 16) * 16, (StarlightWorld.vitricBiome.Center.Y - 20) * 16, ModContent.NPCType<Bosses.GlassMiniboss.GlassweaverWaiting>());
+			StarlightWorld.ShrineGen(null, null);
 			return true;
 		}
 	}

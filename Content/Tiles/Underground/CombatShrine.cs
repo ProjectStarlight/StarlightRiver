@@ -30,18 +30,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (dummy is null)
 					return;
-
-				if (((CombatShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
-					tile.TileFrameX -= 3 * 18;
 			}
 		}
 
 		public override bool RightClick(int i, int j)
 		{
-			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
+			Tile tile = Framing.GetTileSafely(i, j);
 
-			int x = i - tile.TileFrameX / 16;
-			int y = j - tile.TileFrameY / 16;
+			if (tile.TileFrameX >= 18 * 3)
+				return false;
+
+			int x = i - tile.TileFrameX / 18;
+			int y = j - tile.TileFrameY / 18;
 
 			Projectile dummy = Dummy(x, y);
 
@@ -51,10 +51,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 				{
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.TileFrameX / 18;
-						int realY = y1 + j - tile.TileFrameY / 18;
+						int realX = x1 + x;
+						int realY = y1 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((3 + x1) * 18);
 					}
 				}
 
@@ -64,6 +64,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			return false;
 		}
+	}
+
+	class CombatShrineItem : QuickTileItem
+	{
+		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
 	}
 
 	class CombatShrineDummy : Dummy, IDrawAdditive
@@ -78,6 +83,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
+		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
 		public override void Update()
@@ -91,15 +98,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 						int realX = ParentX - 1 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)(x * 18);
 					}
 				}
+
+				return;
 			}
 
 			if (State != 0)
 			{
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
+
+				if (Main.rand.NextBool(2))
+				{
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(-25 * 16 - 8 + 32, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
+				}
 
 				if (State == -1 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
 				{
@@ -281,6 +296,24 @@ namespace StarlightRiver.Content.Tiles.Underground
 					spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, new Color(255, 100, 100), 0, tex2.Size() / 2, 0.3f, 0, 0);
 					spriteBatch.Draw(tex2, Projectile.Center - Main.screenPosition + new Vector2(0, -32) + Vector2.UnitX.RotatedBy(k / (float)(maxWaves - 2) * 3.14f) * rad, default, Color.White, 0, tex2.Size() / 2, 0.1f, 0, 0);
 				}
+
+				Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+				var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
+				var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
+
+				var targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) - 25 * 16 - 10, (int)(Projectile.Center.Y - Main.screenPosition.Y) - 16, 32, 80);
+				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup);
+				targetRect.Inflate(-15, 0);
+				targetRect.Offset(15, 0);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+
+				targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) + 24 * 16 - 6, (int)(Projectile.Center.Y - Main.screenPosition.Y) - 16, 32, 80);
+				spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(255, 100, 100) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(255, 50, 50) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+				targetRect.Inflate(-15, 0);
+				targetRect.Offset(-15, 0);
+				spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
 			}
 		}
 
@@ -289,6 +322,22 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
+		}
+	}
+
+	class CombatShrineBiome : ModBiome
+	{
+		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/CombatShrine");
+
+		public override bool IsBiomeActive(Player player)
+		{
+			return Main.projectile.Any(
+				n => n.active &&
+				n.type == ModContent.ProjectileType<CombatShrineDummy>() &&
+				(n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox) &&
+				(n.ModProjectile as CombatShrineDummy).State != 0);
 		}
 	}
 
