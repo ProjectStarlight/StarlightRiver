@@ -8,7 +8,8 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 		public static int shake = 0;
 
 		private static PanModifier PanModifier = new();
-		private static readonly MoveModifier MoveModifier = new();
+		private static MoveModifier MoveModifier = new();
+		private static AsymetricalPanModifier AsymetricalPanModifier = new();
 
 		/// <summary>
 		/// Sets up a panning animation for the screen. Great for use with things like boss spawns or defeats, or other events happening near the player.
@@ -28,6 +29,26 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			PanModifier.EaseInFunction = easeIn ?? Vector2.SmoothStep;
 			PanModifier.EaseOutFunction = easeOut ?? Vector2.SmoothStep;
 			PanModifier.PanFunction = easePan ?? Vector2.Lerp;
+		}
+
+		/// <summary>
+		/// Sets up a panning animation with different or custom in/out times.
+		/// </summary>
+		/// <param name="durationOut"> How long it takes the camera to reach it's destination </param>
+		/// <param name="durationHold"> How long the camera stays at it's destination </param>
+		/// <param name="durationIn"> How long it takes the camera to return to the player </param>
+		/// <param name="target"> Where the camera will pan to </param>
+		/// <param name="easeOut"> Changes the easing function for the motion from the player to the target. Default is Vector2.Smoothstep </param>
+		/// <param name="easeIn"> Changes the easing function for the motion from the target to the player. Default is Vector2.Smoothstep </param>
+		public static void AsymetricalPan(int durationOut, int durationHold, int durationIn, Vector2 target, Func<Vector2, Vector2, float, Vector2> easeOut = null, Func<Vector2, Vector2, float, Vector2> easeIn = null)
+		{
+			AsymetricalPanModifier.timeOut = durationOut;
+			AsymetricalPanModifier.timeHold = durationHold;
+			AsymetricalPanModifier.timeIn = durationIn;
+
+			AsymetricalPanModifier.target = target;
+			AsymetricalPanModifier.EaseOutFunction = easeOut ?? Vector2.SmoothStep;
+			AsymetricalPanModifier.EaseInFunction = easeIn ?? Vector2.SmoothStep;
 		}
 
 		/// <summary>
@@ -65,6 +86,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 			PanModifier.PassiveUpdate();
 			MoveModifier.PassiveUpdate();
+			AsymetricalPanModifier.PassiveUpdate();
 		}
 
 		public override void ModifyScreenPosition()
@@ -76,6 +98,9 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			if (PanModifier.TotalDuration > 0 && PanModifier.PrimaryTarget != Vector2.Zero)
 				Main.instance.CameraModifiers.Add(PanModifier);
 
+			if (AsymetricalPanModifier.TotalDuration > 0 && AsymetricalPanModifier.target != Vector2.Zero)
+				Main.instance.CameraModifiers.Add(AsymetricalPanModifier);
+
 			if (shake > 0)
 				shake--;
 		}
@@ -86,6 +111,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 			PanModifier.Reset();
 			MoveModifier.Reset();
+			AsymetricalPanModifier.Reset();
 		}
 
 		public override void OnWorldLoad()
@@ -96,6 +122,8 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 		public override void Unload()
 		{
 			PanModifier = null;
+			MoveModifier = null;
+			AsymetricalPanModifier = null;
 		}
 	}
 }

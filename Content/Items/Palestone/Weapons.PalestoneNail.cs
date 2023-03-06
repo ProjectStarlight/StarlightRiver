@@ -228,13 +228,12 @@ namespace StarlightRiver.Content.Items.Palestone
 			{
 				Projectile.tileCollide = true;
 				AttackState = Attacking;
-			}		
+			}
 			else if (AttackState != Flying)
 			{
 				Projectile.tileCollide = true;
 				AttackState = Walking;
 			}
-				
 
 			if (Vector2.Distance(Projectile.position, Player.position) > MinionFlybackRange && Vector2.Distance(Projectile.Center, validZone.Center()) > MinionFlybackRange && !foundTarget)
 			{
@@ -246,7 +245,6 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.tileCollide = true;
 				AttackState = Walking;
 			}*/
-
 
 			//AttackState = 0;//debug
 			float stepSpeed = 1f;
@@ -329,11 +327,11 @@ namespace StarlightRiver.Content.Items.Palestone
 
 						if (JustPogod)
 						{
-							var pogoPos = Main.npc[(int)EnemyWhoAmI].Top;
+							Vector2 pogoPos = Main.npc[(int)EnemyWhoAmI].Top;
 
 							Vector2 toIdlePos = pogoPos - Projectile.Center;
 							toIdlePos.Normalize();
-							toIdlePos *= 10f; 
+							toIdlePos *= 10f;
 
 							Projectile.velocity = (Projectile.velocity * 14f + toIdlePos) / 15f;
 						}
@@ -367,7 +365,7 @@ namespace StarlightRiver.Content.Items.Palestone
 					{
 						if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Top) < 50f && Projectile.Center.Y < Main.npc[(int)EnemyWhoAmI].Top.Y)
 						{
-							PalestoneSlash proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 0, 1f).ModProjectile as PalestoneSlash;
+							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 0, 1f).ModProjectile as PalestoneSlash;
 							proj.parent = Projectile;
 							proj.knockbackVelo = new Vector2(0f, 25f);
 							AttackDelay = 24;
@@ -378,7 +376,7 @@ namespace StarlightRiver.Content.Items.Palestone
 						}
 						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Left) < 35f && Projectile.Center.X < Main.npc[(int)EnemyWhoAmI].Left.X)
 						{
-							PalestoneSlash proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(10f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, -1).ModProjectile as PalestoneSlash;
+							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(10f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, -1).ModProjectile as PalestoneSlash;
 							proj.parent = Projectile;
 							proj.knockbackVelo = new Vector2(6.5f, 0);
 							AttackDelay = 44;
@@ -387,7 +385,7 @@ namespace StarlightRiver.Content.Items.Palestone
 						}
 						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Right) < 35f && Projectile.Center.X > Main.npc[(int)EnemyWhoAmI].Right.X)
 						{
-							PalestoneSlash proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(-5f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 1).ModProjectile as PalestoneSlash;
+							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(-5f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 1).ModProjectile as PalestoneSlash;
 							proj.parent = Projectile;
 							proj.knockbackVelo = new Vector2(-6.5f, 0f);
 							AttackDelay = 44;
@@ -446,13 +444,12 @@ namespace StarlightRiver.Content.Items.Palestone
 					}
 					else if (AttackAnimTimer > 0)
 					{
-						frameSpeed = 15f;	
+						frameSpeed = 15f;
 						startOffset = AttackOffset;
 					}
 
 					break;
 			}
-
 
 			Projectile.frameCounter++;
 
@@ -579,7 +576,9 @@ namespace StarlightRiver.Content.Items.Palestone
 					Projectile.spriteDirection = -1;
 			}
 			else
+			{
 				Projectile.Kill();
+			}
 
 			if (++Projectile.frameCounter % 3 == 0)
 				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];

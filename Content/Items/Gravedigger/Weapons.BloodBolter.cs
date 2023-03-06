@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			Item.damage = 21;
+			Item.damage = 28;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 24;
 			Item.height = 24;
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			int frameTicker = 3;
 
 			if (Projectile.frame == Main.projFrames[Projectile.type] - 1)
-				frameTicker = 30;
+				frameTicker = 15;
 
 			Projectile.frameCounter++;
 

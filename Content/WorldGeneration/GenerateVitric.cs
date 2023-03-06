@@ -61,14 +61,14 @@ namespace StarlightRiver.Core
 					KillTile(x, y);
 
 					if (y > vitricBiome.Y + 5 && y < vitricBiome.Y + 9)
-						PlaceTile(x, y, TileType<VitricBossBarrier>(), true, true);
+						PlaceTile(x, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, true, true);
 				}
 			}
 
 			for (int y = vitricBiome.Y + 9; y < vitricBiome.Y + vitricBiome.Height - 77; y++) //collision for pillars
 			{
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, TileType<VitricBossBarrier>(), false, false);
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, TileType<VitricBossBarrier>(), false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
 			}
 
 			VitricIslandLocations = new List<Point>(); //List for island positions
@@ -512,20 +512,29 @@ namespace StarlightRiver.Core
 
 		private static void GenForge()
 		{
-			int x = forgeSide == 0 ? vitricBiome.X - 40 : vitricBiome.Right - 40;
+			int x = vitricBiome.X - 37;
 			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
-			NPC.NewNPC(new EntitySource_WorldGen(), vitricBiome.X * 16, (vitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+
+			var dims = new Point16();
+			StructureHelper.Generator.GetDimensions("Structures/VitricForge", StarlightRiver.Instance, ref dims);
+
+			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 		}
 
 		private static void GenTemple()
 		{
-			const int X_OFFSET = 59;
-			const int Y_OFFSET = 71;
+			Point16 dimensions = Point16.Zero;
+			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+
+			int yOff = 71;
+
 			StructureHelper.Generator.GenerateStructure(
-				"Structures/VitricTemple",
-				new Point16(vitricBiome.Center.X - X_OFFSET, vitricBiome.Center.Y - Y_OFFSET),
+				"Structures/VitricTempleNew",
+				new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff),
 				StarlightRiver.Instance
 				);
+
+			NPC.NewNPC(new EntitySource_WorldGen(), (vitricBiome.Center.X - 16) * 16, (vitricBiome.Center.Y - 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>

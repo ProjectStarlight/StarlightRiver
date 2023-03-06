@@ -11,7 +11,6 @@ using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Utilities;
-using static StarlightRiver.Helpers.Helper;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.VitricBoss
@@ -370,7 +369,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				return;
 
 			if (pain > 0)
-				painDirection += CompareAngle((NPC.Center - Player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+				painDirection += Helper.CompareAngle((NPC.Center - Player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
 			else
 				painDirection = (NPC.Center - Player.Center).ToRotation();
 
@@ -386,7 +385,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				return;
 
 			if (pain > 0)
-				painDirection += CompareAngle((NPC.Center - Projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+				painDirection += Helper.CompareAngle((NPC.Center - Projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
 			else
 				painDirection = (NPC.Center - Projectile.Center).ToRotation();
 
@@ -520,7 +519,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			if (!BossBarOverlay.visible && Phase != (int)AIStates.Leaving && Phase != (int)AIStates.Dying && Main.netMode != NetmodeID.Server && arena.Contains(Main.LocalPlayer.Center.ToPoint()))
 			{
 				//in case the player joined late or something for the hp bar
-				BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
+				BossBarOverlay.SetTracked(NPC, ", Shattered Sentinel", Request<Texture2D>(AssetDirectory.VitricBoss + "GUI/HealthBar", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 				BossBarOverlay.visible = true;
 			}
 
@@ -779,9 +778,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					speed *= 2;
 
 				if (twistTarget == 1)
-					NPC.rotation += CompareAngle(targetRot, NPC.rotation) * speed;
+					NPC.rotation += Helper.CompareAngle(targetRot, NPC.rotation) * speed;
 				if (twistTarget == -1)
-					NPC.rotation += CompareAngle(targetRot + 3.14f, NPC.rotation) * speed;
+					NPC.rotation += Helper.CompareAngle(targetRot + 3.14f, NPC.rotation) * speed;
 			}
 			else
 			{
@@ -829,8 +828,5 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
-
-		private int IconFrame = 0;
-		private int IconFrameCounter = 0;
 	}
 }
