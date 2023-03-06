@@ -1,5 +1,3 @@
-using StarlightRiver.Content.CustomHooks;
-
 namespace StarlightRiver.Content.Events
 {
 	public class FirstContactEvent : ModSceneEffect
@@ -34,9 +32,6 @@ namespace StarlightRiver.Content.Events
 
 		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 		{
-			TargetHost.Maps?.OrderedShaderPass(); //TODO: Why is this here?
-			TargetHost.Maps?.OrderedRenderPassBatched(Main.spriteBatch, Main.graphics.GraphicsDevice);
-
 			if (FirstContactFade > 0) //TODO: Move this to a ModSceneEffect
 			{
 				tileColor = Color.Lerp(Color.White, new Color(70, 60, 120), FirstContactFade);

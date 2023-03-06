@@ -1,6 +1,5 @@
-
 using System.Linq;
-using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
