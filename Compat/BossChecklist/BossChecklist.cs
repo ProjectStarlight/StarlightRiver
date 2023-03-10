@@ -1,5 +1,4 @@
 using StarlightRiver.Content.Items.Permafrost;
-using StarlightRiver.Custom.BossChecklist;
 using System.Collections.Generic;
 
 namespace StarlightRiver.Compat.BossChecklist
