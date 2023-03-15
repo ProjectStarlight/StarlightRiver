@@ -57,10 +57,9 @@ namespace StarlightRiver.Content.Items.Vitric
 		private List<Vector2> cache = new();
 
 		public VerletChain Chain;
+		public bool chainUpdated = false; // tracks if chain is updated to prevent renders when AI() is not called before
 
 		public Vector2 ChainStart => Projectile.Center + new Vector2(15, 0).RotatedBy(-MathHelper.Pi / 3 + Projectile.rotation);
-
-		bool chainUpdated = false; // tracks if chain is updated to prevent renders when AI() is not called before
 
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
@@ -180,10 +179,14 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void Kill(int timeLeft)
 		{
 			for (int k = 0; k < 60; k++)
+			{
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-16, -1)).RotatedByRandom(0.8f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(1.0f, 1.4f));
+			}
 
 			for (int k = 0; k < 10; k++)
+			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MagmaSmoke>(), (Vector2.UnitY * Main.rand.NextFloat(-3f, -2f)).RotatedByRandom(MathHelper.ToRadians(75f)), 100, Color.Black, Main.rand.NextFloat(0.7f, 0.9f));
+			}
 
 			for (int x = -10; x < 10; x++)
 			{
@@ -261,6 +264,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				return;
 
 			Main.spriteBatch.End();
+
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
