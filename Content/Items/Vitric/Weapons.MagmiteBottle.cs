@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.width = 18;
 			Projectile.height = 18;
 			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Melee;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 180;
 			Projectile.tileCollide = false;
