@@ -3,8 +3,15 @@ using System.Collections.Generic;
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
+	/// <summary>
+	/// This class is to be used for buffs which require handling stacks with seperate data, such as seperate durations or magnitudes.
+	/// </summary>
+	/// <typeparam name="T">The type of stack this buff uses. The default is the parent class BuffStack, which contains only a duration. You can create custom stack types by extending this class.</typeparam>
 	internal abstract class StackableBuff<T> : InstancedBuff where T : BuffStack
 	{
+		/// <summary>
+		/// A list of instances of stacks for this buff
+		/// </summary>
 		public List<T> stacks;
 
 		/// <summary>
@@ -163,6 +170,9 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		}
 	}
 
+	/// <summary>
+	/// A class to represent a stack of a stackable buff. These generally exist soely to hold data and are classes only because struct inheritence dosent play nice with generics.
+	/// </summary>
 	internal class BuffStack
 	{
 		public int duration;

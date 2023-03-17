@@ -2,6 +2,9 @@
 
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
+	/// <summary>
+	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
+	/// </summary>
 	internal abstract class InstancedBuff : ILoadable
 	{
 		/// <summary>
