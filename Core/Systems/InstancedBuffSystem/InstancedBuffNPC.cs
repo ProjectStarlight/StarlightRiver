@@ -51,5 +51,14 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			self.GetGlobalNPC<InstancedBuffNPC>().buffInstances.ForEach(n => n.UpdateNPC(self));
 		}
+
+		/// <summary>
+		/// Handles removing all expired buff instances
+		/// </summary>
+		/// <param name="npc"></param>
+		public override void PostAI(NPC npc)
+		{
+			buffInstances.RemoveAll(n => !npc.HasBuff(n.backingType));
+		}
 	}
 }

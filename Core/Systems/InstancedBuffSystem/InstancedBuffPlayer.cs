@@ -33,25 +33,19 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		}
 
 		/// <summary>
-		/// Inflicts an instanced buff on a player
-		/// </summary>
-		/// <typeparam name="T">The type of instanced buff to inflict</typeparam>
-		/// <param name="player">The player to inflict it on</param>
-		public static void Inflict<T>(Player player, int duration, T premadeInstance = null) where T : InstancedBuff, new()
-		{
-			if (premadeInstance is null)
-				premadeInstance = new T();
-
-			player.GetModPlayer<InstancedBuffPlayer>().buffInstances.Add(premadeInstance);
-			player.AddBuff(premadeInstance.backingType, duration);
-		}
-
-		/// <summary>
 		/// Updates all instanced buffs in the standard update loop
 		/// </summary>
 		public override void PreUpdateBuffs()
 		{
 			buffInstances.ForEach(n => n.UpdatePlayer(Player));
+		}
+
+		/// <summary>
+		/// Handles removing all expired buffs
+		/// </summary>
+		public override void PostUpdateBuffs()
+		{
+			buffInstances.RemoveAll(n => !Player.HasBuff(n.backingType));
 		}
 	}
 }
