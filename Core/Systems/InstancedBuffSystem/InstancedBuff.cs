@@ -35,6 +35,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public void Load(Mod mod)
 		{
 			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip));
+			backingType = ModContent.Find<ModBuff>(Name).Type;
 			Load();
 		}
 
