@@ -220,17 +220,17 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			float pointLength = TotalLength(GetChainPoints()) / NUM_SEGMENTS;
 			float pointCounter = 0;
-			int presision = 30; //This normalizes length between points so it doesnt squash super weirdly on certain parts
+			int precision = 30; //This normalizes length between points so it doesnt squash super weirdly on certain parts
 
 			for (int i = 0; i < NUM_SEGMENTS - 1; i++)
 			{
-				for (int j = 0; j < presision; j++)
+				for (int j = 0; j < precision; j++)
 				{
-					pointCounter += (Chain.ropeSegments[i].posNow - Chain.ropeSegments[i + 1].posNow).Length() / presision;
+					pointCounter += (Chain.ropeSegments[i].posNow - Chain.ropeSegments[i + 1].posNow).Length() / precision;
 
 					while (pointCounter > pointLength)
 					{
-						float lerper = j / (float)presision;
+						float lerper = j / (float)precision;
 						cache.Add(Vector2.Lerp(Chain.ropeSegments[i].posNow, Chain.ropeSegments[i + 1].posNow, lerper));
 						pointCounter -= pointLength;
 					}
@@ -253,7 +253,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			var points = new List<Vector2>();
 
 			foreach (RopeSegment ropeSegment in Chain.ropeSegments)
+			{
 				points.Add(ropeSegment.posNow);
+			}
 
 			return points;
 		}
