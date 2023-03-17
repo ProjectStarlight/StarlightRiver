@@ -37,6 +37,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public sealed override void UpdateNPC(NPC npc)
 		{
 			stacks.ForEach(n => PerStackEffectsNPC(npc, n));
+
+			stacks.ForEach(n => n.duration--);
+			stacks.RemoveAll(n => n.duration <= 0);
+
 			AnyStacksUpdateNPC(npc);
 		}
 
@@ -49,6 +53,10 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public sealed override void UpdatePlayer(Player player)
 		{
 			stacks.ForEach(n => PerStackEffectsPlayer(player, n));
+
+			stacks.ForEach(n => n.duration--);
+			stacks.RemoveAll(n => n.duration <= 0);
+
 			AnyStacksUpdatePlayer(player);
 		}
 
