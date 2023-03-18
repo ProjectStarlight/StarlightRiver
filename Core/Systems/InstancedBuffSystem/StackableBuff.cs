@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	/// <summary>
-	/// Type unsafe non-generic backing class for StackableBuff. You should rarely if ever need to derive from this directly -- use the generic class instead for most applications.
+	/// This class is to be used for buffs which require handling stacks with seperate data, such as seperate durations or magnitudes.
+	/// To inflict an instanced buff, call BuffInflictor.Inflict or BuffInflictor.InflictStack.
 	/// </summary>
 	internal abstract class StackableBuff : InstancedBuff
 	{
@@ -106,7 +107,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	}
 
 	/// <summary>
-	/// This class is to be used for buffs which require handling stacks with seperate data, such as seperate durations or magnitudes.
+	/// This class is to be used for buffs which require handling stacks with seperate data, such as seperate durations or magnitudes. Use this when you need a stack type other than BuffStack.
 	/// To inflict an instanced buff, call BuffInflictor.Inflict or BuffInflictor.InflictStack.
 	/// </summary>
 	/// <typeparam name="T">The type of stack this buff uses. The default is the parent class BuffStack, which contains only a duration. You can create custom stack types by extending this class.</typeparam>
@@ -187,7 +188,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 	/// <summary>
 	/// A class to represent a stack of a stackable buff. These generally exist soely to hold data and are classes only because struct inheritence dosent play nice with generics.
 	/// </summary>
-	internal class BuffStack
+	public class BuffStack
 	{
 		public int duration;
 	}

@@ -12,7 +12,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			{
 				if (mp.buffInstances.Any(n => n is T)) //If an instance already exists, let the backer get re-inflicted and stop
 				{
-					player.AddBuff(premadeInstance.backingType, duration);
+					player.AddBuff(premadeInstance.BackingType, duration);
 					return;
 				}
 
@@ -23,7 +23,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				mp.buffInstances.RemoveAll(n => n is T);
 
 			mp.buffInstances.Add(premadeInstance); //Add the new instance
-			player.AddBuff(premadeInstance.backingType, duration); //Inflict the backer
+			player.AddBuff(premadeInstance.BackingType, duration); //Inflict the backer
 		}
 
 		private static void InflictInner<T>(NPC npc, int duration, T premadeInstance = null) where T : InstancedBuff, new()
@@ -34,7 +34,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			{
 				if (gn.buffInstances.Any(n => n is T)) //If an instance already exists, let the backer get re-inflicted and stop
 				{
-					npc.AddBuff(premadeInstance.backingType, duration);
+					npc.AddBuff(premadeInstance.BackingType, duration);
 					return;
 				}
 
@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				gn.buffInstances.RemoveAll(n => n is T);
 
 			gn.buffInstances.Add(premadeInstance); //Add the new instance
-			npc.AddBuff(premadeInstance.backingType, duration); //Inflict the backer
+			npc.AddBuff(premadeInstance.BackingType, duration); //Inflict the backer
 		}
 
 		private static void InflictStackInner<T>(NPC npc, int duration, BuffStack premadeStack) where T : InstancedBuff, new()
@@ -63,7 +63,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 
-			int index = npc.FindBuffIndex(instance.backingType); //Find the backer and update it's time to reflect that of the longest stack
+			int index = npc.FindBuffIndex(instance.BackingType); //Find the backer and update it's time to reflect that of the longest stack
 			npc.buffTime[index] = instance.GetDuration();
 		}
 
@@ -82,7 +82,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 
-			int index = player.FindBuffIndex(instance.backingType); //Find the backer and update it's time to reflect that of the longest stack
+			int index = player.FindBuffIndex(instance.BackingType); //Find the backer and update it's time to reflect that of the longest stack
 			player.buffTime[index] = instance.GetDuration();
 		}
 

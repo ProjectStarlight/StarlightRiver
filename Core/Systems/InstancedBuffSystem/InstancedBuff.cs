@@ -9,7 +9,7 @@
 		/// <summary>
 		/// The numeric ID of the backing traditional buff to indicate this buffs inflicted status
 		/// </summary>
-		public int backingType;
+		public int BackingType => StarlightRiver.Instance.Find<ModBuff>(Name).Type;
 
 		/// <summary>
 		/// The internal name of the backing ModBuff
@@ -39,7 +39,6 @@
 		public void Load(Mod mod)
 		{
 			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
-			backingType = ModContent.Find<ModBuff>(Name).Type;
 			Load();
 		}
 
@@ -66,7 +65,7 @@
 		/// <returns>If that NPC has any instance of this buff</returns>
 		public bool AnyInflicted(NPC npc)
 		{
-			return npc.HasBuff(backingType);
+			return npc.HasBuff(BackingType);
 		}
 
 		/// <summary>
@@ -76,7 +75,7 @@
 		/// <returns>If that player has any instance of this buff</returns>
 		public bool AnyInflicted(Player player)
 		{
-			return player.HasBuff(backingType);
+			return player.HasBuff(BackingType);
 		}
 
 		/// <summary>
@@ -130,9 +129,9 @@
 
 		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
 		{
-			this.texture = texture;
 			this.name = name;
 			this.displayName = displayName;
+			this.texture = texture;
 			this.tooltip = tooltip;
 			this.debuff = debuff;
 		}

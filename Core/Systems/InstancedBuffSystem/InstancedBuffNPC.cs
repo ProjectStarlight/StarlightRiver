@@ -58,7 +58,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="npc"></param>
 		public override void PostAI(NPC npc)
 		{
-			buffInstances.RemoveAll(n => !npc.HasBuff(n.backingType));
+			buffInstances.RemoveAll(n => !npc.HasBuff(n.BackingType));
 		}
 	}
 }

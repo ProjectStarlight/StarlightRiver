@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		public override void PostUpdateBuffs()
 		{
-			buffInstances.RemoveAll(n => !Player.HasBuff(n.backingType));
+			buffInstances.RemoveAll(n => !Player.HasBuff(n.BackingType));
 		}
 	}
 }
