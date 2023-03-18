@@ -1,0 +1,23 @@
+name: Lint Code Base
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  run-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run dotnet format
+        id: format
+        uses: jfversluis/dotnet-format@v1.0.5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          fix-whitespace: false
+          only-changed-files: true
