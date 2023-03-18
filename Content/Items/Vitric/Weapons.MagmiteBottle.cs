@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.useTime = 18;
 			Item.useAnimation = 18;
 			Item.useStyle = ItemUseStyleID.Swing;
+			Item.noUseGraphic = true;
 			Item.value = 0;
 			Item.rare = ItemRarityID.Orange;
 			Item.UseSound = SoundID.Item1;
@@ -114,7 +115,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Projectile.width = 18;
 			Projectile.height = 18;
 			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Melee;
+			Projectile.DamageType = DamageClass.Ranged;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 180;
 			Projectile.tileCollide = false;
