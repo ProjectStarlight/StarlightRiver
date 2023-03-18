@@ -246,14 +246,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 
 			//these should only initialize on the client!!!
-			if (applyEffect is null)
-				applyEffect = Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
 
-			if (buffer is null)
-				buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+			applyEffect ??= Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
 
-			if (verticies is null)
-				verticies = new VertexPositionColorTexture[6];
+			buffer ??= new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+
+			verticies ??= new VertexPositionColorTexture[6];
 
 			var zoom = new Matrix
 				(

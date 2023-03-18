@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private int favoriteCrystal = 0;
 		private bool altAttack = false;
 		private int randSeed = 1923712512;
-		private UnifiedRandom bossRand = new(1923712512);
+		private readonly UnifiedRandom bossRand = new(1923712512);
 
 		private List<VitricBossSwoosh> swooshes;
 		private BodyHandler body;

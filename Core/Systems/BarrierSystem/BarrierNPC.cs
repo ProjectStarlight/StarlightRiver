@@ -35,7 +35,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				NPCBarrierGlow.anyEnemiesWithBarrier = true;
 		}
 
-		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback, ref bool crit)
+		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback)
 		{
 			if (barrier > 0)
 			{
@@ -66,7 +66,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
 		{
-			ModifyDamage(NPC, ref damage, ref knockback, ref crit);
+			ModifyDamage(NPC, ref damage, ref knockback);
 			timeSinceLastHit = 0;
 
 			base.ModifyHitByItem(NPC, Player, Item, ref damage, ref knockback, ref crit);
@@ -74,7 +74,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			ModifyDamage(NPC, ref damage, ref knockback, ref crit);
+			ModifyDamage(NPC, ref damage, ref knockback);
 			timeSinceLastHit = 0;
 
 			base.ModifyHitByProjectile(NPC, Projectile, ref damage, ref knockback, ref crit, ref hitDirection);

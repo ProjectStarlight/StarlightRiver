@@ -478,12 +478,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 				if (!dontConsumeAmmo)
 				{
-					if (soilGun.ammoItem.ModItem != null)
-						soilGun.ammoItem.ModItem.OnConsumedAsAmmo(owner.HeldItem, owner);
+					soilGun.ammoItem.ModItem?.OnConsumedAsAmmo(owner.HeldItem, owner);
 
 					soilGun.OnConsumeAmmo(soilGun.ammoItem, owner);
 
 					soilGun.ammoItem.stack--;
+
 					if (soilGun.ammoItem.stack <= 0)
 						soilGun.ammoItem.TurnToAir();
 				}

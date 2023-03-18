@@ -49,8 +49,7 @@ namespace StarlightRiver.Core.Systems.ForegroundSystem
 
 			foreach (Foreground fg in ForegroundSystem.Foregrounds)
 			{
-				if (fg != null)
-					fg.Reset();
+				fg?.Reset();
 			}
 
 			orig(self, ref gameTime);

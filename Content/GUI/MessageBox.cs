@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.GUI
 {
 	public class MessageBox : SmartUIState
 	{
-		private MessageBoxInner innerBox = new();
+		private readonly MessageBoxInner innerBox = new();
 		public UIImage exitButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/ExitButton", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)

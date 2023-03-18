@@ -255,13 +255,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			if (effect == null)
+			effect ??= new BasicEffect(Main.instance.GraphicsDevice)
 			{
-				effect = new BasicEffect(Main.instance.GraphicsDevice)
-				{
-					VertexColorEnabled = true
-				};
-			}
+				VertexColorEnabled = true
+			};
 
 			if (direction == Vector2.Zero)
 				direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * 32 * 0.06f;

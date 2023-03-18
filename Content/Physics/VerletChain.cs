@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Physics
 			graphics.Clear(Color.Transparent);
 			graphics.BlendState = BlendState.Opaque;
 
-			toDraw.RemoveAll(n => IsBannerDead(n));
+			toDraw.RemoveAll(IsBannerDead);
 
 			foreach (VerletChain i in toDraw)
 				i.DrawStrip(i.scale);
@@ -369,8 +369,7 @@ namespace StarlightRiver.Content.Physics
 		/// <param name="scale"> the scale factor this should draw with </param>
 		public virtual void PrepareStrip(float scale)
 		{
-			if (meshBuffer is null)
-				meshBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
+			meshBuffer ??= new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
 			var verticies = new VertexPositionColor[segmentCount * 9 - 6];
 
@@ -420,8 +419,7 @@ namespace StarlightRiver.Content.Physics
 			VertexBuffer buffer = prepareFunction(offset);
 			graphics.SetVertexBuffer(buffer);
 
-			if (effect is null)
-				effect = basicEffectColor;
+			effect ??= basicEffectColor;
 
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 			{

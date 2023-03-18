@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
 				Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-				RedrawItem(sb, inv, back, position, slot, color);
+				RedrawItem(sb, inv, position, slot, color);
 			}
 			//else if ((inv[slot].ModItem is InfectedAccessory || inv[slot].ModItem is Blocker) && context == 10)
 			//{
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.CustomHooks
 		}
 
 		//this is vanilla code. I cant be assed to try to change this. Only alternative I see is porting this all to IL.
-		internal static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
+		internal static void RedrawItem(SpriteBatch sb, Item[] inv, Vector2 position, int slot, Color color)
 		{
 			Item Item = inv[slot];
 			Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;

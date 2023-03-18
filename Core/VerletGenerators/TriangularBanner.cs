@@ -10,8 +10,7 @@ namespace StarlightRiver.Core.VerletGenerators
 
 		public override void PrepareStrip(float scale)
 		{
-			if (meshBuffer is null)
-				meshBuffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
+			meshBuffer ??= new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), segmentCount * 9 - 6, BufferUsage.WriteOnly);
 
 			var verticies = new VertexPositionColor[segmentCount * 9 - 6];
 
