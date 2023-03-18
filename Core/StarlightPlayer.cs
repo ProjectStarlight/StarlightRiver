@@ -193,7 +193,7 @@ namespace StarlightRiver.Core
 					if (modPlayer.Charges >= 1 && target != default)
 					{
 						Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
-						drone.ScanTimer = SpotterDrone.ScanTime;
+						drone.ScanTimer = SpotterDrone.SCAN_TIME;
 						drone.Charges = Player.GetModPlayer<BreacherPlayer>().Charges;
 						Player.GetModPlayer<BreacherPlayer>().ticks = 0;
 					}

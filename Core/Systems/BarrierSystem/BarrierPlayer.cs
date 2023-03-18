@@ -64,7 +64,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				Player.GetModPlayer<BarrierPlayer>().dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
-		public void ModifyDamage(ref int damage, ref bool crit)
+		public void ModifyDamage(ref int damage)
 		{
 			if (barrier > 0)
 			{
@@ -99,7 +99,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			{
 				damage = (int)Main.CalculateDamagePlayersTake(damage, Player.statDefense);
 
-				ModifyDamage(ref damage, ref crit);
+				ModifyDamage(ref damage);
 				timeSinceLastHit = 0;
 				Player.statDefense = 0;
 				justHitWithBarrier = true;

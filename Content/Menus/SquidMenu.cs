@@ -69,19 +69,19 @@ namespace StarlightRiver.Content.Menus
 			var target = new Rectangle((int)dpos.X - 630, (int)dpos.Y - 595 + 60, 1260, 1020);
 			var color = new Color(140, 150, 190);
 
-			spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
-			spriteBatch.Draw(layer1, target, GetSource(0.15f, layer1), color, 0, Vector2.Zero, 0, 0);
-			spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer0, target, GetSource(layer0), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer1, target, GetSource(layer1), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer2, target, GetSource(layer2), color, 0, Vector2.Zero, 0, 0);
 
 			target.Y -= 1100;
 			target.X += 64;
 			target.Width -= 128;
 
-			spriteBatch.Draw(layer0, target, GetSource(0.2f, layer0), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer0, target, GetSource(layer0), color, 0, Vector2.Zero, 0, 0);
 			target.Y -= 100;
-			spriteBatch.Draw(layer1, target, GetSource(0.15f, layer1), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer1, target, GetSource(layer1), color, 0, Vector2.Zero, 0, 0);
 			target.Y -= 240;
-			spriteBatch.Draw(layer2, target, GetSource(0.1f, layer2), color, 0, Vector2.Zero, 0, 0);
+			spriteBatch.Draw(layer2, target, GetSource(layer2), color, 0, Vector2.Zero, 0, 0);
 
 			(fakeBoss.ModNPC as SquidBoss).tentacles.ForEach(n => (n.ModNPC as Tentacle).DrawUnderWater(spriteBatch, 0));
 			(fakeBoss.ModNPC as SquidBoss).DrawUnderWater(spriteBatch, 0);
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Menus
 			return true;
 		}
 
-		private Rectangle GetSource(float offset, Texture2D tex)
+		private Rectangle GetSource(Texture2D tex)
 		{
 			int x = tex.Width / 2 - 640;
 			int y = tex.Height / 2 - 595;
