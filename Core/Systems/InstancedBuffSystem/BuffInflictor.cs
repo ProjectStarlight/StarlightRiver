@@ -58,8 +58,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				instance = InstancedBuffNPC.GetInstance<T>(npc) as StackableBuff;
 			}
 
-			if (premadeStack is null) //If we want to add a default stack
-				premadeStack = instance.GenerateDefaultStack(duration);
+			premadeStack ??= instance.GenerateDefaultStack(duration); //If we want to add a default stack
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 
@@ -77,8 +76,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 				instance = InstancedBuffPlayer.GetInstance<T>(player) as StackableBuff;
 			}
 
-			if (premadeStack is null) //If we want to add a default stack
-				premadeStack = instance.GenerateDefaultStack(duration);
+			premadeStack ??= instance.GenerateDefaultStack(duration);//If we want to add a default stack
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 
