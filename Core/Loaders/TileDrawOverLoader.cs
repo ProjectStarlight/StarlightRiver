@@ -36,8 +36,7 @@ namespace StarlightRiver.Core.Loaders
 
 		private static void Main_Update(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
 		{
-			if (StarlightRiver.Instance != null)
-				StarlightRiver.Instance.CheckScreenSize();
+			StarlightRiver.Instance?.CheckScreenSize();
 
 			orig(self, gameTime);
 		}

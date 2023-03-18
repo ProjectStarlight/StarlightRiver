@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	internal class ArrowMagma : ModProjectile
 	{
 
-		private List<Vector2> oldPos = new();
+		private readonly List<Vector2> oldPos = new();
 
 		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
 

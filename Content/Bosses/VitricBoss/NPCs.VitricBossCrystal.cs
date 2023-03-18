@@ -477,10 +477,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-				if (trail is null)
-				{
-					trail = new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
-				}
+				trail ??= new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
 
 				var positions = new Vector2[20];
 

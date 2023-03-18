@@ -337,8 +337,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 			if (partner == default || !SuitablePartner(partner))
 			{
-				NPC tempPartner = Main.npc.Where(x =>
-				SuitablePartner(x)).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
+				NPC tempPartner = Main.npc.Where(SuitablePartner).OrderBy(x => NPC.Distance(x.Center)).FirstOrDefault();
 
 				if (tempPartner != default && !doingCombo)
 				{
@@ -352,7 +351,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				if (partner.active && (partner.ModNPC as ShieldConstruct).Guarding)
 				{
-
 					if (!comboJumpedTwice)
 					{
 						if (xFrame != 1)
