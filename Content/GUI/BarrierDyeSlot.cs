@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.GUI
 		public int Timer = 0;
 		public Vector2 basePos;
 
-		private BarrierDyeSlotElement slot = new();
+		private readonly BarrierDyeSlotElement slot = new();
 
 		public override bool Visible => Main.playerInventory && Main.EquipPageSelected == 2;
 

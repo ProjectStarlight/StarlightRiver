@@ -326,12 +326,12 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Main.rand.NextFloat() < 0.25f) //consume ammo 25% of the time
 					{
-						if (sling.ammoItem.ModItem != null)
-							sling.ammoItem.ModItem.OnConsumedAsAmmo(Owner.HeldItem, Owner);
+						sling.ammoItem.ModItem?.OnConsumedAsAmmo(Owner.HeldItem, Owner);
 
 						sling.OnConsumeAmmo(sling.ammoItem, Owner);
 
 						sling.ammoItem.stack--;
+
 						if (sling.ammoItem.stack <= 0)
 							sling.ammoItem.TurnToAir();
 					}

@@ -21,8 +21,8 @@
 
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData is int && Main.player[(int)dust.customData].active)
-				dust.position = Main.player[(int)dust.customData].Center + new Vector2(0, Main.player[(int)dust.customData].gfxOffY) + dust.velocity;
+			if (dust.customData is int whoAmI && Main.player[whoAmI].active)
+				dust.position = Main.player[whoAmI].Center + new Vector2(0, Main.player[whoAmI].gfxOffY) + dust.velocity;
 
 			dust.rotation += 0.15f;
 

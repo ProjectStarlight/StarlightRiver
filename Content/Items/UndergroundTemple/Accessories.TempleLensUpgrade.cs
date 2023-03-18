@@ -1,7 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core.Systems.ExposureSystem;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.ExposureSystem;
 using System.Linq;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -102,11 +102,11 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (hit)
 				{
 					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-					Dust.NewDustPerfect(NPC.Center + (dir * 15), ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
+					Dust.NewDustPerfect(NPC.Center + dir * 15, ModContent.DustType<GlowLineFast>(), dir * Main.rand.NextFloat(6), 0, Color.Gold, 0.75f);
 				}
 
 				Vector2 dir2 = Main.rand.NextVector2CircularEdge(1, 1);
-				Dust.NewDustPerfect(NPC.Center + (dir2 * 15), ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
+				Dust.NewDustPerfect(NPC.Center + dir2 * 15, ModContent.DustType<Glow>(), dir2 * Main.rand.NextFloat(6), 0, Color.Gold, 0.55f);
 			}
 		}
 	}

@@ -212,13 +212,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			if (effect == null)
+			effect ??= new BasicEffect(Main.instance.GraphicsDevice)
 			{
-				effect = new BasicEffect(Main.instance.GraphicsDevice)
-				{
-					VertexColorEnabled = true
-				};
-			}
+				VertexColorEnabled = true
+			};
 
 			NPC target = Main.npc[(int)Projectile.ai[0]];
 			Projectile.Center = target.Center;

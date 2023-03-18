@@ -57,7 +57,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((5 + x1) * 18);
 					}
-				} (dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
+				}
+
+				(dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
 				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
 				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
 				return true;
