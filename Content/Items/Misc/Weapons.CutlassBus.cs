@@ -171,9 +171,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private NPC target = default;
 
-		private List<NPC> potentialVictims = new();
+		private readonly List<NPC> potentialVictims = new();
 
-		private List<NPC> victims = new();
+		private readonly List<NPC> victims = new();
 
 		private bool stuck = false;
 		private Vector2 stuckOffset = Vector2.Zero;

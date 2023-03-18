@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private float bobTimer = 0f;
 
-		private List<BindedNPC> targets = new();
+		private readonly List<BindedNPC> targets = new();
 
 		public Player Target => Main.player[NPC.target];
 

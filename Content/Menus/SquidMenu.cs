@@ -10,8 +10,7 @@ namespace StarlightRiver.Content.Menus
 
 		float VisualTimerA;
 		float VisualTimerB;
-
-		ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
+		readonly ParticleSystem bubblesSystem = new(AssetDirectory.SquidBoss + "Bubble", UpdateBubblesBody);
 
 		public override string DisplayName => "Auroracle";
 		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/PermafrostPassive");

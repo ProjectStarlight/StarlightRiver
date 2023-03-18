@@ -92,10 +92,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		private bool swooping = false;
 		private float swoopSpeed = 0.1f;
 
-		private List<NPC> alreadyHit = new();
+		private readonly List<NPC> alreadyHit = new();
 
-		private List<Vector2> oldPos = new();
-		private List<float> oldRot = new();
+		private readonly List<Vector2> oldPos = new();
+		private readonly List<float> oldRot = new();
 
 		private List<Vector2> swoopTrajectory = new();
 

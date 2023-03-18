@@ -160,8 +160,8 @@ namespace StarlightRiver.Content.GUI
 		public Item Item = new();
 		private readonly int slotIndex;
 
-		private ParticleSystem slotParticles = new(AssetDirectory.GUI + "WhiteCircle", ParticleUpdate);
-		private ParticleSystem leafParticles = new(AssetDirectory.GUI + "OGLeaf", LeafUpdate);
+		private readonly ParticleSystem slotParticles = new(AssetDirectory.GUI + "WhiteCircle", ParticleUpdate);
+		private readonly ParticleSystem leafParticles = new(AssetDirectory.GUI + "OGLeaf", LeafUpdate);
 
 		public ArmorSlot(int index)
 		{

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		float headRotation = 0f;
 
-		private int XFrame = 0;
+		private readonly int XFrame = 0;
 
 		public Vector2 posToBe = Vector2.Zero;
 
