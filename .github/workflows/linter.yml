@@ -22,5 +22,20 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       
+    - name: Pull TML
+      run: |
+        cd ..
+        mkdir ./tmod
+        touch tModLoader.targets
+        
+        echo '<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+            <Import Project=".\tmod\tMLMod.targets" />
+        </Project>' > tModLoader.targets
+        
+        cd ./tmod
+        wget https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip
+        unzip tModLoader.zip
+        
+      
     - name: Lint
-      run: dotnet format style StarlightRiver.csproj --include ./ --verbosity diag --verify-no-changes
+      run: dotnet format style StarlightRiver.sln --verify-no-changes
