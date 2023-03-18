@@ -87,7 +87,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (PlayerTarget.canUseTarget)
 			{
-				Main.spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
@@ -99,7 +100,8 @@ namespace StarlightRiver.Content.Items.Misc
 					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
 				}
 
-				Main.spriteBatch.End();
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -107,7 +109,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (PlayerTarget.canUseTarget)
 			{
-				Main.spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.End();
+				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
@@ -119,7 +122,8 @@ namespace StarlightRiver.Content.Items.Misc
 					}
 				}
 
-				Main.spriteBatch.End();
+				spriteBatch.End();
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
