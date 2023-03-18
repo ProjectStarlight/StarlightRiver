@@ -1,9 +1,8 @@
-﻿using System.Linq;
-
-namespace StarlightRiver.Core.Systems.InstancedBuffSystem
+﻿namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 {
 	/// <summary>
 	/// This class is to be used for buffs which require instanced data per enttiy it is inflicted on. For example, a different DoT value to apply.
+	/// To inflict an instanced buff, call BuffInflictor.Inflict.
 	/// </summary>
 	internal abstract class InstancedBuff : ILoadable
 	{
@@ -28,13 +27,18 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public abstract string Texture { get; }
 
 		/// <summary>
+		/// If the backing ModBuff should be a buff or debuff
+		/// </summary>
+		public abstract bool Debuff { get; }
+
+		/// <summary>
 		/// The tooltip of the backing ModBuff
 		/// </summary>
 		public virtual string Tooltip => "";
 
 		public void Load(Mod mod)
 		{
-			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip));
+			mod.AddContent(new InstancedBuffBacker(Name, DisplayName, Texture, Tooltip, Debuff));
 			backingType = ModContent.Find<ModBuff>(Name).Type;
 			Load();
 		}
@@ -106,49 +110,6 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// </summary>
 		/// <param name="npc"></param>
 		public virtual void UpdateNPC(NPC npc) { }
-
-		/// <summary>
-		/// Inflicts an instanced buff on a player
-		/// </summary>
-		/// <typeparam name="T">The type of instanced buff to inflict</typeparam>
-		/// <param name="player">The player to inflict it on</param>
-		/// <param name="duration">The duration of the buff</param>
-		/// <param name="premadeInstance">An optional pre-made instance to add or override the existing instance with</param>
-		public static void Inflict<T>(Player player, int duration, T premadeInstance = null) where T : InstancedBuff, new()
-		{
-			if (premadeInstance is null)
-				premadeInstance = new T();
-
-			InstancedBuffPlayer mp = player.GetModPlayer<InstancedBuffPlayer>();
-
-			if (mp.buffInstances.Any(n => n is T))
-				mp.buffInstances.RemoveAll(n => n is T);
-
-			mp.buffInstances.Add(premadeInstance);
-
-			player.AddBuff(premadeInstance.backingType, duration);
-		}
-
-		/// <summary>
-		/// Inflicts an instanced buff on an NPC
-		/// </summary>
-		/// <typeparam name="T">The type of instanced buff to inflict</typeparam>
-		/// <param name="npc">The NPC to inflict it on</param>
-		/// <param name="duration">The duration of the buff</param>
-		/// <param name="premadeInstance">An optional pre-made instance to add or override the existing instance with</param>
-		public static void Inflict<T>(NPC npc, int duration, T premadeInstance = null) where T : InstancedBuff, new()
-		{
-			if (premadeInstance is null)
-				premadeInstance = new T();
-
-			InstancedBuffNPC gn = npc.GetGlobalNPC<InstancedBuffNPC>();
-
-			if (gn.buffInstances.Any(n => n is T))
-				gn.buffInstances.RemoveAll(n => n is T);
-
-			gn.buffInstances.Add(premadeInstance);
-			npc.AddBuff(premadeInstance.backingType, duration);
-		}
 	}
 
 	/// <summary>
@@ -161,23 +122,27 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		public string displayName;
 		public string texture;
 		public string tooltip;
+		public bool debuff;
 
 		public override string Name => name;
 
 		public override string Texture => texture;
 
-		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip) : base()
+		public InstancedBuffBacker(string name, string displayName, string texture, string tooltip, bool debuff) : base()
 		{
 			this.texture = texture;
 			this.name = name;
 			this.displayName = displayName;
 			this.tooltip = tooltip;
+			this.debuff = debuff;
 		}
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault(displayName);
 			Description.SetDefault(tooltip);
+
+			Main.debuff[Type] = debuff;
 		}
 	}
 }
