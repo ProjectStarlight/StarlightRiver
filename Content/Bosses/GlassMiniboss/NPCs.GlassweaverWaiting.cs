@@ -186,7 +186,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					NPC.active = false;
 				});
 
-				RichTextBox.AddButton("See you later", () => RichTextBox.CloseDialogue());
+				RichTextBox.AddButton("See you later", RichTextBox.CloseDialogue);
 			}
 			else if (State == 3) //After winning
 			{

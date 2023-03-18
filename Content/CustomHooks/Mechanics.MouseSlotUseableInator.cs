@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.CustomHooks
 				var source = new Rectangle(0, 52 * (int)(Main.GameUpdateCount / 4 % 4), 52, 52);
 
 				sb.Draw(back, position, source, Color.White, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-				AccessorySlotControl.RedrawItem(sb, inv, back, position, slot, color);
+				AccessorySlotControl.RedrawItem(sb, inv, position, slot, color);
 			}
 
 			else

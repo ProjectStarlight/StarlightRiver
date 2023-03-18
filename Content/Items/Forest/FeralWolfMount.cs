@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Forest
 {
 	internal class FeralWolfMount : CombatMount
 	{
-		List<Projectile> buffedMinions = new();
+		readonly List<Projectile> buffedMinions = new();
 
 		public override string PrimaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountPrimary";
 		public override string SecondaryIconTexture => AssetDirectory.ForestItem + "FeralWolfMountSecondary";

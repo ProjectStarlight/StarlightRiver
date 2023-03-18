@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 15);
+			recipe.AddIngredient(ItemType<SpaceEvent.Astroscrap>(), 15);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -74,21 +74,21 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public override bool IsArmorSet(Item head, Item body, Item legs)
 		{
-			return head.type == ModContent.ItemType<BreacherHead>() && legs.type == ModContent.ItemType<BreacherLegs>();
+			return head.type == ItemType<BreacherHead>() && legs.type == ItemType<BreacherLegs>();
 		}
 
 		public override void UpdateArmorSet(Player Player)
 		{
 			Player.setBonus = "A spotter drone follows you, building energy with kills\nDouble tap DOWN to consume it and call down an orbital strike on an enemy";
 
-			if (Player.ownedProjectileCounts[ModContent.ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
-				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ModContent.ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);
+			if (Player.ownedProjectileCounts[ProjectileType<SpotterDrone>()] < 1 && !Player.dead)
+				Projectile.NewProjectile(Player.GetSource_Accessory(Item), Player.Center, Vector2.Zero, ProjectileType<SpotterDrone>(), (int)(50 * Player.GetDamage(DamageClass.Ranged).Multiplicative), 1.5f, Player.whoAmI);
 		}
 
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 20);
+			recipe.AddIngredient(ItemType<SpaceEvent.Astroscrap>(), 20);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 15);
+			recipe.AddIngredient(ItemType<SpaceEvent.Astroscrap>(), 15);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -130,15 +130,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class SpotterDrone : ModProjectile
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
-
-		public ref float ScanTimer => ref Projectile.ai[0];
-
-		public ref float Charges => ref Projectile.ai[1];
-
-		public const int ScanTime = 230;
-
-		public bool CanScan => ScanTimer <= 0;
+		public const int SCAN_TIME = 230;
 
 		const float attackRange = 200;
 
@@ -151,15 +143,22 @@ namespace StarlightRiver.Content.Items.Breacher
 		private List<float> rotations;
 		private List<float> rotations2;
 
-		private float CurrentRotation => (targetPos - Projectile.Center).ToRotation();
-		private float CurrentRotation2 => (targetPos2 - Projectile.Center).ToRotation();
-
-		private Vector2 targetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + (float)Math.Cos((ScanTimer - 100) * 2 * 6.28f / (ScanTime - 100)) / 2f);
-		private Vector2 targetPos2 => Vector2.Lerp(target.Top, target.Bottom, 0.5f + (float)Math.Cos((ScanTimer - 100) * 2 * 6.28f / (ScanTime - 100)) / 2f);
-
 		private int batteryCharge = 0;
-
 		private float batteryFade;
+
+		public override string Texture => AssetDirectory.BreacherItem + Name;
+
+		public ref float ScanTimer => ref Projectile.ai[0];
+
+		public ref float Charges => ref Projectile.ai[1];
+
+		public bool CanScan => ScanTimer <= 0;
+
+		private float CurrentRotation => (TargetPos - Projectile.Center).ToRotation();
+		private float CurrentRotation2 => (TargetPos2 - Projectile.Center).ToRotation();
+
+		private Vector2 TargetPos => Vector2.Lerp(target.Bottom, target.Top, 0.5f + (float)Math.Cos((ScanTimer - 100) * 2 * 6.28f / (SCAN_TIME - 100)) / 2f);
+		private Vector2 TargetPos2 => Vector2.Lerp(target.Top, target.Bottom, 0.5f + (float)Math.Cos((ScanTimer - 100) * 2 * 6.28f / (SCAN_TIME - 100)) / 2f);
 
 		public override void SetStaticDefaults()
 		{
@@ -202,6 +201,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				if (Player.GetModPlayer<BreacherPlayer>().ticks < BreacherPlayer.CHARGETIME * 5)
 					Player.GetModPlayer<BreacherPlayer>().ticks++;
+
 				IdleMovement(Player);
 				Vector2 direction = Player.Center - Projectile.Center;
 				Projectile.rotation = direction.ToRotation() + 3.14f;
@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (target == null || !target.active)
 				return;
 
-			target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
+			target.GetGlobalNPC<BreacherGNPC>().targetted = false;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -255,25 +255,25 @@ namespace StarlightRiver.Content.Items.Breacher
 			Color scanColor = Color.Lerp(Color.Red, Color.Green, batteryCharge / 5f) * MathHelper.Min(batteryFade, 1);
 			scanColor.A = 0;
 
-			Texture2D tex = ModContent.Request<Texture2D>(Texture + "_Display").Value;
+			Texture2D tex = Request<Texture2D>(Texture + "_Display").Value;
 			Vector2 position = Projectile.Center - Main.screenPosition;
 			var origin = new Vector2(tex.Width / 2, tex.Height);
 			Main.spriteBatch.Draw(tex, position, null, scanColor * 2, 0, origin, new Vector2(0.46f, 0.85f), SpriteEffects.None, 0);
 
-			tex = ModContent.Request<Texture2D>(Texture + "_Battery").Value;
+			tex = Request<Texture2D>(Texture + "_Battery").Value;
 			position = Projectile.Center - Main.screenPosition - new Vector2(0, 30);
 			origin = tex.Size() / 2;
 
 			Main.spriteBatch.Draw(tex, position, null, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
-			tex = ModContent.Request<Texture2D>(Texture + "_BatteryCharge").Value;
+			tex = Request<Texture2D>(Texture + "_BatteryCharge").Value;
 			var frame = new Rectangle(0, 0, 11 + 4 * batteryCharge, tex.Height);
 
 			Main.spriteBatch.Draw(tex, position, frame, scanColor, 0, origin, 1, SpriteEffects.None, 0);
 
 			#endregion
 
-			if (ScanTimer == ScanTime || ScanTimer <= 100 || rotations == null || rotations.Count < 2 || rotations2.Count < 2)
+			if (ScanTimer == SCAN_TIME || ScanTimer <= 100 || rotations == null || rotations.Count < 2 || rotations2.Count < 2)
 				return true;
 
 			var color = Color.Lerp(new Color(255, 0, 0), Color.Red, 0.65f);
@@ -283,42 +283,41 @@ namespace StarlightRiver.Content.Items.Breacher
 			float currentRotation = rotations[Math.Max(rotations.Count - 1, 0)];
 			float rotDifference = ((currentRotation - oldRot) % 6.28f + 9.42f) % 6.28f - 3.14f;
 
-			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((TargetPos - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
 			if (rotDifference > 0)
 			{
 				for (float k = 0; k < rotDifference; k += 0.02f * Math.Sign(rotDifference))
 				{
-					DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+					DrawLine(Main.spriteBatch, k, oldRot, rotDifference, TargetPos);
 				}
 			}
 			else
 			{
 				for (float k = 0; k > rotDifference; k += 0.02f * Math.Sign(rotDifference))
 				{
-					DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos);
+					DrawLine(Main.spriteBatch, k, oldRot, rotDifference, TargetPos);
 				}
 			}
 
-			//-----------------------------------------------------------------------//
 			oldRot = rotations2[0];
 			currentRotation = rotations2[Math.Max(rotations2.Count - 1, 0)];
 			rotDifference = ((currentRotation - oldRot) % 6.28f + 9.42f) % 6.28f - 3.14f;
 
-			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((targetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, Projectile.Center - Main.screenPosition, new Rectangle(0, 0, 1, 1), color, currentRotation, Vector2.Zero, new Vector2((TargetPos2 - Projectile.Center).Length(), 2), SpriteEffects.None, 0);
 
 			if (rotDifference > 0)
 			{
 				for (float k = 0; k < rotDifference; k += 0.01f * Math.Sign(rotDifference))
 				{
-					DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+					DrawLine(Main.spriteBatch, k, oldRot, rotDifference, TargetPos2);
 				}
 			}
 			else
 			{
 				for (float k = 0; k > rotDifference; k += 0.01f * Math.Sign(rotDifference))
 				{
-					DrawLine(Main.spriteBatch, k, oldRot, currentRotation, rotDifference, targetPos2);
+					DrawLine(Main.spriteBatch, k, oldRot, rotDifference, TargetPos2);
 				}
 			}
 
@@ -333,6 +332,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				if (modPlayer.Charges > batteryCharge)
 					batteryFade = 2f;
+
 				batteryCharge = modPlayer.Charges;
 			}
 
@@ -343,7 +343,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float currentRotation, float rotDifference, Vector2 targetPosition)
+		private void DrawLine(SpriteBatch spriteBatch, float k, float oldRot, float rotDifference, Vector2 targetPosition)
 		{
 			float rot = k + oldRot;
 			float lerper = Math.Abs(k / rotDifference);
@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (target == null || !target.active)
 			{
-				ScanTimer = ScanTime;
+				ScanTimer = SCAN_TIME;
 				NPC testtarget = Main.npc.Where(n => n.CanBeChasedBy(Projectile, false) && Vector2.Distance(n.Center, Projectile.Center) < 800).OrderBy(n => Vector2.Distance(n.Center, Main.MouseWorld)).FirstOrDefault();
 
 				if (testtarget != default)
@@ -414,9 +414,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (ScanTimer > Charges)
 			{
-				target.GetGlobalNPC<BreacherGNPC>().Targetted = true;
-				target.GetGlobalNPC<BreacherGNPC>().TargetDuration = 10;
-				BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().Targetted);
+				target.GetGlobalNPC<BreacherGNPC>().targetted = true;
+				target.GetGlobalNPC<BreacherGNPC>().targetDuration = 10;
+				BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.GetGlobalNPC<BreacherGNPC>().targetted);
 
 				if (rotations == null)
 				{
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 			else
 			{
-				target.GetGlobalNPC<BreacherGNPC>().Targetted = false;
+				target.GetGlobalNPC<BreacherGNPC>().targetted = false;
 
 				if (attackDelay == 0)
 					SummonStrike();
@@ -461,14 +461,14 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			if (ScanTimer > 100)
 			{
-				target.GetGlobalNPC<BreacherGNPC>().Alpha = 1;
+				target.GetGlobalNPC<BreacherGNPC>().alpha = 1;
 				AttackMovement(target);
-				Vector2 direction = targetPos - Projectile.Center;
+				Vector2 direction = TargetPos - Projectile.Center;
 				Projectile.rotation = direction.ToRotation() + 3.14f;
 			}
 			else
 			{
-				target.GetGlobalNPC<BreacherGNPC>().Alpha = (float)ScanTimer / 100f;
+				target.GetGlobalNPC<BreacherGNPC>().alpha = (float)ScanTimer / 100f;
 				IdleMovement(Player);
 				Vector2 direction = Player.Center - Projectile.Center;
 				Projectile.rotation = direction.ToRotation() + 3.14f;
@@ -478,11 +478,12 @@ namespace StarlightRiver.Content.Items.Breacher
 		private void SummonStrike()
 		{
 			attackDelay = 6;
+
 			if (Projectile.owner == Main.myPlayer)
 			{
 				var direction = new Vector2(0, -1);
 				direction = direction.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f));
-				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + direction * 800, direction * -10, ModContent.ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center + direction * 800, direction * -10, ProjectileType<OrbitalStrike>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
 			}
 
 			Charges--;
@@ -491,8 +492,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	internal class OrbitalStrike : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + Name;
-
 		private List<Vector2> cache;
 
 		private Trail trail;
@@ -500,9 +499,11 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private bool hit = false;
 
-		private NPC target => Main.npc[(int)Projectile.ai[0]];
+		private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
 		private float Alpha => hit ? (Projectile.timeLeft / 50f) : 1;
+
+		public override string Texture => AssetDirectory.BreacherItem + Name;
 
 		public override void SetDefaults()
 		{
@@ -526,7 +527,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		}
 
 		private void findIfHit()
-		{ //for other Players to determine if this has hit
+		{
+			//for other Players to determine if this has hit
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
 				OnHitNPC(NPC, 0, 0f, false);
@@ -537,11 +539,13 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (!hit)
 			{
-				Vector2 direction = target.Center - Projectile.Center;
+				Vector2 direction = Target.Center - Projectile.Center;
 				direction.Normalize();
 				direction *= 10;
+
 				if (direction.Y > 0)
 					Projectile.velocity = direction;
+
 				if (Main.netMode != NetmodeID.Server)
 					ManageCaches();
 			}
@@ -557,16 +561,22 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
+
 			Color color = Color.Cyan;
 			color.A = 0;
+
 			Color color2 = Color.White;
 			color2.A = 0;
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
 							 color * Alpha * 0.33f, Projectile.rotation, tex.Size() / 2, Projectile.scale * 2, SpriteEffects.None, 0);
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
 							 color * Alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0);
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null,
 							 color2 * Alpha, Projectile.rotation, tex.Size() / 2, Projectile.scale * 0.75f, SpriteEffects.None, 0);
+
 			return false;
 		}
 
@@ -590,6 +600,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (cache == null)
 			{
 				cache = new List<Vector2>();
+
 				for (int i = 0; i < 100; i++)
 				{
 					cache.Add(Projectile.Center);
@@ -607,7 +618,6 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-
 			trail ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(11, 22, factor), factor => Color.Cyan);
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 100, new TriangularTip(16), factor => factor * MathHelper.Lerp(6, 12, factor), factor => Color.White);
 
@@ -627,31 +637,29 @@ namespace StarlightRiver.Content.Items.Breacher
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 			effect.Parameters["alpha"].SetValue(Alpha);
 
 			trail?.Render(effect);
-
 			trail2?.Render(effect);
 		}
 
 		private void Explode(NPC target)
 		{
 			Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+
 			for (int i = 0; i < 5; i++)
 			{
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(20, 70), ModContent.DustType<BreacherDustLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
-				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<BreacherDustStar>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
+				Dust.NewDustPerfect(Projectile.Center + new Vector2(20, 70), DustType<BreacherDustLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(12, 26), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.7f, 0.9f));
+				Dust.NewDustPerfect(Projectile.Center, DustType<BreacherDustStar>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat(8), 0, new Color(48, 242, 96), Main.rand.NextFloat(0.1f, 0.2f));
 			}
 
-			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ProjectileType<OrbitalStrikeRing>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
 		}
 	}
 
 	internal class OrbitalStrikeRing : ModProjectile, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
-
 		private List<Vector2> cache;
 
 		private Trail trail;
@@ -660,6 +668,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		private float Progress => 1 - Projectile.timeLeft / 10f;
 
 		private float Radius => 66 * (float)Math.Sqrt(Math.Sqrt(Progress));
+
+		public override string Texture => AssetDirectory.BreacherItem + "OrbitalStrike";
 
 		public override void SetDefaults()
 		{
@@ -695,6 +705,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (target.whoAmI == (int)Projectile.ai[0])
 				return false;
+
 			return base.CanHitNPC(target);
 		}
 
@@ -703,10 +714,9 @@ namespace StarlightRiver.Content.Items.Breacher
 			Vector2 line = targetHitbox.Center.ToVector2() - Projectile.Center;
 			line.Normalize();
 			line *= Radius;
+
 			if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, Projectile.Center + line))
-			{
 				return true;
-			}
 
 			return false;
 		}
@@ -715,6 +725,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			cache = new List<Vector2>();
 			float radius = Radius;
+
 			for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
 			{
 				double rad = i / 32f * 6.28f;
@@ -731,10 +742,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		private void ManageTrail()
 		{
-
 			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 38 * (1 - Progress), factor => Color.Cyan);
-
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 20 * (1 - Progress), factor => Color.White);
+
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
@@ -755,7 +765,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/GlowTrail").Value);
 			effect.Parameters["alpha"].SetValue(1);
 
 			trail?.Render(effect);
@@ -765,24 +775,23 @@ namespace StarlightRiver.Content.Items.Breacher
 
 	public class BreacherGNPC : GlobalNPC
 	{
+		public bool targetted = false;
+		public int targetDuration = 0;
+
+		public float alpha;
+
 		public override bool InstancePerEntity => true;
-
-		public bool Targetted = false;
-
-		public int TargetDuration = 0;
 
 		public override void ResetEffects(NPC NPC)
 		{
-			TargetDuration--;
+			targetDuration--;
 
-			if (Targetted && TargetDuration < 0)
+			if (targetted && targetDuration < 0)
 			{
-				Targetted = false;
-				BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.active && n.GetGlobalNPC<BreacherGNPC>().Targetted);
+				targetted = false;
+				BreacherArmorHelper.anyScanned = Main.npc.Any(n => n.active && n.GetGlobalNPC<BreacherGNPC>().targetted);
 			}
 		}
-
-		public float Alpha;
 	}
 
 	public class BreacherPlayer : ModPlayer
@@ -790,6 +799,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public const int CHARGETIME = 150;
 
 		public int ticks;
+
 		public int Charges => ticks / CHARGETIME;
 
 		public bool SetBonusActive => Player.armor[0].type == ItemType<BreacherHead>() && Player.armor[1].type == ItemType<BreacherChest>() && Player.armor[2].type == ItemType<BreacherLegs>();
@@ -798,14 +808,12 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;
-			base.OnHitNPCWithProj(proj, target, damage, knockback, crit);
 		}
 
 		public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;
-			base.OnHitNPC(Item, target, damage, knockback, crit);
 		}
 	}
 
@@ -848,9 +856,9 @@ namespace StarlightRiver.Content.Items.Breacher
 			{
 				NPC NPC = Main.npc[i];
 
-				if (NPC.active && NPC.GetGlobalNPC<BreacherGNPC>().Targetted)
+				if (NPC.active && NPC.GetGlobalNPC<BreacherGNPC>().targetted)
 				{
-					alpha = NPC.GetGlobalNPC<BreacherGNPC>().Alpha;
+					alpha = NPC.GetGlobalNPC<BreacherGNPC>().alpha;
 
 					if (NPC.ModNPC != null)
 					{

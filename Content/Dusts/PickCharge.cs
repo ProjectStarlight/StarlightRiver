@@ -19,10 +19,11 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData is int && Main.player[(int)dust.customData].active)
+			if (dust.customData is int whoAmI && Main.player[whoAmI].active)
 			{
-				Player Player = Main.player[(int)dust.customData];
+				Player Player = Main.player[whoAmI];
 				dust.position = Player.Center + new Vector2(0, Player.gfxOffY) + dust.velocity;
+
 				if (!Main.mouseRight || !(Player.HeldItem.ModItem is TemplePick))
 					dust.active = false; //RIP multiPlayer TODO: Make this not gay
 			}

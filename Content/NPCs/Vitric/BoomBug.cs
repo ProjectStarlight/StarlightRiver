@@ -434,7 +434,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 	public class FirebugMagma : ModProjectile, IDrawAdditive
 	{
-		private List<Vector2> oldPos = new();
+		private readonly List<Vector2> oldPos = new();
 
 		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
 
