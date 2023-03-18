@@ -273,13 +273,10 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void AI()
 		{
-			if (noise == null)
+			noise ??= new FastNoise(Main.rand.Next(9999))
 			{
-				noise = new FastNoise(Main.rand.Next(9999))
-				{
-					NoiseType = FastNoise.NoiseTypes.Perlin
-				};
-			}
+				NoiseType = FastNoise.NoiseTypes.Perlin
+			};
 
 			noise.Frequency = MathHelper.Lerp(5, 1.5f, Progress);
 

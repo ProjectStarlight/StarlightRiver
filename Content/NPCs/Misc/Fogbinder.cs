@@ -29,7 +29,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 		}
 
-		private const int XFRAMES = 2;
 		private int frameCounter = 0;
 		public int yFrame = 0;
 		public int xFrame = 1;
@@ -95,10 +94,12 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			bobTimer += 0.05f;
 			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
+
 			var newTargets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
 			newTargets.ForEach(n => ApplyBuff(n));
 
 			targets.ForEach(n => UpdateTarget(n, !newTargets.Contains(n.npc)));
+
 			foreach (BindedNPC target in targets.ToArray())
 			{
 				if (!target.npc.active)
