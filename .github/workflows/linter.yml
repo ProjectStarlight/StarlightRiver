@@ -35,6 +35,8 @@ jobs:
         cd ./tmod
         wget https://github.com/tModLoader/tModLoader/releases/latest/download/tModLoader.zip
         unzip tModLoader.zip
+        cd ..
+        cd ./StarlightRiver
         
       
     - name: Lint
