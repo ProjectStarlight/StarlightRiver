@@ -1,4 +1,6 @@
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +29,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.knockBack = 6;
 			Item.width = 32;
 			Item.height = 48;
-			Item.useTime = 20;
-			Item.useAnimation = 20;
+			Item.useTime = 24;
+			Item.useAnimation = 24;
 			Item.useStyle = ItemUseStyleID.Swing;
+			Item.noUseGraphic = true;
 			Item.value = Item.sellPrice(gold: 3);
 			Item.rare = ItemRarityID.Orange;
 			Item.UseSound = SoundID.Item1;
@@ -49,7 +52,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		}
 	}
 
-	class MagmiteBombProjectile : ModProjectile
+	class MagmiteBombProjectile : ModProjectile, IDrawAdditive
 	{
 		public const int NUM_SEGMENTS = 12;
 
@@ -120,6 +123,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Vector2 chainEnd = Chain.ropeSegments[NUM_SEGMENTS - 1].posNow;
 			Dust.NewDust(chainEnd, 0, 0, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
 			Dust.NewDust(chainEnd, 0, 0, DustID.Torch, 0, 0, 0, default, 0.75f);
+			Dust.NewDustDirect(chainEnd, 0, 0, ModContent.DustType<CoachGunDustGlow>(), 0, 0, 0, default, 1.2f).velocity *= 0.5f;
 		}
 
 		public override bool PreDrawExtras()
@@ -178,6 +182,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
+			CameraSystem.shake += 6;
+
+			SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
+			Helper.PlayPitched("Magic/FireCast", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f));
+
 			for (int k = 0; k < 60; k++)
 			{
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-16, -1)).RotatedByRandom(0.8f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(1.0f, 1.4f));
@@ -302,6 +311,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			return ret;
+		}
+		public void DrawAdditive(SpriteBatch spriteBatch)
+		{
+			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Color color = new Color(255, 100, 50) * 0.4f;
+			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
 		}
 	}
 }
