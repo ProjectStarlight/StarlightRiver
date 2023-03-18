@@ -96,7 +96,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AnyStacksUpdateNPC(NPC npc)
 		{
 			Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood);
-			Main.NewText(npc.lifeRegen);
 		}
 	}
 }
