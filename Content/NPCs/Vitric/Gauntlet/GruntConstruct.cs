@@ -352,7 +352,6 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			{
 				if (partner.active && (partner.ModNPC as ShieldConstruct).Guarding)
 				{
-
 					if (!comboJumpedTwice)
 					{
 						if (xFrame != 1)

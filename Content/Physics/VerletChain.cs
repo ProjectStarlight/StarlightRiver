@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Physics
 			graphics.Clear(Color.Transparent);
 			graphics.BlendState = BlendState.Opaque;
 
-			toDraw.RemoveAll(n => IsBannerDead(n));
+			toDraw.RemoveAll(IsBannerDead);
 
 			foreach (VerletChain i in toDraw)
 				i.DrawStrip(i.scale);

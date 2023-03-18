@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
 
 			var newTargets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
-			newTargets.ForEach(n => ApplyBuff(n));
+			newTargets.ForEach(ApplyBuff);
 
 			targets.ForEach(n => UpdateTarget(n, !newTargets.Contains(n.npc)));
 
