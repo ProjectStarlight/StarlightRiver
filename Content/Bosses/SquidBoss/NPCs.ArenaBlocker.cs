@@ -42,6 +42,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Timer -= 4;
 
 			NPC.friendly = false;
+
+			for (int k = 0; k < Main.maxProjectiles; k++)
+			{
+				Projectile proj = Main.projectile[k];
+				if (proj.active && proj.Hitbox.Intersects(NPC.Hitbox) && proj.aiStyle == 7) //Hooks
+					Main.projectile[k].active = false;
+			}
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

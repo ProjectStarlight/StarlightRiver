@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
 		}
 
 		public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -29,8 +29,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 				if (dummy is null)
 					return;
 
-				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX > 36)
-					tile.TileFrameX -= 3 * 18;
+				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)
+				{
+					tile.TileFrameX -= 5 * 18;
+					dummy.ai[0] = 0;
+				}
 			}
 		}
 
@@ -38,24 +41,23 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 
-			int x = i - tile.TileFrameX / 16;
-			int y = j - tile.TileFrameY / 16;
+			int x = i - tile.TileFrameX / 18;
+			int y = j - tile.TileFrameY / 18;
 
 			Projectile dummy = Dummy(x, y);
 
 			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
-				for (int x1 = 0; x1 < 3; x1++)
+				for (int x1 = 0; x1 < 5; x1++)
 				{
 					for (int y1 = 0; y1 < 6; y1++)
 					{
-						int realX = x1 + i - tile.TileFrameX / 18;
-						int realY = y1 + j - tile.TileFrameY / 18;
+						int realX = x1 + x;
+						int realY = y1 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX += 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)((5 + x1) * 18);
 					}
-				}
-
+				} (dummy.ModProjectile as EvasionShrineDummy).Timer = 0;
 				(dummy.ModProjectile as EvasionShrineDummy).State = 1;
 				(dummy.ModProjectile as EvasionShrineDummy).lives = 4;
 				return true;
@@ -76,7 +78,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 3 * 16, 6 * 16) { }
+		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+
+		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
@@ -93,16 +97,18 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == 0 && Parent.TileFrameX > 3 * 18)
+			if (State == 0 && Parent.TileFrameX > 5 * 18)
 			{
-				for (int x = 0; x < 3; x++)
+				for (int x = 0; x < 5; x++)
 				{
 					for (int y = 0; y < 6; y++)
 					{
-						int realX = ParentX - 1 + x;
+						int realX = ParentX - 2 + x;
 						int realY = ParentY - 3 + y;
 
-						Framing.GetTileSafely(realX, realY).TileFrameX -= 3 * 18;
+						Framing.GetTileSafely(realX, realY).TileFrameX = (short)(x * 18);
+
+						Main.NewText(Framing.GetTileSafely(realX, realY).ToString());
 					}
 				}
 
@@ -113,6 +119,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
+
+				if (Main.rand.NextBool(2))
+				{
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(-27 * 16 - 8 + 32, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * -Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
+					Dust.NewDustPerfect(Projectile.Center + new Vector2(26 * 16, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
+				}
 
 				if (State > 0)
 				{
@@ -283,6 +295,24 @@ namespace StarlightRiver.Content.Tiles.Underground
 						spriteBatch.Draw(fireTex, rightPos, frame, new Color(200, 100, 255), 0, fireTex.Size() / 2, 1, 0, 0);
 						spriteBatch.Draw(fireTex, rightPos, frame, Color.White, 0, fireTex.Size() / 2, 0.95f, 0, 0);
 					}
+
+					Texture2D barrier = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
+					var sourceRect = new Rectangle(0, (int)(Main.GameUpdateCount * 0.4f), barrier.Width, barrier.Height);
+					var sourceRect2 = new Rectangle(0, (int)(Main.GameUpdateCount * -0.73f), barrier.Width, barrier.Height);
+
+					var targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) - 27 * 16 - 10, (int)(Projectile.Center.Y - Main.screenPosition.Y) + 48, 32, 96);
+					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup);
+					targetRect.Inflate(-15, 0);
+					targetRect.Offset(15, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
+
+					targetRect = new Rectangle((int)(Projectile.Center.X - Main.screenPosition.X) + 26 * 16 - 6, (int)(Projectile.Center.Y - Main.screenPosition.Y) + 48, 32, 96);
+					spriteBatch.Draw(barrier, targetRect, sourceRect, new Color(155, 100, 255) * 0.6f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, new Color(85, 50, 150) * 0.5f * Windup, 0, default, SpriteEffects.FlipHorizontally, 0);
+					targetRect.Inflate(-15, 0);
+					targetRect.Offset(-15, 0);
+					spriteBatch.Draw(barrier, targetRect, sourceRect2, Color.White * Windup);
 				}
 			}
 		}
@@ -292,6 +322,22 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
+		}
+	}
+
+	class EvasionShrineBiome : ModBiome
+	{
+		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
+
+		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/EvasionShrine");
+
+		public override bool IsBiomeActive(Player player)
+		{
+			return Main.projectile.Any(
+				n => n.active &&
+				n.type == ModContent.ProjectileType<EvasionShrineDummy>() &&
+				(n.ModProjectile as EvasionShrineDummy).Arena.Intersects(player.Hitbox) &&
+				(n.ModProjectile as EvasionShrineDummy).State != 0);
 		}
 	}
 }

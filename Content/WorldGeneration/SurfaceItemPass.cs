@@ -100,7 +100,7 @@ namespace StarlightRiver.Core
 					{
 						Tile newTile = Framing.GetTileSafely(x, y - 1);
 						newTile.ClearEverything();
-						newTile.HasTile = false;
+						newTile.HasTile = true;
 						newTile.TileType = (ushort)TileType<SeaglassRingTile>();
 
 						return true;

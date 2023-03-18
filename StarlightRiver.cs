@@ -5,9 +5,6 @@ global using Terraria;
 global using Terraria.ModLoader;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Bestiary;
-using StarlightRiver.Content.Items.Breacher;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,8 +28,6 @@ namespace StarlightRiver
 		private List<IRecipeGroup> recipeGroupCache;
 
 		public static bool debugMode = false;
-
-		public static LightingBuffer lightingBufferInstance = null;
 
 		//debug hook to view RTs
 		//public override void PostDrawInterface(SpriteBatch spriteBatch)
@@ -101,8 +96,6 @@ namespace StarlightRiver
 			{
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
 
-				lightingBufferInstance = new LightingBuffer();
-
 				//Hotkeys
 				AbilityKeys = new AbilityHotkeys(this);
 				AbilityKeys.LoadDefaults();
@@ -122,7 +115,6 @@ namespace StarlightRiver
 			{
 				Instance = null;
 				AbilityKeys.Unload();
-				lightingBufferInstance = null;
 
 				SLRSpawnConditions.Unload();
 			}
@@ -139,18 +131,7 @@ namespace StarlightRiver
 		public void CheckScreenSize()
 		{
 			if (!Main.dedServ && !Main.gameMenu)
-			{
-				if (lastScreenSize != new Vector2(Main.screenWidth, Main.screenHeight))
-				{
-					if (TileDrawOverLoader.projTarget != null)
-						TileDrawOverLoader.ResizeTarget();
-
-					if (BreacherArmorHelper.NPCTarget != null)
-						BreacherArmorHelper.ResizeTarget();
-				}
-
 				lastScreenSize = new Vector2(Main.screenWidth, Main.screenHeight);
-			}
 		}
 
 		public override void PostSetupContent()

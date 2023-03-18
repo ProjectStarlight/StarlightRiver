@@ -68,7 +68,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 
 				for (int k = 0; k <= 20; k++)
+				{
 					Dust.NewDust(NPC.position, 48, 32, DustType<GlassGravity>(), Main.rand.Next(-3, 2), -3, 0, default, 1.7f);
+				}
 
 				NPC.netUpdate = true;
 			}
@@ -127,6 +129,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 	}
 
 	/* TODO: Figure out why banners make the game melt
+>>>>>>> master
     internal class CrystalSlimeBanner : ModBanner
     {
         public CrystalSlimeBanner() : base("CrystalSlimeBannerItem", NPCType<CrystalSlime>(), AssetDirectory.VitricNpc) { }

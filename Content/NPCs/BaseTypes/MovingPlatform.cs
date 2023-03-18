@@ -6,9 +6,11 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 {
 	internal abstract class MovingPlatform : ModNPC
 	{
+		Vector2 prevPos;
+
 		public bool beingStoodOn;
 
-		public bool DontCollide = false;
+		public bool dontCollide = false;
 
 		public virtual void SafeSetDefaults() { }
 
@@ -50,6 +52,11 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 			NPC.aiStyle = -1;
 			NPC.damage = 0;
 			NPC.netAlways = true;
+
+			for (int k = 0; k < NPC.buffImmune.Length; k++)
+			{
+				NPC.buffImmune[k] = true;
+			}
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -66,8 +73,6 @@ namespace StarlightRiver.Content.NPCs.BaseTypes
 		{
 			SafeReceiveExtraAI();
 		}
-
-		Vector2 prevPos;
 
 		public sealed override void AI()
 		{
