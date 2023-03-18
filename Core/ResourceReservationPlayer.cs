@@ -94,7 +94,7 @@ namespace StarlightRiver.Core
 
 			int vanillaHearts = Math.Min(20, player.statLifeMax / 20);
 			int fullHeartsToDraw = Math.Min(vanillaHearts, player.GetModPlayer<ResourceReservationPlayer>().reservedLifeAnimation / 20);
-			float lifePerHeart = player.GetModPlayer<ResourceReservationPlayer>().reservedLife > vanillaHearts * 20 ? player.GetModPlayer<ResourceReservationPlayer>().reservedLife / (float)vanillaHearts : 20;
+			float lifePerHeart = player.statLifeMax2 > vanillaHearts * 20 ? player.statLifeMax2 / (float)vanillaHearts : 20;
 
 			for (int k = 0; k <= fullHeartsToDraw; k++)
 			{
