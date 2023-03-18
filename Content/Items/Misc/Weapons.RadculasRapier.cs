@@ -14,20 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public override bool CanUseItem(Player player)
-		{
-			if (player.HasBuff<RadculasRapierCooldown>() && player.altFunctionUse == 2)
-				return false;
-
-			return player.ownedProjectileCounts[ModContent.ProjectileType<RadculasRapierSwungBlade>()] <= 0;
-		}
-
-		public override bool AltFunctionUse(Player player)
-		{
-			return true;
-		}
-
-		public override void SetStaticDefaults	()
+		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
 			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a deadly bleed\n" +
@@ -62,15 +49,24 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (player.altFunctionUse == 2 && !player.HasBuff<RadculasRapierCooldown>())
-			{
 				Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<RadculasRapierTeleport>(), damage, knockback, player.whoAmI);
-			}
 			else
-			{
 				Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
-			}
 
 			return false;
+		}
+
+		public override bool CanUseItem(Player player)
+		{
+			if (player.HasBuff<RadculasRapierCooldown>() && player.altFunctionUse == 2)
+				return false;
+
+			return player.ownedProjectileCounts[ModContent.ProjectileType<RadculasRapierSwungBlade>()] <= 0;
+		}
+
+		public override bool AltFunctionUse(Player player)
+		{
+			return true;
 		}
 	}
 
@@ -83,63 +79,50 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawPlayers_AfterProjectiles += Main_DrawPlayers_AfterProjectiles;
+			StarlightPlayer.PostDrawEvent += StarlightPlayer_PostDrawEvent;
+			StarlightPlayer.PreDrawEvent += StarlightPlayer_PreDrawEvent;
 		}
 
-		private void Main_DrawPlayers_AfterProjectiles(On.Terraria.Main.orig_DrawPlayers_AfterProjectiles orig, Main self)
+		private void StarlightPlayer_PostDrawEvent(Player player, SpriteBatch spriteBatch)
 		{
 			if (PlayerTarget.canUseTarget)
 			{
-
 				Main.spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-				for (int i = 0; i < Main.maxPlayers; i++)
+				bool active = player.active && !player.outOfRange && !player.dead;
+				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
 				{
-					Player player = Main.player[i];
-					if (player.active && !player.outOfRange && !player.dead)
-					{
-						if (player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
-						{
-							for (int x = player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count - 1; x > 0; x--)
-							{
-								Main.spriteBatch.Draw(PlayerTarget.Target, player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition,
-										 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(100, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
-							}
-						}
-					}
+					Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI),
+								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
+
+					Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+					Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
 				}
 
 				Main.spriteBatch.End();
 			}
+		}
 
-			orig.Invoke(self);
-
+		private void StarlightPlayer_PreDrawEvent(Player player, SpriteBatch spriteBatch)
+		{
 			if (PlayerTarget.canUseTarget)
 			{
-
 				Main.spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-				for (int i = 0; i < Main.maxPlayers; i++)
+				bool active = player.active && !player.outOfRange && !player.dead;
+				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
 				{
-					Player player = Main.player[i];
-					if (player.active && !player.outOfRange && !player.dead)
+					for (int x = player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count - 1; x > 0; x--)
 					{
-						if (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
-						{
-							Main.spriteBatch.Draw(PlayerTarget.Target, PlayerTarget.getPlayerTargetPosition(player.whoAmI),
-									 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(150, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
-
-							Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-							Main.spriteBatch.Draw(bloomTex, player.Center - Main.screenPosition, null, new Color(255, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), 0f, bloomTex.Size() / 2f, 2f, 0f, 0f);
-
-						}
+						Main.spriteBatch.Draw(PlayerTarget.Target, player.GetModPlayer<RadculasRapierPlayer>().trailPositions[x] - Main.screenPosition,
+								 PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), new Color(100, 0, 0) * (player.GetModPlayer<RadculasRapierPlayer>().teleportTimer / 60f), player.fullRotation, Vector2.Zero, 1f, 0f, 0f);
 					}
 				}
 
 				Main.spriteBatch.End();
 			}
-
 		}
+
 		public override void ResetEffects()
 		{
 			if (teleportTimer > 0)
@@ -176,7 +159,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class RadculasRapierNPC : GlobalNPC
+	class RadculasRapierNPC : GlobalNPC //TODO: transfer this to stackable buffs
 	{
 		public override bool InstancePerEntity => true;
 
@@ -250,6 +233,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public List<afterImageStruct> afterImages = new(); // position of afterimage, rotation of afterimage, timer for afterimage
 
 		public Player.CompositeArmStretchAmount stretch = Player.CompositeArmStretchAmount.Full;
+
 		public override string Texture => AssetDirectory.MiscItem + "RadculasRapier_Spear";
 
 		public Player Owner => Main.player[Projectile.owner];
@@ -295,7 +279,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			int stabTimer = maxTimeLeft - Projectile.timeLeft;
 
-			if ((amountStabs < 5 || Owner.channel) && !fading)
+			if (!fading)
 			{
 				float totalTime = maxTimeLeft * 0.2f; //total amount of frames the stab lasts
 
@@ -317,7 +301,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						if (!playedSound)
 						{
-							afterImages.Add(new afterImageStruct(Projectile.Center, Projectile.rotation, 10));
+							afterImages.Add(new afterImageStruct(Projectile.Center, Projectile.rotation, 15));
 							Helper.PlayPitched("Magic/ShurikenThrow", 1f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
 							playedSound = true;
 						}
@@ -333,7 +317,7 @@ namespace StarlightRiver.Content.Items.Misc
 					playedSound = false;
 					amountStabs++;
 					Projectile.timeLeft = maxTimeLeft;
-					
+
 					stretch = (Player.CompositeArmStretchAmount)Main.rand.Next(4);
 				}
 
@@ -349,14 +333,14 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Main.rand.NextBool(5))
 				{
 					Vector2 pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
-					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLineFast>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, 0, 100), 1.25f);
+					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLineFast>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, Main.rand.Next(255), 100), 1.25f);
 				}
 
-			}
-			else if (!fading)
-			{
-				Projectile.timeLeft = 5;
-				fading = true;
+				if (!Owner.channel && amountStabs > 5 && Projectile.timeLeft == maxTimeLeft)
+				{
+					Projectile.timeLeft = 5;
+					fading = true;
+				}
 			}
 
 			for (int i = 0; i < afterImages.Count; i++)
@@ -444,15 +428,14 @@ namespace StarlightRiver.Content.Items.Misc
 			effect.Parameters["power"].SetValue(0.2f);
 			effect.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X / Main.screenWidth * 0.5f, 0));
 			effect.Parameters["speed"].SetValue(10f);
-			effect.Parameters["drawColor"].SetValue(new Color(100, 0, 0, 0).ToVector4());
-
 			for (int i = 0; i < afterImages.Count; i++) //idk how performance intensive reapplying this shader is
 			{
 				afterImageStruct afterImage = afterImages[i];
 
-				float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 10f);
+				float opacity = MathHelper.Lerp(0.5f, 0f, 1f - afterImage.time / 15f);
 
 				effect.Parameters["opacity"].SetValue(opacity * fade);
+				effect.Parameters["drawColor"].SetValue(Color.Lerp(new Color(50, 0, 150, 0), new Color(200, 0, 0, 0), 1f - afterImage.time / 15f).ToVector4());
 				effect.CurrentTechnique.Passes[0].Apply();
 
 				Main.spriteBatch.Draw(texGlow, afterImage.pos - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(afterImage.rot - MathHelper.PiOver2), null, color * opacity, afterImage.rot, texGlow.Size() / 2f, Projectile.scale, 0f, 0f);
@@ -488,9 +471,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public List<NPC> hitNPCs = new();
 
 		public List<Vector2> teleportPositions = new();
+
 		public Player Owner => Main.player[Projectile.owner];
 
 		public override string Texture => AssetDirectory.MiscItem + "RadculasRapier_Spear";
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radculas Rapier");
@@ -633,7 +618,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 50; i++)
 			{	
 				Vector2 pos = Vector2.Lerp(originalPos, Owner.Center, Main.rand.NextFloat());
-				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), ModContent.DustType<Dusts.GlowLine>(), originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, 0, 100), 1.25f);
+				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), ModContent.DustType<Dusts.GlowLine>(), originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(1f, 5f), Main.rand.Next(100), new Color(Main.rand.Next(100, 255), 0, 0), 1.25f).fadeIn = Main.rand.NextFloat(30);
 
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), DustID.Blood, originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(10f, 15f), 0, new Color(255, 0, 0, 100), 2f).noGravity = true;
 			}
@@ -650,7 +635,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (anyIFramesWouldBeGiven)
 			{
 				Owner.immune = true;
-				Owner.immuneNoBlink = false;
+				Owner.immuneNoBlink = true;
 				Owner.immuneTime = 45;
 				for (int i = 0; i < Owner.hurtCooldowns.Length; i++)
 				{
@@ -732,7 +717,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!teleported)
 				return;
 
-			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 1200 - (int)MathHelper.Clamp(hitNPCs.Count * 240, 0, 900)); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
+			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 120); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
 
 			for (int i = 0; i < 50; i++)
 			{
