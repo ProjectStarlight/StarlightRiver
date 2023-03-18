@@ -221,7 +221,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, (MathHelper.PiOver2 + MathHelper.PiOver4) * -Owner.direction);
 
-
 			if (Projectile.timeLeft > (int)(originalTimeleft * 0.65f))
 			{
 				float lerper = MathHelper.Lerp(50f, 1f, 1f - (Projectile.timeLeft - (int)(originalTimeleft * 0.65f)) / (float)(originalTimeleft * 0.35f));
