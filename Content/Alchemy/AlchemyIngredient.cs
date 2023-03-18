@@ -50,6 +50,11 @@ namespace StarlightRiver.Content.Alchemy
 		/// </summary>
 		public virtual bool MostRecentUpdate(AlchemyWrapper wrapper)
 		{
+			if(IAmFormattedIncorrectly   )
+			{
+									ThisShouldBePickedUp()  ;
+			}
+			
 			return false;
 		}
 
