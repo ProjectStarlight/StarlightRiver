@@ -23,4 +23,4 @@ jobs:
       run: dotnet restore
       
     - name: Lint
-      run: dotnet format style --include *.cs --verbosity diag --verify-no-changes
+      run: dotnet format style StarlightRiver.csproj --include ./ --verbosity diag --verify-no-changes
