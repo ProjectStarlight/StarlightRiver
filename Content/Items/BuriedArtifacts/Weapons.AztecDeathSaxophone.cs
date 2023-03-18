@@ -170,7 +170,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	class AztecDeathSaxophoneHoldout : ModProjectile
 	{
 		public int originalTimeleft;
+
 		private Player Owner => Main.player[Projectile.owner];
+
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetStaticDefaults()
@@ -208,6 +210,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Projectile.position = position - Projectile.Size * 0.5f;
 
 			Projectile.spriteDirection = Owner.direction;
+
 			if (Main.myPlayer == Owner.whoAmI)
 				Owner.ChangeDir(Main.MouseWorld.X < Owner.Center.X ? -1 : 1);
 
@@ -283,7 +286,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 	{
 		public float Radius => 50 * Projectile.scale;
 
-		public float radiusIncrease => 0.15f + 0.35f * EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 45f);
+		public float RadiusIncrease => 0.15f + 0.35f * EaseBuilder.EaseCircularInOut.Ease(Projectile.timeLeft / 45f);
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
 		public override void SetDefaults()
@@ -304,7 +307,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void AI()
 		{
-			Projectile.scale += radiusIncrease;
+			Projectile.scale += RadiusIncrease;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
