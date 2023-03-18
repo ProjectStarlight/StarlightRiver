@@ -179,7 +179,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <returns>The default stack to add to the stacks</returns>
 		public abstract T GenerateDefaultStackTyped(int duration);
 
-		public override BuffStack GenerateDefaultStack(int duration)
+		public sealed override BuffStack GenerateDefaultStack(int duration)
 		{
 			return GenerateDefaultStackTyped(duration);
 		}
