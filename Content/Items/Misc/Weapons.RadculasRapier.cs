@@ -142,9 +142,10 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 			else
+			{
 				trailPositions.Clear();
+			}
 		}
-
 
 		public override void PreUpdateMovement()
 		{
@@ -158,7 +159,7 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
-			if (trailPositions.Count > 30 || (trailPositions.Count > 0 && teleportTimer == 0))
+			if (trailPositions.Count > 30 || trailPositions.Count > 0 && teleportTimer == 0)
 				trailPositions.RemoveAt(0);
 		}
 	}
@@ -295,6 +296,7 @@ namespace StarlightRiver.Content.Items.Misc
 						stabVec = new Vector2(Main.rand.NextFloat(90, 150), 0);
 						hitNPCs.Clear();
 					}
+
 					if (stabTimer < totalTime * 0.5f)
 					{
 						float lerper = stabTimer / (totalTime * 0.5f);
@@ -314,7 +316,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), EaseBuilder.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
-
 				}
 				else
 				{
@@ -355,7 +356,6 @@ namespace StarlightRiver.Content.Items.Misc
 				if (afterImages[i].time <= 0)
 					afterImages.RemoveAt(i);
 			}
-
 
 			Projectile.Center = Owner.MountedCenter + offset;
 
@@ -551,7 +551,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnSpawn(IEntitySource source)
 		{
-			var mp = Owner.GetModPlayer<RadculasRapierPlayer>();
+			RadculasRapierPlayer mp = Owner.GetModPlayer<RadculasRapierPlayer>();
 
 			originalPos = Owner.Center;
 
@@ -653,7 +653,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			var mp = Owner.GetModPlayer<RadculasRapierPlayer>();
+			RadculasRapierPlayer mp = Owner.GetModPlayer<RadculasRapierPlayer>();
 
 			for (int i = 0; i < teleportPositions.Count; i++)
 			{
@@ -666,12 +666,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			damage = damage * (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
+			damage *= (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
 		}
 
 		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
 		{
-			var gNPC = target.GetGlobalNPC<RadculasRapierNPC>();
+			RadculasRapierNPC gNPC = target.GetGlobalNPC<RadculasRapierNPC>();
 
 			if (hitNPCs.Count <= 0)
 				Helper.PlayPitched("Impacts/GoreHeavy", 1.5f, Main.rand.NextFloat(-0.3f, 0.3f), Owner.Center);
