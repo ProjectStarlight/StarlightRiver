@@ -1,10 +1,9 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
-using System.Collections.Generic;
+using StarlightRiver.Helpers;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
