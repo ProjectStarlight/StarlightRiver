@@ -286,7 +286,9 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public static void DrawSpecial()
 		{
-			if (!MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
+			MetaballSystem.MetaballSystem.actorsSem.WaitOne();
+
+			if (!MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
 				return;
 
 			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
@@ -302,11 +304,13 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
 
-			Texture2D target = MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
+			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+			MetaballSystem.MetaballSystem.actorsSem.Release();
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)

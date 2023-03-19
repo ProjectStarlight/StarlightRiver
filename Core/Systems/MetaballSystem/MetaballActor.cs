@@ -30,7 +30,9 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			Target = new(DrawShapes, () => Active, 1);
 			Target2 = new(DrawSecondTarget, () => Active, 1.1f);
 
-			MetaballSystem.Actors.Add(this);
+			MetaballSystem.actorsSem.WaitOne();
+			MetaballSystem.actors.Add(this);
+			MetaballSystem.actorsSem.Release();
 		}
 
 		public void Unload()
