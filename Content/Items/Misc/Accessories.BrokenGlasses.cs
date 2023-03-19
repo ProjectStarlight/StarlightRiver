@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class BrokenGlasses : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.Invisible;
+		public override string Texture => AssetDirectory.MiscItem + Name;
 		public BrokenGlasses() : base("Broken Glasses", "Damage over time effects are able to critically strike") { }
 
 		public override void Load()
@@ -26,13 +26,13 @@ namespace StarlightRiver.Content.Items.Misc
 		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(player))
-				BrokenGlassesSystem.lastPlayerHit = player.whoAmI;
+				target.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit = player.whoAmI;
 		}
 
 		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(player))
-				BrokenGlassesSystem.lastPlayerHit = player.whoAmI;
+				target.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit = player.whoAmI;
 		}
 
 		public override void SafeSetDefaults()
@@ -50,11 +50,16 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
+	class BrokenGlassesNPC : GlobalNPC
+	{
+		public override bool InstancePerEntity => true;
+
+		public int lastPlayerHit;
+	}
+
 	class BrokenGlassesSystem : IOrderedLoadable
 	{
 		public float Priority => 1f;
-
-		public static int lastPlayerHit;
 
 		public void Load()
 		{
@@ -69,52 +74,59 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private static void InsertCrit(ILContext il)
 		{
-			if (lastPlayerHit < 0)
-				return;
-
 			ILCursor c = new(il);
 
-			ILLabel label = il.DefineLabel();
-
-			int crit = il.MakeLocalVariable<bool>();
-
-			c.EmitDelegate(Crit);
-			c.Emit(OpCodes.Stloc, crit);
-
-			int num = 0;
-
-			c.TryGotoNext(MoveType.Before, x => x.MatchLdloca(out num));
-
-			int whoAmI = 0;
-
-			c.TryGotoNext(MoveType.Before, x => x.MatchStloc(out whoAmI));
-
-			c.TryGotoNext(MoveType.After, x => x.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText))));
-
-			c.MarkLabel(label); // crit label
-
-			c.Emit(OpCodes.Ldloc, label);
-			c.Emit(OpCodes.Brtrue_S, crit);
-
-			c.Emit(OpCodes.Ldloc, num);
-			c.Emit(OpCodes.Ldloc, whoAmI);
-			c.Emit(OpCodes.Call, typeof(BrokenGlassesSystem).GetMethod(nameof(DoCrit), BindingFlags.NonPublic | BindingFlags.Static));
-		}
-
-		private static void DoCrit(int num, int whoAmI)
-		{
-			NPC npc = Main.npc[whoAmI];
-			if (!npc.immortal)
+			if (!c.TryGotoNext(MoveType.After,
+				i => i.MatchLdcI4(0),
+				i => i.MatchLdcI4(1),
+				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) })),
+				i => i.MatchPop()))
 			{
-				npc.life -= num * 2;
+				return;
 			}
 
-			CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.Yellow, num * 2, false, true);
+			ILLabel label = il.DefineLabel(c.Next);
+
+			c.Emit(OpCodes.Ldloc, 0);
+			c.Emit(OpCodes.Ldloc, 15);
+			c.Emit(OpCodes.Ldarg_0);
+
+			c.EmitDelegate(DoCrit);
+
+			if (!c.TryGotoPrev(
+				MoveType.Before,
+				i => i.MatchLdsfld(typeof(Main).GetField(nameof(Main.npc))),
+				i => i.MatchLdloc(15), //15 is the whoAmI of the npc
+				i => i.MatchLdelemRef(),
+				i => i.MatchLdfld(typeof(NPC).GetField(nameof(NPC.immortal)))))
+			{
+				return;
+			}
+
+			c.Index++;
+
+			c.Emit(OpCodes.Ldloc, 15);
+			c.Emit(OpCodes.Ldelem_Ref);
+			c.EmitDelegate(Crit);
+
+			c.Emit(OpCodes.Brtrue, label);
+
+			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.npc)));
+		}
+
+		private static void DoCrit(int num, int whoAmI, NPC npc)
+		{
+			NPC realLifeNPC = Main.npc[whoAmI];
+			if (!realLifeNPC.immortal)
+				realLifeNPC.life -= num * 2;
+
+			CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.Yellow, num * 2 + "!", false, true);
 		}
 		
-		private static bool Crit()
+		private static bool Crit(NPC npc)
 		{
-			return Main.rand.NextFloat() < Main.player[lastPlayerHit].GetTotalCritChance(DamageClass.Generic) * 0.01f;
+			Player player = Main.player[npc.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit];
+			return Main.rand.NextFloat() < player.GetTotalCritChance(DamageClass.Generic) * 0.01f;
 		}
 	}
 }
