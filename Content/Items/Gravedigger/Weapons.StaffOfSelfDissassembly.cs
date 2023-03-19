@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetDefaults()
 		{
-			Item.damage = 38;
+			Item.damage = 60;
 			Item.DamageType = DamageClass.Summon;
 			Item.rare = ItemRarityID.Orange;
 			Item.useStyle = ItemUseStyleID.Swing;
@@ -48,6 +48,16 @@ namespace StarlightRiver.Content.Items.Gravedigger
 					player.lifeRegen += (int)(6 * mp.healPower);
 				}
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
+			recipe.AddIngredient(ItemID.Bone, 25);
+			recipe.AddIngredient(ItemID.GuideVoodooDoll, 25);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -84,6 +94,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.minionSlots = 1;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			if (State == 1 && Timer >= 60)
+				return base.CanHitNPC(target);
+
+			return false;
 		}
 
 		public override void AI()
@@ -138,6 +156,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public void FindTarget()
 		{
+			if (Owner.HasMinionAttackTargetNPC) //take the minion target first
+			{
+				targetNPC = Main.npc[Owner.MinionAttackTargetNPC];
+				return;
+			}
+
 			foreach (NPC npc in Main.npc) //scan all targets for anything less than 600 units away
 			{
 				if (!npc.friendly && npc.CanBeChasedBy(Projectile) && Vector2.Distance(npc.Center, Projectile.Center) < 600)
@@ -152,6 +176,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				State = 0;
 				Timer = 0;
 				target = Vector2.Zero;
+				targetNPC = null;
+				return;
+			}
+
+			if (Owner.HasMinionAttackTargetNPC && targetNPC.whoAmI != Owner.MinionAttackTargetNPC) //If the player has retargeted, abandon
+			{
+				State = 0;
+				Timer = 0;
+				target = Vector2.Zero; //We set to null since FindTarget finds the players target on its own
 				targetNPC = null;
 				return;
 			}
@@ -238,6 +271,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D mainTexOver = ModContent.Request<Texture2D>(Texture + "Over").Value;
 
 			if (State == 1)
 			{
@@ -249,6 +283,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 
 			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, mainTex.Size() / 2f, 1, 0, 0);
+			Main.spriteBatch.Draw(mainTexOver, Projectile.Center - Main.screenPosition, null, Owner.skinColor, Projectile.rotation, mainTexOver.Size() / 2f, 1, 0, 0);
 
 			return false;
 		}
