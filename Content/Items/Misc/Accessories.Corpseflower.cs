@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System.Collections.Generic;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -18,31 +19,13 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ApplyDoTProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (Equipped(player))
-			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = true;
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
-				crit = false;
-				damage = 0;
-			}
-			else
-			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = false;
-			}
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
 		}
 
 		private void ApplyDoTItem(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Equipped(player))
-			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = true;
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().damageAndTimers.Add(new CorpseflowerDamageInstance((int)(damage * 0.33f), 600));
-				crit = false;
-				damage = 0;
-			}
-			else
-			{
-				target.GetGlobalNPC<CorpseflowerGlobalNPC>().corpseFlowered = false;
-			}
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
 		}
 
 		public override void SetStaticDefaults()
@@ -51,71 +34,61 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public struct CorpseflowerDamageInstance
+	class CorpseflowerStack : BuffStack
 	{
 		public int damage;
-		public int timer;
-
-		public CorpseflowerDamageInstance(int damage, int timer)
-		{
-			this.damage = damage;
-			this.timer = timer;
-		}
 	}
 
-	class CorpseflowerGlobalNPC : GlobalNPC
+	class CorpseflowerBuff : StackableBuff<CorpseflowerStack>
 	{
-		public override bool InstancePerEntity => true;
+		public int totalDamage;
+		public override string Name => "CorpseflowerBuff";
 
-		public bool corpseFlowered = false;
+		public override string DisplayName => "Corpseflowered";
 
-		public List<CorpseflowerDamageInstance> damageAndTimers = new();
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public override void ResetEffects(NPC npc)
+		public override bool Debuff => true;
+
+		public override string Tooltip => "ratio + L";
+
+		public override void Load()
 		{
-			for (int i = 0; i < damageAndTimers.Count; i++)
+			StarlightNPC.UpdateLifeRegenEvent += StarlightNPC_UpdateLifeRegenEvent;
+			StarlightNPC.ResetEffectsEvent += ResetDamage;
+		}
+
+		private void StarlightNPC_UpdateLifeRegenEvent(NPC npc, ref int damage)
+		{
+			if (AnyInflicted(npc))
 			{
-				if (damageAndTimers[i].timer > 0)
-				{
-					damageAndTimers[i] = new CorpseflowerDamageInstance(damageAndTimers[i].damage, damageAndTimers[i].timer - 1);
-				}
-				else
-				{
-					damageAndTimers[i] = new CorpseflowerDamageInstance(0, 0);
-					damageAndTimers.Remove(damageAndTimers[i]);
-				}
+				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage)
+					damage = (GetInstance(npc) as CorpseflowerBuff).totalDamage;
 			}
 		}
 
-		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		private void ResetDamage(NPC NPC)
 		{
-			if (!corpseFlowered)
-				return;
-
-			if (damageAndTimers.Count <= 0)
+			if (AnyInflicted(NPC))
 			{
-				if (npc.lifeRegen < 0)
-					npc.lifeRegen = 0;
-
-				damage = 0;
-				return;
+				(GetInstance(NPC) as CorpseflowerBuff).totalDamage = 0;
 			}
+		}
 
-			for (int i = 0; i < damageAndTimers.Count; i++)
+
+		public override CorpseflowerStack GenerateDefaultStackTyped(int duration)
+		{
+			return new CorpseflowerStack()
 			{
-				CorpseflowerDamageInstance struct_ = damageAndTimers[i];
+				duration = duration,
+				damage = 1
+			};
+		}
 
-				if (struct_.timer > 0 && struct_.damage > 0)
-				{
-					if (npc.lifeRegen > 0)
-						npc.lifeRegen = 0;
-
-					npc.lifeRegen -= struct_.damage;
-
-					if (damage < struct_.damage)
-						damage = struct_.damage;
-				}
-			}
+		public override void PerStackEffectsNPC(NPC npc, CorpseflowerStack stack)
+		{
+			npc.lifeRegen -= stack.damage;
+			totalDamage += stack.damage;
 		}
 	}
 }
