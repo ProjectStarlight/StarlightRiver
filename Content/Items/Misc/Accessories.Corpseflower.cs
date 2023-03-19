@@ -1,8 +1,8 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
 using System;
 
 namespace StarlightRiver.Content.Items.Misc
