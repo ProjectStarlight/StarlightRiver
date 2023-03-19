@@ -1,11 +1,16 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System.Collections.Generic;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using System;
+using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	public class Corpseflower : CursedAccessory
 	{
+		public int[] maxTimeLefts = new int[100];
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Corpseflower").Value) { }
@@ -14,6 +19,82 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItem;
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectile;
+
+			On.Terraria.CombatText.UpdateCombatText += CombatText_UpdateCombatText;
+			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+		}
+
+		#region IL
+		private void ChangeDoTColor(MonoMod.Cil.ILContext il)
+		{
+			ILCursor c = new ILCursor(il);
+
+			int indexLocal = il.MakeLocalVariable<int>();
+
+			if (!c.TryGotoNext(MoveType.After, //move to after the vanilla combat text spawning
+				i => i.MatchLdcI4(0),
+				i => i.MatchLdcI4(1),
+				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) }))))
+			{
+				return;
+			}
+
+			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
+
+			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
+			c.Emit(OpCodes.Ldloc, 15); //15 is the whoAmI of the npc. Second parameter for our delegate.
+			c.EmitDelegate(ApplyDoTColor);
+
+			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call
+
+			if (!c.TryGotoNext(MoveType.After, // Move after the SECOND vanilla combat text call.
+				i => i.MatchLdcI4(0),
+				i => i.MatchLdcI4(1),
+				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) }))))
+			{
+				return;
+			}
+
+			//same code as before
+			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
+
+			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
+			c.Emit(OpCodes.Ldloc, 16); //16 is the whoAmI of the npc. Second parameter for our delegate.
+			c.EmitDelegate(ApplyDoTColor);
+
+			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call
+		}
+
+		private void ApplyDoTColor(int i, int whoAmI)
+		{
+			CorpseflowerBuff buff = InstancedBuffNPC.GetInstance<CorpseflowerBuff>(Main.npc[whoAmI]);
+			if (buff is null)
+				return;
+
+			maxTimeLefts[i] = Main.combatText[i].lifeTime;
+		}
+
+		#endregion IL
+
+		private void CombatText_UpdateCombatText(On.Terraria.CombatText.orig_UpdateCombatText orig)
+		{
+			orig();
+
+			for (int i = 0; i < 100; i++)
+			{
+				CombatText text = Main.combatText[i];
+				if (maxTimeLefts[i] > 0)
+				{
+					if (text.active)
+					{
+						text.color = Color.Lerp(Color.Purple, Color.LimeGreen, 1f - text.lifeTime / (float)maxTimeLefts[i]);
+					}
+					else
+					{
+						maxTimeLefts[i] = 0;
+					}
+				}
+			}
 		}
 
 		private void ApplyDoTProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
