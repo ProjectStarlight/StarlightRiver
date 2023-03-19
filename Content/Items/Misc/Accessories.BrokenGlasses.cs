@@ -1,13 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -64,7 +58,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public void Load()
 		{
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
-				
+
 		}
 
 		public void Unload()
@@ -85,13 +79,21 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 			}
 
-			ILLabel label = il.DefineLabel(c.Next);
+			ILLabel afterModded = il.DefineLabel(c.Next);
+
+			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.npc)));
+			c.Emit(OpCodes.Ldloc, 15);
+			c.Emit(OpCodes.Ldelem_Ref);
+			c.EmitDelegate(Crit);
+			c.Emit(OpCodes.Brfalse, afterModded);
 
 			c.Emit(OpCodes.Ldloc, 0);
 			c.Emit(OpCodes.Ldloc, 15);
 			c.Emit(OpCodes.Ldarg_0);
-
 			c.EmitDelegate(DoCrit);
+
+			c.Index -= 4;
+			ILLabel afterVanillaBeforeModded = il.DefineLabel(c.Next);
 
 			if (!c.TryGotoPrev(
 				MoveType.Before,
@@ -109,7 +111,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Ldelem_Ref);
 			c.EmitDelegate(Crit);
 
-			c.Emit(OpCodes.Brtrue, label);
+			c.Emit(OpCodes.Brtrue, afterVanillaBeforeModded);
 
 			c.Emit(OpCodes.Ldsfld, typeof(Main).GetField(nameof(Main.npc)));
 		}
@@ -122,7 +124,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.Yellow, num * 2 + "!", false, true);
 		}
-		
+
 		private static bool Crit(NPC npc)
 		{
 			Player player = Main.player[npc.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit];
