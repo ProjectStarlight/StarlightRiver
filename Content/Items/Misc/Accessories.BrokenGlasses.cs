@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.ID;
@@ -21,13 +22,13 @@ namespace StarlightRiver.Content.Items.Misc
 		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(player))
-				target.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit = player.whoAmI;
+				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player });
 		}
 
 		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(player))
-				target.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit = player.whoAmI;
+				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player});
 		}
 
 		public override void SafeSetDefaults()
@@ -45,11 +46,19 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class BrokenGlassesNPC : GlobalNPC
+	class BrokenGlassesBuff : InstancedBuff
 	{
-		public override bool InstancePerEntity => true;
+		public Player lastInflicted;
 
-		public int lastPlayerHit;
+		public override string Name => "BrokenGlassesBuff";
+
+		public override string DisplayName => "Broken Glasses";
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		public override bool Debuff => true;
+
+		public override string Tooltip => "You cant see, loser!";
 	}
 
 	class BrokenGlassesSystem : IOrderedLoadable
@@ -59,7 +68,6 @@ namespace StarlightRiver.Content.Items.Misc
 		public void Load()
 		{
 			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
-
 		}
 
 		public void Unload()
@@ -128,12 +136,16 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!realLifeNPC.immortal)
 				realLifeNPC.life -= num * 2;
 
-			CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), Color.Yellow, num * 2 + "!", false, true);
+			CombatText.NewText(new Rectangle((int)npc.position.X, (int)npc.position.Y, npc.width, npc.height), new Color(255, 0, 0), num * 2, true, true);
 		}
 
 		private static bool Crit(NPC npc)
 		{
-			Player player = Main.player[npc.GetGlobalNPC<BrokenGlassesNPC>().lastPlayerHit];
+			BrokenGlassesBuff buff = InstancedBuffNPC.GetInstance<BrokenGlassesBuff>(npc);
+			if (buff is null || buff.lastInflicted is null)
+				return false;
+
+			Player player = buff.lastInflicted;
 			return Main.rand.NextFloat() < player.GetTotalCritChance(DamageClass.Generic) * 0.01f;
 		}
 	}
