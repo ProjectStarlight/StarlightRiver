@@ -59,7 +59,6 @@
 			ModifyGlobalLootEvent?.Invoke(globalLoot);
 		}
 
-
 		public delegate void UpdateLifeRegenDelegate(NPC npc, ref int damage);
 		public static event UpdateLifeRegenDelegate UpdateLifeRegenEvent;
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)

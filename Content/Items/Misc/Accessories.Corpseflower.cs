@@ -156,7 +156,6 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-
 		public override CorpseflowerStack GenerateDefaultStackTyped(int duration)
 		{
 			return new CorpseflowerStack()
