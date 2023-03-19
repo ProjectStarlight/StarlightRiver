@@ -129,6 +129,8 @@ namespace StarlightRiver.Core
 					continue;
 				}
 
+				k += 20 - vanillaHearts;
+
 				if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
 				{
 					pos = new Vector2(Main.screenWidth - 66 - k * 26, 58f);
@@ -143,6 +145,8 @@ namespace StarlightRiver.Core
 					if (k >= 10)
 						pos += new Vector2(240, -28);
 				}
+
+				k -= 20 - vanillaHearts;
 
 				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLife").Value;
 				Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLifeLine").Value;
