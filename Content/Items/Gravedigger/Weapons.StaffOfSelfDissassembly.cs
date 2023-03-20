@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Buffs;
+using System;
 using System.Linq;
 using Terraria.ID;
 
@@ -36,6 +37,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override bool CanUseItem(Player player)
 		{
 			return player.GetModPlayer<ResourceReservationPlayer>().TryReserveLife(40);
+		}
+
+		public override bool? UseItem(Player player)
+		{
+			player.AddBuff(ModContent.BuffType<FleshApparationBuff>(), 1800);
+			return true;
 		}
 
 		private void UpdateMinions(Player player)
@@ -82,6 +89,9 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			DisplayName.SetDefault("Flesh apparation");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+
+			Main.projPet[Projectile.type] = true;
+			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -94,6 +104,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.minionSlots = 1;
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
+			Projectile.timeLeft = 2;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -106,7 +117,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void AI()
 		{
-			Projectile.timeLeft = 2;
+			if (Owner.HasBuff<FleshApparationBuff>())
+				Projectile.timeLeft = 2;
 
 			Timer++;
 
@@ -115,8 +127,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (healPower > 3)
 				healPower = 3;
-
-			Projectile.friendly = true; //We should only do damage while dashing!
 
 			switch (State)
 			{
@@ -205,7 +215,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (Timer >= 60 && Timer < 100) //slow down
 			{
 				Projectile.velocity *= 0.92f;
-				Projectile.friendly = true;
 
 				Lighting.AddLight(Projectile.Center, new Vector3(0.02f, 0.01f, 0.01f) * Projectile.velocity.Length());
 			}
@@ -274,7 +283,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
-																			  //Texture2D mainTexOver = ModContent.Request<Texture2D>(Texture + "Over").Value;
 
 			if (State == 1)  //draw afterimage only when dashing
 			{
@@ -287,9 +295,34 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			//draw the normal sprite over the afterimage all the time
 			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, mainTex.Size() / 2f, 1, 0, 0);
-			//Main.spriteBatch.Draw(mainTexOver, Projectile.Center - Main.screenPosition, null, Owner.skinColor, Projectile.rotation, mainTexOver.Size() / 2f, 1, 0, 0);
 
 			return false;
+		}
+	}
+
+	public class FleshApparationBuff : SmartBuff
+	{
+		public override string Texture => AssetDirectory.GravediggerItem + Name;
+
+		public FleshApparationBuff() : base("Flesh apparation", "A chunk of your flesh is following you!", false, true) { }
+
+		public override void SafeSetDefaults()
+		{
+			Main.buffNoSave[Type] = true;
+			Main.buffNoTimeDisplay[Type] = true;
+		}
+
+		public override void Update(Player player, ref int buffIndex)
+		{
+			if (player.ownedProjectileCounts[ModContent.ProjectileType<FleshApparation>()] > 0)
+			{
+				player.buffTime[buffIndex] = 18000;
+			}
+			else
+			{
+				player.DelBuff(buffIndex);
+				buffIndex--;
+			}
 		}
 	}
 }
