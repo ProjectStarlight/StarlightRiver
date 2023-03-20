@@ -10,7 +10,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public JadeStopwatch() : base("Jade stopwatch", "Time moves more quickly for you\nTime moves for slowly for you briefly after being hit") { }
+		public JadeStopwatch() : base("Jade stopwatch", "Time moves more quickly for you\n" +
+			"Time moves for slowly for you briefly after being hit\n" +
+			"50% reduced damage") { }
 
 		public override void Load()
 		{
@@ -30,6 +32,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (flashTime > 0)
 				flashTime--;
+
+			Player.GetDamage(DamageClass.Generic) -= 0.5f;
 		}
 
 		public override void OnEquip(Player player, Item item)
