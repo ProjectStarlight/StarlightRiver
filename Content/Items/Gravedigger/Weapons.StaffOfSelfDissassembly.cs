@@ -131,6 +131,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			if (Main.rand.NextBool(3))
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Blood, 0, 2, 0, default, Main.rand.NextFloat(1.25f));
+
+			Projectile.rotation += 0.05f + Projectile.velocity.Length() * 0.01f;
 		}
 
 		public void PassiveMovement()
@@ -272,7 +274,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
-			Texture2D mainTexOver = ModContent.Request<Texture2D>(Texture + "Over").Value;
+																			  //Texture2D mainTexOver = ModContent.Request<Texture2D>(Texture + "Over").Value;
 
 			if (State == 1)  //draw afterimage only when dashing
 			{
@@ -285,7 +287,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			//draw the normal sprite over the afterimage all the time
 			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, mainTex.Size() / 2f, 1, 0, 0);
-			Main.spriteBatch.Draw(mainTexOver, Projectile.Center - Main.screenPosition, null, Owner.skinColor, Projectile.rotation, mainTexOver.Size() / 2f, 1, 0, 0);
+			//Main.spriteBatch.Draw(mainTexOver, Projectile.Center - Main.screenPosition, null, Owner.skinColor, Projectile.rotation, mainTexOver.Size() / 2f, 1, 0, 0);
 
 			return false;
 		}
