@@ -90,7 +90,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 
-			Main.projPet[Projectile.type] = true;
 			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
 		}
 
@@ -105,6 +104,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.tileCollide = false;
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = 2;
+			Projectile.aiStyle = -1;
 		}
 
 		public override bool? CanHitNPC(NPC target)
