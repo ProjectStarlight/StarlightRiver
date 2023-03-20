@@ -28,6 +28,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		public ScreenTarget(Action<SpriteBatch> draw, Func<bool> active, float order, Func<Vector2, Vector2?> onResize = null)
 		{
+			if (Main.dedServ)
+				return;
+
 			drawFunct = draw;
 			activeFunct = active;
 			this.order = order;
@@ -45,6 +48,9 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		/// <param name="size"></param>
 		public void ForceResize(Vector2 size)
 		{
+			if (Main.dedServ)
+				return;
+
 			RenderTarget.Dispose();
 			RenderTarget = new RenderTarget2D(Main.instance.GraphicsDevice, (int)size.X, (int)size.Y, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 		}
