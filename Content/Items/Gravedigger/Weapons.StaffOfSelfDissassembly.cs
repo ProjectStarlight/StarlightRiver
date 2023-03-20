@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<LivingBlood>(), 8);
 			recipe.AddIngredient(ItemID.Bone, 25);
-			recipe.AddIngredient(ItemID.GuideVoodooDoll, 25);
+			recipe.AddIngredient(ItemID.GuideVoodooDoll, 1);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -240,6 +240,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+			//the lines connecting back to the owner
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value;
 			Texture2D tex3 = ModContent.Request<Texture2D>("StarlightRiver/Assets/MotionTrail").Value;
@@ -270,18 +271,19 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value;
+			Texture2D mainTex = ModContent.Request<Texture2D>(Texture).Value; //the actual sprite of the minion
 			Texture2D mainTexOver = ModContent.Request<Texture2D>(Texture + "Over").Value;
 
-			if (State == 1)
+			if (State == 1)  //draw afterimage only when dashing
 			{
-				for (int k = 0; k < (Timer - 60); k++)
+				for (int k = 0; k < (Timer - 60); k++) //dont draw afterimages that arent from while dashing. This essentially draws the first afterimage up untill the (frames since dash) afterimage.
 				{
 					Color color = Color.Lerp(new Color(255, 100, 100), Color.Red * 0.1f, k / 20f) * (Projectile.velocity.Length() / 20f);
 					Main.spriteBatch.Draw(mainTex, Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2f, null, color, Projectile.oldRot[k], mainTex.Size() / 2f, 1, 0, 0);
 				}
 			}
 
+			//draw the normal sprite over the afterimage all the time
 			Main.spriteBatch.Draw(mainTex, Projectile.Center - Main.screenPosition, null, Color.White, Projectile.rotation, mainTex.Size() / 2f, 1, 0, 0);
 			Main.spriteBatch.Draw(mainTexOver, Projectile.Center - Main.screenPosition, null, Owner.skinColor, Projectile.rotation, mainTexOver.Size() / 2f, 1, 0, 0);
 
