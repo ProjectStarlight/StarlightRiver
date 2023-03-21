@@ -1,18 +1,25 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.ModLoader.IO;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	internal class JadeStopwatch : SmartAccessory
 	{
 		public int slowTime;
-
 		public int flashTime;
+
+		public string feat;
+		public string time;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public JadeStopwatch() : base("Jade stopwatch", "Time moves more quickly for you\n" +
-			"Time moves for slowly for you briefly after being hit\n" +
-			"50% reduced damage") { }
+			"Time moves more slowly for you briefly after being hit\n" +
+			"50% reduced damage")
+		{ }
 
 		public override void Load()
 		{
@@ -20,6 +27,19 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitByNPCEvent += DamageEffect;
 			StarlightPlayer.OnHitByProjectileEvent += ProjDamageEffect;
 			StarlightPlayer.PreDrawEvent += DrawClock;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			int sin = (int)(Math.Sin(Main.GameUpdateCount * 0.1f) * 50);
+			tooltips.FirstOrDefault(n => n.Name == "ItemName").OverrideColor = new Color(50 + sin, 255, 150 + sin);
+
+			var featLine = new TooltipLine(Mod, "StopwatchMark", $"Obtained by beating {feat} in {time}")
+			{
+				OverrideColor = new Color(250 + sin, 200 + sin, 100 + sin)
+			};
+
+			tooltips.Add(featLine);
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -34,6 +54,19 @@ namespace StarlightRiver.Content.Items.Misc
 				flashTime--;
 
 			Player.GetDamage(DamageClass.Generic) -= 0.5f;
+
+			if (slowTime <= 0)
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				var d = Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 1.5f, 0, new Color(50, 255, 150) * 0.5f, 0.25f);
+				d.customData = new object[] { Player, Vector2.One.RotatedBy(rot) * 36 };
+			}
+			else
+			{
+				float rot = Main.rand.NextFloat(6.28f);
+				var d = Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.GlowFollowPlayer>(), Vector2.One.RotatedBy(rot + 1.5f) * 0.5f, 0, Color.Red * 0.5f, 0.25f);
+				d.customData = new object[] { Player, Vector2.One.RotatedBy(rot) * 36 };
+			}
 		}
 
 		public override void OnEquip(Player player, Item item)
@@ -113,6 +146,18 @@ namespace StarlightRiver.Content.Items.Misc
 				var target2 = new Rectangle((int)pos.X, (int)pos.Y, 34, 12);
 				spriteBatch.Draw(armTex, target2, null, color * 0.5f * alpha, Main.GameUpdateCount * 0.01f * speed, new Vector2(0, armTex.Height / 2), 0, 0);
 			}
+		}
+
+		public override void SaveData(TagCompound tag)
+		{
+			tag["feat"] = feat;
+			tag["time"] = time;
+		}
+
+		public override void LoadData(TagCompound tag)
+		{
+			feat = tag.GetString("feat");
+			time = tag.GetString("time");
 		}
 	}
 }
