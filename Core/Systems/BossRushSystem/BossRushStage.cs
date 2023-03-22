@@ -49,7 +49,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		public void BeginFight()
 		{
-			ModContent.GetInstance<BossRushSystem>().trackedBossType = bossType;
+			BossRushSystem.trackedBossType = bossType;
 			spawnBoss(actualPosition);
 		}
 

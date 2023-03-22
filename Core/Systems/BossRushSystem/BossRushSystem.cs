@@ -17,25 +17,25 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class BossRushSystem : ModSystem
 	{
-		public bool isBossRush = true;
+		public static bool isBossRush = true;
 
-		public int currentStage = -1;
-		public int trackedBossType = 0;
+		public static int currentStage = -1;
+		public static int trackedBossType = 0;
 
-		public int scoreTimer;
-		public int score;
+		public static int scoreTimer;
+		public static int score;
 
 		public static int transitionTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
 
-		public List<BossRushStage> stages;
+		public static List<BossRushStage> stages;
 
-		public ScreenTarget starsTarget = new(DrawStars, () => ModContent.GetInstance<BossRushSystem>().isBossRush, 1f);
-		public ScreenTarget starsMap = new(DrawMap, () => ModContent.GetInstance<BossRushSystem>().isBossRush, 1f);
+		public static ScreenTarget starsTarget = new(DrawStars, () => isBossRush, 1f);
+		public static ScreenTarget starsMap = new(DrawMap, () => isBossRush, 1f);
 
 		public static ParticleSystem stars = new("StarlightRiver/Assets/Misc/DotTell", updateStars);
 
-		public BossRushStage CurrentStage => (currentStage >= 0 && currentStage < stages.Count) ? stages[currentStage] : null;
+		public static BossRushStage CurrentStage => (currentStage >= 0 && currentStage < stages.Count) ? stages[currentStage] : null;
 
 		public override void Load()
 		{
@@ -62,7 +62,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					a =>
 					{
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
+
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1764, 2800);
+						HushArmorSystem.DPSTarget = 50;
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
 
@@ -75,7 +77,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
+
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 1200 - 16, 800 - 48);
+						HushArmorSystem.DPSTarget = 65;
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
 
@@ -89,7 +93,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 						var dummy = Main.projectile.FirstOrDefault(n => n.active && n.ModProjectile is VitricBossAltarDummy)?.ModProjectile as VitricBossAltarDummy;
 						ModContent.GetInstance<VitricBossAltar>().SpawnBoss(dummy.ParentX - 2, dummy.ParentY - 3, Main.LocalPlayer);
+
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
+						HushArmorSystem.DPSTarget = 80;
 					},
 					a => _ = a),
 			};
