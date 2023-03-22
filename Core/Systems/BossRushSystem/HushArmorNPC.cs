@@ -14,17 +14,26 @@
 		{
 			pollTimer++;
 
-			if (pollTimer % 60 == 0)
+			if (pollTimer % 20 == 0)
 			{
-				float thisDPS = totalDamage;
+				float thisDPS = totalDamage * 3f;
 				totalDamage = 0;
 
-				if (thisDPS > DPSTarget)
+				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
 					resistance = Helpers.Helper.LerpFloat(resistance, DPSTarget / thisDPS, 0.66f);
 				else
-					resistance += 0.01f;
+					resistance += 0.001f;
 
+				Main.NewText("=====================================================", new Color(200, 200, 200));
+				Main.NewText("Adapative damage resistance stats:");
 				Main.NewText("Current resistance: " + resistance);
+				Main.NewText("Perfect resistance: " + DPSTarget / thisDPS, new Color(200, 255, 255));
+				Main.NewText("unadjusted DPS estimate: " + thisDPS, new Color(255, 200, 200));
+				Main.NewText("adjusted DPS estimate: " + thisDPS * resistance, new Color(255, 225, 200));
+				Main.NewText("DPS target: " + DPSTarget, new Color(255, 255, 200));
+				Main.NewText("Current boss: " + BossRushSystem.trackedBossType, new Color(225, 255, 200));
+				Main.NewText("Current stage: " + BossRushSystem.currentStage, new Color(200, 255, 200));
+				Main.NewText("=====================================================", new Color(200, 200, 200));
 			}
 		}
 	}
@@ -59,7 +68,7 @@
 
 		public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
 		{
-			HushArmorSystem.totalDamage += damage;
+			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
 		}
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
@@ -86,7 +95,7 @@
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
 		{
-			HushArmorSystem.totalDamage += damage;
+			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
 		}
 	}
 }

@@ -148,7 +148,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				foreach (NPC npc in Main.npc)
 					npc.active = false;
 
-				currentStage = 2;
+				currentStage = 0;
 			}
 
 			if (!isBossRush || currentStage > stages.Count)
