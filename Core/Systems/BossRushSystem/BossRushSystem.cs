@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.Items.Permafrost;
+using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.Generation;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
@@ -17,13 +19,15 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class BossRushSystem : ModSystem
 	{
-		public static bool isBossRush = true;
+		public static bool isBossRush = false;
 
 		public static int currentStage = -1;
 		public static int trackedBossType = 0;
 
 		public static int scoreTimer;
 		public static int score;
+
+		public static int speedupTimer;
 
 		public static int transitionTimer = 0;
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
@@ -40,30 +44,108 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public override void Load()
 		{
 			On.Terraria.Main.DrawInterface += DrawOverlay;
+			On.Terraria.Main.DoUpdate += Speedup;
 		}
 
+		/// <summary>
+		/// Resets the boss rush to the default starting state
+		/// </summary>
 		public void Reset()
 		{
-			currentStage = 0;
+			trackedBossType = 0;
+			currentStage = -1;
 			scoreTimer = 0;
-			score = 0;
+			score = 8000;
 
 			transitionTimer = 0;
 		}
 
+		/// <summary>
+		/// This handles the per-stage healing rules.
+		/// </summary>
+		public static void Heal()
+		{
+			if (Main.masterMode) // No heal
+				return;
+
+			if (Main.expertMode) // Partial heal, clear only non-potion-sickness
+			{
+				Main.LocalPlayer.Heal(200);
+
+				for (int k = 0; k < Main.LocalPlayer.buffType.Length; k++)
+				{
+					int type = Main.LocalPlayer.buffType[k];
+
+					if (type != BuffID.PotionSickness && Main.debuff[type])
+						Main.LocalPlayer.buffTime[k] = 0;
+				}
+
+				return;
+			}
+
+			// Full heal and clear ALL debuffs
+			Main.LocalPlayer.statLife = Main.LocalPlayer.statLifeMax2;
+
+			for (int k = 0; k < Main.LocalPlayer.buffType.Length; k++)
+			{
+				if (Main.debuff[Main.LocalPlayer.buffType[k]])
+					Main.LocalPlayer.buffTime[k] = 0;
+			}
+		}
+
+		/// <summary>
+		/// This handles the speedup rules of the boss rush. IE that blitz should be 1.25x gamespeed and showdown 1.5x
+		/// </summary>
+		/// <param name="orig"></param>
+		/// <param name="self"></param>
+		/// <param name="gameTime"></param>
+		private void Speedup(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
+		{
+			orig(self, ref gameTime);
+
+			if (!isBossRush) //dont do anything outside of bossrush but the normal update
+				return;
+
+			speedupTimer++; //track this seperately since gameTime would get sped up
+
+			if (Main.expertMode && speedupTimer % 4 == 0) //1.25x on expert
+				orig(self, ref gameTime);
+
+			if (Main.masterMode && speedupTimer % 2 == 0) //1.5x on master
+				orig(self, ref gameTime);
+		}
+
+		/// <summary>
+		/// The actual stages are populated here. The first and last stages are bumpers for the DPS evaluation and ending item respectively.
+		/// </summary>
 		public override void PostAddRecipes()
 		{
 			stages = new List<BossRushStage>()
 			{
+				new BossRushStage(
+					"Structures/BossRushStart",
+					ModContent.NPCType<BossRushLock>(),
+					new Vector2(250, 200),
+					a =>
+					{
+						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
+
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
+						HushArmorSystem.DPSTarget = 50;
+					},
+					a => _ = a),
+
 				new BossRushStage(
 					"Structures/SquidBossArena",
 					ModContent.NPCType<SquidBoss>(),
 					new Vector2(500, 1600),
 					a =>
 					{
+						StarlightWorld.vitricBiome = new Rectangle(0, 1000, 40, 40);
+
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
 
-						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1764, 2800);
+						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1748, 2800);
 						HushArmorSystem.DPSTarget = 50;
 					},
 					a => StarlightWorld.squidBossArena = new Rectangle(a.X, a.Y, 109, 180)),
@@ -78,7 +160,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
-						visibleArea = new Rectangle((int)a.X, (int)a.Y, 1200 - 16, 800 - 48);
+						visibleArea = new Rectangle((int)a.X, (int)a.Y + 32, 1200 - 16, 532);
 						HushArmorSystem.DPSTarget = 65;
 					},
 					a => StarlightWorld.vitricBiome = new Rectangle(a.X + 37, a.Y - 68, 400, 140)),
@@ -98,11 +180,32 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						HushArmorSystem.DPSTarget = 80;
 					},
 					a => _ = a),
+
+				new BossRushStage(
+					"Structures/BossRushEnd",
+					ModContent.NPCType<BossRushLock>(),
+					new Vector2(250, 200),
+					a =>
+					{
+						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
+
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
+						HushArmorSystem.DPSTarget = 50;
+					},
+					a => _ = a),
 			};
 		}
 
+		/// <summary>
+		/// This generates the boss rush world. Only really needed on dev builds.
+		/// </summary>
+		/// <param name="tasks"></param>
+		/// <param name="totalWeight"></param>
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
 		{
+			if (Main.keyState.PressingControl())
+				isBossRush = true;
+
 			if (!isBossRush)
 				return;
 
@@ -121,6 +224,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			tasks.Add(new PassLegacy("Boss rush arenas", GenerateArenas));
 		}
 
+		/// <summary>
+		/// This sets up the values of the boss rush world to handle things correctly (All bosses available, etc.)
+		/// </summary>
 		public override void PostWorldGen()
 		{
 			if (!isBossRush)
@@ -133,49 +239,54 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			Main.dungeonY = 500;
 
 			StarlightWorld.Flag(WorldFlags.SquidBossOpen);
+			StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 		}
 
+		/// <summary>
+		/// Generates the actual arenas based on the stages
+		/// </summary>
+		/// <param name="progress"></param>
+		/// <param name="configuration"></param>
 		private void GenerateArenas(GenerationProgress progress, GameConfiguration configuration)
 		{
 			var pos = new Vector2(100, 592);
 			stages.ForEach(n => n.Generate(ref pos));
 		}
 
+		/// <summary>
+		/// Handles the logic of the boss rush, such as stage transitions and scoring
+		/// </summary>
 		public override void PostUpdateEverything()
 		{
-			if (Main.LocalPlayer.controlHook)
-			{
-				foreach (NPC npc in Main.npc)
-					npc.active = false;
-
-				currentStage = 0;
-			}
-
 			if (!isBossRush || currentStage > stages.Count)
 				return;
 
 			scoreTimer++;
 
+			if (scoreTimer % 20 == 0)
+				score--;
+
 			if (transitionTimer > 0)
 				transitionTimer--;
+
+			if (Main.mapEnabled)
+				Main.mapEnabled = false;
 
 			if (transitionTimer <= 0 && (!NPC.AnyNPCs(trackedBossType) || trackedBossType == 0))
 			{
 				currentStage++;
-
+				Heal();
 				transitionTimer = 240;
-
-				if (currentStage > stages.Count)
-				{
-					// go to jade room
-				}
 			}
 
 			// transition animation
 			if (transitionTimer > 0)
 			{
 				if (transitionTimer == 130)
+				{
 					CurrentStage?.EnterArena(Main.LocalPlayer);
+					score += 2000;
+				}
 
 				if (transitionTimer == 120)
 					CurrentStage?.BeginFight();
@@ -196,6 +307,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + Main.rand.Next(100)), new Vector2(Main.rand.NextFloat(5.9f, 6.2f), 1), 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f, 3.3f), default, 1));
 		}
 
+		/// <summary>
+		/// The update method for the stardust in the background
+		/// </summary>
+		/// <param name="particle"></param>
 		private static void updateStars(Particle particle)
 		{
 			particle.Timer--;
@@ -206,25 +321,51 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				particle.Alpha = particle.Timer / 30f;
 		}
 
+		/// <summary>
+		/// This draws the background -over- the rest of the game
+		/// </summary>
+		/// <param name="orig"></param>
+		/// <param name="self"></param>
+		/// <param name="gameTime"></param>
 		private void DrawOverlay(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
 		{
+			if (!isBossRush)
+			{
+				orig(self, gameTime);
+				return;
+			}
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
 			mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
 			mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-			//spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 			spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			spriteBatch.End();
-			//spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
 			orig(self, gameTime);
 		}
 
+		/// <summary>
+		/// Draws the score
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		public override void PostDrawInterface(SpriteBatch spriteBatch)
+		{
+			if (!isBossRush)
+				return;
+
+			Utils.DrawBorderString(spriteBatch, "Score: " + score, new Vector2(32, 200), Color.White);
+		}
+
+		/// <summary>
+		/// Draws the background to a ScreenTarget to be used later
+		/// </summary>
+		/// <param name="sb"></param>
 		public static void DrawStars(SpriteBatch sb)
 		{
 			Texture2D texB = Terraria.GameContent.TextureAssets.MagicPixel.Value;
@@ -265,6 +406,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			stars.DrawParticles(sb);
 		}
 
+		/// <summary>
+		/// Draws the map for where the background should appear. Has fade around the visible rectangle
+		/// </summary>
+		/// <param name="sb"></param>
 		public static void DrawMap(SpriteBatch sb)
 		{
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
@@ -274,7 +419,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			Color color = Color.White;
 			color.A = 0;
 
-			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * (float)Math.Sin(transitionTimer / 240f * 3.14f));
+			float opacity = 0;
+
+			if (transitionTimer > 210)
+				opacity = 1 - (transitionTimer - 210) / 30f;
+			else if (transitionTimer > 120 && transitionTimer <= 210)
+				opacity = 1;
+			else if (transitionTimer - 90 <= 30)
+				opacity = (transitionTimer - 90) / 30f;
+
+			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * opacity);
 
 			Vector2 pos = visibleArea.TopLeft() - Main.screenPosition;
 
@@ -291,8 +445,14 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
 		}
 
+		/// <summary>
+		/// Saves if this is a boss rush world, and if so, the arena positions
+		/// </summary>
+		/// <param name="tag"></param>
 		public override void SaveWorldData(TagCompound tag)
 		{
+			tag["isBossRush"] = isBossRush;
+
 			if (isBossRush)
 			{
 				for (int k = 0; k < stages.Count; k++)
@@ -304,8 +464,17 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 
+		/// <summary>
+		/// Loads data about the boss rush if applicable
+		/// </summary>
+		/// <param name="tag"></param>
 		public override void LoadWorldData(TagCompound tag)
 		{
+			isBossRush = tag.GetBool("isBossRush");
+
+			if (isBossRush)
+				Reset();
+
 			if (isBossRush)
 			{
 				for (int k = 0; k < stages.Count; k++)
@@ -316,6 +485,22 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						stages[k].Load(newTag);
 				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Handles score penalty on getting hit
+	/// </summary>
+	internal class BossRushPlayer : ModPlayer
+	{
+		public override void OnHitByNPC(NPC npc, int damage, bool crit)
+		{
+			BossRushSystem.score -= 100;
+		}
+
+		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+		{
+			BossRushSystem.score -= 100;
 		}
 	}
 }

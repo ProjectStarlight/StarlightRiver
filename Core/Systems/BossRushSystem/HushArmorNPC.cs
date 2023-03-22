@@ -12,6 +12,9 @@
 
 		public override void UpdateUI(GameTime gameTime)
 		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
 			pollTimer++;
 
 			if (pollTimer % 20 == 0)
@@ -21,7 +24,7 @@
 
 				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
 					resistance = Helpers.Helper.LerpFloat(resistance, DPSTarget / thisDPS, 0.66f);
-				else
+				else if (resistance < 1)
 					resistance += 0.001f;
 
 				Main.NewText("=====================================================", new Color(200, 200, 200));
@@ -68,6 +71,9 @@
 
 		public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
 		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
 			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
 		}
 
@@ -95,6 +101,9 @@
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
 		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
 			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
 		}
 	}
