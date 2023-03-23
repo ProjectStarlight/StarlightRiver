@@ -1,11 +1,49 @@
 ﻿using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System.Collections.Generic;
+using Terraria.GameContent.UI.Elements;
 using Terraria.IO;
 using Terraria.UI;
 
 namespace StarlightRiver.Content.GUI
 {
+	internal class BossRushButton : SmartUIState
+	{
+		public UIText button;
+
+		public override bool Visible => Main.menuMode == 888;
+
+		public override int InsertionIndex(List<GameInterfaceLayer> layers)
+		{
+			return 0;
+		}
+
+		public override void OnInitialize()
+		{
+			button = new UIText("Boss rush");
+			button.Left.Set(360, 0.5f);
+			button.Top.Set(240, 0);
+			button.Width.Set(100, 0);
+			button.Height.Set(20, 0);
+			button.OnClick += (a, b) => BossRushGUIHack.inMenu = true;
+
+			Append(button);
+		}
+
+		public override void Draw(SpriteBatch spriteBatch)
+		{
+			var dims = button.GetDimensions().ToRectangle();
+			dims.Inflate(10, 10);
+
+			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
+			float opacity = button.IsMouseHovering ? 1 : 0.75f;
+
+			Utils.DrawSplicedPanel(spriteBatch, background, dims.X, dims.Y, dims.Width, dims.Height, 10, 10, 10, 10, new Color(73, 94, 171) * opacity);
+
+			base.Draw(spriteBatch);
+		}
+	}
+
 	internal class BossRushMenu : SmartUIState
 	{
 		public override bool Visible => BossRushGUIHack.inMenu;
