@@ -7,6 +7,7 @@ using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.GameContent.Generation;
 using Terraria.Graphics.Effects;
@@ -21,11 +22,17 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 	{
 		public static bool isBossRush = false;
 
+		public static int bossRushDifficulty;
+
 		public static int currentStage = -1;
 		public static int trackedBossType = 0;
 
 		public static int scoreTimer;
 		public static int score;
+
+		public static int savedNormalScore;
+		public static int savedExpertScore;
+		public static int savedMasterScore;
 
 		public static int speedupTimer;
 
@@ -45,12 +52,15 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			On.Terraria.Main.DrawInterface += DrawOverlay;
 			On.Terraria.Main.DoUpdate += Speedup;
+
+			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
+			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.twld"), Mod.GetFileBytes("Worlds/BossRushWorld.twld"));
 		}
 
 		/// <summary>
 		/// Resets the boss rush to the default starting state
 		/// </summary>
-		public void Reset()
+		public static void Reset()
 		{
 			trackedBossType = 0;
 			currentStage = -1;
@@ -58,6 +68,21 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			score = 8000;
 
 			transitionTimer = 0;
+		}
+
+		/// <summary>
+		/// Ends the boss rush and submits your final score
+		/// </summary>
+		public void End()
+		{
+			if (Main.GameMode == 0)
+				savedNormalScore = score;
+			if (Main.GameMode == 1)
+				savedExpertScore = score * 2;
+			if (Main.GameMode == 2)
+				savedMasterScore = score * 3;
+
+			WorldGen.SaveAndQuit();
 		}
 
 		/// <summary>
@@ -103,16 +128,26 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			orig(self, ref gameTime);
 
-			if (!isBossRush) //dont do anything outside of bossrush but the normal update
+			if (!isBossRush || Main.gameMenu) //dont do anything outside of bossrush but the normal update
 				return;
 
 			speedupTimer++; //track this seperately since gameTime would get sped up
 
-			if (Main.expertMode && speedupTimer % 4 == 0) //1.25x on expert
-				orig(self, ref gameTime);
+			if (Main.expertMode) //1.25x on expert
+			{
+				if (speedupTimer % 4 == 0)
+					orig(self, ref gameTime);
 
-			if (Main.masterMode && speedupTimer % 2 == 0) //1.5x on master
-				orig(self, ref gameTime);
+				return;
+			}
+
+			if (Main.masterMode) //1.5x on master
+			{
+				if (speedupTimer % 2 == 0)
+					orig(self, ref gameTime);
+
+				return;
+			}
 		}
 
 		/// <summary>
@@ -128,6 +163,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(250, 200),
 					a =>
 					{
+						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
+
 						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
@@ -141,8 +178,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					new Vector2(500, 1600),
 					a =>
 					{
-						StarlightWorld.vitricBiome = new Rectangle(0, 1000, 40, 40);
-
 						Item.NewItem(null, a + new Vector2(800, 2700), ModContent.ItemType<SquidBossSpawn>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y + 120, 1748, 2800);
@@ -174,6 +209,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 140);
 
 						var dummy = Main.projectile.FirstOrDefault(n => n.active && n.ModProjectile is VitricBossAltarDummy)?.ModProjectile as VitricBossAltarDummy;
+
+						if (Framing.GetTileSafely(dummy.ParentX, dummy.ParentY).TileFrameX < 90)
+						{
+							for (int x = dummy.ParentX - 2; x < dummy.ParentX + 3; x++)
+							{
+								for (int y = dummy.ParentY - 3; y < dummy.ParentY + 4; y++)
+									Framing.GetTileSafely(x, y).TileFrameX += 90;
+							}
+						}
+
 						ModContent.GetInstance<VitricBossAltar>().SpawnBoss(dummy.ParentX - 2, dummy.ParentY - 3, Main.LocalPlayer);
 
 						visibleArea = new Rectangle((int)a.X + 1040, (int)a.Y + 60, 1520, 1064);
@@ -183,11 +228,11 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				new BossRushStage(
 					"Structures/BossRushEnd",
-					ModContent.NPCType<BossRushLock>(),
-					new Vector2(250, 200),
+					ModContent.NPCType<BossRushGoal>(),
+					new Vector2(50, 200),
 					a =>
 					{
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
+						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushGoal>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
 						HushArmorSystem.DPSTarget = 50;
@@ -203,9 +248,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="totalWeight"></param>
 		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
 		{
-			if (Main.keyState.PressingControl())
-				isBossRush = true;
-
 			if (!isBossRush)
 				return;
 
@@ -261,6 +303,11 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush || currentStage > stages.Count)
 				return;
 
+			Main.GameMode = bossRushDifficulty;
+
+			if (Main.LocalPlayer.dead)
+				End();
+
 			scoreTimer++;
 
 			if (scoreTimer % 20 == 0)
@@ -275,6 +322,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (transitionTimer <= 0 && (!NPC.AnyNPCs(trackedBossType) || trackedBossType == 0))
 			{
 				currentStage++;
+
 				Heal();
 				transitionTimer = 240;
 			}
@@ -284,6 +332,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			{
 				if (transitionTimer == 130)
 				{
+					if (currentStage >= stages.Count)
+					{
+						score += 10000; //completion bonus
+						End();
+						return;
+					}
+
 					CurrentStage?.EnterArena(Main.LocalPlayer);
 					score += 2000;
 				}
@@ -462,6 +517,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					tag["stage" + k] = newTag;
 				}
 			}
+
+			isBossRush = false;
 		}
 
 		/// <summary>
@@ -473,10 +530,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			isBossRush = tag.GetBool("isBossRush");
 
 			if (isBossRush)
+			{
 				Reset();
 
-			if (isBossRush)
-			{
 				for (int k = 0; k < stages.Count; k++)
 				{
 					TagCompound newTag = tag.Get<TagCompound>("stage" + k);
@@ -484,6 +540,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					if (newTag != null)
 						stages[k].Load(newTag);
 				}
+			}
+			else
+			{
+				Main.mapEnabled = true;
 			}
 		}
 	}

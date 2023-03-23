@@ -27,6 +27,9 @@
 				else if (resistance < 1)
 					resistance += 0.001f;
 
+				if (!StarlightRiver.debugMode)
+					return;
+
 				Main.NewText("=====================================================", new Color(200, 200, 200));
 				Main.NewText("Adapative damage resistance stats:");
 				Main.NewText("Current resistance: " + resistance);
@@ -41,11 +44,19 @@
 		}
 	}
 
-	internal class HushArmorNPC : GlobalNPC
+	internal class BossRushNPC : GlobalNPC
 	{
 		public float storedPartialDamage;
 
 		public override bool InstancePerEntity => true;
+
+		public override void SetDefaults(NPC npc)
+		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
+			npc.SpawnedFromStatue = true; //nothing should drop items in boss rush
+		}
 
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
 		{

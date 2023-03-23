@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.height = 42;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
-			NPC.knockBackResist = 1;
+			NPC.knockBackResist = 0f;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/Clink");
 		}

@@ -18,30 +18,30 @@ namespace StarlightRiver.Content.GUI
 		public override void OnInitialize()
 		{
 			var normal = new BossRushChoice("Boss rush",
-				" - Fight all Starlight River bosses in order! [NEWBLOCK]" +
-				" - Normal difficulty [NEWBLOCK]" +
+				" - Fight all Starlight River bosses in order! NEWBLOCK" +
+				" - Normal difficulty NEWBLOCK" +
 				" - Full heal between bosses", 0);
 			normal.Left.Set(-150, 0.25f);
 			normal.Top.Set(-300, 0.5f);
 			Append(normal);
 
 			var expert = new BossRushChoice("Boss blitz",
-				" - Fight all Starlight River bosses in order! [NEWBLOCK]" +
-				" - Expert difficulty [NEWBLOCK]" +
-				" - Heal 200 life between bosses [NEWBLOCK]" +
-				" - Game moves at 1.25x speed! [NEWBLOCK]" +
+				" - Fight all Starlight River bosses in order! NEWBLOCK" +
+				" - Expert difficulty NEWBLOCK" +
+				" - Heal 200 life between bosses NEWBLOCK" +
+				" - Game moves at 1.25x speed! NEWBLOCK" +
 				" - 2x Score multiplier!", 1);
 			expert.Left.Set(-150, 0.5f);
 			expert.Top.Set(-300, 0.5f);
 			Append(expert);
 
-			var master = new BossRushChoice("Starlight showdown",
-				" - Fight all Starlight River bosses in order! [NEWBLOCK]" +
-				" - Master difficulty [NEWBLOCK]" +
-				" - No healing between bosses [NEWBLOCK]" +
-				" - Game moves at 1.5x speed! [NEWBLOCK]" +
-				" - Healing potions disabled! [NEWBLOCK]" +
-				" - Teleportation disabled! [NEWBLOCK]" +
+			var master = new BossRushChoice("Starlight\nshowdown",
+				" - Fight all Starlight River bosses in order! NEWBLOCK" +
+				" - Master difficulty NEWBLOCK" +
+				" - No healing between bosses NEWBLOCK" +
+				" - Game moves at 1.5x speed! NEWBLOCK" +
+				" - Healing potions disabled! NEWBLOCK" +
+				" - Teleportation disabled! NEWBLOCK" +
 				" - 3x Score multiplier!", 2);
 			master.Left.Set(-150, 0.75f);
 			master.Top.Set(-300, 0.5f);
@@ -59,8 +59,8 @@ namespace StarlightRiver.Content.GUI
 
 		public BossRushChoice(string name, string rules, int difficulty)
 		{
-			Width.Set(0, 300);
-			Height.Set(0, 600);
+			Width.Set(300, 0);
+			Height.Set(600, 0);
 
 			this.name = name;
 			this.rules = rules;
@@ -72,29 +72,50 @@ namespace StarlightRiver.Content.GUI
 			CalculatedStyle dims = GetDimensions();
 			Vector2 pos = dims.Position();
 
-			Texture2D background = Terraria.GameContent.TextureAssets.MagicPixel.Value;
+			Texture2D background = Main.Assets.Request<Texture2D>("Images/UI/CharCreation/PanelGrayscale").Value;
+			float opacity = IsMouseHovering ? 1 : 0.75f;
 
-			spriteBatch.Draw(background, dims.ToRectangle(), Color.Blue * 0.8f);
+			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X, (int)dims.Y, (int)dims.Width, (int)dims.Height, 10, 10, 10, 10, new Color(73, 94, 171) * opacity);
 
-			Utils.DrawBorderStringBig(spriteBatch, name, pos + new Vector2(dims.Width / 2f, 60), Color.White);
+			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X + 10, (int)dims.Y + 140, (int)dims.Width - 20, 360, 10, 10, 10, 10, Color.Black * 0.2f);
+			Utils.DrawSplicedPanel(spriteBatch, background, (int)dims.X + 10, (int)dims.Y + 520, (int)dims.Width - 20, 60, 10, 10, 10, 10, Color.Black * 0.2f);
+
+			Utils.DrawBorderStringBig(spriteBatch, name, pos + new Vector2(dims.Width / 2f, 20), Color.White, 1, 0.5f);
 
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-			string rulesWrapped = Helpers.Helper.WrapString(rules, 200, font, 1);
+			string rulesWrapped = Helpers.Helper.WrapString(rules, 240, font, 0.8f);
 
-			Utils.DrawBorderString(spriteBatch, rulesWrapped, pos + new Vector2(dims.Width / 2f, 120), Color.White);
+			Utils.DrawBorderString(spriteBatch, rulesWrapped, pos + new Vector2(dims.Width / 2f, 160), Color.White, 0.8f, 0.5f);
+
+			int sourceScore =
+				difficulty == 0 ? BossRushSystem.savedNormalScore :
+				difficulty == 1 ? BossRushSystem.savedExpertScore :
+				difficulty == 2 ? BossRushSystem.savedMasterScore :
+				0;
+
+			string scoreString = sourceScore > 0 ? $"Score: {sourceScore}" : "No score!";
+			Color scoreColor = sourceScore > 0 ? Color.Yellow : Color.Gray;
+			Utils.DrawBorderStringBig(spriteBatch, scoreString, pos + new Vector2(dims.Width / 2f, 536), scoreColor, 0.5f, 0.5f);
 		}
 
 		public override void Click(UIMouseEvent evt)
 		{
-			BossRushSystem.isBossRush = true;
+			BossRushSystem.Reset();
 
-			var temp = new WorldFileData(ModLoader.ModPath + "/BossRushWorld", false);
+			BossRushSystem.isBossRush = true;
+			BossRushSystem.bossRushDifficulty = difficulty;
+
+			Main.mapEnabled = false;
+
+			var temp = new WorldFileData(ModLoader.ModPath + "/BossRushWorld.wld", false);
 			temp.SetAsActive();
 
-			Main.ActiveWorldFileData = temp;
-			Main.GameMode = difficulty;
+			BossRushGUIHack.inMenu = false;
 
-			WorldGen.CreateNewWorld();
+			Main.ActiveWorldFileData = temp;
+			WorldGen.playWorld();
+
+			Main.menuMode = -1;
 		}
 	}
 }
