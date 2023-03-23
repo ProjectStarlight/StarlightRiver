@@ -75,6 +75,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private float initialRotation = 0;
 
 		private int charge = 0;
+		private float zRotation = 0;
 
 		Player Player => Main.player[Projectile.owner];
 		float ArmRotation => Projectile.rotation - ((Player.direction > 0) ?  MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
@@ -159,10 +160,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (charge < MAXCHARGE)
 				charge++;
 
-			if (currentAttack != AttackType.Slam || timer < 60)
+			if (currentAttack != AttackType.Slam || timer < 115)
 			{
-				freezeTimer = 2;
-				CameraSystem.shake += 2;
+				freezeTimer = 4;
+				CameraSystem.shake += 4;
 			}
 		}
 
@@ -243,7 +244,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private void AdjustPlayer()
 		{
-			Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotation);
+			if (currentAttack != AttackType.Spin)
+				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotation);
+			else
+				Player.itemRotation = ArmRotation;
+
 			Player.itemAnimation = Player.itemTime = 5;
 		}
 
@@ -269,6 +274,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			float progress = SpinEase((float)timer / 150);
 			Projectile.rotation = startAngle + swingAngle * progress;
+			zRotation = MathHelper.TwoPi * 2 * progress + ((Player.direction > 0) ? MathHelper.Pi : 0);
+			Player.UpdateRotation(zRotation);
 			active = progress > 0;
 
 			if ((timer == 10 || timer == 60 || timer == 120) && freezeTimer < 0)
@@ -318,14 +325,16 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			timer = 0;
 			freezeTimer = 0;
-			
+
+			zRotation = 0;
+			Player.UpdateRotation(0);
+
 			if (currentAttack < AttackType.Slam)
 				currentAttack++;
 			else
 				currentAttack = AttackType.Stab;
 
 			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
-
 			curAttackDone = false;
 		}
 	}
