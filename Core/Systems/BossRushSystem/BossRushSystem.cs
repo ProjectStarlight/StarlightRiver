@@ -167,7 +167,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
 
-						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
 					},
 					a => _ = a),
@@ -234,7 +234,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					{
 						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushGoal>());
 
-						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 400);
+						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
 					},
 					a => _ = a),
@@ -300,25 +300,28 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// </summary>
 		public override void PostUpdateEverything()
 		{
+			// if were out of boss rush dont do anything!
 			if (!isBossRush || currentStage > stages.Count)
 				return;
 
+			// set the difficulty
 			Main.GameMode = bossRushDifficulty;
 
+			// end the rush if the player died
 			if (Main.LocalPlayer.dead)
 				End();
 
+			// decrement the score as time goes on
 			scoreTimer++;
 
 			if (scoreTimer % 20 == 0)
 				score--;
 
+			// advance the animation
 			if (transitionTimer > 0)
 				transitionTimer--;
 
-			if (Main.mapEnabled)
-				Main.mapEnabled = false;
-
+			// advance the stage if the boss isnt there anymore
 			if (transitionTimer <= 0 && (!NPC.AnyNPCs(trackedBossType) || trackedBossType == 0))
 			{
 				currentStage++;
