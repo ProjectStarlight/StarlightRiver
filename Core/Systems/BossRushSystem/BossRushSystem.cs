@@ -557,20 +557,4 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 	}
-
-	/// <summary>
-	/// Handles score penalty on getting hit
-	/// </summary>
-	internal class BossRushPlayer : ModPlayer
-	{
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
-		{
-			BossRushSystem.score -= 100;
-		}
-
-		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
-		{
-			BossRushSystem.score -= 100;
-		}
-	}
 }
