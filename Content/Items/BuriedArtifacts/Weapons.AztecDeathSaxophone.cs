@@ -34,22 +34,26 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
-			HitEffects(player, target);
+			if (player.HasItem(Type))
+				HitEffects(player, target);
 		}
 
 		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
-			HitEffects(player, target);
+			if (player.HasItem(Type))
+				HitEffects(player, target);
 		}
 
 		private void StarlightPlayer_OnHitByProjectileEvent(Player player, Projectile projectile, int damage, bool crit)
 		{
-			HurtEffects(player, damage, projectile);
+			if (player.HasItem(Type))
+				HurtEffects(player, damage, projectile);
 		}
 
 		private void StarlightPlayer_OnHitByNPCEvent(Player player, NPC npc, int damage, bool crit)
 		{
-			HurtEffects(player, damage, npc);
+			if (player.HasItem(Type))
+				HurtEffects(player, damage, npc);
 		}
 
 		public void HitEffects(Player Player, NPC target)
