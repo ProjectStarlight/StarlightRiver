@@ -51,7 +51,6 @@ namespace StarlightRiver.Core.Loaders.UILoading
 				{
 					if (visible)
 					{
-						userInterface.Update(Main._drawInterfaceGameTime);
 						state.Draw(Main.spriteBatch);
 					}
 
@@ -81,6 +80,15 @@ namespace StarlightRiver.Core.Loaders.UILoading
 			{
 				SmartUIState state = UILoader.UIStates[k];
 				UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
+			}
+		}
+
+		public override void UpdateUI(GameTime gameTime)
+		{
+			foreach (UserInterface eachState in UILoader.UserInterfaces)
+			{
+				if (eachState?.CurrentState != null && ((SmartUIState) eachState.CurrentState).Visible)
+					eachState.Update(gameTime);
 			}
 		}
 	}
