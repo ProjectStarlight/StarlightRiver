@@ -203,7 +203,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				new BossRushStage(
 					"Structures/VitricTempleNew",
 					ModContent.NPCType<VitricBoss>(),
-					new Vector2(1300, 400),
+					new Vector2(1600, 1000),
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X - 200 * 16) / 16, (int)(a.Y - 6 * 16) / 16, 400, 140);

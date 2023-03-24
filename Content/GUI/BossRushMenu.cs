@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.BossRushSystem;
 using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameContent.UI.States;
 using Terraria.IO;
 using Terraria.UI;
 
@@ -11,7 +12,7 @@ namespace StarlightRiver.Content.GUI
 	{
 		public UIText button;
 
-		public override bool Visible => Main.menuMode == 888;
+		public override bool Visible => Main.gameMenu && Main.menuMode == 888 && Main.MenuUI.CurrentState is UIWorldSelect;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -153,7 +154,7 @@ namespace StarlightRiver.Content.GUI
 			Main.ActiveWorldFileData = temp;
 			WorldGen.playWorld();
 
-			Main.menuMode = -1;
+			Main.MenuUI.SetState(null);
 		}
 	}
 }

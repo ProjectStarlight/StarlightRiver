@@ -27,7 +27,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			orig(self, gameTime);
 
-			if (Main.MenuUI.CurrentState is UIWorldSelect)
+			if (Main.gameMenu && Main.menuMode == 888 && Main.MenuUI.CurrentState is UIWorldSelect)
 			{
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
