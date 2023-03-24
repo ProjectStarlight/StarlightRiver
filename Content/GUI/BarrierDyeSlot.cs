@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
+using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.GameInput;
@@ -28,7 +29,6 @@ namespace StarlightRiver.Content.GUI
 		{
 			slot.Left.Set(leftPos, 1);
 			slot.Top.Set(topPos, 0);
-			slot.OnClick += slot.ClickHandler;
 			Append(slot);
 		}
 
@@ -59,6 +59,11 @@ namespace StarlightRiver.Content.GUI
 
 	public class BarrierDyeSlotElement : UIElement
 	{
+		public BarrierDyeSlotElement()
+		{
+			OnClick += ClickHandler;
+		}
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			Player Player = Main.LocalPlayer;
