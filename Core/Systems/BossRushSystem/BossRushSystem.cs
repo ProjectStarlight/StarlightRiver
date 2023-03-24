@@ -274,8 +274,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush)
 				return;
 
-			Main.spawnTileX = 150;
-			Main.spawnTileY = 106;
+			Main.spawnTileX = 110;
+			Main.spawnTileY = 600;
 
 			Main.dungeonX = 1000;
 			Main.dungeonY = 500;
@@ -333,6 +333,11 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			// transition animation
 			if (transitionTimer > 0)
 			{
+				Main.LocalPlayer.immune = true; //so we dont die during transitions
+				Main.LocalPlayer.immuneTime = 2;
+
+				Main.LocalPlayer.fallStart = (int)Main.LocalPlayer.position.Y; //prevent fall damage
+
 				if (transitionTimer == 130)
 				{
 					if (currentStage >= stages.Count)
@@ -543,6 +548,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					if (newTag != null)
 						stages[k].Load(newTag);
 				}
+
+				PostWorldGen(); //Cant hurt to enforce these are set correctly
 			}
 			else
 			{
