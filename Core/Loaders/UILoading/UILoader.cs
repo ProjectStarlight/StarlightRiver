@@ -43,7 +43,7 @@ namespace StarlightRiver.Core.Loaders.UILoading
 			UIStates = null;
 		}
 
-		public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)
+		public static void AddLayer(List<GameInterfaceLayer> layers, UIState state, int index, bool visible, InterfaceScaleType scale)
 		{
 			string name = state == null ? "Unknown" : state.ToString();
 			layers.Insert(index, new LegacyGameInterfaceLayer("StarlightRiver: " + name,
@@ -79,7 +79,7 @@ namespace StarlightRiver.Core.Loaders.UILoading
 			for (int k = 0; k < UILoader.UIStates.Count; k++)
 			{
 				SmartUIState state = UILoader.UIStates[k];
-				UILoader.AddLayer(layers, UILoader.UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
+				UILoader.AddLayer(layers, state, state.InsertionIndex(layers), state.Visible, state.Scale);
 			}
 		}
 
