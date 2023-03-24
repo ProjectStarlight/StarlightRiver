@@ -9,7 +9,8 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	public class Corpseflower : CursedAccessory
 	{
-		public int[] maxTimeLefts = new int[100];
+		public int[] maxTimeLefts = new int[Main.maxCombatText];
+
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Corpseflower").Value) { }
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			orig();
 
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < Main.maxCombatText; i++)
 			{
 				CombatText text = Main.combatText[i];
 				if (maxTimeLefts[i] > 0)
@@ -130,7 +131,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "ratio + L";
+		public override string Tooltip => "You have been cursed by the corpeflower"; //idk man
 
 		public override void Load()
 		{
