@@ -57,22 +57,18 @@ namespace StarlightRiver.Core.Loaders.UILoading
 		/// Helper method for creating and inserting a LegacyGameInterfaceLayer automatically
 		/// </summary>
 		/// <param name="layers">The vanilla layers</param>
-		/// <param name="userInterface">the UserInterface to bind to the layer</param>
 		/// <param name="state">the UIState to bind to the layer</param>
 		/// <param name="index">Where this layer should be inserted</param>
 		/// <param name="visible">The logic dictating the visibility of this layer</param>
 		/// <param name="scale">The scale settings this layer should scale with</param>
-		public static void AddLayer(List<GameInterfaceLayer> layers, UserInterface userInterface, UIState state, int index, bool visible, InterfaceScaleType scale)
+		public static void AddLayer(List<GameInterfaceLayer> layers, UIState state, int index, bool visible, InterfaceScaleType scale)
 		{
 			string name = state == null ? "Unknown" : state.ToString();
 			layers.Insert(index, new LegacyGameInterfaceLayer("StarlightRiver: " + name,
 				delegate
 				{
 					if (visible)
-					{
-						userInterface.Update(Main._drawInterfaceGameTime);
 						state.Draw(Main.spriteBatch);
-					}
 
 					return true;
 				}, scale));
@@ -109,7 +105,16 @@ namespace StarlightRiver.Core.Loaders.UILoading
 			for (int k = 0; k < UIStates.Count; k++)
 			{
 				SmartUIState state = UIStates[k];
-				AddLayer(layers, UserInterfaces[k], state, state.InsertionIndex(layers), state.Visible, state.Scale);
+				AddLayer(layers, state, state.InsertionIndex(layers), state.Visible, state.Scale);
+			}
+		}
+
+		public override void UpdateUI(GameTime gameTime)
+		{
+			foreach (UserInterface eachState in UserInterfaces)
+			{
+				if (eachState?.CurrentState != null && ((SmartUIState)eachState.CurrentState).Visible)
+					eachState.Update(gameTime);
 			}
 		}
 	}
