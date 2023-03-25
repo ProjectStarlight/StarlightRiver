@@ -194,15 +194,26 @@ namespace StarlightRiver.Content.Items.Moonstone
 			origin.X -= length;
 			origin.Y += length;
 
-			if (effects == SpriteEffects.FlipHorizontally)
-				origin.X = 150 - origin.X;
-
-			if (effects == SpriteEffects.FlipVertically)
-				origin.Y = 150 - origin.Y;
-
 			var scale = new Vector2(Projectile.scale, Projectile.scale);
 
 			Vector2 position = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation);
+
+			float rotation = Projectile.rotation;
+			bool flipped = false;
+
+			if (currentAttack == AttackType.Spin)
+			{
+				if (Player.direction > 0 && (zRotation < MathHelper.PiOver2 || zRotation > MathHelper.PiOver2 * 3))
+				{
+					rotation = (Vector2.UnitX.RotatedBy(Projectile.rotation) * new Vector2(-1, 1)).ToRotation();
+					flipped = true;
+				}
+				if (Player.direction < 0 && zRotation > MathHelper.PiOver2 && zRotation < MathHelper.PiOver2 * 3)
+				{
+					rotation = (Vector2.UnitX.RotatedBy(Projectile.rotation) * new Vector2(-1, 1)).ToRotation();
+					flipped = true;
+				}
+			}
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -210,29 +221,52 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+			effect.Parameters["origin"].SetValue(origin / 150);
+			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
+			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
+			effect.Parameters["flipped"].SetValue(flipped);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
 			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
 			effect.CurrentTechnique.Passes[0].Apply();
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, effects, 0);
+			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, rotation + 0.78f, origin, scale, effects, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
+			effect.Parameters["origin"].SetValue(origin / 150);
+			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
+			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
+			effect.Parameters["flipped"].SetValue(flipped);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
 			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
 			effect.CurrentTechnique.Passes[1].Apply();
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, effects, 0);
+			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, rotation + 0.78f, origin, scale, effects, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
+
+			effect.Parameters["time"].SetValue(0);
+			effect.Parameters["fireHeight"].SetValue(0);
+			effect.Parameters["origin"].SetValue(origin / 150);
+			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
+			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
+			effect.Parameters["flipped"].SetValue(flipped);
+			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
+			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
+			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
+			effect.CurrentTechnique.Passes[2].Apply();
+
+			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), rotation + 0.78f, origin, scale, effects, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, effects, 0);
 			return false;
 		}
 
@@ -274,13 +308,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public void SpinAttack()
 		{
 			float startAngle = Player.direction > 0 || initialRotation < 0 ? initialRotation : initialRotation - MathHelper.TwoPi;
-			float finalAngle = Player.direction > 0 ? MathHelper.Pi * 4.25f : -MathHelper.Pi * 5.25f;
+			float finalAngle = Player.direction > 0 ? MathHelper.Pi * 0.25f : -MathHelper.Pi * 1.25f;
 			float swingAngle = finalAngle - startAngle;
 
 			float progress = SpinEase((float)timer / 120);
 			Projectile.rotation = startAngle + swingAngle * progress;
-			length = 100 - 40 * progress;
-			zRotation = MathHelper.TwoPi * 2 * progress + ((Player.direction > 0) ? MathHelper.Pi : 0);
+			zRotation = (MathHelper.TwoPi * 2 * progress + ((Player.direction > 0) ? MathHelper.Pi : 0)) % MathHelper.TwoPi;
 			Player.UpdateRotation(zRotation);
 			active = progress > 0;
 
@@ -298,7 +331,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			float progress = UppercutEase((float)timer / 25);
 			Projectile.rotation = startAngle + swingAngle * progress;
-			length = 60 + 40 * progress;
 			active = progress > 0;
 
 			if (timer == 0)
