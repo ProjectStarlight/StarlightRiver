@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.GUI
 			};
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (Main.gameMenu)
 				Visible = false;
@@ -50,8 +50,6 @@ namespace StarlightRiver.Content.GUI
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[0], Selections[0].stack);
 				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Selections[1], Selections[1].stack);
 			}
-
-			base.Update(gameTime);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -135,7 +133,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class LootSelection : UIElement
+	class LootSelection : SmartUIElement
 	{
 		internal Item Item;
 
@@ -174,7 +172,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (Parent is LootUI)
 			{

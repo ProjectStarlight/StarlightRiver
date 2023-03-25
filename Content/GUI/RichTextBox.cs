@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class RichTextButton : UIElement
+	class RichTextButton : SmartUIElement
 	{
 		readonly string message;
 		readonly Action onClick;
@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.GUI
 				Utils.DrawBorderString(spriteBatch, message, GetDimensions().ToRectangle().TopLeft() + new Vector2(10, 5), Color.White);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			onClick.Invoke();
 			Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);

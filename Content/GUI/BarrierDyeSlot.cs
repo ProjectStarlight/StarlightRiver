@@ -2,7 +2,6 @@
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
-using System;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.GameInput;
@@ -57,7 +56,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class BarrierDyeSlotElement : UIElement
+	public class BarrierDyeSlotElement : SmartUIElement
 	{
 		public BarrierDyeSlotElement()
 		{
@@ -152,9 +151,8 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
-			base.Update(gameTime);
 			Width.Set(44, 0);
 			Height.Set(44, 0);
 		}
