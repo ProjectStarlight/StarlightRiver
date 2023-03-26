@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.reuseDelay = 20;
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.knockBack = 6.5f;
+			Item.knockBack = 10f;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.crit = 4;
 			Item.rare = 2;
@@ -73,19 +73,20 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private float length = 100;
 		private float initialRotation = 0;
-
-		private int charge = 0;
 		private float zRotation = 0;
 
+		private int charge = 0;
+		private bool slammed = false;
+
 		Player Player => Main.player[Projectile.owner];
-		float ArmRotation => Projectile.rotation - ((Player.direction > 0) ?  MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
+		float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
 		private float Charge => charge / (float)MAXCHARGE;
 
 		private Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
 		private Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
 		private Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1.22f);
 		private Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
-		
+
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
@@ -121,6 +122,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void AI()
 		{
+			if (!Player.active || Player.dead || Player.noItems || Player.CCed)
+			{
+				Projectile.Kill();
+				return;
+			}
 
 			switch (currentAttack)
 			{
@@ -150,6 +156,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 				NextAttack();
 		}
 
+		public override void Kill(int timeleft)
+		{
+			Player.itemAnimation = Player.itemTime = 0;
+			Player.UpdateRotation(0);
+		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (!active)
@@ -165,14 +177,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (currentAttack != AttackType.Slam || timer < 50)
 			{
-				freezeTimer = 4;
-				CameraSystem.shake += 4;
+				if (freezeTimer < -8) // prevent procs from multiple enemies overlapping
+				{ 
+					CameraSystem.shake += 8;
+					freezeTimer = 2;
+				}
 			}
 		}
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
+			if (currentAttack == AttackType.Slam)
+				damage = (int)(damage * 1.5f);
 
+			if (currentAttack == AttackType.Spin)
+				damage = (int)(damage * 1.2f);
+
+			damage = (int)(damage * (1 + Charge / 4));
+
+			hitDirection = target.position.X > Player.position.X ? 1 : -1;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -183,12 +206,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 40 * Projectile.scale, ref collisionPoint);
 		}
 
+		public override void CutTiles()
+		{
+			Vector2 start = Player.MountedCenter;
+			Vector2 end = start + Vector2.UnitX.RotatedBy(Projectile.rotation) * length * 1.5f;
+			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
+		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Texture2D head = Request<Texture2D>(Texture + "_Head").Value;
 			Texture2D tex = TextureAssets.Projectile[Projectile.type].Value;
-			SpriteEffects effects = SpriteEffects.None;
 
 			var origin = new Vector2(140, 10);
 			origin.X -= length;
@@ -198,75 +227,35 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			Vector2 position = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation);
 
-			float rotation = Projectile.rotation;
-			bool flipped = false;
-
-			if (currentAttack == AttackType.Spin)
-			{
-				if (Player.direction > 0 && (zRotation < MathHelper.PiOver2 || zRotation > MathHelper.PiOver2 * 3))
-				{
-					rotation = (Vector2.UnitX.RotatedBy(Projectile.rotation) * new Vector2(-1, 1)).ToRotation();
-					flipped = true;
-				}
-				if (Player.direction < 0 && zRotation > MathHelper.PiOver2 && zRotation < MathHelper.PiOver2 * 3)
-				{
-					rotation = (Vector2.UnitX.RotatedBy(Projectile.rotation) * new Vector2(-1, 1)).ToRotation();
-					flipped = true;
-				}
-			}
-
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["origin"].SetValue(origin / 150);
-			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
-			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
-			effect.Parameters["flipped"].SetValue(flipped);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
 			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
 			effect.CurrentTechnique.Passes[0].Apply();
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, rotation + 0.78f, origin, scale, effects, 0);
+			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
-			effect.Parameters["origin"].SetValue(origin / 150);
-			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
-			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
-			effect.Parameters["flipped"].SetValue(flipped);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
 			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
 			effect.CurrentTechnique.Passes[1].Apply();
 
-			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, rotation + 0.78f, origin, scale, effects, 0);
-
-			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
-
-			effect.Parameters["time"].SetValue(0);
-			effect.Parameters["fireHeight"].SetValue(0);
-			effect.Parameters["origin"].SetValue(origin / 150);
-			effect.Parameters["zRotation"].SetValue(zRotation + MathHelper.Pi);
-			effect.Parameters["projAngle"].SetValue(Projectile.rotation);
-			effect.Parameters["flipped"].SetValue(flipped);
-			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
-			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
-			effect.Parameters["vnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "QuarterstaffMap").Value);
-			effect.CurrentTechnique.Passes[2].Apply();
-
-			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), rotation + 0.78f, origin, scale, effects, 0);
+			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 			return false;
 		}
 
@@ -277,14 +266,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			else
 				Player.itemRotation = ArmRotation;
 
-			Player.itemAnimation = Player.itemTime = 5;
+			Player.itemAnimation = Player.itemTime = 2;
 		}
 
 		public void StabAttack()
 		{
 			float swingAngle = Player.direction * -MathHelper.Pi / 10;
 			float realInitRot = Player.direction > 0 || initialRotation < 0 ? initialRotation : initialRotation - MathHelper.TwoPi;
-			float droop = Player.direction > 0 ? (MathHelper.PiOver2 - Math.Abs(realInitRot)) : (MathHelper.PiOver2 - Math.Abs(realInitRot + MathHelper.Pi) );
+			float droop = Player.direction > 0 ? (MathHelper.PiOver2 - Math.Abs(realInitRot)) : (MathHelper.PiOver2 - Math.Abs(realInitRot + MathHelper.Pi));
 			float progress = StabEase((float)timer / 15);
 
 			length = 60 + 40 * progress;
@@ -299,7 +288,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			if (timer == 0)
+			{
 				Projectile.ResetLocalNPCHitImmunity();
+				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
+			}
 
 			if (timer > 15)
 				curAttackDone = true;
@@ -308,19 +300,23 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public void SpinAttack()
 		{
 			float startAngle = Player.direction > 0 || initialRotation < 0 ? initialRotation : initialRotation - MathHelper.TwoPi;
-			float finalAngle = Player.direction > 0 ? MathHelper.Pi * 0.25f : -MathHelper.Pi * 1.25f;
+			float finalAngle = Player.direction > 0 ? MathHelper.Pi * 4.25f : -MathHelper.Pi * 5.25f;
 			float swingAngle = finalAngle - startAngle;
 
-			float progress = SpinEase((float)timer / 120);
+			float progress = SpinEase((float)timer / 90);
 			Projectile.rotation = startAngle + swingAngle * progress;
-			zRotation = (MathHelper.TwoPi * 2 * progress + ((Player.direction > 0) ? MathHelper.Pi : 0)) % MathHelper.TwoPi;
+			length = 100 - 40 * progress;
+			zRotation = MathHelper.TwoPi * 2 * progress + ((Player.direction > 0) ? MathHelper.Pi : 0);
 			Player.UpdateRotation(zRotation);
 			active = progress > 0;
 
-			if ((timer == 10 || timer == 60 || timer == 80) && freezeTimer < 0)
+			if ((timer == 10 || timer == 40 || timer == 80) && freezeTimer < 0)
 				Projectile.ResetLocalNPCHitImmunity();
 
-			if (timer > 120)
+			if ((timer == 25 || timer == 50) && freezeTimer < 0)
+				Helper.PlayPitched("Effects/HeavyWhoosh", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+
+			if (timer > 90)
 				curAttackDone = true;
 		}
 
@@ -329,33 +325,44 @@ namespace StarlightRiver.Content.Items.Moonstone
 			float startAngle = -MathHelper.PiOver2 - Player.direction * MathHelper.Pi * 1.25f;
 			float swingAngle = Player.direction * -MathHelper.Pi * 2 / 3;
 
-			float progress = UppercutEase((float)timer / 25);
+			float progress = UppercutEase((float)timer / 15);
 			Projectile.rotation = startAngle + swingAngle * progress;
+			length = 60 + 40 * progress;
 			active = progress > 0;
 
 			if (timer == 0)
+			{
 				Projectile.ResetLocalNPCHitImmunity();
+				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+			}
 
-			if (timer > 25)
+			if (timer > 15)
 				curAttackDone = true;
 		}
 
 		public void SlamAttack()
 		{
-			float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
-			float swingAngle = Player.direction * MathHelper.PiOver2 * 1f;
-			
-			float progress = SlamEase((float)timer / 60);
-			Projectile.rotation = startAngle + swingAngle * progress;
+			if (!slammed)
+			{
+				float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
+				float swingAngle = Player.direction * MathHelper.PiOver2 * 1.05f;
 
-			Vector2 tilePos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length;
+				float progress = SlamEase((float)timer / 45);
+				Projectile.rotation = startAngle + swingAngle * progress;
+			}
+
+			Vector2 pos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length;
+			Vector2 tilePos = pos;
 			tilePos.Y += 15;
 			tilePos /= 16;
 
-			if (progress != 1 && freezeTimer < 0)
+			if (timer <= 60 && freezeTimer < 0 && !slammed)
 			{
-				if (Main.tile[(int)tilePos.X, (int)tilePos.Y].BlockType == BlockType.Solid && progress > 0.6 && progress != 1 && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Player.direction)
+				Tile tile = Main.tile[(int)tilePos.X, (int)tilePos.Y];
+				if (tile.HasTile && Main.tileSolid[tile.TileType] && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Player.direction)
 				{
+					slammed = true;
+
 					for (int i = 0; i < 13; i++)
 					{
 						Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
@@ -369,21 +376,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (Charge > 0)
 					{
-						// var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
 
-						// if (proj.ModProjectile is QuarterOrb modproj)
-							// modproj.moveDirection = new Vector2(-Player.direction, -1);
+						if (proj.ModProjectile is QuarterOrb modproj)
+							modproj.moveDirection = new Vector2(-Player.direction, -1);
+
+						charge = 0;
 					}
 
 					CameraSystem.shake += 12;
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), Player.MountedCenter + Vector2.UnitX.RotatedBy(Projectile.rotation) * length, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
 				}
 			}
 
 			if (timer == 30 && freezeTimer < 0)
+			{
 				Projectile.ResetLocalNPCHitImmunity();
+			}
 
-			if (timer > 100)
+			if (timer > 60)
 				curAttackDone = true;
 		}
 
@@ -412,11 +423,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
 			curAttackDone = false;
+			slammed = false;
 		}
 	}
 
 	public class QuarterOrb : ModProjectile, IDrawAdditive
 	{
+		public Vector2 moveDirection;
+		public Vector2 newVelocity = Vector2.Zero;
+		public float speed = 7f;
+
+		bool collideX = false;
+		bool collideY = false;
+
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
@@ -430,19 +449,102 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = false;
-			Projectile.hostile = true;
-			Projectile.friendly = false;
-			Projectile.width = Projectile.height = 36;
+			Projectile.friendly = true;
+			Projectile.width = Projectile.height = 64;
 			Projectile.timeLeft = 150;
 			Projectile.ignoreWater = true;
 		}
 		public override void AI()
 		{
+			Projectile.scale = 0.5f;
+			newVelocity = Collide();
 
+			if (Math.Abs(newVelocity.X) < 0.5f)
+				collideX = true;
+			else
+				collideX = false;
+
+			if (Math.Abs(newVelocity.Y) < 0.5f)
+				collideY = true;
+			else
+				collideY = false;
+
+			if (Projectile.ai[1] == 0f)
+			{
+				Projectile.rotation += (float)(moveDirection.X * moveDirection.Y) * 0.1f;
+
+				if (collideY)
+					Projectile.ai[0] = 2f;
+
+				if (!collideY && Projectile.ai[0] == 2f)
+				{
+					moveDirection.X = -moveDirection.X;
+					Projectile.ai[1] = 1f;
+					Projectile.ai[0] = 1f;
+				}
+
+				if (collideX)
+				{
+					moveDirection.Y = -moveDirection.Y;
+					Projectile.ai[1] = 1f;
+				}
+			}
+			else
+			{
+				Projectile.rotation -= (float)(moveDirection.X * moveDirection.Y) * 0.1f;
+
+				if (collideX)
+					Projectile.ai[0] = 2f;
+
+				if (!collideX && Projectile.ai[0] == 2f)
+				{
+					moveDirection.Y = -moveDirection.Y;
+					Projectile.ai[1] = 0f;
+					Projectile.ai[0] = 1f;
+				}
+
+				if (collideY)
+				{
+					moveDirection.X = -moveDirection.X;
+					Projectile.ai[1] = 0f;
+				}
+			}
+
+			Projectile.velocity = speed * moveDirection;
+			Projectile.velocity = Collide();
+		}
+
+		protected virtual Vector2 Collide()
+		{
+			return Collision.noSlopeCollision(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height, true, true);
+		}
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+
+			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
+			var color = new Color(72 + sin, 30 + sin / 2, 127);
+
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
+
+			Effect effect1 = Filters.Scene["CrescentOrb"].GetShader().Shader;
+			effect1.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/QuarterstaffMap").Value);
+			effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
+			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Projectile.Size / 2, Projectile.scale * 2, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 		}
 	}
