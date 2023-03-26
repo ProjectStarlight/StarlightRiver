@@ -162,8 +162,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
                 if (!dontConsumeAmmo)
                 {
-                    if (ammoItem.ModItem != null)
-                        ammoItem.ModItem.OnConsumedAsAmmo(Item, player); //idk why a non-ammo item would ever override onconsumedasammo but if it does this runs
+                    ammoItem.ModItem?.OnConsumedAsAmmo(Item, player); //idk why a non-ammo item would ever override onconsumedasammo but if it does this runs
 
                     Item.ModItem.OnConsumeAmmo(ammoItem, player);
 

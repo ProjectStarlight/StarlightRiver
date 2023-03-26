@@ -411,8 +411,7 @@ namespace StarlightRiver.Content.Items.Misc
 
                 if (!dontConsumeAmmo)
                 {
-                    if (Holdout.ammoItem.ModItem != null)
-                        Holdout.ammoItem.ModItem.OnConsumedAsAmmo(Owner.HeldItem, Owner);
+                    Holdout.ammoItem.ModItem?.OnConsumedAsAmmo(Owner.HeldItem, Owner);
 
                     Holdout.OnConsumeAmmo(Holdout.ammoItem, Owner);
 
