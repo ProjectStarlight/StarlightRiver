@@ -5,6 +5,7 @@ texture sampleTexture2;
 sampler2D samplerTex2 = sampler_state { texture = <sampleTexture2>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
 float uTime;
+float opacity;
 
 float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
 {
@@ -21,7 +22,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     color.r -= tex2D(samplerTex2, st2).x;
     color.r += tex2D(samplerTex2, st3).x * 0.5;
 
-    return color;
+    return color * opacity;
 }
 
 technique Technique1

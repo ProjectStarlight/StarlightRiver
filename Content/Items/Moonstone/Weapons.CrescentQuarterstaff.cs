@@ -2,6 +2,8 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using System.Linq;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -12,6 +14,11 @@ namespace StarlightRiver.Content.Items.Moonstone
 {
 	public class CrescentQuarterstaff : ModItem
 	{
+		public int charge = 0;
+		private int chargeDepletionTimer = 0;
+		public int combo = 0;
+		private int comboResetTimer = 0;
+
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
@@ -40,7 +47,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.shoot = ProjectileType<CrescentQuarterstaffProj>();
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
-			Item.autoReuse = false;
+			Item.autoReuse = true;
 		}
 
 		public override void AddRecipes()
@@ -49,6 +56,50 @@ namespace StarlightRiver.Content.Items.Moonstone
 			recipe.AddIngredient(ItemType<MoonstoneBarItem>(), 12);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+		}
+		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+		{
+			int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
+			return false;
+		}
+
+		public override void UpdateInventory(Player player)
+		{
+			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<CrescentQuarterstaffProj>()))
+			{
+				chargeDepletionTimer = 0;
+				comboResetTimer = 0;
+			}
+			else
+			{
+				chargeDepletionTimer++;
+				comboResetTimer++;
+
+				if (chargeDepletionTimer > 30 && charge > 0)
+				{
+					charge--;
+					chargeDepletionTimer = 0;
+				}
+
+				if (comboResetTimer > 60)
+					combo = 0;
+			}
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(charge);
+			writer.Write(chargeDepletionTimer);
+			writer.Write(combo);
+			writer.Write(comboResetTimer);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			charge = reader.ReadInt32();
+			chargeDepletionTimer = reader.ReadInt32();
+			combo = reader.ReadInt32();
+			comboResetTimer = reader.ReadInt32();
 		}
 	}
 
@@ -64,9 +115,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private const int MAXCHARGE = 10;
 
-		private AttackType currentAttack = AttackType.Stab;
+		private AttackType CurrentAttack
+		{
+			get => (AttackType)Projectile.ai[0];
+			set => Projectile.ai[0] = (float)value;
+		}
 
-		private int timer = 0;
+		private ref float charge => ref Projectile.ai[1];
 		private int freezeTimer = 0;
 		private bool active = true;
 		private bool curAttackDone = false;
@@ -75,7 +130,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private float initialRotation = 0;
 		private float zRotation = 0;
 
-		private int charge = 0;
+		private int timer = 0;
 		private bool slammed = false;
 
 		Player Player => Main.player[Projectile.owner];
@@ -128,7 +183,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				return;
 			}
 
-			switch (currentAttack)
+			switch (CurrentAttack)
 			{
 				case AttackType.Spin:
 					SpinAttack();
@@ -175,7 +230,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (charge < MAXCHARGE)
 				charge++;
 
-			if (currentAttack != AttackType.Slam || timer < 50)
+			if (CurrentAttack != AttackType.Slam || timer < 50)
 			{
 				if (freezeTimer < -8) // prevent procs from multiple enemies overlapping
 				{ 
@@ -187,13 +242,13 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
-			if (currentAttack == AttackType.Slam)
+			if (CurrentAttack == AttackType.Slam)
 				damage = (int)(damage * 1.5f);
 
-			if (currentAttack == AttackType.Spin)
+			if (CurrentAttack == AttackType.Spin)
 				damage = (int)(damage * 1.2f);
 
-			damage = (int)(damage * (1 + Charge / 4));
+			damage = (int)(damage * (1 + Charge / 5));
 
 			hitDirection = target.position.X > Player.position.X ? 1 : -1;
 		}
@@ -231,7 +286,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			Effect effect = Filters.Scene["MoonFireAura"].GetShader().Shader;
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
+			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
@@ -243,7 +298,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
-			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.01f);
+			effect.Parameters["time"].SetValue(StarlightWorld.visualTimer * 0.2f);
 			effect.Parameters["fireHeight"].SetValue(0.03f * Charge);
 			effect.Parameters["fnoise"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap1").Value);
 			effect.Parameters["fnoise2"].SetValue(Request<Texture2D>(AssetDirectory.MoonstoneItem + "DatsuzeiFlameMap2").Value);
@@ -259,9 +314,19 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return false;
 		}
 
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(initialRotation);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			initialRotation = reader.ReadSingle();
+		}
+
 		private void AdjustPlayer()
 		{
-			if (currentAttack != AttackType.Spin)
+			if (CurrentAttack != AttackType.Spin)
 				Player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, ArmRotation);
 			else
 				Player.itemRotation = ArmRotation;
@@ -310,7 +375,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Player.UpdateRotation(zRotation);
 			active = progress > 0;
 
-			if ((timer == 10 || timer == 40 || timer == 80) && freezeTimer < 0)
+			if ((timer == 10 || timer == 40 || timer == 70) && freezeTimer < 0)
 				Projectile.ResetLocalNPCHitImmunity();
 
 			if ((timer == 25 || timer == 50) && freezeTimer < 0)
@@ -356,7 +421,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			tilePos.Y += 15;
 			tilePos /= 16;
 
-			if (timer <= 60 && freezeTimer < 0 && !slammed)
+			if (timer <= 45 && freezeTimer < 0 && !slammed)
 			{
 				Tile tile = Main.tile[(int)tilePos.X, (int)tilePos.Y];
 				if (tile.HasTile && Main.tileSolid[tile.TileType] && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Player.direction)
@@ -376,10 +441,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (Charge > 0)
 					{
-						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(0, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+						proj.scale = (1 + Charge) / 2;
 
 						if (proj.ModProjectile is QuarterOrb modproj)
 							modproj.moveDirection = new Vector2(-Player.direction, -1);
+
 
 						charge = 0;
 					}
@@ -400,30 +467,36 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public void NextAttack()
 		{
-			if (!Player.channel)
-			{
-				Projectile.Kill();
-			}
-
 			timer = 0;
 			freezeTimer = 0;
 
 			zRotation = 0;
 			Player.UpdateRotation(0);
 
-			if (currentAttack < AttackType.Slam)
+			if (CurrentAttack < AttackType.Slam)
 			{
-				currentAttack++;
+				CurrentAttack++;
 			}
 			else
 			{
-				currentAttack = AttackType.Stab;
+				CurrentAttack = AttackType.Stab;
 				initialRotation = (Main.MouseWorld - Player.MountedCenter).ToRotation();
 			}
 
 			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1;
 			curAttackDone = false;
 			slammed = false;
+
+			if (Player.HeldItem.ModItem is CrescentQuarterstaff staff)
+			{
+				staff.charge = (int)charge;
+				staff.combo = (int)CurrentAttack;
+			}
+
+			if (!Player.channel)
+			{
+				Projectile.Kill();
+			}
 		}
 	}
 
@@ -451,12 +524,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Projectile.tileCollide = false;
 			Projectile.friendly = true;
 			Projectile.width = Projectile.height = 64;
-			Projectile.timeLeft = 150;
+			Projectile.timeLeft = 180;
 			Projectile.ignoreWater = true;
 		}
 		public override void AI()
 		{
-			Projectile.scale = 0.5f;
+			Projectile.width = Projectile.height = (int)(64 * Projectile.scale);
 			newVelocity = Collide();
 
 			if (Math.Abs(newVelocity.X) < 0.5f)
@@ -518,6 +591,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			return Collision.noSlopeCollision(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height, true, true);
 		}
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			return false;
@@ -528,24 +602,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
+			float opacity = Projectile.timeLeft > 20 ? 1 : (float)Projectile.timeLeft / 20f;
 			var color = new Color(72 + sin, 30 + sin / 2, 127);
 
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale, 0, texGlow.Size() / 2, Projectile.scale * 1.0f, default, default);
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f, 0, texGlow.Size() / 2, Projectile.scale * 1.6f, default, default);
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * opacity, 0, texGlow.Size() / 2, Projectile.scale / 2, default, default);
+			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f * opacity, 0, texGlow.Size() / 2, Projectile.scale * 0.8f, default, default);
 
 			Effect effect1 = Filters.Scene["CrescentOrb"].GetShader().Shader;
 			effect1.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/QuarterstaffMap").Value);
 			effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
 			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
+			effect1.Parameters["opacity"].SetValue(opacity);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
 
-			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Projectile.Size / 2, Projectile.scale * 2, 0, 0);
+			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
 		}
 	}
 }
