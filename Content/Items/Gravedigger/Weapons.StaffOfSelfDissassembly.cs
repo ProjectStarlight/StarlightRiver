@@ -20,6 +20,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Tooltip.SetDefault("Reserve 40 life to summon a flesh apparation\n" +
 				"apparations grant increased life regeneration\n" +
 				"life regeneration boost is increased when apparitions strike an enemy");
+			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
+			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
 
 		public override void SetDefaults()
@@ -31,7 +33,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.useAnimation = 20;
 			Item.useTime = 20;
 			Item.shoot = ModContent.ProjectileType<FleshApparation>();
-			Item.shootSpeed = 1;
+			Item.buffType = ModContent.BuffType<FleshApparationBuff>();
+			Item.noMelee = true;
 		}
 
 		public override bool CanUseItem(Player player)
@@ -90,6 +93,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 
+			Main.projPet[Projectile.type] = true;
+			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
 			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
 		}
 
