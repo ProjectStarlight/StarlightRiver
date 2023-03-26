@@ -1,26 +1,20 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Systems;
-using StarlightRiver.Core.Systems.ChestLootSystem;
-using System.Collections.Generic;
-using Terraria;
+using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Helpers;
+using System.Collections.Generic; 
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Terraria.ObjectData;
-using StarlightRiver.Helpers;
 
 namespace StarlightRiver.Content.Items.Misc
 {
-    public class Sling : MultiAmmoWeapon
-    {
-        public override string Texture => AssetDirectory.MiscItem + Name;
-        public override List<AmmoStruct> ValidAmmos => new() 
-        {
-            new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
+	public class Sling : MultiAmmoWeapon
+	{
+		public override string Texture => AssetDirectory.MiscItem + Name;
+
+		public override List<AmmoStruct> ValidAmmos => new()
+		{
+			new AmmoStruct(ItemID.Seed, ModContent.ProjectileType<SlingSeedProjectile>(), shootspeed: -5f), //seed projectile has 1 extra update, so shootspeed is decreased to compensate, effective shootspeed is around 20
             new AmmoStruct(ItemID.StoneBlock, ModContent.ProjectileType<SlingStoneProjectile>(), 5, -4f, 2.5f),
             new AmmoStruct(ItemID.Mushroom, ModContent.ProjectileType<SlingMushroomProjectile>(), -2)
         };

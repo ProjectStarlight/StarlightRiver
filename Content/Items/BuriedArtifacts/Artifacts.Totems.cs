@@ -1,8 +1,5 @@
-﻿using StarlightRiver.Core;
-using Terraria;
+﻿using System;
 using Terraria.ID;
-using System;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
@@ -22,9 +19,9 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.height = 40;
 			Item.value = Item.sellPrice(silver: 50);
 			Item.rare = ItemRarityID.Orange;
-			Item.maxStack = 30;
-			Item.autoReuse = true;
-			Item.consumable = true;
+			Item.maxStack = 1;
+			Item.autoReuse = false;
+			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
 		}
@@ -56,11 +53,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			Item.width = 40;
 			Item.height = 40;
-			Item.value = Item.sellPrice(silver:50);
+			Item.value = Item.sellPrice(silver: 50);
 			Item.rare = ItemRarityID.Orange;
-			Item.maxStack = 30;
-			Item.autoReuse = true;
-			Item.consumable = true;
+			Item.maxStack = 1;
+			Item.autoReuse = false;
+			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
 		}

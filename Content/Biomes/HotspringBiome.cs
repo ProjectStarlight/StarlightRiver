@@ -1,15 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Codex.Entries;
-using StarlightRiver.Content.Tiles.Underground;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using StarlightRiver.Content.Tiles.Underground;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Biomes
 {

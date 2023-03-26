@@ -1,53 +1,75 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
-using Terraria;
-using Terraria.DataStructures;
+using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Core.Systems.LightingSystem;
+using System.Collections.Generic;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	class TempleWindowSmall : ModTile
-    {
-        public override string Texture => AssetDirectory.Invisible;
+	class TallWindow : DummyTile
+	{
+		public override int DummyType => ProjectileType<TallWindowDummy>();
 
-        public override void SetStaticDefaults()
-        {
-            QuickBlock.QuickSetFurniture(this, 4, 8, 0, SoundID.Tink, false, Color.White);
-        }
+		public override string Texture => AssetDirectory.VitricTile + "TallWindow";
 
-        public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
-        {
-            var tile = Framing.GetTileSafely(i, j);
+		public override void SetStaticDefaults()
+		{
+			QuickBlock.QuickSetFurniture(this, 6, 18, DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			Main.tileLighted[Type] = true;
+		}
 
-            if (tile.TileFrameX != 0 || tile.TileFrameY != 0) 
-                return false;
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			(r, g, b) = (0.5f, 0.35f, 0.2f);
+		}
+	}
 
-            var frameTex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmallFrame").Value;
-            var pos = new Point16(i * 16, j * 16) - Main.screenPosition.ToPoint16();
-            var target = new Rectangle(pos.X, pos.Y, frameTex.Width, frameTex.Height);
+	class TallWindowItem : QuickTileItem
+	{
+		public TallWindowItem() : base("Window Actor", "Debug Item", "TallWindow", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
+	}
 
-            for(int k = 0; k < 5; k++)
-            {
-                var tex = Request<Texture2D>(AssetDirectory.VitricTile + "TempleWindowSmall" + k).Value;
-                int xOff = (int)((Main.screenPosition.X + Main.screenWidth / 2 - i * 16) * (1f / ((k + 1) * 2)) * -0.35f);
-                int yOff = (int)((Main.screenPosition.Y + Main.screenHeight / 2 - j * 16) * (1f / ((k + 1) * 2)) * -0.35f);
+	class TallWindowDummy : Dummy
+	{
+		public TallWindowDummy() : base(TileType<TallWindow>(), 16, 16) { }
 
-                var source = new Rectangle(
-                    (tex.Width / 2 - frameTex.Width / 2) + xOff,
-                    (tex.Height / 2 - frameTex.Height / 2) + yOff, 
-                    frameTex.Width,
-                    frameTex.Height
-                    );
+		public override void SafeSetDefaults()
+		{
+			Projectile.hide = true;
+		}
 
-                spriteBatch.Draw(tex, target, source, Color.White);
-            }
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			behindNPCsAndTiles.Add(index);
+		}
 
-            spriteBatch.Draw(frameTex, target, Color.White);
+		public override bool PreDraw(ref Color lightColor)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
 
-            return false;
-        }
-    }
+			var bgTarget = new Rectangle(6, 32, 84, 256);
+			bgTarget.Offset(pos.ToPoint());
+
+			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
+
+			return true;
+		}
+
+		public override void PostDraw(Color lightColor)
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
+			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "TallWindowOver").Value;
+			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
+
+			spriteBatch.End();
+
+			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
+
+			spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+
+			//spriteBatch.Draw(tex, pos, new Color(0.5f, 0.35f, 0.2f));         
+		}
+	}
 }

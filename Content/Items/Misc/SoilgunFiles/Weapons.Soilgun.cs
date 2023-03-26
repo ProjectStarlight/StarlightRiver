@@ -1,22 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
-using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
-using System.Text;
-using StarlightRiver.Core.Systems;
-using System.IO;
-using StarlightRiver.Content.Items.Vitric;
-using System.Linq;
-using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {   
@@ -344,15 +332,26 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             owner.itemTime = 2;
             owner.itemAnimation = 2;
 
-            if (CanShoot)
-            {
-                Projectile.timeLeft = 2;
-                Projectile.rotation = Utils.ToRotation(Projectile.velocity);
-                owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
+			if (CurrentCharge >= maxCharge)
+				drawWhiteTimer--;
 
-                if (Projectile.spriteDirection == -1)
-                    Projectile.rotation += 3.1415927f;
-            }
+			if (!CanHold)
+			{
+				if (CurrentCharge >= maxCharge)
+					ShootSoils(barrelPos);
+				else
+					Projectile.Kill();
+			}
+
+			if (CurrentCharge == maxCharge)
+			{
+				//maybe better sound here
+				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.position);
+				for (int i = 0; i < 9; i++)
+				{
+					Dust.NewDust(barrelPos, 4, 8, DustID.Dirt, 0f, 0f, default, default, Main.rand.NextFloat(0.9f, 1.2f));
+				}
+			}
 
             Projectile.position = armPos - Projectile.Size * 0.5f;
 

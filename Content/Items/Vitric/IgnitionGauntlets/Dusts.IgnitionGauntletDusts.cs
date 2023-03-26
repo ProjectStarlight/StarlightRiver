@@ -1,24 +1,11 @@
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Items.Vitric
+namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletSmoke : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -30,7 +17,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			Color gray = new Color(25, 25, 25);
+			var gray = new Color(25, 25, 25);
 			Color ret;
 			if (dust.alpha < 80)
 				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
@@ -60,15 +47,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.96f;
-				}
 				else
-				{
 					dust.scale *= 0.93f;
-				}
 			}
-
 
 			if (dust.velocity.Length() > 3)
 				dust.velocity *= 0.85f;
@@ -76,15 +58,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.velocity *= 0.92f;
 
 			if (dust.alpha > 60)
-			{
 				dust.alpha += 12;
-			}
 			else
-			{
 				dust.alpha += 8;
-			}
 
-			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
+			Lighting.AddLight(dust.position, ((Color)GetAlpha(dust, Color.White)).ToVector3() * 0.5f);
 
 			dust.position += dust.velocity;
 
@@ -97,7 +75,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 	public class IgnitionGauntletSmoke2 : ModDust
 	{
-		public override string Texture => AssetDirectory.Dust + "NeedlerDustThree";
+		public override string Texture => AssetDirectory.Dust + "NeedlerDust";
 
 		public override void OnSpawn(Dust dust)
 		{
@@ -109,8 +87,9 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			Color gray = new Color(25, 25, 25);
+			var gray = new Color(25, 25, 25);
 			Color ret;
+
 			if (dust.alpha < 80)
 				ret = Color.Lerp(Color.Yellow, Color.Orange, dust.alpha / 80f);
 			else if (dust.alpha < 160)
@@ -139,15 +118,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.98f;
-				}
 				else
-				{
 					dust.scale *= 0.96f;
-				}
 			}
-
 
 			if (dust.velocity.Length() > 3)
 				dust.velocity *= 0.92f;
@@ -156,7 +130,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			dust.alpha += 30;
 
-			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
+			Lighting.AddLight(dust.position, ((Color)GetAlpha(dust, Color.White)).ToVector3() * 0.5f);
 
 			dust.position += dust.velocity;
 
@@ -171,10 +145,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData == null)
-			{
-				dust.customData = 0;
-			}
+			dust.customData ??= 0;
 
 			if ((int)dust.customData < 7)
 			{
@@ -184,15 +155,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			else
 			{
 				if (dust.alpha > 60)
-				{
 					dust.scale *= 0.96f;
-				}
 				else
-				{
 					dust.scale *= 0.93f;
-				}
 			}
-
 
 			if (dust.velocity.Length() > 3)
 				dust.velocity *= 0.84f;
@@ -200,15 +166,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.velocity *= 0.93f;
 
 			if (dust.alpha > 60)
-			{
 				dust.alpha += 6;
-			}
 			else
-			{
 				dust.alpha += 3;
-			}
 
-			Lighting.AddLight(dust.position, ((Color)(GetAlpha(dust, Color.White))).ToVector3() * 0.5f);
+			Lighting.AddLight(dust.position, ((Color)GetAlpha(dust, Color.White)).ToVector3() * 0.5f);
 
 			dust.position += dust.velocity;
 
@@ -248,7 +210,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (dust.fadeIn < 5)
 				mult = dust.fadeIn / 5f;
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - (dust.fadeIn / 20f))), 0, 0) * mult);
+			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
 			dust.shader.UseColor(dust.color * mult);
 			dust.fadeIn += 2;
 
@@ -256,6 +218,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (dust.fadeIn > 45)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -286,7 +249,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			float mult = MathHelper.Min(dust.fadeIn / 15f, (45 - dust.fadeIn) / 15f);
 
-			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - (dust.fadeIn / 20f))), 0, 0) * mult);
+			dust.shader.UseSecondaryColor(new Color((int)(255 * (1 - dust.fadeIn / 20f)), 0, 0) * mult);
 			dust.shader.UseColor(dust.color * mult);
 			dust.fadeIn += 2;
 
@@ -294,6 +257,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (dust.fadeIn > 45)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -325,8 +289,10 @@ namespace StarlightRiver.Content.Items.Vitric
 			dust.position += dust.velocity;
 			dust.fadeIn++;
 			dust.scale = (1 + (float)(2 * Math.Sin(dust.fadeIn * 0.157f))) * 0.3f;
+
 			if (dust.scale <= 0)
 				dust.active = false;
+
 			return false;
 		}
 	}
@@ -337,7 +303,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override Color? GetAlpha(Dust dust, Color lightColor)
 		{
-			var curveOut = Curve(1 - dust.fadeIn / 20f);
+			float curveOut = Curve(1 - dust.fadeIn / 20f);
 			var color = Color.Lerp(dust.color, new Color(255, 100, 0), dust.fadeIn / 10f);
 			dust.color = color * (curveOut + 0.4f);
 			return new Color(255, 100, 0);
@@ -389,7 +355,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			Player owner = Main.player[(int)dust.customData];
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
-			Vector2 dir = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - (dust.position + (new Vector2(32, 32) * dust.scale));
+			Vector2 dir = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - (dust.position + new Vector2(32, 32) * dust.scale);
 			dust.velocity = Vector2.Normalize(dir) * dir.Length() * 0.05f;
 			dust.velocity += owner.velocity;
 
@@ -401,7 +367,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.active = false;
 
 			if (dust.fadeIn == 16)
-				dust.position = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - (new Vector2(32, 32) * dust.scale);
+				dust.position = owner.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, -1.57f * owner.direction) - new Vector2(32, 32) * dust.scale;
 
 			else
 				dust.position += dust.velocity;
@@ -415,11 +381,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			dust.fadeIn++;
 			if (dust.alpha < 100)
-				dust.scale = MathHelper.Lerp(0.25f, 0.45f, dust.alpha / 100f) * (float)Math.Sin((dust.fadeIn / 15f) * 3.14f);
+				dust.scale = MathHelper.Lerp(0.25f, 0.45f, dust.alpha / 100f) * (float)Math.Sin(dust.fadeIn / 15f * 3.14f);
 			else if (dust.alpha < 200)
-				dust.scale = MathHelper.Lerp(0.25f, 0.45f, (dust.alpha - 100) / 100f) * (float)Math.Sin((dust.fadeIn / 18f) * 3.14f);
+				dust.scale = MathHelper.Lerp(0.25f, 0.45f, (dust.alpha - 100) / 100f) * (float)Math.Sin(dust.fadeIn / 18f * 3.14f);
 			else
-				dust.scale = MathHelper.Lerp(0.25f, 0.55f, (dust.alpha - 100) / 100f) * (float)Math.Sin((dust.fadeIn / 22f) * 3.14f);
+				dust.scale = MathHelper.Lerp(0.25f, 0.55f, (dust.alpha - 100) / 100f) * (float)Math.Sin(dust.fadeIn / 22f * 3.14f);
 
 			Player owner = Main.player[(int)dust.customData];
 			IgnitionPlayer modPlayer = owner.GetModPlayer<IgnitionPlayer>();
@@ -428,8 +394,8 @@ namespace StarlightRiver.Content.Items.Vitric
 				dust.active = false;
 
 			dust.shader.UseColor(Color.Lerp(Color.Orange, Color.OrangeRed, dust.alpha / 300f));
-			dust.position = owner.Center + new Vector2(0, 15 + ((dust.alpha % 100) * 0.1f) - (float)Math.Pow(dust.fadeIn / 3, 1.75f)) + new Vector2((15 + (3 * (dust.alpha / 100))) * (float)Math.Sin((dust.fadeIn + dust.alpha) * 0.1f), 0) - (dust.scale * new Vector2(32, 32));
-			
+			dust.position = owner.Center + new Vector2(0, 15 + dust.alpha % 100 * 0.1f - (float)Math.Pow(dust.fadeIn / 3, 1.75f)) + new Vector2((15 + 3 * (dust.alpha / 100)) * (float)Math.Sin((dust.fadeIn + dust.alpha) * 0.1f), 0) - dust.scale * new Vector2(32, 32);
+
 			if (dust.fadeIn >= 15 && dust.alpha < 100)
 				dust.active = false;
 			else if (dust.fadeIn >= 18 && dust.alpha < 200)

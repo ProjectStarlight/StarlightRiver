@@ -1,21 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.Graphics.Effects;
-using System.Text;
-using StarlightRiver.Core.Systems;
-using System.IO;
-using StarlightRiver.Content.Items.Vitric;
-using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 {
@@ -24,21 +14,23 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public int dustID;
 
         public bool Gravity = true;
+        
+		public bool Gravity = true;
 
-        public bool DrawTrail = true;
+		public bool DrawTrail = true;
 
-        public Color TrailColor = Color.White;
-        public Color RingOutsideColor = Color.White;
-        public Color RingInsideColor = Color.White;
+		public Color TrailColor = Color.White;
+    public Color RingOutsideColor = Color.White;
+    public Color RingInsideColor = Color.White;
 
-        private List<Vector2> cache;
-        private Trail trail;
+		private List<Vector2> cache;
+		private Trail trail;
 
-        public float AmmoType => Projectile.ai[0];
+		public float AmmoType => Projectile.ai[0];
 
-        public ref float Time => ref Projectile.ai[1];
+		public ref float Time => ref Projectile.ai[1];
 
-        public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
+    public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
 
         protected BaseSoilProjectile(Color trailColor, Color ringOutsideColor, Color ringInsideColor, int dustID) 
         {
@@ -48,47 +40,47 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             this.dustID = dustID;
         }
 
-        public sealed override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Soil");
-        }
+		public sealed override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Soil");
+		}
 
-        public virtual void SafeSetDefaults() { }
+		public virtual void SafeSetDefaults() { }
 
-        public sealed override void SetDefaults()
-        {
-            Projectile.penetrate = 1;
-            SafeSetDefaults();
+		public sealed override void SetDefaults()
+		{
+			Projectile.penetrate = 1;
+			SafeSetDefaults();
 
-            Projectile.DamageType = DamageClass.Ranged;
-            Projectile.Size = new Vector2(12);
-            Projectile.friendly = true;
-            Projectile.timeLeft = 240;
-        }
+			Projectile.DamageType = DamageClass.Ranged;
+			Projectile.Size = new Vector2(12);
+			Projectile.friendly = true;
+			Projectile.timeLeft = 240;
+		}
 
-        public virtual void SafeAI() { }
+		public virtual void SafeAI() { }
 
-        public sealed override void AI()
-        {
-            SafeAI();
+		public sealed override void AI()
+		{
+			SafeAI();
 
-            Time++;
+			Time++;
 
-            Projectile.rotation = Projectile.velocity.ToRotation();
+			Projectile.rotation = Projectile.velocity.ToRotation();
 
-            if (Projectile.timeLeft < 230 && Gravity)
-            {
-                Projectile.velocity.Y += 0.96f;
-                if (Projectile.velocity.Y > 16f)
-                    Projectile.velocity.Y = 16f;
-            }
+			if (Projectile.timeLeft < 230 && Gravity)
+			{
+				Projectile.velocity.Y += 0.96f;
+				if (Projectile.velocity.Y > 16f)
+					Projectile.velocity.Y = 16f;
+			}
 
-            if (!Main.dedServ)
-            {
-                ManageCaches();
-                ManageTrail();
-            }
-        }
+			if (!Main.dedServ)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
+		}
 
         public override bool PreDraw(ref Color lightColor)
         {
