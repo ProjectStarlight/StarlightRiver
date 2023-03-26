@@ -41,14 +41,19 @@ namespace StarlightRiver.Content.Items.BaseTypes
                                         AmmoNumber += inv[j].stack; //find all valid ammo to get total amount of ammo for the number
                                 }
                             }
+
                             if (AmmoNumber > 0)
-                                ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, $"{AmmoNumber}", position + new Vector2(8f, 30f) * Main.inventoryScale,
+							{
+								ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, $"{AmmoNumber}", position + new Vector2(8f, 30f) * Main.inventoryScale,
                                         lightColor, 0f, Vector2.Zero, new Vector2(Main.inventoryScale * 0.8f), -1f, Main.inventoryScale); //draw total ammo number
-                        }
+							}
+						}
                         else
-                            ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "0", position + new Vector2(8f, 30f) * Main.inventoryScale,
+						{
+							ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "0", position + new Vector2(8f, 30f) * Main.inventoryScale,
                                                             lightColor, 0f, Vector2.Zero, new Vector2(Main.inventoryScale * 0.8f), -1f, Main.inventoryScale);// if ammoItem is null, the player has no valid ammo in their inventory, so draw number 0.
-                    }
+						}
+					}
                 }
             }
         }
@@ -101,16 +106,22 @@ namespace StarlightRiver.Content.Items.BaseTypes
             }
 
             if (ammoItem != null)
-                if (!player.HasItem(ammoItem.type)) //makes ammo get refreshed if thrown out of inventory or crafted, etc.
+			{
+				if (!player.HasItem(ammoItem.type)) //makes ammo get refreshed if thrown out of inventory or crafted, etc.
                 {
                     hasAmmo = false;
                     ammoItem = null;
                 }
-        }
+			}
+		}
 
         public virtual bool SafeCanUseItem(Player player) { return true; }
-        public sealed override bool CanUseItem(Player player) => base.CanUseItem(player) && SafeCanUseItem(player) && hasAmmo;
-        public virtual void SafeModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) { }
+		public sealed override bool CanUseItem(Player player)
+		{
+			return base.CanUseItem(player) && SafeCanUseItem(player) && hasAmmo;
+		}
+
+		public virtual void SafeModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) { }
         public sealed override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
         {
             SafeModifyShootStats(player, ref position, ref velocity, ref type, ref damage, ref knockback);
@@ -123,7 +134,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
             type = currentAmmoStruct.projectileID;
         }
-
 
         public virtual bool? SafeUseItem(Player player) { return null; }
         public sealed override bool? UseItem(Player player)
@@ -147,7 +157,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                     dontConsumeAmmo = true;
                 if (type == 85 && player.itemAnimation < player.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
-                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
+                if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && player.itemAnimation < player.itemAnimationMax - 5)
                     dontConsumeAmmo = true;
 
                 if (!dontConsumeAmmo)
@@ -175,7 +185,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
                 return;
 
             TooltipLine AmmoLine = new TooltipLine(StarlightRiver.Instance, "AmmoLineToolTip", $"Current Ammo: [i:{ammoItem.type}]{ammoItem.stack}");
-            var kbLine = tooltips.Find(n => n.Name == "Knockback");
+			TooltipLine kbLine = tooltips.Find(n => n.Name == "Knockback");
             int index = kbLine is null ? tooltips.Count - 1 : tooltips.IndexOf(kbLine);
             tooltips.Insert(index + 1, AmmoLine);
         }

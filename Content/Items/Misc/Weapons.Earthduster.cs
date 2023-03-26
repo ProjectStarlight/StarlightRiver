@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Content.Items.Misc.SoilgunFiles;
 using StarlightRiver.Core;
 using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
     public class Earthduster : MultiAmmoWeapon
     {
-        public override List<AmmoStruct> ValidAmmos => new List<AmmoStruct>()
+        public override List<AmmoStruct> ValidAmmos => new()
         {
             new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
             new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
@@ -123,15 +124,18 @@ namespace StarlightRiver.Content.Items.Misc
 
         public Earthduster Holdout => Owner.HeldItem.ModItem as Earthduster;
 
-        public Projectile GhostProj = new Projectile();
+        public Projectile GhostProj = new();
 
         public bool CanHold => Owner.channel && !Owner.CCed && !Owner.noItems;
 
         public override string Texture => AssetDirectory.MiscItem + Name;
 
-        public override bool? CanDamage() => false;
+		public override bool? CanDamage()
+		{
+			return false;
+		}
 
-        public override void Load()
+		public override void Load()
         {
             GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore1");
             GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, Texture + "_Gore2");
@@ -158,7 +162,7 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 armPos = Owner.RotatedRelativePoint(Owner.MountedCenter, true);
             armPos += Utils.SafeNormalize(Projectile.velocity, Vector2.UnitX) * 20f;
             armPos += Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * -10f * Owner.direction;
-            Vector2 barrelPos = armPos + (Projectile.velocity * 25f);
+            Vector2 barrelPos = armPos + Projectile.velocity * 25f;
 
             Vector2 dirtPos = armPos + new Vector2(-30, MathHelper.Lerp(-20f, -10f, shots / (float)MAXSHOTS) * Owner.direction).RotatedBy(Projectile.rotation);
 
@@ -254,7 +258,6 @@ namespace StarlightRiver.Content.Items.Misc
                         Vector2 pos = armPos + new Vector2(40, 40f * Owner.direction).RotatedBy(Projectile.rotation);
                         Gore.NewGorePerfect(Projectile.GetSource_FromAI(), pos, Projectile.velocity.RotatedByRandom(0.3f) * 5f, Mod.Find<ModGore>(Name + "_Gore" + Main.rand.Next(1, 3)).Type).timeLeft = 180;
                     }
-
                 }
                 else if (ShootDelay < 65)
                 {
@@ -320,10 +323,9 @@ namespace StarlightRiver.Content.Items.Misc
             Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
             Vector2 offset = Vector2.Lerp(Vector2.Zero, Vector2.UnitY.RotatedBy(Projectile.rotation + (Owner.direction == -1 ? MathHelper.Pi : 0f)) * 13f, shots / (float)MAXSHOTS);
-            Main.spriteBatch.Draw(dirtTex, (Projectile.Center + offset) - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Main.spriteBatch.Draw(dirtTex, Projectile.Center + offset - Main.screenPosition, null, lightColor, Projectile.rotation, dirtTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
-
 
             Color color = Color.Lerp(Color.Transparent, (GhostProj.ModProjectile as BaseSoilProjectile).RingInsideColor, shots / (float)MAXSHOTS);
             //if (reloading)
@@ -335,7 +337,7 @@ namespace StarlightRiver.Content.Items.Misc
 
             Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, glowTex.Size() / 2f, Projectile.scale, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
 
-            Main.spriteBatch.Draw(bloomTex, Projectile.Center + (Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f) - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
+            Main.spriteBatch.Draw(bloomTex, Projectile.Center + Vector2.One.RotatedBy(Projectile.rotation - MathHelper.PiOver4) * 15f - Main.screenPosition, null, color, Projectile.rotation, bloomTex.Size() / 2f, 0.95f, Owner.direction == -1 ? SpriteEffects.FlipVertically : 0f, 0f);
             return false;
         }
 
@@ -361,7 +363,7 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
             if (Main.myPlayer == Projectile.owner)
-                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(15))) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
+                Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(15)) * Main.rand.NextFloat(0.9f, 1.1f), SoilType, damage, knockBack, Owner.whoAmI);
 
             for (float k = 0; k < 50; k++)
             {
@@ -369,7 +371,7 @@ namespace StarlightRiver.Content.Items.Misc
                 float x = (float)Math.Cos(rads) * 50;
                 float y = (float)Math.Sin(rads) * 25;
 
-                Dust.NewDustPerfect(position, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + (Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f), 0, default, 0.85f).noGravity = true;
+                Dust.NewDustPerfect(position, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, new Vector2(x, y).RotatedBy(Projectile.rotation + MathHelper.PiOver2) * 0.055f + Vector2.UnitX.RotatedBy(Projectile.rotation) * 5f, 0, default, 0.85f).noGravity = true;
             }
 
             Vector2 ejectPos = position + new Vector2(-35, -5 * Owner.direction).RotatedBy(Projectile.rotation);
@@ -377,10 +379,11 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Dust.NewDustPerfect(ejectPos, (GhostProj.ModProjectile as BaseSoilProjectile).dustID, (-Projectile.velocity * Main.rand.NextFloat(1f, 3f) + Vector2.UnitY * -Main.rand.NextFloat(1f, 3f)).RotatedByRandom(0.45f), Main.rand.Next(150), default, 1.25f);
             }
+
             shots++;
             SoundEngine.PlaySound(SoundID.Item11, Projectile.position);
 
-            CameraSystem.Shake += 1;
+            CameraSystem.shake += 1;
 
             rotTimer += MaxShootDelay;
 
@@ -401,7 +404,7 @@ namespace StarlightRiver.Content.Items.Misc
                     dontConsumeAmmo = true;
                 if (type == 85 && Owner.itemAnimation < Owner.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
-                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
+                if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
                     dontConsumeAmmo = true;
                 if (Main.rand.NextFloat() < 0.33f) //33% chance to not consume ammo
                     dontConsumeAmmo = true;
@@ -437,7 +440,7 @@ namespace StarlightRiver.Content.Items.Misc
         private Trail trail2;
 
         public int timeLeftStart = 50;
-        private float Progress => 1 - (Projectile.timeLeft / (float)timeLeftStart);
+        private float Progress => 1 - Projectile.timeLeft / (float)timeLeftStart;
 
         private float Radius => Projectile.ai[0];
 
@@ -467,15 +470,18 @@ namespace StarlightRiver.Content.Items.Misc
             }
         }
 
-        public override bool PreDraw(ref Color lightColor) => false;
+		public override bool PreDraw(ref Color lightColor)
+		{
+			return false;
+		}
 
-        private void ManageCaches()
+		private void ManageCaches()
         {
             cache = new List<Vector2>();
             float radius = Radius;
             for (int i = 0; i < 33; i++) //TODO: Cache offsets, to improve performance
             {
-                double rad = (i / 32f) * 6.28f;
+                double rad = i / 32f * 6.28f;
                 Vector2 offset = new Vector2((float)Math.Sin(rad) * 0.3f, (float)Math.Cos(rad));
                 offset *= radius;
                 offset = offset.RotatedBy(Projectile.velocity.ToRotation());
@@ -491,15 +497,9 @@ namespace StarlightRiver.Content.Items.Misc
         private void ManageTrail()
         {
 
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor =>
-            {
-                return trailColorOutline;
-            });
+            trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor => trailColorOutline);
 
-            trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor =>
-            {
-                return trailColor;
-            });
+            trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => trailColor);
             float nextplace = 33f / 32f;
             Vector2 offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
             offset *= Radius;

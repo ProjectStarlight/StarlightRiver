@@ -27,6 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
                 player.itemTime = 0;
                 return false;
             }
+
             Item.noUseGraphic = true;
             player.itemTime = 2;
             if (currentAmmoStruct.ammoID == ItemID.Seed)
@@ -39,8 +40,12 @@ namespace StarlightRiver.Content.Items.Misc
                 Item.useAnimation = Item.useTime = 75;
             return player.ownedProjectileCounts[ModContent.ProjectileType<SlingHeldProjectile>()] <= 0;
         }
-        public override bool CanConsumeAmmo(Item ammo, Player player) => false;
-        public override void SetStaticDefaults()
+		public override bool CanConsumeAmmo(Item ammo, Player player)
+		{
+			return false;
+		}
+
+		public override void SetStaticDefaults()
         {
             Tooltip.SetDefault("Sling seeds, stones, and mushrooms at your enemies\n" +
                 "Seeds have increase velocity\n" +
@@ -129,15 +134,16 @@ namespace StarlightRiver.Content.Items.Misc
             else if (player.direction < 0)
                 player.itemRotation += 3.1415927f;
 
-            Vector2 consistentAnchor = player.itemRotation.ToRotationVector2() * (spriteSize.X / -2f - 10f) * player.direction - origin.RotatedBy(player.itemRotation, default(Vector2));
+            Vector2 consistentAnchor = player.itemRotation.ToRotationVector2() * (spriteSize.X / -2f - 10f) * player.direction - origin.RotatedBy(player.itemRotation, default);
             Vector2 offsetAgain = spriteSize * -0.5f;
             Vector2 finalPosition = desiredPosition + offsetAgain + consistentAnchor;
             if (stepDisplace)
             {
                 int frame = player.bodyFrame.Y / player.bodyFrame.Height;
-                if ((frame > 6 && frame < 10) || (frame > 13 && frame < 17))
+                if (frame > 6 && frame < 10 || frame > 13 && frame < 17)
                     finalPosition -= Vector2.UnitY * 2f;
             }
+
             player.itemLocation = finalPosition;
         }
     }
@@ -149,9 +155,11 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 worldPosition = new Vector2(i, j).ToWorldCoordinates();
             Player nearestPlayer = Main.player[Player.FindClosest(worldPosition, 16, 16)];
             if (nearestPlayer.HasItem(ModContent.ItemType<Sling>()))
-                if ((type == TileID.Plants || type == TileID.Plants2 || type == TileID.PottedPlants1 || type == TileID.PottedPlants2) && Main.rand.NextFloat() < 0.75f)
+			{
+				if ((type == TileID.Plants || type == TileID.Plants2 || type == TileID.PottedPlants1 || type == TileID.PottedPlants2) && Main.rand.NextFloat() < 0.75f)
                     Item.NewItem(new EntitySource_TileBreak(i, j), worldPosition, 1, 1, ItemID.Seed, Main.rand.Next(1, 4));
-        }
+			}
+		}
     }
 
     class SlingHeldProjectile : ModProjectile
@@ -166,8 +174,12 @@ namespace StarlightRiver.Content.Items.Misc
 
         private ref float shootSpeed => ref Projectile.ai[1];
         private Player Owner => Main.player[Projectile.owner];
-        public override bool? CanDamage() => false;
-        public override string Texture => AssetDirectory.MiscItem + Name;
+		public override bool? CanDamage()
+		{
+			return false;
+		}
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -215,6 +227,7 @@ namespace StarlightRiver.Content.Items.Misc
                     Projectile.netUpdate = true;
                 }
             }
+
             Projectile.alpha -= 50;
             Vector2 pos = Owner.RotatedRelativePoint(Owner.MountedCenter + new Vector2(0, -7f * Owner.gravDir), true);
             pos += Projectile.velocity.SafeNormalize(Owner.direction * Vector2.UnitX) * 1f;
@@ -254,6 +267,7 @@ namespace StarlightRiver.Content.Items.Misc
                     return;
                 }
             }
+
             Owner.itemTime = 2;
             Owner.itemAnimation = 2;
             Owner.itemRotation = Utils.ToRotation(Projectile.velocity * Projectile.direction);
@@ -261,12 +275,13 @@ namespace StarlightRiver.Content.Items.Misc
 
         public void ShootSlingProjectile()
         {
-            CameraSystem.Shake += 2;
+            CameraSystem.shake += 2;
             if (Main.myPlayer == Projectile.owner)
             {
                 Vector2 pos = Owner.RotatedRelativePoint(Owner.MountedCenter + new Vector2(-4f * Owner.direction, -5f * Owner.gravDir), true);
                 Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Projectile.DirectionTo(Main.MouseWorld) * shootSpeed, (int)ProjectileToShoot, Projectile.damage, Projectile.knockBack, Projectile.owner);
             }
+
             Helper.PlayPitched("Effects/HeavyWhooshShort", 0.6f, 0.15f, Projectile.position);
             if (Owner.HeldItem.ModItem is Sling sling)
             {
@@ -285,7 +300,7 @@ namespace StarlightRiver.Content.Items.Misc
                     dontConsumeAmmo = true;
                 if (type == 85 && Owner.itemAnimation < Owner.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
-                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
+                if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && Owner.itemAnimation < Owner.itemAnimationMax - 5)
                     dontConsumeAmmo = true;
 
                 if (!dontConsumeAmmo)
@@ -337,6 +352,7 @@ namespace StarlightRiver.Content.Items.Misc
                 else
                     Projectile.velocity.Y *= 1.035f;
             }
+
             if (Projectile.velocity.Y > 16f)
                 Projectile.velocity.Y = 16f;
         }
@@ -348,10 +364,11 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 drawOrigin = tex.Size() / 2f;
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
                 Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(tex, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale, SpriteEffects.None, 0);
             }
+
             return true;
         }
 
@@ -393,7 +410,7 @@ namespace StarlightRiver.Content.Items.Misc
         }
         public override void AI()
         {
-            Projectile.rotation += (0.35f * (Projectile.velocity.X * 0.15f)) * Projectile.direction;
+            Projectile.rotation += 0.35f * (Projectile.velocity.X * 0.15f) * Projectile.direction;
             Projectile.velocity.Y += 0.2f;
             if (Projectile.velocity.Y > 0)
             {
@@ -402,6 +419,7 @@ namespace StarlightRiver.Content.Items.Misc
                 else
                     Projectile.velocity.Y *= 1.04f;
             }
+
             if (Projectile.velocity.Y > 16f)
                 Projectile.velocity.Y = 16f;
         }
@@ -412,16 +430,17 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 drawOrigin = tex.Size() / 2f;
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
                 Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(tex, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * MathHelper.Lerp(1, 0.5f, k / (float)Projectile.oldPos.Length), SpriteEffects.None, 0);
             }
+
             return true;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            CameraSystem.Shake += 1;
+            CameraSystem.shake += 1;
         }
 
         public override void Kill(int timeLeft)
@@ -430,6 +449,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Stone).scale = Main.rand.NextFloat(0.75f, 1.2f);
             }
+
             Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Volume = 0.8f, Pitch = -0.1f }, Projectile.position);
         }
 
@@ -481,10 +501,11 @@ namespace StarlightRiver.Content.Items.Misc
             Vector2 drawOrigin = tex.Size() / 2f;
             for (int k = 0; k < Projectile.oldPos.Length; k++)
             {
-                Vector2 drawPos = (Projectile.oldPos[k] - Main.screenPosition) + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
+                Vector2 drawPos = Projectile.oldPos[k] - Main.screenPosition + drawOrigin + new Vector2(0f, Projectile.gfxOffY);
                 Color color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
                 Main.EntitySpriteDraw(tex, drawPos, null, color, Projectile.rotation, drawOrigin, Projectile.scale * MathHelper.Lerp(1, 0.25f, k / (float)Projectile.oldPos.Length), SpriteEffects.None, 0);
             }
+
             return true;
         }
 
@@ -494,6 +515,7 @@ namespace StarlightRiver.Content.Items.Misc
             {
                 Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt).scale = Main.rand.NextFloat(0.45f, 0.7f);
             }
+
             Terraria.Audio.SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
         }
     }

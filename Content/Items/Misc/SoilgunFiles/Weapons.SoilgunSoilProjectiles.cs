@@ -15,13 +15,11 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public bool Gravity = true;
         
-		public bool Gravity = true;
-
 		public bool DrawTrail = true;
 
 		public Color TrailColor = Color.White;
-    public Color RingOutsideColor = Color.White;
-    public Color RingInsideColor = Color.White;
+		public Color RingOutsideColor = Color.White;
+		public Color RingInsideColor = Color.White;
 
 		private List<Vector2> cache;
 		private Trail trail;
@@ -30,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
 		public ref float Time => ref Projectile.ai[1];
 
-    public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
+		 public override string Texture => AssetDirectory.Invisible; //using the item id for texture was dumb when it can just be requested
 
         protected BaseSoilProjectile(Color trailColor, Color ringOutsideColor, Color ringInsideColor, int dustID) 
         {
@@ -98,7 +96,6 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
             Rectangle sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
 
-
             Vector2 origin = sourceRectangle.Size() / 2f;
 
             float offsetX = 0f;
@@ -134,10 +131,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         private void ManageTrail()
         {
-            trail = trail ?? new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor =>
-            {
-                return TrailColor * 0.8f * factor.X;
-            });
+            trail ??= new Trail(Main.instance.GraphicsDevice, 13, new TriangularTip(4), factor => 7, factor => TrailColor * 0.8f * factor.X);
 
             trail.Positions = cache.ToArray();
             trail.NextPosition = Projectile.Center + Projectile.velocity;
@@ -191,6 +185,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Dirt, 0f, 0f, 15, default, Main.rand.NextFloat(0.8f, 1f));
             }
+
             for (int i = 0; i < 5; i++)
             {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.Sand>(), 0f, 0f, 140, default, Main.rand.NextFloat(0.8f, 1.1f));
@@ -220,6 +215,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
                 Dust.NewDustPerfect(Projectile.Center, DustID.Sand, (Vector2.UnitY * Main.rand.NextFloat(-3, -1)).RotatedByRandom(0.35f), 35, default, Main.rand.NextFloat(0.8f, 1.1f));
             }
+
             for (int i = 0; i < 6; i++)
             {
                 if (Main.myPlayer == Projectile.owner)
@@ -250,6 +246,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     Dust dust = Dust.NewDustPerfect(Projectile.Center, DustID.LifeDrain, (Projectile.DirectionTo(Main.player[Projectile.owner].Center) * Main.rand.NextFloat(2f, 3f)).RotatedByRandom(MathHelper.ToRadians(5f)), 50, default, Main.rand.NextFloat(0.75f, 1f));
                     dust.noGravity = true;
                 }
+
                 if (Main.myPlayer == Projectile.owner && !target.SpawnedFromStatue && target.lifeMax > 5 && target.type != NPCID.TargetDummy)
                     Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.DirectionTo(Main.player[Projectile.owner].Center), ModContent.ProjectileType<SoilgunLifeSteal>(), 0, 0f, Projectile.owner, 2 + (int)(damage * 0.1f));
             }
@@ -308,9 +305,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         private bool foundTarget;
         public SoilgunPearlsandSoil() : base(new Color(87, 77, 106), new Color(87, 77, 106), new Color(246, 235, 228), DustID.Pearlsand) { }
-        public override Color? GetAlpha(Color lightColor) => Color.White;
+		public override Color? GetAlpha(Color lightColor)
+		{
+			return Color.White;
+		}
 
-        public override void SafeAI()
+		public override void SafeAI()
         {
             Gravity = !foundTarget;
 
@@ -322,11 +322,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 npcCenter = npc.Center;
                 foundTarget = true;
             }
+
             if (foundTarget)
             {
                 float speed = Main.player[Projectile.owner].HeldItem.shootSpeed;
                 Vector2 velo = Utils.SafeNormalize(npcCenter - Projectile.Center, Vector2.UnitY);
-                Projectile.velocity = (Projectile.velocity * 20f + velo * speed) / (21f);
+                Projectile.velocity = (Projectile.velocity * 20f + velo * speed) / 21f;
             }
 
             if (Main.rand.NextBool(5))
@@ -344,6 +345,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Pearlsand, 0f, 0f, 25, default, Main.rand.NextFloat(0.8f, 1f));
             }
+
             for (int i = 0; i < 6; i++)
             {
                 Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.MoonstoneShimmer>(), Main.rand.NextVector2Circular(1, 1) * Main.rand.NextFloat(0.3f, 0.4f), 25, new Color(0.3f, 0.2f, 0.3f, 0f), Main.rand.NextFloat(0.3f, 0.4f)).fadeIn = 90f;
@@ -374,8 +376,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     //Crystal.offset += Offset;
                     Crystal.enemyID = target.whoAmI;
                 }
+
                 globalNPC.ShardAmount++;
             }
+
             globalNPC.ShardTimer = 600;
         }
 
@@ -426,9 +430,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         proj.Kill();
                     }
                 }
+
                 globalNPC.GlassAmount = 0;
                 SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath.WithVolumeScale(3f), Projectile.position);
-                CameraSystem.Shake += 5;
+                CameraSystem.shake += 5;
             }
 
             target.AddBuff(BuffID.Frostburn, 180);
@@ -463,6 +468,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             {
                 Dust.NewDustPerfect(Projectile.Center, Main.rand.Next(new int[] { DustID.CopperCoin, DustID.SilverCoin, DustID.GoldCoin, DustID.PlatinumCoin }), (Vector2.UnitY * Main.rand.NextFloat(-4, -1)).RotatedByRandom(0.25f), 35, default, Main.rand.NextFloat(1f, 1.3f));
             }
+
             for (int i = 0; i < 1 + Main.rand.Next(2); i++)
             {
                 if (Main.myPlayer == Projectile.owner)
@@ -529,6 +535,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     Projectile.velocity.Y = -oldVelocity.Y;
                 }
             }
+
             return false;
         }
 

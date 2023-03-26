@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
     public class Soilgun : MultiAmmoWeapon
     {
-        public override List<AmmoStruct> ValidAmmos => new List<AmmoStruct>() 
+        public override List<AmmoStruct> ValidAmmos => new() 
         {
             new AmmoStruct(ItemID.SandBlock, ModContent.ProjectileType<SoilgunSandSoil>(), 2),
             new AmmoStruct(ItemID.EbonsandBlock, ModContent.ProjectileType<SoilgunEbonsandSoil>(), 4),
@@ -24,9 +24,17 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             new AmmoStruct(Mod.Find<ModItem>("VitricSandItem").Type, ModContent.ProjectileType<SoilgunVitricSandSoil>(), 8),
             new AmmoStruct(ItemID.MudBlock, ModContent.ProjectileType<SoilgunMudSoil>(), 3),
         };
-        public override bool CanConsumeAmmo(Item ammo, Player player) => false;
-        public override bool SafeCanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
-        public override string Texture => AssetDirectory.MiscItem + Name;
+		public override bool CanConsumeAmmo(Item ammo, Player player)
+		{
+			return false;
+		}
+
+		public override bool SafeCanUseItem(Player player)
+		{
+			return player.ownedProjectileCounts[ModContent.ProjectileType<SoilgunHoldout>()] <= 0;
+		}
+
+		public override string Texture => AssetDirectory.MiscItem + Name;
 
         public override void SetStaticDefaults()
         {
@@ -75,7 +83,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
         public override bool InstancePerEntity => true;
 
         public TooltipLine infoTooltip2;
-        public List<int> ValidSoils => new List<int>() { ItemID.SandBlock, ItemID.EbonsandBlock, ItemID.PearlsandBlock, ItemID.CrimsandBlock, ItemID.DirtBlock, ItemID.SiltBlock,
+        public List<int> ValidSoils => new() { ItemID.SandBlock, ItemID.EbonsandBlock, ItemID.PearlsandBlock, ItemID.CrimsandBlock, ItemID.DirtBlock, ItemID.SiltBlock,
             ItemID.SlushBlock, Mod.Find<ModItem>("VitricSandItem").Type, ItemID.MudBlock};
         public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
         {
@@ -93,6 +101,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         infoTooltip.OverrideColor = new Color(202, 148, 115);
                         return;
                     }
+
                     switch (item.type)
                     {
                         case ItemID.SandBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of sand that split into many grains of sand upon death"); break;
@@ -104,6 +113,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         case ItemID.SlushBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of slush that cause hit enemies to have icicles impale them\nHitting and enemy with more than 10 icicles causes all icicles to shatter, causing large amounts of damage"); break;
                         case ItemID.MudBlock: infoTooltip2 = new TooltipLine(Mod, "AmmoInfoTooltip", "When used with the Soilgun or Earthduster, it will fire out blocks of mud that bounce off tiles and enemies"); break;
                     }
+
                     tooltips.Add(infoTooltip2);
                     infoTooltip2.OverrideColor = new Color(202, 148, 115);
                 }
@@ -151,6 +161,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     HauntedStacks = 0;
                 }
             }
+
             HauntedStacks = Utils.Clamp(HauntedStacks, 0, MAXHAUNTEDSTACKS);
 
             if (ShardTimer > 0)
@@ -162,6 +173,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     ShardAmount = 0;
                 }
             }
+
             ShardAmount = Utils.Clamp(ShardAmount, 0, MAXVITRICSHARDS);
         }
         public override void AI(NPC npc)
@@ -187,9 +199,8 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     if (SpawnHauntedSoulTimer == 60)
                         Helper.PlayPitched("ShadowSpawn", 1f, Main.rand.NextFloat(-0.1f, 0.1f), npc.position);
 
-
                     if (SpawnHauntedSoulTimer % 5 == 0)
-                        CameraSystem.Shake += 1;
+                        CameraSystem.shake += 1;
 
                     SpawnHauntedSoulTimer--;
                     if (SpawnHauntedSoulTimer <= 0)
@@ -198,11 +209,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         {
                             Dust.NewDustPerfect(npc.Top, DustID.Shadowflame, (Vector2.UnitY * Main.rand.NextFloat(-6f, -1)).RotatedByRandom(0.45f), 25, default, Main.rand.NextFloat(1.1f, 1.35f));
                         }
+
                         for (int i = 0; i < 2 + Main.rand.Next(2); i++)
                         {
                             Projectile.NewProjectile(npc.GetSource_FromThis(), npc.Top, (Vector2.UnitY * Main.rand.NextFloat(-8f, -5f)).RotatedByRandom(0.55f), ModContent.ProjectileType<HauntedSoul>(), HauntedSoulDamage, 1f, HauntedSoulOwner, npc.whoAmI);
                         }
-                        CameraSystem.Shake += 5;
+
+                        CameraSystem.shake += 5;
                         HauntedStacks = 0;
                         SpawnHauntedSoulTimer = 60;
                     }
@@ -225,6 +238,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         proj.timeLeft = 120;
                     }
                 }
+
                 HowLongShardHasBeenOnTarget = 0;
                 npc.AddBuff(BuffID.OnFire, 120);
             }
@@ -275,9 +289,12 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 
         public override string Texture => AssetDirectory.MiscItem + "Soilgun";
 
-        public override bool? CanDamage() => false;
+		public override bool? CanDamage()
+		{
+			return false;
+		}
 
-        public override void SetStaticDefaults()
+		public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Soilgun");
         }
@@ -314,8 +331,10 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     ShootSoils(barrelPos);
                 }
                 else
-                    Projectile.Kill();
-            }
+				{
+					Projectile.Kill();
+				}
+			}
 
             if (CurrentCharge == MaxCharge)
             {
@@ -332,18 +351,18 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             owner.itemTime = 2;
             owner.itemAnimation = 2;
 
-			if (CurrentCharge >= maxCharge)
-				drawWhiteTimer--;
+			if (CurrentCharge >= MaxCharge)
+				DrawWhiteTimer--;
 
 			if (!CanHold)
 			{
-				if (CurrentCharge >= maxCharge)
+				if (CurrentCharge >= MaxCharge)
 					ShootSoils(barrelPos);
 				else
 					Projectile.Kill();
 			}
 
-			if (CurrentCharge == maxCharge)
+			if (CurrentCharge == MaxCharge)
 			{
 				//maybe better sound here
 				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.position);
@@ -374,7 +393,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             if (CurrentCharge < 2)
                 return;
 
-            int DustFrequency = (int)(15 - (Utils.Clamp(CurrentCharge / 5, 0, 12)));
+            int DustFrequency = (int)(15 - Utils.Clamp(CurrentCharge / 5, 0, 12));
             if (Main.rand.NextBool(Utils.Clamp(DustFrequency, 1, 15)))
             {
                 Dust dust = Dust.NewDustDirect(barrelPos, 2, 8, ChooseChargeDust(), 0f, 0f);
@@ -392,7 +411,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 Texture2D texture = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Soilgun_White").Value;
                 SpriteEffects spriteEffects = Projectile.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-                float progress = 1 - (DrawWhiteTimer / 30f);
+                float progress = 1 - DrawWhiteTimer / 30f;
                 Color drawColor = Color.Lerp(Color.White, Color.Transparent, progress);
 
                 Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, drawColor, Projectile.rotation, texture.Size() / 2, 1f, spriteEffects, 0);
@@ -415,12 +434,14 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             Vector2 shootVelocity = Utils.SafeNormalize(Projectile.velocity, Vector2.UnitY) * shootSpeed;
 
             if (Main.myPlayer == Projectile.owner)
-                for (int i = 0; i < 4 + Main.rand.Next(3); i++)
+			{
+				for (int i = 0; i < 4 + Main.rand.Next(3); i++)
                 {
-                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, (shootVelocity.RotatedByRandom(MathHelper.ToRadians(18))) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI);
+                    Projectile.NewProjectile(Projectile.GetSource_FromThis(), position, shootVelocity.RotatedByRandom(MathHelper.ToRadians(18)) * Main.rand.NextFloat(0.9f, 1.1f), (int)SoilProjectile, damage, knockBack, owner.whoAmI);
                 }
+			}
 
-            for (int i = 0; i < 15; i++)
+			for (int i = 0; i < 15; i++)
             {
                 Vector2 dustVelocity = shootVelocity.RotatedByRandom(MathHelper.ToRadians(8)) * Main.rand.NextFloat(0.25f, 0.45f);
 
@@ -428,6 +449,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 dust.scale = Main.rand.NextFloat(1.1f, 1.55f);
                 dust.noGravity = true;
             }
+
             for (int i = 0; i < 7; i++)
             {
                 Vector2 sandVelocity = (shootVelocity * Main.rand.NextFloat(0.12f, 0.20f)).RotatedByRandom(MathHelper.ToRadians(9f));
@@ -439,7 +461,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                 Dust.NewDustDirect(position, 2, 8, ModContent.DustType<SandNoGravity>(), sandVelocity.X, sandVelocity.Y, 135, default, 0.55f);
             }
 
-            CameraSystem.Shake += 2;
+            CameraSystem.shake += 2;
 
             owner.reuseDelay = 15;
 
@@ -462,7 +484,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                     dontConsumeAmmo = true;
                 if (type == 85 && owner.itemAnimation < owner.itemAnimationMax - 6)
                     dontConsumeAmmo = true;
-                if ((type == 145 || type == 146 || (type == 147 || type == 148) || type == 149) && owner.itemAnimation < owner.itemAnimationMax - 5)
+                if ((type == 145 || type == 146 || type == 147 || type == 148 || type == 149) && owner.itemAnimation < owner.itemAnimationMax - 5)
                     dontConsumeAmmo = true;
 
                 if (!dontConsumeAmmo)
@@ -477,6 +499,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
                         soilGun.ammoItem.TurnToAir();
                 }
             }
+
             CanShoot = false;
         }
 
@@ -487,18 +510,19 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
             {
                 return ModContent.DustType<VitricSandDust>();
             }
-            switch (SoilAmmoID)
-            {
-                case ItemID.SandBlock: return DustID.Sand;
-                case ItemID.CrimsandBlock: return DustID.CrimsonPlants;
-                case ItemID.EbonsandBlock: return DustID.Ebonwood;
-                case ItemID.PearlsandBlock: return DustID.Pearlsand;
-                case ItemID.DirtBlock: return DustID.Dirt;
-                case ItemID.SiltBlock: return DustID.Silt;
-                case ItemID.SlushBlock: return DustID.Slush;
-                case ItemID.MudBlock: return DustID.Mud;
-            }
-            return 0;
-        }
+
+			return SoilAmmoID switch
+			{
+				ItemID.SandBlock => DustID.Sand,
+				ItemID.CrimsandBlock => DustID.CrimsonPlants,
+				ItemID.EbonsandBlock => DustID.Ebonwood,
+				ItemID.PearlsandBlock => DustID.Pearlsand,
+				ItemID.DirtBlock => DustID.Dirt,
+				ItemID.SiltBlock => DustID.Silt,
+				ItemID.SlushBlock => DustID.Slush,
+				ItemID.MudBlock => DustID.Mud,
+				_ => 0,
+			};
+		}
     }
 }
