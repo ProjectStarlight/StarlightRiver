@@ -14,21 +14,27 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 		new public void Load() //We want to use IOrderedLoadable's load here to preserve our load order
 		{
-			On.Terraria.Main.CheckMonoliths += RenderScreens;
-			Main.OnResolutionChanged += ResizeScreens;
+			if (!Main.dedServ)
+			{
+				On.Terraria.Main.CheckMonoliths += RenderScreens;
+				Main.OnResolutionChanged += ResizeScreens;
+			}
 		}
 
 		new public void Unload()
 		{
-			On.Terraria.Main.CheckMonoliths -= RenderScreens;
-			Main.OnResolutionChanged -= ResizeScreens;
-
-			Main.QueueMainThreadAction(() =>
+			if (!Main.dedServ)
 			{
-				targets.ForEach(n => n.RenderTarget.Dispose());
-				targets.Clear();
-				targets = null;
-			});
+				On.Terraria.Main.CheckMonoliths -= RenderScreens;
+				Main.OnResolutionChanged -= ResizeScreens;
+
+				Main.QueueMainThreadAction(() =>
+				{
+					targets.ForEach(n => n.RenderTarget.Dispose());
+					targets.Clear();
+					targets = null;
+				});
+			}
 		}
 
 		/// <summary>
