@@ -28,7 +28,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class KeyIcon : UIElement
+	public class KeyIcon : SmartUIElement
 	{
 		public int timer;
 		public Key parent;

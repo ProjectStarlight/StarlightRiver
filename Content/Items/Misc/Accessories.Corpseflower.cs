@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ApplyDoTColor(int i, int whoAmI)
 		{
 			CorpseflowerBuff buff = InstancedBuffNPC.GetInstance<CorpseflowerBuff>(Main.npc[whoAmI]);
-			if (buff is null)
+			if (buff is null || i < 0) // WEIRD ass bug with ceiros that caused index out of bounds. Tested with other enemies, just happens with ceiros. This seems to fix it tho 
 				return;
 
 			maxTimeLefts[i] = Main.combatText[i].lifeTime;
@@ -100,13 +100,19 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ApplyDoTProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
 		{
 			if (Equipped(player))
+			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
+				damage = 1;
+			}
 		}
 
 		private void ApplyDoTItem(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
 		{
 			if (Equipped(player))
+			{
 				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
+				damage = 1;
+			}
 		}
 
 		public override void SetStaticDefaults()
@@ -143,8 +149,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (AnyInflicted(npc))
 			{
-				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage)
-					damage = (GetInstance(npc) as CorpseflowerBuff).totalDamage;
+				if (damage < (GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.33f)
+					damage = (int)((GetInstance(npc) as CorpseflowerBuff).totalDamage * 0.33f);
 			}
 		}
 
