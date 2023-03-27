@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.GUI
 	public class Stamina : SmartUIState
 	{
 		public UIPanel abicon;
-		private readonly Stam Stam1 = new();
+		private readonly StaminaBar Stam1 = new();
 
 		public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax > 1;
 
@@ -22,10 +22,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			Stam1.Left.Set(-303, 1);
-			Stam1.Top.Set(110, 0);
-			Stam1.Width.Set(30, 0f);
-			Append(Stam1);
+			AddElement(Stam1, -303, 1f, 110, 0f, 30, 0f, 0, 0f);
 		}
 
 		protected override void DrawSelf(SpriteBatch spriteBatch)
@@ -85,7 +82,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	internal class Stam : UIElement
+	internal class StaminaBar : SmartUIElement
 	{
 		public static Texture2D overrideTexture = null;
 		public static List<string> specialVesselTextures = new();
@@ -96,6 +93,7 @@ namespace StarlightRiver.Content.GUI
 			Player Player = Main.LocalPlayer;
 			AbilityHandler mp = Player.GetHandler();
 
+			//logic for the horizontal bars UI style
 			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
 			{
 				Texture2D ornament = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBarOrnament").Value;
@@ -134,9 +132,11 @@ namespace StarlightRiver.Content.GUI
 				return;
 			}
 
+			//logic for other UI styles
 			Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
 			Texture2D fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value : overrideTexture;
 
+			//change textures for fancy UI
 			if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
 			{
 				emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmptyFancy").Value;
@@ -159,8 +159,10 @@ namespace StarlightRiver.Content.GUI
 
 					if (mp.ShardCount % 3 >= 1)
 						spriteBatch.Draw(shard1, pos, shard1.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
 					if (mp.ShardCount % 3 >= 2)
 						spriteBatch.Draw(shard2, pos, shard2.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
 					continue;
 				}
 
@@ -174,13 +176,11 @@ namespace StarlightRiver.Content.GUI
 
 				spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 
-				// If on a filled stamina vessel
-				if (k < mp.Stamina - 1)
+				if (k < mp.Stamina - 1) // If on a filled stamina vessel
 				{
 					spriteBatch.Draw(fillTex, pos + Vector2.One * 4, Color.White);
 				}
-				// If on the last stamina vessel
-				else if (k <= mp.Stamina)
+				else if (k <= mp.Stamina) // If on the last stamina vessel
 				{
 					float scale = mp.Stamina - k;
 					spriteBatch.Draw(fillTex, pos + Vector2.One * 4 + fillTex.Size() / 2, fillTex.Frame(), Color.White, 0, fillTex.Size() / 2, scale, 0, 0);

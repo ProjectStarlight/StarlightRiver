@@ -72,11 +72,14 @@ namespace StarlightRiver.Content.Bestiary
 				BorderColor = Color.Transparent,
 				Left = new StyleDimension(5f, 0f)
 			};
+
 			uIElement.SetPadding(0f);
 			uIElement.PaddingRight = 5f;
+
 			UIElement filterImage = GetFilterImage();
 			filterImage.HAlign = 0f;
 			filterImage.Left = new StyleDimension(5f, 0f);
+
 			var element = new UIText(GetDisplayNameKey(), 0.8f)
 			{
 				HAlign = 0f,
@@ -86,10 +89,9 @@ namespace StarlightRiver.Content.Bestiary
 				VAlign = 0.5f,
 				DynamicallyScaleDownToWidth = true
 			};
+
 			if (filterImage != null)
-			{
 				uIElement.Append(filterImage);
-			}
 
 			uIElement.Append(element);
 			uIElement.OnUpdate += delegate (UIElement e)
@@ -100,6 +102,7 @@ namespace StarlightRiver.Content.Bestiary
 					Main.instance.MouseText(textValue, 0, 0);
 				}
 			};
+
 			return uIElement;
 		}
 	}

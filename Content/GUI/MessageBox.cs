@@ -23,12 +23,8 @@ namespace StarlightRiver.Content.GUI
 			innerBox.Top.Set(0, 0.5f);
 			Append(innerBox);
 
-			exitButton.Left.Set(200, 0.5f);
-			exitButton.Top.Set(32, 0.5f);
-			exitButton.Width.Set(38, 0);
-			exitButton.Height.Set(38, 0);
 			exitButton.OnClick += (a, b) => Visible = false;
-			Append(exitButton);
+			AddElement(exitButton, 200, 0.5f, 32, 0.5f, 38, 0f, 38, 0f);
 		}
 
 		public void Display(string title, string message)
@@ -39,7 +35,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class MessageBoxInner : UIElement
+	public class MessageBoxInner : SmartUIElement
 	{
 		public string Title;
 		public string Message;

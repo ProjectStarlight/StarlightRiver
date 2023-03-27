@@ -28,17 +28,17 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			AddElement(quests, -193, 0, 0.5f, 0.3f, 186, 300, this);
 			quests.ListPadding = 6;
+			AddElement(quests, -193, 0.5f, 0, 0.3f, 186, 0f, 300, 0f);
 
-			AddElement(questScroll, -260, 0, 0.5f, 0.3f, 18, 300, this);
 			questScroll.SetView(0, 300);
 			quests.SetScrollbar(questScroll);
+			AddElement(questScroll, -260, 0.5f, 0, 0.3f, 18, 0f, 300, 0f);
 
-			AddElement(ItemList, 5, 75, 0.5f, 0.3f, 200, 200, this);
 			ItemList.ListPadding = 0;
+			AddElement(ItemList, 5, 0.5f, 75, 0.3f, 200, 0f, 200, 0f);
 
-			AddElement(submitButton, 0, 310, 0.5f, 0.3f, 100, 28, this);
+			AddElement(submitButton, 0, 0.5f, 310, 0.3f, 100, 0f, 28, 0f);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -54,19 +54,10 @@ namespace StarlightRiver.Content.GUI
 			base.Draw(spriteBatch);
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (Main.LocalPlayer.talkNPC <= 0)
 				Visible = false;
-		}
-
-		internal void AddElement(UIElement element, int x, int y, float xPercent, float yPercent, int width, int height, UIElement appendTo)
-		{
-			element.Left.Set(x, xPercent);
-			element.Top.Set(y, yPercent);
-			element.Width.Set(width, 0);
-			element.Height.Set(height, 0);
-			appendTo.Append(element);
 		}
 
 		public void PopulateItems()
@@ -76,7 +67,7 @@ namespace StarlightRiver.Content.GUI
 			int offY = 0;
 			foreach (Loot loot in activeQuest.Requirements)
 			{
-				UIElement element = new RequirementPreview(loot.type, loot.count);
+				SmartUIElement element = new RequirementPreview(loot.type, loot.count);
 				element.Top.Set(16, 0);
 				element.Left.Set(16, 0);
 				element.Width.Set(32, 0);
@@ -99,7 +90,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		internal void AddQuestButton(UIElement element, float offY)
+		internal void AddQuestButton(SmartUIElement element, float offY)
 		{
 			element.Left.Set(0, 0);
 			element.Top.Set(offY, 0);
@@ -109,7 +100,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class TownQuestItem : UIElement
+	class TownQuestItem : SmartUIElement
 	{
 		readonly TownUpgrade quest;
 
@@ -133,7 +124,7 @@ namespace StarlightRiver.Content.GUI
 				spriteBatch.Draw(check, pos + new Vector2(158, 0), back.Frame(), Color.White, 0, back.Size() / 2, 1, 0, 0);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
@@ -143,7 +134,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class SubmitButton : UIElement
+	class SubmitButton : SmartUIElement
 	{
 		TownUpgrade Quest => (Parent as TownQuestList).activeQuest;
 
@@ -159,12 +150,13 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
 			if (Quest == null || Quest.Unlocked)
 				return;
+
 			foreach (Loot loot in Quest.Requirements)
 			{
 				if (!Helper.HasItem(Main.LocalPlayer, loot.type, loot.count))
@@ -172,7 +164,9 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			foreach (Loot loot in Quest.Requirements)
+			{
 				Helper.TryTakeItem(Main.LocalPlayer, loot.type, loot.count);
+			}
 
 			NPCUpgradeSystem.townUpgrades[Quest.NPCName] = !NPCUpgradeSystem.townUpgrades[Quest.NPCName];
 
@@ -180,7 +174,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class RequirementPreview : UIElement
+	class RequirementPreview : SmartUIElement
 	{
 		private readonly int type;
 		private readonly int count;
