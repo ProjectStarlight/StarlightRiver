@@ -57,7 +57,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 					return;
 
 				Player player = Main.player.Where(n => n.active && !n.dead).OrderBy(n => n.DistanceSQ(npc.Center)).FirstOrDefault();
-				if (player != default && player.HasItem(ModContent.ItemType<Items.Magnet.UnchargedMagnet>()))
+
+				if (player != default && player.HasItem(ModContent.ItemType<UnchargedMagnet>()))
 				{
 					chargedPlayer = player;
 					charged = true;
@@ -117,6 +118,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (attackCounter % attackCycleLength == 300)
 				{
 					Helper.PlayPitched("Magic/LightningExplode", 0.4f, 0f, npc.Center);
+
 					if (cache != null)
 					{
 						for (int i = 2; i < cache.Count - 2; i++)
@@ -156,6 +158,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (chargedPlayer.inventory[index].type == ModContent.ItemType<UnchargedMagnet>() && chargedPlayer.inventory[index].stack > 0)
 				{
 					chargedPlayer.inventory[index].stack--;
+
 					if (chargedPlayer.inventory[index].stack <= 0)
 						chargedPlayer.inventory[index].TurnToAir();
 
@@ -185,6 +188,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 
 			cache2 = new List<Vector2>();
+
 			for (int i = 0; i < cache.Count; i++)
 			{
 				Vector2 point = cache[i];
