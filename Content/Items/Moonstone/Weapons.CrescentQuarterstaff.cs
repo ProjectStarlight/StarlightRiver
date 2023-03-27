@@ -9,6 +9,8 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using System.Collections.Generic;
+using Terraria.Audio;
 
 namespace StarlightRiver.Content.Items.Moonstone
 {
@@ -121,6 +123,9 @@ namespace StarlightRiver.Content.Items.Moonstone
 			set => Projectile.ai[0] = (float)value;
 		}
 
+		private List<Vector2> cache;
+		private Trail trail;
+
 		private ref float charge => ref Projectile.ai[1];
 		private int freezeTimer = 0;
 		private bool active = true;
@@ -133,13 +138,15 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private int timer = 0;
 		private bool slammed = false;
 
-		Player Player => Main.player[Projectile.owner];
-		float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
+		private Player Player => Main.player[Projectile.owner];
+		private float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
 		private float Charge => charge / (float)MAXCHARGE;
+		private Vector2 StaffEnd => Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length;
+
 
 		private Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
 		private Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
-		private Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1.22f);
+		private Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
 		private Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
@@ -209,6 +216,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (curAttackDone)
 				NextAttack();
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				ManageCaches();
+				ManageTrail();
+			}
 		}
 
 		public override void Kill(int timeleft)
@@ -310,6 +323,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
+			DrawPrimitives();
+
 			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 			return false;
 		}
@@ -390,7 +405,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			float startAngle = -MathHelper.PiOver2 - Player.direction * MathHelper.Pi * 1.25f;
 			float swingAngle = Player.direction * -MathHelper.Pi * 2 / 3;
 
-			float progress = UppercutEase((float)timer / 15);
+			float progress = UppercutEase((float)timer / 20);
 			Projectile.rotation = startAngle + swingAngle * progress;
 			length = 60 + 40 * progress;
 			active = progress > 0;
@@ -401,12 +416,25 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Helper.PlayPitched("Effects/HeavyWhooshShort", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
 			}
 
-			if (timer > 15)
+			if (timer > 20)
 				curAttackDone = true;
 		}
 
 		public void SlamAttack()
 		{
+			if (timer == 0 && charge > 0 && freezeTimer < 0)
+			{
+				for (int i = 0; i < 64; i++)
+				{
+					Vector2 dustOffset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 64);
+					Dust dust = Dust.NewDustDirect(StaffEnd + dustOffset * 10, 0, 0, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0, 0, 1, new Color(120, 120, 255));
+					dust.velocity = 5 * dustOffset;
+				}
+
+				freezeTimer = 5;
+				timer++; // to prevent repeated freezes
+			}
+
 			if (!slammed)
 			{
 				float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
@@ -416,8 +444,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Projectile.rotation = startAngle + swingAngle * progress;
 			}
 
-			Vector2 pos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length;
-			Vector2 tilePos = pos;
+			Vector2 tilePos = StaffEnd;
 			tilePos.Y += 15;
 			tilePos /= 16;
 
@@ -441,18 +468,27 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 					if (Charge > 0)
 					{
+						DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
+						SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+
+						for (int i = 0; i < 64; i++)
+						{
+							Vector2 dustOffset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 64);
+							Dust dust = Dust.NewDustDirect(StaffEnd + dustOffset * 50, 0, 0, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0, 0, 1, new Color(120, 120, 255));
+							dust.velocity = -5 * dustOffset;
+						}
+
 						var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, new Vector2(0, 7), ProjectileType<QuarterOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
 						proj.scale = (1 + Charge) / 2;
 
 						if (proj.ModProjectile is QuarterOrb modproj)
 							modproj.moveDirection = new Vector2(-Player.direction, -1);
 
-
 						charge = 0;
 					}
 
 					CameraSystem.shake += 12;
-					Projectile.NewProjectile(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+					Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
 				}
 			}
 
@@ -496,6 +532,62 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (!Player.channel)
 			{
 				Projectile.Kill();
+			}
+		}
+
+		private void ManageCaches()
+		{
+			if (cache is null)
+			{
+				cache = new List<Vector2>();
+				for (int i = 0; i < 16; i++)
+				{
+					cache.Add(StaffEnd);
+				}
+			}
+
+			for (int i = 0; i < 16; i++)
+			{
+				cache[i] = cache[i] - Vector2.UnitY * 8;
+			}
+
+			cache.Add(StaffEnd);
+
+			while (cache.Count > 16)
+			{
+				cache.RemoveAt(0);
+			}
+		}
+
+		private void ManageTrail()
+		{
+			trail ??= new Trail(Main.instance.GraphicsDevice, 16, new TriangularTip(8), factor => 50f * Charge, factor => new Color(78, 87, 191) * Charge * 0.7f * factor.X);
+
+			trail.Positions = cache.ToArray();
+
+			trail.NextPosition = (StaffEnd - Player.MountedCenter).RotatedBy(Player.direction - Math.PI / 6) + Player.MountedCenter;
+		}
+
+		public void DrawPrimitives()
+		{
+			if (CurrentAttack == AttackType.Slam)
+			{
+			Main.spriteBatch.End();
+
+			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
+
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+
+			effect.Parameters["time"].SetValue(Main.GameUpdateCount * 0.02f);
+			effect.Parameters["repeats"].SetValue(1f);
+			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
+			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/EnergyTrail").Value);
+
+			trail?.Render(effect);
+
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}
