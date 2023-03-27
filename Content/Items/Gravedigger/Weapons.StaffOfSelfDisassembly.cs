@@ -5,7 +5,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger
 {
-	internal class StaffOfSelfDissassembly : ModItem
+	internal class StaffOfSelfDisassembly : ModItem
 	{
 		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
@@ -16,10 +16,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Staff of Self Dissassembly");
+			DisplayName.SetDefault("Staff of Self Disassembly");
 			Tooltip.SetDefault("Reserve 40 life to summon a flesh apparation\n" +
 				"apparations grant increased life regeneration\n" +
 				"life regeneration boost is increased when apparitions strike an enemy");
+
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}
@@ -34,6 +35,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Item.useTime = 20;
 			Item.shoot = ModContent.ProjectileType<FleshApparation>();
 			Item.buffType = ModContent.BuffType<FleshApparationBuff>();
+			Item.UseSound = SoundID.Item44;
 			Item.noMelee = true;
 		}
 
@@ -55,7 +57,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (proj.ModProjectile is FleshApparation mp)
 				{
 					player.GetModPlayer<ResourceReservationPlayer>().ReserveLife(40);
-					player.lifeRegen += (int)(6 * mp.healPower);
+					player.lifeRegen += (int)(6 * mp.healPower); //We need this here because changing lifeRegen in projectile AI is too late in the update cycle for it to take effect
 				}
 			}
 		}
@@ -92,8 +94,6 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			DisplayName.SetDefault("Flesh apparation");
 			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 40;
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-
-			Main.projPet[Projectile.type] = true;
 			ProjectileID.Sets.MinionTargettingFeature[Projectile.type] = true;
 			ProjectileID.Sets.MinionSacrificable[Projectile.type] = true;
 		}
