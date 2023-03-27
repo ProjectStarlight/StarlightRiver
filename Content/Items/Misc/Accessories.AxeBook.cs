@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + "AxeBook";
 
-		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemy armor\nRight click to throw your axe") { }
+		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemies by 1\nRight click to throw your axe") { }
 
 		public override void Load()
 		{
@@ -114,7 +114,6 @@ namespace StarlightRiver.Content.Items.Misc
 					if (pitch >= 1)
 						pitch = 1;
 
-					//Helper.PlayPitched("ChainHit", 1, pitch, player.Center);
 					Helper.PlayPitched("Effects/HeavyWhoosh", 1, pitch, player.Center);
 					Helper.PlayPitched("GlassMiniboss/GlassShatter", 1, pitch, player.Center);
 
@@ -143,9 +142,12 @@ namespace StarlightRiver.Content.Items.Misc
 		public Color trailColor;
 
 		private int freeze = 0;
-		private bool flipSprite = false;
 		private List<Vector2> cache;
 		private Trail trail;
+
+		private bool hitTree;
+
+		private readonly bool flipSprite = false;
 
 		public float Progress => 1 - Projectile.timeLeft / (float)lifeSpan;
 		public int Direction => (Math.Abs(baseAngle - (float)Math.PI / 4f) < Math.PI / 2f) ? 1 : -1;
@@ -183,6 +185,28 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.direction = Direction;
 			Owner.heldProj = Projectile.whoAmI;
 
+			// Cut trees
+			if (Progress > 0 && !hitTree)
+			{
+				float rot = Projectile.rotation + (Direction == 1 ? 0 : -(float)Math.PI / 2f);
+				Vector2 center = Owner.Center + Vector2.UnitX.RotatedBy(rot) * (length * Projectile.scale + holdOut);
+
+				for (int x = -1; x <= 1; x++)
+				{
+					for (int y = -1; y <= 1; y++)
+					{
+						Tile tile = Framing.GetTileSafely((int)center.X / 16 + x, (int)center.Y / 16 + y);
+
+						if (tile.HasTile && Main.tileAxe[tile.TileType])
+						{
+							Owner.PickTile((int)center.X / 16 + x, (int)center.Y / 16 + y, Owner.HeldItem.axe);
+							hitTree = true;
+						}
+					}
+				}
+			}
+
+			// Combat logic
 			switch (comboState)
 			{
 				case 0:
