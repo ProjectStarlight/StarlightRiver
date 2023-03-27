@@ -95,6 +95,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					proj.hostile = true;
 					proj.scale = Main.rand.NextFloat(0.55f, 0.85f);
 				}
+
 				Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<CoachGunRing>(), 60, 4, Target.whoAmI);
 				return true;
 			}
@@ -193,7 +194,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;
 			Texture2D magmaTex = Request<Texture2D>(AssetDirectory.Keys + "GlowHarsh").Value;
 
-			Vector2 magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
+			var magmaOffset = new Vector2(-13 * NPC.spriteDirection, 8);
 			SpriteEffects effects = SpriteEffects.None;
 			if (NPC.spriteDirection == 1)
 				effects = SpriteEffects.FlipHorizontally;
@@ -206,12 +207,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
-					float angle = (i / 6f) * MathHelper.TwoPi;
+					float angle = i / 6f * MathHelper.TwoPi;
 
 					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
 					float distance = 1.5f + cos;
 
-					float opacity = 0.6f + (0.2f * cos);
+					float opacity = 0.6f + 0.2f * cos;
 
 					Vector2 offset = angle.ToRotationVector2() * distance;
 					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
@@ -245,6 +246,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (tile.HasTile && Main.tileSolid[tile.TileType])
 					break;
 			}
+
 			return i;
 		}
 
@@ -259,6 +261,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (tile.HasTile && Main.tileSolid[tile.TileType])
 					break;
 			}
+
 			return i;
 		}
 	}
@@ -314,9 +317,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.spriteDirection = NPC.direction;
 
 			if (NPC.Distance(Target.Center) < 600 && timer++ > 600)
+			{
 				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Target.Center) * 9, 0.05f);
+			}
 			else if (Parent.active && !parentless)
+			{
 				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(Parent.Center) * 6, 0.045f);
+			}
 			else
 			{
 				timer = 601;
@@ -355,12 +362,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 				for (int i = 0; i < 6; i++)
 				{
-					float angle = (i / 6f) * MathHelper.TwoPi;
+					float angle = i / 6f * MathHelper.TwoPi;
 
 					float cos = (float)Math.Cos(Main.timeForVisualEffects * 0.05f);
 					float distance = 1.5f + cos;
 
-					float opacity = 0.6f + (0.2f * cos);
+					float opacity = 0.6f + 0.2f * cos;
 
 					Vector2 offset = angle.ToRotationVector2() * distance;
 					spriteBatch.Draw(glowTex, offset + NPC.Center - screenPos, NPC.frame, Color.White * opacity, NPC.rotation, NPC.frame.Size() / 2, NPC.scale, effects, 0f);
@@ -427,7 +434,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 	public class FirebugMagma : ModProjectile, IDrawAdditive
 	{
-		private List<Vector2> oldPos = new List<Vector2>();
+		private readonly List<Vector2> oldPos = new();
 
 		public override string Texture => AssetDirectory.Keys + "GlowHarsh";
 

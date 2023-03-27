@@ -432,11 +432,18 @@ namespace StarlightRiver.Helpers
 
 		public static bool IsEdgeTile(int x, int y)
 		{
-			return
-				!Framing.GetTileSafely(x - 1, y).HasTile ||
-				!Framing.GetTileSafely(x + 1, y).HasTile ||
-				!Framing.GetTileSafely(x, y - 1).HasTile ||
-				!Framing.GetTileSafely(x, y + 1).HasTile;
+			Tile leftTile = Framing.GetTileSafely(x - 1, y);
+			Tile rightTile = Framing.GetTileSafely(x + 1, y);
+			Tile topTile = Framing.GetTileSafely(x, y - 1);
+			Tile bottomTile = Framing.GetTileSafely(x, y + 1);
+
+			bool isEdge = 
+				!(leftTile.HasTile && Main.tileSolid[leftTile.TileType]) ||
+				!(rightTile.HasTile && Main.tileSolid[rightTile.TileType]) ||
+				!(topTile.HasTile && Main.tileSolid[topTile.TileType]) ||
+				!(bottomTile.HasTile && Main.tileSolid[bottomTile.TileType]);
+
+			return isEdge;
 		}
 
 		public static SlotId PlayPitched(string path, float volume, float pitch, Vector2? position = null)

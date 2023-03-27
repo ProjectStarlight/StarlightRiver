@@ -3,6 +3,7 @@ using StarlightRiver.Content.Items.Moonstone;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -72,6 +73,15 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			NPC.DeathSound = new Terraria.Audio.SoundStyle($"{nameof(StarlightRiver)}/Sounds/VitricBoss/ceramicimpact") with { Volume = 1.1f, Pitch = -0.2f };
 
 			NPC.value = Item.buyPrice(silver: 1, copper: 15);
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				Bestiary.SLRSpawnConditions.Moonstone,
+				new FlavorTextBestiaryInfoElement("A chunk of the moon possessed with hatred for you. These creatures will stop at nothing to protect their home.")
+			});
 		}
 
 		public override void AI()

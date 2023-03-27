@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Kill(int timeLeft)
 		{
-			var unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+			ReLogic.Utilities.SlotId unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
 			for (int k = 1; k <= 6; k++)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8, 8), ModContent.DustType<Glow>(), Main.rand.NextVector2Circular(4, 4), 0, Color.Orange, 0.5f);
@@ -133,9 +133,9 @@ namespace StarlightRiver.Content.Items.Vitric
 	}
 
 	internal class ArrowMagma : ModProjectile
-	{ 
+	{
 
-		private List<Vector2> oldPos = new();
+		private readonly List<Vector2> oldPos = new();
 
 		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
 

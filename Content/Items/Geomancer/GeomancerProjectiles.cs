@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private const int EXPLOSIONTIME = 2;
 
-		private bool initialized = false;
+		private readonly bool initialized = false;
 
 		private Player owner => Main.player[Projectile.owner];
 
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		Vector2 direction = Vector2.Zero;
 
-		private List<float> oldRotation = new();
+		private readonly List<float> oldRotation = new();
 
 		private bool launched = false;
 		private bool lockedOn = false;

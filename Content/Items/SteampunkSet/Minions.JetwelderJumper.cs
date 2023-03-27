@@ -51,6 +51,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = BASE_DURATION;
 			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override bool? CanHitNPC(NPC target)

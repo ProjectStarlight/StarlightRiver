@@ -179,7 +179,8 @@ namespace StarlightRiver.Content.GUI
 
 			if (craftTime == 60)
 			{
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact);
+				SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact);
+
 				for (int k = 0; k < 100; k++)
 				{
 					var p = new Particle(Vector2.Zero, Vector2.Zero, Main.rand.NextFloat(6.28f), 0, Color.White, 40, basePos + new Vector2(96, 236));
@@ -206,8 +207,10 @@ namespace StarlightRiver.Content.GUI
 		{
 			Append(inSlot);
 			Append(options);
+
 			craftButton.OnClick += Craft;
 			Append(craftButton);
+
 			exitButton.OnClick += (a, b) => visible = false;
 			Append(exitButton);
 		}
@@ -241,7 +244,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class InfusionRecipieEntry : UIElement
+	class InfusionRecipieEntry : SmartUIElement
 	{
 		public static CancellationTokenSource tokenSource;
 
@@ -265,18 +268,18 @@ namespace StarlightRiver.Content.GUI
 					Texture2D tex = Request<Texture2D>(output.Texture).Value;
 					output.Draw(spriteBatch, pos + new Vector2(14, 13), 1);
 					Color color = (Parent.Parent.Parent as InfusionMaker).selected == this ? Color.Yellow : Color.White;
-					spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, output.Item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
+					spriteBatch.DrawString(FontAssets.ItemStack.Value, output.Item.Name, pos + new Vector2(32, 6), color, 0, Vector2.Zero, 0.8f, 0, 0);
 				}
 				else
 				{
 					Texture2D tex = Request<Texture2D>(output.FrameTexture).Value;
 					spriteBatch.Draw(tex, pos, Color.Gray);
-					spriteBatch.DrawString(Terraria.GameContent.FontAssets.ItemStack.Value, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
+					spriteBatch.DrawString(FontAssets.ItemStack.Value, "???", pos + new Vector2(32, 6), Color.Gray, 0, Vector2.Zero, 0.8f, 0, 0);
 				}
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (!output.Visible)
 				return;
@@ -322,11 +325,11 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class InfusionMakerSlot : UIElement
+	class InfusionMakerSlot : SmartUIElement
 	{
 		public Item Item;
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			Player Player = Main.LocalPlayer;
 

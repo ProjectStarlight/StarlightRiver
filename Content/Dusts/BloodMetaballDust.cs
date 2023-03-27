@@ -4,7 +4,6 @@ namespace StarlightRiver.Content.Dusts
 {
 	public class BloodMetaballDust : ModDust
 	{
-
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 
 		public override void OnSpawn(Dust dust)
@@ -16,8 +15,7 @@ namespace StarlightRiver.Content.Dusts
 		{
 			dust.position += dust.velocity;
 
-			if (dust.customData == null)
-				dust.customData = Main.rand.NextFloat(0.75f, 1.5f);
+			dust.customData ??= Main.rand.NextFloat(0.75f, 1.5f);
 
 			if (dust.noGravity)
 			{

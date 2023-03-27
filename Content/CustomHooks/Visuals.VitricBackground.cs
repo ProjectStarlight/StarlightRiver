@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-				DrawTilingBackground(Main.spriteBatch);
+				DrawTilingBackground();
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		private void DrawTilingBackground(SpriteBatch spriteBatch)
+		private void DrawTilingBackground()
 		{
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSand").Value;
 			Texture2D texBot = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/VitricSandBottom").Value;

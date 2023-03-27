@@ -246,14 +246,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				return;
 
 			//these should only initialize on the client!!!
-			if (applyEffect is null)
-				applyEffect = Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
 
-			if (buffer is null)
-				buffer = new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+			applyEffect ??= Main.dedServ ? null : applyEffect = Terraria.Graphics.Effects.Filters.Scene["WaterShine"].GetShader().Shader;
 
-			if (verticies is null)
-				verticies = new VertexPositionColorTexture[6];
+			buffer ??= new VertexBuffer(Main.instance.GraphicsDevice, typeof(VertexPositionColorTexture), 6, BufferUsage.WriteOnly);
+
+			verticies ??= new VertexPositionColorTexture[6];
 
 			var zoom = new Matrix
 				(
@@ -269,7 +267,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			applyEffect.Parameters["draw"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterOver").Value);
 			applyEffect.Parameters["distort"].SetValue(Request<Texture2D>(AssetDirectory.SquidBoss + "WaterDistort").Value);
-			applyEffect.Parameters["light"].SetValue(StarlightRiver.lightingBufferInstance.screenLightingTarget);
+			applyEffect.Parameters["light"].SetValue(LightingBuffer.screenLightingTarget.RenderTarget);
 			applyEffect.Parameters["screenWidth"].SetValue(Main.screenWidth);
 			applyEffect.Parameters["xOff"].SetValue(0.5f + DrawHelper.ConvertX(target.X) / 2f);
 			applyEffect.Parameters["zoom"].SetValue(zoom);

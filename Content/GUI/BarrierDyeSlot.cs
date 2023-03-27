@@ -12,10 +12,10 @@ namespace StarlightRiver.Content.GUI
 {
 	class BarrierDyeSlot : SmartUIState
 	{
-		public int Timer = 0;
-		public Vector2 basePos;
+		private const int leftPos = -186;
+		private int topPos = 430;
 
-		private BarrierDyeSlotElement slot = new();
+		private readonly BarrierDyeSlotElement slot = new();
 
 		public override bool Visible => Main.playerInventory && Main.EquipPageSelected == 2;
 
@@ -26,32 +26,43 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			slot.Left.Set(-186, 1);
-			slot.Top.Set(430, 0);
+			slot.Left.Set(leftPos, 1);
+			slot.Top.Set(topPos, 0);
 			Append(slot);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			int mH = Main.mapStyle == 1 ? 256 : 0;
-
-			if (mH + 600 > Main.screenHeight)
-				mH = Main.screenHeight - 600;
-
-			slot.Left.Set(-186, 1);
-			slot.Top.Set(mH + 174, 0);
-
-			Recalculate();
-
-			Player Player = Main.LocalPlayer;
-			BarrierPlayer mp = Player.GetModPlayer<BarrierPlayer>();
-
+			recalculateSlotPosition();
 			base.Draw(spriteBatch);
+		}
+
+		private void recalculateSlotPosition()
+		{
+			int mapHeight = Main.mapStyle == 1 ? 256 : 0;
+
+			if (mapHeight + 600 > Main.screenHeight)
+				mapHeight = Main.screenHeight - 600;
+
+			if (leftPos != mapHeight + 174)
+			{
+				topPos = mapHeight + 174;
+
+				slot.Left.Set(leftPos, 1);
+				slot.Top.Set(topPos, 0);
+
+				Recalculate();
+			}
 		}
 	}
 
-	public class BarrierDyeSlotElement : UIElement
+	public class BarrierDyeSlotElement : SmartUIElement
 	{
+		public BarrierDyeSlotElement()
+		{
+			OnClick += ClickHandler;
+		}
+
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			Player Player = Main.LocalPlayer;
@@ -89,7 +100,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public void ClickHandler(UIMouseEvent evt, UIElement listeningElement)
 		{
 			Main.isMouseLeftConsumedByUI = true;
 			Player Player = Main.LocalPlayer;
@@ -140,7 +151,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			Width.Set(44, 0);
 			Height.Set(44, 0);

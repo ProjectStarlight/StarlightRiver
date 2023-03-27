@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
 		{
 			if (active && !Shield)
-				damageCounter += 100;
+				damageCounter += 170;
 
 			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 		}
@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			GraphicsDevice gD = Main.graphics.GraphicsDevice;
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			RenderTarget2D target = PlayerTarget.Target;
+			Texture2D target = PlayerTarget.Target;
 
 			if (Main.dedServ || spriteBatch == null || gD == null || target == null)
 				return;

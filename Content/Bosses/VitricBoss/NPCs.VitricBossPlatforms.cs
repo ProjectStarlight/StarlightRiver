@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Main.masterMode)
 			{
-				if (!DontCollide)
+				if (!dontCollide)
 				{
 					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
 						masterExpirationTimer += 2;
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (masterExpirationTimer > 150)
 					{
-						DontCollide = true;
+						dontCollide = true;
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
 					}
 				}
@@ -96,7 +96,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					masterExpirationTimer--;
 
 					if (masterExpirationTimer <= 0)
-						DontCollide = false;
+						dontCollide = false;
 				}
 			}
 		}
@@ -105,14 +105,14 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-			if (DontCollide)
+			if (dontCollide)
 				drawColor *= 0.25f;
 
 			drawColor.A = 255;
 
 			spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, drawColor, 0, tex.Size() / 2, 1, 0, 0);
 
-			if (!DontCollide && masterExpirationTimer > 0)
+			if (!dontCollide && masterExpirationTimer > 0)
 				spriteBatch.Draw(tex, NPC.Center + Vector2.UnitY * 4 - screenPos, null, Color.Lerp(Color.Transparent, Color.Red, masterExpirationTimer / 300f), 0, tex.Size() / 2, 1, 0, 0);
 
 			return false;
@@ -172,7 +172,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Main.masterMode)
 			{
-				if (!DontCollide)
+				if (!dontCollide)
 				{
 					if (Main.player.Any(Player => Player.active && Player.velocity.Y == 0 && Player.Hitbox.Intersects(NPC.Hitbox)))
 						masterExpirationTimer += 2;
@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					if (masterExpirationTimer > 150)
 					{
-						DontCollide = true;
+						dontCollide = true;
 						Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<FireRingHostile>(), 40, 0, Main.myPlayer, 50);
 					}
 				}
@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 					masterExpirationTimer--;
 
 					if (masterExpirationTimer <= 0)
-						DontCollide = false;
+						dontCollide = false;
 				}
 			}
 		}

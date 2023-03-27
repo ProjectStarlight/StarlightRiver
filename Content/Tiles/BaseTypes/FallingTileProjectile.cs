@@ -1,8 +1,4 @@
-﻿using System;
-using Terraria.DataStructures;
-using Terraria.Enums;
-using Terraria.ID;
-using Terraria.ObjectData;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.BaseTypes
 {

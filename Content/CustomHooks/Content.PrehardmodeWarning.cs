@@ -1,11 +1,5 @@
-﻿using StarlightRiver.Core.Loaders.UILoading;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core.Systems.CameraSystem;
-using System;
-using System.Linq;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.Localization;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders.UILoading;
 
 namespace StarlightRiver.Content.CustomHooks
 {

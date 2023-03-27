@@ -1,12 +1,10 @@
 ﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 using Terraria.Audio;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.Utilities;
-using Terraria.GameContent.Bestiary;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
@@ -31,7 +29,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 		}
 
-		private const int XFRAMES = 2;
 		private int frameCounter = 0;
 		public int yFrame = 0;
 		public int xFrame = 1;
@@ -40,7 +37,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		private float bobTimer = 0f;
 
-		private List<BindedNPC> targets = new();
+		private readonly List<BindedNPC> targets = new();
 
 		public Player Target => Main.player[NPC.target];
 
@@ -91,16 +88,18 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 		public override void AI()
 		{
-			Dust.NewDustPerfect(NPC.Center + new Vector2(0,50), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.88f).RotatedByRandom(0.15f), 0, Color.White, 0.35f);
+			Dust.NewDustPerfect(NPC.Center + new Vector2(0, 50), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.88f).RotatedByRandom(0.15f), 0, Color.White, 0.35f);
 
 			NPC.TargetClosest(true);
 
 			bobTimer += 0.05f;
 			NPC.velocity = new Vector2(0, 0.2f * (float)System.MathF.Sin(bobTimer));
+
 			var newTargets = Main.npc.Where(n => n.active && n.knockBackResist > 0 && n.Distance(NPC.Center) < 500 && n.type != NPC.type && !n.townNPC).ToList();
-			newTargets.ForEach(n => ApplyBuff(n));
+			newTargets.ForEach(ApplyBuff);
 
 			targets.ForEach(n => UpdateTarget(n, !newTargets.Contains(n.npc)));
+
 			foreach (BindedNPC target in targets.ToArray())
 			{
 				if (!target.npc.active)
@@ -135,6 +134,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				xFrame = 1;
 				divider = 4;
 			}
+
 			yFrame %= divider;
 
 			if (Laughing && yFrame % 6 == 5)
@@ -162,11 +162,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 				NPC target = bindedTarget.npc;
 				float distanceToTarget = (target.Center - NPC.Center).Length();
 
-				Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
+				var directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
 
-				for (float i = 0; i < distanceToTarget; i+= chainTex.Width)
+				for (float i = 0; i < distanceToTarget; i += chainTex.Width)
 				{
-					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+					var pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
 					Color lightColor = Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * bindedTarget.chainTimer;
 					Main.spriteBatch.Draw(chainTex, pos - screenPos, null, lightColor, directionToTarget.ToRotation(), chainTex.Size() / 2, NPC.scale, SpriteEffects.None, 0f);
 				}
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		{
 			NPC target = boundTarget.npc;
 			float distanceToTarget = (target.Center - NPC.Center).Length();
-			Vector2 directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
+			var directionToTarget = Vector2.Normalize(target.Center - NPC.Center);
 			if (leaving)
 			{
 				target.damage = (int)(target.damage * 0.5f);
@@ -216,9 +216,10 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 				for (float i = 0; i < distanceToTarget; i += 20)
 				{
-					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+					var pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
 					Gore.NewGoreDirect(NPC.GetSource_Death(), pos, Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("Fogbinder_Chain").Type);
 				}
+
 				int buffIndex = target.FindBuffIndex(ModContent.BuffType<Fogbinded>());
 				target.DelBuff(buffIndex);
 				boundTarget.active = false;
@@ -232,7 +233,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			{
 				if (Main.rand.NextBool(60))
 				{
-					Vector2 pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
+					var pos = Vector2.Lerp(NPC.Center, target.Center, i / distanceToTarget);
 					Dust.NewDustPerfect(pos + new Vector2(0, 20), ModContent.DustType<Dusts.Mist>(), new Vector2(0, -0.28f).RotatedByRandom(0.3f), 0, Color.White, 0.25f);
 				}
 			}

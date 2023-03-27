@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.GUI
 			OnScrollWheel += ScrollStats;
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (!Main.playerInventory)
 				visible = false;
@@ -67,16 +67,20 @@ namespace StarlightRiver.Content.GUI
 
 			if (Moving)
 				Basepos = Main.MouseScreen - MoveOffset;
+
 			if (Basepos.X < 520)
 				Basepos.X = 520;
+
 			if (Basepos.Y < 20)
 				Basepos.Y = 20;
+
 			if (Basepos.X > Main.screenWidth - 20 - 346)
 				Basepos.X = Main.screenWidth - 20 - 346;
+
 			if (Basepos.Y > Main.screenHeight - 20 - 244)
 				Basepos.Y = Main.screenHeight - 20 - 244;
 
-			ChefBagUI.Move(CookingUI.Basepos + new Vector2(-480, 0));
+			ChefBagUI.Move(Basepos + new Vector2(-480, 0));
 
 			Main.isMouseLeftConsumedByUI = true;
 			SetPosition(MainSlot, 44, 44);
@@ -87,8 +91,6 @@ namespace StarlightRiver.Content.GUI
 			SetPosition(CookButton, 170, 202);
 			SetPosition(ExitButton, 314, 0);
 			SetPosition(TopBar, 0, 2);
-
-			base.Update(gameTime);
 		}
 
 		private void ScrollStats(UIScrollWheelEvent evt, UIElement listeningElement)
@@ -129,7 +131,7 @@ namespace StarlightRiver.Content.GUI
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
 
-				foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
+				foreach (SmartUIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
 				{
 					var ingredient = (element as CookingSlot).Item.ModItem as Ingredient;
 
@@ -231,7 +233,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class CookingSlot : UIElement
+	public class CookingSlot : SmartUIElement
 	{
 		public Item Item = new();
 		private readonly IngredientType Type;
@@ -273,7 +275,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			Player Player = Main.LocalPlayer;
 
@@ -329,10 +331,11 @@ namespace StarlightRiver.Content.GUI
 			Main.isMouseLeftConsumedByUI = true;
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (Item.type == ItemID.None || Item.stack <= 0)
 				Item.TurnToAir();
+
 			Width.Set(60, 0);
 			Height.Set(60, 0);
 		}

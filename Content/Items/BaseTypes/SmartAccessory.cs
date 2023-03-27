@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		public sealed override void UpdateEquip(Player player)
 		{
 			if (!isDoneOnEquip)
-				Equip(player, this.Item);
+				Equip(player, Item);
 
 			if (isChild)
 			{

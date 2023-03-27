@@ -123,7 +123,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				for (int k = 0; k < 20; k++)
 				{
 					float dustRot = aim + 1.57f * 1.5f + Main.rand.NextFloat(-0.2f, 0.2f);
-					Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(dustRot) * 80 + new Vector2(0, 32), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
+					Dust.NewDustPerfect(player.Center + Vector2.One.RotatedBy(dustRot) * 80, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedBy(dustRot) * Main.rand.NextFloat(5), 0, new Color(100, 200, 255), 0.6f);
 				}
 
 				return false;
@@ -165,6 +165,14 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 
 			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<ChargedMagnet>(), 6);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 
 		private List<NPC> FindTargets(Player Player)
@@ -431,7 +439,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				Vector2 dustVel = Vector2.Normalize(nodes[n] - prevPos) * Main.rand.NextFloat(-3, -2);
 
 				if (Main.rand.NextBool(20))
-					Dust.NewDustPerfect(prevPos + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), dustVel, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
+					Dust.NewDustPerfect(prevPos, ModContent.DustType<Dusts.GlowLine>(), dustVel, 0, new Color(100, 150, 200) * (power / 30f), 0.5f);
 			}
 
 			if (Projectile.timeLeft == 1)
@@ -621,7 +629,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			{
 				for (int k = 0; k < 50; k++)
 				{
-					Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 100), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(3, 6), 0, new Color(100, 200, 255), 1.3f);
 				}
 
 				for (int k = 0; k < 20; k++)
@@ -648,7 +656,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			if (Projectile.timeLeft <= 30)
 				return;
 
-			Dust.NewDustPerfect(Projectile.Center + new Vector2(0, 16), ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
+			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowLine>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4), 0, new Color(100, 200, 255), 0.3f);
 
 			if (ShouldFire)
 			{

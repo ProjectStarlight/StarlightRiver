@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.timeLeft = 1200;
 			idleHoverOffset = Main.rand.NextFloat(6.28f);
 			idleYOffset = Main.rand.Next(-25, 35);
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override bool? CanHitNPC(NPC target)

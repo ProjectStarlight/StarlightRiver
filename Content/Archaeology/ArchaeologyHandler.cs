@@ -1,10 +1,3 @@
-
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -17,7 +10,7 @@ namespace StarlightRiver.Content.Archaeology
 	public class ArchaeologyHandler : ModSystem
 	{
 		public override void Load()
-		{ 
+		{
 			On.Terraria.Main.DoDraw_DrawNPCsBehindTiles += DrawArtifacts;
 		}
 
