@@ -126,14 +126,14 @@ namespace StarlightRiver.Core
 		public static event PostDrawDelegate PostDrawEvent;
 		public void PostDraw(Player player, SpriteBatch spriteBatch)
 		{
-			PostDrawEvent?.Invoke(Player, Main.spriteBatch);
+			PostDrawEvent?.Invoke(player, spriteBatch);
 		}
 
 		public delegate void PreDrawDelegate(Player player, SpriteBatch spriteBatch);
 		public static event PreDrawDelegate PreDrawEvent;
 		public void PreDraw(Player player, SpriteBatch spriteBatch)
 		{
-			PreDrawEvent?.Invoke(Player, Main.spriteBatch);
+			PreDrawEvent?.Invoke(player, spriteBatch);
 		}
 
 		//this is the grossest one. I am sorry, little ones.
@@ -172,6 +172,13 @@ namespace StarlightRiver.Core
 			PostUpdateRunSpeedsEvent?.Invoke(Player);
 		}
 
+		public delegate void ModifyDrawInfoDelegate(ref PlayerDrawSet drawInfo);
+		public static event ModifyDrawInfoDelegate ModifyDrawInfoEvent;
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
+		}
+
 		public override void Unload()
 		{
 			CanUseItemEvent = null;
@@ -191,6 +198,7 @@ namespace StarlightRiver.Core
 			PreHurtEvent = null;
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
+			ModifyDrawInfoEvent = null;
 
 			spawners = null;
 		}

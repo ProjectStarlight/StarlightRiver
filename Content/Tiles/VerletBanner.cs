@@ -37,7 +37,8 @@ namespace StarlightRiver.Content.Tiles
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-				scale = 0.6f
+				scale = 0.6f,
+				parent = Projectile
 			};
 		}
 

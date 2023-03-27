@@ -783,11 +783,15 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			player.cursorItemIconID = -1;
 
 			if (chestIndex < 0)
+			{
 				player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
+			}
 			else
 			{
 				if (Main.chest[chestIndex].name != "")
+				{
 					player.cursorItemIconText = Main.chest[chestIndex].name;
+				}
 				else
 				{
 					player.cursorItemIconText = name;
@@ -825,11 +829,15 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			Player.cursorItemIconID = -1;
 
 			if (num138 < 0)
+			{
 				Player.cursorItemIconText = Language.GetTextValue("LegacyDresserType.0");
+			}
 			else
 			{
 				if (Main.chest[num138].name != "")
+				{
 					Player.cursorItemIconText = Main.chest[num138].name;
+				}
 				else
 				{
 					Player.cursorItemIconText = name;

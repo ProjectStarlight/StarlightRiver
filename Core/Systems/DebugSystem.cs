@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Core.Systems
+﻿using Terraria.ID;
+
+namespace StarlightRiver.Core.Systems
 {
 	internal class DebugSystem : ModSystem
 	{
@@ -7,6 +9,24 @@
 		public override void Load()
 		{
 			On.Terraria.Main.Update += DoUpdate;
+			On.Terraria.Main.DrawInterface += DrawDebugMenu;
+		}
+
+		private void DrawDebugMenu(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		{
+			orig(self, gameTime);
+
+			if (!StarlightRiver.debugMode || Main.playerInventory)
+				return;
+
+			string menu = "Debug mode options:\n " +
+				"Y: Hold to speed up game\n " +
+				"U: Hold to slow down game\n " +
+				"P: Press to change difficulty";
+
+			Main.spriteBatch.Begin();
+			Utils.DrawBorderString(Main.spriteBatch, menu, new Vector2(32, 120), new Color(230, 230, 255));
+			Main.spriteBatch.End();
 		}
 
 		private void DoUpdate(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
@@ -22,7 +42,7 @@
 
 			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Y)) //Boss Speed Up Key
 			{
-				for (int k = 0; k < 4; k++)
+				for (int k = 0; k < 8; k++)
 				{
 					orig(self, gameTime);
 				}
@@ -36,6 +56,25 @@
 				timer++;
 
 				return;
+			}
+
+			if (Main.oldKeyState.IsKeyUp(Microsoft.Xna.Framework.Input.Keys.P) && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.P)) //Difficulty toggle key
+			{
+				if (!Main.expertMode)
+				{
+					Main.GameMode = GameModeID.Expert;
+					Main.NewText("The game is now in expert mode.", new Color(255, 150, 0));
+				}
+				else if (!Main.masterMode)
+				{
+					Main.GameMode = GameModeID.Master;
+					Main.NewText("The game is now in master mode.", new Color(255, 0, 0));
+				}
+				else
+				{
+					Main.GameMode = GameModeID.Normal;
+					Main.NewText("The game is now in normal mode.", new Color(180, 180, 255));
+				}
 			}
 
 			orig(self, gameTime);

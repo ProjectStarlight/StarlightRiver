@@ -48,6 +48,11 @@ namespace StarlightRiver.Content.Items.Vitric
 			DisplayName.SetDefault("Enchanted Glass");
 		}
 
+		public override bool? CanHitNPC(NPC target)
+		{
+			return false;
+		}
+
 		public override void AI()
 		{
 			if (Owner.dead)

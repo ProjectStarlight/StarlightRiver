@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core.Loaders.TileLoading;
-using Terraria.ModLoader;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {

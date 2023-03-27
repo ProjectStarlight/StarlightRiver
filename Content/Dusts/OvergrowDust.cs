@@ -21,12 +21,14 @@ namespace StarlightRiver.Content.Dusts
 
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData is int)
+			if (dust.customData is int colorProgress)
 			{
-				dust.customData = (int)dust.customData - 1;
-				if ((int)dust.customData == 0)
+				dust.customData = colorProgress - 1;
+
+				if (colorProgress == 0)
 					dust.active = false;
-				if ((int)dust.customData >= 100)
+
+				if (colorProgress >= 100)
 				{
 					if (dust.color.R < 100)
 						dust.color *= 1.53f;

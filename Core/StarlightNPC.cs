@@ -10,12 +10,6 @@
 
 		//public override bool CloneNewInstances => true;
 
-		public override void UpdateLifeRegen(NPC NPC, ref int damage)
-		{
-			NPC.lifeRegen -= DoT * 2;
-			DoT = 0;
-		}
-
 		public override bool PreKill(NPC npc)
 		{
 			return !dontDropItems;

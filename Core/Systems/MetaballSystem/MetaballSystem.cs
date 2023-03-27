@@ -1,15 +1,17 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
 	public class MetaballSystem : IOrderedLoadable
 	{
-		public static int oldScreenWidth = 0;
-		public static int oldScreenHeight = 0;
+		public static Semaphore actorsSem = new(1, 1);
 
-		public static List<MetaballActor> Actors = new();
+		public static List<MetaballActor> actors = new();
 
-		public float Priority => 1;
+		//We intentionally load after screen targets here so our extra RT swapout applies after the default ones.
+		public float Priority => 1.1f;
 
 		public void Load()
 		{
@@ -25,37 +27,42 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			On.Terraria.Main.DrawNPCs -= DrawTargets;
 			On.Terraria.Main.CheckMonoliths -= BuildTargets;
 
-			Actors = null;
-		}
-
-		public void UpdateWindowSize(int width, int height)
-		{
-			Main.QueueMainThreadAction(() => Actors.ForEach(n => n.ResizeTarget(width, height)));
-
-			oldScreenWidth = width;
-			oldScreenHeight = height;
+			actorsSem.WaitOne();
+			actors = null;
+			actorsSem.Release();
 		}
 
 		private void DrawTargets(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
 			if (behindTiles)
-				Actors.ForEach(a => a.DrawTarget(Main.spriteBatch));
+			{
+				actorsSem.WaitOne();
+				var toDraw = actors.Where(n => !n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+				actorsSem.Release();
+			}
 
 			orig(self, behindTiles);
+
+			if (!behindTiles)
+			{
+				actorsSem.WaitOne();
+				var toDraw = actors.Where(n => n.OverEnemies).ToList();
+				toDraw.ForEach(a => a.DrawTarget(Main.spriteBatch));
+				actorsSem.Release();
+			}
 		}
 
 		private void BuildTargets(On.Terraria.Main.orig_CheckMonoliths orig)
 		{
-			if (Main.graphics.GraphicsDevice != null)
-			{
-				if (Main.screenWidth != oldScreenWidth || Main.screenHeight != oldScreenHeight)
-					UpdateWindowSize(Main.screenWidth, Main.screenHeight);
-			}
-
-			if (Main.spriteBatch != null && Main.graphics.GraphicsDevice != null && !Main.gameMenu)
-				Actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
-
 			orig();
+
+			if (!Main.gameMenu && Main.spriteBatch != null && Main.graphics.GraphicsDevice != null)
+			{
+				actorsSem.WaitOne();
+				actors.ForEach(a => a.DrawToTarget(Main.spriteBatch, Main.graphics.GraphicsDevice));
+				actorsSem.Release();
+			}
 		}
 	}
 }

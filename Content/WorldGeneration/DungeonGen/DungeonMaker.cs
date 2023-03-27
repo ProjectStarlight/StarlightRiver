@@ -415,8 +415,7 @@ namespace StarlightRiver.Content.WorldGeneration.DungeonGen
 		/// <returns></returns>
 		private bool TryMakeHallway(int x, int y, ref List<Point16> hallway, int remainingSections, Point16 directionDisposition = default)
 		{
-			if (hallway is null)
-				hallway = new List<Point16>();
+			hallway ??= new List<Point16>();
 
 			hallway.Add(new Point16(x, y));
 

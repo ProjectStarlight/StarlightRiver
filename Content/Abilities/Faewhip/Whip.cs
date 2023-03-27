@@ -261,11 +261,9 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 			if (!Active || !CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			if (trail is null)
-				trail = new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+			trail ??= new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 10 + n * 0, n => new Color(255, 255, 150) * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
-			if (glowTrail is null)
-				glowTrail = new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
+			glowTrail ??= new Trail(Main.graphics.GraphicsDevice, 100, new TriangularTip(4), n => 18 + n * 0, n => new Color(255, 150, 50) * 0.1f * (endRooted ? Math.Min(n.X * 5f, 1) : (float)Math.Sin(n.X * 3.14f)));
 
 			trail.Positions = trailPoints;
 			glowTrail.Positions = trailPoints;
@@ -276,8 +274,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				trailPoints[k] = pos;
 			}
 
-			if (effect is null)
-				effect = Filters.Scene["WhipAbility"].GetShader().Shader;
+			effect ??= Filters.Scene["WhipAbility"].GetShader().Shader;
 
 			if (startPoint != Vector2.Zero)
 			{

@@ -36,7 +36,7 @@ namespace StarlightRiver.Core
 			Rectangle range = WorldGen.UndergroundDesertLocation;
 			range.Inflate(500, 500);
 
-			int amount = Main.maxTilesX / 17;
+			int amount = Main.maxTilesX / 12;
 
 			PlaceArtifactPool<DesertArtifact>(range, tiles, amount, 999);
 		}
@@ -50,7 +50,7 @@ namespace StarlightRiver.Core
 			};
 
 			var range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
-			int amount = Main.maxTilesX / 12;
+			int amount = Main.maxTilesX / 16;
 
 			PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
 		}
@@ -64,7 +64,7 @@ namespace StarlightRiver.Core
 			};
 
 			var range = new Rectangle(100, 100, Main.maxTilesX - 100, Main.maxTilesY - 400);
-			int amount = Main.maxTilesX / 20;
+			int amount = Main.maxTilesX / 24;
 
 			PlaceArtifactPool<SnowArtifact>(range, tiles, amount, 4999);
 		}

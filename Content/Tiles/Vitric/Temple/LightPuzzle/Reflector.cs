@@ -18,6 +18,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			QuickBlock.QuickSetFurniture(this, 1, 1, DustID.Dirt, SoundID.Dig, new Color(1, 1, 1));
 		}
 
+		public override bool SpawnConditions(int i, int j)
+		{
+			return true;
+		}
+
 		public override bool RightClick(int i, int j)
 		{
 			var dummy = Dummy(i, j).ModProjectile as ReflectorDummy;
@@ -65,11 +70,17 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					rotating = false;
 					FindEndpoint();
 					Projectile.netUpdate = true;
+
+					Parent.TileFrameX = (short)(Rotation / 6.28f * 360);
+					Rotation = Parent.TileFrameX / 360f * 6.28f;
 				}
 			}
-			else if (rotateAnimation > 0)
+			else
 			{
-				rotateAnimation--;
+				Rotation = Parent.TileFrameX / 360f * 6.28f;
+
+				if (rotateAnimation > 0)
+					rotateAnimation--;
 			}
 		}
 

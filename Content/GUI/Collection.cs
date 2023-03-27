@@ -23,16 +23,12 @@ namespace StarlightRiver.Content.GUI
 		private void AddAbility(Ability ability, Vector2 off)
 		{
 			var element = new AbilityDisplay(ability);
-			element.Left.Set((int)off.X - 16, 0);
-			element.Top.Set((int)off.Y - 16, 0);
-			element.Width.Set(32, 0);
-			element.Height.Set(32, 0);
-			Append(element);
+			AddElement(element, (int)off.X - 16, (int)off.Y - 16, 32, 32);
 
 			abilityIconPositions.Add(ability.GetType(), new Vector2(off.X, off.Y));
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || ShouldReset)
 			{
@@ -53,7 +49,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class AbilityDisplay : UIElement
+	public class AbilityDisplay : SmartUIElement
 	{
 		private readonly Ability ability;
 
@@ -67,7 +63,7 @@ namespace StarlightRiver.Content.GUI
 			return Main.InReforgeMenu;
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (ReturnConditions())
 				return;
