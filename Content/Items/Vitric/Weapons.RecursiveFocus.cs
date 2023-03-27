@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -386,7 +387,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return timeSpentOnTarget > 2 && foundTarget && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center, targetCenter, 15, ref useless);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (!rightClickMode)
 			{
@@ -397,7 +398,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float scale = 0.45f + MathHelper.Lerp(0, 0.1f, timeSpentOnTarget / 720);
 

@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -283,14 +284,14 @@ namespace StarlightRiver.Content.Items.Misc
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			hit.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			CameraSystem.shake += 2;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			hitDirection = Math.Sign(target.Center.X - Owner.Center.X);
 		}
@@ -473,7 +474,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Bonk(target.Center);
 			/*Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);

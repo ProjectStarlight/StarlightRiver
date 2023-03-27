@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Lavas
 			if (Main.dedServ)
 				return;
 
-			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalDraw += DrawSpecialLava;
+			//Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids += DrawSpecialLava; PORTTODO: Redo IL
 			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
 			//IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
 		}
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Lavas
 
 		public void Unload()
 		{
-			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalDraw -= DrawSpecialLava;
+			//Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids -= DrawSpecialLava; PORTTODO: Redo IL
 			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalPrepareDraw -= SwapLavaDrawEffects;
 			//IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
 

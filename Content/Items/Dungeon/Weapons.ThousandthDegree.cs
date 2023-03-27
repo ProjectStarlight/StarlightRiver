@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -201,12 +202,12 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Projectile.alpha -= 75;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			damage = (int)(damage * MathHelper.Lerp(0.9f, 2f, CurrentHeat / MAXHEAT));
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Vector2 direction = Projectile.DirectionTo(target.Center);
 
@@ -474,7 +475,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffID.OnFire, 240);
 			target.AddBuff(BuffID.OnFire3, 240);

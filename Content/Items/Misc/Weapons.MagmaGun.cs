@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Items.Vitric;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -466,7 +467,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			foreach (MagmaGlob glob in Globs) //TODO: Merge with canhitNPC similar code into method to reduce boilerplate
 			{

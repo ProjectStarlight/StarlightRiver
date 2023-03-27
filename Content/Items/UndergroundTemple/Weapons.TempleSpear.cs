@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Projectiles;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -54,7 +55,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee));
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//inflicting debuff + light orbs on kill
 			target.AddBuff(BuffType<Buffs.Illuminant>(), 600);

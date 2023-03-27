@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -111,7 +112,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 50, targetHitbox);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffID.Frostburn, 240);
 		}

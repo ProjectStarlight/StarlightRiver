@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -158,7 +159,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && target.active && !target.dontTakeDamage && !target.townNPC;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			hitDirection = Main.player[Projectile.owner].direction;
 
@@ -292,7 +293,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			ShieldLife -= target.damage / 2;
 			CombatText.NewText(Projectile.Hitbox, new Color(100, 255, 255), target.damage / 2);

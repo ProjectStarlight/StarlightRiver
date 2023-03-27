@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.GUI;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -50,7 +51,7 @@ namespace StarlightRiver.Core
 			activeCounter = null;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+		public override void OnHurt(Player.HurtInfo info)
 		{
 			if (!pvp)
 				attemptedMedal = default;

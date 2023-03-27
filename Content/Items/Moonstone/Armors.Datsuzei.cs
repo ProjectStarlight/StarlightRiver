@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -429,7 +430,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), Projectile.Center - Vector2.UnitX.RotatedBy(Projectile.rotation) * 140, Projectile.Center + Vector2.UnitX.RotatedBy(Projectile.rotation) * 140);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Helper.PlayPitched("Magic/FireHit", 0.5f, 1f, target.Center);
 

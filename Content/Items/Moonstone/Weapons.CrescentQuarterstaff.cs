@@ -2,6 +2,7 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -334,7 +335,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.immune[Projectile.owner] = 30;
 
@@ -347,7 +348,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				pauseTime = 7;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (currentAttack == CurrentAttack.Slam)
 				damage = (int)(damage * 1.5f);

@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -237,7 +238,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Main.rand.NextBool(3) && Main.player[Projectile.owner].statLife < Main.player[Projectile.owner].statLifeMax2)
 			{
@@ -280,7 +281,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
 			globalNPC.HauntedSoulDamage = damage * 3;
@@ -360,7 +361,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		public SoilgunVitricSandSoil() : base(new Color(87, 129, 140), new Color(87, 129, 140), new Color(171, 230, 167), ModContent.DustType<VitricSandDust>()) { }
 
 		//yeah this is copied from vitric bullet they kinda similar tho
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
 			if (globalNPC.ShardAmount < 10)
@@ -410,7 +411,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			SoilgunGlobalNPC globalNPC = target.GetGlobalNPC<SoilgunGlobalNPC>();
 			globalNPC.GlassPlayerID = Projectile.owner;
@@ -462,7 +463,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			for (int i = 0; i < 12; i++)
 			{
@@ -505,7 +506,7 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.velocity.X *= -1;
 

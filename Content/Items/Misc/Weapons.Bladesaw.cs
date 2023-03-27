@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -91,13 +92,13 @@ namespace StarlightRiver.Content.Items.Misc
 				ShreddedStacks = 0;
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (ShreddedStacks > 0)
 				damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (ShreddedStacks > 0)
 				damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
@@ -247,7 +248,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			oldTimeleft = Projectile.timeLeft;
 			pauseTimer = 7;
@@ -282,7 +283,7 @@ namespace StarlightRiver.Content.Items.Misc
 			globalNPC.ShreddedStacks++;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			damage = (int)(damage * (1f + 0.03f * hitAmount));
 		}

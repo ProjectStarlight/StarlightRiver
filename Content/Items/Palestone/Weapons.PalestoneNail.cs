@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Buffs.Summon;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.Items.Palestone
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			EnemyWhoAmI = target.whoAmI; //TODO: possible desync, needs testing
 		}
@@ -584,7 +585,7 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (parent != null && !hasHit)
 			{

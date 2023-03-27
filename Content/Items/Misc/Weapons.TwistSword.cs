@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -308,7 +309,7 @@ namespace StarlightRiver.Content.Items.Misc
 			player.UpdateRotation(0);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);

@@ -129,7 +129,7 @@ namespace StarlightRiver.Helpers
 
 		public static Texture2D GetItemTexture(Item Item)
 		{
-			if (Item.type < Main.maxItemTypes)
+			if (Item.type < ItemID.Count)
 				return Terraria.GameContent.TextureAssets.Item[Item.type].Value;
 			else
 				return Request<Texture2D>(Item.ModItem.Texture).Value;
@@ -137,7 +137,7 @@ namespace StarlightRiver.Helpers
 
 		public static Texture2D GetItemTexture(int type)
 		{
-			if (type < Main.maxItemTypes)
+			if (type < ItemID.Count)
 			{
 				return Terraria.GameContent.TextureAssets.Item[type].Value;
 			}

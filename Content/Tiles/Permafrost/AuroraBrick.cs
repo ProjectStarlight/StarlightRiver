@@ -31,15 +31,17 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
 		}
 
-		private bool StopGrappling(Terraria.On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, Tile theTile)
+		private bool StopGrappling(On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, int x, int y)
 		{
+			Tile theTile = Framing.GetTileSafely(x, y);
+
 			if (theTile.TileType == TileType<AuroraBrick>())
 			{
 				self.tileCollide = true;
 				return false;
 			}
 
-			return orig(self, theTile);
+			return orig(self, x, y);
 		}
 	}
 

@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -111,13 +112,13 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (magmaRemaining > 0.4f)
 				target.AddBuff(BuffID.OnFire, 180);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			damage += (int)(progressToDepletion * 8);
 			knockback *= 1 + progressToDepletion;
@@ -212,7 +213,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
 		}

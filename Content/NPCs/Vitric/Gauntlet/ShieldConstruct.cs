@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -233,7 +234,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			return false;
 		}
 
-		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (Guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection || stacked)
 				knockback = 0f;
@@ -258,7 +259,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (Guarding || Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection || stacked)
 				knockback = 0f;

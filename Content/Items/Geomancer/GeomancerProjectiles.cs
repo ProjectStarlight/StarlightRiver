@@ -3,6 +3,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -252,7 +253,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			return base.CanHitNPC(target);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			hitDirection = Math.Sign(Projectile.Center.X - Main.player[Projectile.owner].Center.X);
 			Player Player = Main.player[Projectile.owner];

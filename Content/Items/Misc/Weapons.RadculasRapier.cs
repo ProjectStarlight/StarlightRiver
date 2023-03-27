@@ -5,6 +5,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -363,7 +364,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.ChangeDir(Projectile.direction);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (NPCID.Sets.ProjectileNPC[target.type])
 				return;
@@ -664,12 +665,12 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			damage *= (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			RadculasRapierNPC gNPC = target.GetGlobalNPC<RadculasRapierNPC>();
 

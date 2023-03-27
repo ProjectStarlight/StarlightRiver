@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
 using System;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Pickups
 
 		public virtual void SafeSetDefaults() { }
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			crit = false;
 			knockback = 0;

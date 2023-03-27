@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -98,7 +99,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * (20 + damage * 0.05f) * target.knockBackResist;
 			target.AddBuff(BuffID.OnFire, 180);

@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -180,7 +181,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			Lighting.AddLight(Player.Center, GetArmorColor(Player).ToVector3());
 		}
 
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Projectile, consider using OnHitNPC instead */
 		{
 			if (!SetBonusActive)
 				return;

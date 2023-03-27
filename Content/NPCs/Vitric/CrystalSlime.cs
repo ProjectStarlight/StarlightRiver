@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -95,15 +96,15 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (Shield == 1)
 				damage = 0;
 
-			return base.StrikeNPC(ref damage, defense, ref knockback, hitDirection, ref crit);
+			return base.ModifyIncomingHit(ref damage, defense, ref knockback, hitDirection, ref crit);
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			if (AbilityHelper.CheckDash(target, NPC.Hitbox))
 			{

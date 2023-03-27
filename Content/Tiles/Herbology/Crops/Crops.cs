@@ -99,14 +99,6 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			num = 1;
 		}
 
-		public override bool Drop(int i, int j)/* tModPorter Note: Removed. Use CanDrop to decide if an item should drop. Use GetItemDrops to decide which item drops. Item drops based on placeStyle are handled automatically now, so this method might be able to be removed altogether. */
-		{
-			Tile thisTile = Main.tile[i, j];
-			if (thisTile.TileFrameY == (Height - 1) * 18)
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 0, 0, ItemDrop, thisTile.TileFrameX >= LastFrame ? Main.rand.Next(2, 4) : 1);
-			return false;
-		}
-
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			if (Main.tile[i, j].TileFrameY == 36)

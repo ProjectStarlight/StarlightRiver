@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -174,7 +175,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.frame.Height = 40;
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{

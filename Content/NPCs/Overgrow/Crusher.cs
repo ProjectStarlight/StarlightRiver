@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -71,7 +72,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			}
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 		{
 			target.AddBuff(BuffType<Buffs.Squash>(), 450);
 		}
@@ -81,7 +82,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			return true;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.type == NPCID.Bunny)
 			{

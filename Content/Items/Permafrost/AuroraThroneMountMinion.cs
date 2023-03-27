@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Permafrost
@@ -75,7 +76,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Helpers.Helper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
 		}

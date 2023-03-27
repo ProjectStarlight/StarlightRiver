@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -36,13 +37,13 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.crit = 10;
 		}
 
-		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+		public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (player.HasBuff(ModContent.BuffType<FiletFrenzyBuff>()) && Main.rand.NextBool())
 				crit = false;
 		}
 
-		public override void OnHitNPC(Player player, NPC target, int damage, float knockBack, bool crit)
+		public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (crit)
 			{

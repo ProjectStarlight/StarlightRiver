@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
+using Terraria;
 
 namespace StarlightRiver.Content.Items.Forest
 {
@@ -47,7 +48,7 @@ namespace StarlightRiver.Content.Items.Forest
 			Projectile.velocity = Vector2.UnitX.RotatedBy(Projectile.rotation) * 0.01f;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<WolfBleeding>(), 120);
 

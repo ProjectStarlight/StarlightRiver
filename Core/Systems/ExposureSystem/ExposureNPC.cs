@@ -1,4 +1,5 @@
-﻿namespace StarlightRiver.Core.Systems.ExposureSystem
+﻿using Terraria;
+namespace StarlightRiver.Core.Systems.ExposureSystem
 {
 	public class ExposureNPC : GlobalNPC
 	{
@@ -32,7 +33,7 @@
 			ExposureMultSummon = 0f;
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (item.CountsAsClass(DamageClass.Melee))
 				damage = (int)(damage * (1f + ExposureMultMelee)) + ExposureAddMelee;
@@ -49,7 +50,7 @@
 			damage = (int)(damage * (1f + ExposureMultAll)) + ExposureAddAll;
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (projectile.CountsAsClass(DamageClass.Melee))
 				damage = (int)(damage * (1f + ExposureMultMelee)) + ExposureAddMelee;

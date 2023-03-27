@@ -3,6 +3,7 @@ using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -93,7 +94,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			}
 		}
 
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		public override void ModifyHurt(ref Player.HurtModifiers modifiers)/* tModPorter Override ImmuneTo, FreeDodge or ConsumableDodge instead to prevent taking damage */
 		{
 			if (barrier > 0)
 			{

@@ -4,6 +4,7 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -87,7 +88,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return true;
 		}
 
-		public override void ModifyHitNPC(Player player, NPC target, ref int damage, ref float knockBack, ref bool crit)
+		public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.HasBuff(ModContent.BuffType<MoonfuryDebuff>()))
 			{
@@ -210,7 +211,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<MoonfuryDebuff>(), 150);
 		}

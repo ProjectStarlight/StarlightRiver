@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Helpers;
 using System;
+using Terraria;
 
 namespace StarlightRiver.Core.Systems.BarrierSystem
 {
@@ -64,7 +65,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			}
 		}
 
-		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			ModifyDamage(NPC, ref damage, ref knockback);
 			timeSinceLastHit = 0;
@@ -72,7 +73,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			base.ModifyHitByItem(NPC, Player, Item, ref damage, ref knockback, ref crit);
 		}
 
-		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			ModifyDamage(NPC, ref damage, ref knockback);
 			timeSinceLastHit = 0;

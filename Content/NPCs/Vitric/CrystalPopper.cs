@@ -2,6 +2,7 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.IO;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{

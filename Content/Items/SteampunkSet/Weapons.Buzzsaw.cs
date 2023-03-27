@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -189,7 +190,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			justHit = false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Charge < MAX_CHARGE)
 				Charge++;
@@ -471,7 +472,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.velocity = parent.velocity;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 
 			if (Main.myPlayer == Projectile.owner)

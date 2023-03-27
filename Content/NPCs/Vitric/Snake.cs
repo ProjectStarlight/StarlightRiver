@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Biomes;
 using System.IO;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -202,7 +203,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			return spawnInfo.Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 100 : 0;
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{

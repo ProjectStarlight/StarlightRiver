@@ -9,9 +9,7 @@ namespace StarlightRiver.Core
 
 		public override void Load()
 		{
-			MonoModHooks.RequestNativeAccess();
-
-			IDetour d = new Hook(typeof(PlayerLoader).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
+			var d = new Hook(typeof(PlayerLoader).GetMethod("UpdateBadLifeRegen"), typeof(DoTResistancePlayer).GetMethod("ReduceDoT"));
 			d.Apply();
 		}
 

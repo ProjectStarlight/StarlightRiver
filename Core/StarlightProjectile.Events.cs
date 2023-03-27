@@ -1,10 +1,11 @@
-﻿namespace StarlightRiver.Core
+﻿using Terraria;
+namespace StarlightRiver.Core
 {
 	public partial class StarlightProjectile : GlobalProjectile
 	{
 		public delegate void ModifyHitNPCDelegate(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
 		public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
-		public override void ModifyHitNPC(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			ModifyHitNPCEvent?.Invoke(Projectile, target, ref damage, ref knockback, ref crit, ref hitDirection);
 		}

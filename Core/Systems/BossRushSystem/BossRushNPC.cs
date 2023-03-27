@@ -1,4 +1,5 @@
-﻿namespace StarlightRiver.Core.Systems.BossRushSystem
+﻿using Terraria;
+namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class HushArmorSystem : ModSystem
 	{
@@ -58,7 +59,7 @@
 			npc.SpawnedFromStatue = true; //nothing should drop items in boss rush
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
@@ -80,7 +81,7 @@
 				npc.life++;
 		}
 
-		public override void OnHitByItem(NPC npc, Player player, Item item, int damage, float knockback, bool crit)
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
@@ -88,7 +89,7 @@
 			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
@@ -110,7 +111,7 @@
 				npc.life++;
 		}
 
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;

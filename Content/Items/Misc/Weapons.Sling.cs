@@ -2,6 +2,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -371,7 +372,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffID.Poisoned, Main.rand.Next(new int[] { 180, 240, 300 }));
 		}
@@ -437,7 +438,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			CameraSystem.shake += 1;
 		}

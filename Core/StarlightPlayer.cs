@@ -10,6 +10,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -96,7 +97,7 @@ namespace StarlightRiver.Core
 			Timer++;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+		public override void OnHurt(Player.HurtInfo info)
 		{
 			justHit = true;
 			lastHit = Timer;

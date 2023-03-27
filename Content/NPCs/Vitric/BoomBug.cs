@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -340,7 +341,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.Kill();
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 		{
 			NPC.Kill();
 		}

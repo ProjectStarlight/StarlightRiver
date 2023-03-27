@@ -21,13 +21,13 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectile;
 
 			Terraria.On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
-			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+			//Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor; PORTTODO: Port IL
 		}
 
 		#region IL
 		private void ChangeDoTColor(MonoMod.Cil.ILContext il)
 		{
-			ILCursor c = new ILCursor(il);
+			var c = new ILCursor(il);
 
 			int indexLocal = il.MakeLocalVariable<int>();
 

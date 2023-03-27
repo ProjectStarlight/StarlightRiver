@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.GameContent.Creative;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -144,7 +145,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			return segment % 3 == 0;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			ableToHit = false;
 			if (!embedded)

@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -229,7 +230,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return TargetNPCIndex != -1 && !HitATarget && Main.npc[TargetNPCIndex] == target;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.timeLeft = 30;
 			HitATarget = true;

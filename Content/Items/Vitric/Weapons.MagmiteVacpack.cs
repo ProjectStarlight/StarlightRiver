@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -280,7 +281,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Projectile.Kill();
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
 
@@ -384,7 +385,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, Projectile.Center);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
 
@@ -432,7 +433,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			Player player = Main.player[projectile.owner];
 

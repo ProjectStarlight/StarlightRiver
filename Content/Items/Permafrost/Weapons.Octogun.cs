@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -78,7 +79,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool InstancePerEntity => true;
 
-		public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (shotFromSquidGun)
 			{
@@ -419,7 +420,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			KillEffects();
 		}

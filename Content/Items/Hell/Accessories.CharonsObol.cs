@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -257,7 +258,7 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 		}
 
-		public override void OnHitNPC(NPC hitTarget, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.penetrate++;
 

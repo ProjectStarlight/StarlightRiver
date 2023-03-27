@@ -1,6 +1,4 @@
-﻿using Terraria.DataStructures;
-
-namespace StarlightRiver.Content.Buffs
+﻿namespace StarlightRiver.Content.Buffs
 {
 	class Rage : SmartBuff
 	{
@@ -12,12 +10,12 @@ namespace StarlightRiver.Content.Buffs
 		{
 			StarlightNPC.ModifyHitPlayerEvent += BuffDamage;
 			StarlightNPC.ResetEffectsEvent += ResetRageBuff;
-			Terraria.On_Player.Hurt += IncreaseKB;
+			//Terraria.On_Player.hurt += IncreaseKBs; PORTTODO: Port this to something
 		}
 
-		private double IncreaseKB(Terraria.On_Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+		/*private double IncreaseKBs(On_Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter, bool dodgeable)
 		{
-			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
+			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter, dodgeable);
 
 			if (damageSource.SourceNPCIndex != -1)
 			{
@@ -28,7 +26,7 @@ namespace StarlightRiver.Content.Buffs
 			}
 
 			return value;
-		}
+		}*/
 
 		private void BuffDamage(NPC NPC, Player target, ref int damage, ref bool crit)
 		{

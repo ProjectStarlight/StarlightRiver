@@ -22,9 +22,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.HitSound = SoundID.NPCHit1;
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossLifeScale -> balance (bossAdjustment is different, see the docs for details) */
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossAdjustment -> balance (bossAdjustment is different, see the docs for details) */
 		{
-			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossLifeScale) : (int)(750 * bossLifeScale);
+			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossAdjustment) : (int)(750 * bossAdjustment);
 		}
 
 		public override void AI()
@@ -41,39 +41,33 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return false;
 		}
 
-		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			damage = (int)(damage * 1.25f);
+			modifiers.FinalDamage *= 1.25f;
 		}
 
-		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			damage = (int)(damage * 1.25f);
+			modifiers.FinalDamage *= 1.25f;
 		}
 
-		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			if (crit)
-				damage *= 2; //"But what about the crit damage system?" -- That is calculated in ModifyHitByX, and is thus already accounted for before this.
-
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damage;
+				Parent.NPC.life -= damageDone;
 
-			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
+			else if (Parent.NPC.life - damageDone < Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
 
 			NPC.life = NPC.lifeMax;
 		}
 
-		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (crit)
-				damage *= 2;
-
 			if (Parent.NPC.life > Parent.NPC.lifeMax - NPC.lifeMax * 4)
-				Parent.NPC.life -= damage;
+				Parent.NPC.life -= damageDone;
 
-			else if (Parent.NPC.life - damage < Parent.NPC.lifeMax - NPC.lifeMax * 4)
+			else if (Parent.NPC.life - damageDone < Parent.NPC.lifeMax - NPC.lifeMax * 4)
 				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
 
 			NPC.life = NPC.lifeMax;

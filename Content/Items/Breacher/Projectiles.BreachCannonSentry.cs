@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -201,7 +202,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 15, ref collisionPoint);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			hitDirection = Math.Sign(target.Center.X - Projectile.Center.X);
 			Rectangle targetHitbox = target.Hitbox;

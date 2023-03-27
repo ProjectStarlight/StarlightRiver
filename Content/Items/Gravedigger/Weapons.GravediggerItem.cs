@@ -2,6 +2,7 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -287,7 +288,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
 			CameraSystem.shake += 3;
@@ -323,7 +324,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 			}
 		}
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.knockBackResist != 0 && !target.collideY && !target.noGravity && SwingFrame < 2 && target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
 				damage = (int)(damage * 1.5f);

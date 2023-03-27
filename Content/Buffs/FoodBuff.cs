@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Buffs
 
 		public override string Texture => AssetDirectory.Buffs + "FoodBuff";
 
-		public override void ModifyBuffTip(ref string tip, ref int rare)
+		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
 			FoodBuffHandler mp = Main.LocalPlayer.GetModPlayer<FoodBuffHandler>();
 			foreach (Item Item in mp.Consumed.Where(n => n.ModItem is Ingredient))

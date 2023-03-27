@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -305,7 +306,7 @@ namespace StarlightRiver.Content.Items.Starwood
 				Projectile.velocity.Y += 0.25f;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (empowered)
 				damage += DAMAGE_INCREASE;

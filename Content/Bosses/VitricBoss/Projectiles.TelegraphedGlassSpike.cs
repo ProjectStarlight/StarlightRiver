@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -53,7 +54,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			Projectile.rotation = savedVelocity.ToRotation() + 3.14f / 4;
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			target.AddBuff(BuffID.Bleeding, 300);
 		}

@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Terraria.UI.On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
 
 			Terraria.IL_Player.ScrollHotbar += AllowBigScrolling;
-			Terraria.IL_Player.Update += AllowBigHotkeying;
+			//Terraria.IL_Player.Update += AllowBigHotkeying; PORTTODO: Fix IL
 		}
 
 		private void DrawSpecial(Terraria.UI.On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)

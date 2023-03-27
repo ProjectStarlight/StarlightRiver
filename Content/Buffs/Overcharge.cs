@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Buffs
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Buffs
 			Projectile.friendly = true;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//AI Fields:
 			//0: jumps remaining

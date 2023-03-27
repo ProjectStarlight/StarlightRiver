@@ -104,9 +104,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false; //no contact damage!
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossLifeScale -> balance (bossAdjustment is different, see the docs for details) */
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossAdjustment -> balance (bossAdjustment is different, see the docs for details) */
 		{
-			NPC.lifeMax = (int)(2000 * bossLifeScale);
+			NPC.lifeMax = (int)(2000 * bossAdjustment);
 		}
 
 		public override bool CheckDead()
@@ -117,11 +117,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.dontTakeDamage = true;
 
 			return false;
-		}
-
-		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
-		{
-			Main.NewText($"Boss hit by projectile: [Name: {projectile.ModProjectile?.Name}, Damage: {damage}, Hostile: {projectile.hostile}, Friendly: {projectile.friendly}]");
 		}
 
 		public override void AI()

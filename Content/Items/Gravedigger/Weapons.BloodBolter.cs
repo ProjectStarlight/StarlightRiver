@@ -2,6 +2,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -175,7 +176,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			return false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) //ModifyHitNPC so it runs before enemies prehurt method
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) //ModifyHitNPC so it runs before enemies prehurt method
 		{
 			BloodBolterGNPC GNPC = target.GetGlobalNPC<BloodBolterGNPC>();
 			GNPC.hitFromBolter = true;

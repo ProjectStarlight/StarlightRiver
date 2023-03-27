@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Gravedigger
@@ -232,7 +233,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			healPower += 0.5f;
 

@@ -1,4 +1,5 @@
-﻿namespace StarlightRiver.Core
+﻿using Terraria;
+namespace StarlightRiver.Core
 {
 	class CritMultiPlayer : ModPlayer //TODO: Make compatible with new damage type hoo-hah
 	{
@@ -33,7 +34,7 @@
 			}
 		}
 
-		public override void ModifyHitNPC(Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)/* tModPorter If you don't need the Item, consider using ModifyHitNPC instead */
 		{
 			if (crit)
 			{

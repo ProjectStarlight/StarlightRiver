@@ -35,8 +35,8 @@ namespace StarlightRiver.Content.Packets
 
 			if (projIdentity == -1)
 			{
-				modPlayer.ModifyHitNPC(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
-				modPlayer.OnHitNPC(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
+				modPlayer.ModifyHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
+				modPlayer.OnHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
 
 			}
 			else

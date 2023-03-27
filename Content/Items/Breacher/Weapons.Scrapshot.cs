@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -344,7 +345,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 || Retracting)
 				return;
@@ -363,7 +364,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.friendly = false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			damage /= 4;
 			knockback /= 4f;

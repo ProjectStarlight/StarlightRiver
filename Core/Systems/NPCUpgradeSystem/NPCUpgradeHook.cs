@@ -18,16 +18,16 @@ namespace StarlightRiver.Core.Systems.NPCUpgradeSystem
 			Terraria.On_NPC.GetChat += SetUpgradeUI;
 
 			//This set of IL hooks changes the title of the NPCs in chat messages and UI, since attempting to change the actual name of the NPCs makes vanilla unhappy.
-			Terraria.IL_WorldGen.SpawnTownNPC += SwapTitle;
-			Terraria.IL_NPC.checkDead += SwapTitleDeath;
-			Terraria.IL_Main.DrawNPCHousesInUI += SwapTitleMenu;
+			//Terraria.IL_WorldGen.SpawnTownNPC += SwapTitle; PORTTODO: Fix IL
+			//Terraria.IL_NPC.checkDead += SwapTitleDeath;
+			//Terraria.IL_Main.DrawNPCHousesInUI += SwapTitleMenu;
 		}
 
 		public override void Unload()
 		{
-			Terraria.IL_WorldGen.SpawnTownNPC -= SwapTitle;
-			Terraria.IL_NPC.checkDead -= SwapTitleDeath;
-			Terraria.IL_Main.DrawNPCHousesInUI -= SwapTitleMenu;
+			//Terraria.IL_WorldGen.SpawnTownNPC -= SwapTitle;
+			//Terraria.IL_NPC.checkDead -= SwapTitleDeath;
+			//Terraria.IL_Main.DrawNPCHousesInUI -= SwapTitleMenu;
 		}
 
 		private string SetUpgradeUI(Terraria.On_NPC.orig_GetChat orig, NPC self)

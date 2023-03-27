@@ -1,11 +1,12 @@
 ﻿using StarlightRiver.Content.Tiles.Mushroom;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class TruffleShopAdditions : GlobalNPC
 	{
-		public override void SetupShop(int type, Chest shop, ref int nextSlot)
+		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
 		{
 			if (type == NPCID.Truffle)
 			{

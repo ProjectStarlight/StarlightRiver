@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -60,7 +61,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			Projectile.velocity = Projectile.velocity.RotatedBy(Math.Sin(Projectile.timeLeft * 0.2f) * Projectile.ai[0]);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			target.GetGlobalNPC<StarwoodScoreCounter>().AddScore(counterScore, Projectile.owner, damage);
 		}

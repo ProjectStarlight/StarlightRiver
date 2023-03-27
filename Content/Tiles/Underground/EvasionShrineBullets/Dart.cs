@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -73,7 +74,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			ManageTrail();
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			parent.lives--;
 

@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -84,13 +85,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public bool dropHeart = false;
 
-		public override void OnHitByItem(NPC NPC, Player player, Item item, int damage, float knockback, bool crit)
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			if (dropHeart && NPC.life <= 0)
 				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
 		}
 
-		public override void OnHitByProjectile(NPC NPC, Projectile projectile, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			if (dropHeart && NPC.life <= 0)
 				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
@@ -132,7 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 			ManageTrail();
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.GetGlobalNPC<BloodAmuletGNPC>().dropHeart = true;
 
