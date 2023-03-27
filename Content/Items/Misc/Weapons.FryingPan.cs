@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private bool facingRight;
 
-		private float zRotation = 0;
+		private readonly float zRotation = 0;
 
 		private float rotVel = 0f;
 

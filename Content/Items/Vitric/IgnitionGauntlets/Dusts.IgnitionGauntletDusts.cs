@@ -145,8 +145,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 	{
 		public override bool Update(Dust dust)
 		{
-			if (dust.customData == null)
-				dust.customData = 0;
+			dust.customData ??= 0;
 
 			if ((int)dust.customData < 7)
 			{

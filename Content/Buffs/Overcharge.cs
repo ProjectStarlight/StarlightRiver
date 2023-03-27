@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
+﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Buffs

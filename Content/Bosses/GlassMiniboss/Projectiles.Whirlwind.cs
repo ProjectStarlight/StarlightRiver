@@ -1,10 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
-using StarlightRiver.Core;
+﻿using ReLogic.Content;
 using System;
-using Terraria;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
@@ -12,6 +7,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	class Whirlwind : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public ref float Timer => ref Projectile.ai[0];
+
+		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
 		public override void SetStaticDefaults()
 		{
@@ -27,10 +26,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Projectile.penetrate = -1;
 			Projectile.tileCollide = true;
 		}
-
-		public ref float Timer => ref Projectile.ai[0];
-
-		public NPC Parent => Main.npc[(int)Projectile.ai[1]];
 
 		public override void AI()
 		{
@@ -55,6 +50,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			Rectangle slashBox = projHitbox;
 			slashBox.Inflate(30, 10);
+
 			return Timer > 10 && slashBox.Intersects(targetHitbox);
 		}
 
@@ -62,8 +58,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (Math.Abs(Parent.velocity.X - oldVelocity.X) > 0)
 				Parent.velocity.X = -oldVelocity.X;
+
 			if (Math.Abs(Parent.velocity.Y - oldVelocity.Y) > 0)
 				Parent.velocity.Y = -oldVelocity.Y;
+
 			return false;
 		}
 

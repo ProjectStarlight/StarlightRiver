@@ -4,7 +4,6 @@
 
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Tiles.Desert;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;

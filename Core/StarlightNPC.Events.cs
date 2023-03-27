@@ -59,6 +59,13 @@
 			ModifyGlobalLootEvent?.Invoke(globalLoot);
 		}
 
+		public delegate void UpdateLifeRegenDelegate(NPC npc, ref int damage);
+		public static event UpdateLifeRegenDelegate UpdateLifeRegenEvent;
+		public override void UpdateLifeRegen(NPC NPC, ref int damage)
+		{
+			UpdateLifeRegenEvent.Invoke(NPC, ref damage);
+		}
+
 		public override void Unload()
 		{
 			PostAIEvent = null;
@@ -69,6 +76,7 @@
 			ResetEffectsEvent = null;
 			ModifyNPCLootEvent = null;
 			ModifyGlobalLootEvent = null;
+			UpdateLifeRegenEvent = null;
 		}
 	}
 }

@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -36,7 +38,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player player)
 		{
-			if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true))
+			if (player.controlJump && player.grappling[0] < 0 && (!player.mount?.Active ?? true) && !player.ActiveAbility<Dash>())
 			{
 				if (oldVelocity.Y != 0 && player.velocity.Y < 0 && Math.Abs(oldVelocity.Y - player.velocity.Y) > 1) //slightly geeky check but AFAIK there's no other way to do this
 					Fire(player);

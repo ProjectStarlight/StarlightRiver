@@ -1,6 +1,7 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Permafrost;
 using StarlightRiver.Core.Systems.MetaballSystem;
+using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Linq;
 using Terraria.ModLoader.IO;
@@ -33,39 +34,14 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 	class AuroraWaterSystem : ModSystem
 	{
-		public static RenderTarget2D auroraTarget;
-		public static RenderTarget2D auroraBackTarget;
+		public static ScreenTarget auroraTarget = new(DrawAuroraTarget, () => true, 1);
+		public static ScreenTarget auroraBackTarget = new(DrawAuroraBackTarget, () => true, 1);
 
 		public float Priority => 1;
 
 		public override void Load()
 		{
-			On.Terraria.Main.SetDisplayMode += RefreshWaterTargets;
-			On.Terraria.Main.CheckMonoliths += DrawAuroraTarget;
 			On.Terraria.Main.DrawInfernoRings += DrawAuroraWater;
-
-			if (!Main.dedServ)
-			{
-				Main.QueueMainThreadAction(() =>
-				{
-					auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-					auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight, false, default, default, default, RenderTargetUsage.PreserveContents);
-				});
-			}
-		}
-
-		private void RefreshWaterTargets(On.Terraria.Main.orig_SetDisplayMode orig, int width, int height, bool fullscreen)
-		{
-			if (Main.dedServ)
-				return;
-
-			if (!Main.gameInactive && (width != Main.screenWidth || height != Main.screenHeight))
-			{
-				auroraBackTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
-				auroraTarget = new RenderTarget2D(Main.graphics.GraphicsDevice, width, height, false, default, default, default, RenderTargetUsage.PreserveContents);
-			}
-
-			orig(width, height, fullscreen);
 		}
 
 		public static void DrawToMetaballTarget()
@@ -90,19 +66,10 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			}
 		}
 
-		private void DrawAuroraTarget(On.Terraria.Main.orig_CheckMonoliths orig)
+		private static void DrawAuroraTarget(SpriteBatch sb)
 		{
-			orig();
-
-			if (Main.dedServ || Main.gameMenu)
-				return;
-
-			Main.graphics.GraphicsDevice.SetRenderTarget(null);
-
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-			Main.graphics.GraphicsDevice.SetRenderTarget(auroraBackTarget);
-			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+			sb.End();
+			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
@@ -129,9 +96,43 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 						Color.White);
 				}
 			}
+		}
 
-			Main.spriteBatch.End();
-			Main.graphics.GraphicsDevice.SetRenderTarget(null);
+		private static void DrawAuroraBackTarget(SpriteBatch sb)
+		{
+			sb.End();
+			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
+
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+			for (int i = -tex2.Width; i <= Main.screenWidth + tex2.Width; i += tex2.Width)
+			{
+				for (int j = -tex2.Height; j <= Main.screenHeight + tex2.Height; j += tex2.Height)
+				{
+					sb.Draw(tex2, new Vector2(i, j),
+						new Rectangle(
+							(int)(Main.screenPosition.X % tex2.Width - Main.GameUpdateCount * 0.55f),
+							(int)(Main.screenPosition.Y % tex2.Height + Main.GameUpdateCount * 0.3f),
+							tex2.Width,
+							tex2.Height
+							),
+						Color.White * 0.7f, default, default, 1, 0, 0);
+
+					sb.Draw(tex2, new Vector2(i, j),
+						new Rectangle(
+							(int)(Main.screenPosition.X % tex2.Width + Main.GameUpdateCount * 0.75f),
+							(int)(Main.screenPosition.Y % tex2.Height - Main.GameUpdateCount * 0.4f),
+							tex2.Width,
+							tex2.Height
+							),
+						Color.White);
+				}
+			}
+
+			sb.End();
+			sb.Begin();
 		}
 
 		private void DrawAuroraWater(On.Terraria.Main.orig_DrawInfernoRings orig, Main self)
@@ -285,7 +286,9 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public static void DrawSpecial()
 		{
-			if (!MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
+			MetaballSystem.MetaballSystem.actorsSem.WaitOne();
+
+			if (!MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
 				return;
 
 			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
@@ -296,16 +299,18 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
 			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
 			shader.Parameters["offset"].SetValue(new Vector2(Main.screenPosition.X % Main.screenWidth / Main.screenWidth, Main.screenPosition.Y % Main.screenHeight / Main.screenHeight));
-			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget);
+			shader.Parameters["sampleTexture2"].SetValue(AuroraWaterSystem.auroraBackTarget.RenderTarget);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, shader);
 
-			RenderTarget2D target = MetaballSystem.MetaballSystem.Actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target;
+			Texture2D target = MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Target.RenderTarget;
 			Main.spriteBatch.Draw(target, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(0, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+
+			MetaballSystem.MetaballSystem.actorsSem.Release();
 		}
 
 		public override bool PostDraw(SpriteBatch spriteBatch, Texture2D target)

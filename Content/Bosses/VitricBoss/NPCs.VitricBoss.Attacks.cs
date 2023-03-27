@@ -989,6 +989,22 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 						if (laserCore.ModProjectile is FinalLaser)
 							(laserCore.ModProjectile as FinalLaser).parent = this;
+
+						if (Main.masterMode)
+						{
+							for (int k = 1; k <= 2; k++)
+							{
+								int i3 = Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center + new Vector2(4, 0), Vector2.Zero, ProjectileType<FinalLaser>(), 45, 0, Main.myPlayer, 0, 0);
+								Projectile laserCore2 = Main.projectile[i3];
+
+								if (laserCore2.ModProjectile is FinalLaser)
+								{
+									(laserCore2.ModProjectile as FinalLaser).parent = this;
+									(laserCore2.ModProjectile as FinalLaser).aimOffset = k * (6.28f / 3f);
+									(laserCore2.ModProjectile as FinalLaser).copyDirection = laserCore.ModProjectile as FinalLaser;
+								}
+							}
+						}
 					}
 				}
 

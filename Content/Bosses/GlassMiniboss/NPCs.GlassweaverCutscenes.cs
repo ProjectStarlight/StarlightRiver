@@ -1,24 +1,40 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Core.Systems.CameraSystem;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	public partial class Glassweaver : ModNPC
 	{
+		private void SpawnAnimation()
+		{
+			NPC.noGravity = true;
+
+			if (AttackTimer == 0)
+				CameraSystem.shake += 6;
+
+			if (AttackTimer < 60)
+			{
+				NPC.position.Y += (AttackTimer - 45) * 0.3f;
+				NPC.scale = 1 - AttackTimer / 60f * 0.25f;
+			}
+
+			if (AttackTimer == 60)
+				CameraSystem.shake += 12;
+		}
+
 		private void JumpBackAnimation()
 		{
-			AttackTimer++;
-
-			if (AttackTimer == 40)
-				CameraSystem.shake = 8;
-
-			if (AttackTimer > 38 && AttackTimer < 160)
-				CameraSystem.shake += 2;
-
-			if (AttackTimer > 410)
+			if (AttackTimer < 60)
 			{
-				Phase = (int)PhaseEnum.DirectPhase;
+				NPC.position.Y -= (AttackTimer - 45) * 0.3f;
+				NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
+			}
+
+			if (AttackTimer > 90)
+			{
+				Phase = (int)Phases.DirectPhase;
 				ResetAttack();
 				NPC.dontTakeDamage = false;
+				NPC.noGravity = false;
 				AttackPhase = -1;
 			}
 		}
