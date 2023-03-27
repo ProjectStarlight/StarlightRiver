@@ -14,17 +14,20 @@ namespace StarlightRiver.Content.Items.Food.Special
 	{
 		public CreamySoup() : base("Critical strikes reveal the secret of the sauce, horrifying enemies and causing them to deal 50% less damage the next time they hit you.\nWip") { }
 
-		public override FoodRecipie Recipie() => new FoodRecipie(
+		public override FoodRecipie Recipie()
+		{
+			return new(
 			Type,
 			ModContent.ItemType<Entrails>(),
-			ModContent.ItemType<VertebrateNuggets>(),	
+			ModContent.ItemType<VertebrateNuggets>(),
 			ModContent.ItemType<Milk>(),
 			ModContent.ItemType<TableSalt>()
 			);
+		}
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
-			
+		public override void BuffEffects(Player Player, float multiplier)
+		{
+
 		}
 	}
 }

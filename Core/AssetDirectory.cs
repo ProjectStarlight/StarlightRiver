@@ -92,7 +92,7 @@ namespace StarlightRiver.Core
 
 		public const string VoidTile = Assets + "Tiles/Void/";
 
-        public const string FoodTile = Assets + "Tiles/Food/";
+		public const string FoodTile = Assets + "Tiles/Food/";
 
 		public const string Alchemy = Assets + "Alchemy/";
 

@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Buffs
+﻿using Terraria.ID;
+
+namespace StarlightRiver.Content.Buffs
 {
 	class Illuminant : SmartBuff
 	{
@@ -19,7 +21,7 @@
 		{
 			if (Main.rand.NextBool(4))
 			{
-				int i = Dust.NewDust(Player.position, Player.width, Player.height, 264, 0, 0, 0, new Color(255, 255, 200));
+				int i = Dust.NewDust(Player.position, Player.width, Player.height, DustID.PortalBoltTrail, 0, 0, 0, new Color(255, 255, 200));
 				Main.dust[i].noGravity = true;
 			}
 

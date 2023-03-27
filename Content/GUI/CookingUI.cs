@@ -116,17 +116,18 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderString(spriteBatch, "Info/Stats", Basepos + new Vector2(202, 8), Color.White, 0.8f);
 			Utils.DrawBorderString(spriteBatch, "Prepare", Basepos + new Vector2(212, 210), Color.White, 1.1f);
 
-            int drawY = 0;
-            if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
-                Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
-
-            else
-            {
-                int duration = 0;
-                float durationMult = 1;
-                int cooldown = 0;
-                float cooldownMult = 1;
-                List<(string, Color)> lines = new List<(string, Color)>();
+			int drawY = 0;
+			if (!Elements.Any(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir && ((n as CookingSlot).Item.ModItem as Ingredient).ThisType == IngredientType.Main))
+			{
+				Utils.DrawBorderString(spriteBatch, "Place a Main Course in\nthe top slot to start\ncooking", Basepos + new Vector2(186, 54 + drawY), Color.White, 0.7f);
+			}
+			else
+			{
+				int duration = 0;
+				float durationMult = 1;
+				int cooldown = 0;
+				float cooldownMult = 1;
+				List<(string, Color)> lines = new List<(string, Color)>();
 
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
@@ -146,14 +147,15 @@ namespace StarlightRiver.Content.GUI
 							lines.Add((substrings[n], ingredient.GetColor()));
 					}
 
-                    duration += ingredient.Fill;
-                    durationMult *= ingredient.FullnessMult;
+					duration += ingredient.Fill;
+					durationMult *= ingredient.FullnessMult;
 
-                    cooldown += (int)(ingredient.Fill * 1.5f);
-                    cooldownMult *= ingredient.WellFedMult;
-                }
-                duration = (int)(duration * durationMult);
-                cooldown = (int)(cooldown * cooldownMult);
+					cooldown += (int)(ingredient.Fill * 1.5f);
+					cooldownMult *= ingredient.WellFedMult;
+				}
+
+				duration = (int)(duration * durationMult);
+				cooldown = (int)(cooldown * cooldownMult);
 
 				int max = (int)MathHelper.Clamp(scrollStart + 5, 0, lines.Count());
 				lineCount = lines.Count();
@@ -209,14 +211,14 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-        private static void CookIngredient(Item target, CookingSlot source)
-        {
-            if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
-            {
-                (target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
-                (target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
-                (target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
-                (target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
+		private static void CookIngredient(Item target, CookingSlot source)
+		{
+			if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
+			{
+				(target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
+				(target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
+				(target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
+				(target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
 
 				if (source.Item.stack == 1)
 					source.Item.TurnToAir();

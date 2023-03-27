@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
 		{
 			if (Equipped(player))
-				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player});
+				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player });
 		}
 
 		public override void SafeSetDefaults()

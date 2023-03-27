@@ -229,7 +229,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 		}
 		protected void Grow(int i, int j, int chance)
 		{
-			if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j - maxLength].TileType != Type && Main.rand.Next(chance) == 0)
+			if (!Main.tile[i, j + 1].HasTile && Main.tile[i, j - maxLength].TileType != Type && Main.rand.NextBool(chance))
 				WorldGen.PlaceTile(i, j + 1, Type, true);
 		}
 

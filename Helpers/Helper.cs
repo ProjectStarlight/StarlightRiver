@@ -437,7 +437,7 @@ namespace StarlightRiver.Helpers
 			Tile topTile = Framing.GetTileSafely(x, y - 1);
 			Tile bottomTile = Framing.GetTileSafely(x, y + 1);
 
-			bool isEdge = 
+			bool isEdge =
 				!(leftTile.HasTile && Main.tileSolid[leftTile.TileType]) ||
 				!(rightTile.HasTile && Main.tileSolid[rightTile.TileType]) ||
 				!(topTile.HasTile && Main.tileSolid[topTile.TileType]) ||
@@ -570,4 +570,3 @@ namespace StarlightRiver.Helpers
 		}
 	}
 }
-

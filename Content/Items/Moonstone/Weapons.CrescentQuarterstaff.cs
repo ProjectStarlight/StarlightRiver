@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.knockBack = 6.5f;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.crit = 4;
-			Item.rare = 2;
+			Item.rare = ItemRarityID.Green;
 			Item.shootSpeed = 14f;
 			Item.autoReuse = false;
 			Item.shoot = ProjectileType<CrescentQuarterstaffProj>();

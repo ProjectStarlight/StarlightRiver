@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 				for (float k = 0; k <= 0.3f; k += 0.007f)
 				{
 					Vector2 vel = new Vector2(1, 0).RotatedBy(-k) * Main.rand.NextFloat(8);
-					if (Main.rand.Next(2) == 0)
+					if (Main.rand.NextBool(2))
 						vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8);
 					Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
 					Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);

@@ -14,16 +14,19 @@ namespace StarlightRiver.Content.Items.Food.Special
 	{
 		public CrimsonKebab() : base("Replaces your blood with Ichor, which reduces armor of enemies that damage you\nWip") { }
 
-		public override FoodRecipie Recipie() => new FoodRecipie(
+		public override FoodRecipie Recipie()
+		{
+			return new(
 			Type,
 			ModContent.ItemType<CrimsonSteak>(),
 			ModContent.ItemType<VertebrateNuggets>(),
 			ModContent.ItemType<Eye>(),
 			ModContent.ItemType<BlackPepper>()
 			);
+		}
 
-        public override void BuffEffects(Player Player, float multiplier)
-        {
+		public override void BuffEffects(Player Player, float multiplier)
+		{
 
 		}
 	}

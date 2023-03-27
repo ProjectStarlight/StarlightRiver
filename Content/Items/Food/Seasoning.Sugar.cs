@@ -2,9 +2,9 @@
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class Sugar : Ingredient
-    {
-        public Sugar() : base("No additional effects", 2700, IngredientType.Seasoning) { }
+	internal class Sugar : Ingredient
+	{
+		public Sugar() : base("No additional effects", 2700, IngredientType.Seasoning) { }
 
 		public override void SafeSetDefaults()
 		{

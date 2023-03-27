@@ -17,10 +17,9 @@ namespace StarlightRiver.Content.Tiles.Food
 
 		public virtual int TileType => ModContent.TileType<TableSalt>();
 
-		public virtual Color MapColor => new Color(0.8f, 0.8f, 0.8f);
+		public virtual Color MapColor => new(0.8f, 0.8f, 0.8f);
 
 		public override string Texture => AssetDirectory.FoodTile + Name;
-
 
 		public override void SetStaticDefaults()
 		{
@@ -160,7 +159,7 @@ namespace StarlightRiver.Content.Tiles.Food
 
 		public override int ItemDrop => ModContent.ItemType<Items.Food.SeaSalt>();
 
-		public override Color MapColor => new Color(1f, 0.8f, 0.8f);
+		public override Color MapColor => new(1f, 0.8f, 0.8f);
 	}
 
 	internal class PinkSeaSaltProjectile : FallingTileProjectile

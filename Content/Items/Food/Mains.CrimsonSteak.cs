@@ -2,9 +2,9 @@
 
 namespace StarlightRiver.Content.Items.Food
 {
-    internal class CrimsonSteak : Ingredient
-    {
-        public CrimsonSteak() : base("+5% all damage", 400, IngredientType.Main) { }
+	internal class CrimsonSteak : Ingredient
+	{
+		public CrimsonSteak() : base("+5% all damage", 400, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
