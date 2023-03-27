@@ -191,7 +191,6 @@ namespace StarlightRiver.Content.Items.Magnet
 
 			return targets;
 		}
-
 	}
 
 	internal class ThunderbussShot : ModProjectile, IDrawAdditive, IDrawPrimitive

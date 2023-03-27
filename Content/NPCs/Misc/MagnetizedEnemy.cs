@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (!Main.dedServ)
 				{
 					ManageCache(npc);
-					ManageTrails(npc);
+					ManageTrails();
 				}
 
 				if (fade > 1f)
@@ -202,7 +202,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 		}
 
-		private void ManageTrails(NPC npc)
+		private void ManageTrails()
 		{
 			Vector2 endPoint = cache[SEGMENTS];
 			trail ??= new Trail(Main.instance.GraphicsDevice, SEGMENTS + 1, new TriangularTip(4), factor => 16 * Math.Max(fade, 1) * MathHelper.Lerp(1, 0.25f, flashOpacity), factor =>
