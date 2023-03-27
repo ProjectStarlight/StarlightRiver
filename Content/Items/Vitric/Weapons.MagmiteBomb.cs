@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				drag = 1.2f,
 				parent = Projectile,
 				customDistances = true, // Using custom distance so it can be shortened smoothly
-				segmentDistances = new List<int> {5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
+				segmentDistances = new List<int> { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }
 			};
 
 			Chain.Start(); // Manually initialize chain so dust can be drawn immediately
@@ -119,7 +119,7 @@ namespace StarlightRiver.Content.Items.Vitric
 					break;
 				}
 			}
-			
+
 			Vector2 chainEnd = Chain.ropeSegments[NUM_SEGMENTS - 1].posNow;
 			Dust.NewDust(chainEnd, 0, 0, DustID.AmberBolt, 0, 0, 0, default, 0.5f);
 			Dust.NewDust(chainEnd, 0, 0, DustID.Torch, 0, 0, 0, default, 0.75f);
