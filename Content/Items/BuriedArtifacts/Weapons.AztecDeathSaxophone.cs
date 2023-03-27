@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				{
 					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), target.Center.DirectionTo(Player.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(5f, 15f), 0, new Color(255, 0, 0), 0.65f);
 				}
-			}			
+			}
 		}
 
 		public void HurtEffects(Player Player, int damage, Entity attacker)
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 					sax.charge += increase;
 					if (sax.charge > 30)
 						sax.charge = 30;
-				}			
+				}
 			}
 		}
 
@@ -245,7 +245,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 					SoundEngine.PlaySound(style with { Pitch = -0.15f }, Owner.Center);
 					SoundEngine.PlaySound(SoundID.NPCDeath1 with { Pitch = -1f }, Owner.Center);
 				}
-					
 
 				if (Projectile.timeLeft % ((int)(originalTimeleft * 0.65f) / 5) == 0)
 				{
@@ -317,7 +316,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		{
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius, targetHitbox);
 		}
-		
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -353,7 +352,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void OnSpawn(Dust dust)
 		{
-			dust.color = Color.Transparent;		
+			dust.color = Color.Transparent;
 			dust.fadeIn = 0;
 			dust.noLight = false;
 			dust.frame = new Rectangle(0, 0, 8, 128);

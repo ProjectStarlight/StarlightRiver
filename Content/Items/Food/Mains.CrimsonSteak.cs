@@ -2,9 +2,9 @@
 
 namespace StarlightRiver.Content.Items.Food
 {
-	internal class Greens : Ingredient
+	internal class CrimsonSteak : Ingredient
 	{
-		public Greens() : base("+1 defense", 300, IngredientType.Side) { }
+		public CrimsonSteak() : base("+5% all damage", 400, IngredientType.Main) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void BuffEffects(Player Player, float multiplier)
 		{
-			Player.statDefense += (int)(1 * multiplier);
+			Player.GetDamage(DamageClass.Generic) += 0.05f * multiplier;
 		}
 	}
 }

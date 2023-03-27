@@ -233,7 +233,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 			if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
 			{
-				if (Main.rand.Next(Math.Max(10 / Player.HeldItem.useTime * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f) / 2, 1)) == 0)
+				if (Main.rand.NextBool(Math.Max(10 / Player.HeldItem.useTime * (int)Math.Pow(target.GetGlobalNPC<GeoNPC>().amethystDebuff, 0.3f) / 2, 1)))
 				{
 					Projectile.NewProjectile(
 						Player.GetSource_ItemUse(Player.armor[0]),

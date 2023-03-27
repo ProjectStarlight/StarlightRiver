@@ -289,9 +289,9 @@ namespace StarlightRiver.Core
 
 					layers["FLOOR"] = (int)Math.Floor(minFloorDepth - (0.3f + heights[x - vitricBiome.X]) * NOISE_HEIGHT);
 
-					if (x < vitricBiome.Center.X - 35 && genRand.Next(4) == 0)
+					if (x < vitricBiome.Center.X - 35 && genRand.NextBool(4))
 						layers["TOP"] -= genRand.Next(2);
-					if (x > vitricBiome.Center.X + 35 && genRand.Next(4) == 0)
+					if (x > vitricBiome.Center.X + 35 && genRand.NextBool(4))
 						layers["TOP"] += genRand.Next(2);
 					if (layers["TOP"] > vitricBiome.Y)
 						layers["TOP"] = vitricBiome.Y;
@@ -338,7 +338,7 @@ namespace StarlightRiver.Core
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 					Tile t = Main.tile[x, y];
 
-					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.Next(xRand) == 0 || y >= layers["TOP"])
+					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand)|| y >= layers["TOP"])
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
 						t.Slope = SlopeType.Solid;
@@ -346,7 +346,7 @@ namespace StarlightRiver.Core
 					}
 				}
 
-				if (!makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.Next(30) == 0)
+				if (!makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.NextBool(30))
 				{
 					makingLake = true;
 					lakeStart = xDif;
@@ -359,7 +359,7 @@ namespace StarlightRiver.Core
 
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 
-					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.Next(xRand) == 0 || y <= layers["BOTTOM"])
+					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand)|| y <= layers["BOTTOM"])
 					{
 						if (t.TileType != TileType<VitricSpike>())
 							PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
@@ -547,7 +547,7 @@ namespace StarlightRiver.Core
 					if (i >= vitricBiome.Center.X - 52 && i <= vitricBiome.Center.X - 51)
 						continue;
 
-					if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].TileType)) //Generates vines, random size between 4-23
+					if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.NextBool(9)&& ValidGround.Any(x => x == Main.tile[i, j].TileType)) //Generates vines, random size between 4-23
 					{
 						int targSize = genRand.Next(4, 23);
 						for (int k = 1; k < targSize; ++k)
@@ -701,7 +701,7 @@ namespace StarlightRiver.Core
 					else
 						depth += genRand.Next(-1, 2);
 
-					if (genRand.Next(3) == 0)
+					if (genRand.NextBool(3))
 					{
 						peak = true;
 						peakStart = i;

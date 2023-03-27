@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.Cooking;
+﻿using StarlightRiver.Content.Tiles.Food;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;

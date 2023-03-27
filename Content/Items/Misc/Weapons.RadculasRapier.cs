@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.DamageType = DamageClass.Melee;
 
 			Item.useTime = 30;
-			Item.useAnimation = 30; 
+			Item.useAnimation = 30;
 
 			Item.autoReuse = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
@@ -369,7 +369,7 @@ namespace StarlightRiver.Content.Items.Misc
 				return;
 
 			hitNPCs.Add(target);
-		    CameraSystem.shake += 1;
+			CameraSystem.shake += 1;
 
 			target.GetGlobalNPC<RadculasRapierNPC>().duration += 30;
 			target.GetGlobalNPC<RadculasRapierNPC>().lastHitPos = Owner.Center;
@@ -620,7 +620,7 @@ namespace StarlightRiver.Content.Items.Misc
 			CameraSystem.shake += 15;
 
 			for (int i = 0; i < 50; i++)
-			{	
+			{
 				Vector2 pos = Vector2.Lerp(originalPos, Owner.Center, Main.rand.NextFloat());
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), ModContent.DustType<Dusts.GlowLine>(), originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(1f, 5f), Main.rand.Next(100), new Color(Main.rand.Next(100, 255), 0, 0), 1.25f).fadeIn = Main.rand.NextFloat(30);
 

@@ -4,7 +4,7 @@ namespace StarlightRiver.Content.Items.Food
 {
 	internal class Dough : Ingredient
 	{
-		public Dough() : base("Food buffs are 30% more effective", 1000, IngredientType.Main) { }
+		public Dough() : base("Food buffs are 30% more effective\n+30% duration", 300, IngredientType.Main, 1.3f) { }
 
 		public override void SafeSetDefaults()
 		{

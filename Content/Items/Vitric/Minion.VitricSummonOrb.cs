@@ -425,4 +425,3 @@
 // * - you have adapted vanilla code where you didnt re-name the local vars or comment that it was adapted vanilla code. dont do that.
 // * - each weapon here belongs in it's own file. a 1.1k line long file is not OK.
 // */
-

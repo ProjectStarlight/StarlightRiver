@@ -182,5 +182,10 @@ namespace StarlightRiver.Core
 		{
 			return new Medal(tag.GetString("name"), tag.GetInt("difficulty"), tag.GetFloat("order"));
 		}
+
+		public override int GetHashCode()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

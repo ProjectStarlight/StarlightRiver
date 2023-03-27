@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				Gore.NewGoreDirect(Projectile.GetSource_FromThis(), Projectile.Center, (Vector2.UnitY * Main.rand.NextFloat(-16, -1)).RotatedByRandom(0.8f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(1.0f, 1.4f));
 
 			for (int k = 0; k < 50; k++)
-				Dust.NewDust(Projectile.position, 16, 16, 14);
+				Dust.NewDust(Projectile.position, 16, 16, DustID.Demonite);
 
 			for (int x = -8; x < 8; x++)
 			{

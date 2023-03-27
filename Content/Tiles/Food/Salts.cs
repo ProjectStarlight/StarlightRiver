@@ -5,7 +5,7 @@ using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace StarlightRiver.Content.Tiles.Cooking
+namespace StarlightRiver.Content.Tiles.Food
 {
 	internal class TableSalt : ModTile
 	{
@@ -17,17 +17,24 @@ namespace StarlightRiver.Content.Tiles.Cooking
 
 		public virtual int TileType => ModContent.TileType<TableSalt>();
 
-		public override string Texture => AssetDirectory.CookingTile + Name;
+		public virtual Color MapColor => new(0.8f, 0.8f, 0.8f);
+
+		public override string Texture => AssetDirectory.FoodTile + Name;
 
 		public override void SetStaticDefaults()
 		{
 			Main.tileMerge[TileID.Sand][Type] = true;
-			this.QuickSet(0, DustType, SoundID.Dig, Color.White, ItemDrop);
+			Main.tileMerge[Type][ModContent.TileType<PinkSeaSalt>()] = true;
+			Main.tileMerge[ModContent.TileType<PinkSeaSalt>()][Type] = true;
+			this.QuickSet(0, DustType, SoundID.Dig, MapColor, ItemDrop);
 			Main.tileSolid[Type] = false;
 			Main.tileSolidTop[Type] = true;
 			Main.tileNoAttach[Type] = false;
 			Main.tileLighted[Type] = true;
 			Main.tileBlockLight[Type] = false;
+
+			TileID.Sets.ForAdvancedCollision.ForSandshark[Type] = true; // Allows sandsharks to swim in this.
+			TileID.Sets.Falling[Type] = true;
 
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 			TileObjectData.newTile.UsesCustomCanPlace = true;
@@ -151,6 +158,8 @@ namespace StarlightRiver.Content.Tiles.Cooking
 		public override int ProjectileType => ModContent.ProjectileType<PinkSeaSaltProjectile>();
 
 		public override int ItemDrop => ModContent.ItemType<Items.Food.SeaSalt>();
+
+		public override Color MapColor => new(1f, 0.8f, 0.8f);
 	}
 
 	internal class PinkSeaSaltProjectile : FallingTileProjectile
@@ -161,7 +170,7 @@ namespace StarlightRiver.Content.Tiles.Cooking
 
 		protected override string ProjectileName => "Sea Salt";
 
-		public override string Texture => AssetDirectory.CookingTile + Name;
+		public override string Texture => AssetDirectory.FoodTile + Name;
 	}
 
 	internal class TableSaltProjectile : FallingTileProjectile
@@ -172,6 +181,6 @@ namespace StarlightRiver.Content.Tiles.Cooking
 
 		protected override string ProjectileName => "Table Salt";
 
-		public override string Texture => AssetDirectory.CookingTile + Name;
+		public override string Texture => AssetDirectory.FoodTile + Name;
 	}
 }

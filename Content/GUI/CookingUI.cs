@@ -124,8 +124,10 @@ namespace StarlightRiver.Content.GUI
 			else
 			{
 				int duration = 0;
+				float durationMult = 1;
 				int cooldown = 0;
-				var lines = new List<(string, Color)>();
+				float cooldownMult = 1;
+				List<(string, Color)> lines = new List<(string, Color)>();
 
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
@@ -146,8 +148,14 @@ namespace StarlightRiver.Content.GUI
 					}
 
 					duration += ingredient.Fill;
+					durationMult *= ingredient.FullnessMult;
+
 					cooldown += (int)(ingredient.Fill * 1.5f);
+					cooldownMult *= ingredient.WellFedMult;
 				}
+
+				duration = (int)(duration * durationMult);
+				cooldown = (int)(cooldown * cooldownMult);
 
 				int max = (int)MathHelper.Clamp(scrollStart + 5, 0, lines.Count());
 				lineCount = lines.Count();
@@ -208,6 +216,8 @@ namespace StarlightRiver.Content.GUI
 			if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
 			{
 				(target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
+				(target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
+				(target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
 				(target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
 
 				if (source.Item.stack == 1)
