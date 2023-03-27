@@ -167,6 +167,14 @@ namespace StarlightRiver.Content.Items.Magnet
 			return false;
 		}
 
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<ChargedMagnet>(), 6);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
+
 		private List<NPC> FindTargets(Player Player)
 		{
 			var targets = new List<NPC>();

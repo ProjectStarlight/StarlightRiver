@@ -59,6 +59,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			}
 
 			premadeStack ??= instance.GenerateDefaultStack(duration); //If we want to add a default stack
+			premadeStack.duration = duration; //Override duration
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 
@@ -77,6 +78,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 			}
 
 			premadeStack ??= instance.GenerateDefaultStack(duration);//If we want to add a default stack
+			premadeStack.duration = duration; //Override duration
 
 			instance.stacks.Add(premadeStack); //Add our new stack
 

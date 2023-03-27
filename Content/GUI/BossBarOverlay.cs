@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.GUI
 			Append(bar);
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			Recalculate();
 
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class BarOverlay : UIElement
+	public class BarOverlay : SmartUIElement
 	{
 		public override void Draw(SpriteBatch spriteBatch)
 		{

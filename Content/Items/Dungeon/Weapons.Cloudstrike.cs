@@ -176,8 +176,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 	public class CloudstrikeShot : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
-
 		public bool followPlayer = false; //Whether or not the bolt stays on the Player if they move/rotate their mouse
 
 		public float thickness = 1; //Thickness of the trail
@@ -210,6 +208,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the Player
 		private float oldRotation = 0f;
 
+		public NPC host; //Magnetized enemies use this class for the little sparks around them. If this isn't default, the charge is drawn to the enemy
+
 		private float Charge => Projectile.ai[0];
 
 		private float ChargeSqrt => (float)Math.Sqrt(Charge);
@@ -224,6 +224,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private bool Miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
 		private bool Branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
+
+		public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
 
 		public override void SetDefaults()
 		{
@@ -523,7 +525,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (Miniature)
 			{
-				Vector2 dir2 = Player.Center + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
+				Vector2 hostCenter = host == default ? Player.Center : host.Center;
+				Vector2 dir2 = hostCenter + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
 				distance = dir2.Length();
 				rotToBe = Vector2.Normalize(dir2).RotatedBy(curve * 3);
 			}
