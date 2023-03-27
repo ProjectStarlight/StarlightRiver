@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.CustomHooks
 		//gonna be really weird if anything does anything else here I think
 		public override void Load()
 		{
-			IL.Terraria.Item.Prefix += ApplyTwice;
+			Terraria.IL_Item.Prefix += ApplyTwice;
 		}
 
 		private void ApplyTwice(ILContext il) //this is horrid.

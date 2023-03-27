@@ -11,10 +11,10 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override void Load()
 		{
-			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks;
+			Terraria.On_Player.ItemCheck_Inner += TriggerMountAttacks;
 		}
 
-		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
+		private void TriggerMountAttacks(Terraria.On_Player.orig_ItemCheck_Inner orig, Player self, int i)
 		{
 			CombatMount activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
 			Item sItem = self.HeldItem;

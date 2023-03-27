@@ -7,7 +7,7 @@ namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
 	{
-		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
+		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
 			int ShiniesIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Shinies"));
 			int SurfaceIndex = tasks.FindIndex(genpass => genpass.Name.Equals("Sunflowers"));

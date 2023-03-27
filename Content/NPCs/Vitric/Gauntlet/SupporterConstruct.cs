@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawNPCs += DrawBarrierGlow;
+			Terraria.On_Main.DrawNPCs += DrawBarrierGlow;
 			base.Load();
 		}
 
@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.noGravity = false;
 		}
 
-		private void DrawBarrierGlow(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
+		private void DrawBarrierGlow(Terraria.On_Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
 			for (int i = 0; i < Main.npc.Length; i++)
 			{

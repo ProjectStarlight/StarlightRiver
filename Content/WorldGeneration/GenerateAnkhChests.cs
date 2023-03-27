@@ -14,7 +14,7 @@ namespace StarlightRiver.Core
 
 			for (int i = 0; i < 5; i++)
 			{
-				if (!PlaceAnkhChest(WorldGen.UndergroundDesertLocation.X + Main.rand.Next(-500, 500), WorldGen.UndergroundDesertLocation.Y + WorldGen.UndergroundDesertLocation.Height / 2 + Main.rand.Next(-500, 500)))
+				if (!PlaceAnkhChest(GenVars.UndergroundDesertLocation.X + Main.rand.Next(-500, 500), GenVars.UndergroundDesertLocation.Y + GenVars.UndergroundDesertLocation.Height / 2 + Main.rand.Next(-500, 500)))
 				{
 					tries++;
 					i--;

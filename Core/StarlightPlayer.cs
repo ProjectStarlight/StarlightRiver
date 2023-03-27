@@ -137,7 +137,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void OnEnterWorld(Player Player)
+		public override void OnEnterWorld()
 		{
 			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
 
@@ -157,7 +157,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void OnRespawn(Player Player)
+		public override void OnRespawn()
 		{
 			if (Player == Main.LocalPlayer)
 				CameraSystem.Reset();
@@ -166,7 +166,7 @@ namespace StarlightRiver.Core
 			inTutorial = false;
 		}
 
-		public override void PlayerConnect(Player Player)
+		public override void PlayerConnect()
 		{
 			var packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
 			packet.Send(runLocally: false);

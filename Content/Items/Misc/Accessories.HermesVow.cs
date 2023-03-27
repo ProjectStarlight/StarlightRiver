@@ -51,12 +51,12 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			for (int i = 3; i < 10; i++)
 			{
-				if (Player.IsAValidEquipmentSlotForIteration(i))
+				if (Player.IsItemSlotUnlockedAndUsable(i))
 				{
 					Item wingItem = Player.armor[i];
 					if (wingItem.wingSlot > 0)
 					{
-						Player.QuickSpawnClonedItem(Player.GetSource_Accessory(Item), wingItem);
+						Player.QuickSpawnItem(Player.GetSource_Accessory(Item), wingItem);
 						wingItem.wingSlot = 0;
 						wingItem.TurnToAir();
 					}

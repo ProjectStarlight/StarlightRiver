@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += PlayerFrame;
-			On.Terraria.Main.DrawInterface_30_Hotbar += OverrideHotbar;
+			Terraria.On_Main.DrawInterface_30_Hotbar += OverrideHotbar;
 			activationTimer = 0;
 			sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
 		}
@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void Unload()
 		{
 			StarlightPlayer.PostUpdateEvent -= PlayerFrame;
-			On.Terraria.Main.DrawInterface_30_Hotbar -= OverrideHotbar;
+			Terraria.On_Main.DrawInterface_30_Hotbar -= OverrideHotbar;
 			sparkles = null;
 		}
 
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.crit = 10;
 		}
 
-		private void OverrideHotbar(On.Terraria.Main.orig_DrawInterface_30_Hotbar orig, Main self)
+		private void OverrideHotbar(Terraria.On_Main.orig_DrawInterface_30_Hotbar orig, Main self)
 		{
 			orig(self);
 
@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				if (!(Player.armor[0].ModItem is MoonstoneHead) || !(Player.armor[0].ModItem as MoonstoneHead).IsArmorSet(Player))
 				{
 					Item.TurnToAir();
-					Main.LocalPlayer.QuickSpawnClonedItem(null, Main.mouseItem, Main.mouseItem.stack); //null since we don't want anything to get any ideas about altering this item being spawned
+					Main.LocalPlayer.QuickSpawnItem(null, Main.mouseItem, Main.mouseItem.stack); //null since we don't want anything to get any ideas about altering this item being spawned
 					Main.mouseItem = new Item();
 				}
 

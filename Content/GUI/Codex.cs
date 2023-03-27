@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.GUI
 		public override void OnInitialize()
 		{
 			AddElement(BookButton, 570, 240, 26, 32, this);
-			BookButton.OnClick += OpenCodex;
+			BookButton.OnLeftClick += OpenCodex;
 			BookButton.SetVisibility(1, 1);
 
 			AddElement(Back, Main.screenWidth / 2 - 250, Main.screenHeight / 2 - 225, 500, 500, this);
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.GUI
 
 			AddElement(DragButton, 410, 4, 38, 38, Back);
 			AddElement(ExitButton, 454, 4, 38, 38, Back);
-			ExitButton.OnClick += Exit;
+			ExitButton.OnLeftClick += Exit;
 		}
 
 		private void ScrollEntry(UIScrollWheelEvent evt, UIElement listeningElement)

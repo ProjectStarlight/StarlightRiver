@@ -20,8 +20,8 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItem;
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectile;
 
-			On.Terraria.CombatText.UpdateCombatText += CombatText_UpdateCombatText;
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+			Terraria.On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
+			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
 		}
 
 		#region IL
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		#endregion IL
 
-		private void CombatText_UpdateCombatText(On.Terraria.CombatText.orig_UpdateCombatText orig)
+		private void CombatText_UpdateCombatText(Terraria.On_CombatText.orig_UpdateCombatText orig)
 		{
 			orig();
 

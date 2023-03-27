@@ -832,12 +832,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawNPCs += DrawBreacherOverlay;
+			Terraria.On_Main.DrawNPCs += DrawBreacherOverlay;
 		}
 
 		public void Unload() { }
 
-		private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		private void DrawBreacherOverlay(Terraria.On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			orig(self, behindTiles);
 

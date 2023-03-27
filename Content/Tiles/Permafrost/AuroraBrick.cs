@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void Load()
 		{
-			On.Terraria.Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
+			Terraria.On_Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
 		}
 
 		public override void SetStaticDefaults()
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
 		}
 
-		private bool StopGrappling(On.Terraria.Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, Tile theTile)
+		private bool StopGrappling(Terraria.On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, Tile theTile)
 		{
 			if (theTile.TileType == TileType<AuroraBrick>())
 			{

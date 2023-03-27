@@ -14,12 +14,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			On.Terraria.Player.HealEffect += HealEffect;
+			Terraria.On_Player.HealEffect += HealEffect;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.HealEffect -= HealEffect;
+			Terraria.On_Player.HealEffect -= HealEffect;
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<HolyAmuletHealingTracker>().item = Item;
 		}
 
-		private void HealEffect(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+		private void HealEffect(Terraria.On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))
 				self.GetModPlayer<HolyAmuletHealingTracker>().Healed(healAmount);

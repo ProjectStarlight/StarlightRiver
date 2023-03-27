@@ -12,10 +12,10 @@ namespace StarlightRiver.Content.Buffs
 		{
 			StarlightNPC.ModifyHitPlayerEvent += BuffDamage;
 			StarlightNPC.ResetEffectsEvent += ResetRageBuff;
-			On.Terraria.Player.Hurt += IncreaseKB;
+			Terraria.On_Player.Hurt += IncreaseKB;
 		}
 
-		private double IncreaseKB(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
+		private double IncreaseKB(Terraria.On_Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
 		{
 			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
 

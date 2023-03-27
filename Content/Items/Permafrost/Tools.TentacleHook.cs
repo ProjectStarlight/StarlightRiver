@@ -91,7 +91,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override bool? SingleGrappleHook(Player player)
+		public override bool? SingleGrappleHook(Player player)/* tModPorter Note: Removed. In SetStaticDefaults, use ProjectileID.Sets.SingleGrappleHook[Type] = true if you previously had this method return true */
 		{
 			return true;
 		}

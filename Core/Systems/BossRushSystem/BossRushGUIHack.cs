@@ -10,17 +10,17 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawMenu += DrawBossMenu;
-			On.Terraria.Main.UpdateMenu += UpdateBossMenu;
+			Terraria.On_Main.DrawMenu += DrawBossMenu;
+			Terraria.On_Main.UpdateMenu += UpdateBossMenu;
 		}
 
-		private void UpdateBossMenu(On.Terraria.Main.orig_UpdateMenu orig)
+		private void UpdateBossMenu(Terraria.On_Main.orig_UpdateMenu orig)
 		{
 			if (inMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 				inMenu = false;
 		}
 
-		private void DrawBossMenu(On.Terraria.Main.orig_DrawMenu orig, Main self, GameTime gameTime)
+		private void DrawBossMenu(Terraria.On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)
 		{
 			if (inMenu)
 				Main.MenuUI.SetState(UILoader.GetUIState<BossRushMenu>());

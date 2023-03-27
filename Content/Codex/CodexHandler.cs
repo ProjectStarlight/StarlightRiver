@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Codex
 			}
 		}
 
-		public override void OnEnterWorld(Player Player)
+		public override void OnEnterWorld()
 		{
 			if (Entries.Count == 0) //failsafe incase the Player dosent load for some reason
 			{

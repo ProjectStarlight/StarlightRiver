@@ -15,12 +15,12 @@ namespace StarlightRiver.Content.WorldGeneration
 	{
 		public void Load(Mod mod)
 		{
-			IL.Terraria.WorldGen.dropMeteor += DropMoonstoneOrMeteor;
+			Terraria.IL_WorldGen.dropMeteor += DropMoonstoneOrMeteor;
 		}
 
 		public void Unload()
 		{
-			IL.Terraria.WorldGen.dropMeteor -= DropMoonstoneOrMeteor;
+			Terraria.IL_WorldGen.dropMeteor -= DropMoonstoneOrMeteor;
 		}
 
 		public static void DropMoonstoneOrMeteor(ILContext il)

@@ -23,8 +23,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void Load()
 		{
-			On.Terraria.Player.KeyDoubleTap += ActivateSpear;
-			On.Terraria.Main.DrawPendingMouseText += SpoofMouseItem;
+			Terraria.On_Player.KeyDoubleTap += ActivateSpear;
+			Terraria.On_Main.DrawPendingMouseText += SpoofMouseItem;
 			StarlightPlayer.PreDrawEvent += DrawMoonCharge;
 			StarlightPlayer.OnHitNPCEvent += ChargeFromMelee;
 			StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
@@ -32,8 +32,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void Unload()
 		{
-			On.Terraria.Player.KeyDoubleTap -= ActivateSpear;
-			On.Terraria.Main.DrawPendingMouseText -= SpoofMouseItem;
+			Terraria.On_Player.KeyDoubleTap -= ActivateSpear;
+			Terraria.On_Main.DrawPendingMouseText -= SpoofMouseItem;
 			StarlightPlayer.PreDrawEvent -= DrawMoonCharge;
 			StarlightPlayer.OnHitNPCEvent -= ChargeFromMelee;
 			StarlightPlayer.OnHitNPCWithProjEvent -= ChargeFromProjectile;
@@ -112,7 +112,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (spearOn)
 			{
 				if (!(Main.mouseItem.type == dummySpear.type) && !Main.mouseItem.IsAir)
-					Main.LocalPlayer.QuickSpawnClonedItem(null, Main.mouseItem, Main.mouseItem.stack);
+					Main.LocalPlayer.QuickSpawnItem(null, Main.mouseItem, Main.mouseItem.stack);
 
 				Main.mouseItem = dummySpear;
 				player.inventory[58] = dummySpear;
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		private void ActivateSpear(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
+		private void ActivateSpear(Terraria.On_Player.orig_KeyDoubleTap orig, Player player, int keyDir)
 		{
 			if (keyDir == 0 && IsArmorSet(player))
 			{
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			orig(player, keyDir);
 		}
 
-		private void SpoofMouseItem(On.Terraria.Main.orig_DrawPendingMouseText orig)
+		private void SpoofMouseItem(Terraria.On_Main.orig_DrawPendingMouseText orig)
 		{
 			Player player = Main.LocalPlayer;
 

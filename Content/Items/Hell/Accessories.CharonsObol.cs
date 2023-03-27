@@ -25,12 +25,12 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void Load()
 		{
-			On.Terraria.NPC.NPCLoot_DropMoney += SpawnObols;
+			Terraria.On_NPC.NPCLoot_DropMoney += SpawnObols;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.NPC.NPCLoot_DropMoney -= SpawnObols;
+			Terraria.On_NPC.NPCLoot_DropMoney -= SpawnObols;
 		}
 
 		public override void SafeSetDefaults()
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Item.rare = ItemRarityID.Orange;
 		}
 
-		private void SpawnObols(On.Terraria.NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
+		private void SpawnObols(Terraria.On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
 		{
 			if (!Equipped(closestPlayer))
 			{

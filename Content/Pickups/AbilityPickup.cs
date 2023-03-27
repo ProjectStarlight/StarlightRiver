@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Pickups
 			return false;
 		}
 
-		public sealed override bool? CanHitNPC(NPC target)
+		public sealed override bool CanHitNPC(NPC target)/* tModPorter Suggestion: Return true instead of null */
 		{
 			return false;
 		}

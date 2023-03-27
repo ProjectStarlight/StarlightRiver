@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.Main.DrawMap += MapShader;
+			Terraria.IL_Main.DrawMap += MapShader;
 		}
 
 		private void MapShader(ILContext il)
