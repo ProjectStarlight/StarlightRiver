@@ -338,7 +338,7 @@ namespace StarlightRiver.Core
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 					Tile t = Main.tile[x, y];
 
-					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand) || y >= layers["TOP"])
+					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y >= layers["TOP"])
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
 						t.Slope = SlopeType.Solid;
@@ -359,7 +359,7 @@ namespace StarlightRiver.Core
 
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 
-					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand) || y <= layers["BOTTOM"])
+					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y <= layers["BOTTOM"])
 					{
 						if (t.TileType != TileType<VitricSpike>())
 							PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
