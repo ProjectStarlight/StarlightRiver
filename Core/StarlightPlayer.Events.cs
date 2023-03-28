@@ -159,7 +159,7 @@ namespace StarlightRiver.Core
 		public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
 			bool result = false;
-			foreach (ImmuneToDelegate del in ImmuneToEvent.GetInvocationList())
+			foreach (ImmuneToDelegate del in ImmuneToEvent?.GetInvocationList())
 			{
 				result &= del.Invoke(Player, damageSource, cooldownCounter, dodgeable);
 			}
