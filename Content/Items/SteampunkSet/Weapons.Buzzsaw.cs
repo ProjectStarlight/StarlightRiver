@@ -4,7 +4,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -438,7 +437,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 

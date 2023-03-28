@@ -4,7 +4,6 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -96,15 +95,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 				int index = target.FindBuffIndex(ModContent.BuffType<MoonfuryDebuff>());
 				target.DelBuff(index);
 				Helper.PlayPitched("Magic/Shadow1", 1, Main.rand.NextFloat(-0.1f, 0.1f));
-				damage += 5;
-				damage += (int)(target.defense / 5f);
+				modifiers.SourceDamage += 5;
+				modifiers.SourceDamage += (int)(target.defense / 5f);
 				Projectile.NewProjectile(player.GetSource_ItemUse(Item), target.Center, Vector2.Zero, ModContent.ProjectileType<MoonfuryRing>(), 0, 0, player.whoAmI);
 
 				for (int i = 0; i < 16; i++)
+				{
 					Dust.NewDustPerfect(target.Center, ModContent.DustType<Dusts.Glow>(), Vector2.UnitX.RotatedBy(Main.rand.NextFloat(6.28f)) * Main.rand.NextFloat(12), 0, new Color(50, 50, 255), 0.4f);
+				}
 			}
 		}
 	}
+
 	internal class MoonfuryProj : ModProjectile, IDrawPrimitive, IDrawAdditive
 	{
 		private List<Vector2> cache;
@@ -172,6 +174,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			ManageTrail();
 		}
+
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			if (!stuck)

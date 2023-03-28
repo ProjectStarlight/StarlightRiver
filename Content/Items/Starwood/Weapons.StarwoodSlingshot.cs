@@ -1,7 +1,6 @@
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -309,7 +308,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (empowered)
-				damage += DAMAGE_INCREASE;
+				modifiers.SourceDamage += DAMAGE_INCREASE;
 		}
 
 		public override void Kill(int timeLeft)

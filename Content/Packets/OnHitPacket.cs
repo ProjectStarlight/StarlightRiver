@@ -28,8 +28,9 @@ namespace StarlightRiver.Content.Packets
 			this.crit = crit;
 		}
 
-		protected override void Receive()
+		protected override void Receive() //PORTTODO: Figure out if this is needed and if so now to adapt to the new system;
 		{
+			/*
 			Player Player = Main.player[fromWho];
 			StarlightPlayer modPlayer = Player.GetModPlayer<StarlightPlayer>();
 
@@ -37,7 +38,6 @@ namespace StarlightRiver.Content.Packets
 			{
 				modPlayer.ModifyHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
 				modPlayer.OnHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
-
 			}
 			else
 			{
@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Packets
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
 				Send(-1, fromWho, false);
+			*/
 		}
 	}
 }

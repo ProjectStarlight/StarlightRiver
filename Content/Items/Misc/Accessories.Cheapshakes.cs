@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using System;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
@@ -13,25 +12,23 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightPlayer.PreHurtEvent += PreHurtAccessory;
+			StarlightPlayer.ModifyHurtEvent += PreHurtAccessory;
 			StarlightPlayer.PostUpdateRunSpeedsEvent += ModifyMovement;
 		}
 
 		public override void Unload()
 		{
-			StarlightPlayer.PreHurtEvent -= PreHurtAccessory;
+			StarlightPlayer.ModifyHurtEvent -= PreHurtAccessory;
 			StarlightPlayer.PostUpdateRunSpeedsEvent -= ModifyMovement;
 		}
 
-		private bool PreHurtAccessory(Player Player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		private void PreHurtAccessory(Player player, ref Player.HurtModifiers modifiers)
 		{
-			if (Equipped(Player) && Math.Abs(Player.velocity.X) > 3f)
+			if (Equipped(player) && Math.Abs(player.velocity.X) > 3f)
 			{
-				float damageMult = 1f + MathHelper.Lerp(0, 0.25f, (Math.Abs(Player.velocity.X) - 3f) / (Player.maxRunSpeed * 0.5f));
-				damage = (int)(damage * damageMult);
+				float damageMult = 1f + MathHelper.Lerp(0, 0.25f, (Math.Abs(player.velocity.X) - 3f) / (player.maxRunSpeed * 0.5f));
+				modifiers.SourceDamage *= damageMult;
 			}
-
-			return true;
 		}
 
 		private void ModifyMovement(Player Player)

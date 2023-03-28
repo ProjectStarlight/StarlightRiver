@@ -173,7 +173,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				 n.immune[Owner.whoAmI] <= 0 &&
 				 Colliding(new Rectangle(), n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
@@ -396,7 +396,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				 !n.townNPC &&
 				 Colliding(new Rectangle(), n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 

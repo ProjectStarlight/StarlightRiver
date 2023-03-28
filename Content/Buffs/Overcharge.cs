@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Buffs
 					{
 						var proj = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<LightningNode>(), 2, 0, Player.whoAmI, 2, 100);
 						proj.friendly = false;
-						proj.ModProjectile.OnHitNPC(NPC, 2, 0, false);
+						proj.ModProjectile.OnHitNPC(NPC, new NPC.HitInfo() { Damage = 2 }, 2);
 						DrawHelper.DrawElectricity(Player.Center, NPC.Center, DustType<Content.Dusts.Electric>());
 						break;
 					}

@@ -35,14 +35,14 @@ namespace StarlightRiver.Content.Items.Misc
 				TransferRandomDebuffToNearbyEnemies(Player);
 		}
 
-		private void OnHitNPCAccessory(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void OnHitNPCAccessory(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			OnHit(Player, crit);
+			OnHit(Player, info.Crit);
 		}
 
-		private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+		private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			OnHit(Player, crit);
+			OnHit(Player, info.Crit);
 		}
 
 		public static void TransferRandomDebuffToNearbyEnemies(Player Player)

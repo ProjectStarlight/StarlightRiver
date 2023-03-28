@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Misc
 			instance.flashTime = 20;
 		}
 
-		private void ProjDamageEffect(Player player, Projectile projectile, int damage, bool crit)
+		private void ProjDamageEffect(Player player, Projectile projectile, Player.HurtInfo info)
 		{
 			if (Equipped(player))
 			{
@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private void DamageEffect(Player player, NPC npc, int damage, bool crit)
+		private void DamageEffect(Player player, NPC npc, Player.HurtInfo info)
 		{
 			if (Equipped(player))
 			{

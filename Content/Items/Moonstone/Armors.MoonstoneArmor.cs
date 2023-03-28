@@ -42,16 +42,16 @@ namespace StarlightRiver.Content.Items.Moonstone
 			dummySpear = null;
 		}
 
-		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+		private void ChargeFromProjectile(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (proj.DamageType.Type == DamageClass.Melee.Type && proj.type != ProjectileType<DatsuzeiProjectile>() && IsArmorSet(Player))
-				AddCharge(Player, damage);
+				AddCharge(Player, damageDone);
 		}
 
-		private void ChargeFromMelee(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void ChargeFromMelee(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Item.DamageType.Type == DamageClass.Melee.Type && IsArmorSet(Player))
-				AddCharge(Player, damage);
+				AddCharge(Player, damageDone);
 		}
 
 		private void AddCharge(Player Player, int damage)

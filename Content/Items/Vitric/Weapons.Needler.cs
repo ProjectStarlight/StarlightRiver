@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 

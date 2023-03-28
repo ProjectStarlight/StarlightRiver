@@ -1,11 +1,8 @@
-﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.CustomHooks;
+﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -332,13 +329,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 				if (Main.rand.NextBool(5))
 				{
-					Vector2 pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
+					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowFastDecelerate>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, 0, 100), 0.45f);
 				}
 
 				if (Main.rand.NextBool(5))
 				{
-					Vector2 pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
+					var pos = Vector2.Lerp(Owner.Center, Projectile.Center, Main.rand.NextFloat());
 					Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.GlowLineFast>(), pos.DirectionTo(Main.MouseWorld).RotatedByRandom(0.35f) * Main.rand.NextFloat(2f, 5f), 0, new Color(255, 0, Main.rand.Next(255), 100), 1.25f);
 				}
 
@@ -543,7 +540,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.Pi);
 			Owner.ChangeDir(Projectile.direction);
 
-			Vector2 pos = Vector2.Lerp(Owner.MountedCenter + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Owner.MountedCenter + new Vector2(120f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Projectile.timeLeft / 30f);
+			var pos = Vector2.Lerp(Owner.MountedCenter + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Owner.MountedCenter + new Vector2(120f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Projectile.timeLeft / 30f);
 			for (int i = 0; i < 2; i++)
 			{
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(1f, 1f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(200, 0, 0, 100), 0.35f);
@@ -601,7 +598,7 @@ namespace StarlightRiver.Content.Items.Misc
 			float step = 0.1f;
 			for (int i = 0; i < (1 / step); i++)
 			{
-				Vector2 stepPos = Vector2.Lerp(originalPos, Owner.Center, step * i);
+				var stepPos = Vector2.Lerp(originalPos, Owner.Center, step * i);
 				teleportPositions.Add(stepPos);
 			}
 
@@ -622,7 +619,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			for (int i = 0; i < 50; i++)
 			{
-				Vector2 pos = Vector2.Lerp(originalPos, Owner.Center, Main.rand.NextFloat());
+				var pos = Vector2.Lerp(originalPos, Owner.Center, Main.rand.NextFloat());
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), ModContent.DustType<Dusts.GlowLine>(), originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(1f, 5f), Main.rand.Next(100), new Color(Main.rand.Next(100, 255), 0, 0), 1.25f).fadeIn = Main.rand.NextFloat(30);
 
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(Owner.width, Owner.height), DustID.Blood, originalPos.DirectionTo(Owner.Center) * Main.rand.NextFloat(10f, 15f), 0, new Color(255, 0, 0, 100), 2f).noGravity = true;
@@ -667,7 +664,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage *= (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
+			modifiers.SourceDamage *= (int)Math.Round(MathHelper.Lerp(1, 3, target.GetGlobalNPC<RadculasRapierNPC>().duration / 600f));
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -726,7 +723,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			for (int i = 0; i < 50; i++)
 			{
-				Vector2 pos = Vector2.Lerp(Owner.MountedCenter + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Owner.MountedCenter + new Vector2(120f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Main.rand.NextFloat());
+				var pos = Vector2.Lerp(Owner.MountedCenter + new Vector2(-20f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Owner.MountedCenter + new Vector2(120f, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + offset, Main.rand.NextFloat());
 				Dust.NewDustPerfect(pos + Main.rand.NextVector2Circular(1f, 1f), ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2f, 2f), 0, new Color(200, 0, 0, 100), 0.35f);
 			}
 

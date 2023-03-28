@@ -38,6 +38,20 @@
 			ModifyHitPlayerEvent?.Invoke(npc, target, ref modifiers);
 		}
 
+		public delegate void OnHitByItemDelegate(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone);
+		public static event OnHitByItemDelegate OnHitByItemEvent;
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			OnHitByItemEvent?.Invoke(npc, player, item, hit, damageDone);
+		}
+
+		public delegate void OnHitByProjectileDelegate(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone);
+		public static event OnHitByProjectileDelegate OnHitByProjectileEvent;
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			OnHitByProjectileEvent?.Invoke(npc, projectile, hit, damageDone);
+		}
+
 		public delegate void ResetEffectsDelegate(NPC NPC);
 		public static event ResetEffectsDelegate ResetEffectsEvent;
 		public override void ResetEffects(NPC NPC)

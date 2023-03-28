@@ -35,18 +35,25 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				NPCBarrierGlow.anyEnemiesWithBarrier = true;
 		}
 
-		public void ModifyDamage(NPC NPC, ref int damage, ref float knockback)
+		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
+		{
+			//We need to use the backdoor here because we need to know the final damage to correctly subtract from barrier!
+			modifiers.ModifyHitInfo += (ref NPC.HitInfo n) => ModifyDamage(npc, ref n);
+			timeSinceLastHit = 0;
+		}
+
+		public void ModifyDamage(NPC NPC, ref NPC.HitInfo info)
 		{
 			if (barrier > 0)
 			{
 				float reduction = 1.0f - barrierDamageReduction;
 
-				if (barrier > damage)
+				if (barrier > info.Damage)
 				{
-					CombatText.NewText(NPC.Hitbox, Color.Cyan, damage);
+					CombatText.NewText(NPC.Hitbox, Color.Cyan, info.Damage);
 
-					barrier -= damage;
-					damage = (int)(damage * reduction);
+					barrier -= info.Damage;
+					info.Damage = (int)(info.Damage * reduction);
 				}
 				else
 				{
@@ -54,30 +61,14 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 
 					CombatText.NewText(NPC.Hitbox, Color.Cyan, barrier);
 
-					int overblow = damage - barrier;
-					damage = (int)(barrier * reduction) + overblow;
+					int overblow = info.Damage - barrier;
+					info.Damage = (int)(barrier * reduction) + overblow;
 
 					barrier = 0;
 				}
 
-				knockback *= 0.5f;
+				info.KnockBack *= 0.5f;
 			}
-		}
-
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
-		{
-			ModifyDamage(npc, ref damage, ref knockback);
-			timeSinceLastHit = 0;
-
-			//base.ModifyHitByItem(npc, player, item, ref damage, ref knockback, ref crit);
-		}
-
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
-		{
-			ModifyDamage(npc, ref damage, ref knockback);
-			timeSinceLastHit = 0;
-
-			//base.ModifyHitByProjectile(npc, projectile, ref damage, ref knockback, ref crit, ref hitDirection);
 		}
 
 		public override void UpdateLifeRegen(NPC NPC, ref int damage)

@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -240,7 +239,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && Colliding(Projectile.Hitbox, n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 

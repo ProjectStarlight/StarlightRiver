@@ -137,14 +137,14 @@ namespace StarlightRiver.Core
 		}
 
 		//this is the grossest one. I am sorry, little ones.
-		public delegate void PreHurtDelegate(Player player, ref Player.HurtModifiers modifiers);
+		public delegate void ModifyHurtDelegate(Player player, ref Player.HurtModifiers modifiers);
 		/// <summary>
 		/// If any PreHurtEvent returns false, the default behavior is overridden.
 		/// </summary>
-		public static event PreHurtDelegate PreHurtEvent;
+		public static event ModifyHurtDelegate ModifyHurtEvent;
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)/* tModPorter Override ImmuneTo, FreeDodge or ConsumableDodge instead to prevent taking damage */
 		{
-			PreHurtEvent?.Invoke(Player, ref modifiers);
+			ModifyHurtEvent?.Invoke(Player, ref modifiers);
 		}
 
 		public delegate void PostHurtDelegate(Player player, Player.HurtInfo info);
@@ -204,7 +204,7 @@ namespace StarlightRiver.Core
 			PostUpdateEquipsEvent = null;
 			PostUpdateEvent = null;
 			PreDrawEvent = null;
-			PreHurtEvent = null;
+			ModifyHurtEvent = null;
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
 			ModifyDrawInfoEvent = null;
