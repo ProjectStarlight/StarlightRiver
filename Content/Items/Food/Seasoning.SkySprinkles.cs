@@ -19,16 +19,22 @@ namespace StarlightRiver.Content.Items.Food
 
 		private void OnHitProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
-			player.ManaEffect(amount);
-			player.statMana += amount;
+			if (Active(player))
+			{
+				int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+				player.ManaEffect(amount);
+				player.statMana += amount;
+			}
 		}
 
 		private void OnHit(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
-			player.ManaEffect(amount);
-			player.statMana += amount;
+			if (Active(player))
+			{
+				int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+				player.ManaEffect(amount);
+				player.statMana += amount;
+			}
 		}
 	}
 }

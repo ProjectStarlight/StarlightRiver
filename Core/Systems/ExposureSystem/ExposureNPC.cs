@@ -36,29 +36,29 @@
 		{
 			if (modifiers.DamageType.CountsAsClass(DamageClass.Melee))
 			{
-				modifiers.FinalDamage *= ExposureMultMelee;
+				modifiers.FinalDamage *= 1 + ExposureMultMelee;
 				modifiers.FinalDamage += ExposureAddMelee;
 			}
 
 			if (modifiers.DamageType.CountsAsClass(DamageClass.Ranged))
 			{
-				modifiers.FinalDamage *= ExposureMultRanged;
+				modifiers.FinalDamage *= 1 + ExposureMultRanged;
 				modifiers.FinalDamage += ExposureAddRanged;
 			}
 
 			if (modifiers.DamageType.CountsAsClass(DamageClass.Magic))
 			{
-				modifiers.FinalDamage *= ExposureMultMagic;
+				modifiers.FinalDamage *= 1 + ExposureMultMagic;
 				modifiers.FinalDamage += ExposureAddMagic;
 			}
 
 			if (modifiers.DamageType.CountsAsClass(DamageClass.Summon))
 			{
-				modifiers.FinalDamage *= ExposureMultSummon;
+				modifiers.FinalDamage *= 1 + ExposureMultSummon;
 				modifiers.FinalDamage += ExposureAddSummon;
 			}
 
-			modifiers.FinalDamage *= ExposureMultAll;
+			modifiers.FinalDamage *= 1 + ExposureMultAll;
 			modifiers.FinalDamage += ExposureAddAll;
 		}
 	}

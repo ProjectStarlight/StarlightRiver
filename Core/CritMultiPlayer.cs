@@ -20,8 +20,7 @@
 			if (proj.DamageType.Type == DamageClass.Magic.Type)
 				toMult += MagicCritMult;
 
-			float multiplier = 1 + toMult;
-			modifiers.CritDamage += multiplier;
+			modifiers.CritDamage += toMult;
 		}
 
 		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)/* tModPorter If you don't need the Item, consider using ModifyHitNPC instead */
@@ -37,8 +36,7 @@
 			if (item.DamageType.Type == DamageClass.Magic.Type)
 				toMult += MagicCritMult;
 
-			float multiplier = 1 + toMult;
-			modifiers.CritDamage += multiplier;
+			modifiers.CritDamage += toMult;
 		}
 
 		public override void ResetEffects()
