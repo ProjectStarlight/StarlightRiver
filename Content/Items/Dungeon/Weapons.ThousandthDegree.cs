@@ -2,7 +2,6 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -204,7 +203,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage = (int)(damage * MathHelper.Lerp(0.9f, 2f, CurrentHeat / MAXHEAT));
+			modifiers.FinalDamage *= MathHelper.Lerp(0.9f, 2f, CurrentHeat / MAXHEAT);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

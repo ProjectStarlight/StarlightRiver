@@ -13,6 +13,12 @@
 			//Terraria.On_Player.hurt += IncreaseKBs; PORTTODO: Port this to something
 		}
 
+		private void BuffDamage(NPC NPC, Player target, ref Player.HurtModifiers modifiers)
+		{
+			if (Inflicted(NPC))
+				modifiers.SourceDamage *= 1.5f; //50% more damage
+		}
+
 		/*private double IncreaseKBs(On_Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter, bool dodgeable)
 		{
 			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter, dodgeable);
@@ -27,15 +33,6 @@
 
 			return value;
 		}*/
-
-		private void BuffDamage(NPC NPC, Player target, ref int damage, ref bool crit)
-		{
-			if (Inflicted(NPC))
-			{
-				damage = (int)(damage * 1.5f); //50% more damage
-				crit = true;
-			}
-		}
 
 		private void ResetRageBuff(NPC NPC)
 		{

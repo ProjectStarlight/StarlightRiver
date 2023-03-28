@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -99,9 +98,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (Shield == 1)
-				damage = 0;
-
-			return base.ModifyIncomingHit(ref damage, defense, ref knockback, hitDirection, ref crit);
+				modifiers.FinalDamage -= int.MaxValue;
 		}
 
 		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)

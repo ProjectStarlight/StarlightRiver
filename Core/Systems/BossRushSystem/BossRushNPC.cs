@@ -1,5 +1,4 @@
-﻿using Terraria;
-namespace StarlightRiver.Core.Systems.BossRushSystem
+﻿namespace StarlightRiver.Core.Systems.BossRushSystem
 {
 	internal class HushArmorSystem : ModSystem
 	{
@@ -59,12 +58,17 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			npc.SpawnedFromStatue = true; //nothing should drop items in boss rush
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
+		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
 
-			damage = (int)(damage * HushArmorSystem.resistance);
+			modifiers.ModifyHitInfo += (ref NPC.HitInfo n) => AdaptiveDR(ref n, npc);
+		}
+
+		private void AdaptiveDR(ref NPC.HitInfo info, NPC npc)
+		{
+			int damage = (int)(info.Damage * HushArmorSystem.resistance);
 
 			if (damage == 0)
 			{
@@ -79,44 +83,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (damage == 0)
 				npc.life++;
+
+			info.Damage = damage;
 		}
 
-		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+		public override void HitEffect(NPC npc, NPC.HitInfo hit)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
 
-			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
-		}
-
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
-		{
-			if (!BossRushSystem.isBossRush)
-				return;
-
-			damage = (int)(damage * HushArmorSystem.resistance);
-
-			if (damage == 0)
-			{
-				storedPartialDamage += damage * HushArmorSystem.resistance;
-			}
-
-			if (storedPartialDamage >= 1)
-			{
-				damage = 1;
-				storedPartialDamage = 0;
-			}
-
-			if (damage == 0)
-				npc.life++;
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (!BossRushSystem.isBossRush)
-				return;
-
-			HushArmorSystem.totalDamage += (int)(damage * (1 / HushArmorSystem.resistance));
+			HushArmorSystem.totalDamage += (int)(hit.Damage * (1 / HushArmorSystem.resistance));
 		}
 	}
 }

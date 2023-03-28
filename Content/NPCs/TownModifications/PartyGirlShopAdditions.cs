@@ -1,17 +1,15 @@
 ﻿using StarlightRiver.Content.Items.Misc;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class PartyGirlShopAdditions : GlobalNPC
 	{
-		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
+		public override void ModifyShop(NPCShop shop)
 		{
-			if (type == NPCID.PartyGirl)
+			if (shop.NpcType == NPCID.PartyGirl)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<BalloonGun>());
-				nextSlot++;
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<BalloonGun>()));
 			}
 		}
 	}

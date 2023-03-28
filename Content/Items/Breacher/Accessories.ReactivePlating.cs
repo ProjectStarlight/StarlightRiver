@@ -1,7 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using System;
-using Terraria;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -84,8 +82,6 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (active && !Shield)
 				damageCounter += 170;
-
-			return base.ModifyHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 		}
 	}
 

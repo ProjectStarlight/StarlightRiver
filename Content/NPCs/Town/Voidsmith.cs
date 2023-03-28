@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.Town
 		{
 			if (firstButton)
 			{
-				shop = true;
+				shopName = "Shop";
 			}
 			else
 			{

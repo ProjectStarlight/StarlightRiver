@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -86,10 +85,13 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 		{
 			if (target.type == NPCID.Bunny)
 			{
-				damage *= 99;
-				crit = true;
+				modifiers.FinalDamage *= 99f;
+				modifiers.SetCrit();
+
 				for (int k = 0; k < 1000; k++)
+				{
 					Dust.NewDustPerfect(target.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, 3);
+				}
 			}
 		}
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

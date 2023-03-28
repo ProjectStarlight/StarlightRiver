@@ -2,7 +2,6 @@ using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.IO;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -150,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 			}
 
-			if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)
+			if (NPC.ai[0] == 0 && hit.Damage > maxIgnoreDamage)
 				ExitSleep();
 		}
 

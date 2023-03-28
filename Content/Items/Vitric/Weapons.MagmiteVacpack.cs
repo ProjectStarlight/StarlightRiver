@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -390,7 +389,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			MagmiteVacpackGlobalNPC globalNPC = target.GetGlobalNPC<MagmiteVacpackGlobalNPC>();
 
 			if (globalNPC.magmiteAmount >= 3)
-				damage = (int)(damage * 1.5);
+				modifiers.SourceDamage *= 1.5f;
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -440,7 +439,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			bool IsSummoner = projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true;
 
 			if (projectile.owner == magmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && magmiteAmount > 0 && player.HasMinionAttackTargetNPC)
-				damage += magmiteAmount * 3;
+				modifiers.SourceDamage += magmiteAmount * 3;
 		}
 	}
 }

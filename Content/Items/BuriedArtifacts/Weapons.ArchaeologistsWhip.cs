@@ -1,6 +1,5 @@
 ﻿using ReLogic.Content;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Creative;
 using Terraria.ID;
@@ -140,8 +139,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				else
 					Item.NewItem(target.GetSource_Loot(), target.Hitbox, treasure[Main.rand.Next(treasure.Length)]);
 			}
-
-			base.OnHitNPC(target, damage, knockback, crit);
 		}
 	}
 
@@ -230,7 +227,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Player player = Main.player[projectile.owner];
 
 			if (projectile.minion && player.HasBuff(ModContent.BuffType<ArchaeologistsBuff>()))
-				damage = (int)(damage * 1.2f);
+				modifiers.FinalDamage *= 1.2f;
 		}
 	}
 }

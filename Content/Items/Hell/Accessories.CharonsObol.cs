@@ -6,7 +6,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -262,20 +261,14 @@ namespace StarlightRiver.Content.Items.Hell
 		{
 			Projectile.penetrate++;
 
-			if (hitTarget == target)
-			{
-				CameraSystem.shake += 3;
-				Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-				ManageCaches();
-				Projectile.velocity = Vector2.Zero;
-				disappeared = true;
-				Projectile.friendly = false;
-				Projectile.timeLeft = 3000;
-			}
-			else
-			{
-				alreadyHit.Add(hitTarget);
-			}
+			CameraSystem.shake += 3;
+			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			ManageCaches();
+			Projectile.velocity = Vector2.Zero;
+			disappeared = true;
+			Projectile.friendly = false;
+			Projectile.timeLeft = 3000;
+			alreadyHit.Add(target);
 		}
 
 		public override bool? CanHitNPC(NPC hitTarget)

@@ -5,7 +5,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.Graphics.Effects;
@@ -578,12 +577,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Load()
 		{
-			StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamage;
+			StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamages;
 		}
 
 		public override void Update(NPC NPC, ref int buffIndex)
 		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
 			NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMelee += 0.25f;
 		}
 
@@ -592,12 +591,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.5f;
 		}
 
-		private void IncreaseRefractiveDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void IncreaseRefractiveDamages(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (Inflicted(NPC))
 			{
 				if (Projectile.type == ProjectileType<RefractiveBladeProj>())
-					damage = (int)(damage * 1.5f);
+					modifiers.FinalDamage *= 1.5f;
 			}
 		}
 	}

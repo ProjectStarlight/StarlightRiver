@@ -4,7 +4,6 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -65,7 +64,8 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			if (cooldown <= 0 && active)
 			{
-				damageTicker += (int)damage;
+				damageTicker += info.Damage;
+
 				if (damageTicker >= 50)
 				{
 					damageTicker = 0;
@@ -79,9 +79,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void PreUpdate()
 		{
 			cooldown--;
+
 			if (active)
 			{
 				launchCounter--;
+
 				if (launchCounter == 1)
 					SummonDrop(Player, accessory);
 			}

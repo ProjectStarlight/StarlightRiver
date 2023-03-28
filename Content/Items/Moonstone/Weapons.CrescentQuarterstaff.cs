@@ -2,7 +2,6 @@
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -351,10 +350,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (currentAttack == CurrentAttack.Slam)
-				damage = (int)(damage * 1.5f);
+				modifiers.SourceDamage *= 1.5f;
 
 			if (currentAttack == CurrentAttack.Spin)
-				damage = (int)(damage * 1.5f);
+				modifiers.SourceDamage *= 1.5f;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

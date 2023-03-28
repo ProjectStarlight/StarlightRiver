@@ -1,7 +1,4 @@
-﻿using Terraria;
-using Terraria.DataStructures;
-
-namespace StarlightRiver.Core.Systems.ExposureSystem
+﻿namespace StarlightRiver.Core.Systems.ExposureSystem
 {
 	public class ExposurePlayer : ModPlayer
 	{
@@ -16,8 +13,8 @@ namespace StarlightRiver.Core.Systems.ExposureSystem
 
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
-			damage = (int)(damage * (1f + exposureMult)) + exposureAdd;
-			return base.ModifyHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
+			modifiers.FinalDamage *= exposureMult;
+			modifiers.FinalDamage += exposureAdd;
 		}
 	}
 }

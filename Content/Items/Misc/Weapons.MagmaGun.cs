@@ -1,7 +1,6 @@
 using StarlightRiver.Content.Items.Vitric;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -478,7 +477,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.position, glob.size))
 					{
-						damage *= 2;
+						modifiers.SourceDamage *= 2f;
 						break;
 					}
 				}

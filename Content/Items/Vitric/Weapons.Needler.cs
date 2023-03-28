@@ -3,7 +3,6 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -259,8 +258,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			crit = true;
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+			modifiers.SetCrit();
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

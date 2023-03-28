@@ -1,6 +1,5 @@
 using StarlightRiver.Content.Dusts;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -120,8 +119,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage += (int)(progressToDepletion * 8);
-			knockback *= 1 + progressToDepletion;
+			modifiers.SourceDamage += (int)(progressToDepletion * 8);
+			modifiers.Knockback *= 1 + progressToDepletion;
 		}
 
 		public override void Kill(int timeLeft)

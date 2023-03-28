@@ -530,7 +530,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 
 			AdjTiles = new int[] { TileID.ClosedDoor };
-			OpenDoorID/* tModPorter Note: Removed. Use TileID.Sets.OpenDoorID instead */ = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
+			TileID.Sets.OpenDoorID[Type] = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -603,7 +603,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			TileID.Sets.HasOutlines[Type] = true;
 
 			AdjTiles = new int[] { TileID.OpenDoor };
-			CloseDoorID/* tModPorter Note: Removed. Use TileID.Sets.CloseDoorID instead */ = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
+			TileID.Sets.CloseDoorID[Type] = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)

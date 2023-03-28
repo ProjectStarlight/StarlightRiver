@@ -4,7 +4,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -20,14 +19,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitByNPCEvent += BloodAmuletOnhit;
-			StarlightPlayer.ModifyHitByProjectileEvent += BloodAmuletOnhitProjectile;
-		}
-
-		public override void Unload()
-		{
-			StarlightPlayer.ModifyHitByNPCEvent -= BloodAmuletOnhit;
-			StarlightPlayer.ModifyHitByProjectileEvent -= BloodAmuletOnhitProjectile;
+			StarlightPlayer.OnHitByNPCEvent += BloodAmuletOnhits;
+			StarlightPlayer.OnHitByProjectileEvent += BloodAmuletOnhitProjectiles;
 		}
 
 		public override void SafeSetDefaults()
@@ -36,20 +29,20 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.rare = ItemRarityID.LightRed;
 		}
 
-		public void BloodAmuletOnhit(Player player, NPC NPC, ref int damage, ref bool crit)
+		private void BloodAmuletOnhits(Player player, NPC npc, Player.HurtInfo hurtInfo)
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).storedDamage += hurtInfo.Damage;
 				SpawnBolts(player);
 			}
 		}
 
-		public void BloodAmuletOnhitProjectile(Player player, Projectile proj, ref int damage, ref bool crit)
+		private void BloodAmuletOnhitProjectiles(Player player, Projectile proj, Player.HurtInfo hurtInfo)
 		{
 			if (Equipped(player))
 			{
-				(GetEquippedInstance(player) as BloodAmulet).storedDamage += damage;
+				(GetEquippedInstance(player) as BloodAmulet).storedDamage += hurtInfo.Damage;
 				SpawnBolts(player);
 			}
 		}
@@ -87,14 +80,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			if (dropHeart && NPC.life <= 0)
-				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
+			if (dropHeart && npc.life <= 0)
+				Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Heart);
 		}
 
 		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (dropHeart && NPC.life <= 0)
-				Item.NewItem(NPC.GetSource_Loot(), NPC.Center, ItemID.Heart);
+			if (dropHeart && npc.life <= 0)
+				Item.NewItem(npc.GetSource_Loot(), npc.Center, ItemID.Heart);
 		}
 	}
 

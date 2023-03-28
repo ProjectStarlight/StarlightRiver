@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			if (shotFromSquidGun)
 			{
-				if (crit || target.life <= 0)
+				if (hit.Crit || target.life <= 0)
 				{
 					if (Main.player[projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<OctogunTentapistol>()] <= 0)
 					{

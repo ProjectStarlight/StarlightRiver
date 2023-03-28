@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -504,7 +503,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			if ((parent.ModNPC as Snoobel).pulling)
-				damage /= 3;
+				modifiers.SourceDamage *= 0.33f;
 		}
 	}
 }

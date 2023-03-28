@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -202,7 +201,7 @@ namespace StarlightRiver.Core
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (ChargeTime > 0)
-				damage = (int)(damage * MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime));
+				modifiers.SourceDamage *= MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

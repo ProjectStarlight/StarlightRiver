@@ -4,7 +4,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -326,26 +325,32 @@ namespace StarlightRiver.Content.Items.Dungeon
 				modProj.followPlayer = followPlayer;
 			}
 		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (Projectile.timeLeft < 25 || hitTargets.Contains(target))
 				return false;
+
 			return base.CanHitNPC(target);
 		}
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			hitTargets.Add(target);
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Vector2.Zero, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f));
 
 			for (int i = 0; i < 20; i++)
+			{
 				Dust.NewDustPerfect(target.Center + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 6, 0, new Color(100, 150, 200) * (Power / 30f), 0.5f);
+			}
 
 			for (int j = 0; j < 6; j++)
+			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 3, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f) * 0.3f);
+			}
 
 			Projectile.localNPCImmunity[target.whoAmI] = 2;
 			target.immune[Projectile.owner] = 2;
-			base.OnHitNPC(target, damage, knockback, crit);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -385,6 +390,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Vector2 point = cache[i];
 				Vector2 nextPoint = i == cache.Count - 1 ? Projectile.Center + oldVel : cache[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache.Count - 3 || dir == Vector2.Zero)
 					cache2.Add(point);
 				else
@@ -405,6 +411,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + oldVel;
+
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);

@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -168,24 +167,24 @@ namespace StarlightRiver.Content.Items.Starwood
 				{
 					if (empowered)
 					{
-						damage *= ScaleMult;
-						knockback *= ScaleMult;
+						modifiers.SourceDamage *= ScaleMult;
+						modifiers.Knockback *= ScaleMult;
 					}
 					else
 					{
-						damage *= ScaleMult;
-						knockback *= ScaleMult;
+						modifiers.SourceDamage *= ScaleMult;
+						modifiers.Knockback *= ScaleMult;
 					}
 				}
 				else
 				{
-					damage = ScaleMult;
-					knockback *= 0.1f;
+					modifiers.SourceDamage -= int.MaxValue;
+					modifiers.Knockback *= 0.1f;
 				}
 			}
 			else if (empowered)
 			{
-				damage += 3;
+				modifiers.SourceDamage += 3;
 			}
 		}
 

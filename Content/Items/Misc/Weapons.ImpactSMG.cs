@@ -3,7 +3,6 @@ using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -325,7 +324,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
-				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
+				modifiers.SourceDamage *= 1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05f;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -810,7 +809,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Player Owner = Main.player[Projectile.owner];
 
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
-				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
+				modifiers.SourceDamage *= 1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05f;
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Packets;
 using System;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
@@ -35,9 +34,9 @@ namespace StarlightRiver.Content.Pickups
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			crit = false;
-			knockback = 0;
-			damage = 0;
+			modifiers.FinalDamage *= 0;
+			modifiers.Knockback *= 0;
+			modifiers.DisableCrit();
 		}
 
 		public override bool CheckActive()

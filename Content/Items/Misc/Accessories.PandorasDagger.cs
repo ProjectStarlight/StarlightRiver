@@ -2,7 +2,6 @@
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -199,22 +198,16 @@ namespace StarlightRiver.Content.Items.Misc
 				VolatileStacks = 0;
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
+		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 		{
 			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.07f * VolatileStacks));
-		}
-
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
-		{
-			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.07f * VolatileStacks));
+				modifiers.FinalDamage *= 1f + 0.07f * VolatileStacks;
 		}
 
 		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 		{
 			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.03f * VolatileStacks));
+				modifiers.FinalDamage *= 1f + 0.03f * VolatileStacks;
 		}
 
 		public override void AI(NPC npc)

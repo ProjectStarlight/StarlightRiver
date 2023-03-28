@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -258,28 +257,26 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			CutlassBusGNPC gnpc = localtarget.GetGlobalNPC<CutlassBusGNPC>();
-			if (localtarget.knockBackResist > 0.1f)
+			CutlassBusGNPC gnpc = target.GetGlobalNPC<CutlassBusGNPC>();
+			if (target.knockBackResist > 0.1f)
 			{
 				gnpc.targettable = false;
-				Projectile.velocity *= Math.Max(1, localtarget.knockBackResist);
+				Projectile.velocity *= Math.Max(1, target.knockBackResist);
 				gnpc.skewered = true;
-				gnpc.skewerOffset = localtarget.Center - Projectile.Center;
+				gnpc.skewerOffset = target.Center - Projectile.Center;
 				gnpc.skewerer = Projectile;
 
-				victims.Add(localtarget);
+				victims.Add(target);
 			}
 			else
 			{
 				Projectile.timeLeft = 100;
 				stuck = true;
 				Projectile.friendly = false;
-				stuckTarget = localtarget;
-				stuckOffset = Projectile.Center - localtarget.Center;
+				stuckTarget = target;
+				stuckOffset = Projectile.Center - target.Center;
 				Projectile.velocity = Vector2.Zero;
 			}
-
-			base.OnHitNPC(localtarget, damage, knockback, crit);
 		}
 
 		public override void Kill(int timeLeft)

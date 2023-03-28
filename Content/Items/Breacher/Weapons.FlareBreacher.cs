@@ -4,7 +4,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -211,7 +210,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			if (!target.immortal && !target.dontTakeDamage)
-				target.StrikeNPC(Projectile.damage, 0f, 0);
+				target.StrikeNPC(target.SimpleStrike(Projectile.damage, 0));
 
 			CameraSystem.shake = 10;
 			int numberOfProjectiles = Main.rand.Next(4, 6);

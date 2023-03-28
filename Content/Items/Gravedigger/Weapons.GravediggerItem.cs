@@ -2,7 +2,6 @@ using StarlightRiver.Content.Buffs;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -327,26 +326,26 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.knockBackResist != 0 && !target.collideY && !target.noGravity && SwingFrame < 2 && target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
-				damage = (int)(damage * 1.5f);
+				modifiers.FinalDamage *= 1.5f;
 
 			if (SwingFrame < 2)
 			{
-				hitDirection = Math.Sign(target.Center.X - Player.Center.X);
+				modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Player.Center.X);
 				if (target.HasBuff(ModContent.BuffType<ShovelSlowFall>()))
-					knockback *= 0.3f;
+					modifiers.Knockback *= 0.3f;
 			}
 			else
 			{
-				hitDirection = 0;
+				modifiers.HitDirectionOverride = 0;
 			}
 
-			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY && target.life > damage)
+			if (SwingFrame == 3 && !target.noGravity && target.knockBackResist != 0 && !target.collideY)
 			{
 				target.velocity.X = Main.player[Projectile.owner].direction * 20;
-				knockback = 0;
+				modifiers.Knockback *= 0;
 			}
 
-			CreateBlood(target, hitDirection, knockback);
+			CreateBlood(target, modifiers.HitDirection, modifiers.Knockback.Base);
 		}
 
 		private void CreateBlood(NPC target, int hitDirection, float knockback)

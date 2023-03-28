@@ -5,7 +5,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -513,8 +512,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			if (Projectile.DamageType == DamageClass.Ranged && damageIncreased)
-				damage = (int)(damage * 1.2f);
+			if (projectile.DamageType == DamageClass.Ranged && damageIncreased)
+				modifiers.SourceDamage *= 1.2f;
 		}
 	}
 }

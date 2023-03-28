@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -190,7 +189,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				return;
 
 			int odds = Math.Max(1, 15 - rngProtector);
-			if ((crit || target.life <= 0) && storedGem != StoredGem.All)
+			if ((hit.Crit || target.life <= 0) && storedGem != StoredGem.All)
 			{
 				rngProtector++;
 				if (Main.rand.NextBool(odds))
@@ -212,25 +211,23 @@ namespace StarlightRiver.Content.Items.Geomancer
 				}
 			}
 
-			if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && crit)
+			if ((storedGem == StoredGem.Diamond || storedGem == StoredGem.All) && hit.Crit)
 			{
 				int extraDamage = target.defense / 2;
 				extraDamage += (int)(proj.damage * 0.2f * (target.life / (float)target.lifeMax));
 				CombatText.NewText(target.Hitbox, new Color(200, 200, 255), extraDamage);
+
 				if (target.type != NPCID.TargetDummy)
 					target.life -= extraDamage;
+
 				target.HitEffect(0, extraDamage);
 			}
 
 			if (Main.rand.Next(100) <= critRate && (storedGem == StoredGem.Emerald || storedGem == StoredGem.All))
-			{
 				Item.NewItem(target.GetSource_Loot(), new Rectangle((int)target.position.X, (int)target.position.Y, target.width, target.height), ModContent.ItemType<EmeraldHeart>());
-			}
 
 			if ((storedGem == StoredGem.Ruby || storedGem == StoredGem.All) && Main.rand.NextFloat() > 0.3f && proj.type != ModContent.ProjectileType<RubyDagger>())
-			{
-				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, knockback, Player.whoAmI, target.whoAmI);
-			}
+				Projectile.NewProjectile(Player.GetSource_ItemUse(Player.armor[0]), Player.Center, Main.rand.NextVector2Circular(7, 7), ModContent.ProjectileType<RubyDagger>(), (int)(proj.damage * 0.3f) + 1, hit.KnockBack, Player.whoAmI, target.whoAmI);
 
 			if (storedGem == StoredGem.Amethyst || storedGem == StoredGem.All && target.GetGlobalNPC<GeoNPC>().amethystDebuff < 400)
 			{

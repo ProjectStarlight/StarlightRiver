@@ -3,7 +3,6 @@ using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
 using StarlightRiver.Helpers;
 using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
@@ -105,8 +104,6 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				Player.statDefense = 0;
 				justHitWithBarrier = true;
 			}
-
-			return true;
 		}
 
 		public override void UpdateBadLifeRegen()

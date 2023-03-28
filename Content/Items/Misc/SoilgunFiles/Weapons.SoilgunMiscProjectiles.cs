@@ -3,7 +3,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -408,9 +407,9 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 		{
 			switch (Projectile.frame)
 			{
-				case 0: damage = (int)(damage * 1.3f); break; // platinum coin do more dmg then gold, gold more than silver, etc
-				case 1: damage = (int)(damage * 1.2f); break;
-				case 2: damage = (int)(damage * 1.1f); break;
+				case 0: modifiers.SourceDamage *= 1.3f; break; // platinum coin do more dmg then gold, gold more than silver, etc
+				case 1: modifiers.SourceDamage *= 1.2f; break;
+				case 2: modifiers.SourceDamage *= 1.1f; break;
 			}
 		}
 

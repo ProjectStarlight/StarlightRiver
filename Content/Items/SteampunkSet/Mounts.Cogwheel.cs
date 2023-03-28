@@ -2,7 +2,6 @@ using StarlightRiver.Content.Buffs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -183,14 +182,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			mounted = false;
 		}
 
-		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
-		{
-			if (damageSource.SourceOtherIndex == 3 && mounted)
-				return false;
-
-			return base.ModifyHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
-		}
-
 		public override void PostUpdate()
 		{
 			if (!mounted)
@@ -340,9 +331,8 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(Player.direction);
-			damage = (int)(damage * MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f));
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+			modifiers.HitDirectionOverride = Math.Sign(Player.direction);
+			modifiers.FinalDamage *= MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f);
 		}
 	}
 }

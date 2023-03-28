@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -429,7 +428,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			if (Main.rand.NextBool(4))
 				target.AddBuff(BuffID.OnFire, 150);
 
-			knockback = 0;
+			modifiers.Knockback *= 0;
 		}
 
 		public override bool PreDraw(ref Color lightColor)

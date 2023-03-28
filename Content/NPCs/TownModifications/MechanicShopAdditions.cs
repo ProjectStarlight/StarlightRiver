@@ -1,17 +1,15 @@
 ﻿using StarlightRiver.Content.Items.Misc;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class MechanicShopAdditions : GlobalNPC
 	{
-		public override void ModifyActiveShop(NPC npc, string shopName, Item[] items)
+		public override void ModifyShop(NPCShop shop)
 		{
-			if (type == NPCID.Mechanic)
+			if (shop.NpcType == NPCID.Mechanic)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<Sorcerwrench>());
-				nextSlot++;
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<Sorcerwrench>()));
 			}
 		}
 	}

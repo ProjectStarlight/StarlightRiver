@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -391,10 +390,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (!rightClickMode)
 			{
-				damage = (int)(damage * (1f + timeSpentOnTarget / 720f));
+				modifiers.SourceDamage *= 1f + timeSpentOnTarget / 720f;
 
 				if (target != targetNPC)
-					damage /= 2;
+					modifiers.SourceDamage *= 0.5f;
 			}
 		}
 

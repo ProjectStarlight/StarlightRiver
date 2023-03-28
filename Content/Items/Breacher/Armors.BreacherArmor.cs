@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -498,11 +497,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		private Trail trail;
 		private Trail trail2;
 
-		private bool hit = false;
+		private bool hasHit = false;
 
 		private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
-		private float Alpha => hit ? (Projectile.timeLeft / 50f) : 1;
+		private float Alpha => hasHit ? (Projectile.timeLeft / 50f) : 1;
 
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -527,18 +526,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
-		private void findIfHit()
+		private void FindIfHit()
 		{
 			//for other Players to determine if this has hit
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0f, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
 		public override void AI()
 		{
-			if (!hit)
+			if (!hasHit)
 			{
 				Vector2 direction = Target.Center - Projectile.Center;
 				direction.Normalize();
@@ -552,7 +551,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 			else if (Main.myPlayer != Projectile.owner)
 			{
-				findIfHit();
+				FindIfHit();
 			}
 
 			if (Main.netMode != NetmodeID.Server)
@@ -588,7 +587,7 @@ namespace StarlightRiver.Content.Items.Breacher
 
 			Projectile.friendly = false;
 			Projectile.penetrate++;
-			hit = true;
+			hasHit = true;
 			Projectile.timeLeft = 50;
 			Projectile.extraUpdates = 3;
 			Projectile.velocity = Vector2.Zero;

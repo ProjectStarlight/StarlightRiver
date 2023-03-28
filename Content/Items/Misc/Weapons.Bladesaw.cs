@@ -2,7 +2,6 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -92,16 +91,17 @@ namespace StarlightRiver.Content.Items.Misc
 				ShreddedStacks = 0;
 		}
 
+		//TODO: Rewrite as a stackable buff
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			if (ShreddedStacks > 0)
-				damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
+			//if (ShreddedStacks > 0)
+			//damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
 		}
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			if (ShreddedStacks > 0)
-				damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
+			//if (ShreddedStacks > 0)
+			//damage = (int)Main.CalculateDamageNPCsTake(damage, npc.defense - 2 * ShreddedStacks);
 		}
 
 		public override void UpdateLifeRegen(NPC npc, ref int damage)
@@ -285,7 +285,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage = (int)(damage * (1f + 0.03f * hitAmount));
+			modifiers.FinalDamage *= 1f + 0.03f * hitAmount;
 		}
 
 		public override bool PreDraw(ref Color lightColor)

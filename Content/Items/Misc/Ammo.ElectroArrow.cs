@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Buffs;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -147,8 +146,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage /= 4;
-			crit = false;
+			modifiers.FinalDamage *= 0.25f;
+			modifiers.DisableCrit();
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
