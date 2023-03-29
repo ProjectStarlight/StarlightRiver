@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Brfalse, afterModded); //if we dont want to do our logic because we didnt crit, skip over it and go back to the vanilla flow
 
 			c.Emit(OpCodes.Ldloc, 0); //next we emit our logic for special combat text -before- that label. This should only run if we do crit
-			c.Emit(OpCodes.Ldloc, 15);
+			c.Emit(OpCodes.Ldloc, 18);
 			c.Emit(OpCodes.Ldarg_0);
 			c.EmitDelegate(DoCrit);
 
@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!c.TryGotoPrev(  //now we go back up to before damage is calculated
 				MoveType.Before,
 				i => i.MatchLdsfld(typeof(Main).GetField(nameof(Main.npc))),
-				i => i.MatchLdloc(15), //15 is the whoAmI of the npc
+				i => i.MatchLdloc(18), //18 is the whoAmI of the npc
 				i => i.MatchLdelemRef(),
 				i => i.MatchLdfld(typeof(NPC).GetField(nameof(NPC.immortal)))))
 			{
@@ -72,7 +72,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			c.Index++;
 
-			c.Emit(OpCodes.Ldloc, 15); //we roll if we should crit or not, and store that in a local
+			c.Emit(OpCodes.Ldloc, 18); //we roll if we should crit or not, and store that in a local
 			c.Emit(OpCodes.Ldelem_Ref);
 			c.EmitDelegate(Crit);
 			c.Emit(OpCodes.Stloc, critLocal);
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.Items.Misc
 				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) })),
 				i => i.MatchPop(),
 				i => i.MatchLdsfld(typeof(Main).GetField(nameof(Main.npc))),
-				i => i.MatchLdloc(16)))
+				i => i.MatchLdloc(19)))
 			{
 				return;
 			}
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Brfalse, afterModded); //if we dont want to do our logic because we didnt crit, skip over it and go back to the vanilla flow
 
 			c.Emit(OpCodes.Ldloc, 0);
-			c.Emit(OpCodes.Ldloc, 16);
+			c.Emit(OpCodes.Ldloc, 19);
 			c.Emit(OpCodes.Ldarg_0);
 			c.EmitDelegate(DoCrit); // DoCrit logic is gonna be a little different here
 
@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			c.Index++;
 
-			c.Emit(OpCodes.Ldloc, 16); //we roll if we should crit or not, and store that in a local. We have to reroll even though in the c# code it looks like we already rolled. Thats cause the crit is rolled in an if statement, and we are currently outside that if statement (in the IL)
+			c.Emit(OpCodes.Ldloc, 19); //we roll if we should crit or not, and store that in a local. We have to reroll even though in the c# code it looks like we already rolled. Thats cause the crit is rolled in an if statement, and we are currently outside that if statement (in the IL)
 			c.Emit(OpCodes.Ldelem_Ref);
 			c.EmitDelegate(Crit);
 			c.Emit(OpCodes.Stloc, critLocal);
