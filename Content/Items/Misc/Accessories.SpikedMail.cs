@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (oldBarrier > barrierplayer.barrier)
 			{
 				int damageToDeal = oldBarrier - barrierplayer.barrier;
-				NPC.StrikeNPC(NPC.SimpleStrike(Math.Max(1, damageToDeal - NPC.defense / 2), Math.Sign(NPC.Center.X - player.Center.X), false, 1));
+				NPC.SimpleStrikeNPC(Math.Max(1, damageToDeal - NPC.defense / 2), Math.Sign(NPC.Center.X - player.Center.X), false, 1);
 			}
 		}
 	}

@@ -83,8 +83,8 @@ namespace StarlightRiver.Content.Items.Misc
 				CombatText.NewText(Projectile.Hitbox, new Color(255, 230, 100), "Ouch!", true);
 
 				NPC npc = Main.npc[(int)HitNpcIndex];
-				npc.SimpleStrike(9999, 0);
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
+				npc.SimpleStrikeNPC(9999, 0);
+				//NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI); Pretty sure SimpleStrikeNPC handles the netcode
 
 				if (WasFleshy == 0)
 				{

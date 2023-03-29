@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
 					CameraSystem.shake += 15;
 
-					hooked.StrikeNPC(hooked.SimpleStrike(Projectile.damage, Player.Center.X < hooked.Center.X ? -1 : 1));
+					hooked.SimpleStrikeNPC(Projectile.damage, Player.Center.X < hooked.Center.X ? -1 : 1);
 					Helper.PlayPitched("Guns/ChainPull", 0.001f, 0, Player.Center);
 				}
 			}

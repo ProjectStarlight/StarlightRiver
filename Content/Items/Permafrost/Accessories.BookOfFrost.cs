@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (proj.CountsAsClass(DamageClass.Melee) && info.Crit)
 			{
 				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
-				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.KnockBack * 0.25f, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.Knockback * 0.25f, player.whoAmI);
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			if (Item.CountsAsClass(DamageClass.Melee) && info.Crit)
 			{
 				Helper.PlayPitched("Magic/FrostHit", 0.75f, Main.rand.NextFloat(-0.05f, 0.05f), target.Center);
-				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.KnockBack * 0.25f, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<FrostExplosion>(), (int)(damageDone * 1.25f), info.Knockback * 0.25f, player.whoAmI);
 			}
 		}
 	}
