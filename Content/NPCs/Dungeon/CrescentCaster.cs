@@ -232,6 +232,7 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 		public override void ModifyNPCLoot(NPCLoot npcLoot)
 		{
 			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Dungeon.InertStaff>(), 20));
+			npcLoot.Add(ItemDropRule.Common(ModContent.ItemType<Items.Magnet.UnchargedMagnet>(), 1));
 		}
 
 		public override void FindFrame(int frameHeight)

@@ -10,4 +10,5 @@ Barrier | Provides damage reduction while active. When you resist damage this wa
 Stamina | Allows you to use abilities. Each ability has a set stamina cost which may be modified via infusions. | 255 | 200 | 155
 Cursed | This item comes with a crippling downside, and cannot be removed normally once equipped. A scroll of undoing can destroy the item, removing its effects and freeing the slot but deleting it forever. | 200 | 100 | 255
 Inoculation | Multiplicitavely reduces damage-over-time taken from all sources. | 170 | 255 | 150
+Rend | Permanently decreases defense by the specified amount, stacking additively | 255 | 100 | 80
 Debug | Not intended for use in normal gameplay, and should only be obtainable via cheats or inventory editors. Please submit a bug report at https://github.com/ProjectStarlight/StarlightRiver/issues if you believe you recieved this item in error. | 255 | 0 | 0

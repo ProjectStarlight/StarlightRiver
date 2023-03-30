@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Buffs
 		{
 			Player.statDefense /= 4;
 
-			if (Main.rand.Next(10) == 0)
+			if (Main.rand.NextBool(10))
 			{
 				Vector2 pos = Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(Player.width);
 				DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Buffs
 
 			return;
 
-			if (Main.rand.Next(20) == 0)
+			if (Main.rand.NextBool(20))
 			{
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.Buffs
 		{
 			NPC.defense /= 4;
 
-			if (Main.rand.Next(10) == 0)
+			if (Main.rand.NextBool(10))
 			{
 				Vector2 pos = NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(NPC.width);
 				DrawHelper.DrawElectricity(pos, pos + Vector2.One.RotatedByRandom(6.28f) * Main.rand.Next(5, 10), DustType<Content.Dusts.Electric>(), 0.8f, 3, default, 0.25f);
@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Buffs
 
 			return;
 
-			if (Main.rand.Next(20) == 0)
+			if (Main.rand.NextBool(20))
 			{
 				for (int k = 0; k < Main.maxNPCs; k++)
 				{

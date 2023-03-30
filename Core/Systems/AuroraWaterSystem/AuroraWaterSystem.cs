@@ -289,12 +289,18 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			MetaballSystem.MetaballSystem.actorsSem.WaitOne();
 
 			if (!MetaballSystem.MetaballSystem.actors.FirstOrDefault(n => n is AuroraWaterTileMetaballs).Active)
+			{
+				MetaballSystem.MetaballSystem.actorsSem.Release();
 				return;
+			}
 
 			Effect shader = Terraria.Graphics.Effects.Filters.Scene["AuroraWaterShader"].GetShader().Shader;
 
 			if (shader is null)
+			{
+				MetaballSystem.MetaballSystem.actorsSem.Release();
 				return;
+			}
 
 			shader.Parameters["time"].SetValue(StarlightWorld.visualTimer);
 			shader.Parameters["screenSize"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));

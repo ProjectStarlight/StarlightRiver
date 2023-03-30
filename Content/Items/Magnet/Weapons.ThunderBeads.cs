@@ -24,6 +24,14 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.value = Item.sellPrice(0, 2, 0, 0);
 			Item.rare = ItemRarityID.Orange;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ModContent.ItemType<ChargedMagnet>(), 6);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class ThunderBeadsProj : BaseWhip
