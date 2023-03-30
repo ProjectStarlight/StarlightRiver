@@ -95,15 +95,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override bool StrikeNPC(ref double damage, int defense, ref float knockback, int hitDirection, ref bool crit)
+		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (Shield == 1)
-				damage = 0;
-
-			return base.StrikeNPC(ref damage, defense, ref knockback, hitDirection, ref crit);
+				modifiers.FinalDamage -= int.MaxValue;
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			if (AbilityHelper.CheckDash(target, NPC.Hitbox))
 			{

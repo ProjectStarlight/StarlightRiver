@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && Colliding(Projectile.Hitbox, n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Misc
 			player.UpdateRotation(0);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);

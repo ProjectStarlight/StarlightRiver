@@ -257,12 +257,12 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				Player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, 1.57f * Player.direction);
 		}
 
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
 			if (launching)
-				return false;
+				return true;
 
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
+			return false;
 		}
 	}
 }

@@ -90,25 +90,25 @@ namespace StarlightRiver.Content.Items.Misc
 			return null;
 		}
 
-		public void BoostDamage(Player player, Item item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		public void BoostDamage(Player player, Item item, NPC target, ref NPC.HitModifiers hit)
 		{
 			var instance = GetEquippedInstance(player) as RhythmicResonator;
 
 			if (Equipped(player) && instance.RhythmStacks > 0)
 			{
-				damage = (int)(damage * (1f + 0.05f * instance.RhythmStacks)); //5% increase up to 25%
-				knockback *= 1f + 0.1f * instance.RhythmStacks; // 10% yadada
+				hit.SourceDamage *= 1f + 0.05f * instance.RhythmStacks; //5% increase up to 25%
+				hit.Knockback *= 1f + 0.1f * instance.RhythmStacks; // 10% yadada
 			}
 		}
 
-		public void BoostDamageProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public void BoostDamageProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
 			var instance = GetEquippedInstance(player) as RhythmicResonator;
 
 			if (Equipped(player) && instance.RhythmStacks > 0)
 			{
-				damage = (int)(damage * (1f + 0.05f * instance.RhythmStacks));
-				knockback *= 1f + 0.1f * instance.RhythmStacks;
+				hit.SourceDamage *= 1f + 0.05f * instance.RhythmStacks; //5% increase up to 25%
+				hit.Knockback *= 1f + 0.1f * instance.RhythmStacks; // 10% yadada
 			}
 		}
 

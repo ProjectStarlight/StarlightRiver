@@ -86,8 +86,8 @@ namespace StarlightRiver.Content.Biomes
 			target = new(DrawTargetOne, () => opacity > 0, 1);
 			backgroundTarget = new(DrawTargetTwo, () => opacity > 0 || distortion > 0, 1);
 
-			On.Terraria.Main.DrawBackgroundBlackFill += DrawParticleTarget;
-			On.Terraria.Main.DrawSurfaceBG += DistortBG;
+			Terraria.On_Main.DrawBackgroundBlackFill += DrawParticleTarget;
+			Terraria.On_Main.DrawSurfaceBG += DistortBG;
 		}
 
 		public override void PostUpdateEverything()
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.Biomes
 			}
 		}
 
-		private void DistortBG(On.Terraria.Main.orig_DrawSurfaceBG orig, Main self)
+		private void DistortBG(Terraria.On_Main.orig_DrawSurfaceBG orig, Main self)
 		{
 			if (distortion > 0 && !drawingBGtarget && !Main.gameMenu)
 			{
@@ -174,7 +174,7 @@ namespace StarlightRiver.Content.Biomes
 			drawingBGtarget = false;
 		}
 
-		private void DrawParticleTarget(On.Terraria.Main.orig_DrawBackgroundBlackFill orig, Main self)
+		private void DrawParticleTarget(Terraria.On_Main.orig_DrawBackgroundBlackFill orig, Main self)
 		{
 			orig(self);
 

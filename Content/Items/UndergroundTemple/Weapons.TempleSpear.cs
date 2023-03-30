@@ -54,11 +54,12 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			d.scale = Projectile.timeLeft / (30f * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee));
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//inflicting debuff + light orbs on kill
 			target.AddBuff(BuffType<Buffs.Illuminant>(), 600);
-			if (damage >= target.life)
+
+			if (damageDone >= target.life)
 				Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, new Vector2(0, -1), ProjectileType<TempleSpearLight>(), 0, 0);
 		}
 	}

@@ -6,15 +6,15 @@
 
 		public void Load()
 		{
-			On.Terraria.Player.KeyDoubleTap += Player_KeyDoubleTap;
+			Terraria.On_Player.KeyDoubleTap += Player_KeyDoubleTap;
 		}
 
 		public void Unload()
 		{
-			On.Terraria.Player.KeyDoubleTap -= Player_KeyDoubleTap;
+			Terraria.On_Player.KeyDoubleTap -= Player_KeyDoubleTap;
 		}
 
-		private static void Player_KeyDoubleTap(On.Terraria.Player.orig_KeyDoubleTap orig, Player self, int keyDir)
+		private static void Player_KeyDoubleTap(Terraria.On_Player.orig_KeyDoubleTap orig, Player self, int keyDir)
 		{
 			orig(self, keyDir);
 			self.GetModPlayer<StarlightPlayer>().DoubleTapEffects(keyDir);

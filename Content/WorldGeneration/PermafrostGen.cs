@@ -63,7 +63,7 @@ namespace StarlightRiver.Core
 			}
 
 			int center = iceLeft + (iceRight - iceLeft) / 2;
-			int centerY = (int)WorldGen.worldSurfaceHigh + (iceBottom - (int)WorldGen.worldSurfaceHigh) / 2;
+			int centerY = (int)GenVars.worldSurfaceHigh + (iceBottom - (int)GenVars.worldSurfaceHigh) / 2;
 
 		TryToGenerateArena:
 
@@ -93,7 +93,7 @@ namespace StarlightRiver.Core
 			for (int k = 1; k <= 3; k++)
 			{
 				float fraction = k / 4f;
-				int yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)WorldGen.worldSurfaceHigh, fraction);
+				int yTarget = (int)Helper.LerpFloat(squidBossArena.Y, (float)GenVars.worldSurfaceHigh, fraction);
 
 				for (int x = 0; x < Main.maxTilesX; x++)
 				{

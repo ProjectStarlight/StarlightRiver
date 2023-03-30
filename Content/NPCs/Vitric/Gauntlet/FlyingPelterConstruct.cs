@@ -3,6 +3,7 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -358,7 +359,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (pairedGrunt != default)
 				(pairedGrunt.ModNPC as FlyingGruntConstruct).attacking = true;

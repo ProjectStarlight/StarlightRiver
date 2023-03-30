@@ -208,10 +208,10 @@ namespace StarlightRiver.Content.GUI
 			Append(inSlot);
 			Append(options);
 
-			craftButton.OnClick += Craft;
+			craftButton.OnLeftClick += Craft;
 			Append(craftButton);
 
-			exitButton.OnClick += (a, b) => visible = false;
+			exitButton.OnLeftClick += (a, b) => visible = false;
 			Append(exitButton);
 		}
 

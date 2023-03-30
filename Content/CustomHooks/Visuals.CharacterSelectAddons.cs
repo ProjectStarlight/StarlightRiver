@@ -27,8 +27,8 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.GameContent.UI.Elements.UICharacterListItem.DrawSelf += DrawSpecialCharacter;
-			On.Terraria.GameContent.UI.Elements.UICharacterListItem.ctor += ShiftTextOver;
+			Terraria.GameContent.UI.Elements.On_UICharacterListItem.DrawSelf += DrawSpecialCharacter;
+			Terraria.GameContent.UI.Elements.On_UICharacterListItem.ctor += ShiftTextOver;
 
 			sparkles = new ParticleSystem(AssetDirectory.GUI + "Sparkle", updateSparkles);
 		}
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Rotation += 0.05f;
 		}
 
-		private void ShiftTextOver(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
+		private void ShiftTextOver(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_ctor orig, UICharacterListItem self, PlayerFileData data, int snapPointIndex)
 		{
 			orig(self, data, snapPointIndex);
 
@@ -73,7 +73,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-		private void DrawSpecialCharacter(On.Terraria.GameContent.UI.Elements.UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
+		private void DrawSpecialCharacter(Terraria.GameContent.UI.Elements.On_UICharacterListItem.orig_DrawSelf orig, UICharacterListItem self, SpriteBatch spriteBatch)
 		{
 			orig(self, spriteBatch);
 			var origin = new Vector2(self.GetDimensions().X, self.GetDimensions().Y);
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < Player.armor.Length; k++)
 			{
 				if (Player.armor[k].ModItem != null && Player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
-					Player.VanillaUpdateEquip(Player.armor[k]);
+					Player.GrantPrefixBenefits(Player.armor[k]); /* tModPorter Note: Removed. Use either GrantPrefixBenefits (if Item.accessory) or GrantArmorBenefits (for armor slots) */
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;

@@ -1,6 +1,6 @@
-﻿using On.Terraria.GameContent.Achievements;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Terraria.GameContent.Achievements;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			for (int k = 3; k < 10; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
 			{
-				if (Player.IsAValidEquipmentSlotForIteration(k))
+				if (Player.IsItemSlotUnlockedAndUsable(k))
 				{
 					if (Player.armor[k].type == Item.type)
 						return true;
@@ -208,10 +208,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void Load()
 		{
-			AchievementsHelper.HandleOnEquip += OnEquipHandler;
+			On_AchievementsHelper.HandleOnEquip += OnEquipHandler;
 		}
 
-		private void OnEquipHandler(AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
+		private void OnEquipHandler(On_AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
 		{
 			if (item.ModItem is SmartAccessory)
 				(item.ModItem as SmartAccessory).Equip(player, item);
@@ -219,13 +219,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			orig(player, item, context);
 		}
 
-		public override void OnEnterWorld(Player player)
+		public override void OnEnterWorld()
 		{
 			simulatedAccessories.Clear();
 
 			for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
 			{
-				(player.armor[k].ModItem as SmartAccessory)?.Equip(player, player.armor[k]);
+				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
 			}
 		}
 

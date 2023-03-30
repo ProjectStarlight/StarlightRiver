@@ -24,13 +24,13 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent -= ManaLeechOnHitProj;
 		}
 
-		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+		private void ManaLeechOnHitProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (proj.DamageType == DamageClass.Magic && Equipped(Player) && Main.rand.NextFloat() < 0.25f)
 			{
-				double decay = Math.Pow(1 * (1 - 0.02f), damage);
+				double decay = Math.Pow(1 * (1 - 0.02f), damageDone);
 				decay = Math.Clamp(decay, 0.185f, 1);
-				int manaAmount = (int)(damage * decay);
+				int manaAmount = (int)(damageDone * decay);
 
 				Player.ManaEffect(manaAmount);
 
@@ -43,13 +43,13 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private void ManaLeechOnHit(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void ManaLeechOnHit(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Item.DamageType == DamageClass.Magic && Equipped(player) && Main.rand.NextFloat() < 0.25f)
 			{
-				double decay = Math.Pow(1 * (1 - 0.02f), damage);
+				double decay = Math.Pow(1 * (1 - 0.02f), damageDone);
 				decay = Math.Clamp(decay, 0.185f, 1);
-				int manaAmount = (int)(damage * decay);
+				int manaAmount = (int)(damageDone * decay);
 
 				player.ManaEffect(manaAmount);
 

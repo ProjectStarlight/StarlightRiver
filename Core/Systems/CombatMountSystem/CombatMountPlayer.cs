@@ -11,17 +11,17 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override void Load()
 		{
-			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks;
+			Terraria.On_Player.ItemCheck_Inner += TriggerMountAttacks;
 		}
 
-		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
+		private void TriggerMountAttacks(On_Player.orig_ItemCheck_Inner orig, Player self)
 		{
 			CombatMount activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
 			Item sItem = self.HeldItem;
 
 			if (activeMount is null || self.CCed || !self.controlUseItem || !self.releaseUseItem || self.itemAnimation != 0)
 			{
-				orig(self, i);
+				orig(self);
 				return;
 			}
 
@@ -51,7 +51,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 				}
 			}
 
-			orig(self, i);
+			orig(self);
 		}
 
 		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.

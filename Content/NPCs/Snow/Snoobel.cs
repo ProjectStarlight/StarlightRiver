@@ -500,10 +500,10 @@ namespace StarlightRiver.Content.NPCs.Snow
 			return ret;
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			if ((parent.ModNPC as Snoobel).pulling)
-				damage /= 3;
+				modifiers.SourceDamage *= 0.33f;
 		}
 	}
 }

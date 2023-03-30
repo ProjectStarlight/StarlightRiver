@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy(this, false) && Vector2.Distance(n.Center, Projectile.Center) < 120))
 			{
-				npc.StrikeNPC(Projectile.damage, Projectile.knockBack, Projectile.Center.X > npc.Center.X ? 1 : -1, false);
+				npc.StrikeNPC(npc.SimpleStrike(Projectile.damage, Projectile.Center.X > npc.Center.X ? 1 : -1, false, Projectile.knockBack));
 				npc.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
 			}
 
@@ -75,7 +75,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Helpers.Helper.PlayPitched("JellyBounce", 1f, 1f, Projectile.Center);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
 		}
@@ -130,16 +130,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 			StarlightPlayer.ModifyHitByProjectileEvent += TakeExtraDamageProjectile;
 		}
 
-		private void TakeExtraDamage(Player player, NPC NPC, ref int damage, ref bool crit)
+		private void TakeExtraDamage(Player player, NPC NPC, ref Player.HurtModifiers hit)
 		{
 			if (Inflicted(player))
-				damage = (int)(damage * 1.25f);
+				hit.SourceDamage *= 1.25f;
 		}
 
-		private void TakeExtraDamageProjectile(Player player, Projectile proj, ref int damage, ref bool crit)
+		private void TakeExtraDamageProjectile(Player player, Projectile proj, ref Player.HurtModifiers hit)
 		{
 			if (Inflicted(player))
-				damage = (int)(damage * 1.25f);
+				hit.SourceDamage *= 1.25f;
 		}
 
 		public override void Update(NPC npc, ref int buffIndex)

@@ -25,113 +25,107 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyHitNPCWithProj;
 		}
 
-		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
-			{
-				if (Equipped(player) && greatAxe.stickyAI)
-				{
-					if (target == greatAxe.targetNPC)
-					{
-						if (crit)
-							return;
-
-						float initCrit = proj.CritChance * 2 / 100;
-						if (Main.rand.NextFloat() < initCrit)
-							crit = true;
-					}
-					else
-					{
-						crit = false;
-					}
-				}
-			}
-		}
-
-		private void ModifyHitNPC(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
-		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
-			{
-				if (Equipped(player) && greatAxe.stickyAI)
-				{
-					if (target == greatAxe.targetNPC)
-					{
-						if (crit)
-							return;
-
-						float initCrit = (Item.crit + player.GetTotalCritChance(DamageClass.Generic)) * 2 / 100;
-
-						if (Main.rand.NextFloat() < initCrit)
-							crit = true;
-					}
-					else
-					{
-						crit = false;
-					}
-				}
-			}
-		}
-
-		private void OnHitNPCWithProj(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
-			{
-				if (Equipped(player))
-				{
-					if (crit && !greatAxe.Embedding)
-					{
-						//if there is an enemy close to the target that was just critted, the greataxe will go into them
-						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
-							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
-
-						if (npc != default)
-						{
-							greatAxe.targetNPC = npc;
-							greatAxe.Embedding = true;
-						}
-						else
-						{
-							greatAxe.targetNPC = target;
-							greatAxe.Embedding = true;
-						}
-					}
-				}
-			}
-		}
-
-		private void OnHitNPC(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
-		{
-			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
-			{
-				if (Equipped(player))
-				{
-					if (crit && !greatAxe.Embedding)
-					{
-						//if there is an enemy close to the target that was just critted, the greataxe will go into them
-						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
-							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
-
-						if (npc != default)
-						{
-							greatAxe.targetNPC = npc;
-							greatAxe.Embedding = true;
-						}
-						else
-						{
-							greatAxe.targetNPC = target;
-							greatAxe.Embedding = true;
-						}
-					}
-				}
-			}
-		}
-
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Cursed\n" +
 				"Summons an Ethereal Greataxe, which embeds itself near enemies who were just critically striked\n" +
 				"The enemy that the Greataxe embeds itself in becomes Focused\n" +
 				"<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
+		}
+
+		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
+		{
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			{
+				if (Equipped(player) && greatAxe.stickyAI)
+				{
+					if (target == greatAxe.targetNPC)
+					{
+						float initCrit = proj.CritChance * 2 / 100f;
+						if (Main.rand.NextFloat() < initCrit)
+							hit.SetCrit();
+					}
+					else
+					{
+						hit.DisableCrit();
+					}
+				}
+			}
+		}
+
+		private void ModifyHitNPC(Player player, Item Item, NPC target, ref NPC.HitModifiers hit)
+		{
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			{
+				if (Equipped(player) && greatAxe.stickyAI)
+				{
+					if (target == greatAxe.targetNPC)
+					{
+						float initCrit = (Item.crit + player.GetTotalCritChance(DamageClass.Generic)) * 2 / 100;
+
+						if (Main.rand.NextFloat() < initCrit)
+							hit.SetCrit();
+					}
+					else
+					{
+						hit.DisableCrit();
+					}
+				}
+			}
+		}
+
+		private void OnHitNPCWithProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			{
+				if (Equipped(player))
+				{
+					if (info.Crit && !greatAxe.Embedding)
+					{
+						//if there is an enemy close to the target that was just critted, the greataxe will go into them
+						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
+
+						if (npc != default)
+						{
+							greatAxe.targetNPC = npc;
+							greatAxe.Embedding = true;
+						}
+						else
+						{
+							greatAxe.targetNPC = target;
+							greatAxe.Embedding = true;
+						}
+					}
+				}
+			}
+		}
+
+		private void OnHitNPC(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			if (Main.projectile[ProjectileIndex].ModProjectile is TaintedGreataxeProjectile greatAxe)
+			{
+				if (Equipped(player))
+				{
+					if (info.Crit && !greatAxe.Embedding)
+					{
+						//if there is an enemy close to the target that was just critted, the greataxe will go into them
+						NPC npc = Main.npc.Where(n => n.active && n != target && target.Distance(n.Center) < 400f)
+							.OrderBy(n => target.Distance(n.Center)).FirstOrDefault();
+
+						if (npc != default)
+						{
+							greatAxe.targetNPC = npc;
+							greatAxe.Embedding = true;
+						}
+						else
+						{
+							greatAxe.targetNPC = target;
+							greatAxe.Embedding = true;
+						}
+					}
+				}
+			}
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -266,7 +260,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (!stickyAI && target.life > 0)
 			{

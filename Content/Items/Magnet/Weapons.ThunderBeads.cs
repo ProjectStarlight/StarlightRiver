@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.GameContent.Creative;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Items.Magnet
 
 		public override void Load()
 		{
-			On.Terraria.Projectile.FillWhipControlPoints += OverrideWhipControlPoints;
+			Terraria.On_Projectile.FillWhipControlPoints += OverrideWhipControlPoints;
 			base.Load();
 		}
 
@@ -144,7 +145,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			return segment % 3 == 0;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			ableToHit = false;
 			if (!embedded)
@@ -275,7 +276,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			trail2?.Render(effect);
 		}
 
-		private void OverrideWhipControlPoints(On.Terraria.Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)
+		private void OverrideWhipControlPoints(Terraria.On_Projectile.orig_FillWhipControlPoints orig, Projectile proj, List<Vector2> controlPoints)
 		{
 			orig(proj, controlPoints);
 			if (proj.ModProjectile is ThunderBeadsProj modProj && modProj.embedded)

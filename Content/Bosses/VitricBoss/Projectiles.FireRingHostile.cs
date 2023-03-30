@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -49,7 +50,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 8;
 			target.AddBuff(BuffID.OnFire, 180);

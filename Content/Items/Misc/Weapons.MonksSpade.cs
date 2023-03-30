@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -76,7 +77,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			var ownerSpade = Main.player[Projectile.owner].HeldItem.ModItem as MonkSpade;
 

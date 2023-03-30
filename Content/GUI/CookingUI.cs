@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			CookButton.OnClick += CookFood;
+			CookButton.OnLeftClick += CookFood;
 			CookButton.SetVisibility(1, 1);
-			ExitButton.OnClick += Exit;
+			ExitButton.OnLeftClick += Exit;
 			ExitButton.SetVisibility(1, 1);
 
 			OnScrollWheel += ScrollStats;
@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.GUI
 					(Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
 
 				Item.position = Main.LocalPlayer.Center;
-				Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
+				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
 			}

@@ -423,12 +423,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.frame %= Main.projFrames[Projectile.type];
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.rand.NextBool(4))
 				target.AddBuff(BuffID.OnFire, 150);
 
-			knockback = 0;
+			modifiers.Knockback *= 0;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -466,7 +466,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Utils.PlotTileLine(Projectile.Center, Projectile.Center + direction * Projectile.width * Projectile.scale, Projectile.height * Projectile.scale, DelegateMethods.CutTiles);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 && Main.rand.NextBool(2))
 				SpawnScrap(target.Center);

@@ -247,7 +247,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (charge < MAXCHARGE)
 				charge++;
@@ -262,17 +262,17 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (CurrentAttack == AttackType.Slam)
-				damage = (int)(damage * 1.5f);
+				modifiers.SourceDamage *= 1.5f;
 
 			if (CurrentAttack == AttackType.Spin)
-				damage = (int)(damage * 1.2f);
+				modifiers.SourceDamage *= 1.2f;
 
-			damage = (int)(damage * (1 + Charge / 5));
+			modifiers.SourceDamage *=  1 + Charge / 5;
 
-			hitDirection = target.position.X > Player.position.X ? 1 : -1;
+			modifiers.HitDirectionOverride = target.position.X > Player.position.X ? 1 : -1;
 		}
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

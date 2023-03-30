@@ -5,12 +5,11 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class SkeletonMerchantShopAdditions : GlobalNPC
 	{
-		public override void SetupShop(int type, Chest shop, ref int nextSlot)
+		public override void ModifyShop(NPCShop shop)
 		{
-			if (type == NPCID.SkeletonMerchant && Main.moonPhase > 2 && Main.moonPhase < 5)
+			if (shop.NpcType == NPCID.SkeletonMerchant)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<BizarrePotion>());
-				nextSlot++;
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<BizarrePotion>(), Condition.MoonPhaseFirstQuarter));
 			}
 		}
 	}

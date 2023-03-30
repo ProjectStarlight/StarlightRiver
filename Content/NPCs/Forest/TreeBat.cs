@@ -2,6 +2,7 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -139,7 +140,7 @@ namespace StarlightRiver.Content.NPCs.Forest
 			}
 		}
 
-		public override void OnHitByProjectile(Projectile Projectile, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			State = (int)BehaviorStates.Fleeing;
 			NPC.velocity.X += Main.rand.NextBool() ? 5 : -5;

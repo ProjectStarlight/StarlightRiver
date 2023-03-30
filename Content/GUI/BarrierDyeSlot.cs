@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.GUI
 	{
 		public BarrierDyeSlotElement()
 		{
-			OnClick += ClickHandler;
+			OnLeftClick += ClickHandler;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)

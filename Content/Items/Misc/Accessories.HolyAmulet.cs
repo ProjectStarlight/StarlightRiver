@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -14,12 +15,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			On.Terraria.Player.HealEffect += HealEffect;
+			Terraria.On_Player.HealEffect += HealEffect;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.HealEffect -= HealEffect;
+			Terraria.On_Player.HealEffect -= HealEffect;
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<HolyAmuletHealingTracker>().item = Item;
 		}
 
-		private void HealEffect(On.Terraria.Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+		private void HealEffect(Terraria.On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))
 				self.GetModPlayer<HolyAmuletHealingTracker>().Healed(healAmount);
@@ -229,7 +230,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return TargetNPCIndex != -1 && !HitATarget && Main.npc[TargetNPCIndex] == target;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.timeLeft = 30;
 			HitATarget = true;

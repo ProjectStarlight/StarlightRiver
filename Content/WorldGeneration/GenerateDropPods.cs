@@ -14,7 +14,7 @@ namespace StarlightRiver.Core
 		{
 			progress.Message = "Crashing alien tech...";
 
-			foreach (int x in WorldGen.floatingIslandHouseX)
+			foreach (int x in GenVars.floatingIslandHouseX)
 			{
 				if (x == 0 || x == default)
 					continue;

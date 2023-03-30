@@ -16,25 +16,25 @@ namespace StarlightRiver.Core.Loaders
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawProjectiles += Main_DrawProjectiles;
-			On.Terraria.Main.Update += Main_Update;
+			Terraria.On_Main.DrawProjectiles += Main_DrawProjectiles;
+			Terraria.On_Main.Update += Main_Update;
 		}
 
 		public void Unload()
 		{
-			On.Terraria.Main.DrawProjectiles -= Main_DrawProjectiles;
-			On.Terraria.Main.Update -= Main_Update;
+			Terraria.On_Main.DrawProjectiles -= Main_DrawProjectiles;
+			Terraria.On_Main.Update -= Main_Update;
 
 			projTarget = null;
 		}
 
-		private void Main_DrawProjectiles(On.Terraria.Main.orig_DrawProjectiles orig, Main self)
+		private void Main_DrawProjectiles(Terraria.On_Main.orig_DrawProjectiles orig, Main self)
 		{
 			orig(self);
 			DrawTargets();
 		}
 
-		private static void Main_Update(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		private static void Main_Update(Terraria.On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
 			StarlightRiver.Instance?.CheckScreenSize();
 

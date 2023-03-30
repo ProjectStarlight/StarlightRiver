@@ -15,56 +15,41 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.ModifyHitNPCWithProjEvent += ModifyCritProj;
 		}
 
-		public override void Unload()
-		{
-			StarlightPlayer.ModifyHitNPCEvent -= ModifyCrit;
-			StarlightPlayer.ModifyHitNPCWithProjEvent -= ModifyCritProj;
-		}
-
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
 		}
 
-		private void ModifyCritProj(Player Player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ModifyCritProj(Player Player, Projectile proj, NPC target, ref NPC.HitModifiers hit)
 		{
 			if (Equipped(Main.player[proj.owner]))
 			{
-				float multiplier = 2 + CritMultiPlayer.GetMultiplier(proj);
+				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
 
-				if (crit)
-					damage += (int)(damage / multiplier * (1.5f - target.life / target.lifeMax / 2));
-
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > target.life)
+				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
 					Execute(target, proj.owner);
 			}
 		}
 
-		private void ModifyCrit(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void ModifyCrit(Player Player, Item Item, NPC target, ref NPC.HitModifiers hit)
 		{
 			if (Equipped(Player))
 			{
-				float multiplier = 2 + CritMultiPlayer.GetMultiplier(Item);
+				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
 
-				if (crit)
-					damage += (int)(damage / multiplier * (1.5f - target.life / target.lifeMax / 2));
-
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f && (damage * multiplier * 1.5f) > target.life)
+				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
 					Execute(target, Player.whoAmI);
 			}
 		}
 
 		private void Execute(NPC NPC, int owner)
 		{
-			int flesh = 1;
-
-			if (Helpers.Helper.IsFleshy(NPC))
-				flesh = 0;
+			int flesh = Helpers.Helper.IsFleshy(NPC) ? 0 : 1;
 
 			if (Main.myPlayer == owner)
 			{
 				Projectile.NewProjectile(Main.player[owner].GetSource_Accessory(Item), NPC.Center, Vector2.Zero, ModContent.ProjectileType<GuillotineVFX>(), 0, 0, Main.myPlayer, NPC.whoAmI, flesh);
-				NPC.StrikeNPC(9999, 0f, 1, false, true, false);// kill NPC
+				NPC.StrikeNPC(new NPC.HitInfo() { InstantKill = true });// kill NPC
 			}
 		}
 	}
@@ -97,9 +82,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 				CombatText.NewText(Projectile.Hitbox, new Color(255, 230, 100), "Ouch!", true);
 
-				NPC NPC = Main.npc[(int)HitNpcIndex];
-				NPC.StrikeNPCNoInteraction(9999, 1, 0, false, true);
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, NPC.whoAmI);
+				NPC npc = Main.npc[(int)HitNpcIndex];
+				npc.SimpleStrike(9999, 0);
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc.whoAmI);
 
 				if (WasFleshy == 0)
 				{

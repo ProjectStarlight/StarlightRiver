@@ -88,14 +88,6 @@ namespace StarlightRiver.Core
 			return 0;
 		}
 
-		public override bool Drop(int i, int j)
-		{
-			if (Main.tile[i, j].TileFrameX > 0)
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * maxWidth, 16 * maxHeight, itemType);
-
-			return false;
-		}
-
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			return false;

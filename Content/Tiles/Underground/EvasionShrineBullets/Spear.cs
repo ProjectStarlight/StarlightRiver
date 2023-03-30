@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 
 namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 {
@@ -70,7 +71,7 @@ namespace StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets
 			return false;
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			parent.lives--;
 

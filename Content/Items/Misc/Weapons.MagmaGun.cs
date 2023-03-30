@@ -466,7 +466,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			foreach (MagmaGlob glob in Globs) //TODO: Merge with canhitNPC similar code into method to reduce boilerplate
 			{
@@ -477,7 +477,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.position, glob.size))
 					{
-						damage *= 2;
+						modifiers.SourceDamage *= 2f;
 						break;
 					}
 				}

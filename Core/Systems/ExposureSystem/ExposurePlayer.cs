@@ -1,6 +1,4 @@
-﻿using Terraria.DataStructures;
-
-namespace StarlightRiver.Core.Systems.ExposureSystem
+﻿namespace StarlightRiver.Core.Systems.ExposureSystem
 {
 	public class ExposurePlayer : ModPlayer
 	{
@@ -13,10 +11,10 @@ namespace StarlightRiver.Core.Systems.ExposureSystem
 			exposureAdd = 0;
 		}
 
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
-			damage = (int)(damage * (1f + exposureMult)) + exposureAdd;
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
+			modifiers.FinalDamage *= exposureMult;
+			modifiers.FinalDamage += exposureAdd;
 		}
 	}
 }

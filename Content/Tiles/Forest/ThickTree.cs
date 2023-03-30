@@ -2,6 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Forest
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void SetStaticDefaults()
 		{
-			ModTranslation name = CreateMapEntryName();
+			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Large Tree");
 
 			Main.tileAxe[Type] = true;

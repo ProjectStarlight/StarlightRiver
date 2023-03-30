@@ -71,24 +71,27 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			}
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 		{
 			target.AddBuff(BuffType<Buffs.Squash>(), 450);
 		}
 
-		public override bool? CanHitNPC(NPC target)
+		public override bool CanHitNPC(NPC target)/* tModPorter Suggestion: Return true instead of null */
 		{
 			return true;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.type == NPCID.Bunny)
 			{
-				damage *= 99;
-				crit = true;
+				modifiers.FinalDamage *= 99f;
+				modifiers.SetCrit();
+
 				for (int k = 0; k < 1000; k++)
+				{
 					Dust.NewDustPerfect(target.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, 3);
+				}
 			}
 		}
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

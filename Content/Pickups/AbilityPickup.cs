@@ -32,11 +32,11 @@ namespace StarlightRiver.Content.Pickups
 
 		public virtual void SafeSetDefaults() { }
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			crit = false;
-			knockback = 0;
-			damage = 0;
+			modifiers.FinalDamage *= 0;
+			modifiers.Knockback *= 0;
+			modifiers.DisableCrit();
 		}
 
 		public override bool CheckActive()
@@ -134,7 +134,7 @@ namespace StarlightRiver.Content.Pickups
 			return false;
 		}
 
-		public sealed override bool? CanHitNPC(NPC target)
+		public sealed override bool CanHitNPC(NPC target)/* tModPorter Suggestion: Return true instead of null */
 		{
 			return false;
 		}

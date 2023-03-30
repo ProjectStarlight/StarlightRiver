@@ -11,14 +11,14 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			On.Terraria.Player.AddBuff += Player_AddBuff;
+			Terraria.On_Player.AddBuff += Player_AddBuff;
 			StarlightItem.GetHealLifeEvent += AlchemistLifeModify;
 			StarlightItem.GetHealManaEvent += AlchemistManaModify;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.AddBuff -= Player_AddBuff;
+			Terraria.On_Player.AddBuff -= Player_AddBuff;
 		}
 
 		public override void SetStaticDefaults()
@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nCursed : Potion sickness effects last 15 seconds longer");
 		}
 
-		public static void Player_AddBuff(On.Terraria.Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
+		public static void Player_AddBuff(Terraria.On_Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)
 		{
 			SmartAccessory instance = GetEquippedInstance(self, ModContent.ItemType<AlchemistShackles>());
 

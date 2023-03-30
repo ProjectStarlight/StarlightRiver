@@ -51,7 +51,7 @@ namespace StarlightRiver.Content.Tiles.MusicBox
 		{
 			base.SetDefaults();
 			Item.accessory = true;
-			Item.canBePlacedInVanityRegardlessOfConditions = true;
+			Item.hasVanityEffects = true;
 		}
 	}
 }

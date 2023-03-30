@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -16,22 +13,28 @@ namespace StarlightRiver.Content.Items.Food
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitNPCEvent += OnHit;
-			StarlightPlayer.ModifyHitNPCWithProjEvent += OnHitProj;
+			StarlightPlayer.OnHitNPCEvent += OnHit;
+			StarlightPlayer.OnHitNPCWithProjEvent += OnHitProj;
 		}
 
-		private void OnHitProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void OnHitProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
-			player.ManaEffect(amount);
-			player.statMana += amount;
+			if (Active(player))
+			{
+				int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+				player.ManaEffect(amount);
+				player.statMana += amount;
+			}
 		}
 
-		private void OnHit(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void OnHit(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
-			player.ManaEffect(amount);
-			player.statMana += amount;
+			if (Active(player))
+			{
+				int amount = (int)(1 * player.GetModPlayer<FoodBuffHandler>().Multiplier);
+				player.ManaEffect(amount);
+				player.statMana += amount;
+			}
 		}
 	}
 }

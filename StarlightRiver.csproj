@@ -22,9 +22,6 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\System.Windows.Forms\v4.0_4.0.0.0__b77a5c561934e089\System.Windows.Forms.dll</HintPath>
     </Reference>
-    <Reference Include="tModLoader">
-      <HintPath>..\..\..\..\..\..\HardDrive Program Files (x86)\Steam\steamapps\common\tModLoader\tModLoader.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\Healthbars\" />

@@ -16,13 +16,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void Load()
 		{
-			On.Terraria.Player.KeyDoubleTap += HauntItem;
+			Terraria.On_Player.KeyDoubleTap += HauntItem;
 			StarlightItem.CanUseItemEvent += ControlItemUse;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.KeyDoubleTap -= HauntItem;
+			Terraria.On_Player.KeyDoubleTap -= HauntItem;
 			StarlightItem.CanUseItemEvent -= ControlItemUse;
 		}
 
@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		}
 
-		private void HauntItem(On.Terraria.Player.orig_KeyDoubleTap orig, Player player, int keyDir)
+		private void HauntItem(Terraria.On_Player.orig_KeyDoubleTap orig, Player player, int keyDir)
 		{
 			if (keyDir == 0 && player.armor[0].type == ItemType<PoltergeistHead>())
 			{

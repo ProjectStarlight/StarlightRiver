@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void Load()
 		{
-			On.Terraria.Projectile.Colliding += SpecialWhipColission; //We need to use a custom hook here since vanilla oofs whip colission before tmods colliding hook can run.
+			Terraria.On_Projectile.Colliding += SpecialWhipColission; //We need to use a custom hook here since vanilla oofs whip colission before tmods colliding hook can run.
 		}
 
 		public override void SetDefaults()
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return variant;
 		}
 
-		private bool SpecialWhipColission(On.Terraria.Projectile.orig_Colliding orig, Projectile self, Rectangle myRect, Rectangle targetRect)
+		private bool SpecialWhipColission(Terraria.On_Projectile.orig_Colliding orig, Projectile self, Rectangle myRect, Rectangle targetRect)
 		{
 			if (self.type == ModContent.ProjectileType<AuroraThroneMountWhip>())
 			{

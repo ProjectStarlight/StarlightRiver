@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
@@ -77,7 +78,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 				Lighting.AddLight(Projectile.Center, Color.OrangeRed.ToVector3() * 0.4f);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			int distance = (int)(Owner.Center - Projectile.Center).Length();
 			float pushback = (float)Math.Sqrt(200 * EaseFunction.EaseCubicIn.Ease((200 - distance) / 200f));

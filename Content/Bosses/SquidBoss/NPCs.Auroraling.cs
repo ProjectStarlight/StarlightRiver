@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -58,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			target.noKnockback = true;
 
@@ -72,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.active = false;
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (NPC.life <= 0)
 			{

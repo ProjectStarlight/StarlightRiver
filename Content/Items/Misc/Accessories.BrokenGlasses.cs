@@ -19,12 +19,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCEvent += StarlightPlayer_OnHitNPCEvent;
 			StarlightPlayer.OnHitNPCWithProjEvent += StarlightPlayer_OnHitNPCWithProjEvent;
 
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
+			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
 		}
 
 		public override void Unload()
 		{
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs -= InsertCrit;
+			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs -= InsertCrit;
 		}
 
 		private static void InsertCrit(ILContext il)
@@ -159,13 +159,14 @@ namespace StarlightRiver.Content.Items.Misc
 			Player player = buff.lastInflicted;
 			return Main.rand.NextFloat() < player.GetTotalCritChance(DamageClass.Generic) * 0.01f;
 		}
-		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+
+		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Equipped(player))
 				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player });
 		}
 
-		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Equipped(player))
 				BuffInflictor.Inflict(target, 600, new BrokenGlassesBuff() { lastInflicted = player });

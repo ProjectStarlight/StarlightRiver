@@ -233,10 +233,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			return false;
 		}
 
-		public override void ModifyHitByItem(Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
 			if (Guarding || Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection || stacked)
-				knockback = 0f;
+				modifiers.Knockback *= 0f;
 
 			if (Math.Sign(NPC.Center.DirectionTo(player.Center).X) == NPC.spriteDirection)
 			{
@@ -244,12 +244,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				if (Guarding || stacked)
 				{
-					damage = 1;
+					modifiers.FinalDamage -= int.MaxValue;
 					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
-					damage = (int)(damage * 0.4f);
+					modifiers.FinalDamage *= 0.4f;
 				}
 			}
 			else
@@ -258,10 +258,10 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 		}
 
-		public override void ModifyHitByProjectile(Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (Guarding || Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection || stacked)
-				knockback = 0f;
+				modifiers.Knockback *= 0f;
 
 			if (Math.Sign(NPC.Center.DirectionTo(Target.Center).X) == NPC.spriteDirection)
 			{
@@ -269,12 +269,12 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 
 				if (Guarding || stacked)
 				{
-					damage = 1;
+					modifiers.FinalDamage -= int.MaxValue;
 					CombatText.NewText(NPC.Hitbox, Color.OrangeRed, "Blocked!");
 				}
 				else
 				{
-					damage = (int)(damage * 0.4f);
+					modifiers.FinalDamage *= 0.4f;
 				}
 			}
 			else

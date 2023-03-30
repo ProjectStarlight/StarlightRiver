@@ -530,7 +530,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 
 			AdjTiles = new int[] { TileID.ClosedDoor };
-			OpenDoorID = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
+			TileID.Sets.OpenDoorID[Type] = Mod.Find<ModTile>(name.Replace("Closed", "Open")).Type;
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -603,7 +603,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			TileID.Sets.HasOutlines[Type] = true;
 
 			AdjTiles = new int[] { TileID.OpenDoor };
-			CloseDoorID = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
+			TileID.Sets.CloseDoorID[Type] = Mod.Find<ModTile>(name.Replace("Open", "Closed")).Type;
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -657,7 +657,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.QuickSetFurniture(3, 2, dust, SoundID.Dig, false, color);
 
 			AdjTiles = new int[] { TileID.Dressers };
-			DresserDrop = Mod.Find<ModItem>(name).Type;
+			ItemDrop = Mod.Find<ModItem>(name).Type;
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -667,7 +667,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 32, DresserDrop);
+			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 32, ItemDrop);
 			Chest.DestroyChest(i, j);
 		}
 

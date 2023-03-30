@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tentacle Hook");
+			ProjectileID.Sets.SingleGrappleHook[Type] = true;
 		}
 
 		public override void SetDefaults()
@@ -89,11 +90,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * Projectile.velocity.Length();
 				}
 			}
-		}
-
-		public override bool? SingleGrappleHook(Player player)
-		{
-			return true;
 		}
 
 		public override float GrappleRange()

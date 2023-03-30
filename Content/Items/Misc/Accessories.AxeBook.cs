@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 
@@ -287,7 +288,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return null;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Helper.PlayPitched(Helper.IsFleshy(target) ? "Impacts/GoreLight" : "Impacts/Clink", 1, -Main.rand.NextFloat(0.25f), Owner.Center);
 			CameraSystem.shake += 4;
@@ -472,7 +473,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return Helper.CheckCircularCollision(Projectile.Center, (int)(length * Projectile.scale) / 2, targetHitbox);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			for (int k = 0; k < 10; k++)
 			{

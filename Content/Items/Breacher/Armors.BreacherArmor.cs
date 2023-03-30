@@ -497,11 +497,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		private Trail trail;
 		private Trail trail2;
 
-		private bool hit = false;
+		private bool hasHit = false;
 
 		private NPC Target => Main.npc[(int)Projectile.ai[0]];
 
-		private float Alpha => hit ? (Projectile.timeLeft / 50f) : 1;
+		private float Alpha => hasHit ? (Projectile.timeLeft / 50f) : 1;
 
 		public override string Texture => AssetDirectory.BreacherItem + Name;
 
@@ -526,18 +526,18 @@ namespace StarlightRiver.Content.Items.Breacher
 			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
 		}
 
-		private void findIfHit()
+		private void FindIfHit()
 		{
 			//for other Players to determine if this has hit
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0f, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
 		public override void AI()
 		{
-			if (!hit)
+			if (!hasHit)
 			{
 				Vector2 direction = Target.Center - Projectile.Center;
 				direction.Normalize();
@@ -551,7 +551,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 			else if (Main.myPlayer != Projectile.owner)
 			{
-				findIfHit();
+				FindIfHit();
 			}
 
 			if (Main.netMode != NetmodeID.Server)
@@ -580,14 +580,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Main.myPlayer == Projectile.owner)
 				CameraSystem.shake += 9;
 
 			Projectile.friendly = false;
 			Projectile.penetrate++;
-			hit = true;
+			hasHit = true;
 			Projectile.timeLeft = 50;
 			Projectile.extraUpdates = 3;
 			Projectile.velocity = Vector2.Zero;
@@ -804,13 +804,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public bool SetBonusActive => Player.armor[0].type == ItemType<BreacherHead>() && Player.armor[1].type == ItemType<BreacherChest>() && Player.armor[2].type == ItemType<BreacherLegs>();
 
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Projectile, consider using OnHitNPC instead */
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;
 		}
 
-		public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Item, consider using OnHitNPC instead */
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;
@@ -832,12 +832,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawNPCs += DrawBreacherOverlay;
+			Terraria.On_Main.DrawNPCs += DrawBreacherOverlay;
 		}
 
 		public void Unload() { }
 
-		private void DrawBreacherOverlay(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		private void DrawBreacherOverlay(Terraria.On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			orig(self, behindTiles);
 

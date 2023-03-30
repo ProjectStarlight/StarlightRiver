@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.useStyle = ItemUseStyleID.Swing;
 		}
 
-		public override void ExtractinatorUse(ref int resultType, ref int resultStack)
+		public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
 		{
 			int[] gems = new int[]
 			{

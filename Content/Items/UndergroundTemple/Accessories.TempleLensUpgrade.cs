@@ -27,19 +27,19 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitNPCEvent += ModifyHurtLens;
-			StarlightProjectile.ModifyHitNPCEvent += ModifyProjectileLens;
+			StarlightPlayer.OnHitNPCEvent += ModifyHurtLens;
+			StarlightProjectile.OnHitNPCEvent += ModifyProjectileLens;
 		}
 
-		private void ModifyHurtLens(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void ModifyHurtLens(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Equipped(Player) && crit)
+			if (Equipped(Player) && info.Crit)
 				ApplyExposed(target);
 		}
 
-		private void ModifyProjectileLens(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ModifyProjectileLens(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Equipped(Main.player[Projectile.owner]) && crit)
+			if (Equipped(Main.player[Projectile.owner]) && info.Crit)
 				ApplyExposed(target);
 		}
 
@@ -68,8 +68,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void Load()
 		{
-			StarlightNPC.ModifyHitByItemEvent += DelBuffItem;
-			StarlightNPC.ModifyHitByProjectileEvent += DelBuffProjectile;
+			StarlightNPC.OnHitByItemEvent += DelBuffItem;
+			StarlightNPC.OnHitByProjectileEvent += DelBuffProjectile;
 		}
 
 		public override void Update(NPC npc, ref int buffIndex)
@@ -77,18 +77,18 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			npc.GetGlobalNPC<ExposureNPC>().ExposureMultAll += 0.20f;
 		}
 
-		private void DelBuffProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void DelBuffProjectile(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
 		{
-			if (Inflicted(NPC) && !crit)
+			if (Inflicted(NPC) && !info.Crit)
 			{
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
 				CreateDust(NPC, true);
 			}
 		}
 
-		private void DelBuffItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		private void DelBuffItem(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
 		{
-			if (Inflicted(NPC) && !crit)
+			if (Inflicted(NPC) && !info.Crit)
 			{
 				NPC.DelBuff(NPC.FindBuffIndex(Type));
 				CreateDust(NPC, true);

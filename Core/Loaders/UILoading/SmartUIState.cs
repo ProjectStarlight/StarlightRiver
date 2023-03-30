@@ -228,9 +228,9 @@ namespace StarlightRiver.Core.Loaders.UILoading
 		/// <param name="evt">The mouse event that occured to fire this listener</param>
 		public virtual void SafeMouseUp(UIMouseEvent evt) { }
 
-		public sealed override void MouseUp(UIMouseEvent evt)
+		public sealed override void LeftMouseUp(UIMouseEvent evt)
 		{
-			base.MouseUp(evt);
+			base.LeftMouseUp(evt);
 			SafeMouseUp(evt);
 		}
 
@@ -240,9 +240,9 @@ namespace StarlightRiver.Core.Loaders.UILoading
 		/// <param name="evt">The mouse event that occured to fire this listener</param>
 		public virtual void SafeMouseDown(UIMouseEvent evt) { }
 
-		public sealed override void MouseDown(UIMouseEvent evt)
+		public sealed override void LeftMouseDown(UIMouseEvent evt)
 		{
-			base.MouseDown(evt);
+			base.LeftMouseDown(evt);
 			SafeMouseDown(evt);
 		}
 
@@ -252,9 +252,9 @@ namespace StarlightRiver.Core.Loaders.UILoading
 		/// <param name="evt">The mouse event that occured to fire this listener</param>
 		public virtual void SafeClick(UIMouseEvent evt) { }
 
-		public sealed override void Click(UIMouseEvent evt)
+		public sealed override void LeftClick(UIMouseEvent evt)
 		{
-			base.Click(evt);
+			base.LeftClick(evt);
 			SafeClick(evt);
 		}
 
@@ -264,9 +264,9 @@ namespace StarlightRiver.Core.Loaders.UILoading
 		/// <param name="evt">The mouse event that occured to fire this listener</param>
 		public virtual void SafeDoubleClick(UIMouseEvent evt) { }
 
-		public sealed override void DoubleClick(UIMouseEvent evt)
+		public sealed override void LeftDoubleClick(UIMouseEvent evt)
 		{
-			base.DoubleClick(evt);
+			base.LeftDoubleClick(evt);
 			SafeDoubleClick(evt);
 		}
 		#endregion

@@ -169,14 +169,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.Center = target.Center;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
-		{
-			target.AddBuff(ModContent.BuffType<Buffs.StaticShock>(), 180);
-			Projectile.timeLeft = 100;
-			canHit = false;
-		}
-
-		public override void OnHitPvp(Player target, int damage, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<Buffs.StaticShock>(), 180);
 			Projectile.timeLeft = 100;

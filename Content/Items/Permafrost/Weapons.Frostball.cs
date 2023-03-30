@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Tiles.Permafrost;
 using System;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Permafrost
@@ -107,7 +108,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (auroraPower < 7)
 				auroraPower++;

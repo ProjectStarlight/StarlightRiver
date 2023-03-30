@@ -6,7 +6,7 @@ namespace StarlightRiver.Core
 	{
 		public override void Load() //extremely hacky but it works, ty Mirsario
 		{
-			On.Terraria.Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
+			Terraria.On_Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				int result = orig(entitySource, position, velocity, type, scale);
 
@@ -15,7 +15,7 @@ namespace StarlightRiver.Core
 				return result;
 			};
 
-			On.Terraria.Gore.NewGoreDirect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
+			Terraria.On_Gore.NewGoreDirect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
 
@@ -24,7 +24,7 @@ namespace StarlightRiver.Core
 				return result;
 			};
 
-			On.Terraria.Gore.NewGorePerfect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
+			Terraria.On_Gore.NewGorePerfect_IEntitySource_Vector2_Vector2_int_float += (orig, entitySource, position, velocity, type, scale) =>
 			{
 				Gore result = orig(entitySource, position, velocity, type, scale);
 
