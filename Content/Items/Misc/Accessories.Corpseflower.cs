@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent += PostHitProjectiles;
 
 			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
-			//Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor; PORTTODO: Port IL
+			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
 		}
 
 		public override void SetStaticDefaults()
@@ -50,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
 
 			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
-			c.Emit(OpCodes.Ldloc, 15); //15 is the whoAmI of the npc. Second parameter for our delegate.
+			c.Emit(OpCodes.Ldloc, 18); //18 is the whoAmI of the npc. Second parameter for our delegate.
 			c.EmitDelegate(ApplyDoTColor);
 
 			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call
@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
 
 			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
-			c.Emit(OpCodes.Ldloc, 16); //16 is the whoAmI of the npc. Second parameter for our delegate.
+			c.Emit(OpCodes.Ldloc, 19); //19 is the whoAmI of the npc. Second parameter for our delegate.
 			c.EmitDelegate(ApplyDoTColor);
 
 			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call

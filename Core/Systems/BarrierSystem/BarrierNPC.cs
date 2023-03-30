@@ -67,7 +67,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 					barrier = 0;
 				}
 
-				info.KnockBack *= 0.5f;
+				info.Knockback *= 0.5f;
 			}
 		}
 

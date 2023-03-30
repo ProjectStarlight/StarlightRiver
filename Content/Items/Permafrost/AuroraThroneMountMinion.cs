@@ -55,7 +55,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			foreach (NPC npc in Main.npc.Where(n => n.active && n.CanBeChasedBy(this, false) && Vector2.Distance(n.Center, Projectile.Center) < 120))
 			{
-				npc.StrikeNPC(npc.SimpleStrike(Projectile.damage, Projectile.Center.X > npc.Center.X ? 1 : -1, false, Projectile.knockBack));
+				npc.SimpleStrikeNPC(Projectile.damage, Projectile.Center.X > npc.Center.X ? 1 : -1, false, Projectile.knockBack);
 				npc.AddBuff(BuffType<AuroraThroneMountMinionDebuff>(), 300);
 			}
 
