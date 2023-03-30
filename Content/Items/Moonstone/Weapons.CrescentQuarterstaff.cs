@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -63,7 +62,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<CrescentQuarterstaffProj>()))
 				return false; // prevents possibility of duplicate projectiles
-			
+
 			int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, Main.myPlayer, combo, charge);
 			return false;
 		}
@@ -270,7 +269,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			if (CurrentAttack == AttackType.Spin)
 				modifiers.SourceDamage *= 1.2f;
 
-			modifiers.SourceDamage *=  1 + Charge / 5;
+			modifiers.SourceDamage *= 1 + Charge / 5;
 
 			modifiers.HitDirectionOverride = target.position.X > Player.position.X ? 1 : -1;
 		}
@@ -335,7 +334,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			DrawPrimitives();
 
 			spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Lerp(lightColor, Color.White, Charge), Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
-			
+
 			return false;
 		}
 
@@ -615,7 +614,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 				Texture2D texFlare = Request<Texture2D>(AssetDirectory.MoonstoneItem + "CrescentShine").Value;
 				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 
-				float flareRotation =  MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
+				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
 				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
 
 				float intensity = 2.5f;
@@ -665,7 +664,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (Main.rand.NextBool(3))
 			{
-				Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)), 
+				Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)),
 				ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.2f, 0.4f)), 1,
 				new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
 			}
@@ -712,7 +711,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-			
+
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 			var glowColor = new Color(78, 87, 191);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), glowColor * Projectile.Opacity * 0.8f, 0, tex.Size() / 2, 2.5f * Projectile.scale * Projectile.Opacity, 0, 0);
