@@ -17,10 +17,15 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     float2 st3 = st - float2(uTime, uTime);
 
     color.g -= tex2D(samplerTex2, st2).x * 0.5;
-    color.g += tex2D(samplerTex2, st3).x;
 
     color.r -= tex2D(samplerTex2, st2).x;
     color.r += tex2D(samplerTex2, st3).x * 0.5;
+
+    color.b += tex2D(samplerTex2, st3).x * 0.5;
+
+    float dist = distance(st, float2(0.5, 0.5));
+    if (dist > 0.45) 
+		color *= (0.5 - distance(st, float2(0.5, 0.5))) / 0.05;
 
     return color * opacity;
 }
