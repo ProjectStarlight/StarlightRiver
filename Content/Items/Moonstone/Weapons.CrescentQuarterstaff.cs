@@ -611,28 +611,18 @@ namespace StarlightRiver.Content.Items.Moonstone
 		{
 			if (CurrentAttack == AttackType.Slam && slamCharged)
 			{
-				Texture2D texFlare = Request<Texture2D>(AssetDirectory.MoonstoneItem + "CrescentShine").Value;
-				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+				Texture2D texFlare = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
+				Texture2D texBloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
 
 				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 40f);
 				float flareScale = timer < 20 ? MathHelper.SmoothStep(0, 1, timer / 20f) : MathHelper.SmoothStep(1, 0, (timer - 20) / 20f);
 
-				float intensity = 2.5f;
 				var color = new Color(78, 87, 191);
 
 				Vector2 pos = StaffEnd + Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
 
-				spriteBatch.Draw(texGlow, pos - Main.screenPosition, null, color * 0.8f, 0, texGlow.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
-
-				Effect effect1 = Filters.Scene["LensFlare"].GetShader().Shader;
-				effect1.Parameters["color"].SetValue(color.ToVector4());
-				effect1.Parameters["intensity"].SetValue(intensity);
-
-				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * intensity, flareRotation, texFlare.Size() / 2, Projectile.scale * 1.5f * flareScale, default, default);
-
-				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
+				spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
+				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
 			}
 		}
 	}
