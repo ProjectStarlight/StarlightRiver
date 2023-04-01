@@ -13,7 +13,7 @@
 
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
-			modifiers.FinalDamage *= exposureMult;
+			modifiers.FinalDamage *= 1 + exposureMult;
 			modifiers.FinalDamage += exposureAdd;
 		}
 	}
