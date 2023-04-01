@@ -29,8 +29,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.damage = 11;
 			Item.crit = 10;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.useTime = 90;
-			Item.useAnimation = 90;
+			Item.useTime = 60;
+			Item.useAnimation = 60;
 			Item.noUseGraphic = true;
 			Item.noMelee = true;
 			Item.knockBack = 2f;
@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void OnSpawn(IEntitySource source)
 		{
 			maxCharge = (int)(Owner.HeldItem.useAnimation * (1f / Owner.GetTotalAttackSpeed(DamageClass.Melee)));
-			maxCharge = Utils.Clamp(maxCharge, 15, 90);
+			maxCharge = Utils.Clamp(maxCharge, 15, 60);
 		}
 
 		public override void AI()
