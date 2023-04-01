@@ -160,12 +160,12 @@ namespace StarlightRiver.Core
 		{
 			bool result = false;
 
-			if (ImmuneToEvent != null)
+			if (ImmuneToEvent is null)
+				return result;
+
+			foreach (ImmuneToDelegate del in ImmuneToEvent.GetInvocationList())
 			{
-				foreach (ImmuneToDelegate del in ImmuneToEvent?.GetInvocationList())
-				{
-					result &= del.Invoke(Player, damageSource, cooldownCounter, dodgeable);
-				}
+				result &= del.Invoke(Player, damageSource, cooldownCounter, dodgeable);
 			}
 
 			return result;
