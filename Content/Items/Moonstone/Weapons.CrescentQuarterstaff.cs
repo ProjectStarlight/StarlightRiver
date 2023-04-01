@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Crescent Quarterstaff");
-			Tooltip.SetDefault("Update this egshels (sfx needed)");
+			Tooltip.SetDefault("Striking enemies charges the staff with lunar energy\n" + "Condenses collected energy into a lunar orb when the final slam hits the ground\n" + "Update this egshels (sfx needed)");
 		}
 
 		public override void SetDefaults()
@@ -58,6 +58,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			if (Main.projectile.Any(n => n.active && n.owner == player.whoAmI && n.type == ProjectileType<CrescentQuarterstaffProj>()))
@@ -124,16 +125,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		private const int MAXCHARGE = 10;
 
-		private AttackType CurrentAttack
-		{
-			get => (AttackType)Projectile.ai[0];
-			set => Projectile.ai[0] = (float)value;
-		}
-
 		private List<Vector2> cache;
 		private Trail trail;
 
-		private ref float charge => ref Projectile.ai[1];
+		private int timer = 0;
 		private int freezeTimer = 0;
 		private bool active = true;
 		private bool curAttackDone = false;
@@ -142,9 +137,15 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private float initialRotation = 0;
 		private float zRotation = 0;
 
-		private int timer = 0;
 		private bool slamCharged = false;
 		private bool slammed = false;
+
+		private AttackType CurrentAttack
+		{
+			get => (AttackType)Projectile.ai[0];
+			set => Projectile.ai[0] = (float)value;
+		}
+		private ref float charge => ref Projectile.ai[1];
 
 		private Player Player => Main.player[Projectile.owner];
 		private float ArmRotation => Projectile.rotation - ((Player.direction > 0) ? MathHelper.Pi / 3 : MathHelper.Pi * 2 / 3);
@@ -182,16 +183,12 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Projectile.scale = Player.GetAdjustedItemScale(Player.HeldItem);
 		}
 
-		public override bool PreAI()
+		public override void AI()
 		{
 			Player.heldProj = Projectile.whoAmI;
 			Projectile.velocity = Vector2.Zero;
 			Lighting.AddLight(Projectile.Center, new Vector3(0.905f, 0.89f, 1) * Charge);
-			return true;
-		}
 
-		public override void AI()
-		{
 			if (!Player.active || Player.dead || Player.noItems || Player.CCed)
 			{
 				Projectile.Kill();
@@ -449,12 +446,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;
 			float swingAngle = Player.direction * MathHelper.PiOver2 * 1.05f;
 
+			// stops further movement after slam
 			if (!slammed)
 			{
 				progress = SlamEase((float)timer / 45 * MeleeSpeed);
 				Projectile.rotation = startAngle + swingAngle * progress;
 			}
 
+			// prevents clipping through blocks when swinging really fast
 			if (timer > (20 / MeleeSpeed) && timer <= (45 / MeleeSpeed) && freezeTimer < 0 && !slammed)
 			{
 				float prevPos = startAngle + swingAngle * SlamEase((timer - 1) / 45f * MeleeSpeed);
@@ -464,47 +463,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 				{
 					Projectile.rotation = MathHelper.Lerp(prevPos, nextPos, k / (10f * MeleeSpeed));
 
-					Vector2 tilePos = StaffEnd;
-					tilePos.Y += 15;
-					tilePos /= 16;
+					TentativelyExecuteSlam();
 
-					Tile tile = Main.tile[(int)tilePos.X, (int)tilePos.Y];
-					if (tile.HasTile && Main.tileSolid[tile.TileType] && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Player.direction)
-					{
-						slammed = true;
-
-						for (int i = 0; i < 13; i++)
-						{
-							Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
-							dustVel.X *= 10;
-
-							if (Math.Abs(dustVel.X) < 6)
-								dustVel.X += Math.Sign(dustVel.X) * 6;
-
-							Dust.NewDustPerfect(tilePos * 16 - new Vector2(Main.rand.Next(-20, 20), 17), ModContent.DustType<Dusts.CrescentSmoke>(), dustVel, 0, new Color(236, 214, 146) * 0.15f, Main.rand.NextFloat(0.5f, 1));
-						}
-
-						if (slamCharged)
-						{
-							DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>(AssetDirectory.MoonstoneItem + "MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
-
-							for (int i = 0; i < 64; i++)
-							{
-								Vector2 dustOffset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 64);
-								var dust = Dust.NewDustDirect(StaffEnd + dustOffset * 50, 0, 0, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0, 0, 1, new Color(120, 120, 255));
-								dust.velocity = -5 * dustOffset;
-							}
-
-							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
-							proj.scale = (1 + Charge) / 2 * Projectile.scale;
-
-							charge = 0;
-						}
-
-						CameraSystem.shake += 12;
-						Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+					if (slammed)
 						break;
-					}
 				}
 			}
 
@@ -515,6 +477,51 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			if (timer > 60 / MeleeSpeed)
 				curAttackDone = true;
+		}
+
+		// Function that executes slam if conditions are fulfilled
+		private void TentativelyExecuteSlam()
+		{
+			Vector2 tilePos = StaffEnd;
+			tilePos.Y += 15;
+			tilePos /= 16;
+
+			Tile tile = Main.tile[(int)tilePos.X, (int)tilePos.Y];
+			if (tile.HasTile && Main.tileSolid[tile.TileType] && Math.Sign(Projectile.rotation.ToRotationVector2().X) == Player.direction)
+			{
+				slammed = true;
+
+				for (int i = 0; i < 13; i++)
+				{
+					Vector2 dustVel = Vector2.UnitY.RotatedBy(Main.rand.NextFloat(-0.9f, 0.9f)) * Main.rand.NextFloat(-2, -0.5f);
+					dustVel.X *= 10;
+
+					if (Math.Abs(dustVel.X) < 6)
+						dustVel.X += Math.Sign(dustVel.X) * 6;
+
+					Dust.NewDustPerfect(tilePos * 16 - new Vector2(Main.rand.Next(-20, 20), 17), ModContent.DustType<Dusts.CrescentSmoke>(), dustVel, 0, new Color(236, 214, 146) * 0.15f, Main.rand.NextFloat(0.5f, 1));
+				}
+
+				if (slamCharged)
+				{
+					DustHelper.DrawDustImage(StaffEnd + Vector2.One * 4, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0.05f, ModContent.Request<Texture2D>(AssetDirectory.MoonstoneItem + "MoonstoneHamaxe_Crescent").Value, 0.7f, 0, new Color(120, 120, 255));
+
+					for (int i = 0; i < 64; i++)
+					{
+						Vector2 dustOffset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 64);
+						var dust = Dust.NewDustDirect(StaffEnd + dustOffset * 50, 0, 0, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0, 0, 1, new Color(120, 120, 255));
+						dust.velocity = -5 * dustOffset;
+					}
+
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), StaffEnd - Vector2.UnitY * 32 * Projectile.scale, new Vector2(Player.direction * 10, 0) * MeleeSpeed, ProjectileType<CrescentOrb>(), (int)MathHelper.Lerp(Projectile.damage * 0.25f, Projectile.damage, Charge), 0, Projectile.owner, 0, 0);
+					proj.scale = (1 + Charge) / 2 * Projectile.scale;
+
+					charge = 0;
+				}
+
+				CameraSystem.shake += 16;
+				Projectile.NewProjectile(Projectile.GetSource_FromThis(), StaffEnd, Vector2.Zero, ProjectileType<GravediggerSlam>(), 0, 0, Player.whoAmI);
+			}
 		}
 
 		private void NextAttack()
@@ -624,95 +631,6 @@ namespace StarlightRiver.Content.Items.Moonstone
 				spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, color, 0, texBloom.Size() / 2, Projectile.scale * 3 * flareScale, default, default);
 				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, color * 2, flareRotation, texFlare.Size() / 2, Projectile.scale * 0.75f * flareScale, default, default);
 			}
-		}
-	}
-
-	public class CrescentOrb : ModProjectile, IDrawAdditive
-	{
-		public override string Texture => AssetDirectory.MoonstoneItem + Name;
-
-		public override void SetStaticDefaults()
-		{
-			ProjectileID.Sets.TrailCacheLength[Projectile.type] = 2;
-			ProjectileID.Sets.TrailingMode[Projectile.type] = 0;
-			DisplayName.SetDefault("Lunar Orb");
-		}
-
-		public override void SetDefaults()
-		{
-			Projectile.penetrate = -1;
-			Projectile.friendly = true;
-			Projectile.width = Projectile.height = 64;
-			Projectile.timeLeft = 180;
-			Projectile.ignoreWater = true;
-		}
-		public override void AI()
-		{
-			Projectile.width = Projectile.height = (int)(64 * Projectile.scale);
-			Projectile.rotation += Projectile.velocity.X * 0.01f;
-			Projectile.velocity.Y += 1f;
-
-			if (Main.rand.NextBool(3))
-			{
-				Dust.NewDustPerfect(Projectile.TopLeft + new Vector2(Main.rand.NextFloat(Projectile.width), Main.rand.NextFloat(Projectile.height)),
-				ModContent.DustType<Dusts.MoonstoneShimmer>(), new Vector2(Main.rand.NextFloat(-0.3f, 0.3f), Main.rand.NextFloat(-0.2f, 0.4f)), 1,
-				new Color(Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.25f, 0.30f), Main.rand.NextFloat(0.35f, 0.45f), 0f), Main.rand.NextFloat(0.2f, 0.4f));
-			}
-
-			Lighting.AddLight(Projectile.Center, new Vector3(0.905f, 0.89f, 1) * Projectile.scale * Projectile.Opacity);
-		}
-		public override bool OnTileCollide(Vector2 oldVelocity)
-		{
-			if (Projectile.velocity.X != oldVelocity.X && Projectile.timeLeft > 10)
-				Projectile.timeLeft = 10;
-
-			Projectile.velocity.X = oldVelocity.X;
-
-			return false;
-		}
-
-		public override bool PreDraw(ref Color lightColor)
-		{
-			return false;
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			Projectile.Opacity = Projectile.timeLeft > 10 ? 1 : Projectile.timeLeft / 10f;
-
-			Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-
-			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 40f);
-			var color = new Color(72 + sin, 30 + sin / 2, 127);
-
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale / 2, default, default);
-			spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition, null, color * Projectile.scale * 1.2f * Projectile.Opacity, 0, texGlow.Size() / 2, Projectile.scale * 0.8f, default, default);
-
-			Effect effect1 = Filters.Scene["CrescentOrb"].GetShader().Shader;
-			effect1.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Items/Moonstone/CrescentQuarterstaffMap").Value);
-			effect1.Parameters["sampleTexture2"].SetValue(Request<Texture2D>("StarlightRiver/Assets/Bosses/VitricBoss/LaserBallDistort").Value);
-			effect1.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.01f);
-			effect1.Parameters["opacity"].SetValue(Projectile.Opacity);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
-
-			spriteBatch.Draw(TextureAssets.Projectile[Projectile.type].Value, Projectile.Center - Main.screenPosition, null, Color.White * Projectile.scale, Projectile.rotation, Vector2.One * 32, Projectile.scale, 0, 0);
-
-			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
-
-			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
-			var glowColor = new Color(78, 87, 191);
-			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), glowColor * Projectile.Opacity * 0.8f, 0, tex.Size() / 2, 2.5f * Projectile.scale * Projectile.Opacity, 0, 0);
-		}
-
-		public override bool? CanDamage()
-		{
-			if (Projectile.timeLeft < 10)
-				return false;
-
-			return base.CanDamage();
 		}
 	}
 }
