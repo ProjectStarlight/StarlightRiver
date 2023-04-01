@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.Lavas
 			if (Main.dedServ)
 				return;
 
-			//Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids += DrawSpecialLava; PORTTODO: Redo IL
+			Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids += DrawSpecialLava;
 			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalPrepareDraw += SwapLavaDrawEffects;
 			//IL.Terraria.Main.DrawTiles += DrawSpecialLavaBlock;
 		}
@@ -32,7 +32,7 @@ namespace StarlightRiver.Content.Lavas
 
 		public void Unload()
 		{
-			//Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids -= DrawSpecialLava; PORTTODO: Redo IL
+			Terraria.GameContent.Liquid.IL_LiquidRenderer.DrawNormalLiquids -= DrawSpecialLava;
 			Terraria.GameContent.Liquid.IL_LiquidRenderer.InternalPrepareDraw -= SwapLavaDrawEffects;
 			//IL.Terraria.Main.DrawTiles -= DrawSpecialLavaBlock;
 
@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Lavas
 		{
 			var c = new ILCursor(il);
 			c.TryGotoNext(n => n.MatchLdloc(8), n => n.MatchLdcI4(2));
-			c.Index++;
+			c.Index += 2;
 			c.EmitDelegate<Func<int, int>>(LavaBody);
 			c.Emit(OpCodes.Stloc, 8);
 			c.Emit(OpCodes.Ldloc, 8);

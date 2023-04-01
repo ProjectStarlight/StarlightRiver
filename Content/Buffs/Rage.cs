@@ -10,7 +10,7 @@
 		{
 			StarlightNPC.ModifyHitPlayerEvent += BuffDamage;
 			StarlightNPC.ResetEffectsEvent += ResetRageBuff;
-			//Terraria.On_Player.hurt += IncreaseKBs; PORTTODO: Port this to something
+			StarlightPlayer.OnHitByNPCEvent += Knockback;
 		}
 
 		private void BuffDamage(NPC NPC, Player target, ref Player.HurtModifiers modifiers)
@@ -19,20 +19,11 @@
 				modifiers.SourceDamage *= 1.5f; //50% more damage
 		}
 
-		/*private double IncreaseKBs(On_Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter, bool dodgeable)
+		private void Knockback(Player player, NPC npc, Player.HurtInfo hurtInfo)
 		{
-			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter, dodgeable);
-
-			if (damageSource.SourceNPCIndex != -1)
-			{
-				NPC npc = Main.npc[damageSource.SourceNPCIndex];
-
-				if (npc.HasBuff<Rage>() && !self.noKnockback)
-					self.velocity += Vector2.Normalize(self.Center - npc.Center) * 10;
-			}
-
-			return value;
-		}*/
+			if (npc.HasBuff<Rage>() && !player.noKnockback)
+				player.velocity += Vector2.Normalize(player.Center - npc.Center) * 10;
+		}
 
 		private void ResetRageBuff(NPC NPC)
 		{
