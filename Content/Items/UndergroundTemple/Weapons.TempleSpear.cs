@@ -137,7 +137,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				}
 			}
 
-
 			if (!stabbing)
 			{
 				Projectile.velocity = Owner.DirectionTo(OwnerMouse.Value);
@@ -355,7 +354,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 1f, 0, 0);
 
-
 			return false;
 		}
 
@@ -364,25 +362,20 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			cache = new List<Vector2>();
 			for (int i = 0; i < 20; i++)
 			{
-				cache.Add(Vector2.Lerp((Projectile.Center + Projectile.velocity), Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2), i / 20f));
+				cache.Add(Vector2.Lerp(Projectile.Center + Projectile.velocity, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2), i / 20f));
 			}
+
 			cache.Add(Projectile.Center + Projectile.velocity + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2));
 		}
 
 		private void ManageTrail()
 		{
-			trail = trail ?? new Trail(Main.instance.GraphicsDevice, 21, new TriangularTip(4), factor => 6f, factor =>
-			{
-				return new Color(255, 255, 100) * TrailFade();
-			});
+			trail ??= new Trail(Main.instance.GraphicsDevice, 21, new TriangularTip(4), factor => 6f, factor => new Color(255, 255, 100) * TrailFade());
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + Projectile.velocity + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
 
-			trail2 = trail2 ?? new Trail(Main.instance.GraphicsDevice, 21, new TriangularTip(4), factor => 3.5f, factor =>
-			{
-				return new Color(255, 255, 255) * TrailFade();
-			});
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 21, new TriangularTip(4), factor => 3.5f, factor => new Color(255, 255, 255) * TrailFade());
 
 			trail2.Positions = cache.ToArray();
 			trail2.NextPosition = Projectile.Center + Projectile.velocity + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
@@ -418,7 +411,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		private float TrailFade()
 		{
-			return (parent.timeLeft / 35f) * 0.5f;
+			return parent.timeLeft / 35f * 0.5f;
 		}
 	}
 
