@@ -152,7 +152,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "You have been cursed by the corpeflower"; //idk man
+		public override string Tooltip => "You have been cursed by the corpseflower"; //idk man
 
 		public override void Load()
 		{
