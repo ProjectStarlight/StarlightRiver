@@ -208,14 +208,14 @@ namespace StarlightRiver.Content.GUI
 			Append(inSlot);
 			Append(options);
 
-			craftButton.OnLeftClick += Craft;
+			craftButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) => Craft();
 			Append(craftButton);
 
 			exitButton.OnLeftClick += (a, b) => visible = false;
 			Append(exitButton);
 		}
 
-		private void Craft(UIMouseEvent evt, UIElement listeningElement)
+		private void Craft()
 		{
 			if (selected is null)
 				return;

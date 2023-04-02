@@ -153,10 +153,10 @@ namespace StarlightRiver.Content.Items.Moonstone
 		private Vector2 StaffEnd => Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ArmRotation) + Vector2.UnitX.RotatedBy(Projectile.rotation) * length * Projectile.scale;
 		private float MeleeSpeed => Player.GetTotalAttackSpeed(DamageClass.Melee);
 
-		private Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
-		private Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
-		private Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
-		private Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
+		private readonly static Func<float, float> StabEase = Helper.CubicBezier(0.09f, 0.71f, 0.08f, 1.62f);
+		private readonly static Func<float, float> SpinEase = Helper.CubicBezier(0.6f, -0.3f, .3f, 1f);
+		private readonly static Func<float, float> UppercutEase = Helper.CubicBezier(0.6f, -0.3f, 0.5f, 0.8f);
+		private readonly static Func<float, float> SlamEase = Helper.CubicBezier(0.5f, -1.6f, 0.9f, -1.6f);
 
 		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
