@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			CookButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) => CookFood();
+			CookButton.OnLeftClick += CookFood;
 			CookButton.SetVisibility(1, 1);
-			ExitButton.OnLeftClick += (UIMouseEvent evt, UIElement listeningElement) => Exit();
+			ExitButton.OnLeftClick += Exit;
 			ExitButton.SetVisibility(1, 1);
 
 			OnScrollWheel += ScrollStats;
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.GUI
 			Append(element);
 		}
 
-		private void CookFood()
+		private void CookFood(UIMouseEvent evt, UIElement listeningElement)
 		{
 			if (!MainSlot.Item.IsAir) //make sure were cooking SOMETHING!
 			{
@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		private void Exit()
+		private void Exit(UIMouseEvent evt, UIElement listeningElement)
 		{
 			visible = false;
 			Main.playerInventory = false;
