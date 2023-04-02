@@ -190,7 +190,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Main.rand.NextBool(3))
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<CoachGunDustGlow>(), 0, 0, 0, default, 2f).velocity *= 0.1f;
-			
+
 			if (Main.rand.NextBool(10))
 				Dust.NewDustPerfect(npc.position, ModContent.DustType<Dusts.MagmaSmoke>(), (Vector2.UnitY * Main.rand.NextFloat(-3f, -2f)).RotatedByRandom(MathHelper.ToRadians(75f)), 100, Color.Black, Main.rand.NextFloat(0.7f, 0.9f));
 		}
