@@ -1,5 +1,4 @@
 ﻿using System;
-using Terraria;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
@@ -39,6 +38,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
+				NPC.active = false;
+
 			if (State == 1 && Timer > 0)
 				Timer -= 4;
 
