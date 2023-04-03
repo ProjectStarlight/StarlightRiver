@@ -49,6 +49,11 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 			}
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	internal class JarDummy : Dummy, IDrawAdditive

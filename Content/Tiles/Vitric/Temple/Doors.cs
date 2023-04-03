@@ -86,6 +86,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			this.QuickSetFurniture(2, 13, DustType<Dusts.GlassGravity>(), SoundID.Tink, false, new Color(100, 200, 255));
 			Main.tileSolid[Type] = true;
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	class DashableDoorDummy : Dummy
