@@ -11,7 +11,7 @@ namespace StarlightRiver.Core.Systems.CombatMountSystem
 
 		public override void Load()
 		{
-			Terraria.On_Player.ItemCheck_Inner += TriggerMountAttacks;
+			On_Player.ItemCheck_Inner += TriggerMountAttacks;
 		}
 
 		private void TriggerMountAttacks(On_Player.orig_ItemCheck_Inner orig, Player self)

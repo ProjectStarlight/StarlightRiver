@@ -8,12 +8,12 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public override void Load()
 		{
-			Terraria.On_Player.dropItemCheck += DontDropCoolStuff;
+			On_Player.dropItemCheck += DontDropCoolStuff;
 			Terraria.UI.On_ItemSlot.LeftClick_ItemArray_int_int += LockMouseToSpecialItem;
 			Terraria.UI.On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
 
-			Terraria.IL_Player.ScrollHotbar += AllowBigScrolling;
-			//Terraria.IL_Player.Update += AllowBigHotkeying; PORTTODO: Fix IL, never mind this is unused for now. fix later if we actually use it!
+			IL_Player.ScrollHotbar += AllowBigScrolling;
+			//IL_Player.Update += AllowBigHotkeying; PORTTODO: Fix IL, never mind this is unused for now. fix later if we actually use it!
 		}
 
 		private void DrawSpecial(Terraria.UI.On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
 				orig(inv, context, slot);
 		}
 
-		private void DontDropCoolStuff(Terraria.On_Player.orig_dropItemCheck orig, Terraria.Player self)
+		private void DontDropCoolStuff(On_Player.orig_dropItemCheck orig, Terraria.Player self)
 		{
 			if (!(Main.mouseItem.ModItem is Core.InworldItem))
 				orig(self);

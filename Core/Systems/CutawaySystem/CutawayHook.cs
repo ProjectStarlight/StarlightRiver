@@ -20,9 +20,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			if (Main.dedServ)
 				return;
 
-			Terraria.On_Main.DrawInfernoRings += DrawNegative;
-			Terraria.On_Main.DrawDust += DrawPositive;
-			Terraria.On_WorldGen.SaveAndQuit += ClearCutaways;
+			On_Main.DrawInfernoRings += DrawNegative;
+			On_Main.DrawDust += DrawPositive;
+			On_WorldGen.SaveAndQuit += ClearCutaways;
 		}
 
 		public override void Unload()
@@ -31,13 +31,13 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			cutawayTarget = null;
 		}
 
-		private void ClearCutaways(Terraria.On_WorldGen.orig_SaveAndQuit orig, Action callback)
+		private void ClearCutaways(On_WorldGen.orig_SaveAndQuit orig, Action callback)
 		{
 			cutaways.Clear();
 			orig(callback);
 		}
 
-		private void DrawPositive(Terraria.On_Main.orig_DrawDust orig, Main self)
+		private void DrawPositive(On_Main.orig_DrawDust orig, Main self)
 		{
 			for (int k = 0; k < cutaways.Count; k++)
 				cutaways[k].Draw();
@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 			orig(self);
 		}
 
-		private void DrawNegative(Terraria.On_Main.orig_DrawInfernoRings orig, Main self)
+		private void DrawNegative(On_Main.orig_DrawInfernoRings orig, Main self)
 		{
 			orig(self);
 

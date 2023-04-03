@@ -4,7 +4,6 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -27,7 +26,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEvent += PlayerFrame;
-			Terraria.On_Main.DrawInterface_30_Hotbar += OverrideHotbar;
+			On_Main.DrawInterface_30_Hotbar += OverrideHotbar;
 			activationTimer = 0;
 			sparkles = new ParticleSystem(AssetDirectory.Dust + "Aurora", updateSparkles);
 		}
@@ -35,7 +34,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void Unload()
 		{
 			StarlightPlayer.PostUpdateEvent -= PlayerFrame;
-			Terraria.On_Main.DrawInterface_30_Hotbar -= OverrideHotbar;
+			On_Main.DrawInterface_30_Hotbar -= OverrideHotbar;
 			sparkles = null;
 		}
 
@@ -61,7 +60,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.crit = 10;
 		}
 
-		private void OverrideHotbar(Terraria.On_Main.orig_DrawInterface_30_Hotbar orig, Main self)
+		private void OverrideHotbar(On_Main.orig_DrawInterface_30_Hotbar orig, Main self)
 		{
 			orig(self);
 

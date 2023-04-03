@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			Terraria.On_Player.Update += Speedup;
+			On_Player.Update += Speedup;
 			StarlightPlayer.OnHitByNPCEvent += DamageEffect;
 			StarlightPlayer.OnHitByProjectileEvent += ProjDamageEffect;
 			StarlightPlayer.PreDrawEvent += DrawClock;
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private void Speedup(Terraria.On_Player.orig_Update orig, Player self, int i)
+		private void Speedup(On_Player.orig_Update orig, Player self, int i)
 		{
 			if (Equipped(self) && Main.GameUpdateCount % 2 == 0) //every other frame, 
 			{

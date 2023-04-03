@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (Main.dedServ)
 				return;
 
-			Terraria.On_Main.DrawNPCs += DrawLens;
+			On_Main.DrawNPCs += DrawLens;
 		}
 
 		public void Unload()
@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (Main.dedServ)
 				return;
 
-			Terraria.On_Main.DrawNPCs -= DrawLens;
+			On_Main.DrawNPCs -= DrawLens;
 		}
 
 		private static void DrawNPCTarget(SpriteBatch spriteBatch)
@@ -82,7 +82,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			}
 		}
 
-		private void DrawLens(Terraria.On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		private void DrawLens(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			orig(self, behindTiles);
 			if (!behindTiles && Active)

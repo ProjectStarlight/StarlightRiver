@@ -13,11 +13,11 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		{
 
 			Terraria.GameContent.UI.IL_NewMultiplayerClosePlayersOverlay.PlayerOffScreenCache.DrawLifeBar += DrawAllyRadarBarrierIL;
-			Terraria.On_Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
-			Terraria.On_Main.DrawInterface_39_MouseOver += drawShieldHoverText;
+			On_Main.DrawInterface_14_EntityHealthBars += DrawShieldForPlayers;
+			On_Main.DrawInterface_39_MouseOver += drawShieldHoverText;
 		}
 
-		private void DrawShieldForPlayers(Terraria.On_Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
+		private void DrawShieldForPlayers(On_Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
 		{
 			orig(self);
 
@@ -50,7 +50,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		/// </summary>
 		/// <param name="orig"></param>
 		/// <param name="self"></param>
-		private void drawShieldHoverText(Terraria.On_Main.orig_DrawInterface_39_MouseOver orig, Main self)
+		private void drawShieldHoverText(On_Main.orig_DrawInterface_39_MouseOver orig, Main self)
 		{
 			orig(self);
 

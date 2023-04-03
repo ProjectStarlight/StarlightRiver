@@ -7,11 +7,11 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public override void Load()
 		{
-			Terraria.On_Player.Update_NPCCollision += ForceColliding;
+			On_Player.Update_NPCCollision += ForceColliding;
 		}
 
 		// for the most part vanilla
-		private void ForceColliding(Terraria.On_Player.orig_Update_NPCCollision orig, Player self)
+		private void ForceColliding(On_Player.orig_Update_NPCCollision orig, Player self)
 		{
 			var rectangle = new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height);
 

@@ -19,12 +19,12 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCEvent += StarlightPlayer_OnHitNPCEvent;
 			StarlightPlayer.OnHitNPCWithProjEvent += StarlightPlayer_OnHitNPCWithProjEvent;
 
-			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
+			IL_NPC.UpdateNPC_BuffApplyDOTs += InsertCrit;
 		}
 
 		public override void Unload()
 		{
-			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs -= InsertCrit;
+			IL_NPC.UpdateNPC_BuffApplyDOTs -= InsertCrit;
 		}
 
 		private static void InsertCrit(ILContext il)

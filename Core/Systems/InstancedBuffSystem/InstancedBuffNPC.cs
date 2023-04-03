@@ -14,7 +14,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 
 		public override void Load()
 		{
-			Terraria.On_NPC.UpdateNPC_BuffSetFlags += UpdateInstancedBuffs;
+			On_NPC.UpdateNPC_BuffSetFlags += UpdateInstancedBuffs;
 		}
 
 		/// <summary>
@@ -45,7 +45,7 @@ namespace StarlightRiver.Core.Systems.InstancedBuffSystem
 		/// <param name="orig"></param>
 		/// <param name="self"></param>
 		/// <param name="lowerBuffTime"></param>
-		private void UpdateInstancedBuffs(Terraria.On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
+		private void UpdateInstancedBuffs(On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
 		{
 			orig(self, lowerBuffTime);
 

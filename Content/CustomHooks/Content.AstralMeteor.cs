@@ -12,10 +12,10 @@ namespace StarlightRiver.Content.CustomHooks
 		//Swaps the vanilla meteor events out, could create conflicts if other mods attempt the same but shouldnt be anything fatal
 		public override void Load()
 		{
-			Terraria.On_WorldGen.meteor += AluminumMeteor;
+			On_WorldGen.meteor += AluminumMeteor;
 		}
 
-		private bool AluminumMeteor(Terraria.On_WorldGen.orig_meteor orig, int i, int j, bool ignorePlayers)
+		private bool AluminumMeteor(On_WorldGen.orig_meteor orig, int i, int j, bool ignorePlayers)
 		{
 			CameraSystem.shake += 80;
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode);

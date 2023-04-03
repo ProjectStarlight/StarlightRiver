@@ -16,12 +16,12 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void Load()
 		{
-			Terraria.On_Main.DrawPendingMouseText += SpoofMouseItem;
+			On_Main.DrawPendingMouseText += SpoofMouseItem;
 		}
 
 		public override void Unload()
 		{
-			Terraria.On_Main.DrawPendingMouseText -= SpoofMouseItem;
+			On_Main.DrawPendingMouseText -= SpoofMouseItem;
 		}
 
 		public override void SetStaticDefaults()
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 				Player.GetModPlayer<BarrierPlayer>().maxBarrier += 100;
 		}
 
-		private void SpoofMouseItem(Terraria.On_Main.orig_DrawPendingMouseText orig)
+		private void SpoofMouseItem(On_Main.orig_DrawPendingMouseText orig)
 		{
 			Player Player = Main.LocalPlayer;
 

@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override void Load()
 		{
-			Terraria.On_Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
+			On_Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
 		}
 
 		public override void SetStaticDefaults()

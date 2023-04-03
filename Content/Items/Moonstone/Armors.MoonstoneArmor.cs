@@ -23,8 +23,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void Load()
 		{
-			Terraria.On_Player.KeyDoubleTap += ActivateSpear;
-			Terraria.On_Main.DrawPendingMouseText += SpoofMouseItem;
+			On_Player.KeyDoubleTap += ActivateSpear;
+			On_Main.DrawPendingMouseText += SpoofMouseItem;
 			StarlightPlayer.PreDrawEvent += DrawMoonCharge;
 			StarlightPlayer.OnHitNPCEvent += ChargeFromMelee;
 			StarlightPlayer.OnHitNPCWithProjEvent += ChargeFromProjectile;
@@ -32,8 +32,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void Unload()
 		{
-			Terraria.On_Player.KeyDoubleTap -= ActivateSpear;
-			Terraria.On_Main.DrawPendingMouseText -= SpoofMouseItem;
+			On_Player.KeyDoubleTap -= ActivateSpear;
+			On_Main.DrawPendingMouseText -= SpoofMouseItem;
 			StarlightPlayer.PreDrawEvent -= DrawMoonCharge;
 			StarlightPlayer.OnHitNPCEvent -= ChargeFromMelee;
 			StarlightPlayer.OnHitNPCWithProjEvent -= ChargeFromProjectile;
@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 		}
 
-		private void ActivateSpear(Terraria.On_Player.orig_KeyDoubleTap orig, Player player, int keyDir)
+		private void ActivateSpear(On_Player.orig_KeyDoubleTap orig, Player player, int keyDir)
 		{
 			if (keyDir == 0 && IsArmorSet(player))
 			{
@@ -158,7 +158,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			orig(player, keyDir);
 		}
 
-		private void SpoofMouseItem(Terraria.On_Main.orig_DrawPendingMouseText orig)
+		private void SpoofMouseItem(On_Main.orig_DrawPendingMouseText orig)
 		{
 			Player player = Main.LocalPlayer;
 

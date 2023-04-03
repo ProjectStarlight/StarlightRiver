@@ -41,7 +41,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 
 		public override void Load()
 		{
-			Terraria.On_Main.DrawInfernoRings += DrawAuroraWater;
+			On_Main.DrawInfernoRings += DrawAuroraWater;
 		}
 
 		public static void DrawToMetaballTarget()
@@ -135,7 +135,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 			sb.Begin();
 		}
 
-		private void DrawAuroraWater(Terraria.On_Main.orig_DrawInfernoRings orig, Main self)
+		private void DrawAuroraWater(On_Main.orig_DrawInfernoRings orig, Main self)
 		{
 			orig(self);
 			AuroraWaterTileMetaballs.DrawSpecial();

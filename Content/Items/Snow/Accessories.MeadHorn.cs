@@ -11,15 +11,15 @@ namespace StarlightRiver.Content.Items.Snow
 
 		public override void Load()
 		{
-			Terraria.On_Player.AddBuff += MeadhornBuff;
+			On_Player.AddBuff += MeadhornBuff;
 		}
 
 		public override void Unload()
 		{
-			Terraria.On_Player.AddBuff -= MeadhornBuff;
+			On_Player.AddBuff -= MeadhornBuff;
 		}
 
-		private void MeadhornBuff(Terraria.On_Player.orig_AddBuff orig, Player self, int type, int timeToAdd, bool quiet, bool foodHack)
+		private void MeadhornBuff(On_Player.orig_AddBuff orig, Player self, int type, int timeToAdd, bool quiet, bool foodHack)
 		{
 			if (!Equipped(self) || Main.debuff[type])
 			{

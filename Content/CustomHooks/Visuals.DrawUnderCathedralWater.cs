@@ -15,12 +15,12 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			Terraria.IL_Main.DoDraw_WallsTilesNPCs += DrawWater;
+			IL_Main.DoDraw_WallsTilesNPCs += DrawWater;
 		}
 
 		public override void Unload()
 		{
-			Terraria.IL_Main.DoDraw_WallsTilesNPCs -= DrawWater;
+			IL_Main.DoDraw_WallsTilesNPCs -= DrawWater;
 		}
 
 		private void DrawWater(ILContext il)

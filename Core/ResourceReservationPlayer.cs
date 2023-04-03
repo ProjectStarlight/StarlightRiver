@@ -16,7 +16,7 @@ namespace StarlightRiver.Core
 
 		public override void Load()
 		{
-			Terraria.On_Main.GUIBarsDraw += DrawResourceOverlays;
+			On_Main.GUIBarsDraw += DrawResourceOverlays;
 		}
 
 		public override void PostUpdate()
@@ -72,7 +72,7 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private void DrawResourceOverlays(Terraria.On_Main.orig_GUIBarsDraw orig, Main self)
+		private void DrawResourceOverlays(On_Main.orig_GUIBarsDraw orig, Main self)
 		{
 			orig(self);
 

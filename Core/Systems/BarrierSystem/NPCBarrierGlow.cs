@@ -24,12 +24,12 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			NPCTarget ??= new(n => DrawAllNPCS(n, false), () => anyEnemiesWithBarrier, 1);
 			NPCTargetBehindTiles ??= new(n => DrawAllNPCS(n, true), () => anyEnemiesWithBarrier, 1);
 
-			Terraria.On_Main.DrawNPCs += DrawBarrierOverlay;
+			On_Main.DrawNPCs += DrawBarrierOverlay;
 		}
 
 		public override void Unload()
 		{
-			Terraria.On_Main.DrawNPCs -= DrawBarrierOverlay;
+			On_Main.DrawNPCs -= DrawBarrierOverlay;
 		}
 
 		public override void PreUpdateNPCs()
@@ -62,7 +62,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			}
 		}
 
-		private void DrawBarrierOverlay(Terraria.On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
+		private void DrawBarrierOverlay(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 		{
 			if (anyEnemiesWithBarrier)
 				DrawNPCTarget(behindTiles ? NPCTargetBehindTiles.RenderTarget : NPCTarget.RenderTarget);

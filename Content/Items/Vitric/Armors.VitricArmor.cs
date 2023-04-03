@@ -17,13 +17,13 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void Load()
 		{
 			StarlightItem.PickAmmoEvent += PickShardsWhenLoaded;
-			Terraria.On_Player.KeyDoubleTap += LoadShots;
+			On_Player.KeyDoubleTap += LoadShots;
 		}
 
 		public override void Unload()
 		{
 			StarlightItem.PickAmmoEvent -= PickShardsWhenLoaded;
-			Terraria.On_Player.KeyDoubleTap -= LoadShots;
+			On_Player.KeyDoubleTap -= LoadShots;
 		}
 
 		public override void SetStaticDefaults()
@@ -98,7 +98,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				loaded = false; //failsafe
 		}
 
-		private void LoadShots(Terraria.On_Player.orig_KeyDoubleTap orig, Player Player, int keyDir)
+		private void LoadShots(On_Player.orig_KeyDoubleTap orig, Player Player, int keyDir)
 		{
 			if (keyDir == 0 && Player.armor[0].type == ItemType<VitricHead>())
 			{

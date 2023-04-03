@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Physics
 
 		public void Load()
 		{
-			Terraria.On_Main.DrawProjectiles += DrawVerletBanners;
+			On_Main.DrawProjectiles += DrawVerletBanners;
 		}
 
 		public void Unload()
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Physics
 			toDraw = null;
 		}
 
-		private void DrawVerletBanners(Terraria.On_Main.orig_DrawProjectiles orig, Main self)
+		private void DrawVerletBanners(On_Main.orig_DrawProjectiles orig, Main self)
 		{
 			Effect shader = Filters.Scene["Outline"].GetShader().Shader;
 

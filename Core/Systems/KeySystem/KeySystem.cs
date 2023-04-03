@@ -12,7 +12,7 @@ namespace StarlightRiver.Core.Systems.KeySystem
 
 		public override void Load()
 		{
-			Terraria.On_Main.DrawItems += DrawKeys;
+			On_Main.DrawItems += DrawKeys;
 		}
 
 		public override void Unload()
@@ -42,7 +42,7 @@ namespace StarlightRiver.Core.Systems.KeySystem
 			}
 		}
 
-		private void DrawKeys(Terraria.On_Main.orig_DrawItems orig, Main self)
+		private void DrawKeys(On_Main.orig_DrawItems orig, Main self)
 		{
 			foreach (Key key in Keys)
 				key.Draw(Main.spriteBatch);

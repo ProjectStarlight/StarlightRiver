@@ -14,15 +14,15 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			Terraria.On_Player.HealEffect += GrantRage;
+			On_Player.HealEffect += GrantRage;
 		}
 
 		public override void Unload()
 		{
-			Terraria.On_Player.HealEffect -= GrantRage;
+			On_Player.HealEffect -= GrantRage;
 		}
 
-		private void GrantRage(Terraria.On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+		private void GrantRage(On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))
 			{

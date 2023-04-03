@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent += PostHitProjectiles;
 
 			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
-			Terraria.IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+			IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
 		}
 
 		public override void SetStaticDefaults()

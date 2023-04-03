@@ -20,9 +20,9 @@ namespace StarlightRiver.Content.CustomHooks
 			ForegroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/HolyBig", UpdateForegroundBody);
 			BackgroundParticles = new ParticleSystem("StarlightRiver/Assets/GUI/Holy", UpdateBackgroundBody);
 
-			Terraria.On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
-			Terraria.On_Main.DrawBlack += ForceDrawBlack;
-			Terraria.IL_Main.DrawBlack += ChangeBlackThreshold;
+			On_Main.DrawBackgroundBlackFill += DrawVitricBackground;
+			On_Main.DrawBlack += ForceDrawBlack;
+			IL_Main.DrawBlack += ChangeBlackThreshold;
 		}
 
 		public override void Unload()
@@ -31,7 +31,7 @@ namespace StarlightRiver.Content.CustomHooks
 			BackgroundParticles = null;
 		}
 
-		private void ForceDrawBlack(Terraria.On_Main.orig_DrawBlack orig, Main self, bool force)
+		private void ForceDrawBlack(On_Main.orig_DrawBlack orig, Main self, bool force)
 		{
 			if (StarlightWorld.vitricBiome.Intersects(Helper.ScreenTiles))
 				orig(self, true);
@@ -84,7 +84,7 @@ namespace StarlightRiver.Content.CustomHooks
 			particle.Rotation += 0.02f;
 		}
 
-		private void DrawVitricBackground(Terraria.On_Main.orig_DrawBackgroundBlackFill orig, Main self)
+		private void DrawVitricBackground(On_Main.orig_DrawBackgroundBlackFill orig, Main self)
 		{
 			orig(self);
 

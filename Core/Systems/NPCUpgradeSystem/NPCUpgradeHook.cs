@@ -15,22 +15,22 @@ namespace StarlightRiver.Core.Systems.NPCUpgradeSystem
 		//ON justs sets some values on a UI when a vanilla event is triggered, IL swaps out some names. Questionable for IL, but might classift for fragile due to the sheer amount of IL patches in here.
 		public override void Load()
 		{
-			Terraria.On_NPC.GetChat += SetUpgradeUI;
+			On_NPC.GetChat += SetUpgradeUI;
 
 			//This set of IL hooks changes the title of the NPCs in chat messages and UI, since attempting to change the actual name of the NPCs makes vanilla unhappy.
-			//Terraria.IL_WorldGen.SpawnTownNPC += SwapTitle; PORTTODO: Fix IL
-			//Terraria.IL_NPC.checkDead += SwapTitleDeath;
-			//Terraria.IL_Main.DrawNPCHousesInUI += SwapTitleMenu;
+			//IL_WorldGen.SpawnTownNPC += SwapTitle; PORTTODO: Fix IL
+			//IL_NPC.checkDead += SwapTitleDeath;
+			//IL_Main.DrawNPCHousesInUI += SwapTitleMenu;
 		}
 
 		public override void Unload()
 		{
-			//Terraria.IL_WorldGen.SpawnTownNPC -= SwapTitle;
-			//Terraria.IL_NPC.checkDead -= SwapTitleDeath;
-			//Terraria.IL_Main.DrawNPCHousesInUI -= SwapTitleMenu;
+			//IL_WorldGen.SpawnTownNPC -= SwapTitle;
+			//IL_NPC.checkDead -= SwapTitleDeath;
+			//IL_Main.DrawNPCHousesInUI -= SwapTitleMenu;
 		}
 
-		private string SetUpgradeUI(Terraria.On_NPC.orig_GetChat orig, NPC self)
+		private string SetUpgradeUI(On_NPC.orig_GetChat orig, NPC self)
 		{
 			if (NPCUpgradeSystem.townUpgrades.TryGetValue(self.TypeName, out bool unlocked))
 			{

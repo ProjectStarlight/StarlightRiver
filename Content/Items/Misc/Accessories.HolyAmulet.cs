@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -15,12 +14,12 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			Terraria.On_Player.HealEffect += HealEffect;
+			On_Player.HealEffect += HealEffect;
 		}
 
 		public override void Unload()
 		{
-			Terraria.On_Player.HealEffect -= HealEffect;
+			On_Player.HealEffect -= HealEffect;
 		}
 
 		public override void SafeUpdateEquip(Player Player)
@@ -28,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Player.GetModPlayer<HolyAmuletHealingTracker>().item = Item;
 		}
 
-		private void HealEffect(Terraria.On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
+		private void HealEffect(On_Player.orig_HealEffect orig, Player self, int healAmount, bool broadcast)
 		{
 			if (Equipped(self))
 				self.GetModPlayer<HolyAmuletHealingTracker>().Healed(healAmount);
