@@ -85,11 +85,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			{
 				Item item = Player.inventory[i];
 
-				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < 30)
+				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < MAX_CHARGE)
 				{
 					sax.charge += increase;
-					if (sax.charge > 30)
-						sax.charge = 30;
+					if (sax.charge > MAX_CHARGE)
+						sax.charge = MAX_CHARGE;
 				}
 			}
 		}
