@@ -804,13 +804,13 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public bool SetBonusActive => Player.armor[0].type == ItemType<BreacherHead>() && Player.armor[1].type == ItemType<BreacherChest>() && Player.armor[2].type == ItemType<BreacherLegs>();
 
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Projectile, consider using OnHitNPC instead */
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;
 		}
 
-		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)/* tModPorter If you don't need the Item, consider using OnHitNPC instead */
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 && ticks < CHARGETIME * 5)
 				ticks += CHARGETIME / 3;

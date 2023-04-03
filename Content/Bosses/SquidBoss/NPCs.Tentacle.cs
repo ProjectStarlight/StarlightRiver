@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			NPC.dontTakeDamage = true;
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossAdjustment -> balance (bossAdjustment is different, see the docs for details) */
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = Main.masterMode ? (int)(1000 * bossAdjustment) : (int)(750 * bossAdjustment);
 		}

@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false; //no contact damage!
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossAdjustment -> balance (bossAdjustment is different, see the docs for details) */
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = (int)(2000 * bossAdjustment);
 		}

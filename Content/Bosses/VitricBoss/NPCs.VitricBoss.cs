@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 		}
 
-		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)/* tModPorter Note: bossAdjustment -> balance (bossAdjustment is different, see the docs for details) */
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.lifeMax = (int)(9000 * bossAdjustment);
 			NPC.damage = 40;

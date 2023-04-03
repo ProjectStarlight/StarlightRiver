@@ -64,7 +64,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				Player.GetModPlayer<BarrierPlayer>().dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
-		public override void ModifyHurt(ref Player.HurtModifiers modifiers)/* tModPorter Override ImmuneTo, FreeDodge or ConsumableDodge instead to prevent taking damage */
+		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
 			if (barrier > 0)
 			{
@@ -180,7 +180,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			timeSinceLastHit = 0;
 		}
 
-		public override void CopyClientState(ModPlayer clientClone)/* tModPorter Suggestion: Replace Item.Clone usages with Item.CopyNetStateTo */
+		public override void CopyClientState(ModPlayer clientClone)
 		{
 			var clone = clientClone as BarrierPlayer;
 			// Here we would make a backup clone of values that are only correct on the local Players Player instance.

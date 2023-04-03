@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < Player.armor.Length; k++)
 			{
 				if (Player.armor[k].ModItem != null && Player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
-					Player.GrantPrefixBenefits(Player.armor[k]); /* tModPorter Note: Removed. Use either GrantPrefixBenefits (if Item.accessory) or GrantArmorBenefits (for armor slots) */
+					Player.GrantPrefixBenefits(Player.armor[k]); 
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;

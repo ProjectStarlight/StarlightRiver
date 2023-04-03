@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			target.AddBuff(BuffType<Buffs.Squash>(), 450);
 		}
 
-		public override bool CanHitNPC(NPC target)/* tModPorter Suggestion: Return true instead of null */
+		public override bool CanHitNPC(NPC target)
 		{
 			return true;
 		}
