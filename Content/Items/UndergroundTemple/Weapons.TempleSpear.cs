@@ -55,16 +55,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public Vector2 pullbackOffset; //cache the pullback offset for the stab
 
-		public Vector2? OwnerMouse
-		{
-			get
-			{
-				if (Main.myPlayer == Projectile.owner)
-					return Main.MouseWorld;
-
-				return null;
-			}
-		}
+		public Vector2? OwnerMouse => (Main.myPlayer == Owner.whoAmI) ? Main.MouseWorld : null;
 
 		public ref float Timer => ref Projectile.ai[0];
 
@@ -327,7 +318,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 		public override void Kill(int timeLeft)
 		{
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2), Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
+			Vector2 pos = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
+			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
 			proj.rotation = Projectile.rotation;
 		}
 
@@ -346,13 +338,15 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			DrawLaser(Main.spriteBatch);
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.5f, 0, 0);
+			Vector2 laserEnd = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition;
 
-			Main.spriteBatch.Draw(starTex, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition, null, new Color(150, 150, 10, 0), Projectile.rotation, starTex.Size() / 2f, 0.25f, 0, 0);
+			Main.spriteBatch.Draw(bloomTex, laserEnd, null, new Color(150, 150, 10, 0), 0f, bloomTex.Size() / 2f, 0.5f, 0, 0);
 
-			Main.spriteBatch.Draw(starTex, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition, null, new Color(255, 255, 255, 0), Projectile.rotation, starTex.Size() / 2f, 0.25f, 0, 0);
+			Main.spriteBatch.Draw(starTex, laserEnd, null, new Color(150, 150, 10, 0), Projectile.rotation, starTex.Size() / 2f, 0.25f, 0, 0);
 
-			Main.spriteBatch.Draw(bloomTex, Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2) - Main.screenPosition, null, new Color(255, 255, 255, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 1f, 0, 0);
+			Main.spriteBatch.Draw(starTex, laserEnd, null, new Color(255, 255, 255, 0), Projectile.rotation, starTex.Size() / 2f, 0.25f, 0, 0);
+
+			Main.spriteBatch.Draw(bloomTex, laserEnd, null, new Color(255, 255, 255, 0) * 0.5f, 0f, bloomTex.Size() / 2f, 1f, 0, 0);
 
 			return false;
 		}
@@ -394,18 +388,21 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			effect.Parameters["repeats"].SetValue(1);
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value);
-			trail?.Render(effect);
 
+			trail?.Render(effect);
 			trail2?.Render(effect);
+
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "FireTrail").Value);
-			trail?.Render(effect);
 
+			trail?.Render(effect);
 			trail2?.Render(effect);
+
 			effect.Parameters["time"].SetValue(Projectile.timeLeft * -0.02f);
 			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Assets + "EnergyTrail").Value);
-			trail?.Render(effect);
 
+			trail?.Render(effect);
 			trail2?.Render(effect);
+
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
