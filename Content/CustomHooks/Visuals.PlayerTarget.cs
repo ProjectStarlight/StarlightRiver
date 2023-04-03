@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.CustomHooks
 				prevNumPlayers = activePlayerCount;
 
 				Target.Dispose();
-				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
+				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, sheetSquareY * activePlayerCount, sheetSquareY);
 
 				int activeCount = 0;
 
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.spriteBatch.Begin();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{

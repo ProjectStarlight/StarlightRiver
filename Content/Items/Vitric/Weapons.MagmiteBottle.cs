@@ -1,4 +1,6 @@
+using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.NPCs.Vitric;
+using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -134,7 +136,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (target.Hitbox.Intersects(Projectile.Hitbox))
-				target.GetGlobalNPC<StarlightNPC>().DoT += (int)((float)Projectile.damage * Projectile.timeLeft / 180f);
+				BuffInflictor.Inflict<MagmaBurn>(target, 30);
 			return false;
 		}
 
@@ -154,6 +156,43 @@ namespace StarlightRiver.Content.Items.Vitric
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 			Color color = new Color(255, 100, 50) * 0.3f * (Projectile.timeLeft / 180f);
 			spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, tex.Frame(), color, 0, tex.Size() / 2, 1.2f * (Projectile.timeLeft / 180f), 0, 0);
+		}
+	}
+
+	internal class MagmaBurn : StackableBuff
+	{
+		public override string Name => "MagmaBurn";
+
+		public override string DisplayName => "Magma burn";
+
+		public override string Texture => AssetDirectory.VitricItem + Name;
+
+		public override bool Debuff => true;
+
+		public override string Tooltip => "Liquid glass melts away at you!";
+
+		public override BuffStack GenerateDefaultStack(int duration)
+		{
+			return new BuffStack()
+			{
+				duration = duration
+			};
+		}
+
+		public override void PerStackEffectsNPC(NPC npc, BuffStack stack)
+		{
+			npc.lifeRegen -= 1;
+		}
+
+		public override void AnyStacksUpdateNPC(NPC npc)
+		{
+			Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Torch, 0, 0, 0, default, 2f).noGravity = true;
+
+			if (Main.rand.NextBool(3))
+				Dust.NewDustDirect(npc.position, npc.width, npc.height, ModContent.DustType<CoachGunDustGlow>(), 0, 0, 0, default, 2f).velocity *= 0.1f;
+
+			if (Main.rand.NextBool(10))
+				Dust.NewDustPerfect(npc.position, ModContent.DustType<Dusts.MagmaSmoke>(), (Vector2.UnitY * Main.rand.NextFloat(-3f, -2f)).RotatedByRandom(MathHelper.ToRadians(75f)), 100, Color.Black, Main.rand.NextFloat(0.7f, 0.9f));
 		}
 	}
 }

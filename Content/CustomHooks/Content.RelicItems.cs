@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using StarlightRiver.Content.Items.BaseTypes;
 using System;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.CustomHooks
 {
@@ -10,14 +11,14 @@ namespace StarlightRiver.Content.CustomHooks
 		//gonna be really weird if anything does anything else here I think
 		public override void Load()
 		{
-			//Terraria.IL_Item.Prefix += ApplyTwice; PORTTODO: Fix IL
+			IL_Item.Prefix += ApplyTwice;
 		}
 
 		private void ApplyTwice(ILContext il) //this is horrid.
 		{
 			var c = new ILCursor(il);
 
-			c.TryGotoNext(i => i.MatchStfld<Item>("crit"), i => i.MatchLdloc(2), i => i.MatchLdcI4(85));
+			c.TryGotoNext(i => i.MatchStfld<Item>("crit"), i => i.MatchLdloc(2), i => i.MatchLdsfld<PrefixID>("Count"));
 			c.Index++;
 
 			ILLabel label = il.DefineLabel(c.Next); //for when we need to skip later

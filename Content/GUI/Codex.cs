@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.GUI
 		public override void OnInitialize()
 		{
 			AddElement(BookButton, 570, 240, 26, 32, this);
-			BookButton.OnLeftClick += OpenCodex;
+			BookButton.OnLeftClick += (a, b) => OpenCodex();
 			BookButton.SetVisibility(1, 1);
 
 			AddElement(Back, Main.screenWidth / 2 - 250, Main.screenHeight / 2 - 225, 500, 500, this);
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.GUI
 
 			AddElement(DragButton, 410, 4, 38, 38, Back);
 			AddElement(ExitButton, 454, 4, 38, 38, Back);
-			ExitButton.OnLeftClick += Exit;
+			ExitButton.OnLeftClick += (a, b) => Exit();
 		}
 
 		private void ScrollEntry(UIScrollWheelEvent evt, UIElement listeningElement)
@@ -71,13 +71,13 @@ namespace StarlightRiver.Content.GUI
 				element.ActiveEntry.LinePos += evt.ScrollWheelValue > 0 ? -1 : 1;
 		}
 
-		private void OpenCodex(UIMouseEvent evt, UIElement listeningElement)
+		private void OpenCodex()
 		{
 			if (Main.LocalPlayer.GetModPlayer<CodexHandler>().CodexState != 0)
 				Open = true;
 		}
 
-		private void Exit(UIMouseEvent evt, UIElement listeningElement)
+		private void Exit()
 		{
 			Open = false;
 		}

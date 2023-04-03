@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.CustomHooks
 		private void ChangeBlackThreshold(ILContext il)
 		{
 			var c = new ILCursor(il);
-			c.TryGotoNext(n => n.MatchLdloc(6), n => n.MatchStloc(12)); //beginning of the loop, local 11 is a looping variable
+			c.TryGotoNext(n => n.MatchLdloc(6), n => n.MatchStloc(13)); //beginning of the loop, local 11 is a looping variable
 			c.Index++; //this is kinda goofy since I dont think you could actually ever write c# to compile to the resulting IL from emitting here.
 			c.Emit(OpCodes.Ldloc, 3); //pass the original value so we can set that instead if we dont want to change the threshold
 			c.EmitDelegate<Func<float, float>>(NewThreshold); //check if were in the biome to set, else set the original value
@@ -183,7 +183,7 @@ namespace StarlightRiver.Content.CustomHooks
 		public static void DrawTitleVitricBackground()
 		{
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 			for (int k = 5; k >= 0; k--)
 			{
@@ -192,35 +192,44 @@ namespace StarlightRiver.Content.CustomHooks
 
 				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass" + k).Value;
 
-				float heightRatio = tex.Height / Main.screenHeight;
-				int width = (int)(tex.Width / heightRatio);
+				float heightRatio = Main.screenHeight / (float)Main.screenWidth;
+				int width = (int)(tex.Width * heightRatio);
 				var pos = new Vector2((int)(Main.screenPosition.X * 0.035f * -(k - 5)) % width, 0);
 
+				Color color = Color.White;
+
+				byte a = color.A;
+
+				color *= 0.8f + (Main.dayTime ? (float)Math.Sin(Main.time / Main.dayLength * 3.14f) * 0.35f : -(float)Math.Sin(Main.time / Main.nightLength * 3.14f) * 0.35f);
+				color.A = a;
+
 				for (int h = 0; h < Main.screenWidth + width; h += width)//during loading the texture has a width of one
-					Main.spriteBatch.Draw(tex, new Rectangle(h - (int)pos.X, (int)pos.Y, width, Main.screenHeight), null, Color.White, 0, default, 0, 0);
+					Main.spriteBatch.Draw(tex, new Rectangle(h - (int)pos.X, (int)pos.Y, width, Main.screenHeight), null, color, 0, default, 0, 0);
 
 				if (k == 0)
 				{
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 					float progress = (float)Math.Sin(Main.screenPosition.X * 0.005f);
+
 					float colorAdd = 0f;
-					Color color = new Color(255, 255, 100) * (0.45f + (progress + colorAdd) * 0.2f);
 
 					if (!Main.dayTime)
-						colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength) * 5.0f);//causes the brightness to jump on the title screen
+						colorAdd = Math.Min(2, (float)Math.Sin(Main.time / Main.nightLength * 3.14f) * 5.0f);//causes the brightness to jump on the title screen
+
+					Color color2 = new Color(255, 255, 100) * (0.45f + (progress + colorAdd) * 0.2f);
 
 					for (float h = 0; h < Main.screenWidth + width; h += width)
 					{
 						Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value;
 						var rect = new Rectangle((int)(h - pos.X), (int)pos.Y, width, Main.screenHeight);
-						Main.spriteBatch.Draw(texGlow, rect, null, color, 0, Vector2.UnitY + Vector2.One * progress * 2, 0, 0);
-						Main.spriteBatch.Draw(texGlow, rect, null, color, 0, Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, 0, 0);
+						Main.spriteBatch.Draw(texGlow, rect, null, color2, 0, Vector2.UnitY + Vector2.One * progress * 2, 0, 0);
+						Main.spriteBatch.Draw(texGlow, rect, null, color2, 0, Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, 0, 0);
 					}
 
 					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.BackgroundViewMatrix.ZoomMatrix);
+					Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 				}
 
 				if (k == 1)
@@ -230,12 +239,12 @@ namespace StarlightRiver.Content.CustomHooks
 			int screenCenterX = (int)(Main.screenPosition.X + Main.screenWidth / 2);
 			for (int k = (int)(screenCenterX - Main.screenPosition.X) - (int)(Main.screenWidth * 1.5f); k <= (int)(screenCenterX - Main.screenPosition.X) + (int)(Main.screenWidth * 1.5f); k += 30)
 			{
-				var spawnPos = new Vector2(Main.screenWidth, 600);
-				if (Main.rand.NextBool(400))
-					BackgroundParticles.AddParticle(new Particle(new Vector2(0, 400), new Vector2(0, Main.rand.NextFloat(-1.3f, -0.4f)), 0, 0, Color.White, 2400, spawnPos));
+				Vector2 spawnPos = Main.screenPosition + new Vector2(Main.rand.Next(Main.screenWidth * 2), Main.screenHeight + 0);
+				if (Main.rand.NextBool(800))
+					BackgroundParticles.AddParticle(new Particle(new Vector2(0, Main.screenPosition.Y + 1600), new Vector2(3f, Main.rand.NextFloat(-1.3f, -0.3f)), 0, 0, Color.White, 2400, spawnPos));
 
-				if (Main.rand.NextBool(1000))
-					ForegroundParticles.AddParticle(new Particle(new Vector2(0, 400), new Vector2(0, Main.rand.NextFloat(-1.9f, -0.4f)), 0, 0, Color.White, 1800, spawnPos));
+				if (Main.rand.NextBool(2600))
+					ForegroundParticles.AddParticle(new Particle(new Vector2(0, Main.screenPosition.Y + 1600), new Vector2(3f, Main.rand.NextFloat(-1.9f, -0.3f)), 0, 0, Color.White, 1800, spawnPos));
 			}
 		}
 

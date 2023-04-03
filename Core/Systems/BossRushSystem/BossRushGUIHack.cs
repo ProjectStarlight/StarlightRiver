@@ -18,6 +18,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		{
 			if (inMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 				inMenu = false;
+
+			orig();
 		}
 
 		private void DrawBossMenu(Terraria.On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)

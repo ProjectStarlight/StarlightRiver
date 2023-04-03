@@ -9,9 +9,9 @@ namespace StarlightRiver.Content.Packets
 		private readonly short fromWho;
 		private readonly int projIdentity;
 		private readonly byte NPCId;
-		private int damage;
-		private float knockback;
-		private bool crit;
+		private readonly int damage;
+		private readonly float knockback;
+		private readonly bool crit;
 
 		public OnHitPacket(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
