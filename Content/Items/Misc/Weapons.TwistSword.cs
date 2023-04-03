@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void HoldItem(Player Player)
 		{
-			if (noItemLastFrame && Player.whoAmI == Main.myPlayer && !Player.noItems && Player.channel && CanUseItem(Player))
+			if (noItemLastFrame && Player.whoAmI == Main.myPlayer && !Player.noItems && Player.channel && charge > 40)
 			{
 				//if the Player gets hit by a noItem effect like cursed or forbidden winds dash, the twist sword Projectile will die, but if they continue to hold left click through it we want to resummon the twist sword at the end
 				//alteratively we could change the logic to have noItem set Player.channel to false so they have to manually reclick once the effect ends but I think this feels more polished
