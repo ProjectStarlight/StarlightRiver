@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			int distance = (int)(Owner.Center - Projectile.Center).Length();
 			float pushback = (float)Math.Sqrt(200 * EaseFunction.EaseCubicIn.Ease((200 - distance) / 200f));
 			Vector2 direction = target.DirectionTo(Owner.Center);
-			Owner.velocity += direction * pushback * 0.15f;
+			Owner.velocity += direction * (pushback + 0.01f) * 0.15f;
 
 			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Projectile.velocity * 0.4f, ModContent.ProjectileType<IgnitionGauntletsImpactRing>(), 0, 0, Owner.whoAmI, Main.rand.Next(15, 25), Projectile.velocity.ToRotation());
 
