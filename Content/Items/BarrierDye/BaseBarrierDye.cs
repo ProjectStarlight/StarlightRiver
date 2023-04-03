@@ -54,12 +54,12 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				Dust.NewDustPerfect(Player.Center, ModContent.DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(4f), 0, new Color(20, 100, 110), Main.rand.NextFloat(0.5f));
 		}
 
-		public override void PreDrawEffects(SpriteBatch spriteBatch, Player Player)
+		public override void PreDrawEffects(SpriteBatch spriteBatch, Player player)
 		{
 			if (!CustomHooks.PlayerTarget.canUseTarget)
 				return;
 
-			BarrierPlayer barrier = Player.GetModPlayer<BarrierPlayer>();
+			BarrierPlayer barrier = player.GetModPlayer<BarrierPlayer>();
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
@@ -74,16 +74,16 @@ namespace StarlightRiver.Content.Items.BarrierDye
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
 
 				if (Main.LocalPlayer.gravDir == -1f)
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
 				else
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(Player.whoAmI), color);
+					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
 			}
 
 			spriteBatch.End();
 
 			SamplerState samplerState = Main.DefaultSamplerState;
 
-			if (Player.mount.Active)
+			if (player.mount.Active)
 				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
 
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);

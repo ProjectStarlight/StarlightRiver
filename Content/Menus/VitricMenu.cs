@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Menus
 
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
-			//logoScale = 1.0f;
+			logoScale = 1.0f;
 
 			VitricBackground.DrawTitleVitricBackground();
 			return true;
