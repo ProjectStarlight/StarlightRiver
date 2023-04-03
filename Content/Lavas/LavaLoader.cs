@@ -47,9 +47,10 @@ namespace StarlightRiver.Content.Lavas
 			var c = new ILCursor(il);
 			c.TryGotoNext(n => n.MatchLdloc(8), n => n.MatchLdcI4(2));
 			c.Index += 2;
+			c.Emit(OpCodes.Ldloc, 8);
 			c.EmitDelegate<Func<int, int>>(LavaBody);
 			c.Emit(OpCodes.Stloc, 8);
-			c.Emit(OpCodes.Ldloc, 8);
+			//c.Emit(OpCodes.Ldloc, 8);
 		}
 
 		private int LavaBody(int arg)
