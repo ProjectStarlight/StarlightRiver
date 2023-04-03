@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Items.Breacher
 					Player.velocity = Vector2.Normalize(startPos - hooked.Center) * 15;
 					CameraSystem.shake += 15;
 
-					hooked.StrikeNPC(Projectile.damage, Projectile.knockBack, Player.Center.X < hooked.Center.X ? -1 : 1);
+					hooked.SimpleStrikeNPC(Projectile.damage, Player.Center.X < hooked.Center.X ? -1 : 1);
 					Helper.PlayPitched("Guns/ChainPull", 0.001f, 0, Player.Center);
 				}
 			}
@@ -344,7 +344,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0 || Retracting)
 				return;
@@ -363,12 +363,11 @@ namespace StarlightRiver.Content.Items.Breacher
 			Projectile.friendly = false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage /= 4;
-			knockback /= 4f;
-			crit = false;
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+			modifiers.FinalDamage *= 0.25f;
+			modifiers.Knockback *= 0.25f;
+			modifiers.DisableCrit();
 		}
 
 		public override bool PreDraw(ref Color lightColor)

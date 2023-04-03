@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.netAlways = true;
 		}
 
-		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.damage = 50;
 		}

@@ -25,12 +25,12 @@ namespace StarlightRiver.Content.Items.Hell
 
 		public override void Load()
 		{
-			On.Terraria.NPC.NPCLoot_DropMoney += SpawnObols;
+			On_NPC.NPCLoot_DropMoney += SpawnObols;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.NPC.NPCLoot_DropMoney -= SpawnObols;
+			On_NPC.NPCLoot_DropMoney -= SpawnObols;
 		}
 
 		public override void SafeSetDefaults()
@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Hell
 			Item.rare = ItemRarityID.Orange;
 		}
 
-		private void SpawnObols(On.Terraria.NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
+		private void SpawnObols(On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
 		{
 			if (!Equipped(closestPlayer))
 			{
@@ -257,24 +257,18 @@ namespace StarlightRiver.Content.Items.Hell
 			}
 		}
 
-		public override void OnHitNPC(NPC hitTarget, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.penetrate++;
 
-			if (hitTarget == target)
-			{
-				CameraSystem.shake += 3;
-				Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
-				ManageCaches();
-				Projectile.velocity = Vector2.Zero;
-				disappeared = true;
-				Projectile.friendly = false;
-				Projectile.timeLeft = 3000;
-			}
-			else
-			{
-				alreadyHit.Add(hitTarget);
-			}
+			CameraSystem.shake += 3;
+			Helper.PlayPitched("Impacts/Ricochet", 0.2f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
+			ManageCaches();
+			Projectile.velocity = Vector2.Zero;
+			disappeared = true;
+			Projectile.friendly = false;
+			Projectile.timeLeft = 3000;
+			alreadyHit.Add(target);
 		}
 
 		public override bool? CanHitNPC(NPC hitTarget)

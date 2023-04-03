@@ -17,25 +17,39 @@
 		}
 
 		//these modify hit bys should only be used for editting the ref variables if you want them changed in a way that happens BEFORE Player on hit effects run. no extra effects will be synced in multiPlayer outside of the ref variables
-		public delegate void ModifyHitByItemDelegate(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit);
+		public delegate void ModifyHitByItemDelegate(NPC NPC, Player Player, Item Item, ref NPC.HitModifiers modifiers);
 		public static event ModifyHitByItemDelegate ModifyHitByItemEvent;
-		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			ModifyHitByItemEvent?.Invoke(NPC, Player, Item, ref damage, ref knockback, ref crit);
+			ModifyHitByItemEvent?.Invoke(npc, player, item, ref modifiers);
 		}
 
-		public delegate void ModifyHitByProjectileDelegate(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
+		public delegate void ModifyHitByProjectileDelegate(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers);
 		public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
-		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			ModifyHitByProjectileEvent?.Invoke(NPC, Projectile, ref damage, ref knockback, ref crit, ref hitDirection);
+			ModifyHitByProjectileEvent?.Invoke(npc, projectile, ref modifiers);
 		}
 
-		public delegate void ModifyHitPlayerDelegate(NPC NPC, Player target, ref int damage, ref bool crit);
+		public delegate void ModifyHitPlayerDelegate(NPC NPC, Player target, ref Player.HurtModifiers modifiers);
 		public static event ModifyHitPlayerDelegate ModifyHitPlayerEvent;
-		public override void ModifyHitPlayer(NPC NPC, Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 		{
-			ModifyHitPlayerEvent?.Invoke(NPC, target, ref damage, ref crit);
+			ModifyHitPlayerEvent?.Invoke(npc, target, ref modifiers);
+		}
+
+		public delegate void OnHitByItemDelegate(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone);
+		public static event OnHitByItemDelegate OnHitByItemEvent;
+		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			OnHitByItemEvent?.Invoke(npc, player, item, hit, damageDone);
+		}
+
+		public delegate void OnHitByProjectileDelegate(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone);
+		public static event OnHitByProjectileDelegate OnHitByProjectileEvent;
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			OnHitByProjectileEvent?.Invoke(npc, projectile, hit, damageDone);
 		}
 
 		public delegate void ResetEffectsDelegate(NPC NPC);

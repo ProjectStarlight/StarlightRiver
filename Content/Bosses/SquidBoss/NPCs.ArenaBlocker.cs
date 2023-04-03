@@ -38,6 +38,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
+			if (!NPC.AnyNPCs(NPCType<SquidBoss>()))
+				NPC.active = false;
+
 			if (State == 1 && Timer > 0)
 				Timer -= 4;
 
@@ -83,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			target.immune = true;
 			target.immuneTime = 1;

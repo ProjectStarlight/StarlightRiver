@@ -10,11 +10,11 @@ namespace StarlightRiver.Core.Systems.ForegroundSystem
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawInterface += DrawForeground;
-			On.Terraria.Main.DoUpdate += ResetForeground;
+			On_Main.DrawInterface += DrawForeground;
+			On_Main.DoUpdate += ResetForeground;
 		}
 
-		public void DrawForeground(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		public void DrawForeground(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
 		{
 			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);//Main.spriteBatch.Begin()
 
@@ -39,7 +39,7 @@ namespace StarlightRiver.Core.Systems.ForegroundSystem
 			Main.spriteBatch.End();
 		}
 
-		private void ResetForeground(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
+		private void ResetForeground(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
 		{
 			if (Main.gameMenu)
 			{

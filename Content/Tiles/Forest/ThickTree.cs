@@ -2,6 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Forest
@@ -12,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void SetStaticDefaults()
 		{
-			ModTranslation name = CreateMapEntryName();
+			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Large Tree");
 
 			Main.tileAxe[Type] = true;
@@ -202,8 +203,22 @@ namespace StarlightRiver.Content.Tiles.Forest
 		public override void SetStaticDefaults()
 		{
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
+			Main.tileAxe[Type] = true;
 
 			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
+		}
+
+		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+			if (fail || effectOnly)
+				return;
+
+			Framing.GetTileSafely(i, j).HasTile = false;
+
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
+
+			if (up)
+				WorldGen.KillTile(i, j - 1);
 		}
 	}
 }

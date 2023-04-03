@@ -45,15 +45,15 @@ namespace StarlightRiver.Content.CustomHooks
 
 			Main.QueueMainThreadAction(() => Target = new RenderTarget2D(Main.graphics.GraphicsDevice, Main.screenWidth, Main.screenHeight));
 
-			On.Terraria.Main.CheckMonoliths += DrawTargets;
-			On.Terraria.Lighting.GetColor_int_int += getColorOverride;
-			On.Terraria.Lighting.GetColor_Point += getColorOverride;
-			On.Terraria.Lighting.GetColor_int_int_Color += getColorOverride;
-			On.Terraria.Lighting.GetColor_Point_Color += GetColorOverride;
-			On.Terraria.Lighting.GetColorClamped += GetColorOverride;
+			On_Main.CheckMonoliths += DrawTargets;
+			On_Lighting.GetColor_int_int += getColorOverride;
+			On_Lighting.GetColor_Point += getColorOverride;
+			On_Lighting.GetColor_int_int_Color += getColorOverride;
+			On_Lighting.GetColor_Point_Color += GetColorOverride;
+			On_Lighting.GetColorClamped += GetColorOverride;
 		}
 
-		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
+		private Color GetColorOverride(On_Lighting.orig_GetColorClamped orig, int x, int y, Color oldColor)
 		{
 			if (canUseTarget)
 				return orig.Invoke(x, y, oldColor);
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16), oldColor);
 		}
 
-		private Color GetColorOverride(On.Terraria.Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
+		private Color GetColorOverride(On_Lighting.orig_GetColor_Point_Color orig, Point point, Color originalColor)
 		{
 			if (canUseTarget)
 				return orig.Invoke(point, originalColor);
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)), originalColor);
 		}
 
-		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_Point orig, Point point)
+		public Color getColorOverride(On_Lighting.orig_GetColor_Point orig, Point point)
 		{
 			if (canUseTarget)
 				return orig.Invoke(point);
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig.Invoke(new Point(point.X + (int)((oldPos.X - positionOffset.X) / 16), point.Y + (int)((oldPos.Y - positionOffset.Y) / 16)));
 		}
 
-		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int orig, int x, int y)
+		public Color getColorOverride(On_Lighting.orig_GetColor_int_int orig, int x, int y)
 		{
 			if (canUseTarget)
 				return orig.Invoke(x, y);
@@ -85,7 +85,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig.Invoke(x + (int)((oldPos.X - positionOffset.X) / 16), y + (int)((oldPos.Y - positionOffset.Y) / 16));
 		}
 
-		public Color getColorOverride(On.Terraria.Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
+		public Color getColorOverride(On_Lighting.orig_GetColor_int_int_Color orig, int x, int y, Color c)
 		{
 			if (canUseTarget)
 				return orig.Invoke(x, y, c);
@@ -113,7 +113,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return gravPosition - new Vector2(sheetSquareX / 2, sheetSquareY / 2);
 		}
 
-		private void DrawTargets(On.Terraria.Main.orig_CheckMonoliths orig)
+		private void DrawTargets(On_Main.orig_CheckMonoliths orig)
 		{
 			orig();
 
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.CustomHooks
 				prevNumPlayers = activePlayerCount;
 
 				Target.Dispose();
-				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, 300 * activePlayerCount, 300);
+				Target = new RenderTarget2D(Main.graphics.GraphicsDevice, sheetSquareY * activePlayerCount, sheetSquareY);
 
 				int activeCount = 0;
 
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.spriteBatch.Begin();
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
 
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{

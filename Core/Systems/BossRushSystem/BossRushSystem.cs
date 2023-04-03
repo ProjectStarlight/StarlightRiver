@@ -50,8 +50,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawInterface += DrawOverlay;
-			On.Terraria.Main.DoUpdate += Speedup;
+			On_Main.DrawInterface += DrawOverlay;
+			On_Main.DoUpdate += Speedup;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.twld"), Mod.GetFileBytes("Worlds/BossRushWorld.twld"));
@@ -124,7 +124,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="orig"></param>
 		/// <param name="self"></param>
 		/// <param name="gameTime"></param>
-		private void Speedup(On.Terraria.Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
+		private void Speedup(On_Main.orig_DoUpdate orig, Main self, ref GameTime gameTime)
 		{
 			orig(self, ref gameTime);
 
@@ -246,7 +246,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// </summary>
 		/// <param name="tasks"></param>
 		/// <param name="totalWeight"></param>
-		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref float totalWeight)
+		public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 		{
 			if (!isBossRush)
 				return;
@@ -390,7 +390,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="orig"></param>
 		/// <param name="self"></param>
 		/// <param name="gameTime"></param>
-		private void DrawOverlay(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
 		{
 			if (!isBossRush)
 			{

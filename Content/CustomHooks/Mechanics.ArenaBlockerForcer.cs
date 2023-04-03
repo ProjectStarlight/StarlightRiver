@@ -7,11 +7,11 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public override void Load()
 		{
-			On.Terraria.Player.Update_NPCCollision += ForceColliding;
+			On_Player.Update_NPCCollision += ForceColliding;
 		}
 
 		// for the most part vanilla
-		private void ForceColliding(On.Terraria.Player.orig_Update_NPCCollision orig, Player self)
+		private void ForceColliding(On_Player.orig_Update_NPCCollision orig, Player self)
 		{
 			var rectangle = new Rectangle((int)self.position.X, (int)self.position.Y, self.width, self.height);
 
@@ -30,11 +30,11 @@ namespace StarlightRiver.Content.CustomHooks
 
 				if (rectangle.Intersects(NPCRect) && type == NPCType<ArenaBlocker>() && NPCLoader.CanHitPlayer(NPC, self, ref specialHit))
 				{
-					NPCLoader.OnHitPlayer(NPC, self, NPC.damage, false);
+					var hit = new Player.HurtInfo() { Damage = NPC.damage };
+					NPCLoader.OnHitPlayer(NPC, self, hit);
 
-					int dam = NPC.damage;
-					bool crit = false;
-					NPCLoader.ModifyHitPlayer(NPC, self, ref dam, ref crit);
+					var hit2 = new Player.HurtModifiers();
+					NPCLoader.ModifyHitPlayer(NPC, self, ref hit2);
 
 					return;
 				}

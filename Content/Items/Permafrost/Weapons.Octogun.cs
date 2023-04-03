@@ -78,11 +78,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override bool InstancePerEntity => true;
 
-		public override void OnHitNPC(Projectile projectile, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (shotFromSquidGun)
 			{
-				if (crit || target.life <= 0)
+				if (hit.Crit || target.life <= 0)
 				{
 					if (Main.player[projectile.owner].ownedProjectileCounts[ModContent.ProjectileType<OctogunTentapistol>()] <= 0)
 					{
@@ -419,7 +419,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			KillEffects();
 		}

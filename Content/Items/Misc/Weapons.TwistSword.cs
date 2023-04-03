@@ -89,7 +89,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void HoldItem(Player Player)
 		{
-			if (noItemLastFrame && Player.whoAmI == Main.myPlayer && !Player.noItems && Player.channel && CanUseItem(Player))
+			if (noItemLastFrame && Player.whoAmI == Main.myPlayer && !Player.noItems && Player.channel && charge > 40)
 			{
 				//if the Player gets hit by a noItem effect like cursed or forbidden winds dash, the twist sword Projectile will die, but if they continue to hold left click through it we want to resummon the twist sword at the end
 				//alteratively we could change the logic to have noItem set Player.channel to false so they have to manually reclick once the effect ends but I think this feels more polished
@@ -195,7 +195,7 @@ namespace StarlightRiver.Content.Items.Misc
 				var target = new Rectangle(pos.X, pos.Y, (int)(charge / 600f * tex.Width), tex.Height);
 				var source = new Rectangle(0, 0, (int)(charge / 600f * tex.Width), tex.Height);
 				var target2 = new Rectangle(pos.X, pos.Y + 2, tex2.Width, tex2.Height);
-				var color = Vector3.Lerp(Color.Red.ToVector3(), Color.Aqua.ToVector3(), charge / 800f);
+				var color = Vector3.Lerp(Color.Purple.ToVector3(), Color.Aqua.ToVector3(), charge / 800f);
 
 				Main.spriteBatch.Draw(tex2, target2, new Color(40, 40, 40));
 				Main.spriteBatch.Draw(tex, target, source, new Color(color.X, color.Y, color.Z));
@@ -239,7 +239,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && Colliding(Projectile.Hitbox, n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
@@ -308,7 +308,7 @@ namespace StarlightRiver.Content.Items.Misc
 			player.UpdateRotation(0);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float rot = Rotation % 80 / 80f * 6.28f;
 			Vector2 away = Vector2.UnitX.RotatedBy(rot);

@@ -144,13 +144,13 @@ namespace StarlightRiver.Content.Items.Misc
 			return target.whoAmI != blacklistNPC;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage /= 4;
-			crit = false;
+			modifiers.FinalDamage *= 0.25f;
+			modifiers.DisableCrit();
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffType<Overcharge>(), 300);
 

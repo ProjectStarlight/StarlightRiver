@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.GUI
 			innerBox.Top.Set(0, 0.5f);
 			Append(innerBox);
 
-			exitButton.OnClick += (a, b) => Visible = false;
+			exitButton.OnLeftClick += (a, b) => Visible = false;
 			AddElement(exitButton, 200, 0.5f, 32, 0.5f, 38, 0f, 38, 0f);
 		}
 

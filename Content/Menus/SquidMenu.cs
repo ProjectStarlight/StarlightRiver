@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Bosses.SquidBoss;
+﻿using ReLogic.Content;
+using StarlightRiver.Content.Bosses.SquidBoss;
 using System;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,6 +16,8 @@ namespace StarlightRiver.Content.Menus
 		public override string DisplayName => "Auroracle";
 		public override int Music => MusicLoader.GetMusicSlot(Mod, "Sounds/Music/PermafrostPassive");
 
+		public override Asset<Texture2D> Logo => Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIcon");
+
 		private static void UpdateBubblesBody(Particle particle)
 		{
 			particle.Timer--;
@@ -30,7 +33,6 @@ namespace StarlightRiver.Content.Menus
 			VisualTimerA += 0.04f;
 			VisualTimerB += 0.01f;
 
-			Main.time = 1000;
 			Main.dayTime = false;
 
 			Vector2 center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2);
@@ -54,7 +56,7 @@ namespace StarlightRiver.Content.Menus
 
 		public override bool PreDrawLogo(SpriteBatch spriteBatch, ref Vector2 logoDrawCenter, ref float logoRotation, ref float logoScale, ref Color drawColor)
 		{
-			logoScale = 0.8f;
+			logoScale = 1.0f;
 
 			Main.screenPosition = Vector2.Zero;
 
@@ -129,6 +131,17 @@ namespace StarlightRiver.Content.Menus
 			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
 			return true;
+		}
+
+		public override void PostDrawLogo(SpriteBatch spriteBatch, Vector2 logoDrawCenter, float logoRotation, float logoScale, Color drawColor)
+		{
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow2").Value;
+			Color color = Color.White;
+			color.A = 0;
+			spriteBatch.Draw(tex2, logoDrawCenter, null, color, logoRotation, tex2.Size() / 2f, logoScale, 0, 0);
+
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/MenuIconGlow").Value;
+			spriteBatch.Draw(tex, logoDrawCenter, null, Color.White, logoRotation, tex.Size() / 2f, logoScale, 0, 0);
 		}
 
 		private Rectangle GetSource(Texture2D tex)

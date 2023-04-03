@@ -1,6 +1,4 @@
-﻿using Terraria.DataStructures;
-
-namespace StarlightRiver.Content.Buffs
+﻿namespace StarlightRiver.Content.Buffs
 {
 	class Rage : SmartBuff
 	{
@@ -12,31 +10,19 @@ namespace StarlightRiver.Content.Buffs
 		{
 			StarlightNPC.ModifyHitPlayerEvent += BuffDamage;
 			StarlightNPC.ResetEffectsEvent += ResetRageBuff;
-			On.Terraria.Player.Hurt += IncreaseKB;
+			StarlightPlayer.OnHitByNPCEvent += Knockback;
 		}
 
-		private double IncreaseKB(On.Terraria.Player.orig_Hurt orig, Player self, PlayerDeathReason damageSource, int Damage, int hitDirection, bool pvp, bool quiet, bool Crit, int cooldownCounter)
-		{
-			double value = orig(self, damageSource, Damage, hitDirection, pvp, quiet, Crit, cooldownCounter);
-
-			if (damageSource.SourceNPCIndex != -1)
-			{
-				NPC npc = Main.npc[damageSource.SourceNPCIndex];
-
-				if (npc.HasBuff<Rage>() && !self.noKnockback)
-					self.velocity += Vector2.Normalize(self.Center - npc.Center) * 10;
-			}
-
-			return value;
-		}
-
-		private void BuffDamage(NPC NPC, Player target, ref int damage, ref bool crit)
+		private void BuffDamage(NPC NPC, Player target, ref Player.HurtModifiers modifiers)
 		{
 			if (Inflicted(NPC))
-			{
-				damage = (int)(damage * 1.5f); //50% more damage
-				crit = true;
-			}
+				modifiers.SourceDamage *= 1.5f; //50% more damage
+		}
+
+		private void Knockback(Player player, NPC npc, Player.HurtInfo hurtInfo)
+		{
+			if (npc.HasBuff<Rage>() && !player.noKnockback)
+				player.velocity += Vector2.Normalize(player.Center - npc.Center) * 10;
 		}
 
 		private void ResetRageBuff(NPC NPC)

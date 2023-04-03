@@ -18,21 +18,21 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawNPCs += DrawTargets;
-			On.Terraria.Main.CheckMonoliths += BuildTargets;
+			On_Main.DrawNPCs += DrawTargets;
+			On_Main.CheckMonoliths += BuildTargets;
 		}
 
 		public void Unload()
 		{
-			On.Terraria.Main.DrawNPCs -= DrawTargets;
-			On.Terraria.Main.CheckMonoliths -= BuildTargets;
+			On_Main.DrawNPCs -= DrawTargets;
+			On_Main.CheckMonoliths -= BuildTargets;
 
 			actorsSem.WaitOne();
 			actors = null;
 			actorsSem.Release();
 		}
 
-		private void DrawTargets(On.Terraria.Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
+		private void DrawTargets(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles = false)
 		{
 			if (behindTiles)
 			{
@@ -53,7 +53,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			}
 		}
 
-		private void BuildTargets(On.Terraria.Main.orig_CheckMonoliths orig)
+		private void BuildTargets(On_Main.orig_CheckMonoliths orig)
 		{
 			orig();
 

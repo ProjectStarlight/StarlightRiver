@@ -1,10 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -32,28 +27,28 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			StarlightPlayer.OnHitNPCWithProjEvent += StarlightPlayer_OnHitNPCWithProjEvent;
 		}
 
-		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
+		private void StarlightPlayer_OnHitNPCWithProjEvent(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (player.HasItem(Type))
 				HitEffects(player, target);
 		}
 
-		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void StarlightPlayer_OnHitNPCEvent(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (player.HasItem(Type))
 				HitEffects(player, target);
 		}
 
-		private void StarlightPlayer_OnHitByProjectileEvent(Player player, Projectile projectile, int damage, bool crit)
+		private void StarlightPlayer_OnHitByProjectileEvent(Player player, Projectile projectile, Player.HurtInfo info)
 		{
 			if (player.HasItem(Type))
-				HurtEffects(player, damage, projectile);
+				HurtEffects(player, info.Damage, projectile);
 		}
 
-		private void StarlightPlayer_OnHitByNPCEvent(Player player, NPC npc, int damage, bool crit)
+		private void StarlightPlayer_OnHitByNPCEvent(Player player, NPC npc, Player.HurtInfo info)
 		{
 			if (player.HasItem(Type))
-				HurtEffects(player, damage, npc);
+				HurtEffects(player, info.Damage, npc);
 		}
 
 		public void HitEffects(Player Player, NPC target)
@@ -90,11 +85,11 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			{
 				Item item = Player.inventory[i];
 
-				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < 30)
+				if (item.ModItem is AztecDeathSaxophone sax && sax.charge < MAX_CHARGE)
 				{
 					sax.charge += increase;
-					if (sax.charge > 30)
-						sax.charge = 30;
+					if (sax.charge > MAX_CHARGE)
+						sax.charge = MAX_CHARGE;
 				}
 			}
 		}
@@ -158,7 +153,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			spriteBatch.Draw(tex, position, frame, drawColor, 0f, origin, scale, 0f, 0f);
 
-			Color color = new Color(200, 0, 0, 0) * MathHelper.Lerp(0f, 1f, charge / (float)MAX_CHARGE);
+			Color color = new Color(200, 0, 0, 0) * MathHelper.Lerp(0f, 1f, charge / MAX_CHARGE);
 
 			if (flashTimer > 0)
 				color = Color.Lerp(new Color(255, 255, 255, 0), new Color(200, 0, 0, 0), 1f - flashTimer / 45f);
@@ -322,7 +317,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D texBlur = ModContent.Request<Texture2D>(Texture + "_Blurred").Value;
 
-			Color color = new Color(100, 0, 0, 0);
+			var color = new Color(100, 0, 0, 0);
 			if (Projectile.timeLeft < 10)
 				color *= Projectile.timeLeft / 10f;
 

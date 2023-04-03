@@ -1,4 +1,3 @@
-using System.Linq;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -71,43 +70,6 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player Player)
 		{
 			StarlightRiver.debugMode = !StarlightRiver.debugMode;
-			return true;
-		}
-	}
-
-	class Eraser : ModItem
-	{
-		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
-
-		public override void SetStaticDefaults()
-		{
-			DisplayName.SetDefault("Eraser");
-			Tooltip.SetDefault("Death");
-		}
-
-		public override void SetDefaults()
-		{
-			Item.damage = 10;
-			Item.DamageType = DamageClass.Melee;
-			Item.width = 38;
-			Item.height = 38;
-			Item.useTime = 2;
-			Item.useAnimation = 2;
-			Item.useStyle = ItemUseStyleID.Swing;
-			Item.knockBack = 5f;
-			Item.value = 1000;
-			Item.rare = ItemRarityID.LightRed;
-			Item.autoReuse = true;
-			Item.UseSound = SoundID.Item18;
-			Item.useTurn = true;
-			Item.accessory = true;
-		}
-
-		public override bool? UseItem(Player Player)
-		{
-			foreach (NPC NPC in Main.npc.Where(n => Vector2.Distance(n.Center, Main.MouseWorld) < 100))
-				NPC.StrikeNPC(99999, 0, 0, false, false, false);
-
 			return true;
 		}
 	}

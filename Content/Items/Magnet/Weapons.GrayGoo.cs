@@ -3,6 +3,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -251,7 +252,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			float scale = 1;
 			int amount = 5;

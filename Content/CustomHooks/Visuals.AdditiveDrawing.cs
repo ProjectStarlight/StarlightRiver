@@ -8,10 +8,10 @@
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawDust += DrawAdditive;
+			On_Main.DrawDust += DrawAdditive;
 		}
 
-		private void DrawAdditive(On.Terraria.Main.orig_DrawDust orig, Main self)
+		private void DrawAdditive(On_Main.orig_DrawDust orig, Main self)
 		{
 			orig(self);
 			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);

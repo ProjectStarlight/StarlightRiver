@@ -420,6 +420,63 @@ namespace StarlightRiver.Helpers
 			return a * (1.0f - f) + b * f;
 		}
 
+		/// <summary>
+		/// <para>Animations are interpolated with a cubic bezier. You will define the bezier using the p1 and p2 parameters.</para>
+		/// <para>This function serves as a constructor for the real interpolation function</para>
+		/// <para>Use https://cubic-bezier.com/ to find appropriate parameters.</para>
+		/// </summary>
+		public static Func<float, float> CubicBezier(float p1x, float p1y, float p2x, float p2y)
+		{
+			if (p1x < 0 || p1x > 1 || p2x < 0 || p2x > 1)
+			{
+				throw new ArgumentException("X point parameters of cubic bezier timing function should be between values 0 and 1!");
+			}
+
+			Vector2 p0 = Vector2.Zero;
+			var p1 = new Vector2(p1x, p1y);
+			var p2 = new Vector2(p2x, p2y);
+			Vector2 p3 = Vector2.One;
+
+			float timing(float t)
+			{
+				return (float)(Math.Pow(1 - t, 3) * p0.X + 3 * Math.Pow(1 - t, 2) * t * p1.X + 3 * (1 - t) * Math.Pow(t, 2) * p2.X + Math.Pow(t, 3) * p3.X);
+			}
+
+			float progression(float x)
+			{
+				float time;
+				if (x <= 0)
+					time = 0;
+				else if (x >= 1)
+					time = 1;
+				else
+					time = BinarySolve(timing, x, 0.001f);
+
+				return (float)(Math.Pow(1 - time, 3) * p0.Y + 3 * Math.Pow(1 - time, 2) * time * p1.Y + 3 * (1 - time) * Math.Pow(time, 2) * p2.Y + Math.Pow(time, 3) * p3.Y);
+			}
+
+			return progression;
+		}
+
+		// Binary solver for cubic bezier
+		private static float BinarySolve(in Func<float, float> function, in float target, in float precision, float start = 0, float end = 1, int iteration = 0)
+		{
+			if (iteration > 1000)
+			{
+				throw new ArgumentException("Could not converge to an answer in over 1000 iterations.");
+			}
+
+			float halfway = (start + end) / 2;
+			float res = function(halfway);
+
+			if (Math.Abs(res - target) < precision)
+				return halfway;
+			else if (target < res)
+				return BinarySolve(function, target, precision, start, halfway, iteration + 1);
+			else
+				return BinarySolve(function, target, precision, halfway, end, iteration + 1);
+		}
+
 		public static T[] FastUnion<T>(this T[] front, T[] back)
 		{
 			var combined = new T[front.Length + back.Length];

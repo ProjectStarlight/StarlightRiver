@@ -279,7 +279,7 @@ namespace StarlightRiver.Content.Abilities
 			ActiveAbility = null;
 		}
 
-		public override void OnRespawn(Player Player)
+		public override void OnRespawn()
 		{
 			Stamina = StaminaMax;
 		}
@@ -415,7 +415,7 @@ namespace StarlightRiver.Content.Abilities
 			}
 		}
 
-		public override void OnEnterWorld(Player Player)
+		public override void OnEnterWorld()
 		{
 			var packet = new AbilityProgress(Player.whoAmI, Player.GetHandler());
 			packet.Send();

@@ -136,15 +136,15 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 		}
 
-		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(9000 * bossLifeScale);
+			NPC.lifeMax = (int)(9000 * bossAdjustment);
 			NPC.damage = 40;
 			NPC.defense = 14;
 
 			if (Main.masterMode)
 			{
-				NPC.lifeMax = (int)(14000 * bossLifeScale);
+				NPC.lifeMax = (int)(14000 * bossAdjustment);
 				NPC.damage = 60;
 				NPC.defense = 14;
 			}
@@ -363,35 +363,35 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			}
 		}
 
-		public override void OnHitByItem(Player Player, Item Item, int damage, float knockback, bool crit)
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				return;
 
 			if (pain > 0)
-				painDirection += Helper.CompareAngle((NPC.Center - Player.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+				painDirection += Helper.CompareAngle((NPC.Center - player.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
 			else
-				painDirection = (NPC.Center - Player.Center).ToRotation();
+				painDirection = (NPC.Center - player.Center).ToRotation();
 
-			pain += damage;
+			pain += damageDone;
 
-			if (crit)
+			if (hit.Crit)
 				pain += 40;
 		}
 
-		public override void OnHitByProjectile(Projectile Projectile, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer)
 				return;
 
 			if (pain > 0)
-				painDirection += Helper.CompareAngle((NPC.Center - Projectile.Center).ToRotation(), painDirection) * Math.Min(damage / 200f, 0.5f);
+				painDirection += Helper.CompareAngle((NPC.Center - projectile.Center).ToRotation(), painDirection) * Math.Min(damageDone / 200f, 0.5f);
 			else
-				painDirection = (NPC.Center - Projectile.Center).ToRotation();
+				painDirection = (NPC.Center - projectile.Center).ToRotation();
 
-			pain += damage;
+			pain += damageDone;
 
-			if (crit)
+			if (hit.Crit)
 				pain += 40;
 		}
 

@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void ModifyBuffTip(ref string tip, ref int rare)
+		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
 			rare = ItemRarityID.Red;
 			tip = "The Impact SMG deals " + Main.LocalPlayer.GetModPlayer<ImpactSMGPlayer>().stacks * 5 + "% " + "increased damage";
@@ -321,13 +321,13 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
-				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
+				modifiers.SourceDamage *= 1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05f;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Overheated && !exploding && !exploded)
 			{
@@ -804,15 +804,15 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			Player Owner = Main.player[Projectile.owner];
 
 			if (Owner.GetModPlayer<ImpactSMGPlayer>().stacks > 0)
-				damage = (int)(damage * (1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05));
+				modifiers.SourceDamage *= 1f + Owner.GetModPlayer<ImpactSMGPlayer>().stacks * 0.05f;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.friendly = false;
 

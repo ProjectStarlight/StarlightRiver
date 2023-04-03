@@ -16,7 +16,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		{
 			if (!Main.dedServ)
 			{
-				On.Terraria.Main.CheckMonoliths += RenderScreens;
+				On_Main.CheckMonoliths += RenderScreens;
 				Main.OnResolutionChanged += ResizeScreens;
 			}
 		}
@@ -25,7 +25,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 		{
 			if (!Main.dedServ)
 			{
-				On.Terraria.Main.CheckMonoliths -= RenderScreens;
+				On_Main.CheckMonoliths -= RenderScreens;
 				Main.OnResolutionChanged -= ResizeScreens;
 
 				Main.QueueMainThreadAction(() =>
@@ -89,7 +89,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 			targetSem.Release();
 		}
 
-		private void RenderScreens(On.Terraria.Main.orig_CheckMonoliths orig)
+		private void RenderScreens(On_Main.orig_CheckMonoliths orig)
 		{
 			orig();
 

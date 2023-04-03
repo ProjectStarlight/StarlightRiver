@@ -16,27 +16,27 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCEvent += OnHit;
-			StarlightProjectile.ModifyHitNPCEvent += OnHitProjectile;
+			StarlightProjectile.OnHitNPCEvent += OnHitProjectile;
 		}
 
 		public override void Unload()
 		{
 			StarlightPlayer.OnHitNPCEvent -= OnHit;
-			StarlightProjectile.ModifyHitNPCEvent -= OnHitProjectile;
+			StarlightProjectile.OnHitNPCEvent -= OnHitProjectile;
 		}
 
-		private void OnHitProjectile(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void OnHitProjectile(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
 
 			if (Projectile.DamageType == DamageClass.Melee && Equipped(Player))
-				Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+				Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damageDone);
 		}
 
-		private void OnHit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void OnHit(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Equipped(Player))
-				Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damage);
+				Player.GetModPlayer<StarlightPlayer>().SetIronHeart(damageDone);
 		}
 
 		public override void AddRecipes()

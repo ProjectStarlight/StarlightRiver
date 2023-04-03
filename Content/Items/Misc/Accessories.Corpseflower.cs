@@ -17,17 +17,25 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItem;
-			StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectile;
+			StarlightPlayer.ModifyHitNPCEvent += ApplyDoTItems;
+			StarlightPlayer.ModifyHitNPCWithProjEvent += ApplyDoTProjectiles;
 
-			On.Terraria.CombatText.UpdateCombatText += CombatText_UpdateCombatText;
-			IL.Terraria.NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+			StarlightPlayer.OnHitNPCEvent += PostHitItems;
+			StarlightPlayer.OnHitNPCWithProjEvent += PostHitProjectiles;
+
+			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
+			IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is decreased by 66%\nYou are unable to critically strike while equipped");
 		}
 
 		#region IL
 		private void ChangeDoTColor(MonoMod.Cil.ILContext il)
 		{
-			ILCursor c = new ILCursor(il);
+			var c = new ILCursor(il);
 
 			int indexLocal = il.MakeLocalVariable<int>();
 
@@ -42,7 +50,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
 
 			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
-			c.Emit(OpCodes.Ldloc, 15); //15 is the whoAmI of the npc. Second parameter for our delegate.
+			c.Emit(OpCodes.Ldloc, 18); //18 is the whoAmI of the npc. Second parameter for our delegate.
 			c.EmitDelegate(ApplyDoTColor);
 
 			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call
@@ -59,7 +67,7 @@ namespace StarlightRiver.Content.Items.Misc
 			c.Emit(OpCodes.Stloc, indexLocal); //store the index returned by CombatText.NewText
 
 			c.Emit(OpCodes.Ldloc, indexLocal); //load the index to use as our first parameter in ApplyDoTColor
-			c.Emit(OpCodes.Ldloc, 16); //16 is the whoAmI of the npc. Second parameter for our delegate.
+			c.Emit(OpCodes.Ldloc, 19); //19 is the whoAmI of the npc. Second parameter for our delegate.
 			c.EmitDelegate(ApplyDoTColor);
 
 			c.Emit(OpCodes.Ldloc, indexLocal); // push the indexLocal to the top of the stack to satisfy the stack state, since the pop call expects the return value of the CombatText call
@@ -76,7 +84,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		#endregion IL
 
-		private void CombatText_UpdateCombatText(On.Terraria.CombatText.orig_UpdateCombatText orig)
+		private void CombatText_UpdateCombatText(On_CombatText.orig_UpdateCombatText orig)
 		{
 			orig();
 
@@ -97,27 +105,34 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		private void ApplyDoTProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void ApplyDoTItems(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (Equipped(player))
+				modifiers.HideCombatText();
+		}
+
+		private void ApplyDoTProjectiles(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (Equipped(player))
+				modifiers.HideCombatText();
+		}
+
+		private void PostHitItems(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
-				damage = 1;
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damageDone * 0.33f) });
+				target.life += damageDone;
 			}
 		}
 
-		private void ApplyDoTItem(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void PostHitProjectiles(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Equipped(player))
 			{
-				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damage * 0.33f) });
-				damage = 1;
+				BuffInflictor.InflictStack<CorpseflowerBuff, CorpseflowerStack>(target, 600, new CorpseflowerStack() { duration = 600, damage = (int)(damageDone * 0.33f) });
+				target.life += damageDone;
 			}
-		}
-
-		public override void SetStaticDefaults()
-		{
-			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is decreased by 66%\nYou are unable to critically strike while equipped");
 		}
 	}
 
@@ -137,7 +152,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Debuff => true;
 
-		public override string Tooltip => "You have been cursed by the corpeflower"; //idk man
+		public override string Tooltip => "You have been cursed by the corpseflower"; //idk man
 
 		public override void Load()
 		{

@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.CustomHooks
 			dustDrawMethod = typeof(Main).GetMethod("DrawDust", BindingFlags.NonPublic | BindingFlags.Instance);
 			goreDrawMethod = typeof(Main).GetMethod("DrawGore", BindingFlags.NonPublic | BindingFlags.Instance);
 
-			On.Terraria.Main.DoDraw_WallsAndBlacks += DrawWallReflectionLayer;
-			On.Terraria.Main.CheckMonoliths += SpecialDraww;
+			On_Main.DoDraw_WallsAndBlacks += DrawWallReflectionLayer;
+			On_Main.CheckMonoliths += SpecialDraww;
 
 			DrawWallReflectionNormalMapEvent += drawGlassWallReflectionNormalMap;
 
@@ -72,12 +72,12 @@ namespace StarlightRiver.Content.CustomHooks
 
 		public override void Unload()
 		{
-			On.Terraria.Main.DoDraw_WallsAndBlacks -= DrawWallReflectionLayer;
+			On_Main.DoDraw_WallsAndBlacks -= DrawWallReflectionLayer;
 
 			DrawWallReflectionNormalMapEvent -= drawGlassWallReflectionNormalMap;
 		}
 
-		private void SpecialDraww(On.Terraria.Main.orig_CheckMonoliths orig)
+		private void SpecialDraww(On_Main.orig_CheckMonoliths orig)
 		{
 			orig();
 
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.CustomHooks
 		/// </summary>
 		/// <param name="orig"></param>
 		///
-		public void DrawWallReflectionLayer(On.Terraria.Main.orig_DoDraw_WallsAndBlacks orig, Main self)
+		public void DrawWallReflectionLayer(On_Main.orig_DoDraw_WallsAndBlacks orig, Main self)
 		{
 			orig(self);
 

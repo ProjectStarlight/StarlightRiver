@@ -28,6 +28,16 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCEvent -= OnHitNPC;
 		}
 
+		private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			OnHit(Player, target, info.Crit);
+		}
+
+		private void OnHitNPC(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			OnHit(Player, target, info.Crit);
+		}
+
 		private void OnHit(Player Player, NPC target, bool crit)
 		{
 			if (Equipped(Player) && crit)
@@ -40,16 +50,6 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 					Player.GetModPlayer<StarlightPlayer>().shouldSendHitPacket = true;
 			}
-		}
-
-		private void OnHitNPCWithProjAccessory(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-		{
-			OnHit(Player, target, crit);
-		}
-
-		private void OnHitNPC(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
-		{
-			OnHit(Player, target, crit);
 		}
 
 		public override void AddRecipes()

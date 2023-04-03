@@ -33,7 +33,7 @@ namespace StarlightRiver.Core
 				  TileID.Sandstone
 			};
 
-			Rectangle range = WorldGen.UndergroundDesertLocation;
+			Rectangle range = GenVars.UndergroundDesertLocation;
 			range.Inflate(500, 500);
 
 			int amount = Main.maxTilesX / 12;

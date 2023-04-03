@@ -173,11 +173,11 @@ namespace StarlightRiver.Content.Items.Vitric
 				 n.immune[Owner.whoAmI] <= 0 &&
 				 Colliding(new Rectangle(), n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.velocity += Vector2.UnitX.RotatedBy((target.Center - Owner.Center).ToRotation()) * 10 * target.knockBackResist;
 
@@ -396,7 +396,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				 !n.townNPC &&
 				 Colliding(new Rectangle(), n.Hitbox) == true))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
@@ -411,7 +411,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.velocity += Vector2.UnitX.RotatedBy(LaserRotation) * 0.25f * target.knockBackResist;
 
@@ -577,12 +577,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Load()
 		{
-			StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamage;
+			StarlightNPC.ModifyHitByProjectileEvent += IncreaseRefractiveDamages;
 		}
 
 		public override void Update(NPC NPC, ref int buffIndex)
 		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Dusts.Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustType<Glow>(), 0, 0, 0, new Color(255, 150, 50), 0.5f);
 			NPC.GetGlobalNPC<ExposureNPC>().ExposureMultMelee += 0.25f;
 		}
 
@@ -591,12 +591,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			player.GetModPlayer<ExposurePlayer>().exposureMult += 0.5f;
 		}
 
-		private void IncreaseRefractiveDamage(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void IncreaseRefractiveDamages(NPC NPC, Projectile Projectile, ref NPC.HitModifiers modifiers)
 		{
 			if (Inflicted(NPC))
 			{
 				if (Projectile.type == ProjectileType<RefractiveBladeProj>())
-					damage = (int)(damage * 1.5f);
+					modifiers.FinalDamage *= 1.5f;
 			}
 		}
 	}

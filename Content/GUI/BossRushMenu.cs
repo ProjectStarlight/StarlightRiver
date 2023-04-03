@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.GUI
 			button.Top.Set(240, 0);
 			button.Width.Set(100, 0);
 			button.Height.Set(20, 0);
-			button.OnClick += (a, b) => BossRushGUIHack.inMenu = true;
+			button.OnLeftClick += (a, b) => BossRushGUIHack.inMenu = true;
 
 			Append(button);
 		}
@@ -137,7 +137,7 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderStringBig(spriteBatch, scoreString, pos + new Vector2(dims.Width / 2f, 536), scoreColor, 0.5f, 0.5f);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void LeftClick(UIMouseEvent evt)
 		{
 			BossRushSystem.Reset();
 

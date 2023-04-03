@@ -8,11 +8,11 @@ namespace StarlightRiver.Core.Systems
 
 		public override void Load()
 		{
-			On.Terraria.Main.Update += DoUpdate;
-			On.Terraria.Main.DrawInterface += DrawDebugMenu;
+			On_Main.Update += DoUpdate;
+			On_Main.DrawInterface += DrawDebugMenu;
 		}
 
-		private void DrawDebugMenu(On.Terraria.Main.orig_DrawInterface orig, Main self, GameTime gameTime)
+		private void DrawDebugMenu(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
 
@@ -29,7 +29,7 @@ namespace StarlightRiver.Core.Systems
 			Main.spriteBatch.End();
 		}
 
-		private void DoUpdate(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		private void DoUpdate(On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
 			if (Main.LocalPlayer.position == Vector2.Zero || float.IsNaN(Main.LocalPlayer.position.X) || float.IsNaN(Main.LocalPlayer.position.Y))
 				Main.LocalPlayer.position = new Vector2(Main.spawnTileX * 16, Main.spawnTileY * 16);

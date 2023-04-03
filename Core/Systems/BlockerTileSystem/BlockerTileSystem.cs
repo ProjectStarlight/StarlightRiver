@@ -11,15 +11,15 @@ namespace StarlightRiver.Core.Systems.BlockerTileSystem
 
 		public override void Load()
 		{
-			On.Terraria.Main.Update += UpdateCollision;
+			On_Main.Update += UpdateCollision;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Main.Update -= UpdateCollision;
+			On_Main.Update -= UpdateCollision;
 		}
 
-		private void UpdateCollision(On.Terraria.Main.orig_Update orig, Main self, GameTime gameTime)
+		private void UpdateCollision(On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
 			orig(self, gameTime);
 

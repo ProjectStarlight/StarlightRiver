@@ -1,6 +1,7 @@
 using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
@@ -152,7 +153,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			return false;
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			if (Projectile.ai[1] == 1)
 			{

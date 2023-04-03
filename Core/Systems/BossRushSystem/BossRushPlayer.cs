@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Terraria;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {
@@ -7,7 +8,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 	/// </summary>
 	internal class BossRushPlayer : ModPlayer
 	{
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
+		public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;
@@ -15,7 +16,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			BossRushSystem.score -= 100;
 		}
 
-		public override void OnHitByProjectile(Projectile proj, int damage, bool crit)
+		public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
 		{
 			if (!BossRushSystem.isBossRush)
 				return;

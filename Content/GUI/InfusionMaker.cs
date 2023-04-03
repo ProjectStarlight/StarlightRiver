@@ -69,10 +69,10 @@ namespace StarlightRiver.Content.GUI
 
 		public void Constrain()
 		{
-			setElement(inSlot, new Vector2(82, 220), new Vector2(32, 32));
-			setElement(options, new Vector2(206, 16), new Vector2(180, 390));
-			setElement(craftButton, new Vector2(394, 36), new Vector2(32, 32));
-			setElement(exitButton, new Vector2(390, 0), new Vector2(32, 32));
+			SetElement(inSlot, new Vector2(82, 220), new Vector2(32, 32));
+			SetElement(options, new Vector2(206, 16), new Vector2(180, 390));
+			SetElement(craftButton, new Vector2(394, 36), new Vector2(32, 32));
+			SetElement(exitButton, new Vector2(390, 0), new Vector2(32, 32));
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -208,23 +208,23 @@ namespace StarlightRiver.Content.GUI
 			Append(inSlot);
 			Append(options);
 
-			craftButton.OnClick += Craft;
+			craftButton.OnLeftClick += (a, b) => Craft();
 			Append(craftButton);
 
-			exitButton.OnClick += (a, b) => visible = false;
+			exitButton.OnLeftClick += (a, b) => visible = false;
 			Append(exitButton);
 		}
 
-		private void Craft(UIMouseEvent evt, UIElement listeningElement)
+		private void Craft()
 		{
 			if (selected is null)
 				return;
 
-			Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal);
+			SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal);
 			crafting = true;
 		}
 
-		private void setElement(UIElement element, Vector2 offset, Vector2 size = default)
+		private void SetElement(UIElement element, Vector2 offset, Vector2 size = default)
 		{
 			element.Left.Set(basePos.X + offset.X, 0);
 			element.Top.Set(basePos.Y + offset.Y, 0);

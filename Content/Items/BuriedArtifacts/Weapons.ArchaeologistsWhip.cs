@@ -122,7 +122,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			return minLight;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			int[] treasure = new int[] {
 			ModContent.ItemType<AWhip_BlueGem>(),
@@ -139,8 +139,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				else
 					Item.NewItem(target.GetSource_Loot(), target.Hitbox, treasure[Main.rand.Next(treasure.Length)]);
 			}
-
-			base.OnHitNPC(target, damage, knockback, crit);
 		}
 	}
 
@@ -224,12 +222,12 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(12, 12), ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>(), Vector2.Zero);
 		}
 
-		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			Player player = Main.player[projectile.owner];
 
 			if (projectile.minion && player.HasBuff(ModContent.BuffType<ArchaeologistsBuff>()))
-				damage = (int)(damage * 1.2f);
+				modifiers.FinalDamage *= 1.2f;
 		}
 	}
 }

@@ -6,7 +6,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
-	internal class BossWindowDummy : Dummy, IMoonlordLayerDrawable
+	internal class BossWindowDummy : Dummy
 	{
 		private ParticleSystem particles = new("StarlightRiver/Assets/GUI/HolyBig", UpdateParticles);
 

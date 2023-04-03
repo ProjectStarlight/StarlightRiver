@@ -2,6 +2,7 @@ using ReLogic.Content;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
 
@@ -99,7 +100,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			if (swingTimer < TotalTime * 0.12f)
 				target.AddBuff(BuffType<Buffs.Squash>(), 180);
@@ -254,7 +255,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Projectile.Kill();
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			if (Timer >= RAISE_TIME)
 			{

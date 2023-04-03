@@ -1,7 +1,4 @@
-﻿using StarlightRiver.Core;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -14,22 +11,9 @@ namespace StarlightRiver.Content.Items.Food
 			Item.rare = ItemRarityID.Blue;
 		}
 
-		public override void Load()
+		public override void BuffEffects(Player Player, float multiplier)
 		{
-			StarlightPlayer.ModifyHitNPCEvent += OnHit;
-			StarlightPlayer.ModifyHitNPCWithProjEvent += OnHitProj;
-		}
-
-		private void OnHitProj(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			if (crit)
-				damage = (int)(damage * (1 + 0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier));
-		}
-
-		private void OnHit(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
-		{
-			if (crit)
-				damage = (int)(damage * (1 + 0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier));
+			Player.GetModPlayer<CritMultiPlayer>().AllCritMult += 0.1f * multiplier;
 		}
 	}
 }
