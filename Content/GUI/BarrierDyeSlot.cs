@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.GUI
 	{
 		public BarrierDyeSlotElement()
 		{
-			OnLeftClick += ClickHandler;
+			OnLeftClick += (a, b) => ClickHandler();
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public void ClickHandler(UIMouseEvent evt, UIElement listeningElement)
+		public void ClickHandler()
 		{
 			Main.isMouseLeftConsumedByUI = true;
 			Player Player = Main.LocalPlayer;

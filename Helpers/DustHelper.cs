@@ -36,8 +36,7 @@ namespace StarlightRiver.Helpers
 		{
 			float rot;
 
-			if (color is null)
-				color = Color.White;
+			color ??= Color.White;
 
 			if (rotationAmount < 0)
 				rot = Main.rand.NextFloat(0, (float)Math.PI * 2);

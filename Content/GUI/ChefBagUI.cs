@@ -48,10 +48,10 @@ namespace StarlightRiver.Content.GUI
 			Append(grid);
 
 			AddElement(SortButton, -260, 0.5f, -220, 0.5f, 32, 0f, 32, 0f);
-			SortButton.OnLeftClick += ChangeSortMode;
+			SortButton.OnLeftClick += (a, b) => ChangeSortMode();
 
 			AddElement(OwnedButton, -260, 0.5f, -180, 0.5f, 32, 0f, 32, 0f);
-			OwnedButton.OnLeftClick += ChangeOwnedMode;
+			OwnedButton.OnLeftClick += (a, b) => ChangeOwnedMode();
 
 			AddElement(IngredientTab, -220, 0.5f, -256, 0.5f, 50, 0f, 28, 0f);
 			IngredientTab.OnLeftClick += (a, b) => RebuildGrid();
@@ -60,14 +60,14 @@ namespace StarlightRiver.Content.GUI
 			RecipieTab.OnLeftClick += (a, b) => RebuildRecipies();
 		}
 
-		private void ChangeOwnedMode(UIMouseEvent evt, UIElement listeningElement)
+		private void ChangeOwnedMode()
 		{
 			hideUnowned = !hideUnowned;
 			OwnedButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButton" + (hideUnowned ? "On" : "Off"), ReLogic.Content.AssetRequestMode.ImmediateLoad));
 			RebuildGrid();
 		}
 
-		private void ChangeSortMode(UIMouseEvent evt, UIElement listeningElement)
+		private void ChangeSortMode()
 		{
 			switch (sortMode)
 			{

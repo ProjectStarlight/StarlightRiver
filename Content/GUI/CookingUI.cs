@@ -41,9 +41,9 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			CookButton.OnLeftClick += CookFood;
+			CookButton.OnLeftClick += (a, b) => CookFood();
 			CookButton.SetVisibility(1, 1);
-			ExitButton.OnLeftClick += Exit;
+			ExitButton.OnLeftClick += (a, b) => Exit();
 			ExitButton.SetVisibility(1, 1);
 
 			OnScrollWheel += ScrollStats;
@@ -127,7 +127,7 @@ namespace StarlightRiver.Content.GUI
 				float durationMult = 1;
 				int cooldown = 0;
 				float cooldownMult = 1;
-				List<(string, Color)> lines = new List<(string, Color)>();
+				var lines = new List<(string, Color)>();
 
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
@@ -187,7 +187,7 @@ namespace StarlightRiver.Content.GUI
 			Append(element);
 		}
 
-		private void CookFood(UIMouseEvent evt, UIElement listeningElement)
+		private void CookFood()
 		{
 			if (!MainSlot.Item.IsAir) //make sure were cooking SOMETHING!
 			{
@@ -227,7 +227,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		private void Exit(UIMouseEvent evt, UIElement listeningElement)
+		private void Exit()
 		{
 			visible = false;
 			Main.playerInventory = false;
