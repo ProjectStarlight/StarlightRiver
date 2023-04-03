@@ -3111,6 +3111,11 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			DesertMonolithItem: {
+				DisplayName: Desert Monolith
+				Tooltip: Places a section of desert monolith
+			}
 		}
 
 		Projectiles: {
@@ -3602,6 +3607,7 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			DesertMonolith.MapEntry: ""
 		}
 
 		Biomes: {
