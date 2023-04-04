@@ -25,6 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Projectile.width = Projectile.height = 64;
 			Projectile.timeLeft = 180;
 			Projectile.ignoreWater = true;
+			Projectile.knockBack = 5;
 		}
 
 		public override void AI()
