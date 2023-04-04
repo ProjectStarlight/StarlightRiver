@@ -71,6 +71,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 				FrameMonolith(Main.rand.Next(2), 2, i, j + 4);
 		}
 
+		/// <summary>
+		/// Fraems a monolith section to a given section
+		/// </summary>
+		/// <param name="x">the x coordinate of the section on the sprite sheet</param>
+		/// <param name="y">the y coordinate of the section on the sprite sheet</param>
+		/// <param name="i">the x coordinate of the top-left of the segment</param>
+		/// <param name="j">the y coordinate of the top-left of the segment</param>
 		public void FrameMonolith(int x, int y, int i, int j)
 		{
 			for (int x1 = 0; x1 < 4; x1++)
