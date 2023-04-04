@@ -3116,6 +3116,11 @@ Mods: {
 				DisplayName: Desert Monolith
 				Tooltip: Places a section of desert monolith
 			}
+
+			DesertMonolithFlippedItem: {
+				DisplayName: Inverted Desert Monolith
+				Tooltip: Places a section of inverted desert monolith
+			}
 		}
 
 		Projectiles: {
@@ -3608,6 +3613,7 @@ Mods: {
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
 			DesertMonolith.MapEntry: ""
+			DesertMonolithFlipped.MapEntry: ""
 		}
 
 		Biomes: {
