@@ -3111,6 +3111,15 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			SpearBook: {
+				DisplayName: Snake Technique
+				Tooltip:
+					'''
+					Allows execution of combos with spears
+					Right click to deter enemies with a flurry of stabs
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3433,6 +3442,7 @@ Mods: {
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
 			CrescentOrb.DisplayName: Lunar Orb
+			SpearBookProjectile.DisplayName: Spear Book Projectile
 		}
 
 		Tiles: {
