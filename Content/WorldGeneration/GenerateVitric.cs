@@ -238,6 +238,7 @@ namespace StarlightRiver.Core
 			int lakeWidth = 30;
 
 			bool makingTunnel = false;
+			bool madeTunnel = false;
 			int tunnelStart = 0;
 			int tunnelWidth = 30;
 
@@ -347,34 +348,43 @@ namespace StarlightRiver.Core
 
 					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y >= layers["TOP"])
 					{
-						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
+						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, true, true);
 						t.Slope = SlopeType.Solid;
 						KillWall(x, y, false);
 					}
 				}
 
-				if (!makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.NextBool(30))
+				if (!makingTunnel && !makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.NextBool(30))
 				{
 					makingLake = true;
 					lakeStart = xDif;
 					lakeWidth = genRand.Next(15, 40);
 				}
 
-				if (!makingLake && xDif > 50 && xDif > vitricBiome.Width / 2 + vitricBiome.Width / 4)
+				if (!makingLake && !makingTunnel && !madeTunnel && xDif > 50 && xDif > vitricBiome.Width / 2 + vitricBiome.Width / 4 * 1.5f)
 				{
 					makingTunnel = true;
 					tunnelStart = xDif;
 				}
 
+				if (makingTunnel && xDif > tunnelStart + tunnelWidth + 6)
+				{
+					makingTunnel = false;
+					madeTunnel = true;
+				}
+
 				for (int y = layers["FLOOR"] - 9; y < layers["BOTTOM"] + 8; ++y)
 				{
-					int tunnelFinal = tunnelStart + tunnelWidth + (int)Math.Sin(y * 0.2f);
-					if (makingTunnel && xDif < tunnelFinal)
+					int tunnelFinal = tunnelStart + tunnelWidth + (int)(Math.Sin(y * 0.2f) * 5);
+					if (makingTunnel && xDif > tunnelFinal - tunnelWidth && xDif < tunnelFinal)
 					{
-						int tunnelDif = xDif - tunnelFinal;
+						int tunnelDif = tunnelFinal - xDif;
+						Main.NewText(tunnelDif);
 
-						if (tunnelDif < 3 || tunnelDif > tunnelFinal - 3)
-							PlaceTile(x, y, ModContent.TileType<VitricSpike>(), false, true);
+						if (tunnelDif < 5 || tunnelDif > tunnelWidth - 5)
+							PlaceTile(x, y, ModContent.TileType<VitricSpike>(), true, true);
+						else
+							Framing.GetTileSafely(x, y).ClearEverything();
 
 						continue;
 					}
@@ -386,7 +396,7 @@ namespace StarlightRiver.Core
 					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y <= layers["BOTTOM"])
 					{
 						if (t.TileType != TileType<VitricSpike>())
-							PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
+							PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, true, true);
 
 						t.Slope = SlopeType.Solid;
 						KillWall(x, y, false);
@@ -399,10 +409,10 @@ namespace StarlightRiver.Core
 						int lakeProgress = xDif - lakeStart;
 
 						if (lakeProgress == 0)
-							PlaceTile(x - 1, y, TileType<VitricSpike>(), false, true);
+							PlaceTile(x - 1, y, TileType<VitricSpike>(), true, true);
 
 						if (lakeProgress == 30)
-							PlaceTile(x + 1, y, TileType<VitricSpike>(), false, true);
+							PlaceTile(x + 1, y, TileType<VitricSpike>(), true, true);
 
 						t.LiquidType = 1;
 						t.LiquidAmount = 200;
@@ -412,7 +422,7 @@ namespace StarlightRiver.Core
 						{
 							for (int k = 0; k < genRand.Next(2, 3); k++)
 							{
-								PlaceTile(x, y + k, TileType<VitricSpike>(), false, true);
+								PlaceTile(x, y + k, TileType<VitricSpike>(), true, true);
 								t.HasTile = true;
 							}
 						}
@@ -808,6 +818,12 @@ namespace StarlightRiver.Core
 						FindType(cX, cY, -1, ValidGround),
 						FindType(cX + 1, cY, -1, ValidGround)
 						);
+
+					if (cY < 0)
+					{
+						tries++;
+						continue;
+					}
 
 					if (ValidGround.Any(v => v == Main.tile[cX + 1, cY].TileType) && ValidGround.Any(v => v == Main.tile[cX + 2, cY].TileType) && ScanRectangle(cX, cY - 6, 4, 6) < 3)
 					{
