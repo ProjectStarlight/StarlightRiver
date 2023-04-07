@@ -366,14 +366,19 @@ namespace StarlightRiver.Core
 					tunnelStart = xDif;
 				}
 
-				if (makingTunnel && xDif < tunnelStart + tunnelWidth)
-				{
-					//dig tunnel
-					continue;
-				}
-
 				for (int y = layers["FLOOR"] - 9; y < layers["BOTTOM"] + 8; ++y)
 				{
+					int tunnelFinal = tunnelStart + tunnelWidth + (int)Math.Sin(y * 0.2f);
+					if (makingTunnel && xDif < tunnelFinal)
+					{
+						int tunnelDif = xDif - tunnelFinal;
+
+						if (tunnelDif < 3 || tunnelDif > tunnelFinal - 3)
+							PlaceTile(x, y, ModContent.TileType<VitricSpike>(), false, true);
+
+						continue;
+					}
+
 					Tile t = Framing.GetTileSafely(x, y);
 
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
