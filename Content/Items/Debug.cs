@@ -42,7 +42,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.ShrineGen(null, null);
+			StarlightWorld.VitricGen(null, null);
 			return true;
 		}
 	}

@@ -36,7 +36,8 @@ namespace StarlightRiver.Core
 		/// <param name="progress"></param>
 		public static void VitricGen(GenerationProgress progress, GameConfiguration configuration)
 		{
-			progress.Message = "Digging the Vitric Desert";
+			if (progress != null)
+				progress.Message = "Digging the Vitric Desert";
 
 			int vitricHeight = 140;
 			ValidGround = new int[] { instance.Find<ModTile>("VitricSand").Type, instance.Find<ModTile>("VitricSoftSand").Type };
@@ -44,7 +45,7 @@ namespace StarlightRiver.Core
 				TileID.HardenedSand, TileID.FossilOre };
 
 			//Basic biome information
-			vitricBiome = new Rectangle(GenVars.UndergroundDesertLocation.X - 80, GenVars.UndergroundDesertLocation.Y + GenVars.UndergroundDesertLocation.Height, GenVars.UndergroundDesertLocation.Width + 150, vitricHeight);
+			vitricBiome = new Rectangle(GenVars.UndergroundDesertLocation.X - 25, GenVars.UndergroundDesertLocation.Y + GenVars.UndergroundDesertLocation.Height / 2, GenVars.UndergroundDesertLocation.Width + 50, vitricHeight);
 			//Boss arena protection
 			ProtectionWorld.ProtectedRegions.Add(VitricBossArena);
 
@@ -192,7 +193,8 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			progress.Message = "Melting Glass";
+			if (progress != null)
+				progress.Message = "Melting Glass";
 
 			GenConsistentMiniIslands();
 			GenSandstonePillars();
@@ -204,6 +206,7 @@ namespace StarlightRiver.Core
 			GenTemple();
 
 			//GenDesertDecoration();
+			TopHole();
 			FinalCleanup();
 
 			vitricBiome.Y -= 8; //Adjust a bit
@@ -233,6 +236,10 @@ namespace StarlightRiver.Core
 			bool makingLake = false;
 			int lakeStart = 0;
 			int lakeWidth = 30;
+
+			bool makingTunnel = false;
+			int tunnelStart = 0;
+			int tunnelWidth = 30;
 
 			for (int x = vitricBiome.X; x < vitricBiome.X + vitricBiome.Width; x++) //Basic biome shape
 			{
@@ -332,7 +339,7 @@ namespace StarlightRiver.Core
 
 				for (int y = layers["TOP"] - 8; y < layers["CEILING"]; ++y)
 				{
-					if (x > vitricBiome.Center.X - 35 && x <= vitricBiome.Center.X + 36)
+					if (x > vitricBiome.Center.X - 35 && x <= vitricBiome.Center.X + 36) //hole at the top
 						break;
 
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
@@ -351,6 +358,18 @@ namespace StarlightRiver.Core
 					makingLake = true;
 					lakeStart = xDif;
 					lakeWidth = genRand.Next(15, 40);
+				}
+
+				if (!makingLake && xDif > 50 && xDif > vitricBiome.Width / 2 + vitricBiome.Width / 4)
+				{
+					makingTunnel = true;
+					tunnelStart = xDif;
+				}
+
+				if (makingTunnel && xDif < tunnelStart + tunnelWidth)
+				{
+					//dig tunnel
+					continue;
 				}
 
 				for (int y = layers["FLOOR"] - 9; y < layers["BOTTOM"] + 8; ++y)
@@ -943,6 +962,32 @@ namespace StarlightRiver.Core
 
 			RuinedPillarPositions.Add(new Point(x, y));
 			return true;
+		}
+
+		/// <summary>
+		/// Generates the smooth transition into the hole ontop of the biome
+		/// </summary>
+		public static void TopHole()
+		{
+			for (int x = vitricBiome.Center.X - 45; x <= vitricBiome.Center.X + 46; x++)
+			{
+				int offset = (int)(Math.Sin((x - vitricBiome.Center.X - 45) / 90f * 3.14f) * 26);
+
+				for (int y = vitricBiome.Y - 28 + offset; y < vitricBiome.Y; y++)
+				{
+					int yOff = y - (vitricBiome.Y - 28 + offset);
+
+					Tile tile = Framing.GetTileSafely(x, y);
+
+					if (tile.HasTile && tile.TileType != instance.Find<ModTile>("VitricSand").Type)
+						tile.ClearEverything();
+
+					if (Math.Abs(offset) < 18 && yOff < (12 - Math.Abs(offset) / 3))
+						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
+
+					KillWall(x, y, false);
+				}
+			}
 		}
 
 		public static void FinalCleanup()
