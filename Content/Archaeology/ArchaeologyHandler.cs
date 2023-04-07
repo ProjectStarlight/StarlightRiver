@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Map;
-using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace StarlightRiver.Content.Archaeology
@@ -28,7 +27,7 @@ namespace StarlightRiver.Content.Archaeology
 			}
 		}
 
-		public override void LoadWorldData(TagCompound tag)
+		public override void OnWorldLoad()
 		{
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
