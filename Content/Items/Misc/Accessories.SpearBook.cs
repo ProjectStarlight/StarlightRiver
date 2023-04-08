@@ -1,17 +1,14 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Items.BaseTypes;
+﻿using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using static tModPorter.ProgressUpdate;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -32,12 +29,19 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += OverrideSpearEffects;
+			StarlightItem.AltFunctionUseEvent += AllowRightClick;
 
 			AI019SpearsOld_Info = typeof(Projectile).GetMethod("AI_019_Spears_Old", BindingFlags.NonPublic | BindingFlags.Instance);
 			AI019SpearsOld = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019SpearsOld_Info);
 
 			AI019Spears_Info = typeof(Projectile).GetMethod("AI_019_Spears", BindingFlags.NonPublic | BindingFlags.Instance);
 			AI019Spears = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019Spears_Info);
+		}
+
+		public override void Unload()
+		{
+			StarlightItem.CanUseItemEvent -= OverrideSpearEffects;
+			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
 		}
 
 		public void PostLoad()
@@ -51,11 +55,6 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void Unload()
-		{
-			StarlightItem.CanUseItemEvent -= OverrideSpearEffects;
-		}
-
 		public void PostLoadUnload()
 		{
 			spearList.Clear();
@@ -64,6 +63,23 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+		}
+
+		/// <summary>
+		/// Allows the player to right click with spears that don't normally have them
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="player"></param>
+		/// <returns></returns>
+		private bool AllowRightClick(Item item, Player player)
+		{
+			if (Equipped(player))
+			{
+				if (item.DamageType.Type == DamageClass.Melee.Type && spearList[item.shoot] && item.noMelee)
+					return true;
+			}
+
+			return false;
 		}
 
 		private bool OverrideSpearEffects(Item item, Player player)
@@ -78,7 +94,21 @@ namespace StarlightRiver.Content.Items.Misc
 					if (Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<SpearBookProjectile>() && n.owner == player.whoAmI))
 						return false;
 
-					int i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState);
+					int i;
+					if (Main.mouseRight)
+					{
+						i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage * 2 / 3, item.knockBack, player.whoAmI, 5);
+
+						comboState = 0;
+					}
+					else
+					{
+						i = Projectile.NewProjectile(player.GetSource_ItemUse(item), player.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), item.damage, item.knockBack, player.whoAmI, comboState);
+
+						comboState++;
+						comboState %= 5;
+					}
+
 					Projectile proj = Main.projectile[i];
 
 					if (proj.ModProjectile is SpearBookProjectile)
@@ -91,14 +121,9 @@ namespace StarlightRiver.Content.Items.Misc
 						modProj.original = new Projectile();
 						modProj.original.SetDefaults(item.shoot);
 						modProj.original.owner = player.whoAmI;
-						modProj.original.damage = (int)(proj.damage / 1.5f);
+						modProj.original.damage = proj.damage;
 						modProj.original.knockBack = proj.knockBack;
-						modProj.original.localAI[0] = 0;
-						modProj.original.whoAmI = 1;
 					}
-
-					comboState++;
-					comboState %= 5;
 
 					return false;
 				}
@@ -108,7 +133,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	class SpearBookProjectile : ModProjectile, IDrawPrimitive, IDrawAdditive
+	class SpearBookProjectile : ModProjectile, IDrawPrimitive
 	{
 		const int TRAILLENGTH = 50;
 		const int TRAIL2LENGTH = 20;
@@ -135,7 +160,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public Texture2D texture;
 		public Color trailColor;
 
-		public Projectile original;
+		public Projectile? original; // Flurry duplicates do not run original AI
 		private int originalAITimer = 0;
 
 		private float holdout = 0.8f;
@@ -150,14 +175,17 @@ namespace StarlightRiver.Content.Items.Misc
 		private float progressAngle = 0;
 		private Motion motion = Motion.None;
 
+		private int screenshakeCooldown = 0;
+
 		public override string Texture => AssetDirectory.Invisible;
 		public Player Owner => Main.player[Projectile.owner];
-		
+
 		private AttackType CurrentAttack
 		{
 			get => (AttackType)Projectile.ai[0];
 			set => Projectile.ai[0] = (float)value;
 		}
+		private bool FlurryDuplicate => CurrentAttack == AttackType.Stab && original == null;
 		private ref float Timer => ref Projectile.ai[1];
 		private ref float TargetAngle => ref Projectile.ai[2];
 
@@ -170,7 +198,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.penetrate = -1;
 			Projectile.scale = 1.25f;
 			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 36;
+			Projectile.localNPCHitCooldown = 18;
 			Projectile.extraUpdates = 2;
 			Projectile.timeLeft = 3000;
 		}
@@ -183,11 +211,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			OriginalAI();
 
 			Projectile.Center = Owner.Center;
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemAnimation = Owner.itemTime = 2;
+			Owner.itemAnimationMax = 10;
+
+			OriginalAI();
 
 			switch (CurrentAttack)
 			{
@@ -207,11 +237,12 @@ namespace StarlightRiver.Content.Items.Misc
 					ChargedStab();
 					break;
 				case AttackType.Flurry:
-					DownSwing();
+					Flurry();
 					break;
 			}
 
 			Timer++;
+			screenshakeCooldown--;
 
 			Owner.itemRotation = MathHelper.WrapAngle(Projectile.rotation - ((Owner.direction > 0) ? 0 : MathHelper.Pi));
 
@@ -225,7 +256,8 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 start = Owner.MountedCenter;
 			Vector2 end = start;
 
-			if (CurrentAttack == AttackType.ChargedStab) {
+			if (CurrentAttack == AttackType.ChargedStab)
+			{
 				end += 1.25f * GetSpearEndVector();
 			}
 			else if (CurrentAttack == AttackType.Stab)
@@ -243,20 +275,32 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
-			CameraSystem.shake += 2;
 
-			original.StatusNPC(target.whoAmI);
+			// cooldown for screenshake to avoid spazzing out
+			// flurry duplicates also do not have screenshake for the same reason
+			if (screenshakeCooldown < 0 && !FlurryDuplicate)
+			{
+				CameraSystem.shake += 3;
+				screenshakeCooldown = 2;
+			}
+
+			original?.StatusNPC(target.whoAmI);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (CurrentAttack == AttackType.ChargedStab)
 			{
-				if (Main.rand.NextFloat() * 100 < Owner.GetTotalCritChance(DamageClass.Melee) * 2.5f)
+				if (Main.rand.NextFloat() * 100 < (Owner.GetTotalCritChance(DamageClass.Melee) + Owner.HeldItem.crit) * 2f)
 				{
 					modifiers.SetCrit();
 				}
+				modifiers.CritDamage *= 1.5f;
 			}
+
+			// check for flurry or flurry duplicate
+			if (CurrentAttack == AttackType.Flurry || FlurryDuplicate)
+				modifiers.Knockback *= (1 - (target.Center - Owner.Center).Length() / (Projectile.Size.Length() * Projectile.scale)) * 4;
 
 			modifiers.Knockback *= 0.7f;
 			modifiers.HitDirectionOverride = target.position.X > Owner.MountedCenter.X ? 1 : -1;
@@ -297,7 +341,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
-			
+
 			return false;
 		}
 
@@ -323,11 +367,22 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					original.Center = Projectile.Center;
 					original.rotation = Projectile.rotation;
-					original.velocity = GetSpearEndVector() / Projectile.Size.Length() * 10;
+					original.velocity = GetSpearEndVector() / Projectile.Size.Length() * 12.5f;
+					original.ai[0] = 0; // seems to relate to extension of spear, so we set to 0 to prevent dusts from flying too far
 				}
 
+				// run vanilla AI
 				SpearBook.AI019Spears(original);
 				SpearBook.AI019SpearsOld(original);
+
+				// run modded AI if applicable
+				if (original.ModProjectile is ModProjectile modProj)
+				{
+					if (modProj.PreAI())
+						modProj.AI();
+
+					modProj.PostAI();
+				}
 
 				originalAITimer++;
 			}
@@ -451,7 +506,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Projectile.rotation = TargetAngle;
 			holdout = StabEase.Ease(Timer);
-			progress = Timer / 135;
+			progress = Timer / 145;
 
 			Projectile.spriteDirection = Owner.direction;
 
@@ -471,6 +526,33 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Timer > 145)
 				Projectile.Kill();
+		}
+
+		private void Flurry()
+		{
+			ChargedStab();
+
+			Owner.velocity.X *= 0.975f; // slow the player down ever so slightly
+
+			if (Timer > 60 && Timer < 120 && Timer % 10 == 0)
+			{
+				float randomRotation = TargetAngle + (Main.rand.NextFloat() - 0.5f) * MathHelper.Pi / 4;
+				int i = Projectile.NewProjectile(Owner.GetSource_ItemUse(Owner.HeldItem), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<SpearBookProjectile>(), Projectile.damage / 2, Projectile.knockBack, Owner.whoAmI, (float)AttackType.Stab);
+
+				Projectile proj = Main.projectile[i];
+
+				if (proj.ModProjectile is SpearBookProjectile)
+				{
+					var modProj = proj.ModProjectile as SpearBookProjectile;
+					modProj.trailColor = trailColor;
+					modProj.texture = texture;
+					proj.Size = Projectile.Size;
+
+					proj.ai[2] = randomRotation;
+					proj.Opacity = 0.4f;
+					modProj.original = null;
+				}
+			}
 		}
 
 		private Vector2 GetSpearEndVector()
@@ -583,7 +665,7 @@ namespace StarlightRiver.Content.Items.Misc
 						if (factor.X >= 0.98f)
 							return Color.White * 0;
 
-						return trailColor * (float)Math.Min(factor.X, progress) * 0.5f * (float)Math.Sin(progress * 3.14f);
+						return trailColor * (float)Math.Min(factor.X, progress) * 1.5f * (float)Math.Sin(progress * 3.14f);
 					});
 				}
 
@@ -618,24 +700,6 @@ namespace StarlightRiver.Content.Items.Misc
 			if (motion == Motion.Slash2 || motion == Motion.Stab)
 			{
 				trail2?.Render(effect);
-			}
-		}
-
-		public void DrawAdditive(SpriteBatch spriteBatch)
-		{
-			if (CurrentAttack == AttackType.ChargedStab && Timer > 60)
-			{
-				Texture2D texFlare = ModContent.Request<Texture2D>(AssetDirectory.Assets + "StarTexture").Value;
-				Texture2D texBloom = ModContent.Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
-
-				float timer = Timer - 60;
-				float flareRotation = MathHelper.SmoothStep(0, MathHelper.TwoPi, timer / 60f);
-				float flareScale = timer < 30 ? MathHelper.SmoothStep(0, 1, timer / 30f) : MathHelper.SmoothStep(1, 0, (timer - 30) / 30f);
-
-				Vector2 pos = Owner.MountedCenter + GetSpearEndVector() - Vector2.UnitX.RotatedBy(Projectile.rotation) * 10 * Projectile.scale;
-
-				spriteBatch.Draw(texBloom, pos - Main.screenPosition, null, trailColor, 0, texBloom.Size() / 2, 2 * flareScale, default, default);
-				spriteBatch.Draw(texFlare, pos - Main.screenPosition, null, trailColor, flareRotation, texFlare.Size() / 2, 0.5f * flareScale, default, default);
 			}
 		}
 	}
