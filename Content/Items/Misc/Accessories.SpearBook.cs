@@ -5,6 +5,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -19,6 +20,11 @@ namespace StarlightRiver.Content.Items.Misc
 		public int comboState;
 		public static Dictionary<int, bool> spearList;
 
+		public static MethodInfo? AI019SpearsOld_Info;
+		public static Action<Projectile>? AI019SpearsOld;
+		public static MethodInfo? AI019Spears_Info;
+		public static Action<Projectile>? AI019Spears;
+
 		public SpearBook() : base("Snake Technique", "Allows execution of combos with spears\nRight click to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
@@ -26,6 +32,12 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightItem.CanUseItemEvent += OverrideSpearEffects;
+
+			AI019SpearsOld_Info = typeof(Projectile).GetMethod("AI_019_Spears_Old", BindingFlags.NonPublic | BindingFlags.Instance);
+			AI019SpearsOld = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019SpearsOld_Info);
+
+			AI019Spears_Info = typeof(Projectile).GetMethod("AI_019_Spears", BindingFlags.NonPublic | BindingFlags.Instance);
+			AI019Spears = (Action<Projectile>)Delegate.CreateDelegate(typeof(Action<Projectile>), AI019Spears_Info);
 		}
 
 		public void PostLoad()
@@ -75,6 +87,14 @@ namespace StarlightRiver.Content.Items.Misc
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
 						modProj.texture = TextureAssets.Projectile[item.shoot].Value;
 						proj.Size = modProj.texture.Size();
+
+						modProj.original = new Projectile();
+						modProj.original.SetDefaults(item.shoot);
+						modProj.original.owner = player.whoAmI;
+						modProj.original.damage = (int)(proj.damage / 1.5f);
+						modProj.original.knockBack = proj.knockBack;
+						modProj.original.localAI[0] = 0;
+						modProj.original.whoAmI = 1;
 					}
 
 					comboState++;
@@ -115,8 +135,10 @@ namespace StarlightRiver.Content.Items.Misc
 		public Texture2D texture;
 		public Color trailColor;
 
+		public Projectile original;
+		private int originalAITimer = 0;
+
 		private float holdout = 0.8f;
-		private bool active = true;
 		private float xRotation = 0;
 		private float slashRotationOffset = 0;
 
@@ -161,6 +183,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
+			OriginalAI();
+
 			Projectile.Center = Owner.Center;
 			Owner.heldProj = Projectile.whoAmI;
 			Owner.itemAnimation = Owner.itemTime = 2;
@@ -199,7 +223,19 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			float collisionPoint = 0f;
 			Vector2 start = Owner.MountedCenter;
-			Vector2 end = start + Vector2.UnitX.RotatedBy(Projectile.rotation) * Projectile.Size.Length() * Projectile.scale * holdout;
+			Vector2 end = start;
+
+			if (CurrentAttack == AttackType.ChargedStab) {
+				end += 1.25f * GetSpearEndVector();
+			}
+			else if (CurrentAttack == AttackType.Stab)
+			{
+				end += 1.1f * GetSpearEndVector();
+			}
+			else
+			{
+				end += GetSpearEndVector();
+			}
 
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
 		}
@@ -208,6 +244,8 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Helper.PlayPitched(Helpers.Helper.IsFleshy(target) ? "Impacts/StabFleshy" : "Impacts/Clink", 1, Main.rand.NextFloat(), Owner.Center);
 			CameraSystem.shake += 2;
+
+			original.StatusNPC(target.whoAmI);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -265,10 +303,34 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? CanDamage()
 		{
-			if (active)
+			if (motion != Motion.None)
 				return base.CanDamage();
 
 			return false;
+		}
+
+		private void OriginalAI()
+		{
+			if (original != null && Timer % 3 == 0 && motion != Motion.None)
+			{
+				if (originalAITimer < 2)
+				{
+					original.Center = Projectile.Center;
+					original.rotation = Projectile.rotation;
+					original.velocity = TargetAngle.ToRotationVector2() * 5;
+				}
+				else
+				{
+					original.Center = Projectile.Center;
+					original.rotation = Projectile.rotation;
+					original.velocity = GetSpearEndVector() / Projectile.Size.Length() * 10;
+				}
+
+				SpearBook.AI019Spears(original);
+				SpearBook.AI019SpearsOld(original);
+
+				originalAITimer++;
+			}
 		}
 
 		private void DownSwing()
@@ -379,7 +441,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ChargedStab()
 		{
-
 			EaseBuilder StabEase = new EaseBuilder();
 			StabEase.AddPoint(new Vector2(0, 0.6f), EaseFunction.EaseQuinticOut);
 			StabEase.AddPoint(new Vector2(60, 0.3f), EaseFunction.EaseQuinticOut);
@@ -398,11 +459,6 @@ namespace StarlightRiver.Content.Items.Misc
 				motion = Motion.Stab;
 			else
 				motion = Motion.None;
-
-			if (Timer < 65)
-				active = false;
-			else
-				active = true;
 
 			if (Timer > 125)
 				Projectile.Opacity = MathHelper.SmoothStep(1, 0, (Timer - 125) / 20);
