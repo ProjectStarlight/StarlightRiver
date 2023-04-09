@@ -320,6 +320,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					modifiers.SetCrit();
 				}
+
 				modifiers.CritDamage *= 1.5f;
 			}
 
