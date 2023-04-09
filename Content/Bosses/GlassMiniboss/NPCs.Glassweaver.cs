@@ -123,12 +123,6 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			AttackTimer++;
 
-			Dust.NewDustPerfect(arenaPos, ModContent.DustType<Dusts.BlueStamina>());
-
-			Dust.NewDustPerfect(PickSpot(), ModContent.DustType<Dusts.Stamina>());
-			Dust.NewDustPerfect(PickCloseSpot(), ModContent.DustType<Dusts.Void>());
-			Dust.NewDustPerfect(PickSpotSelf(), ModContent.DustType<Dusts.LavaSpark>());
-
 			switch (Phase)
 			{
 				case (int)Phases.SpawnEffects:
