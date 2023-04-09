@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			));
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<MagmaCore>(), 1, 1, 2));
-			npcLoot.Add(ItemDropRule.Common(ItemType<Items.Misc.StaminaUp>(), 1, 1, 1));
+			npcLoot.Add(ItemDropRule.Common(ItemType<StaminaUp>(), 1, 1, 1));
 
 			npcLoot.Add(ItemDropRule.Common(ItemType<Items.BarrierDye.VitricBossBarrierDye>(), 10, 1, 1));
 			npcLoot.Add(ItemDropRule.Common(ItemType<Tiles.Trophies.CeirosTrophyItem>(), 10, 1, 1));

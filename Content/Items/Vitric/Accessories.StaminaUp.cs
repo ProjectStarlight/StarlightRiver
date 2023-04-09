@@ -2,11 +2,11 @@ using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Vitric
 {
 	public class StaminaUp : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public StaminaUp() : base("Glass Stamina Vessel", "Increased maximum stamina by 1") { }
 

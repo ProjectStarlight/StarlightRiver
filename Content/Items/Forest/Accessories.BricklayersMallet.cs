@@ -3,11 +3,11 @@ using StarlightRiver.Core.Systems.ChestLootSystem;
 using System;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Forest
 {
 	public class BricklayersMallet : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.ForestItem + Name;
 
 		public BricklayersMallet() : base("Bricklayer's Mallet", "Doubles block placement and tool range\nDecreases mining speed by 50% for blocks outside your original range") { }
 

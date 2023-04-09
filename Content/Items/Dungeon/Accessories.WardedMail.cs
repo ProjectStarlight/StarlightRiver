@@ -1,13 +1,14 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System.Collections.Generic;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Dungeon
 {
 	public class WardedMail : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.DungeonItem + Name;
 
 		public WardedMail() : base("Warded Mail", "Barrier damage is applied to attackers as thorns \n+Barrier negates 10% more damage \n+40 barrier") { }
 
@@ -32,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ModContent.ItemType<SpikedMail>(), 1);
-			recipe.AddIngredient(ModContent.ItemType<Dungeon.AquaSapphire>(), 1);
+			recipe.AddIngredient(ModContent.ItemType<AquaSapphire>(), 1);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.Register();
 

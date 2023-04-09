@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -7,13 +6,13 @@ using System.Linq;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Gravedigger
 {
 	public class BloodAmulet : SmartAccessory
 	{
 		public int storedDamage;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.GravediggerItem + Name;
 
 		public BloodAmulet() : base("Blood Amulet", "Every 25 damage taken releases a homing bloodbolt \nThese bolts damage enemies and guaruntee they drop life hearts on death") { }
 

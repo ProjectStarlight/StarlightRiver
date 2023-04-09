@@ -1,16 +1,15 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.Items.BaseTypes;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Jungle
 {
 	public class Slitherring : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.JungleItem + Name;
 
 		public Slitherring() : base("Slitherring", "Whips have a chance to shoot out a smaller, snake whip") { }
 
@@ -39,7 +38,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	public class SlitherringWhip : BaseWhip
 	{
-		public override string Texture => AssetDirectory.MiscItem + "SlitherringWhip";
+		public override string Texture => AssetDirectory.JungleItem + "SlitherringWhip";
 
 		public SlitherringWhip() : base("Slither Whip", 15, 0.75f, Color.DarkGreen) { }
 
@@ -83,7 +82,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 			Projectile.ai[0]--;
 			Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
-			Projectile.spriteDirection = (!(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f)) ? 1 : -1;
+			Projectile.spriteDirection = !(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f) ? 1 : -1;
 			if (Projectile.ai[0] <= 0 || player.itemAnimation == 0)
 			{
 				Projectile.Kill();

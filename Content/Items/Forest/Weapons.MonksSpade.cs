@@ -1,15 +1,14 @@
 ﻿using System;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Forest
 {
 	class MonkSpade : ModItem
 	{
 		public float bonusChance = 0;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.ForestItem + Name;
 
 		public override void SetDefaults()
 		{
@@ -34,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 	class MonkSpadeProjectile : ModProjectile
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.ForestItem + Name;
 
 		public override void SetDefaults()
 		{
