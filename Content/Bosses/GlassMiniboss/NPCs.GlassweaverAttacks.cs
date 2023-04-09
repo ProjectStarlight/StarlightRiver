@@ -113,6 +113,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			NPC.rotation = MathHelper.WrapAngle(progress * MathHelper.TwoPi * totalRotations) * NPC.direction * direction;
 		}
 
+		/// <summary>
+		/// The boss leaps into the air and performs 3 staggered charges, slashing a sword each time
+		/// </summary>
 		private void TripleSlash()
 		{
 			attackType = (int)AttackTypes.TripleSlash;
@@ -171,6 +174,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss conjures a spear and leaps into the air, crashing to the ground and summoning 3 bouncing lava orbs after landing
+		/// </summary>
 		private void MagmaSpear()
 		{
 			attackType = (int)AttackTypes.MagmaSpear;
@@ -190,6 +196,12 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				spearIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassSpear>(), 10, 0.2f, Main.myPlayer, 0, NPC.whoAmI);
 				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
+			}
+
+			if (AttackTimer == 5)
+			{
+				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
+					Glint.SpawnGlint(spear.Projectile.Center, new Color(150, 200, 255), new Color(150, 150, 255));
 			}
 
 			if (AttackTimer <= 65)
@@ -236,6 +248,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss conjures a spear and leaps into the air, but this time chucks it at the player to create burning ground
+		/// </summary>
 		private void MagmaSpearAlt()
 		{
 			attackType = (int)AttackTypes.MagmaSpear;
@@ -261,30 +276,36 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, 0.7f, NPC.Center);
 			}
 
+			if (AttackTimer == 5)
+			{
+				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
+					Glint.SpawnGlint(spear.Projectile.Center, new Color(255, 200, 150), new Color(255, 150, 150));
+			}
+
 			if (AttackTimer <= 65)
 			{
 				float jumpProgress = Utils.GetLerpValue(5, 65, AttackTimer, true);
 				NPC.position.X = MathHelper.Lerp(MathHelper.SmoothStep(moveStart.X, moveTarget.X, MathHelper.Min(jumpProgress * 1.1f, 1f)), moveTarget.X + 200 * -NPC.direction, jumpProgress) - NPC.width / 2f;
 				NPC.velocity.Y *= 0.94f;
 				NPC.noGravity = true;
-
-				Dust.NewDustPerfect(moveTarget, ModContent.DustType<Dusts.Stamina>());
 			}
 
 			if (AttackTimer == 65)
 			{
-				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
-				spear.boundToParent = false;
-				spear.Projectile.velocity = (moveTarget + Vector2.UnitY * 32 - spear.Projectile.Center) * 0.05f;
-				spear.Projectile.velocity.X *= 2.5f;
+				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
+				{
+					spear.boundToParent = false;
+					spear.Projectile.velocity = (moveTarget + Vector2.UnitY * 32 - spear.Projectile.Center) * 0.05f;
+					spear.Projectile.velocity.X *= 2.5f;
 
-				NPC.velocity -= spear.Projectile.velocity * 0.35f;
+					NPC.velocity -= spear.Projectile.velocity * 0.35f;
+				}
 			}
 
 			if (AttackTimer > 65 && AttackTimer < 85)
 			{
-				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
-				spear.Projectile.velocity.X *= 0.95f;
+				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
+					spear.Projectile.velocity.X *= 0.95f;
 			}
 
 			if (AttackTimer > 65 && AttackTimer < 160)
@@ -294,8 +315,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 85)
 			{
-				var spear = Main.projectile[spearIndex].ModProjectile as GlassSpear;
-				spear.Projectile.velocity *= 0;
+				if (Main.projectile[spearIndex].ModProjectile is GlassSpear spear)
+					spear.Projectile.velocity *= 0;
 
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSmash", 1f, 0.3f, NPC.Center);
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), Main.projectile[spearIndex].Center, Vector2.Zero, ProjectileType<BurningGround>(), 1, 0, Main.myPlayer);
