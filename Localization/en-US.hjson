@@ -3120,6 +3120,15 @@ Mods: {
 					Right click to deter enemies with a flurry of stabs
 					'''
 			}
+
+			MartialBook: {
+				DisplayName: Martial Encyclopedia
+				Tooltip:
+					'''
+					Effects of Tiger, Snake, and Mantis Techniques
+					+10% melee critical damage
+					'''
+			}
 		}
 
 		Projectiles: {
