@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Core;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -20,7 +21,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateEquip(Player Player)
 		{
-			Player.GetCritChance(DamageClass.Melee) += 10;
+			Player.GetModPlayer<CritMultiPlayer>().MeleeCritMult += 0.1f;
 		}
 
 		public override void SafeSetDefaults()
