@@ -22,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public static MethodInfo? AI019Spears_Info;
 		public static Action<Projectile>? AI019Spears;
 
-		public SpearBook() : base("Snake Technique", "Allows execution of combos with spears\nRight click to deter enemies with a flurry of stabs") { }
+		public SpearBook() : base("Snake Technique", "Allows execution of combos with spears\nLast combo attack has increased critical strike chance and damage\nRight click to deter enemies with a flurry of stabs") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SpearBook";
 
@@ -258,7 +258,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (CurrentAttack == AttackType.ChargedStab)
 			{
-				end += 1.25f * GetSpearEndVector();
+				end += 1.5f * GetSpearEndVector();
 			}
 			else if (CurrentAttack == AttackType.Stab)
 			{
@@ -270,6 +270,27 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
+		}
+
+		public override void CutTiles()
+		{
+			Vector2 start = Owner.MountedCenter;
+			Vector2 end = start;
+
+			if (CurrentAttack == AttackType.ChargedStab)
+			{
+				end += 1.5f * GetSpearEndVector();
+			}
+			else if (CurrentAttack == AttackType.Stab)
+			{
+				end += 1.1f * GetSpearEndVector();
+			}
+			else
+			{
+				end += GetSpearEndVector();
+			}
+
+			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -285,6 +306,10 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 
 			original?.StatusNPC(target.whoAmI);
+
+			// run modded OnHit if applicable
+			if (original?.ModProjectile is ModProjectile modProj)
+				modProj.OnHitNPC(target, hit, damageDone);
 		}
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
@@ -582,11 +607,11 @@ namespace StarlightRiver.Content.Items.Misc
 
 					for (int i = 0; i < TRAILLENGTH; i++)
 					{
-						cache.Add(GetSpearEndVector() * 0.9f);
+						cache.Add(GetSpearEndVector() * 0.8f);
 					}
 				}
 
-				cache.Add(GetSpearEndVector() * 0.9f);
+				cache.Add(GetSpearEndVector() * 0.8f);
 
 				while (cache.Count > TRAILLENGTH)
 				{
@@ -603,16 +628,16 @@ namespace StarlightRiver.Content.Items.Misc
 					for (int i = 0; i < TRAIL2LENGTH; i++)
 					{
 						if (motion == Motion.Stab)
-							cache2.Add(GetSpearEndVector() * 1.25f);
+							cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
 						else
-							cache2.Add(GetSpearEndVector() * 0.9f);
+							cache2.Add(GetSpearEndVector() * 0.8f);
 					}
 				}
 
 				if (motion == Motion.Stab)
-					cache2.Add(GetSpearEndVector() * 1.25f);
+					cache2.Add(GetSpearEndVector() * (CurrentAttack == AttackType.ChargedStab ? 1.5f : 1.25f));
 				else
-					cache2.Add(GetSpearEndVector() * 0.9f);
+					cache2.Add(GetSpearEndVector() * 0.8f);
 
 				while (cache2.Count > TRAIL2LENGTH)
 				{
