@@ -270,7 +270,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			//Stalk
 			if (Vector2.Distance(NPC.Center, basePoint) > 32 && Helpers.Helper.CheckLinearCollision(NPC.Center, basePoint, player.Hitbox, out Vector2 intersect))
 			{
-				if (!StarlightRiver.debugMode)
+				if (StarlightRiver.debugMode)
 					Main.NewText($"Stalk colliding {Main.rand.Next(2000)}");
 
 				if (intersect.X < player.Center.X)
