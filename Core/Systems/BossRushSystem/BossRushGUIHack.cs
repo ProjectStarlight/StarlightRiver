@@ -8,6 +8,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 	{
 		public static bool inMenu;
 
+		public static bool inScoreScreen;
+
 		public override void Load()
 		{
 			On_Main.DrawMenu += DrawBossMenu;
@@ -16,8 +18,14 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		private void UpdateBossMenu(On_Main.orig_UpdateMenu orig)
 		{
-			if (inMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
-				inMenu = false;
+			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+			{
+				if (inMenu)
+					inMenu = false;
+
+				if (inScoreScreen)
+					inScoreScreen = false;
+			}
 
 			orig();
 		}
@@ -25,7 +33,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		private void DrawBossMenu(On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)
 		{
 			if (inMenu)
+			{
 				Main.MenuUI.SetState(UILoader.GetUIState<BossRushMenu>());
+				Main.menuMode = 888;
+			}
+
+			if (inScoreScreen)
+			{
+				Main.MenuUI.SetState(UILoader.GetUIState<BossRushScore>());
+				Main.menuMode = 888;
+			}
 
 			orig(self, gameTime);
 

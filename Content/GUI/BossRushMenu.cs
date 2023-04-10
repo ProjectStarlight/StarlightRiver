@@ -139,10 +139,10 @@ namespace StarlightRiver.Content.GUI
 
 		public override void LeftClick(UIMouseEvent evt)
 		{
-			BossRushSystem.Reset();
-
 			BossRushSystem.isBossRush = true;
 			BossRushSystem.bossRushDifficulty = difficulty;
+
+			BossRushSystem.Reset();
 
 			Main.mapEnabled = false;
 
