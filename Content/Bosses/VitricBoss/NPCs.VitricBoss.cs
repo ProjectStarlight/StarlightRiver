@@ -138,13 +138,13 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = (int)(9000 * bossAdjustment);
+			NPC.lifeMax = 9000;
 			NPC.damage = 40;
 			NPC.defense = 14;
 
 			if (Main.masterMode)
 			{
-				NPC.lifeMax = (int)(14000 * bossAdjustment);
+				NPC.lifeMax = 14000;
 				NPC.damage = 60;
 				NPC.defense = 14;
 			}

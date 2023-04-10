@@ -126,8 +126,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = Main.masterMode ? (int)(8000 * bossAdjustment) : (int)(6000 * bossAdjustment);
-			baseLife = Main.masterMode ? (int)(4000 * bossAdjustment) : (int)(3000 * bossAdjustment);
+			NPC.lifeMax = Main.masterMode ? 8000 : 6000;
+			baseLife = Main.masterMode ? 4000 : 3000;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
