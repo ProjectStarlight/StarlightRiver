@@ -508,6 +508,12 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
 		}
 
+		public override void OnWorldUnload()
+		{
+			if (isBossRush)
+				isBossRush = false;
+		}
+
 		/// <summary>
 		/// Saves if this is a boss rush world, and if so, the arena positions
 		/// </summary>
@@ -525,8 +531,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					tag["stage" + k] = newTag;
 				}
 			}
-
-			isBossRush = false;
 		}
 
 		/// <summary>
