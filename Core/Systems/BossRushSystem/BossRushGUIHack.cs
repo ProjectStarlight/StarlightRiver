@@ -13,21 +13,27 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public override void Load()
 		{
 			On_Main.DrawMenu += DrawBossMenu;
-			On_Main.UpdateMenu += UpdateBossMenu;
+			On_Main.Update += UpdateBossMenu;
 		}
 
-		private void UpdateBossMenu(On_Main.orig_UpdateMenu orig)
+		private void UpdateBossMenu(On_Main.orig_Update orig, Main self, GameTime gameTime)
 		{
-			if (Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
+			if (Main.gameMenu && Main.keyState.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Escape))
 			{
 				if (inMenu)
+				{
 					inMenu = false;
+					Main.menuMode = 0;
+				}
 
 				if (inScoreScreen)
+				{
 					inScoreScreen = false;
+					Main.menuMode = 0;
+				}
 			}
 
-			orig();
+			orig(self, gameTime);
 		}
 
 		private void DrawBossMenu(On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)
