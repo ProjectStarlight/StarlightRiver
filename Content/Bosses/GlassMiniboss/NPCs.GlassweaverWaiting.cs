@@ -198,6 +198,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (TextState >= 4)
 					{
+						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+
 						RichTextBox.ClearButtons();
 
 						RichTextBox.AddButton("I need a key", () =>
@@ -208,7 +210,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 							}
 							else
 							{
-								Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+								Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+								RichTextBox.CloseDialogue();
 							}
 						});
 
@@ -225,6 +228,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 			else if (State == 4) //After talking after win
 			{
+				RichTextBox.OpenDialogue(NPC, "Glassweaver", GetKeyDialogue());
 				RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
 
 				RichTextBox.ClearButtons();
@@ -237,7 +241,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					}
 					else
 					{
-						Item.NewItem(NPC.GetSource_FromThis(), NPC.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 						RichTextBox.CloseDialogue();
 					}
 				});
