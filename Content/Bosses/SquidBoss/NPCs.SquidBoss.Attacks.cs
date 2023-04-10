@@ -560,7 +560,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (AttackTimer == 430 + k * 10)
 					{
 						tentacle.shouldDrawPortal = false;
-						tentacle.NPC.Center = spawnPoint + Vector2.UnitY * 300; //reset position just incase
+						tentacle.NPC.Center = spawnPoint + Vector2.UnitY * 200; //reset position just incase
+						tentacle.basePoint = spawnPoint + Vector2.UnitY * 200;
 
 						if (k == 3)
 							tentacle.State = 1;

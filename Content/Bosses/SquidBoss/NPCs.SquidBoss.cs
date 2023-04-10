@@ -508,6 +508,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						Phase = (int)AIStates.FirstPhaseTwo;
 						GlobalTimer = 0;
+						AttackPhase = 0;
 						ResetAttack();
 						return;
 					}
@@ -584,12 +585,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 275 && GlobalTimer <= 325)
 					Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
-
-				if (GlobalTimer == 325) //make the remaining tentacles vulnerable
-				{
-					foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
-						tentacle.ai[0] = 0;
-				}
 
 				if (GlobalTimer > 325) //continue attacking otherwise
 				{
