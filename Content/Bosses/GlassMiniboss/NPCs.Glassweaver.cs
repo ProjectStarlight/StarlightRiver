@@ -205,7 +205,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 						AttackPhase++;
 
-						if (AttackPhase > 8)
+						if (AttackPhase > 7)
 							AttackPhase = 0;
 
 						attackVariant = Main.rand.NextBool(2);
@@ -225,43 +225,39 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 							break;
 
 						case 1:
-							Whirlwind();
-							break;
-
-						case 2:
 							if (attackVariant)
 								MagmaSpear();
 							else
 								JavelinRain();
 							break;
 
-						case 3:
+						case 2:
 							BigBrightBubble();
 							break;
 
-						case 4:
+						case 3:
 							if (attackVariant)
 								GlassRaise();
 							else
 								GlassRaiseAlt();
 							break;
 
-						case 5:
+						case 4:
 							JavelinRain();
 							break;
 
-						case 6:
+						case 5:
 							TripleSlash();
 							break;
 
-						case 7:
+						case 6:
 							if (attackVariant)
 								MagmaSpear();
 							else
 								MagmaSpearAlt();
 							break;
 
-						case 8:
+						case 7:
 							BigBrightBubble();
 							break;
 
