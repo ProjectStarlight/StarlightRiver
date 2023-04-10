@@ -1,7 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {

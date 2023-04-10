@@ -44,7 +44,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 1.25f),//gravity x/y
-				scale = 15.0f
+				scale = 15.0f,
+				parent = Projectile
 			};
 		}
 

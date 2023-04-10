@@ -18,12 +18,18 @@ namespace StarlightRiver.Content.Items.Food
 		public string ItemTooltip;
 		public int Fill = 0;
 		public IngredientType ThisType { get; set; }
+		public float FullnessMult = 1;
+		public float WellFedMult = 1;
 
-		protected Ingredient(string tooltip, int filling, IngredientType type)
+		/// <param name="tooltip">Extra tooltip lines</param>
+		/// <param name="filling">How much time this should add to the food, time in seconds is this divided by 60</param>
+		protected Ingredient(string tooltip, int filling, IngredientType type, float totalFillMult = 1f, float fullMult = 1)
 		{
 			Fill = filling;
 			ItemTooltip = tooltip;
 			ThisType = type;
+			FullnessMult = totalFillMult;
+			WellFedMult = fullMult;
 		}
 
 		public override string Texture => AssetDirectory.FoodItem + Name;

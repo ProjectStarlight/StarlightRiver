@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Player.velocity.X = 6 * side;
 
 				for (int y = 0; y < 10; y++)//placeholder dash dust
-					Dust.NewDust(Player.BottomLeft + Player.velocity, Player.width, (int)Player.velocity.Y, 6, 3 * -side, 0, 0, default, 2);
+					Dust.NewDust(Player.BottomLeft + Player.velocity, Player.width, (int)Player.velocity.Y, DustID.Torch, 3 * -side, 0, 0, default, 2);
 			}
 
 			if (!Player.controlJump && Player.velocity.Y != 0)
@@ -60,7 +60,7 @@ namespace StarlightRiver.Content.Items.Misc
 					Player.velocity.Y += -2;//if neither or both, then slightly higher jump
 
 					for (int y = 0; y < 8; y++)//placeholder dash dust
-						Dust.NewDust(Player.BottomLeft + Player.velocity, Player.width, (int)Player.velocity.Y, 6, 0, 0, 0, default, 2);
+						Dust.NewDust(Player.BottomLeft + Player.velocity, Player.width, (int)Player.velocity.Y, DustID.Torch, 0, 0, 0, default, 2);
 				}
 				else if (Player.controlLeft)//-1
 				{

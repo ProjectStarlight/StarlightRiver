@@ -50,10 +50,9 @@ namespace StarlightRiver.Core
 			activeCounter = null;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+		public override void OnHurt(Player.HurtInfo info)
 		{
-			if (!pvp)
-				attemptedMedal = default;
+			attemptedMedal = default;
 		}
 
 		public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
@@ -181,6 +180,11 @@ namespace StarlightRiver.Core
 		public static Medal Deserialize(TagCompound tag)
 		{
 			return new Medal(tag.GetString("name"), tag.GetInt("difficulty"), tag.GetFloat("order"));
+		}
+
+		public override int GetHashCode()
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

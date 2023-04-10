@@ -2,6 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace StarlightRiver.Core
@@ -21,7 +22,7 @@ namespace StarlightRiver.Core
 			Main.tileLighted[tile.Type] = true;
 			Main.tileBlockLight[tile.Type] = true;
 
-			ModTranslation name = tile.CreateMapEntryName();
+			LocalizedText name = tile.CreateMapEntryName();
 			name.SetDefault(mapName);
 			tile.AddMapEntry(mapColor, name);
 		}
@@ -40,7 +41,7 @@ namespace StarlightRiver.Core
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 			TileObjectData.addTile(tile.Type);
 
-			ModTranslation name = tile.CreateMapEntryName();
+			LocalizedText name = tile.CreateMapEntryName();
 			name.SetDefault("Metal Bar"); //all bars are called metal bar in vanilla
 
 			if (mapColor != null)
@@ -112,7 +113,7 @@ namespace StarlightRiver.Core
 
 			TileObjectData.addTile(tile.Type);
 
-			ModTranslation name = tile.CreateMapEntryName();
+			LocalizedText name = tile.CreateMapEntryName();
 			name.SetDefault(mapName);
 			tile.AddMapEntry(mapColor, name);
 			tile.DustType = dustType;
@@ -154,7 +155,7 @@ namespace StarlightRiver.Core
 
 			TileObjectData.addTile(tile.Type);
 
-			ModTranslation name = tile.CreateMapEntryName();
+			LocalizedText name = tile.CreateMapEntryName();
 			name.SetDefault(mapName);
 			tile.AddMapEntry(mapColor, name);
 			tile.DustType = dustType;

@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<Dusts.GlowFastDecelerate>(), 0f, 0f, 0, new Color(220, 205, 140), 0.35f);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			VolatileGlobalNPC globalNPC = target.GetGlobalNPC<VolatileGlobalNPC>();
 
@@ -198,22 +198,16 @@ namespace StarlightRiver.Content.Items.Misc
 				VolatileStacks = 0;
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 		{
 			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.07f * VolatileStacks));
+				modifiers.FinalDamage *= 1f + 0.07f * VolatileStacks;
 		}
 
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 		{
 			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.07f * VolatileStacks));
-		}
-
-		public override void ModifyHitPlayer(NPC npc, Player target, ref int damage, ref bool crit)
-		{
-			if (VolatileStacks > 0)
-				damage = (int)(damage * (1f + 0.03f * VolatileStacks));
+				modifiers.FinalDamage *= 1f + 0.03f * VolatileStacks;
 		}
 
 		public override void AI(NPC npc)

@@ -11,17 +11,17 @@ namespace StarlightRiver.Content.CustomHooks
 		//Orig is called when appropriate, but this is still messing with vanilla behavior. Also IL.
 		public override void Load()
 		{
-			On.Terraria.Player.SlopingCollision += PlatformCollision;
+			On_Player.SlopingCollision += PlatformCollision;
 
-			IL.Terraria.Projectile.AI_007_GrapplingHooks += GrapplePlatforms;
+			IL_Projectile.AI_007_GrapplingHooks += GrapplePlatforms;
 		}
 
 		public override void Unload()
 		{
-			IL.Terraria.Projectile.AI_007_GrapplingHooks -= GrapplePlatforms;
+			IL_Projectile.AI_007_GrapplingHooks -= GrapplePlatforms;
 		}
 
-		private void PlatformCollision(On.Terraria.Player.orig_SlopingCollision orig, Player self, bool fallThrough, bool ignorePlats)
+		private void PlatformCollision(On_Player.orig_SlopingCollision orig, Player self, bool fallThrough, bool ignorePlats)
 		{
 
 			if (self.GetModPlayer<StarlightPlayer>().platformTimer > 0)
@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			foreach (NPC NPC in Main.npc)
 			{
-				if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).DontCollide)
+				if (!NPC.active || NPC.ModNPC == null || NPC.ModNPC is not MovingPlatform || (NPC.ModNPC as MovingPlatform).dontCollide)
 
 					continue;
 

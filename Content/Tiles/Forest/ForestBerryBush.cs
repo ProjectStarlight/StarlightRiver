@@ -26,9 +26,9 @@ namespace StarlightRiver.Content.Tiles.Forest
 			var data = TileObjectData.GetTileData(tile.TileType, TileObjectData.GetTileStyle(tile)); //grabs the TileObjectData associated with our tile. So we dont have to use as many magic numbers
 			int fullFrameWidth = data.Width * (data.CoordinateWidth + data.CoordinatePadding); //the width of a full frame of our multitile in pixels. We get this by multiplying the size of 1 full frame with padding by the width of our tile in tiles.
 
-			if ((tile.TileFrameX == 0 || tile.TileFrameX == 36) && tile.TileFrameY % 36 == 0) //this checks to make sure this is only the top-left tile. We only want one tile to do all the growing for us, and top-left is the standard. otherwise each tile in the multitile ticks on its own due to stupid poopoo redcode.
+			if (tile.TileFrameY % 36 == 0) //this checks to make sure this is only the top-left tile. We only want one tile to do all the growing for us, and top-left is the standard. otherwise each tile in the multitile ticks on its own due to stupid poopoo redcode.
 			{
-				if (Main.rand.NextBool(2) && tile.TileFrameX == 0) //a random check here can slow growing as much as you want.
+				if (Main.rand.NextBool(2) && (tile.TileFrameX == 0 || tile.TileFrameX == 36)) //a random check here can slow growing as much as you want.
 				{
 					for (int x = 0; x < data.Width; x++) //this for loop iterates through every COLUMN of the multitile, starting on the top-left.
 					{
@@ -104,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			Item.useTime = 15;
 			Item.useAnimation = 15;
 			Item.useStyle = ItemUseStyleID.EatFood;
-			Item.healLife = 5;
+			Item.healLife = 20;
 			Item.potion = true;
 			Item.UseSound = SoundID.Item2;
 		}
@@ -113,6 +113,16 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			player.AddBuff(BuffID.PotionSickness, 15);
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			var recipe = Recipe.Create(ItemID.LesserHealingPotion, 3);
+			recipe.AddIngredient(ItemID.Bottle, 3);
+			recipe.AddIngredient(ModContent.ItemType<ForestBerries>(), 1);
+			recipe.AddIngredient(ItemID.Gel, 1);
+			recipe.AddTile(TileID.Bottles);
+			recipe.Register();
 		}
 	}
 

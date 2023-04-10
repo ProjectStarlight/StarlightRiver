@@ -32,6 +32,11 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 
 			base.SafeNearbyEffects(i, j, closer);
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	internal class DashBarrierDummy : Dummy

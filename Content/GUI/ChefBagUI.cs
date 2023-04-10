@@ -37,8 +37,6 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			Elements.Clear();
-
 			grid.Left.Set(-220, 0.5f);
 			grid.Top.Set(-220, 0.5f);
 			grid.Width.Set(480, 0);
@@ -49,47 +47,27 @@ namespace StarlightRiver.Content.GUI
 
 			Append(grid);
 
-			SortButton.Left.Set(-260, 0.5f);
-			SortButton.Top.Set(-220, 0.5f);
-			SortButton.Width.Set(32, 0);
-			SortButton.Height.Set(32, 0);
-			SortButton.OnClick += ChangeSortMode;
+			AddElement(SortButton, -260, 0.5f, -220, 0.5f, 32, 0f, 32, 0f);
+			SortButton.OnLeftClick += (a, b) => ChangeSortMode();
 
-			Append(SortButton);
+			AddElement(OwnedButton, -260, 0.5f, -180, 0.5f, 32, 0f, 32, 0f);
+			OwnedButton.OnLeftClick += (a, b) => ChangeOwnedMode();
 
-			OwnedButton.Left.Set(-260, 0.5f);
-			OwnedButton.Top.Set(-180, 0.5f);
-			OwnedButton.Width.Set(32, 0);
-			OwnedButton.Height.Set(32, 0);
-			OwnedButton.OnClick += ChangeOwnedMode;
+			AddElement(IngredientTab, -220, 0.5f, -256, 0.5f, 50, 0f, 28, 0f);
+			IngredientTab.OnLeftClick += (a, b) => RebuildGrid();
 
-			Append(OwnedButton);
-
-			IngredientTab.Left.Set(-220, 0.5f);
-			IngredientTab.Top.Set(-256, 0.5f);
-			IngredientTab.Width.Set(50, 0);
-			IngredientTab.Height.Set(28, 0);
-			IngredientTab.OnClick += (a, b) => RebuildGrid();
-
-			Append(IngredientTab);
-
-			RecipieTab.Left.Set(-160, 0.5f);
-			RecipieTab.Top.Set(-256, 0.5f);
-			RecipieTab.Width.Set(50, 0);
-			RecipieTab.Height.Set(28, 0);
-			RecipieTab.OnClick += (a, b) => RebuildRecipies();
-
-			Append(RecipieTab);
+			AddElement(RecipieTab, -160, 0.5f, -256, 0.5f, 50, 0f, 28, 0f);
+			RecipieTab.OnLeftClick += (a, b) => RebuildRecipies();
 		}
 
-		private void ChangeOwnedMode(UIMouseEvent evt, UIElement listeningElement)
+		private void ChangeOwnedMode()
 		{
 			hideUnowned = !hideUnowned;
 			OwnedButton.SetImage(Request<Texture2D>("StarlightRiver/Assets/GUI/HideButton" + (hideUnowned ? "On" : "Off"), ReLogic.Content.AssetRequestMode.ImmediateLoad));
 			RebuildGrid();
 		}
 
-		private void ChangeSortMode(UIMouseEvent evt, UIElement listeningElement)
+		private void ChangeSortMode()
 		{
 			switch (sortMode)
 			{
@@ -164,7 +142,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (grid._items.Count() == 0)
 				RebuildGrid();
@@ -186,14 +164,14 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class IngredientStorageSlot : UIElement
+	class IngredientStorageSlot : SmartUIElement
 	{
-		public Item Item;
+		public Item item;
 		public float scale;
 
-		public IngredientStorageSlot(Item Item, int index, float scale = 1)
+		public IngredientStorageSlot(Item item, int index, float scale = 1)
 		{
-			this.Item = Item;
+			this.item = item;
 
 			Width.Set(50 * scale, 0);
 			Height.Set(50 * scale, 0);
@@ -206,23 +184,23 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Main.instance.LoadItem(Item.type);
+			Main.instance.LoadItem(item.type);
 
 			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
 			Texture2D texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
-			Texture2D ItemTex = TextureAssets.Item[Item.type].Value;
+			Texture2D ItemTex = TextureAssets.Item[item.type].Value;
 			Vector2 pos = GetDimensions().Center();
 
 			List<Item> items = ChefBagUI.openBag.Items;
-			Item heldItem = items.FirstOrDefault(n => n.type == Item.type);
+			Item heldItem = items.FirstOrDefault(n => n.type == item.type);
 			int count = heldItem is null ? 0 : heldItem.stack;
 
 			Color color = count == 0 ? Color.LightGray * 0.5f : Color.White;
 
-			Color color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
+			Color color2 = (item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
-			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, scale, 0, 0);
+			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(item.rare).MultiplyRGB(color), 0, tex.Size() / 2, scale, 0, 0);
 			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, scale, 0, 0);
 			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, scale, 0, 0);
 			Utils.DrawBorderString(spriteBatch, count.ToString(), pos + Vector2.One * 14, color, 0.8f * scale, 1, 0.5f);
@@ -230,16 +208,16 @@ namespace StarlightRiver.Content.GUI
 			if (IsMouseHovering && count > 0)
 			{
 				Main.LocalPlayer.mouseInterface = true;
-				Main.HoverItem = Item.Clone();
+				Main.HoverItem = item.Clone();
 				Main.hoverItemName = "a";
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (Main.mouseItem.IsAir)
 			{
-				Main.mouseItem = ChefBagUI.openBag.RemoveItem(Item.type) ?? Main.mouseItem;
+				Main.mouseItem = ChefBagUI.openBag.RemoveItem(item.type) ?? Main.mouseItem;
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grab);
 			}
 			else if (ChefBagUI.openBag.InsertItem(Main.LocalPlayer.HeldItem))
@@ -249,16 +227,16 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void RightClick(UIMouseEvent evt)
+		public override void SafeRightClick(UIMouseEvent evt)
 		{
 			if (Main.mouseItem.IsAir)
 			{
-				Main.mouseItem = ChefBagUI.openBag.RemoveItem(Item.type, 1) ?? Main.mouseItem;
+				Main.mouseItem = ChefBagUI.openBag.RemoveItem(item.type, 1) ?? Main.mouseItem;
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 			}
-			else if (Main.mouseItem.type == Item.type && Main.mouseItem.stack < Main.mouseItem.maxStack)
+			else if (Main.mouseItem.type == item.type && Main.mouseItem.stack < Main.mouseItem.maxStack)
 			{
-				Item removal = ChefBagUI.openBag.RemoveItem(Item.type, 1);
+				Item removal = ChefBagUI.openBag.RemoveItem(item.type, 1);
 
 				if (removal != null)
 					Main.mouseItem.stack += removal.stack;
@@ -285,37 +263,37 @@ namespace StarlightRiver.Content.GUI
 
 		private int CompareRarity(IngredientStorageSlot other)
 		{
-			int firstOrder = Item.type > other.Item.type ? 1 : 0;
+			int firstOrder = item.type > other.item.type ? 1 : 0;
 
-			int x = Item.rare * 6 + (int)(Item.ModItem as Ingredient).ThisType * 2 + firstOrder;
-			int y = other.Item.rare * 6 + (int)(other.Item.ModItem as Ingredient).ThisType * 2 + firstOrder;
+			int x = item.rare * 6 + (int)(item.ModItem as Ingredient).ThisType * 2 + firstOrder;
+			int y = other.item.rare * 6 + (int)(other.item.ModItem as Ingredient).ThisType * 2 + firstOrder;
 
 			return x >= y ? 1 : -1;
 		}
 
 		private int CompareType(IngredientStorageSlot other)
 		{
-			int firstOrder = Item.type > other.Item.type ? 1 : 0;
+			int firstOrder = item.type > other.item.type ? 1 : 0;
 
-			int x = (int)(Item.ModItem as Ingredient).ThisType * 24 + Item.rare * 2 + firstOrder;
-			int y = (int)(other.Item.ModItem as Ingredient).ThisType * 24 + other.Item.rare * 2 + firstOrder;
+			int x = (int)(item.ModItem as Ingredient).ThisType * 24 + item.rare * 2 + firstOrder;
+			int y = (int)(other.item.ModItem as Ingredient).ThisType * 24 + other.item.rare * 2 + firstOrder;
 
 			return x >= y ? 1 : -1;
 		}
 
 		private int CompareAlphabetical(IngredientStorageSlot other)
 		{
-			return Item.Name.CompareTo(other.Item.Name);
+			return item.Name.CompareTo(other.item.Name);
 		}
 	}
 
 	class RecipieSlot : IngredientStorageSlot
 	{
-		public BonusIngredient Result => Item.ModItem as BonusIngredient;
+		public BonusIngredient Result => item.ModItem as BonusIngredient;
 
-		public RecipieSlot(Item Item, int index) : base(Item, index)
+		public RecipieSlot(Item item, int index) : base(item, index)
 		{
-			this.Item = Item;
+			this.item = item;
 
 			Width.Set(230, 0);
 			Height.Set(50, 0);
@@ -325,9 +303,9 @@ namespace StarlightRiver.Content.GUI
 
 			for (int k = 0; k < 4; k++)
 			{
-				var item = new Item();
-				item.SetDefaults(Result.Recipie().AsList()[k]);
-				var slot = new IngredientStorageSlot(item, k + 1, 0.8f);
+				var newItem = new Item();
+				newItem.SetDefaults(Result.Recipie().AsList()[k]);
+				var slot = new IngredientStorageSlot(newItem, k + 1, 0.8f);
 				slot.Left.Set(50 + k * 42, 0);
 				slot.Top.Set(8, 0);
 				Append(slot);
@@ -336,25 +314,25 @@ namespace StarlightRiver.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Main.instance.LoadItem(Item.type);
+			Main.instance.LoadItem(item.type);
 
 			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "FoodSlot").Value;
 			Texture2D texOver = Request<Texture2D>(AssetDirectory.GUI + "FoodSlotOver").Value;
-			Texture2D ItemTex = TextureAssets.Item[Item.type].Value;
+			Texture2D ItemTex = TextureAssets.Item[item.type].Value;
 			Vector2 pos = GetDimensions().Center();
 			pos.X = GetDimensions().X + 25;
 
 			List<Item> items = ChefBagUI.openBag.Items;
-			Item heldItem = items.FirstOrDefault(n => n.type == Item.type);
+			Item heldItem = items.FirstOrDefault(n => n.type == item.type);
 
 			Color color = Color.White;
 
-			Color color2 = (Item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
+			Color color2 = (item.ModItem as Ingredient).GetColor().MultiplyRGB(color);
 			color2.A = 0;
 
 			float scale = ItemTex.Width > ItemTex.Height ? 32f / ItemTex.Width : 32f / ItemTex.Height;
 
-			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(Item.rare).MultiplyRGB(color), 0, tex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(tex, pos, null, Terraria.GameContent.UI.ItemRarity.GetColor(item.rare).MultiplyRGB(color), 0, tex.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(texOver, pos, null, color2, 0, tex.Size() / 2, 1, 0, 0);
 			spriteBatch.Draw(ItemTex, pos, null, color, 0, ItemTex.Size() / 2, scale, 0, 0);
 
@@ -363,15 +341,15 @@ namespace StarlightRiver.Content.GUI
 			if (IsMouseHovering && hitbox.Contains(Main.MouseScreen.ToPoint()))
 			{
 				Main.LocalPlayer.mouseInterface = true;
-				Main.HoverItem = Item.Clone();
+				Main.HoverItem = item.Clone();
 				Main.hoverItemName = "a";
 			}
 
-			foreach (UIElement child in Children)
+			foreach (SmartUIElement child in Children)
 				child.Draw(spriteBatch);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			var hitbox = new Rectangle((int)GetDimensions().X, (int)GetDimensions().Y, 50, 50);
 

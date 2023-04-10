@@ -26,7 +26,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			SafeKill(timeLeft);
 
-			if (ValidPoints.Count(n => Main.tile[n.X, n.Y].HasTile) == ValidPoints.Count)
+			if (ValidPoints.Count(n => Framing.GetTileSafely(n.X, n.Y).HasTile) == ValidPoints.Count)
 				GoodEffects();
 			else
 				BadEffects();
@@ -67,11 +67,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					float sin = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f);
 					var colorGlow = new Color(35, 100, 40 + (int)(10 * sin));
 
-					if (!Main.tile[point.X, point.Y].HasTile)
+					if (!Framing.GetTileSafely(point.X, point.Y).HasTile)
 					{
 						Main.spriteBatch.Draw(tex, point.ToVector2() * 16 - Main.screenPosition, new Rectangle(0, off, 16, 16), Color.White);
 						colorGlow = new Color(50, 80, 150 + (int)(30 * sin));
-
 					}
 
 					colorGlow.A = 0;

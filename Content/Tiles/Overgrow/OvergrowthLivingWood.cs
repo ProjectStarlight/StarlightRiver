@@ -1,4 +1,5 @@
 ﻿using Terraria.ID;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Tiles.Overgrow
 {
@@ -17,7 +18,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 			ItemDrop = ModContent.ItemType<OvergrowthLivingWoodItem>();
 			DustType = ModContent.DustType<OvergrowthLivingWoodDust>();
 
-			ModTranslation name = CreateMapEntryName();
+			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Overgrown Living Wood");
 		}
 

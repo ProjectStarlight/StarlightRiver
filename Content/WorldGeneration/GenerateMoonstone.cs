@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using StarlightRiver.Content.Noise;
 using StarlightRiver.Content.Tiles.Moonstone;
 using StarlightRiver.Helpers;
 using System;
@@ -14,12 +15,12 @@ namespace StarlightRiver.Content.WorldGeneration
 	{
 		public void Load(Mod mod)
 		{
-			IL.Terraria.WorldGen.dropMeteor += DropMoonstoneOrMeteor;
+			IL_WorldGen.dropMeteor += DropMoonstoneOrMeteor;
 		}
 
 		public void Unload()
 		{
-			IL.Terraria.WorldGen.dropMeteor -= DropMoonstoneOrMeteor;
+			IL_WorldGen.dropMeteor -= DropMoonstoneOrMeteor;
 		}
 
 		public static void DropMoonstoneOrMeteor(ILContext il)
@@ -122,7 +123,7 @@ namespace StarlightRiver.Content.WorldGeneration
 			for (int k = -craterRadiusX; k < craterRadiusX; k++)
 			{
 				int toRaise = (int)-(Math.Cos(k * 4.71f / craterRadiusX) * craterRadiusY * Math.Pow(noise.GetNoise(0.5f + k / (craterRadiusX * 2), 0.5f), 0.6f));
-				RaiseTerrain(k + (int)origin.X, (int)origin.Y - 20, toRaise).ForEach(n => pointsToUpdate.Add(n));
+				pointsToUpdate.AddRange(RaiseTerrain(k + (int)origin.X, (int)origin.Y - 20, toRaise));
 			}
 
 			var pointsToPlace = new List<Vector2>();

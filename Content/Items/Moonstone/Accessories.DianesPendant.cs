@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -245,7 +246,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
 			BarrierPlayer modPlayer = Player.GetModPlayer<BarrierPlayer>();

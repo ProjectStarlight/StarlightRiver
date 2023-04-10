@@ -1,6 +1,6 @@
-﻿using On.Terraria.GameContent.Achievements;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Terraria.GameContent.Achievements;
 
 namespace StarlightRiver.Content.Items.BaseTypes
 {
@@ -22,6 +22,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		private readonly string tooltip;
 
 		/// <summary>
+		/// When this is first equipped we want to perform onEquip logic to simulate child accessories or other setup data
+		/// Done this way since most inventory logic is client side (but accessories are synced) and this is easier than trying to hunt down places where equipment is set in multiplayer
+		/// </summary>
+		public bool isDoneOnEquip = false;
+
+		/// <summary>
 		/// Override this and add the types of SmartAccessories you want this one to simulate. Note that simulated accessories are reset on unequip/reload, so you will need to save any persistent data on the parent accessory.
 		/// </summary>
 		public virtual List<int> ChildTypes => new();
@@ -41,7 +47,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		{
 			for (int k = 3; k < 10; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
 			{
-				if (Player.IsAValidEquipmentSlotForIteration(k))
+				if (Player.IsItemSlotUnlockedAndUsable(k))
 				{
 					if (Player.armor[k].type == Item.type)
 						return true;
@@ -118,6 +124,8 @@ namespace StarlightRiver.Content.Items.BaseTypes
 				Simulate(type, player);
 
 			OnEquip(player, item);
+
+			isDoneOnEquip = true;
 		}
 
 		/// <summary>
@@ -150,6 +158,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public sealed override void UpdateEquip(Player player)
 		{
+			if (!isDoneOnEquip)
+				Equip(player, Item);
+
 			if (isChild)
 			{
 				var toRemove = new List<Item>(); //Removes unequipped accessories from parents
@@ -197,10 +208,10 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 		public override void Load()
 		{
-			AchievementsHelper.HandleOnEquip += OnEquipHandler;
+			On_AchievementsHelper.HandleOnEquip += OnEquipHandler;
 		}
 
-		private void OnEquipHandler(AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
+		private void OnEquipHandler(On_AchievementsHelper.orig_HandleOnEquip orig, Player player, Item item, int context)
 		{
 			if (item.ModItem is SmartAccessory)
 				(item.ModItem as SmartAccessory).Equip(player, item);
@@ -208,13 +219,13 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			orig(player, item, context);
 		}
 
-		public override void OnEnterWorld(Player player)
+		public override void OnEnterWorld()
 		{
 			simulatedAccessories.Clear();
 
 			for (int k = 3; k <= 7 + Player.extraAccessorySlots; k++)
 			{
-				(player.armor[k].ModItem as SmartAccessory)?.Equip(player, player.armor[k]);
+				(Player.armor[k].ModItem as SmartAccessory)?.Equip(Player, Player.armor[k]);
 			}
 		}
 

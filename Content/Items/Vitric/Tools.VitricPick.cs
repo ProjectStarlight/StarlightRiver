@@ -13,12 +13,12 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Load()
 		{
-			On.Terraria.Player.PickTile += GenerateHeat;
+			On_Player.PickTile += GenerateHeat;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Player.PickTile -= GenerateHeat;
+			On_Player.PickTile -= GenerateHeat;
 		}
 
 		public override void SetStaticDefaults()
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			Item.useTurn = true;
 		}
 
-		private void GenerateHeat(On.Terraria.Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
+		private void GenerateHeat(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
 		{
 			var myPick = self.HeldItem.ModItem as VitricPick;
 			Tile tile = Framing.GetTileSafely(x, y);

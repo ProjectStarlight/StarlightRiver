@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.GUI
 					7 => "Are the logged hours on your Steam account accurate?",
 					8 => "You sure you wanna do this?",
 					9 => "There are easier difficulties you know.",
-					10 => "You can install CheatSheet from the mod browser.",
+					10 => "You can install Dragonlens from the mod browser.",
 					11 => "You can always come back after beating other bosses.",
 					12 => "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 					13 => "Just so you know, Starlight River does not have a pacifist route. Consider changing your playstyle.",

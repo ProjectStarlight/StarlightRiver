@@ -58,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 
 			if ((tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Water || tileDown.LiquidAmount > 0 && tileDown.LiquidType == LiquidID.Water) && Main.rand.Next(10) > 3)//surface lights
 			{
-				var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(Main.rand.Next(30) == 0 ? 200 : 0, Main.rand.Next(150), 255));
+				var d = Dust.NewDustPerfect(pos, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.Zero, 200, new Color(Main.rand.NextBool(30) ? 200 : 0, Main.rand.Next(150), 255));
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.6f, 0.8f));
 
 				if (Main.rand.NextBool())
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			Vector2 pos2 = NPC.Center + Vector2.UnitX.RotatedByRandom(6.28f) * Main.rand.NextFloat(-DUST_RANGE, DUST_RANGE);
 			Tile tile2 = Framing.GetTileSafely(pos2);
 
-			if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.Next(2) == 0)//under water lights
+			if (tile2.LiquidAmount > 0 && tile2.LiquidType == LiquidID.Water && Main.rand.NextBool(2))//under water lights
 			{
 				var d = Dust.NewDustPerfect(pos2, ModContent.DustType<Dusts.AuroraSuction>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(), 0, new Color(0, 50, 255), 0.5f);
 				d.customData = new Dusts.AuroraSuctionData(this, Main.rand.NextFloat(0.4f, 0.5f));

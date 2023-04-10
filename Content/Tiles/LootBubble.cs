@@ -45,6 +45,11 @@ namespace StarlightRiver.Content.Tiles
 
 			return;
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	class LootBubbleDummy : Dummy, IDrawAdditive

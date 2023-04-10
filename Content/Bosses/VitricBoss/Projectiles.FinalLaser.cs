@@ -7,15 +7,18 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 	{
 		public VitricBoss parent;
 
-		public override string Texture => AssetDirectory.VitricBoss + Name;
+		public int direction = -1;
+		public Vector2 endpoint = Vector2.Zero;
+
+		public float aimOffset = 0;
+		public FinalLaser copyDirection = null;
 
 		public ref float Timer => ref Projectile.ai[0];
 		public ref float LaserRotation => ref Projectile.ai[1];
 
 		private float LaserTimer => (Timer - 120) % 400;
 
-		public int direction = -1;
-		public Vector2 endpoint = Vector2.Zero;
+		public override string Texture => AssetDirectory.VitricBoss + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -34,12 +37,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			return false;
 		}
 
-		public void findParent()
+		public void FindParent()
 		{
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
 				NPC NPC = Main.npc[i];
-				if (NPC.active && NPC.type == ModContent.NPCType<VitricBoss>())
+				if (NPC.active && NPC.type == NPCType<VitricBoss>())
 				{
 					parent = NPC.ModNPC as VitricBoss;
 					return;
@@ -52,7 +55,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		public override void AI()
 		{
 			if (parent is null)
-				findParent();
+				FindParent();
 
 			if (parent is null)
 				return;
@@ -71,8 +74,10 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				for (int k = 0; k < 3; k++)
 				{
-					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, new Color(255, Main.rand.Next(200, 255), 100), 1 - Timer / 60f);
+					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
+					Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
+					var swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: new Color(255, Main.rand.Next(200, 255), 100), Scale: Main.rand.NextFloat(1f, 2f));
+					swirl.customData = Projectile.Center;
 				}
 
 				Projectile.scale = Math.Min(1, Timer / 60f);
@@ -80,26 +85,25 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			if (Timer > 120)
 			{
-				//if (LaserTimer == 1)
-				//    Helpers.Helper.PlayPitched("VitricBoss/CeirosLaser", 1, 0, Projectile.Center);
-
 				if (LaserTimer == 140)
 					direction = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() > LaserRotation ? 1 : -1;
+
+				if (LaserTimer == 141 && copyDirection != null)
+					direction = copyDirection.direction;
 
 				if (LaserTimer > 30 && LaserTimer <= 75)
 				{
 					Projectile.netUpdate = true;
-					LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation();
+					LaserRotation = (Main.player[parent.NPC.target].Center - Projectile.Center).ToRotation() + aimOffset;
 
-					float rot = Main.rand.NextFloat(6.28f);
-					Dust.NewDustPerfect(Projectile.Center + Vector2.One.RotatedBy(rot) * 100, DustType<Dusts.Glow>(), Vector2.One.RotatedBy(rot) * -3, 0, Color.Yellow, (LaserTimer - 30) / 45f);
+					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(300, 300);
+					Vector2 vel = pos.DirectionTo(Projectile.Center).RotatedBy(MathHelper.Pi / 2.2f * Main.rand.NextFloatDirection()) * Main.rand.NextFloat(5f);
+					var swirl = Dust.NewDustPerfect(pos, DustType<Dusts.Cinder>(), vel, newColor: new Color(255, Main.rand.Next(200, 255), 100), Scale: Main.rand.NextFloat(1f, 2f));
+					swirl.customData = Projectile.Center;
 				}
 
 				if (LaserTimer == 135)
 					Helpers.Helper.PlayPitched("VitricBoss/LaserFire", 1.0f, 0, Projectile.Center);
-
-				//if (LaserTimer == 150)
-				//Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyFlameBreath);
 
 				if (LaserTimer > 150) //laser is actually active
 				{
@@ -126,7 +130,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 						if (Player.active && !Player.dead && Helpers.Helper.CheckLinearCollision(Projectile.Center, endpoint, Player.Hitbox, out Vector2 point))
 						{
-							Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.masterMode ? 9999999 : Main.expertMode ? 65 : 45, 0, false, false, false, 5);
+							Player.Hurt(Terraria.DataStructures.PlayerDeathReason.ByCustomReason(Player.name + " was reduced to ash"), Main.masterMode ? 9999999 : Main.expertMode ? 65 : 45, 0, false, false, -1, false);
 							endpoint = point;
 							break;
 						}

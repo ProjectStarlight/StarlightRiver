@@ -43,15 +43,14 @@ namespace StarlightRiver.Content.Tiles.Desert
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 			TileObjectData.addTile(Type);
 
-			ModTranslation name = CreateMapEntryName();
+			LocalizedText name = CreateMapEntryName();
 			AddMapEntry(Color.Gold, name, MapChestName);
-			name = CreateMapEntryName(Name + "_Locked");
 			name.SetDefault("Ankh Chest");
 			AddMapEntry(Color.Cyan, name, MapChestName);
 			DustType = DustID.Sand;
 			AdjTiles = new int[] { TileID.Containers };
-			ChestDrop = ModContent.ItemType<AnkhChestItem>();
-			ContainerName.SetDefault("Ankh Chest");
+			ItemDrop = ModContent.ItemType<AnkhChestItem>();
+			//ContainerName.SetDefault("Ankh Chest");
 		}
 
 		public string MapChestName(string name, int i, int j)
@@ -128,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 32, 32, ChestDrop);
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 32, 32, ItemDrop);
 			Chest.DestroyChest(i, j);
 		}
 
@@ -163,13 +162,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			if (player.editedChestName)
 			{
-				NetMessage.SendData(33, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
+				NetMessage.SendData(MessageID.SyncPlayerChest, -1, -1, NetworkText.FromLiteral(Main.chest[player.chest].name), player.chest, 1f, 0f, 0f, 0, 0, 0);
 				player.editedChestName = false;
 			}
 
 			bool isLocked = IsLockedChest(left, top);
 
-			if (Main.netMode == 1 && !isLocked)
+			if (Main.netMode == NetmodeID.MultiplayerClient && !isLocked)
 			{
 				if (left == player.chestX && top == player.chestY && player.chest >= 0)
 				{
@@ -179,7 +178,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 				}
 				else
 				{
-					NetMessage.SendData(31, -1, -1, null, left, top, 0f, 0f, 0, 0, 0);
+					NetMessage.SendData(MessageID.RequestChestOpen, -1, -1, null, left, top, 0f, 0f, 0, 0, 0);
 					Main.stackSplit = 600;
 				}
 			}
@@ -233,7 +232,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			if (chest >= 0 && tile.TileFrameX < 72)
 			{
-				player.cursorItemIconID = ChestDrop;
+				player.cursorItemIconID = ItemDrop;
 				player.cursorItemIconText = "";
 				player.noThrow = 2;
 				player.cursorItemIconEnabled = true;

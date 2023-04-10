@@ -34,56 +34,34 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void PostDraw(Color lightColor)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
+			Player player = Main.player[Main.myPlayer];
 
-			Vector2 pos = Projectile.position + new Vector2(-608, -289) - Main.screenPosition;
+			Vector2 pos = Projectile.position - new Vector2(567, 400) - Main.screenPosition;
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
 			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
 
-			var frame = new Rectangle(0, backdrop.Height / 3 * (int)(Main.GameUpdateCount / 8 % 3), backdrop.Width, backdrop.Height / 3);
+			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - Projectile.position.X, 0) * 0.15f;
+			Texture2D farBackdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdrop").Value;
+			Texture2D farBackdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdropGlow").Value;
+
+			Texture2D backdropBlack = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropBlack").Value;
+
+			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
+
+			LightingBufferRenderer.DrawWithLighting(pos, backdropBlack, frame);
+
+			LightingBufferRenderer.DrawWithLighting(pos + parallaxOffset, farBackdrop, frame);
+			//spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
-			spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
+			//spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-			if (Main.rand.NextBool(3))
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(204 + Main.rand.Next(-10, 10), -94), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(950, 320), new Vector3(1, 0.8f, 0.4f) * 3f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 320), new Vector3(1, 0.8f, 0.4f) * 3f);
 
-			if (Main.rand.NextBool(3))
-				Dust.NewDustPerfect(Projectile.Center + new Vector2(0 + Main.rand.Next(-10, 10), -240), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f).RotatedBy(Main.rand.NextBool() ? 0.6f : -0.6f) * Main.rand.NextFloat(1, 1.5f), 0, new Color(255, Main.rand.Next(150, 200), 80), 0.30f);
+			float pulse = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f) + (float)System.Math.Cos(Main.GameUpdateCount * 0.024f);
 
-			if (Main.rand.NextBool(5))
-			{
-				var d = Dust.NewDustPerfect(Projectile.Center + new Vector2(-110 + Main.rand.Next(120), -130), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
-				d.noGravity = true;
-
-				d = Dust.NewDustPerfect(Projectile.Center + new Vector2(-250 + Main.rand.Next(80), -66), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
-				d.noGravity = true;
-
-				int dist = Main.rand.Next(80);
-				d = Dust.NewDustPerfect(Projectile.Center + new Vector2(10 + dist, -130 + dist), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
-				d.noGravity = true;
-
-				dist = Main.rand.Next(60);
-				d = Dust.NewDustPerfect(Projectile.Center + new Vector2(-110 + dist, -196 - dist), DustType<Dusts.LavaSpark>(), -Vector2.UnitY.RotatedByRandom(0.1f) * Main.rand.NextFloat(0.1f, 0.6f), 0, new Color(255, 220, 120), Main.rand.NextFloat(0.2f));
-				d.noGravity = true;
-			}
-
-			for (int k = 0; k < 5; k++)
-			{
-				Lighting.AddLight(Projectile.Center + new Vector2(200, -280 + k * 35), new Vector3(1, 0.8f, 0.5f));
-			}
-
-			Lighting.AddLight(Projectile.Center + new Vector2(-20, -280), new Vector3(1, 0.8f, 0.5f) * 1.1f);
-			Lighting.AddLight(Projectile.Center + new Vector2(-80, -220), new Vector3(1, 0.8f, 0.5f) * 1.1f);
-			Lighting.AddLight(Projectile.Center + new Vector2(40, -90), new Vector3(1, 0.8f, 0.5f) * 1.1f);
-
-			Lighting.AddLight(Projectile.Center + new Vector2(-260, -80), new Vector3(1, 0.8f, 0.5f) * 0.8f);
-
-			for (int k = 0; k < 3; k++)
-			{
-				Lighting.AddLight(Projectile.Center + new Vector2(130, 200 + k * 35), new Vector3(1, 0.8f, 0.5f) * 1.1f);
-				Lighting.AddLight(Projectile.Center + new Vector2(-130, 200 + k * 35), new Vector3(1, 0.8f, 0.5f) * 1.1f);
-			}
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulse * 0.5f));
 		}
 	}
 }

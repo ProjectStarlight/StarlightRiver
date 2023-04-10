@@ -46,6 +46,11 @@ namespace StarlightRiver.Content.Tiles
 
 			return false;
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	public struct Loot

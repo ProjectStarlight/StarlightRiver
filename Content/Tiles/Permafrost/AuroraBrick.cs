@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -8,6 +8,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	class AuroraBrick : ModTile
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrick";
+
+		public override void Load()
+		{
+			On_Projectile.AI_007_GrapplingHooks_CanTileBeLatchedOnTo += StopGrappling;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -24,6 +29,19 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			float mult = Lighting.Brightness(i, j);
 
 			drawData.colorTint = color.MultiplyRGB(Color.White * mult);
+		}
+
+		private bool StopGrappling(On_Projectile.orig_AI_007_GrapplingHooks_CanTileBeLatchedOnTo orig, Projectile self, int x, int y)
+		{
+			Tile theTile = Framing.GetTileSafely(x, y);
+
+			if (theTile.TileType == TileType<AuroraBrick>())
+			{
+				self.tileCollide = true;
+				return false;
+			}
+
+			return orig(self, x, y);
 		}
 	}
 

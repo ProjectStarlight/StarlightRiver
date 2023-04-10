@@ -24,35 +24,35 @@ namespace StarlightRiver.Core
 		}
 
 		//for on-hit effects that require more specific effects, Projectiles
-		public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref int damage, ref bool crit);
+		public delegate void ModifyHitByProjectileDelegate(Player player, Projectile proj, ref Player.HurtModifiers modifiers);
 		public static event ModifyHitByProjectileDelegate ModifyHitByProjectileEvent;
-		public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
+		public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
 		{
-			ModifyHitByProjectileEvent?.Invoke(Player, proj, ref damage, ref crit);
+			ModifyHitByProjectileEvent?.Invoke(Player, proj, ref modifiers);
 		}
 
 		//for on-hit effects that require more specific effects, contact damage
-		public delegate void ModifyHitByNPCDelegate(Player player, NPC NPC, ref int damage, ref bool crit);
+		public delegate void ModifyHitByNPCDelegate(Player player, NPC NPC, ref Player.HurtModifiers modifiers);
 		public static event ModifyHitByNPCDelegate ModifyHitByNPCEvent;
-		public override void ModifyHitByNPC(NPC NPC, ref int damage, ref bool crit)
+		public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
 		{
-			ModifyHitByNPCEvent?.Invoke(Player, NPC, ref damage, ref crit);
+			ModifyHitByNPCEvent?.Invoke(Player, npc, ref modifiers);
 		}
 
 		//for on-hit effects that run after modifyhitnpc and prehurt, contact damage
-		public delegate void OnHitByNPCDelegate(Player player, NPC npc, int damage, bool crit);
+		public delegate void OnHitByNPCDelegate(Player player, NPC npc, Player.HurtInfo hurtInfo);
 		public static event OnHitByNPCDelegate OnHitByNPCEvent;
-		public override void OnHitByNPC(NPC npc, int damage, bool crit)
+		public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
 		{
-			OnHitByNPCEvent?.Invoke(Player, npc, damage, crit);
+			OnHitByNPCEvent?.Invoke(Player, npc, hurtInfo);
 		}
 
 		//for on-hit effects that run after modifyhitnpc and prehurt, projectile damage
-		public delegate void OnHitByProjectileDelegate(Player player, Projectile projectile, int damage, bool crit);
+		public delegate void OnHitByProjectileDelegate(Player player, Projectile proj, Player.HurtInfo hurtInfo);
 		public static event OnHitByProjectileDelegate OnHitByProjectileEvent;
-		public override void OnHitByProjectile(Projectile projectile, int damage, bool crit)
+		public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
 		{
-			OnHitByProjectileEvent?.Invoke(Player, projectile, damage, crit);
+			OnHitByProjectileEvent?.Invoke(Player, proj, hurtInfo);
 		}
 
 		/// <summary>
@@ -61,11 +61,11 @@ namespace StarlightRiver.Core
 		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
 		/// </summary>
 		public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
-		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit);
-		public override void ModifyHitNPC(Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers);
+		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			AddHitPacket(null, target, damage, knockback, crit);
-			ModifyHitNPCEvent?.Invoke(Player, Item, target, ref damage, ref knockback, ref crit);
+			//AddHitPacket(null, target, damage, knockback, crit); PORTTODO: Change
+			ModifyHitNPCEvent?.Invoke(Player, item, target, ref modifiers);
 		}
 
 		/// <summary>
@@ -74,11 +74,11 @@ namespace StarlightRiver.Core
 		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect beyond editting ref variables.
 		/// </summary>
 		public static event ModifyHitNPCWithProjDelegate ModifyHitNPCWithProjEvent;
-		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection);
-		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public delegate void ModifyHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers);
+		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			AddHitPacket(proj, target, damage, knockback, crit);
-			ModifyHitNPCWithProjEvent?.Invoke(Player, proj, target, ref damage, ref knockback, ref crit, ref hitDirection);
+			//AddHitPacket(proj, target, damage, knockback, crit);  PORTTODO: Change
+			ModifyHitNPCWithProjEvent?.Invoke(Player, proj, target, ref modifiers);
 		}
 
 		/// <summary>
@@ -86,10 +86,10 @@ namespace StarlightRiver.Core
 		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiPlayer.
 		/// </summary>
 		public static event OnHitNPCDelegate OnHitNPCEvent;
-		public delegate void OnHitNPCDelegate(Player player, Item Item, NPC target, int damage, float knockback, bool crit);
-		public override void OnHitNPC(Item Item, NPC target, int damage, float knockback, bool crit)
+		public delegate void OnHitNPCDelegate(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone);
+		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			OnHitNPCEvent?.Invoke(Player, Item, target, damage, knockback, crit);
+			OnHitNPCEvent?.Invoke(Player, item, target, hit, damageDone);
 			SendHitPacket();
 		}
 
@@ -98,10 +98,10 @@ namespace StarlightRiver.Core
 		/// Set StarlightPlayer.shouldSendHitPacket to true to sync if this has an effect for multiPlayer.
 		/// </summary>
 		public static event OnHitNPCWithProjDelegate OnHitNPCWithProjEvent;
-		public delegate void OnHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit);
-		public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+		public delegate void OnHitNPCWithProjDelegate(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone);
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			OnHitNPCWithProjEvent?.Invoke(Player, proj, target, damage, knockback, crit);
+			OnHitNPCWithProjEvent?.Invoke(Player, proj, target, hit, damageDone);
 			SendHitPacket();
 		}
 
@@ -126,36 +126,49 @@ namespace StarlightRiver.Core
 		public static event PostDrawDelegate PostDrawEvent;
 		public void PostDraw(Player player, SpriteBatch spriteBatch)
 		{
-			PostDrawEvent?.Invoke(Player, Main.spriteBatch);
+			PostDrawEvent?.Invoke(player, spriteBatch);
 		}
 
 		public delegate void PreDrawDelegate(Player player, SpriteBatch spriteBatch);
 		public static event PreDrawDelegate PreDrawEvent;
 		public void PreDraw(Player player, SpriteBatch spriteBatch)
 		{
-			PreDrawEvent?.Invoke(Player, Main.spriteBatch);
+			PreDrawEvent?.Invoke(player, spriteBatch);
 		}
 
 		//this is the grossest one. I am sorry, little ones.
-		public delegate bool PreHurtDelegate(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter);
+		public delegate void ModifyHurtDelegate(Player player, ref Player.HurtModifiers modifiers);
 		/// <summary>
 		/// If any PreHurtEvent returns false, the default behavior is overridden.
 		/// </summary>
-		public static event PreHurtDelegate PreHurtEvent;
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		public static event ModifyHurtDelegate ModifyHurtEvent;
+		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
-			if (PreHurtEvent != null)
-			{
-				bool result = true;
-				foreach (PreHurtDelegate del in PreHurtEvent.GetInvocationList())
-				{
-					result &= del(Player, pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
-				}
+			ModifyHurtEvent?.Invoke(Player, ref modifiers);
+		}
 
+		public delegate void PostHurtDelegate(Player player, Player.HurtInfo info);
+		public static event PostHurtDelegate PostHurtEvent;
+		public override void PostHurt(Player.HurtInfo info)
+		{
+			PostHurtEvent?.Invoke(Player, info);
+		}
+
+		public delegate bool ImmuneToDelegate(Player player, PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable);
+		public static event ImmuneToDelegate ImmuneToEvent;
+		public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
+		{
+			bool result = false;
+
+			if (ImmuneToEvent is null)
 				return result;
+
+			foreach (ImmuneToDelegate del in ImmuneToEvent.GetInvocationList())
+			{
+				result &= del.Invoke(Player, damageSource, cooldownCounter, dodgeable);
 			}
 
-			return true;
+			return result;
 		}
 
 		public delegate void PreUpdateBuffsDelegate(Player player);
@@ -170,6 +183,13 @@ namespace StarlightRiver.Core
 		public override void PostUpdateRunSpeeds()
 		{
 			PostUpdateRunSpeedsEvent?.Invoke(Player);
+		}
+
+		public delegate void ModifyDrawInfoDelegate(ref PlayerDrawSet drawInfo);
+		public static event ModifyDrawInfoDelegate ModifyDrawInfoEvent;
+		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
+		{
+			ModifyDrawInfoEvent?.Invoke(ref drawInfo);
 		}
 
 		public override void Unload()
@@ -188,9 +208,10 @@ namespace StarlightRiver.Core
 			PostUpdateEquipsEvent = null;
 			PostUpdateEvent = null;
 			PreDrawEvent = null;
-			PreHurtEvent = null;
+			ModifyHurtEvent = null;
 			PostUpdateRunSpeedsEvent = null;
 			ResetEffectsEvent = null;
+			ModifyDrawInfoEvent = null;
 
 			spawners = null;
 		}

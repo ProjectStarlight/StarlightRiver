@@ -1,7 +1,4 @@
-﻿using Terraria;
-using Terraria.ModLoader;
-
-namespace StarlightRiver.Content.Items.Food.Special
+﻿namespace StarlightRiver.Content.Items.Food.Special
 {
 	internal class Slimejelly : BonusIngredient
 	{

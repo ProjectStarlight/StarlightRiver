@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	class ExtraDefenseInfoPanel : UIElement
+	class ExtraDefenseInfoPanel : SmartUIElement
 	{
 		private readonly Texture2D texture;
 		private readonly int offsetPosition;

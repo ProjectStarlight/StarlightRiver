@@ -61,8 +61,14 @@ namespace StarlightRiver.Helpers
 					Tile tile = Framing.GetTileSafely(position.X + x, position.Y + y); //get the targeted tile
 					tile.TileType = (ushort)type; //set the type of the tile to our multitile
 
+					int yHeight = 0;
+					for (int k = 0; k < data.CoordinateHeights.Length; k++)
+					{
+						yHeight += data.CoordinateHeights[k] + data.CoordinatePadding;
+					}
+
 					tile.TileFrameX = (short)((x + data.Width * xVariants) * (data.CoordinateWidth + data.CoordinatePadding)); //set the X frame appropriately
-					tile.TileFrameY = (short)((y + data.Height * yVariants) * (data.CoordinateHeights[y] + data.CoordinatePadding)); //set the Y frame appropriately
+					tile.TileFrameY = (short)(y * (data.CoordinateHeights[y > 0 ? y - 1 : y] + data.CoordinatePadding) + yVariants * yHeight); //set the Y frame appropriately
 					tile.HasTile = true; //activate the tile
 				}
 			}
@@ -146,4 +152,3 @@ namespace StarlightRiver.Helpers
 		}
 	}
 }
-

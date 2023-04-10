@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Buffs
 			}
 		}
 
-		public override void ModifyBuffTip(ref string tip, ref int rare)
+		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
 			if (Main.npc.Any(n => n.active && n.boss))
 				tip = "An evil presence prevents you from relaxing in the hot springs!";

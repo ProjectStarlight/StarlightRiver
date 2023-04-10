@@ -10,10 +10,10 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawInterface_27_Inventory += DrawInventoryParticles;
+			On_Main.DrawInterface_27_Inventory += DrawInventoryParticles;
 		}
 
-		private void DrawInventoryParticles(On.Terraria.Main.orig_DrawInterface_27_Inventory orig, Main self)
+		private void DrawInventoryParticles(On_Main.orig_DrawInterface_27_Inventory orig, Main self)
 		{
 			orig(self);
 			CursedAccessory.CursedSystem.DrawParticles(Main.spriteBatch);

@@ -198,10 +198,10 @@ namespace StarlightRiver.Core
 		public virtual void FallingTileCollide(Vector2 oldVelocity) { }
 		#endregion
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (ChargeTime > 0)
-				damage = (int)(damage * MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime));
+				modifiers.SourceDamage *= MathHelper.Lerp(DamageMult.X, DamageMult.Y, ChargeTime / MaxChargeTime);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)

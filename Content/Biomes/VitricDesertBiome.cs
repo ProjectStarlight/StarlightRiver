@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Waters;
+using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using Terraria.Graphics.Effects;
 
@@ -17,6 +18,8 @@ namespace StarlightRiver.Content.Biomes
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
 
+		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
+
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Desert");
@@ -24,10 +27,11 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return StarlightWorld.vitricBiome.Contains((player.position / 16).ToPoint());
-		}
+			Rectangle detectionBox = StarlightWorld.vitricBiome;
+			detectionBox.Inflate(Main.screenWidth / 32, Main.screenHeight / 32);
 
-		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
+			return detectionBox.Contains((player.position / 16).ToPoint());
+		}
 
 		public override void OnInBiome(Player player)
 		{
@@ -40,7 +44,7 @@ namespace StarlightRiver.Content.Biomes
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)
 						.UseProgress(6)
-						.UseImage(StarlightRiver.lightingBufferInstance.screenLightingTarget, 0);
+						.UseImage(LightingBuffer.screenLightingTarget.RenderTarget, 0);
 				}
 			}
 			else

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
@@ -37,7 +38,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return !broken;
 		}
 
-		public override void OnHitNPC(Player player, NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (!broken)
 			{
@@ -93,7 +94,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			DisplayName.SetDefault("Enchanted Glass");
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item27);
 		}

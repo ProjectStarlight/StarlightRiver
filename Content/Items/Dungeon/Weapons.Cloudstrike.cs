@@ -176,8 +176,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 	public class CloudstrikeShot : ModProjectile, IDrawAdditive, IDrawPrimitive
 	{
-		public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
-
 		public bool followPlayer = false; //Whether or not the bolt stays on the Player if they move/rotate their mouse
 
 		public float thickness = 1; //Thickness of the trail
@@ -210,6 +208,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		private Vector2 oldPlayerPos = Vector2.Zero; //These 2 variables are used for following the Player
 		private float oldRotation = 0f;
 
+		public NPC host; //Magnetized enemies use this class for the little sparks around them. If this isn't default, the charge is drawn to the enemy
+
 		private float Charge => Projectile.ai[0];
 
 		private float ChargeSqrt => (float)Math.Sqrt(Charge);
@@ -224,6 +224,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		private bool Miniature => Projectile.ai[1] == 2; //If this is true, it's a spark created around the Player
 		private bool Branch => Projectile.ai[1] == 1; //If this is true, it's a branch of the main stream. This means it has a smaller starting ball + can't make further branches
+
+		public override string Texture => AssetDirectory.DungeonItem + "Cloudstrike";
 
 		public override void SetDefaults()
 		{
@@ -323,26 +325,32 @@ namespace StarlightRiver.Content.Items.Dungeon
 				modProj.followPlayer = followPlayer;
 			}
 		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			if (Projectile.timeLeft < 25 || hitTargets.Contains(target))
 				return false;
+
 			return base.CanHitNPC(target);
 		}
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			hitTargets.Add(target);
 			Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Vector2.Zero, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f));
 
 			for (int i = 0; i < 20; i++)
+			{
 				Dust.NewDustPerfect(target.Center + new Vector2(0, 30), ModContent.DustType<Dusts.GlowLine>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 6, 0, new Color(100, 150, 200) * (Power / 30f), 0.5f);
+			}
 
 			for (int j = 0; j < 6; j++)
+			{
 				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<CloudstrikeCircleDust>(), Main.rand.NextFloat(6.28f).ToRotationVector2() * Main.rand.NextFloat() * 3, 0, default, (float)Math.Pow(ChargeSqrt, 0.3f) * 0.3f);
+			}
 
 			Projectile.localNPCImmunity[target.whoAmI] = 2;
 			target.immune[Projectile.owner] = 2;
-			base.OnHitNPC(target, damage, knockback, crit);
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -382,6 +390,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 				Vector2 point = cache[i];
 				Vector2 nextPoint = i == cache.Count - 1 ? Projectile.Center + oldVel : cache[i + 1];
 				Vector2 dir = Vector2.Normalize(nextPoint - point).RotatedBy(Main.rand.NextBool() ? -1.57f : 1.57f);
+
 				if (i > cache.Count - 3 || dir == Vector2.Zero)
 					cache2.Add(point);
 				else
@@ -402,6 +411,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			trail.Positions = cache.ToArray();
 			trail.NextPosition = Projectile.Center + oldVel;
+
 			trail2 ??= new Trail(Main.instance.GraphicsDevice, 50, new TriangularTip(4), factor => thickness * sparkMult * 3 * (float)Math.Pow(ChargeSqrt, 0.7f) * Main.rand.NextFloat(0.55f, 1.45f), factor =>
 			{
 				float progress = EaseFunction.EaseCubicOut.Ease(1 - factor.X);
@@ -523,7 +533,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 			if (Miniature)
 			{
-				Vector2 dir2 = Player.Center + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
+				Vector2 hostCenter = host == default ? Player.Center : host.Center;
+				Vector2 dir2 = hostCenter + Main.rand.NextVector2Circular(12, 12) - Projectile.Center;
 				distance = dir2.Length();
 				rotToBe = Vector2.Normalize(dir2).RotatedBy(curve * 3);
 			}

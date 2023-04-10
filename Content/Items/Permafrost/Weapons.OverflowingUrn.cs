@@ -29,15 +29,15 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overflowing Urn");
-			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will freeze you\nYou have greatly increased defense while frozen");
+			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will frostburn you");
 		}
 
 		public override void SetDefaults()
 		{
-			Item.damage = 20;
+			Item.damage = 15;
 			Item.channel = true;
 			Item.DamageType = DamageClass.Magic;
-			Item.mana = 6;
+			Item.mana = 3;
 			Item.width = 1;
 			Item.height = 34;
 			Item.useTime = 8;
@@ -71,6 +71,12 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 				if (item.animationTimer > 0)
 				{
+					if (Player.HasBuff(ModContent.BuffType<UrnFreeze>()))
+					{
+						tex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overload").Value;
+						overlayTex = ModContent.Request<Texture2D>(AssetDirectory.PermafrostItem + "UrnFreezeUnder_Overlay_Overload").Value;
+					}
+
 					spriteBatch.Draw(tex, Player.Center + Vector2.UnitY * (48 + Player.gfxOffY) - Main.screenPosition, null, Color.White * item.animationTimer, 0, new Vector2(16, 23), item.animationTimer, 0, 0);
 
 					float rectLerper = MathHelper.Clamp(item.freezeTimer / 360f, 0, 1);
@@ -183,9 +189,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Projectile.timeLeft = 20;
 			Projectile.ignoreWater = true;
 			Projectile.hide = true;
-
-			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = 2;
+			Projectile.ownerHitCheck = true;
 		}
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -260,7 +264,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 						sound = soundInstance?.Sound;
 						sound.Volume *= 4;
 					}
-					//Helper.PlayPitched("Effects/HeavyWhoosh", 0.5f, Main.rand.NextFloat(-0.5f, -0.2f), Projectile.Center);
+
 					for (int i = 0; i < freezeTimer / 100 + 1; i++)
 					{
 						if (attackCounter % 2 == 0)
@@ -333,17 +337,27 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
+
+			return Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, targetHitbox);
+		}
+
 		public override bool? CanHitNPC(NPC target)
 		{
 			float rot = (Projectile.rotation + 1.57f * 3) % 6.28f - 3.14f;
 
-			if (windBlowing && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
+			if (!windBlowing)
+				return false;
+
+			if (base.CanHitNPC(target) == true && Helper.CheckConicalCollision(Projectile.Center, 500, rot, 0.3f, target.Hitbox))
 			{
-				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 1);
+				target.AddBuff(ModContent.BuffType<Buffs.PrismaticDrown>(), 20);
 				target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * 0.4f * target.knockBackResist;
 			}
 
-			return false;
+			return base.CanHitNPC(target);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -378,6 +392,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			Main.spriteBatch.Draw(topTex, capPos, null, lightColor * opacity * capOpacity, Projectile.rotation + rot, new Vector2(topTex.Width / 2, tex.Height / 2 + 10), Projectile.scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.Draw(tex, urnPos, null, lightColor * opacity, Projectile.rotation + rot, new Vector2(tex.Width / 2, tex.Height / 2), Projectile.scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 

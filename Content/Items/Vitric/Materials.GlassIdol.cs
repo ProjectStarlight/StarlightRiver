@@ -14,18 +14,20 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.rare = ItemRarityID.Orange;
+			Item.maxStack = 20;
 			Item.width = 32;
 			Item.height = 32;
 		}
 	}
 
-	class GlassIdolPremiumEdition : ModItem
+	class GlassIdolEndless : ModItem
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Used to worship a powerful guardian. Many times.\nMany many times.");
+			DisplayName.SetDefault("Gilded Glass Idol");
+			Tooltip.SetDefault("Used to worship a powerful guardian.\nInfinite uses");
 		}
 
 		public override void SetDefaults()
