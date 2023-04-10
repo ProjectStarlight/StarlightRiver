@@ -162,9 +162,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSlash", 1f, 0.1f, NPC.Center);
 
 				if (Main.masterMode) //Projectile swords on master mode
-				{
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * NPC.direction * 15, ProjectileType<GlassBubbleFragment>(), 12, 1, Main.myPlayer);
-				}
 
 				if (AttackTimer == slashTimes[2] - 1)
 				{
