@@ -5,6 +5,7 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			scoreMult = bossRushDifficulty + 1;
 
 			transitionTimer = 0;
+
+			MasterDeathTicker.animationTimer = 480;
+			UILoader.GetUIState<MessageBox>().Visible = false;
 		}
 
 		/// <summary>
@@ -485,6 +489,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			stars.DrawParticles(sb);
+
+			if (currentStage <= 0) //black before the first boss
+				sb.Draw(texB, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
 		}
 
 		/// <summary>
