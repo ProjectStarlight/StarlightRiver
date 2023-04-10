@@ -161,6 +161,11 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			{
 				Helpers.Helper.PlayPitched("GlassMiniboss/GlassSlash", 1f, 0.1f, NPC.Center);
 
+				if (Main.masterMode) //Projectile swords on master mode
+				{
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * NPC.direction * 15, ProjectileType<GlassBubbleFragment>(), 12, 1, Main.myPlayer);
+				}
+
 				if (AttackTimer == slashTimes[2] - 1)
 				{
 					NPC.TargetClosest();
@@ -183,7 +188,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			int lobCount = 3;
 
 			if (Main.masterMode)
-				lobCount = 15;
+				lobCount = 10;
 			else if (Main.expertMode)
 				lobCount = 4;
 
@@ -235,7 +240,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				for (int i = 0; i < lobCount; i++)
 				{
 					float lobVel = MathHelper.ToRadians(MathHelper.Lerp(6, 90, (float)i / lobCount)) * NPC.direction;
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Main.myPlayer, -44 - i, lobVel);
+					int index = Projectile.NewProjectile(NPC.GetSource_FromAI(), lobPos, Vector2.Zero, ProjectileType<LavaLob>(), 10, 0.2f, Main.myPlayer, -44 - i, lobVel);
+
+					if (Main.masterMode && i % 3 != 0)
+						Main.projectile[index].scale = 0.5f;
 				}
 
 				for (int j = 0; j < 50; j++)
@@ -329,6 +337,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// Currently unused
+		/// </summary>
 		private void Whirlwind()
 		{
 			attackType = (int)AttackTypes.Whirlwind;
@@ -369,6 +380,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss leaps up and summons a large amount of small glass daggers, aimed at the player
+		/// </summary>
 		private void JavelinRain()
 		{
 			attackType = (int)AttackTypes.JavelinRain;
@@ -425,6 +439,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss jumps to one side of the arena, slams a hammer, and summons telegraphed pillars of glass
+		/// </summary>
 		private void GlassRaise()
 		{
 			attackType = (int)AttackTypes.GlassRaise;
@@ -452,10 +469,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			int spikeCount = 5;
 
-			if (Main.masterMode)
-				spikeCount = 12;
-			else if (Main.expertMode)
-				spikeCount = 8;
+			if (Main.expertMode)
+				spikeCount = 7;
 
 			int spikeSpawn = HAMMER_SPAWN_TIME + hammerTime - 65;
 			int betweenSpikes = 5;
@@ -474,7 +489,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		}
 
-		//spikes out from center instead of side
+		/// <summary>
+		/// The boss jumps to the center of the arena, slams a hammer, and summons telegraphed pillars radiating from the center
+		/// </summary>
 		private void GlassRaiseAlt()
 		{
 			attackType = (int)AttackTypes.GlassRaise;
@@ -503,9 +520,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				hammerIndex = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ProjectileType<GlassHammer>(), 40, 1, Main.myPlayer, NPC.whoAmI, hammerTime);
 
 			int spikeCount = 3;
-			if (Main.masterMode)
-				spikeCount = 6;
-			else if (Main.expertMode)
+
+			if (Main.expertMode)
 				spikeCount = 4;
 
 			int spikeSpawn = HAMMER_SPAWN_TIME + hammerTime - 65;
@@ -532,6 +548,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss charges a large sphere of glass, then hits it to have it drift around the arena. After a bit, it explodes into directed high-velocity shards
+		/// </summary>
 		private void BigBrightBubble()
 		{
 			attackType = (int)AttackTypes.BigBrightBubble;
@@ -609,21 +628,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				}
 			}
 
-			if (AttackTimer > BUBBLE_RECOIL_TIME + 80)
+			if (AttackTimer > BUBBLE_RECOIL_TIME + 20)
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss' behavior for hitting the bubble for BigBrightBubble
+		/// </summary>
+		/// <param name="direction">The direction of this vector is used to set the direction of the glass bubble projectile</param>
 		private void HitBubble(Vector2 direction)
 		{
 			Projectile bubble = Main.projectile[bubbleIndex];
-			float speed = 4.77f;
+			float speed = 6.77f;
 
 			if (Main.projectile.IndexInRange(bubbleIndex))
 			{
 				if (bubble.active && bubble.type == ProjectileType<GlassBubble>())
 				{
 					Helpers.Helper.PlayPitched("GlassMiniboss/GlassBounce", 1f, 0f, NPC.Center);
-					CameraSystem.shake += 10;
+					CameraSystem.shake += 5;
 					bubble.velocity = direction * speed;
 					bubble.ai[1] = 1;
 
@@ -631,6 +654,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						Dust.NewDustPerfect(bubble.Center, DustType<Dusts.Cinder>(), Main.rand.NextVector2Circular(6, 3).RotatedBy(NPC.AngleTo(bubble.Center)), 0, GlassColor);
 					}
+				}
+
+				if (Main.masterMode)
+				{
+					int i = Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
+					Main.projectile[i].scale = 0.8f;
+
+					i = Projectile.NewProjectile(NPC.GetSource_FromAI(), bubble.Center, direction.RotatedBy(-1) * speed * 0.6f, ProjectileType<GlassBubble>(), 20, 2f, Main.myPlayer, NPC.whoAmI, 1, 180);
+					Main.projectile[i].scale = 0.8f;
 				}
 			}
 		}
