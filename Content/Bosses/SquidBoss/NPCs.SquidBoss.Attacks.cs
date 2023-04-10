@@ -63,6 +63,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		}
 
 		#region phase 1
+		/// <summary>
+		/// The boss telegraphs and thrusts up each of its tentacles at the player in sequence, them becoming vulnerable afterwards.
+		/// </summary>
 		private void TentacleSpike()
 		{
 			NPC.rotation = NPC.velocity.X * 0.01f;
@@ -194,6 +197,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss moves towards the player and fires off a volley of projectiles
+		/// </summary>
 		private void InkBurst()
 		{
 			if (AttackTimer < 30)
@@ -229,6 +235,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			return;
 		}
 
+		/// <summary>
+		/// The boss moves to the center and fires a pattern of projectiles
+		/// </summary>
 		private void InkBurstAlt()
 		{
 			if (AttackTimer > 45 && AttackTimer < 60)
@@ -288,6 +297,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss spawns a large quantity of auroralings
+		/// </summary>
 		private void SpawnAdds()
 		{
 			RandomizeTarget();
@@ -319,6 +331,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss will select a platform, then use two tentacles to coax the plaxer onto that platform while moving under it. He will then shoot projectiles up at them. One of the containing tentacles is vulnerable.
+		/// </summary>
 		private void PlatformSweep()
 		{
 			var tentacleL = tentacles[0].ModNPC as Tentacle;
@@ -475,6 +490,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 		}
 
+		/// <summary>
+		/// Expert exclusive attack, the boss will move to the center, and poke 3 of its tentacles through portals above platforms. One will be vulnerable. The remaining tentacle will sweep the entire arena in an arc
+		/// </summary>
 		private void ArenaSweep()
 		{
 			if (AttackTimer == 1)
@@ -493,7 +511,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			{
 				var tentacle = tentacles[k].ModNPC as Tentacle;
 
-				if (k != 2)
+				if (k != 2) // logic for the poking tentacles
 				{
 					if (AttackTimer == 1)
 						tentacle.shouldDrawPortal = true;
@@ -542,12 +560,13 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					if (AttackTimer == 430 + k * 10)
 					{
 						tentacle.shouldDrawPortal = false;
+						tentacle.NPC.Center = spawnPoint + Vector2.UnitY * 300; //reset position just incase
 
 						if (k == 3)
 							tentacle.State = 1;
 					}
 				}
-				else
+				else // logic for the sweeping tentacle
 				{
 					if (AttackTimer < 100)
 						tentacle.downwardDrawDistance++;
@@ -578,6 +597,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		#endregion
 
 		#region phase 2
+		/// <summary>
+		/// The boss shoots lines of projectiles upward, with evenly spaced gaps
+		/// </summary>
 		private void Spew()
 		{
 			NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, 200))) * -0.15f;
@@ -627,6 +649,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss shoots a burst of wavy projectiles, in alternating even and odd amounts
+		/// </summary>
 		private void SpewAlternate()
 		{
 			NPC.velocity += Vector2.Normalize(NPC.Center - (Main.player[NPC.target].Center + new Vector2(0, 300))) * -0.15f;
@@ -671,6 +696,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss charges a laser and sweeps the arena. The player must build a bridge to hide above from the laser quickly
+		/// </summary>
 		private void Laser()
 		{
 			GlobalTimer++;
@@ -742,6 +770,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss uses two tentacles to narrow the playing range, and then leaps out of the water and fires wavey projectiles
+		/// </summary>
 		private void Leap()
 		{
 			if (AttackTimer == 1)
@@ -851,6 +882,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// Unused
+		/// </summary>
 		private void LeapHard()
 		{
 			if (AttackTimer == 1)
@@ -916,6 +950,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		#endregion
 
 		#region phase 3
+		/// <summary>
+		/// The boss thrusts its tentacles through portals in sequence, coming out at random points on the side of the arena towards the player
+		/// </summary>
 		private void TentacleSpike2()
 		{
 			for (int k = 0; k < 4; k++)
@@ -1027,6 +1064,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss uses a tentacle to steal platforms from the player
+		/// </summary>
 		private void StealPlatform()
 		{
 			for (int k = 0; k < (Main.masterMode ? 2 : 1); k++)
@@ -1068,6 +1108,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ResetAttack();
 		}
 
+		/// <summary>
+		/// The boss moves upward and fires a burst of wavy proejctiles
+		/// </summary>
 		private void InkBurst2()
 		{
 			if (AttackTimer == 1)
