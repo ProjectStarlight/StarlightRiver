@@ -76,10 +76,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			if (AttackTimer == 30) //Ground ranged and air melee
-			{
-				SpawnEnemy(arenaPos + new Vector2(-450 * PlayerDirection, 0), Pelter, true);
 				SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, -100), FlyingGrunt, false);
-			}
 
 			if (AttackTimer == 40) //Air ranged and support
 				SpawnEnemy(arenaPos + new Vector2(-440 * PlayerDirection, -150), FlyingPelter, false);
@@ -168,22 +165,19 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 20) //Ground melee
 			{
 				SpawnEnemy(arenaPos + new Vector2(200, 0), Shielder, true);
-				SpawnEnemy(arenaPos + new Vector2(260, 0), Grunt, true);
+				SpawnEnemy(arenaPos + new Vector2(260, 0), Pelter, true);
 			}
 
 			if (AttackTimer == 30) //Ground ranged and air melee
 			{
 				SpawnEnemy(arenaPos + new Vector2(-200, 0), Pelter, true);
-				SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingGrunt, false);
+				SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingPelter, false);
 			}
 
 			if (AttackTimer == 40) //Air ranged and support
 			{
-				SpawnEnemy(arenaPos + new Vector2(-320, 0), Supporter, true);
-				SpawnEnemy(arenaPos + new Vector2(-380, 0), Supporter, true);
+				SpawnEnemy(arenaPos + new Vector2(-300, 0), Supporter, true);
 				SpawnEnemy(arenaPos + new Vector2(300, 0), Supporter, true);
-
-				SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
 			}
 
 			if (AttackTimer == 161 && ActiveGauntletCount > 4)
@@ -191,12 +185,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 180)
 			{
-				SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
-
 				SpawnEnemy(arenaPos + new Vector2(320, -50), FlyingGrunt, false);
 
 				SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
+				SpawnEnemy(arenaPos + new Vector2(-280, 0), Pelter, true);
 			}
 
 			if (AttackTimer > 280)
@@ -232,8 +224,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer == 180)
 			{
-				SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
+				SpawnEnemy(arenaPos + new Vector2(-380 * PlayerDirection, -130), FlyingPelter, false);
 				SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
 			}
 
