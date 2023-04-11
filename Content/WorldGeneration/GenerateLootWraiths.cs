@@ -1,16 +1,10 @@
-﻿using Terraria.DataStructures;
-using StarlightRiver.Content.Tiles.Dungeon;
-using System.Linq;
-using Terraria.ID;
-using Terraria.IO;
-using Terraria.WorldBuilding;
-using StarlightRiver.Content.NPCs.Misc;
+﻿using StarlightRiver.Content.NPCs.Misc;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Core
 {
 	public partial class StarlightWorld : ModSystem
 	{
-
 		private void LootWraithGen()
 		{
 			foreach (Chest chest in Main.chest)
