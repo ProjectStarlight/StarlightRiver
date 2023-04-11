@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ObjectData;
 using Terraria.Utilities;
+using Terraria.Localization;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
 {
@@ -58,9 +59,9 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			TileObjectData.newTile.CoordinatePadding = 2;
 			TileObjectData.addTile(Type);
 			AdjTiles = new int[] { TileID.Anvils, TileID.Hellforge};
-			ModTranslation name = CreateMapEntryName();
+			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Funk Forge");
-			AddMapEntry(new Color(200, 200, 200), name);
+			AddMapEntry(Color.Purple, name);
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num)
