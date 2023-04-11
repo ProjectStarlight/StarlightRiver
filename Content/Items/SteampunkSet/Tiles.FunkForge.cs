@@ -30,6 +30,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient(ModContent.ItemType<SuspiciouslyStrangeBrewArtifactItem>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<ImportantScrewArtifactItem>(), 1);
 			recipe.AddIngredient(ModContent.ItemType<InconspicuousPlatingArtifactItem>(), 1);
+			recipe.Register();
 
 			Recipe recipe2 = CreateRecipe();
 			recipe2.AddIngredient(ItemID.Hellforge, 1);
@@ -38,6 +39,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe2.AddIngredient(ModContent.ItemType<SuspiciouslyStrangeBrewArtifactItem>(), 1);
 			recipe2.AddIngredient(ModContent.ItemType<ImportantScrewArtifactItem>(), 1);
 			recipe2.AddIngredient(ModContent.ItemType<InconspicuousPlatingArtifactItem>(), 1);
+			recipe2.Register();
 		}
 	}
 	public class FunkForgeTile : ModTile

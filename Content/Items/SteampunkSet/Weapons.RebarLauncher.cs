@@ -68,11 +68,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			recipe.AddIngredient(ItemID.DemoniteBar, 10);
 			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 
 			Recipe recipe2 = CreateRecipe();
 			recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
 			recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
 			recipe2.AddTile(TileID.Anvils);
+			recipe2.Register();
 		}
 	}
 

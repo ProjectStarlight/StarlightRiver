@@ -35,6 +35,14 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.shoot = ModContent.ProjectileType<CogAmmoProjectile>();
 			Item.shootSpeed = 4.5f;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe(100);
+			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 1);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	internal class CogAmmoProjectile : ModProjectile

@@ -37,7 +37,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.rare = ItemRarityID.Blue;
 		}
 
-		public override void ExtractinatorUse(ref int resultType, ref int resultStack)
+		public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
 		{
 			resultType = ModContent.ItemType<Items.SteampunkSet.AncientGear>();
 			resultStack = Main.rand.Next(1, 4);

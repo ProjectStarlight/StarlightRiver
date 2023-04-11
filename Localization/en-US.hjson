@@ -3129,6 +3129,51 @@ Mods: {
 					+10% melee critical damage
 					'''
 			}
+
+			CopperCogArtifactItem: {
+				DisplayName: Copper Cog
+				Tooltip:
+					'''
+					Can be used at the extractinator 
+					'Our editors work hard to keep our work polished!'
+					'''
+			}
+
+			ImportantScrewArtifactItem: {
+				DisplayName: Important Screw
+				Tooltip:
+					'''
+					Can be used at the extractinator 
+					'No machine would be complete (Or work...) Without it!'
+					'''
+			}
+
+			InconspicuousPlatingArtifactItem: {
+				DisplayName: Inconspicuous Plating
+				Tooltip:
+					'''
+					Can be used at the extractinator 
+					'Stronger than diamonds! Kinda...'
+					'''
+			}
+
+			SuspiciouslyStrangeBrewArtifactItem: {
+				DisplayName: Suspiciously Strange Brew
+				Tooltip:
+					'''
+					Can be used at the extractinator 
+					'1,500 standard proof!'
+					'''
+			}
+
+			FunkForgeItem: {
+				DisplayName: Funk Forge
+				Tooltip:
+					'''
+					Combined effects of anvil and hellforge 
+					Reforges of crafted items are garaunteed to be positive
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3621,6 +3666,7 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			FunkForgeTile.MapEntry: Funk Forge
 		}
 
 		Biomes: {
