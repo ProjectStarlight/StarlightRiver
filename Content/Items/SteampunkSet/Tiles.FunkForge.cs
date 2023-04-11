@@ -1,7 +1,7 @@
 //TODO on funk forge:
 //Glowmask
 //Animations
-//Add lighting
+//Item sprite
 using Microsoft.Xna.Framework;
 using StarlightRiver.Content.Items.BuriedArtifacts;
 using System.Linq;
@@ -48,6 +48,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public override void SetStaticDefaults()
 		{
+			Main.tileLighted[Type] = true;
 			Main.tileFrameImportant[Type] = true;
 			Main.tileSolid[Type] = false;
 			TileObjectData.newTile.Height = 3;
@@ -64,6 +65,13 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			LocalizedText name = CreateMapEntryName();
 			name.SetDefault("Funk Forge");
 			AddMapEntry(Color.Purple, name);
+		}
+
+		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+		{
+			r = 0.4f;
+			g = 0.1f;
+			b = 0.6f;
 		}
 
 		public override void NumDust(int i, int j, bool fail, ref int num)
