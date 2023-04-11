@@ -26,7 +26,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 		private const int NUM_SEGMENTS = 20;
 
 		private int xFrame = 0;
-		private int yFrame = 0;
 
 		private bool takenKnockback = false;
 		private int chargeCounter = 0;
@@ -36,7 +35,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public int xTile = 0;
 		public int yTile = 0;
 
-		private List<Vector2> oldPos = new();
+		private readonly List<Vector2> oldPos = new();
 
 		private int screechTimer = 31;
 
@@ -134,8 +133,8 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 					Vector2 screamPos = NPC.Center + new Vector2(12 * NPC.spriteDirection, -8);
 					DistortionPointHandler.AddPoint(screamPos, 1, 0.5f,
-					(intensity, ticksPassed) => 1 + (MathF.Sin(ticksPassed * 3.14f / 15f)) - (ticksPassed / 30f),
-					(progress, ticksPassed) => 1 - (ticksPassed / 15f),
+					(intensity, ticksPassed) => 1 + MathF.Sin(ticksPassed * 3.14f / 15f) - ticksPassed / 30f,
+					(progress, ticksPassed) => 1 - ticksPassed / 15f,
 					(progress, intensity, ticksPassed) => ticksPassed <= 15);
 
 					for (int i = 0; i < 14; i++)
@@ -197,7 +196,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 					else
 					{
 						Vector2 dustDir = Main.rand.NextVector2CircularEdge(1, 1);
-						Dust.NewDustPerfect(NPC.Center + (dustDir * 15), ModContent.DustType<Dusts.Glow>(), dustDir * Main.rand.NextFloat(5), 0, Color.Cyan, chargeupCounter * 0.5f);
+						Dust.NewDustPerfect(NPC.Center + dustDir * 15, ModContent.DustType<Dusts.Glow>(), dustDir * Main.rand.NextFloat(5), 0, Color.Cyan, chargeupCounter * 0.5f);
 						NPC.rotation = NPC.rotation + Main.rand.NextFloat(chargeupCounter * -0.1f, chargeupCounter * 0.1f);
 						NPC.velocity = Vector2.Zero;
 					}
@@ -222,7 +221,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				else
 				{
 					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
-					Dust.NewDustPerfect(NPC.Center + new Vector2(5 * NPC.spriteDirection, -6) - (dir * 25), ModContent.DustType<GlowLineFast>(), dir * 4, 0, Color.MediumPurple, MathHelper.Min(((chargeCounter % 150) - 50) / 100f, 0.7f));
+					Dust.NewDustPerfect(NPC.Center + new Vector2(5 * NPC.spriteDirection, -6) - dir * 25, ModContent.DustType<GlowLineFast>(), dir * 4, 0, Color.MediumPurple, MathHelper.Min((chargeCounter % 150 - 50) / 100f, 0.7f));
 					NPC.velocity *= 0.96f;
 				}
 			}
@@ -305,7 +304,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public override void FindFrame(int frameHeight)
 		{
 			int frameWidth = NPC.width;
-			NPC.frame = new Rectangle(frameWidth * xFrame, frameHeight * yFrame, frameWidth, frameHeight);
+			NPC.frame = new Rectangle(frameWidth * xFrame, 0, frameWidth, frameHeight);
 		}
 
 		private void UpdateChain()
