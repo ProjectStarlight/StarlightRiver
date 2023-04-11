@@ -5,12 +5,11 @@ namespace StarlightRiver.Content.NPCs.TownModifications
 {
 	class TruffleShopAdditions : GlobalNPC
 	{
-		public override void SetupShop(int type, Chest shop, ref int nextSlot)
+		public override void ModifyShop(NPCShop shop)
 		{
-			if (type == NPCID.Truffle)
+			if (shop.NpcType == NPCID.Truffle)
 			{
-				shop.item[nextSlot].SetDefaults(ModContent.ItemType<JellyShroomItem>());
-				nextSlot++;
+				shop.Add(new NPCShop.Entry(ModContent.ItemType<JellyShroomItem>()));
 			}
 		}
 	}

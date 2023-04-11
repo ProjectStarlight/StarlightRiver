@@ -32,6 +32,9 @@ namespace StarlightRiver.Core.Systems.KeywordSystem
 
 		public override void Load() //temporary debug behavior
 		{
+			if (Main.dedServ)
+				return;
+
 			ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
 			Stream stream = Mod.GetFileStream("Keywords.txt");

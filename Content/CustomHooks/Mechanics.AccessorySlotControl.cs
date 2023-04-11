@@ -8,12 +8,12 @@ namespace StarlightRiver.Content.CustomHooks
 		//Should be a fairly stable hook in theory, but some vanilla behavior is repeated/replaced here. Could be refactored in the future, this is old code.
 		public override void Load()
 		{
-			On.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += HandleSpecialItemInteractions;
-			On.Terraria.UI.ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
-			On.Terraria.UI.ItemSlot.RightClick_ItemArray_int_int += NoSwapCurse;
+			Terraria.UI.On_ItemSlot.LeftClick_ItemArray_int_int += HandleSpecialItemInteractions;
+			Terraria.UI.On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+			Terraria.UI.On_ItemSlot.RightClick_ItemArray_int_int += NoSwapCurse;
 		}
 
-		private void HandleSpecialItemInteractions(On.Terraria.UI.ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+		private void HandleSpecialItemInteractions(Terraria.UI.On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
 			if (inv[slot].ModItem is CursedAccessory && context == 10) //|| inv[slot].ModItem is Blocker)
 			{
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(inv, context, slot);
 		}
 
-		private void NoSwapCurse(On.Terraria.UI.ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+		private void NoSwapCurse(Terraria.UI.On_ItemSlot.orig_RightClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 		{
 			Player Player = Main.player[Main.myPlayer];
 
@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(inv, context, slot);
 		}
 
-		private void DrawSpecial(On.Terraria.UI.ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
+		private void DrawSpecial(Terraria.UI.On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb, Item[] inv, int context, int slot, Vector2 position, Color color)
 		{
 			//TODO: Rewrite this later to be less... noob looking.
 			if (inv[slot].ModItem is CursedAccessory && context == 10)
@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.CustomHooks
 				Color backcolor = (!Main.expertMode && slot == 8) ? Color.White * 0.25f : Color.White * 0.75f;
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-				RedrawItem(sb, inv, back, position, slot, color);
+				RedrawItem(sb, inv, position, slot, color);
 			}
 			//else if ((inv[slot].ModItem is InfectedAccessory || inv[slot].ModItem is Blocker) && context == 10)
 			//{
@@ -87,7 +87,7 @@ namespace StarlightRiver.Content.CustomHooks
 		}
 
 		//this is vanilla code. I cant be assed to try to change this. Only alternative I see is porting this all to IL.
-		internal static void RedrawItem(SpriteBatch sb, Item[] inv, Texture2D back, Vector2 position, int slot, Color color)
+		internal static void RedrawItem(SpriteBatch sb, Item[] inv, Vector2 position, int slot, Color color)
 		{
 			Item Item = inv[slot];
 			Vector2 scaleVector = Vector2.One * 52 * Main.inventoryScale;

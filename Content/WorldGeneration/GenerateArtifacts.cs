@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Archaeology;
 using StarlightRiver.Content.Archaeology.BuriedArtifacts;
-using System;
 using System.Linq;
 using Terraria.ID;
 using Terraria.IO;
@@ -20,6 +19,8 @@ namespace StarlightRiver.Core
 			PlaceLavaArtifacts();
 			PlaceUndergroundArtifacts();
 			PlaceJungleArtifacts();
+			PlaceSnowArtifacts();
+			PlaceHellArtifacts();
 
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
@@ -32,10 +33,10 @@ namespace StarlightRiver.Core
 				  TileID.Sandstone
 			};
 
-			Rectangle range = WorldGen.UndergroundDesertLocation;
+			Rectangle range = GenVars.UndergroundDesertLocation;
 			range.Inflate(500, 500);
 
-			int amount = Main.maxTilesX / 17;
+			int amount = Main.maxTilesX / 12;
 
 			PlaceArtifactPool<DesertArtifact>(range, tiles, amount, 999);
 		}
@@ -49,9 +50,23 @@ namespace StarlightRiver.Core
 			};
 
 			var range = new Rectangle(100, 100, Main.maxTilesX - 200, Main.maxTilesY - 400);
-			int amount = Main.maxTilesX / 12;
+			int amount = Main.maxTilesX / 16;
 
 			PlaceArtifactPool<JungleArtifact>(range, tiles, amount, 4999);
+		}
+
+		private void PlaceSnowArtifacts()
+		{
+			int[] tiles = new int[]
+			{
+				  TileID.SnowBlock,
+				  TileID.IceBlock
+			};
+
+			var range = new Rectangle(100, 100, Main.maxTilesX - 100, Main.maxTilesY - 400);
+			int amount = Main.maxTilesX / 24;
+
+			PlaceArtifactPool<SnowArtifact>(range, tiles, amount, 4999);
 		}
 
 		private void PlaceOceanArtifacts()
@@ -83,6 +98,21 @@ namespace StarlightRiver.Core
 			int amount = Main.maxTilesX / 800;
 
 			PlaceArtifactPool<LavaArtifact>(range, tiles, amount, 999);
+		}
+
+		private void PlaceHellArtifacts()
+		{
+			int[] tiles = new int[]
+			{
+				  TileID.Ash,
+				  TileID.Hellstone
+			};
+
+			var range = new Rectangle(0, Main.maxTilesY - 500, Main.maxTilesX, 500);
+
+			int amount = Main.maxTilesX / 400;
+
+			PlaceArtifactPool<HellArtifact>(range, tiles, amount, 999);
 		}
 
 		private void PlaceUndergroundArtifacts()

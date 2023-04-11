@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
@@ -136,7 +137,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				if (Player.direction != 1)
 					Player.itemRotation -= 3.14f;
 
-				if (timer > 10 && Main.rand.Next(4) == 0)
+				if (timer > 10 && Main.rand.NextBool(4))
 				{
 					float prog = Helper.SwoopEase(Math.Min(1, timer / 50f));
 					float dustRot = Projectile.rotation + 0.1f + Main.rand.NextFloat(-0.3f, 0.3f);
@@ -387,7 +388,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			ManageTrail();
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (target.life <= 0)
 				Projectile.timeLeft = 150;

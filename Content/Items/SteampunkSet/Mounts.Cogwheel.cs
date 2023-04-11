@@ -147,7 +147,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 
 		public CogwheelBuff() : base("Cogwheel", "They see me rollin'", false, true) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
 		}
@@ -180,14 +180,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void ResetEffects()
 		{
 			mounted = false;
-		}
-
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
-		{
-			if (damageSource.SourceOtherIndex == 3 && mounted)
-				return false;
-
-			return base.PreHurt(pvp, quiet, ref damage, ref hitDirection, ref crit, ref customDamage, ref playSound, ref genGore, ref damageSource, ref cooldownCounter);
 		}
 
 		public override void PostUpdate()
@@ -337,11 +329,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			return base.CanHitNPC(target);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(Player.direction);
-			damage = (int)(damage * MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f));
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+			modifiers.HitDirectionOverride = Math.Sign(Player.direction);
+			modifiers.FinalDamage *= MathHelper.Lerp(0.4f, 1.6f, MathHelper.Min(11, Player.velocity.Length()) / 11f);
 		}
 	}
 }

@@ -88,5 +88,10 @@ namespace StarlightRiver.Content.ArmorEnchantment
 
 			return realCopy;
 		}
+
+		public override int GetHashCode()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

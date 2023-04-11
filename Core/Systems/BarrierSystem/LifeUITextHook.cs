@@ -11,7 +11,31 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			if (Main.dedServ)
 				return;
 
-			IL.Terraria.GameContent.UI.ResourceSets.ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText;
+			Terraria.GameContent.UI.ResourceSets.IL_ClassicPlayerResourcesDisplaySet.DrawLife += ShiftText;
+			Terraria.GameContent.UI.ResourceSets.On_CommonResourceBarMethods.DrawLifeMouseOver += DrawBarrierMouseOver;
+		}
+
+		/// <summary>
+		/// Replaces default health bar mouse over text with one that includes barrier text
+		/// </summary>
+		/// <param name="orig"></param>
+		private void DrawBarrierMouseOver(Terraria.GameContent.UI.ResourceSets.On_CommonResourceBarMethods.orig_DrawLifeMouseOver orig)
+		{
+			Player localPlayer = Main.LocalPlayer;
+			BarrierPlayer barrierPlayer = localPlayer.GetModPlayer<BarrierPlayer>();
+
+			if (barrierPlayer.maxBarrier <= 0)
+			{
+				orig.Invoke();
+			}
+			else if (!Main.mouseText)
+			{
+				localPlayer.cursorItemIconEnabled = false;
+				string text = localPlayer.statLife + "/" + localPlayer.statLifeMax2;
+				text += "\n[c/64c8ff:" + barrierPlayer.barrier + "/" + barrierPlayer.maxBarrier + "]";
+				Main.instance.MouseTextHackZoom(text);
+				Main.mouseText = true;
+			}
 		}
 
 		private void ShiftText(ILContext il)

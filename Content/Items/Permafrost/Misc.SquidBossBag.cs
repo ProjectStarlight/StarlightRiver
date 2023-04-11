@@ -1,4 +1,7 @@
-﻿using Terraria.GameContent;
+using StarlightRiver.Content.DropRules;
+using Terraria.GameContent;
+using Terraria.GameContent.Creative;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -7,13 +10,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 	class SquidBossBag : ModItem
 	{
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
-
-		public override int BossBagNPC => NPCType<Bosses.SquidBoss.SquidBoss>();
-
-		public override bool CanRightClick()
-		{
-			return true;
-		}
 
 		public override Color? GetAlpha(Color lightColor)
 		{
@@ -26,6 +22,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 			ItemID.Sets.BossBag[Type] = true;
 			ItemID.Sets.PreHardmodeLikeBossBag[Type] = true;
+
+			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 3;
 		}
 
 		public override void SetDefaults()
@@ -40,25 +38,40 @@ namespace StarlightRiver.Content.Items.Permafrost
 			Item.maxStack = 999;
 		}
 
-		public override void OpenBossBag(Player Player)
+		public override bool CanRightClick()
 		{
-			int weapon = Main.rand.Next(4);
+			return true;
+		}
 
-			for (int k = 0; k < 2; k++) //PORT: k < Main.MasterMode ? 3 : 2
+		public override void ModifyItemLoot(ItemLoot itemLoot)
+		{
+			var notMasterMode = new LeadingConditionRule(new Conditions.NotMasterMode());
+			var masterMode = new LeadingConditionRule(new Conditions.IsMasterMode());
+
+			notMasterMode.ConditionalFewFromOptions(new int[] //drop two items in expert mode
 			{
-				switch (weapon % 2)
-				{
-					case 0: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<OverflowingUrn>()); break;
-					case 1: Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<AuroraBell>()); break;
-						//TODO: Add drops as they're implemented
-				}
+				ItemType<OverflowingUrn>(),
+				ItemType<AuroraBell>(),
+				ItemType<AuroraThroneMountItem>(),
+				ItemType<Tentalance>(),
+				ItemType<Octogun>(),
+				ItemType<TentacleHook>()
+			}, 2);
 
-				weapon++;
-			}
+			masterMode.ConditionalFewFromOptions(new int[] //drop three items in master mode
+			{
+				ItemType<OverflowingUrn>(),
+				ItemType<AuroraBell>(),
+				ItemType<AuroraThroneMountItem>(),
+				ItemType<Tentalance>(),
+				ItemType<Octogun>(),
+				ItemType<TentacleHook>()
+			}, 3);
 
-			if (Main.rand.NextBool(3))
-				Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<SquidFins>());
-			//Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<ShatteredAegis>()); Expert item?
+			itemLoot.Add(notMasterMode);
+			itemLoot.Add(masterMode);
+
+			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 3));
 		}
 
 		//This method is stolen from examplemod and I trust it to emulate vanilla accurately

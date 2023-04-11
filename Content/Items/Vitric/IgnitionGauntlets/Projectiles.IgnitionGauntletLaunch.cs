@@ -16,12 +16,12 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawDust += DrawCone;
+			On_Main.DrawDust += DrawCone;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Main.DrawDust -= DrawCone;
+			On_Main.DrawDust -= DrawCone;
 		}
 
 		public override void SetStaticDefaults()
@@ -68,7 +68,7 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 			return false;
 		}
 
-		private void DrawCone(On.Terraria.Main.orig_DrawDust orig, Main self) //putting this here so I dont have to load another detour to get it to load in front of the fist
+		private void DrawCone(On_Main.orig_DrawDust orig, Main self) //putting this here so I dont have to load another detour to get it to load in front of the fist
 		{
 			orig(self);
 

@@ -52,7 +52,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 0.25f),//gravity x/y
-				scale = 0.4f
+				scale = 0.4f,
+				parent = Projectile
 			};
 
 			ChainShort = new VerletChain(6, false, Projectile.Center + new Vector2(14, -26), 8)
@@ -60,7 +61,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 				constraintRepetitions = 2,//defaults to 2, raising this lowers stretching at the cost of performance
 				drag = 2f,//This number defaults to 1, Is very sensitive
 				forceGravity = new Vector2(0f, 0.22f),//gravity x/y
-				scale = 0.5f
+				scale = 0.5f,
+				parent = Projectile
 			};
 		}
 

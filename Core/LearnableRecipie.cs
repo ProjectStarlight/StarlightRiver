@@ -33,9 +33,9 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public static Recipe.Condition GetCondition(Item result)
+		public static Condition GetCondition(Item result)
 		{
-			return new Recipe.Condition(NetworkText.FromLiteral("Must be unlocked"), n => RecipeSystem.knownRecipies.Contains(result.Name));
+			return new Condition(LocalizedText.Empty, () => RecipeSystem.knownRecipies.Contains(result.Name));
 		}
 	}
 }

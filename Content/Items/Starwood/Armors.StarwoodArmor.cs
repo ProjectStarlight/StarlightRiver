@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void Load()//adds method to Starlight Player event
 		{
-			StarlightPlayer.ModifyHitNPCEvent += ModifyHitNPCStarwood;
+			StarlightPlayer.OnHitNPCEvent += ModifyHitNPCStarwood;
 		}
 
 		public override void SetStaticDefaults()
@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		private void ModifyHitNPCStarwood(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)//sets bool on hit NPCs
+		private void ModifyHitNPCStarwood(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)//sets bool on hit NPCs
 		{
 			if (ArmorHelper.IsSetEquipped(this, Player))
 				target.GetGlobalNPC<ManastarDrops>().DropStar = true;

@@ -17,7 +17,7 @@ namespace StarlightRiver.Core
 
 		private static Vector2 FindSand()
 		{
-			for (int i = WorldGen.UndergroundDesertLocation.X; i < Main.maxTilesX; i++)
+			for (int i = GenVars.UndergroundDesertLocation.X; i < Main.maxTilesX; i++)
 			{
 				for (int j = 0; j < Main.maxTilesY; j++)
 				{
@@ -31,7 +31,7 @@ namespace StarlightRiver.Core
 				}
 			}
 
-			return new Vector2(WorldGen.UndergroundDesertLocation.X, 400);
+			return new Vector2(GenVars.UndergroundDesertLocation.X, 400);
 		}
 	}
 }

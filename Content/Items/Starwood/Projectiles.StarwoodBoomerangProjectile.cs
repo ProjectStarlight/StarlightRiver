@@ -159,7 +159,7 @@ namespace StarlightRiver.Content.Items.Starwood
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Projectile.ai[0] == 1)
 			{
@@ -167,24 +167,24 @@ namespace StarlightRiver.Content.Items.Starwood
 				{
 					if (empowered)
 					{
-						damage *= ScaleMult;
-						knockback *= ScaleMult;
+						modifiers.SourceDamage *= ScaleMult;
+						modifiers.Knockback *= ScaleMult;
 					}
 					else
 					{
-						damage *= ScaleMult;
-						knockback *= ScaleMult;
+						modifiers.SourceDamage *= ScaleMult;
+						modifiers.Knockback *= ScaleMult;
 					}
 				}
 				else
 				{
-					damage = ScaleMult;
-					knockback *= 0.1f;
+					modifiers.SourceDamage -= int.MaxValue;
+					modifiers.Knockback *= 0.1f;
 				}
 			}
 			else if (empowered)
 			{
-				damage += 3;
+				modifiers.SourceDamage += 3;
 			}
 		}
 
@@ -194,12 +194,12 @@ namespace StarlightRiver.Content.Items.Starwood
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			NextPhase(0, true);
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo info)
 		{
 			NextPhase(0, true);
 		}

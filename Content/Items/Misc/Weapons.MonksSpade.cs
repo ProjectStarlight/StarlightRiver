@@ -1,5 +1,5 @@
 ﻿using System;
-using Terraria.Audio;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.knockBack = 2.5f;
 			Item.autoReuse = true;
 
-			Item.UseSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/GlassMinibossSword");
+			Item.UseSound = SoundID.Item18;
 
 			Item.shoot = ProjectileType<MonkSpadeProjectile>();
 			Item.shootSpeed = 1;
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			var ownerSpade = Main.player[Projectile.owner].HeldItem.ModItem as MonkSpade;
 

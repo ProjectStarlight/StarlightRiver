@@ -12,10 +12,10 @@ namespace StarlightRiver.Content.CustomHooks
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_TransformDrawData += CustomTransformations;
+			Terraria.DataStructures.On_PlayerDrawLayers.DrawPlayer_TransformDrawData += CustomTransformations;
 		}
 
-		private void CustomTransformations(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
+		private void CustomTransformations(Terraria.DataStructures.On_PlayerDrawLayers.orig_DrawPlayer_TransformDrawData orig, ref PlayerDrawSet drawinfo)
 		{
 			orig(ref drawinfo);
 			for (int k = 0; k < drawinfo.DrawDataCache.Count; k++)

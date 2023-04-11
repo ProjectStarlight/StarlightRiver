@@ -10,6 +10,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -96,7 +97,7 @@ namespace StarlightRiver.Core
 			Timer++;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+		public override void OnHurt(Player.HurtInfo info)
 		{
 			justHit = true;
 			lastHit = Timer;
@@ -137,10 +138,9 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void OnEnterWorld(Player Player)
+		public override void OnEnterWorld()
 		{
 			ZoomHandler.SetZoomAnimation(Main.GameZoomTarget, 1);
-			StarlightRiver.lightingBufferInstance.ResizeBuffers(Main.screenWidth, Main.screenHeight);
 
 			rotation = 0;
 
@@ -158,7 +158,7 @@ namespace StarlightRiver.Core
 			}
 		}
 
-		public override void OnRespawn(Player Player)
+		public override void OnRespawn()
 		{
 			if (Player == Main.LocalPlayer)
 				CameraSystem.Reset();
@@ -167,7 +167,7 @@ namespace StarlightRiver.Core
 			inTutorial = false;
 		}
 
-		public override void PlayerConnect(Player Player)
+		public override void PlayerConnect()
 		{
 			var packet = new AbilityProgress(Main.myPlayer, Main.LocalPlayer.GetHandler());
 			packet.Send(runLocally: false);
@@ -194,7 +194,7 @@ namespace StarlightRiver.Core
 					if (modPlayer.Charges >= 1 && target != default)
 					{
 						Helper.PlayPitched("Effects/Chirp" + (Main.rand.Next(2) + 1).ToString(), 0.5f, 0);
-						drone.ScanTimer = SpotterDrone.ScanTime;
+						drone.ScanTimer = SpotterDrone.SCAN_TIME;
 						drone.Charges = Player.GetModPlayer<BreacherPlayer>().Charges;
 						Player.GetModPlayer<BreacherPlayer>().ticks = 0;
 					}

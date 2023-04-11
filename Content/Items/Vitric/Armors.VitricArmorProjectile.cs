@@ -3,6 +3,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -46,6 +47,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Enchanted Glass");
+		}
+
+		public override bool? CanHitNPC(NPC target)
+		{
+			return false;
 		}
 
 		public override void AI()
@@ -212,7 +218,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			for (int k = 0; k < 20; k++)
 			{

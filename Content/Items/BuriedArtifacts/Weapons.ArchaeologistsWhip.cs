@@ -27,15 +27,16 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 	public class ArchaeologistsWhip_Whip : BaseWhip
 	{
+		const int X_FRAMES = 1;
+		const int Y_FRAMES = 5;
+
+		int xFrame;
+
 		protected bool Empowered => Main.player[Projectile.owner].HasBuff(ModContent.BuffType<ArchaeologistsBuff>());
 
 		public override string Texture => AssetDirectory.ArtifactItem + Name;
 
-		public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97))
-		{
-			xFrames = 1;
-			yFrames = 5;
-		}
+		public ArchaeologistsWhip_Whip() : base("Archaeologist's Whip", 15, 0.87f, new Color(153, 122, 97)) { }
 
 		public override int SegmentVariant(int segment)
 		{
@@ -67,7 +68,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			points.Clear();
 			SetPoints(points);
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture + "_Glow");
-			Rectangle whipFrame = texture.Frame(xFrames, yFrames, xFrame, 0);
+			Rectangle whipFrame = texture.Frame(X_FRAMES, Y_FRAMES, xFrame, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
 
@@ -82,7 +83,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				}
 				else if (i == points.Count - 2)
 				{
-					whipFrame.Y = height * (yFrames - 1);
+					whipFrame.Y = height * (Y_FRAMES - 1);
 				}
 				else
 				{
@@ -121,7 +122,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			return minLight;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			int[] treasure = new int[] {
 			ModContent.ItemType<AWhip_BlueGem>(),
@@ -138,8 +139,6 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				else
 					Item.NewItem(target.GetSource_Loot(), target.Hitbox, treasure[Main.rand.Next(treasure.Length)]);
 			}
-
-			base.OnHitNPC(target, damage, knockback, crit);
 		}
 	}
 
@@ -223,12 +222,12 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 				Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(12, 12), ModContent.DustType<Dusts.ArtifactSparkles.GoldArtifactSparkle>(), Vector2.Zero);
 		}
 
-		public override void ModifyHitNPC(Projectile projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
 		{
 			Player player = Main.player[projectile.owner];
 
 			if (projectile.minion && player.HasBuff(ModContent.BuffType<ArchaeologistsBuff>()))
-				damage = (int)(damage * 1.2f);
+				modifiers.FinalDamage *= 1.2f;
 		}
 	}
 }

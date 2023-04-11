@@ -5,8 +5,8 @@ namespace StarlightRiver.Core
 	class StatusTrackingNPC : GlobalNPC
 	{
 		private Player attacker;
-		private readonly int[] storedBuffs = new int[5];
-		private readonly int[] storedTimes = new int[5];
+		private readonly int[] storedBuffs = new int[20];
+		private readonly int[] storedTimes = new int[20];
 		private bool compareBuffs;
 
 		public static event Action<Player, NPC, int[], int[], int[], int[]> buffCompareEffects;
@@ -23,16 +23,16 @@ namespace StarlightRiver.Core
 			return base.PreAI(NPC);
 		}
 
-		public override void ModifyHitByItem(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
-			Tracker(NPC).attacker = Player;
-			Tracker(NPC).compareBuffs = true;
+			Tracker(npc).attacker = player;
+			Tracker(npc).compareBuffs = true;
 		}
 
-		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			Tracker(NPC).attacker = Main.player[Projectile.owner];
-			Tracker(NPC).compareBuffs = true;
+			Tracker(npc).attacker = Main.player[projectile.owner];
+			Tracker(npc).compareBuffs = true;
 		}
 
 		public override void ResetEffects(NPC NPC)

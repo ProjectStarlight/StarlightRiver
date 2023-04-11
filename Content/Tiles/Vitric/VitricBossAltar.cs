@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			if (Main.rand.Next(200) == 0 && tile.TileFrameX < 90 && tile.TileFrameX > 16)
+			if (Main.rand.NextBool(200) && tile.TileFrameX < 90 && tile.TileFrameX > 16)
 			{
 				var pos = new Vector2(i * 16 + Main.rand.Next(16), j * 16 + Main.rand.Next(16));
 
@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 			Player player = Main.LocalPlayer;
 
-			if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolPremiumEdition>())))
+			if (StarlightWorld.HasFlag(WorldFlags.VitricBossOpen) && tile.TileFrameX >= 90 && !NPC.AnyNPCs(NPCType<VitricBoss>()) && (player.ConsumeItem(ItemType<Items.Vitric.GlassIdol>()) || player.HasItem(ItemType<Items.Vitric.GlassIdolEndless>())))
 			{
 				int x = i - (tile.TileFrameX - 90) / 18;
 				int y = j - tile.TileFrameY / 18;
@@ -152,7 +152,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter);
 
 					for (int k = 0; k < 100; k++)
-						Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<Dusts.GlassGravity>(), 0, 0, 0, default, 1.2f);
+					{
+						Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType<GlassGravity>(), 0, 0, 0, default, 1.2f);
+					}
 
 					if (Main.myPlayer == Player.whoAmI)
 					{
@@ -177,6 +179,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			for (int i = 0; i < Main.maxNPCs; i++)
 			{
 				NPC NPC = Main.npc[i];
+
 				if (NPC.active && NPC.type == NPCType<VitricBoss>())
 					boss = NPC;
 

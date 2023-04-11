@@ -1,24 +1,27 @@
-﻿namespace StarlightRiver.Core.Systems.CombatMountSystem
+﻿using System;
+
+namespace StarlightRiver.Core.Systems.CombatMountSystem
 {
 	internal class CombatMountPlayer : ModPlayer
 	{
 		public CombatMount activeMount;
 
 		public int mountingTime;
+		public Vector2 startPoint;
 
 		public override void Load()
 		{
-			On.Terraria.Player.ItemCheck_Inner += TriggerMountAttacks;
+			On_Player.ItemCheck_Inner += TriggerMountAttacks;
 		}
 
-		private void TriggerMountAttacks(On.Terraria.Player.orig_ItemCheck_Inner orig, Player self, int i)
+		private void TriggerMountAttacks(On_Player.orig_ItemCheck_Inner orig, Player self)
 		{
 			CombatMount activeMount = self.GetModPlayer<CombatMountPlayer>().activeMount;
 			Item sItem = self.HeldItem;
 
 			if (activeMount is null || self.CCed || !self.controlUseItem || !self.releaseUseItem || self.itemAnimation != 0)
 			{
-				orig(self, i);
+				orig(self);
 				return;
 			}
 
@@ -48,7 +51,7 @@
 				}
 			}
 
-			orig(self, i);
+			orig(self);
 		}
 
 		public override void PreUpdateMovement() //Updates the active mount's timers and calls their actions.
@@ -58,6 +61,9 @@
 
 			if (activeMount is null)
 				return;
+
+			if (mountingTime > 0)
+				mountingTime--;
 
 			if (Player.HeldItem.IsAir && Main.mouseRight && !Player.releaseUseItem && activeMount.secondaryAbilityTimer == 0 && activeMount.secondaryCooldownTimer <= 0) //special case for shooting while holding air
 				activeMount.StartSecondaryAction(Player);
@@ -81,6 +87,12 @@
 			}
 
 			activeMount.PostUpdate(Player);
+		}
+
+		public override void PostUpdate()
+		{
+			if (mountingTime > 0)
+				Player.gfxOffY = Helpers.Helper.LerpFloat(Player.mount.PlayerOffset, 0, 1 - mountingTime / 30f) - (float)Math.Sin(3.14f * (1 - mountingTime / 30f)) * 64;
 		}
 
 		public void Dismount()

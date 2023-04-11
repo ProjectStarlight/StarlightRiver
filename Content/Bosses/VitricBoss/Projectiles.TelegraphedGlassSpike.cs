@@ -1,4 +1,5 @@
 ﻿using System;
+using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -40,16 +41,20 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			Color color = Helpers.Helper.MoltenVitricGlow(MathHelper.Min(200 - Projectile.timeLeft, 120));
 
-			for (int k = 0; k <= 1; k++)
+			if (Projectile.timeLeft < 165)
 			{
-				var d = Dust.NewDustPerfect(Projectile.Center + Projectile.velocity, 264, (Projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? 0.4f : -0.4f), 0, color, 1f);
-				d.noGravity = true;
+				for (int k = 0; k <= 1; k++)
+				{
+					Vector2 pos = Projectile.Center + Vector2.Normalize(Projectile.velocity).RotatedBy(1.57f) * (k == 0 ? 10f : -10f);
+					var d = Dust.NewDustPerfect(pos, DustType<Dusts.GlowLine>(), (Projectile.velocity * Main.rand.NextFloat(-0.25f, -0.1f)).RotatedBy(k == 0 ? -0.4f : 0.4f), 0, color, 1f);
+					d.customData = 0.85f;
+				}
 			}
 
 			Projectile.rotation = savedVelocity.ToRotation() + 3.14f / 4;
 		}
 
-		public override void ModifyHitPlayer(Player target, ref int damage, ref bool crit)
+		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
 		{
 			target.AddBuff(BuffID.Bleeding, 300);
 		}

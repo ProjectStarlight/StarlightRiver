@@ -13,14 +13,14 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public override void Load()
 		{
-			On.Terraria.Player.PickTile += DontPickInZone;
-			On.Terraria.WorldGen.PlaceTile += DontManuallyPlaceInZone;
-			On.Terraria.WorldGen.PoundTile += DontPoundTile;
-			On.Terraria.WorldGen.PlaceWire += DontPlaceWire;
-			On.Terraria.WorldGen.PlaceWire2 += DontPlaceWire2;
-			On.Terraria.WorldGen.PlaceWire3 += DontPlaceWire3;
-			On.Terraria.WorldGen.PlaceWire4 += DontPlaceWire4;
-			On.Terraria.WorldGen.PlaceActuator += DontPlaceActuator;
+			On_Player.PickTile += DontPickInZone;
+			On_WorldGen.PlaceTile += DontManuallyPlaceInZone;
+			On_WorldGen.PoundTile += DontPoundTile;
+			On_WorldGen.PlaceWire += DontPlaceWire;
+			On_WorldGen.PlaceWire2 += DontPlaceWire2;
+			On_WorldGen.PlaceWire3 += DontPlaceWire3;
+			On_WorldGen.PlaceWire4 += DontPlaceWire4;
+			On_WorldGen.PlaceActuator += DontPlaceActuator;
 
 		}
 
@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return false;
 		}
 
-		private bool DontPoundTile(On.Terraria.WorldGen.orig_PoundTile orig, int x, int y)
+		private bool DontPoundTile(On_WorldGen.orig_PoundTile orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -70,7 +70,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private bool DontPlaceWire(On.Terraria.WorldGen.orig_PlaceWire orig, int x, int y)
+		private bool DontPlaceWire(On_WorldGen.orig_PlaceWire orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private bool DontPlaceWire2(On.Terraria.WorldGen.orig_PlaceWire2 orig, int x, int y)
+		private bool DontPlaceWire2(On_WorldGen.orig_PlaceWire2 orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -92,7 +92,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private bool DontPlaceWire3(On.Terraria.WorldGen.orig_PlaceWire3 orig, int x, int y)
+		private bool DontPlaceWire3(On_WorldGen.orig_PlaceWire3 orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private bool DontPlaceWire4(On.Terraria.WorldGen.orig_PlaceWire4 orig, int x, int y)
+		private bool DontPlaceWire4(On_WorldGen.orig_PlaceWire4 orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private bool DontPlaceActuator(On.Terraria.WorldGen.orig_PlaceActuator orig, int x, int y)
+		private bool DontPlaceActuator(On_WorldGen.orig_PlaceActuator orig, int x, int y)
 		{
 			if (IsProtected(x, y))
 			{
@@ -125,7 +125,7 @@ namespace StarlightRiver.Content.CustomHooks
 			return orig(x, y);
 		}
 
-		private void DontPickInZone(On.Terraria.Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
+		private void DontPickInZone(On_Player.orig_PickTile orig, Player self, int x, int y, int pickPower)
 		{
 			if (IsProtected(x, y))
 			{
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.CustomHooks
 			orig(self, x, y, pickPower);
 		}
 
-		private bool DontManuallyPlaceInZone(On.Terraria.WorldGen.orig_PlaceTile orig, int i, int j, int type, bool mute, bool forced, int plr, int style)
+		private bool DontManuallyPlaceInZone(On_WorldGen.orig_PlaceTile orig, int i, int j, int type, bool mute, bool forced, int plr, int style)
 		{
 			if (IsProtected(i, j))
 			{

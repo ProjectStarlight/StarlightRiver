@@ -90,7 +90,43 @@ namespace StarlightRiver.Core
 				return result;
 			}
 
-			return true;
+			return base.CanUseItem(Item, Player);
+		}
+
+		public delegate bool? CanAutoReuseItemDelegate(Item Item, Player Player);
+		public static event CanAutoReuseItemDelegate CanAutoReuseItemEvent;
+		public override bool? CanAutoReuseItem(Item Item, Player Player)
+		{
+			if (CanAutoReuseItemEvent != null)
+			{
+				bool? result = true;
+				foreach (CanAutoReuseItemDelegate del in CanAutoReuseItemEvent.GetInvocationList())
+				{
+					result &= del(Item, Player);
+				}
+
+				return result;
+			}
+
+			return base.CanAutoReuseItem(Item, Player);
+		}
+
+		public delegate bool AltFunctionUseDelegate(Item item, Player player);
+		public static event AltFunctionUseDelegate AltFunctionUseEvent;
+		public override bool AltFunctionUse(Item item, Player player)
+		{
+			if (AltFunctionUseEvent != null)
+			{
+				bool result = false;
+				foreach (AltFunctionUseDelegate del in AltFunctionUseEvent.GetInvocationList())
+				{
+					result |= del(item, player);
+				}
+
+				return result;
+			}
+
+			return base.AltFunctionUse(item, player);
 		}
 
 		public delegate bool CanEquipAccessoryDelegate(Item item, Player player, int slot, bool modded);
@@ -136,17 +172,37 @@ namespace StarlightRiver.Core
 			ModifyItemLootEvent?.Invoke(item, itemLoot);
 		}
 
+		public delegate bool? UseItemDelegate(Item Item, Player Player);
+		public static event UseItemDelegate UseItemEvent;
+		public override bool? UseItem(Item Item, Player Player)
+		{
+			if (UseItemEvent != null)
+			{
+				bool? result = true;
+				foreach (UseItemDelegate del in UseItemEvent.GetInvocationList())
+				{
+					result &= del(Item, Player);
+				}
+
+				return result;
+			}
+
+			return base.UseItem(Item, Player);
+		}
+
 		public override void Unload()
 		{
 			GetHealLifeEvent = null;
 			ModifyWeaponDamageEvent = null;
 			GetWeaponCritEvent = null;
+			CanAutoReuseItemEvent = null;
 			PickAmmoEvent = null;
 			OnPickupEvent = null;
 			CanUseItemEvent = null;
 			CanEquipAccessoryEvent = null;
 			CanAccessoryBeEquippedWithEvent = null;
 			ModifyItemLootEvent = null;
+			UseItemEvent = null;
 		}
 	}
 }

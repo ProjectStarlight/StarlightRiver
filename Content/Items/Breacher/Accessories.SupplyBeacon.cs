@@ -60,11 +60,12 @@ namespace StarlightRiver.Content.Items.Breacher
 			active = false;
 		}
 
-		public override void Hurt(bool pvp, bool quiet, double damage, int hitDirection, bool crit, int cooldownCounter)
+		public override void OnHurt(Player.HurtInfo info)
 		{
 			if (cooldown <= 0 && active)
 			{
-				damageTicker += (int)damage;
+				damageTicker += info.Damage;
+
 				if (damageTicker >= 50)
 				{
 					damageTicker = 0;
@@ -78,9 +79,11 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void PreUpdate()
 		{
 			cooldown--;
+
 			if (active)
 			{
 				launchCounter--;
+
 				if (launchCounter == 1)
 					SummonDrop(Player, accessory);
 			}
@@ -316,10 +319,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconDefense() : base("Supply Beacon", "Defense increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
@@ -336,10 +338,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconHeal() : base("Supply Beacon", "Regeneration increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)
@@ -357,10 +358,9 @@ namespace StarlightRiver.Content.Items.Breacher
 
 		public SupplyBeaconDamage() : base("Supply Beacon", "Damage increased", false) { }
 
-		public override void SafeSetDetafults()
+		public override void SafeSetDefaults()
 		{
 			Main.buffNoTimeDisplay[Type] = true;
-			base.SafeSetDetafults();
 		}
 
 		public override void Update(Player Player, ref int buffIndex)

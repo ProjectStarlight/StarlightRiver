@@ -189,7 +189,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			justHit = false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (Charge < MAX_CHARGE)
 				Charge++;
@@ -437,7 +437,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo() { Damage = 0 }, 0);
 			}
 		}
 
@@ -471,7 +471,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.velocity = parent.velocity;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 
 			if (Main.myPlayer == Projectile.owner)

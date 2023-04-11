@@ -12,6 +12,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SafeSetDefaults()
 		{
 			Item.rare = ItemRarityID.Blue;
+			Item.value = Item.sellPrice(0, 0, 20, 0);
 		}
 
 		public override void Load()

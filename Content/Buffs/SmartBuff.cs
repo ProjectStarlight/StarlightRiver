@@ -20,7 +20,8 @@
 			return false;
 		}
 
-		public virtual void SafeSetDetafults() { }
+		public virtual void SafeSetDefaults() { }
+
 		protected SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
 		{
 			ThisName = name;
@@ -34,11 +35,14 @@
 			DisplayName.SetDefault(ThisName);
 			Description.SetDefault(ThisTooltip);
 			Main.debuff[Type] = Debuff;
+
 			if (Summon)
 			{
 				Main.buffNoSave[Type] = true;
 				Main.buffNoTimeDisplay[Type] = true;
 			}
+
+			SafeSetDefaults();
 		}
 	}
 }

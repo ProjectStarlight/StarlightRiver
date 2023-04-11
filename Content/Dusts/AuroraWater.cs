@@ -31,4 +31,15 @@
 			return false;
 		}
 	}
+
+	public class AuroraWaterFast : AuroraWater
+	{
+		public override bool Update(Dust dust)
+		{
+			base.Update(dust);
+			dust.scale -= 0.01f;
+
+			return false;
+		}
+	}
 }

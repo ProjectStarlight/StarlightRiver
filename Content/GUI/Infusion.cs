@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.GUI
 		public static Color animationColor;
 
 		private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
-		private readonly UIElement infusionElement = new();
+		private readonly SmartUIElement infusionElement = new();
 		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
 
 		public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax != 0 && Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
@@ -121,16 +121,16 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class InfusionSlot : UIElement
+	public class InfusionSlot : SmartUIElement
 	{
+		public int TargetSlot { get; }
+
+		public bool Unlocked => Main.LocalPlayer.GetHandler().InfusionLimit > TargetSlot;
+
 		public InfusionSlot(int slot)
 		{
 			TargetSlot = slot;
 		}
-
-		public int TargetSlot { get; }
-
-		public bool Unlocked => Main.LocalPlayer.GetHandler().InfusionLimit > TargetSlot;
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
@@ -194,7 +194,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (Infusion.ReturnConditions())
 				return;
@@ -204,7 +204,7 @@ namespace StarlightRiver.Content.GUI
 				Main.cursorOverride = 9;
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (Infusion.ReturnConditions())
 				return;

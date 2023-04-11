@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Map;
-using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace StarlightRiver.Content.Archaeology
@@ -10,13 +9,13 @@ namespace StarlightRiver.Content.Archaeology
 	public class ArchaeologyHandler : ModSystem
 	{
 		public override void Load()
-		{ 
-			On.Terraria.Main.DoDraw_DrawNPCsBehindTiles += DrawArtifacts;
+		{
+			On_Main.DoDraw_DrawNPCsBehindTiles += DrawArtifacts;
 		}
 
 		public override void Unload()
 		{
-			On.Terraria.Main.DoDraw_DrawNPCsBehindTiles -= DrawArtifacts;
+			On_Main.DoDraw_DrawNPCsBehindTiles -= DrawArtifacts;
 		}
 
 		public override void PreUpdateDusts()
@@ -28,12 +27,12 @@ namespace StarlightRiver.Content.Archaeology
 			}
 		}
 
-		public override void LoadWorldData(TagCompound tag)
+		public override void OnWorldLoad()
 		{
 			ModContent.GetInstance<ArchaeologyMapLayer>().CalculateDrawables();
 		}
 
-		public void DrawArtifacts(On.Terraria.Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
+		public void DrawArtifacts(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
 		{
 			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)

@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<CoachDebuff>(), 170);
 			target.AddBuff(BuffID.OnFire, 170);
@@ -466,7 +466,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(ModContent.BuffType<CoachDebuff>(), 170);
 			target.AddBuff(BuffID.OnFire, 170);
@@ -510,10 +510,10 @@ namespace StarlightRiver.Content.Items.Misc
 			damageIncreased = false;
 		}
 
-		public override void ModifyHitByProjectile(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
-			if (Projectile.DamageType == DamageClass.Ranged && damageIncreased)
-				damage = (int)(damage * 1.2f);
+			if (projectile.DamageType == DamageClass.Ranged && damageIncreased)
+				modifiers.SourceDamage *= 1.2f;
 		}
 	}
 }

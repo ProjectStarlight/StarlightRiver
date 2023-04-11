@@ -27,10 +27,9 @@ namespace StarlightRiver.Content.Dusts
 			dust.rotation += 0.05f;
 
 			dust.scale *= 0.97f;
+
 			if (dust.scale < 0.2f)
-			{
 				dust.active = false;
-			}
 
 			return false;
 		}
@@ -44,10 +43,9 @@ namespace StarlightRiver.Content.Dusts
 			dust.rotation += 0.05f;
 
 			dust.scale *= 0.92f;
+
 			if (dust.scale < 0.3f)
-			{
 				dust.active = false;
-			}
 
 			return false;
 		}
@@ -80,10 +78,8 @@ namespace StarlightRiver.Content.Dusts
 			Player Player = Main.LocalPlayer;
 			dust.rotation = Vector2.Distance(dust.position, Player.Center) * 0.1f;
 
-			if (dust.customData is int)
-			{
-				dust.customData = (int)dust.customData - 1;
-			}
+			if (dust.customData is int progress)
+				dust.customData = progress - 1;
 
 			dust.position += dust.velocity;
 
@@ -92,10 +88,9 @@ namespace StarlightRiver.Content.Dusts
 			if (dust.customData != null && (int)dust.customData <= 0)
 			{
 				rot += (float)(Math.PI * 2) / (20 * 18);
+
 				if (rot >= (float)Math.PI * 2)
-				{
 					rot = 0;
-				}
 
 				Vector2 offset = Player.Center - dust.position;
 				dust.position.X = Player.Center.X + (float)Math.Cos(rot) * offset.Length();
@@ -107,9 +102,7 @@ namespace StarlightRiver.Content.Dusts
 				timer--;
 
 				if (timer == 0 || dust.scale <= 0.31f)
-				{
 					dust.active = false;
-				}
 			}
 			else
 			{
