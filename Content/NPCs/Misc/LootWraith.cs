@@ -1,8 +1,7 @@
 ﻿//TODO on loot wraith:
-//[]Loot dropping
-//[]Hypothetical animations
-//[]Make them not a garaunteed spawn
-//[]Make them nettable 
+//Loot dropping
+//Hypothetical animations
+//Make them nettable 
 //Charge sound effects
 
 using Microsoft.Xna.Framework.Graphics;
@@ -238,15 +237,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 			}
 		}
 
-		public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
-			if (knockback > 0)
+			if (hit.Knockback > 0)
 				takenKnockback = true;
 		}
 
-		public override void OnHitByItem(Player player, Item item, int damage, float knockback, bool crit)
+		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
-			if (knockback > 0)
+			if (hit.Knockback > 0)
 				takenKnockback = true;
 		}
 

@@ -15,7 +15,7 @@ namespace StarlightRiver.Core
 		{
 			foreach (Chest chest in Main.chest)
 			{
-				if (chest != null)
+				if (chest != null && Main.rand.NextBool(15))
 				{
 					int frameX = Framing.GetTileSafely(chest.x, chest.y).TileFrameX / 36;
 					if (frameX == 11 || frameX == 1)

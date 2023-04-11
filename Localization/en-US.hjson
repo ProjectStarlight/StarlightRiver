@@ -3699,6 +3699,7 @@ Mods: {
 			Voidsmith.DisplayName: Voidsmith
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
+			LootWraith.DisplayName: Loot Wraith
 		}
 
 		Buffs: {
