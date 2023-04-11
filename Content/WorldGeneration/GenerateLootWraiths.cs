@@ -28,7 +28,6 @@ namespace StarlightRiver.Core
 						}
 					}
 				}
-
 			}
 		}
 	}

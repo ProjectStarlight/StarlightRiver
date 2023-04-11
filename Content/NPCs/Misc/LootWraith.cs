@@ -23,11 +23,10 @@ namespace StarlightRiver.Content.NPCs.Misc
 {
 	internal class LootWraith : ModNPC
 	{
-		private readonly int NUM_SEGMENTS = 20;
+		private const int NUM_SEGMENTS = 20;
 
 		private int xFrame = 0;
 		private int yFrame = 0;
-		private int frameCounter = 0;
 
 		private bool takenKnockback = false;
 		private int chargeCounter = 0;
@@ -37,7 +36,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 		public int xTile = 0;
 		public int yTile = 0;
 
-		private List<Vector2> oldPos = new List<Vector2>();
+		private List<Vector2> oldPos = new();
 
 		private int screechTimer = 31;
 
@@ -144,9 +143,11 @@ namespace StarlightRiver.Content.NPCs.Misc
 						Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
 						Dust.NewDustPerfect(screamPos + dir * 25, ModContent.DustType<Dusts.GlowLineFast>(), dir * Main.rand.NextFloat(10), 0, Color.Cyan, 1);
 					}
+
 					Target.velocity -= Target.DirectionTo(NPC.Center) * 15;
 					screechTimer = 0;
 				}
+
 				if (NPC.Distance(Target.Center - NPC.DirectionTo(Target.Center) * 60) > 10)
 					NPC.velocity += NPC.DirectionTo(Target.Center - NPC.DirectionTo(Target.Center) * 60) * 0.2f;
 
@@ -155,6 +156,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 					NPC.velocity.Normalize();
 					NPC.velocity *= 10;
 				}
+
 				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(ChainStart), NPC.Distance(ChainStart) * 0.001f);
 
 				Tile tile = Framing.GetTileSafely(xTile, yTile);
@@ -168,6 +170,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 						{
 							SoundEngine.PlaySound(SoundID.DeerclopsScream with { Pitch = 0.6f }, NPC.Center);
 						}
+
 						xFrame = 1;
 						NPC.rotation = 0;
 						NPC.velocity.Y = -8;
@@ -203,14 +206,19 @@ namespace StarlightRiver.Content.NPCs.Misc
 			else
 			{
 				xFrame = 1;
+
 				if (++chargeCounter % 150 == 0)
 				{
-					takenKnockback= false;
+					takenKnockback = false;
 					chargeVel = NPC.DirectionTo(Target.Center) * 15;
 				}
+
 				chargeVel *= 0.96f;
+
 				if (chargeVel.Length() > 1 && !takenKnockback)
+				{
 					NPC.velocity = chargeVel;
+				}
 				else
 				{
 					Vector2 dir = Main.rand.NextVector2CircularEdge(1, 1);
@@ -225,6 +233,7 @@ namespace StarlightRiver.Content.NPCs.Misc
 				if (oldPos.Count > 10)
 					oldPos.RemoveAt(0);
 			}
+
 			if (chain is null || NPC.DistanceSQ(Target.Center) > 4000000 || enraged)
 				return;
 
@@ -363,7 +372,6 @@ namespace StarlightRiver.Content.NPCs.Misc
 
 			trail2.Positions = positions.ToArray();
 		}
-
 
 		private void DrawChain()
 		{
