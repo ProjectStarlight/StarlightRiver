@@ -1,11 +1,4 @@
-﻿//TODO on loot wraith:
-//Loot dropping
-//Hypothetical animations
-//Make them nettable 
-//Charge sound effects
-
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Dusts;
+﻿using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
@@ -16,7 +9,6 @@ using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
