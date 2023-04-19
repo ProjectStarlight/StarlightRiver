@@ -25,15 +25,6 @@ namespace StarlightRiver.Content.GUI
 			AddElement(button, Main.screenWidth / 2 - TextureAssets.ChatBack.Value.Width / 2 - 104, 100, 86, 28, this);
 		}
 
-		internal void AddElement(UIElement element, int x, int y, int width, int height, UIElement appendTo)
-		{
-			element.Left.Set(x, 0);
-			element.Top.Set(y, 0);
-			element.Width.Set(width, 0);
-			element.Height.Set(height, 0);
-			appendTo.Append(element);
-		}
-
 		public void SetState(TownUpgrade state)
 		{
 			activeUpgrade = state;
@@ -51,7 +42,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class TownButton : UIElement
+	public class TownButton : SmartUIElement
 	{
 		public string displayString = "ERROR";
 
@@ -65,13 +56,13 @@ namespace StarlightRiver.Content.GUI
 			Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/GUI/NPCButton").Value;
 			spriteBatch.Draw(tex, GetDimensions().ToRectangle(), tex.Frame(), Color.White * (locked ? 0.4f : 0.8f));
 
-			float x = Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(displayString).X;
+			float x = FontAssets.ItemStack.Value.MeasureString(displayString).X;
 
 			float scale = x < 70 ? 1 : 70 / x;
 			Utils.DrawBorderString(spriteBatch, displayString, GetDimensions().ToRectangle().Center() + new Vector2(0, 3), Color.White * (locked ? 0.4f : 1), scale, 0.5f, 0.5f);
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			if (Parent is ChatboxOverUI)
 				(Parent as ChatboxOverUI).activeUpgrade?.ClickButton();

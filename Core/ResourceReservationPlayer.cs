@@ -16,7 +16,7 @@ namespace StarlightRiver.Core
 
 		public override void Load()
 		{
-			On.Terraria.Main.DrawInterface_25_ResourceBars += DrawResourceOverlays;
+			On_Main.GUIBarsDraw += DrawResourceOverlays;
 		}
 
 		public override void PostUpdate()
@@ -72,7 +72,7 @@ namespace StarlightRiver.Core
 			return true;
 		}
 
-		private void DrawResourceOverlays(On.Terraria.Main.orig_DrawInterface_25_ResourceBars orig, Main self)
+		private void DrawResourceOverlays(On_Main.orig_GUIBarsDraw orig, Main self)
 		{
 			orig(self);
 
@@ -93,8 +93,8 @@ namespace StarlightRiver.Core
 			Player player = Main.LocalPlayer;
 
 			int vanillaHearts = Math.Min(20, player.statLifeMax / 20);
-			int fullHeartsToDraw = Math.Min(vanillaHearts, player.GetModPlayer<ResourceReservationPlayer>().reservedLifeAnimation / 20);
-			float lifePerHeart = player.GetModPlayer<ResourceReservationPlayer>().reservedLife > vanillaHearts * 20 ? player.GetModPlayer<ResourceReservationPlayer>().reservedLife / (float)vanillaHearts : 20;
+			float lifePerHeart = player.statLifeMax2 > vanillaHearts * 20 ? player.statLifeMax2 / (float)vanillaHearts : 20;
+			int fullHeartsToDraw = Math.Min(vanillaHearts, (int)(player.GetModPlayer<ResourceReservationPlayer>().reservedLifeAnimation / lifePerHeart));
 
 			for (int k = 0; k <= fullHeartsToDraw; k++)
 			{
@@ -129,6 +129,8 @@ namespace StarlightRiver.Core
 					continue;
 				}
 
+				k += 20 - vanillaHearts;
+
 				if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
 				{
 					pos = new Vector2(Main.screenWidth - 66 - k * 26, 58f);
@@ -143,6 +145,8 @@ namespace StarlightRiver.Core
 					if (k >= 10)
 						pos += new Vector2(240, -28);
 				}
+
+				k -= 20 - vanillaHearts;
 
 				Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLife").Value;
 				Texture2D texLine = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ReservedLifeLine").Value;

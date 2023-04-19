@@ -18,20 +18,20 @@ namespace StarlightRiver.Content.Items.Forest
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitNPCWithProjEvent += SpawnAcorn;
+			StarlightPlayer.OnHitNPCWithProjEvent += SpawnAcorn;
 		}
 
 		public override void Unload()
 		{
-			StarlightPlayer.ModifyHitNPCWithProjEvent -= SpawnAcorn;
+			StarlightPlayer.OnHitNPCWithProjEvent -= SpawnAcorn;
 		}
 
-		private void SpawnAcorn(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void SpawnAcorn(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (!Equipped(player))
 				return;
 
-			if (target.life - damage <= 0)
+			if (target.life - damageDone <= 0)
 			{
 				if (proj.minion && proj.owner == player.whoAmI && player.MinionAttackTargetNPC == target.whoAmI)
 				{

@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			NPC.netAlways = true;
 		}
 
-		public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
 			NPC.damage = 50;
 		}
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)(NPC.Center.Y + 24) / 16);
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != TileType<Tiles.Vitric.VitricBossBarrier>() && NPC.Center.Y > StarlightWorld.vitricBiome.Y * 16) //tile collision
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && tile.TileType != StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type && NPC.Center.Y > StarlightWorld.vitricBiome.Y * 16) //tile collision
 						Impact();
 
 					break;
@@ -477,10 +477,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			{
 				GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-				if (trail is null)
-				{
-					trail = new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
-				}
+				trail ??= new Trail(graphics, 20, new NoTip(), ArcWidth, ArcColor);
 
 				var positions = new Vector2[20];
 

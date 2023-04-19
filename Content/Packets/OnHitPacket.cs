@@ -9,9 +9,9 @@ namespace StarlightRiver.Content.Packets
 		private readonly short fromWho;
 		private readonly int projIdentity;
 		private readonly byte NPCId;
-		private int damage;
-		private float knockback;
-		private bool crit;
+		private readonly int damage;
+		private readonly float knockback;
+		private readonly bool crit;
 
 		public OnHitPacket(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
 		{
@@ -28,16 +28,16 @@ namespace StarlightRiver.Content.Packets
 			this.crit = crit;
 		}
 
-		protected override void Receive()
+		protected override void Receive() //PORTTODO: Figure out if this is needed and if so now to adapt to the new system;
 		{
+			/*
 			Player Player = Main.player[fromWho];
 			StarlightPlayer modPlayer = Player.GetModPlayer<StarlightPlayer>();
 
 			if (projIdentity == -1)
 			{
-				modPlayer.ModifyHitNPC(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
-				modPlayer.OnHitNPC(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
-
+				modPlayer.ModifyHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], ref damage, ref knockback, ref crit);
+				modPlayer.OnHitNPCWithItem(Player.HeldItem, Main.npc[NPCId], damage, knockback, crit);
 			}
 			else
 			{
@@ -62,6 +62,7 @@ namespace StarlightRiver.Content.Packets
 
 			if (Main.netMode == Terraria.ID.NetmodeID.Server && fromWho != -1)
 				Send(-1, fromWho, false);
+			*/
 		}
 	}
 }

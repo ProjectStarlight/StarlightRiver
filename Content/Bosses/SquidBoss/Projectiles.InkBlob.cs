@@ -96,9 +96,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
 		{
-			for (int k = 0; k < cache.Count; k++)
+			for (int k = 5; k < cache.Count; k++)
 			{
-				var hitbox = new Rectangle((int)cache[k].X - 4, (int)cache[k].Y - 4, 8, 8);
+				var hitbox = new Rectangle((int)cache[k].X - k / 2, (int)cache[k].Y - k / 2, k, k);
+
 				if (hitbox.Intersects(targetHitbox))
 					return true;
 			}
@@ -156,8 +157,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Color color = new Color(0.7f, 0.8f, 0.5f) * EaseFunction.EaseCubicOut.Ease(MathHelper.Max(0, (Projectile.timeLeft - 90) / 30f));
+
 			for (int i = 0; i < 3; i++)
+			{
 				spriteBatch.Draw(tex, initialPosition - Main.screenPosition, null, color, 0f, tex.Size() / 2, 1.2f, SpriteEffects.None, 0f);
+			}
 		}
 
 		public void DrawPrimitives()

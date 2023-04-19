@@ -41,15 +41,15 @@ namespace StarlightRiver.Content.GUI
 
 		public override void OnInitialize()
 		{
-			CookButton.OnClick += CookFood;
+			CookButton.OnLeftClick += (a, b) => CookFood();
 			CookButton.SetVisibility(1, 1);
-			ExitButton.OnClick += Exit;
+			ExitButton.OnLeftClick += (a, b) => Exit();
 			ExitButton.SetVisibility(1, 1);
 
 			OnScrollWheel += ScrollStats;
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (!Main.playerInventory)
 				visible = false;
@@ -67,16 +67,20 @@ namespace StarlightRiver.Content.GUI
 
 			if (Moving)
 				Basepos = Main.MouseScreen - MoveOffset;
+
 			if (Basepos.X < 520)
 				Basepos.X = 520;
+
 			if (Basepos.Y < 20)
 				Basepos.Y = 20;
+
 			if (Basepos.X > Main.screenWidth - 20 - 346)
 				Basepos.X = Main.screenWidth - 20 - 346;
+
 			if (Basepos.Y > Main.screenHeight - 20 - 244)
 				Basepos.Y = Main.screenHeight - 20 - 244;
 
-			ChefBagUI.Move(CookingUI.Basepos + new Vector2(-480, 0));
+			ChefBagUI.Move(Basepos + new Vector2(-480, 0));
 
 			Main.isMouseLeftConsumedByUI = true;
 			SetPosition(MainSlot, 44, 44);
@@ -87,8 +91,6 @@ namespace StarlightRiver.Content.GUI
 			SetPosition(CookButton, 170, 202);
 			SetPosition(ExitButton, 314, 0);
 			SetPosition(TopBar, 0, 2);
-
-			base.Update(gameTime);
 		}
 
 		private void ScrollStats(UIScrollWheelEvent evt, UIElement listeningElement)
@@ -122,13 +124,15 @@ namespace StarlightRiver.Content.GUI
 			else
 			{
 				int duration = 0;
+				float durationMult = 1;
 				int cooldown = 0;
+				float cooldownMult = 1;
 				var lines = new List<(string, Color)>();
 
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 52, 152, lineCount >= 5 ? 18 * 5 : lineCount * 18), new Color(40, 20, 10) * 0.5f);
 				spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)Basepos.X + 182, (int)Basepos.Y + 148, 152, 28), new Color(40, 20, 10) * 0.5f);
 
-				foreach (UIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
+				foreach (SmartUIElement element in Elements.Where(n => n is CookingSlot && !(n as CookingSlot).Item.IsAir))
 				{
 					var ingredient = (element as CookingSlot).Item.ModItem as Ingredient;
 
@@ -144,8 +148,14 @@ namespace StarlightRiver.Content.GUI
 					}
 
 					duration += ingredient.Fill;
+					durationMult *= ingredient.FullnessMult;
+
 					cooldown += (int)(ingredient.Fill * 1.5f);
+					cooldownMult *= ingredient.WellFedMult;
 				}
+
+				duration = (int)(duration * durationMult);
+				cooldown = (int)(cooldown * cooldownMult);
 
 				int max = (int)MathHelper.Clamp(scrollStart + 5, 0, lines.Count());
 				lineCount = lines.Count();
@@ -177,7 +187,7 @@ namespace StarlightRiver.Content.GUI
 			Append(element);
 		}
 
-		private void CookFood(UIMouseEvent evt, UIElement listeningElement)
+		private void CookFood()
 		{
 			if (!MainSlot.Item.IsAir) //make sure were cooking SOMETHING!
 			{
@@ -195,7 +205,7 @@ namespace StarlightRiver.Content.GUI
 					(Item.ModItem as Meal).Ingredients.Add(FoodRecipieHandler.GetFromRecipie(special));
 
 				Item.position = Main.LocalPlayer.Center;
-				Main.LocalPlayer.QuickSpawnClonedItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
+				Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), Item);
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_BetsyScream); //TODO: Change to custom chop chop sizzle sound
 			}
@@ -206,6 +216,8 @@ namespace StarlightRiver.Content.GUI
 			if (!source.Item.IsAir && source.Item.ModItem is Ingredient)
 			{
 				(target.ModItem as Meal).Ingredients.Add(source.Item.Clone());
+				(target.ModItem as Meal).FullnessMult *= (source.Item.ModItem as Ingredient).FullnessMult;
+				(target.ModItem as Meal).WellFedMult *= (source.Item.ModItem as Ingredient).WellFedMult;
 				(target.ModItem as Meal).Fullness += (source.Item.ModItem as Ingredient).Fill;
 
 				if (source.Item.stack == 1)
@@ -215,7 +227,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		private void Exit(UIMouseEvent evt, UIElement listeningElement)
+		private void Exit()
 		{
 			visible = false;
 			Main.playerInventory = false;
@@ -223,7 +235,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	public class CookingSlot : UIElement
+	public class CookingSlot : SmartUIElement
 	{
 		public Item Item = new();
 		private readonly IngredientType Type;
@@ -265,7 +277,7 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void Click(UIMouseEvent evt)
+		public override void SafeClick(UIMouseEvent evt)
 		{
 			Player Player = Main.LocalPlayer;
 
@@ -321,10 +333,11 @@ namespace StarlightRiver.Content.GUI
 			Main.isMouseLeftConsumedByUI = true;
 		}
 
-		public override void Update(GameTime gameTime)
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			if (Item.type == ItemID.None || Item.stack <= 0)
 				Item.TurnToAir();
+
 			Width.Set(60, 0);
 			Height.Set(60, 0);
 		}

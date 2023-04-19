@@ -55,6 +55,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Main.tile[i, j];
 			return tile.TileFrameY == 0 && tile.TileFrameX % 36 == 0;
 		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
 	}
 
 	internal class VitricOreFloat : DummyTile
@@ -77,6 +82,11 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			// Sync the drop for multiPlayer
 			if (Main.netMode == NetmodeID.MultiplayerClient && item >= 0)
 				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item, 1f);
+		}
+
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
 		}
 	}
 

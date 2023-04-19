@@ -21,20 +21,20 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightPlayer.OnHitNPCWithProjEvent -= OnHitNPCWithProj;
 		}
 
+		private void OnHitNPC(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			OnHit(Player, info.Crit);
+		}
+
+		private void OnHitNPCWithProj(Player Player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			OnHit(Player, info.Crit);
+		}
+
 		private void OnHit(Player Player, bool crit)
 		{
 			if (Equipped(Player) && crit && Main.rand.NextFloat() < 0.1f)
 				ReduceDebuffDurations(Player);
-		}
-
-		private void OnHitNPC(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
-		{
-			OnHit(Player, crit);
-		}
-
-		private void OnHitNPCWithProj(Player Player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-		{
-			OnHit(Player, crit);
 		}
 
 		public static void ReduceDebuffDurations(Player Player)

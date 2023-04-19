@@ -30,6 +30,22 @@ namespace StarlightRiver.Content.Items.Misc
 			StarlightItem.OnPickupEvent += PreventHeartPickups;
 		}
 
+		private void OnHitNPCProj(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			if (!Equipped(player))
+				return;
+
+			HitEffects(player, target, damageDone);
+		}
+
+		private void OnHitNPCItem(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
+		{
+			if (!Equipped(player))
+				return;
+
+			HitEffects(player, target, damageDone);
+		}
+
 		private void HitEffects(Player player, NPC target, int damage)
 		{
 			if (Main.rand.NextBool(4))
@@ -57,22 +73,6 @@ namespace StarlightRiver.Content.Items.Misc
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.NPCDeath1 with { PitchVariance = 0.25f }, target.Center);
 			}
-		}
-
-		private void OnHitNPCProj(Player player, Projectile proj, NPC target, int damage, float knockback, bool crit)
-		{
-			if (!Equipped(player))
-				return;
-
-			HitEffects(player, target, damage);
-		}
-
-		private void OnHitNPCItem(Player player, Item Item, NPC target, int damage, float knockback, bool crit)
-		{
-			if (!Equipped(player))
-				return;
-
-			HitEffects(player, target, damage);
 		}
 
 		private void RemoveLifeRegen(Player player)

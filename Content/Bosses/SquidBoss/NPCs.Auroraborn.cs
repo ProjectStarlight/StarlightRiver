@@ -6,6 +6,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	class Auroraborn : ModNPC
 	{
+		public ref float Timer => ref NPC.ai[0];
+
 		public override string Texture => AssetDirectory.SquidBoss + Name;
 
 		public override void SetDefaults()
@@ -31,19 +33,22 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void AI()
 		{
-			NPC.frame = new Rectangle((int)(NPC.ai[0] / 10) % 6 * 58, 0, 58, 50);
+			NPC.frame = new Rectangle((int)(Timer / 10) % 6 * 58, 0, 58, 50);
 
 			NPC.TargetClosest();
 			Player Player = Main.player[NPC.target];
 
-			if (NPC.ai[0] % 60 == 0)
+			if (Timer % 60 == 0)
 			{
 				NPC.velocity = Vector2.Normalize(NPC.Center - Player.Center) * -6f;
+
 				for (int k = 0; k < 10; k++)
+				{
 					Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10), DustType<Dusts.Starlight>(), NPC.velocity * Main.rand.NextFloat(-5, 5));
+				}
 			}
 
-			NPC.ai[0]++;
+			Timer++;
 
 			NPC.velocity *= 0.95f;
 
@@ -54,7 +59,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		{
 			if (NPC.IsABestiaryIconDummy)
 			{
-				NPC.ai[0]++;
+				Timer++;
 				NPC.frame = new Rectangle((int)(NPC.ai[0] / 10) % 6 * 58, 0, 58, 50);
 			}
 

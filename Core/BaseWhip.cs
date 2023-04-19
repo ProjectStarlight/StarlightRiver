@@ -10,22 +10,27 @@ namespace StarlightRiver.Core
 {
 	public abstract class BaseWhip : ModProjectile
 	{
-		protected int xFrames = 1;
-		protected int yFrames = 5;
-		protected int xFrame = 0;
-
 		protected string name;
 		protected int segments;
-		protected float rangeMult;
+		protected float rangeMultiplier;
 		protected float flyTime;
 		protected Color stringColor;
 		protected int handleOffset;
+
+		public float MiddleOfArc => flyTime / 1.5f;
+
+		public Vector2 EndPoint => Projectile.WhipPointsForCollision[segments - 1] + new Vector2(Projectile.width * 0.5f, Projectile.height * 0.5f);
+
+		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+		{
+			return false;
+		}
 
 		public BaseWhip(string name, int segments = 20, float rangeMultiplier = 1f, Color? stringColor = null, int handleOffset = 2)
 		{
 			this.name = name;
 			this.segments = Math.Max(3, segments);
-			rangeMult = rangeMultiplier;
+			this.rangeMultiplier = rangeMultiplier;
 
 			if (stringColor != null)
 				this.stringColor = stringColor.Value;
@@ -44,19 +49,16 @@ namespace StarlightRiver.Core
 		public override void SetDefaults()
 		{
 			Projectile.DefaultToWhip();
-		}
-
-		public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
-		{
-			return false;
+			SafeSetDefaults();
 		}
 
 		public override bool PreAI()
 		{
 			Player player = Main.player[Projectile.owner];
 			flyTime = player.itemAnimationMax * Projectile.MaxUpdates;
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
 			Projectile.ai[0]++;
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 			Projectile.Center = Main.GetPlayerArmPosition(Projectile) + Projectile.velocity * (Projectile.ai[0] - 1f);
 			Projectile.spriteDirection = (!(Vector2.Dot(Projectile.velocity, Vector2.UnitX) < 0f)) ? 1 : -1;
 
@@ -85,27 +87,26 @@ namespace StarlightRiver.Core
 			}
 
 			ArcAI();
+
 			return false;
 		}
 
-		public float MiddleOfArc => flyTime / 1.5f;
-
-		public Vector2 EndPoint => Projectile.WhipPointsForCollision[segments - 1] + new Vector2(Projectile.width * 0.5f, Projectile.height * 0.5f);
-
 		public virtual void ArcAI() { }
+
+		public virtual void SafeSetDefaults() { }
 
 		public override void CutTiles()
 		{
-			var value = new Vector2(Projectile.width * Projectile.scale * 0.5f, 0f);
+			var midPoint = new Vector2(Projectile.width * Projectile.scale * 0.5f, 0f);
 
 			for (int i = 0; i < Projectile.WhipPointsForCollision.Count; i++)
 			{
 				DelegateMethods.tilecut_0 = TileCuttingContext.AttackProjectile;
-				Utils.PlotTileLine(Projectile.WhipPointsForCollision[i] - value, Projectile.WhipPointsForCollision[i] + value, Projectile.height * Projectile.scale, DelegateMethods.CutTiles);
+				Utils.PlotTileLine(Projectile.WhipPointsForCollision[i] - midPoint, Projectile.WhipPointsForCollision[i] + midPoint, Projectile.height * Projectile.scale, DelegateMethods.CutTiles);
 			}
 		}
 
-		public void SetPoints(List<Vector2> controlPoints)
+		public virtual void SetPoints(List<Vector2> controlPoints)
 		{
 			float time = Projectile.ai[0] / flyTime;
 			float timeModified = time * 1.5f;
@@ -118,38 +119,35 @@ namespace StarlightRiver.Core
 				timeModified = MathHelper.Lerp(1f, 0f, tLerp);
 			}
 
-			//vanilla code
+			//vanilla code	 
 			Player player = Main.player[Projectile.owner];
 			Item heldItem = player.HeldItem;
 			float realRange = ContentSamples.ItemsByType[heldItem.type].useAnimation * 2 * time * player.whipRangeMultiplier;
-			float num8 = Projectile.velocity.Length() * realRange * timeModified * rangeMult / segments;
+			float segmentLength = Projectile.velocity.Length() * realRange * timeModified * rangeMultiplier / segments;
 			Vector2 playerArmPosition = Main.GetPlayerArmPosition(Projectile);
 			Vector2 firstPos = playerArmPosition;
-			float num10 = 0f - MathHelper.PiOver2;
+			float negativeAngle = -MathHelper.PiOver2;
 			Vector2 midPos = firstPos;
-			float num11 = 0f + MathHelper.PiOver2 + MathHelper.PiOver2 * Projectile.spriteDirection;
+			float directedAngle = 0f + MathHelper.PiOver2 + MathHelper.PiOver2 * Projectile.spriteDirection;
 			Vector2 lastPos = firstPos;
-			float num12 = 0f + MathHelper.PiOver2;
+			float positiveAngle = MathHelper.PiOver2;
 			controlPoints.Add(playerArmPosition);
 
 			for (int i = 0; i < segments; i++)
 			{
-				float num14 = segmentOffset * (i / (float)segments);
-				Vector2 nextFirst = firstPos + num10.ToRotationVector2() * num8;
-				Vector2 nextLast = lastPos + num12.ToRotationVector2() * (num8 * 2f);
-				Vector2 nextMid = midPos + num11.ToRotationVector2() * (num8 * 2f);
-				float num15 = 1f - timeModified;
-				float num16 = 1f - num15 * num15;
-				var value3 = Vector2.Lerp(nextLast, nextFirst, num16 * 0.9f + 0.1f);
-				var value4 = Vector2.Lerp(nextMid, value3, num16 * 0.7f + 0.3f);
-				Vector2 spinningpoint = playerArmPosition + (value4 - playerArmPosition) * new Vector2(1f, 1.5f);
-				float num17 = tLerp;
-				num17 *= num17;
-				Vector2 item = spinningpoint.RotatedBy(Projectile.rotation + 4.712389f * num17 * Projectile.spriteDirection, playerArmPosition);
+				float thisOffset = segmentOffset * (i / (float)segments);
+				Vector2 nextFirst = firstPos + negativeAngle.ToRotationVector2() * segmentLength;
+				Vector2 nextLast = lastPos + positiveAngle.ToRotationVector2() * (segmentLength * 2f);
+				Vector2 nextMid = midPos + directedAngle.ToRotationVector2() * (segmentLength * 2f);
+				float progressModifier = 1f - (float)Math.Pow(1f - timeModified, 2);
+				var lerpPoint1 = Vector2.Lerp(nextLast, nextFirst, progressModifier * 0.9f + 0.1f);
+				var lerpPoint2 = Vector2.Lerp(nextMid, lerpPoint1, progressModifier * 0.7f + 0.3f);
+				Vector2 spinningpoint = playerArmPosition + (lerpPoint2 - playerArmPosition) * new Vector2(1f, 1.5f);
+				Vector2 item = spinningpoint.RotatedBy(Projectile.rotation + 4.712389f * (float)Math.Pow(tLerp, 2) * Projectile.spriteDirection, playerArmPosition);
 				controlPoints.Add(item);
-				num10 += num14;
-				num12 += num14;
-				num11 += num14;
+				negativeAngle += thisOffset;
+				positiveAngle += thisOffset;
+				directedAngle += thisOffset;
 				firstPos = nextFirst;
 				lastPos = nextLast;
 				midPos = nextMid;
@@ -167,7 +165,6 @@ namespace StarlightRiver.Core
 
 			//string
 			Vector2 stringPoint = points[0];
-
 			for (int i = 0; i < points.Count - 2; i++)
 			{
 				Vector2 nextPoint = points[i + 1] - points[i];
@@ -179,7 +176,7 @@ namespace StarlightRiver.Core
 
 			//whip
 			Asset<Texture2D> texture = ModContent.Request<Texture2D>(Texture);
-			Rectangle whipFrame = texture.Frame(xFrames, yFrames, xFrame, 0);
+			Rectangle whipFrame = texture.Frame(1, 5, 0, 0);
 			int height = whipFrame.Height;
 			Vector2 firstPoint = points[0];
 
@@ -194,7 +191,7 @@ namespace StarlightRiver.Core
 				}
 				else if (i == points.Count - 2)
 				{
-					whipFrame.Y = height * (yFrames - 1);
+					whipFrame.Y = height * 4;
 				}
 				else
 				{
@@ -216,7 +213,6 @@ namespace StarlightRiver.Core
 
 			return false;
 		}
-
 		public virtual int SegmentVariant(int segment)
 		{
 			return 1 + segment % 3;

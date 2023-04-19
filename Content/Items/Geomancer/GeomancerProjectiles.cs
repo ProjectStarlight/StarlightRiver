@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		private const int EXPLOSIONTIME = 2;
 
-		private bool initialized = false;
+		private readonly bool initialized = false;
 
 		private Player owner => Main.player[Projectile.owner];
 
@@ -252,9 +252,9 @@ namespace StarlightRiver.Content.Items.Geomancer
 			return base.CanHitNPC(target);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(Projectile.Center.X - Main.player[Projectile.owner].Center.X);
+			modifiers.HitDirectionOverride = Math.Sign(Projectile.Center.X - Main.player[Projectile.owner].Center.X);
 			Player Player = Main.player[Projectile.owner];
 
 			Player.GetModPlayer<BarrierPlayer>().barrier -= target.damage;
@@ -397,7 +397,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		Vector2 direction = Vector2.Zero;
 
-		private List<float> oldRotation = new();
+		private readonly List<float> oldRotation = new();
 
 		private bool launched = false;
 		private bool lockedOn = false;

@@ -78,7 +78,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			{
 				Item.useStyle = ItemUseStyleID.Swing;
 				Item.noUseGraphic = false;
-				Item.shoot = 0;
+				Item.shoot = ProjectileID.None;
 				Item.noMelee = false;
 				Item.UseSound = SoundID.Item1;
 			}
@@ -225,7 +225,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			Item.noUseGraphic = false;
 			Item.useStyle = ItemUseStyleID.Swing;
-			Item.shoot = 0;
+			Item.shoot = ProjectileID.None;
 			Item.noMelee = false; //hacky solution but its the only one i could find for wonky stuff happening to the left click after right clicking
 		}
 

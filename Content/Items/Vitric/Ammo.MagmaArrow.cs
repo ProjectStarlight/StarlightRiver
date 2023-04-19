@@ -111,21 +111,21 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (magmaRemaining > 0.4f)
 				target.AddBuff(BuffID.OnFire, 180);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			damage += (int)(progressToDepletion * 8);
-			knockback *= 1 + progressToDepletion;
+			modifiers.SourceDamage += (int)(progressToDepletion * 8);
+			modifiers.Knockback *= 1 + progressToDepletion;
 		}
 
 		public override void Kill(int timeLeft)
 		{
-			var unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
+			ReLogic.Utilities.SlotId unused1 = SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);
 
 			for (int k = 1; k <= 6; k++)
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(8, 8), ModContent.DustType<Glow>(), Main.rand.NextVector2Circular(4, 4), 0, Color.Orange, 0.5f);
@@ -133,9 +133,9 @@ namespace StarlightRiver.Content.Items.Vitric
 	}
 
 	internal class ArrowMagma : ModProjectile
-	{ 
+	{
 
-		private List<Vector2> oldPos = new();
+		private readonly List<Vector2> oldPos = new();
 
 		public override string Texture => AssetDirectory.Keys + "GlowHarshAlpha";
 
@@ -212,7 +212,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
 		}

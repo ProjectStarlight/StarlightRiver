@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 	internal class TentacleHookProj : ModProjectile
 	{
-		private List<Vector2> followPoints = new();
+		private readonly List<Vector2> followPoints = new();
 
 		private bool launching = true;
 
@@ -53,6 +53,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tentacle Hook");
+			ProjectileID.Sets.SingleGrappleHook[Type] = true;
 		}
 
 		public override void SetDefaults()
@@ -63,6 +64,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void AI()
 		{
 			colorCounter += 0.8f;
+
 			if (launching)
 			{
 				if (timer++ % 6 == 0)
@@ -90,11 +92,6 @@ namespace StarlightRiver.Content.Items.Permafrost
 			}
 		}
 
-		public override bool? SingleGrappleHook(Player player)
-		{
-			return true;
-		}
-
 		public override float GrappleRange()
 		{
 			return 350f;
@@ -119,6 +116,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void GrappleTargetPoint(Player player, ref float grappleX, ref float grappleY)
 		{
 			launching = false;
+
 			if (followPoints.Count < 1)
 				return;
 
@@ -143,6 +141,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			int chainNum = 0;
 
 			float colorIncrement = colorCounter;
+
 			while (distanceToPlayer > 20f && !float.IsNaN(distanceToPlayer))
 			{
 				directionToPlayer /= distanceToPlayer; // get unit vector
@@ -152,7 +151,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 				directionToPlayer = playerCenter - center; // update distance
 				distanceToPlayer = directionToPlayer.Length();
 
-				Color chainColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
+				var chainColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
 
 				Color bloomColor = chainColor * 0.75f;
 				bloomColor.A = 0;
@@ -173,15 +172,17 @@ namespace StarlightRiver.Content.Items.Permafrost
 						chainTexture.Bounds, chainColor, chainRotation,
 						chainTexture.Size() * 0.5f, 1f, SpriteEffects.None, 0);
 				}
+
 				colorIncrement++;
 				chainNum++;
 			}
 
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
-			Color drawColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
+			var drawColor = new Color(0.5f + MathF.Cos(colorIncrement) * 0.2f, 0.8f, 0.5f + MathF.Sin(colorIncrement) * 0.2f);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
 			Main.spriteBatch.Draw(glowTex, Projectile.Center - Main.screenPosition, null, drawColor, Projectile.rotation, tex.Size() / 2, Projectile.scale, SpriteEffects.None, 0f);
+
 			return false;
 		}
 	}

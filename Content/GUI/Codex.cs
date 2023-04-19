@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.GUI
 		private readonly UIImage DragButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/DragButton").Value);
 		private readonly UIImage ExitButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/ExitButton").Value);
 		private readonly UIImageButton BookButton = new(Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked"));
-		private readonly UIElement EntryBack = new();
+		private readonly SmartUIElement EntryBack = new();
 		internal UIList ClickableEntries = new();
 		private readonly UIScrollbar EntryScroll = new();
 
@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.GUI
 		public override void OnInitialize()
 		{
 			AddElement(BookButton, 570, 240, 26, 32, this);
-			BookButton.OnClick += OpenCodex;
+			BookButton.OnLeftClick += (a, b) => OpenCodex();
 			BookButton.SetVisibility(1, 1);
 
 			AddElement(Back, Main.screenWidth / 2 - 250, Main.screenHeight / 2 - 225, 500, 500, this);
@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.GUI
 
 			AddElement(DragButton, 410, 4, 38, 38, Back);
 			AddElement(ExitButton, 454, 4, 38, 38, Back);
-			ExitButton.OnClick += Exit;
+			ExitButton.OnLeftClick += (a, b) => Exit();
 		}
 
 		private void ScrollEntry(UIScrollWheelEvent evt, UIElement listeningElement)
@@ -71,13 +71,13 @@ namespace StarlightRiver.Content.GUI
 				element.ActiveEntry.LinePos += evt.ScrollWheelValue > 0 ? -1 : 1;
 		}
 
-		private void OpenCodex(UIMouseEvent evt, UIElement listeningElement)
+		private void OpenCodex()
 		{
 			if (Main.LocalPlayer.GetModPlayer<CodexHandler>().CodexState != 0)
 				Open = true;
 		}
 
-		private void Exit(UIMouseEvent evt, UIElement listeningElement)
+		private void Exit()
 		{
 			Open = false;
 		}
@@ -105,7 +105,8 @@ namespace StarlightRiver.Content.GUI
 			if (Open)
 				base.Draw(spriteBatch);
 		}
-		public override void Update(GameTime gameTime)
+
+		public override void SafeUpdate(GameTime gameTime)
 		{
 			CodexHandler Player = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 
@@ -132,45 +133,31 @@ namespace StarlightRiver.Content.GUI
 
 			if (DragButton.IsMouseHovering && Main.mouseLeft)
 				Dragging = true;
+
 			if (!Main.mouseLeft)
 				Dragging = false;
 
 			if (Dragging)
 				SetPos(Back, Main.MouseScreen + new Vector2(-429, -19));
+
 			if (Back.Left.Pixels < 20)
 				Back.Left.Set(20, 0);
+
 			if (Back.Top.Pixels < 20)
 				Back.Top.Set(20, 0);
+
 			if (Back.Left.Pixels > Main.screenWidth - Back.Width.Pixels)
 				Back.Left.Set(Main.screenWidth - Back.Width.Pixels, 0);
+
 			if (Back.Top.Pixels > Main.screenHeight - Back.Height.Pixels)
 				Back.Top.Set(Main.screenHeight - Back.Height.Pixels, 0);
+
 			Recalculate();
-			base.Update(gameTime);
 		}
 
-		internal void AddElement(UIElement element, int x, int y, int width, int height, UIElement appendTo)
+		internal void AddEntryButton(UIElement element, int offY)
 		{
-			element.Left.Set(x, 0);
-			element.Top.Set(y, 0);
-			element.Width.Set(width, 0);
-			element.Height.Set(height, 0);
-			appendTo.Append(element);
-		}
-
-		internal void AddEntryButton(UIElement element, float offY)
-		{
-			element.Left.Set(0, 0);
-			element.Top.Set(offY, 0);
-			element.Width.Set(120, 0);
-			element.Height.Set(28, 0);
-			ClickableEntries.Add(element);
-		}
-
-		internal static void SetPos(UIElement element, float x, float y)
-		{
-			element.Left.Set(x, 0);
-			element.Top.Set(y, 0);
+			AddElement(element, 0, offY, 120, 28, ClickableEntries);
 		}
 
 		internal static void SetPos(UIElement element, Vector2 pos)
@@ -180,7 +167,7 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	internal class CodexBack : UIElement
+	internal class CodexBack : SmartUIElement
 	{
 		internal CodexEntry ActiveEntry;
 		internal CodexEntry.Categories ActiveCategory = CodexEntry.Categories.None;
@@ -190,11 +177,13 @@ namespace StarlightRiver.Content.GUI
 			if (ContainsPoint(Main.MouseScreen))
 				Main.LocalPlayer.mouseInterface = true;
 
-			spriteBatch.Draw(TextureAssets.MagicPixel.Value, GetDimensions().ToRectangle(), Terraria.GameContent.TextureAssets.MagicPixel.Value.Frame(), Color.White * 0.1f);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, GetDimensions().ToRectangle(), TextureAssets.MagicPixel.Value.Frame(), Color.White * 0.1f);
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(20, 50);
 			Texture2D backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack").Value;
+
 			if (ActiveEntry?.RequiresUpgradedBook == true)
 				backTex = Request<Texture2D>("StarlightRiver/Assets/GUI/CodexBack2").Value; //use a purple back for rift entries
+
 			spriteBatch.Draw(backTex, pos, Color.White * 0.8f);
 			ActiveEntry?.Draw(pos + new Vector2(50, 16), spriteBatch); //draws the text of the active entry
 			base.Draw(spriteBatch);
@@ -202,7 +191,7 @@ namespace StarlightRiver.Content.GUI
 			foreach (EntryButton button in (Parent as Codex).ClickableEntries._items)
 			{
 				if (button.IsMouseHovering && button.Entry.Locked && button.Entry.Hint != null)
-					Utils.DrawBorderString(spriteBatch, Helper.WrapString(button.Entry.Hint, 300, Terraria.GameContent.FontAssets.DeathText.Value, 0.8f), Main.MouseScreen + Vector2.One * 16, Main.MouseTextColorReal, 0.8f);
+					Utils.DrawBorderString(spriteBatch, Helper.WrapString(button.Entry.Hint, 300, FontAssets.DeathText.Value, 0.8f), Main.MouseScreen + Vector2.One * 16, Main.MouseTextColorReal, 0.8f);
 			}
 		}
 
@@ -210,6 +199,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (!(Parent is Codex))
 				return;
+
 			var parent = Parent as Codex;
 
 			ActiveCategory = category;
@@ -226,10 +216,12 @@ namespace StarlightRiver.Content.GUI
 		}
 	}
 
-	internal class CategoryButton : UIElement
+	internal class CategoryButton : SmartUIElement
 	{
 		private readonly CodexEntry.Categories Category;
+
 		private readonly string Text = "";
+
 		public CategoryButton(CodexEntry.Categories category, string text)
 		{
 			Category = category;
@@ -240,6 +232,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (!(Parent is CodexBack))
 				return;
+
 			var parent = Parent as CodexBack;
 			CodexHandler Player = Main.LocalPlayer.GetModPlayer<CodexHandler>();
 
@@ -255,18 +248,19 @@ namespace StarlightRiver.Content.GUI
 			Utils.DrawBorderString(spriteBatch, Text, GetDimensions().ToRectangle().Center(), parent.ActiveCategory == Category ? Color.Yellow : Color.White, 0.6f, 0.5f, 0.5f);
 		}
 
-		public override void MouseDown(UIMouseEvent evt)
+		public override void SafeMouseDown(UIMouseEvent evt)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
 			if (!(Parent is CodexBack))
 				return;
+
 			var parent = Parent as CodexBack;
 			parent.ChangeCategory(Category);
 		}
 	}
 
-	internal class EntryButton : UIElement
+	internal class EntryButton : SmartUIElement
 	{
 		public CodexEntry Entry;
 		public EntryButton(CodexEntry entry) { Entry = entry; }
@@ -275,6 +269,7 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (!(Parent.Parent.Parent.Parent is CodexBack))
 				return; //way too many parents >.<
+
 			var parent = Parent.Parent.Parent.Parent as CodexBack;
 
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft();
@@ -301,12 +296,13 @@ namespace StarlightRiver.Content.GUI
 			}
 		}
 
-		public override void MouseDown(UIMouseEvent evt)
+		public override void SafeMouseDown(UIMouseEvent evt)
 		{
 			Terraria.Audio.SoundEngine.PlaySound(SoundID.MenuTick);
 
 			if (!(Parent.Parent.Parent.Parent is CodexBack) || Entry.Locked)
 				return; //way too many parents >.<
+
 			var parent = Parent.Parent.Parent.Parent as CodexBack;
 			parent.ActiveEntry = Entry;
 			Entry.New = false;

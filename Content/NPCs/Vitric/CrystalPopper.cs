@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 		}
 
-		public override void HitEffect(int hitDirection, double damage)
+		public override void HitEffect(NPC.HitInfo hit)
 		{
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
@@ -149,7 +149,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				}
 			}
 
-			if (NPC.ai[0] == 0 && damage > maxIgnoreDamage)
+			if (NPC.ai[0] == 0 && hit.Damage > maxIgnoreDamage)
 				ExitSleep();
 		}
 

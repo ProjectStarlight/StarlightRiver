@@ -42,7 +42,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
 
 					for (int k = 0; k < 5; k++)
+					{
 						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(), 0.6f);
+					}
 				}
 
 				if (Player.altFunctionUse == 2)
@@ -50,8 +52,11 @@ namespace StarlightRiver.Content.Items.Permafrost
 					AuroraWaterSystem.RemoveAuroraWater(Player.tileTargetX, Player.tileTargetY);
 
 					Terraria.Audio.SoundEngine.PlaySound(SoundID.Splash);
+
 					for (int k = 0; k < 10; k++)
+					{
 						Dust.NewDust(new Vector2(Player.tileTargetX, Player.tileTargetY) * 16, 16, 16, ModContent.DustType<Dusts.Glow>(), 0, 0, 0, AuroraColor(), 0.6f);
+					}
 				}
 			}
 

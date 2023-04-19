@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Helpers;
+using System;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -57,6 +58,7 @@ namespace StarlightRiver.Content.Items.Utility
 			Item.useTime = 5;
 			Item.useAnimation = 5;
 			Item.channel = true;
+			Item.noUseGraphic = true;
 			Item.shoot = ModContent.ProjectileType<LaserPointerProjectile>();
 		}
 
@@ -115,6 +117,9 @@ namespace StarlightRiver.Content.Items.Utility
 			Projectile.Center = Owner.Center;
 			LaserRotation = (Main.MouseWorld - Owner.Center).ToRotation();
 			Owner.heldProj = Projectile.whoAmI;
+			Owner.itemAnimation = Owner.itemTime = 2;
+			Owner.ChangeDir(Math.Sign((Main.MouseWorld - Owner.Center).X));
+			Owner.itemRotation = MathHelper.WrapAngle(LaserRotation - ((Owner.direction == 1) ? 0 : MathHelper.Pi));
 
 			if (Owner.channel)
 				Projectile.timeLeft = 2;

@@ -6,6 +6,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -324,7 +325,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			dontHit = target;
 		}
@@ -334,7 +335,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int i = 0; i < 10; i++)
 				Dust.NewDustPerfect(Projectile.Center, 133, Main.rand.NextVector2Circular(3, 3)).noGravity = false;
 
-			var targets = (List<NPC>)Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 200);
+			IEnumerable<NPC> targets = Main.npc.Where(x => x.active && !x.townNPC && !x.immortal && !x.dontTakeDamage && !x.friendly && x.Distance(Projectile.Center) < 200);
 
 			foreach (NPC target in targets)
 			{
@@ -608,7 +609,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return base.CanHitNPC(hitting);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Projectile.extraUpdates = 0;
 			Projectile.timeLeft = FADE_TIME;

@@ -19,4 +19,3 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public VitricSandWallItem() : base("Vitric Sand Wall", "", WallType<VitricSandWall>(), 0, AssetDirectory.VitricTile) { }
 	}
 }
-

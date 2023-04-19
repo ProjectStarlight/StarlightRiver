@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Items.Misc;
 using System;
 using System.Linq;
+using Terraria;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.SteampunkSet
@@ -62,6 +63,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.timeLeft = 1200;
 			idleHoverOffset = Main.rand.NextFloat(6.28f);
 			idleYOffset = Main.rand.Next(-25, 35);
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -426,7 +428,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			victim = target;
 		}

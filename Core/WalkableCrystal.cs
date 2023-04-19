@@ -88,14 +88,6 @@ namespace StarlightRiver.Core
 			return 0;
 		}
 
-		public override bool Drop(int i, int j)
-		{
-			if (Main.tile[i, j].TileFrameX > 0)
-				Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 16 * maxWidth, 16 * maxHeight, itemType);
-
-			return false;
-		}
-
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			return false;
@@ -146,7 +138,7 @@ namespace StarlightRiver.Core
 
 			if (t != null && t.TileFrameX > 0 && variantCount > 0)
 			{
-				Texture2D tex = TextureAssets.Tile[(int)t.BlockType].Value;
+				Texture2D tex = TextureAssets.Tile[t.TileType].Value;
 				Rectangle frame = tex.Frame(variantCount, 1, t.TileFrameX - 1);
 				Vector2 pos = Projectile.position - Main.screenPosition + DrawOffset - new Vector2(frame.Width * 0.5f, frame.Height);
 				LightingBufferRenderer.DrawWithLighting(pos, tex, frame, DrawColor);

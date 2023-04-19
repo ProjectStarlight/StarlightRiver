@@ -61,4 +61,23 @@
 			return base.Update(dust);
 		}
 	}
+
+	public class GlowFollowPlayer : Glow
+	{
+		public override bool Update(Dust dust)
+		{
+			base.Update(dust);
+
+			if (dust.customData is object[] pair)
+			{
+				var player = pair[0] as Player;
+				var pos = (Vector2)pair[1];
+
+				dust.position = player.Center + Vector2.UnitY * player.gfxOffY + pos - Vector2.One * 32 * dust.scale;
+				pair[1] = pos + dust.velocity;
+			}
+
+			return false;
+		}
+	}
 }

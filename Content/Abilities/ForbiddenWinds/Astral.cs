@@ -122,11 +122,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public override void Load()
 		{
-			StarlightNPC.ModifyHitByItemEvent += TrackKillsMelee;
-			StarlightNPC.ModifyHitByProjectileEvent += TrackKillsRanged;
+			StarlightNPC.OnHitByItemEvent += TrackKillsMelee;
+			StarlightNPC.OnHitByProjectileEvent += TrackKillsRanged;
 
 			StarlightItem.OnPickupEvent += TrackPickup;
-
 		}
 
 		private bool TrackPickup(Item Item, Player Player)
@@ -142,7 +141,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			return true;
 		}
 
-		private void TrackKillsRanged(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void TrackKillsRanged(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
 			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
@@ -151,7 +150,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 				killObjective.progress++;
 		}
 
-		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
 		{
 			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
 

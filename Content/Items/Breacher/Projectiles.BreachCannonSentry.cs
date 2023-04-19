@@ -201,14 +201,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), laserStartpoint, laserEndpoint, 15, ref collisionPoint);
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(target.Center.X - Projectile.Center.X);
+			modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Projectile.Center.X);
 			Rectangle targetHitbox = target.Hitbox;
 			float collisionPoint = 0f;
 
 			if (superLaser && Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), superLaserStartpoint, superLaserEndpoint, 15 * superCharge, ref collisionPoint))
-				damage = (int)(damage * Math.Sqrt(superCharge));
+				modifiers.FinalDamage *= (float)Math.Sqrt(superCharge);
 		}
 
 		private void SuperLaserCheck()

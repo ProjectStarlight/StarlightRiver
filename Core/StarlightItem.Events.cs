@@ -111,6 +111,24 @@ namespace StarlightRiver.Core
 			return base.CanAutoReuseItem(Item, Player);
 		}
 
+		public delegate bool AltFunctionUseDelegate(Item item, Player player);
+		public static event AltFunctionUseDelegate AltFunctionUseEvent;
+		public override bool AltFunctionUse(Item item, Player player)
+		{
+			if (AltFunctionUseEvent != null)
+			{
+				bool result = false;
+				foreach (AltFunctionUseDelegate del in AltFunctionUseEvent.GetInvocationList())
+				{
+					result |= del(item, player);
+				}
+
+				return result;
+			}
+
+			return base.AltFunctionUse(item, player);
+		}
+
 		public delegate bool CanEquipAccessoryDelegate(Item item, Player player, int slot, bool modded);
 		public static event CanEquipAccessoryDelegate CanEquipAccessoryEvent;
 		public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)

@@ -55,19 +55,31 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item13, position);
 			}
 
-			for (int i = 0; i < 3; i++)
+			if (proj != null && proj.active)
 			{
-				if (proj != null && proj.active)
+				proj.damage = damage / 2;
+				var mp = proj.ModProjectile as MagmaGunPhantomProj;
+
+				if (mp is null)
 				{
-					proj.damage = damage / 2;
-					var mp = proj.ModProjectile as MagmaGunPhantomProj;
+					proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+					return false;
+				}
+
+				for (int i = 0; i < 3; i++)
+				{
 					Vector2 direction = velocity.RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
+
 					Vector2 position2 = position;
 					position2 += Vector2.Normalize(velocity) * 20;
 					position2 += Vector2.Normalize(velocity.RotatedBy(1.57f * -player.direction)) * 5;
 					mp.CreateGlob(position2, direction);
 				}
+			}
+			else
+			{
+				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
 			}
 
 			return false;
@@ -454,7 +466,7 @@ namespace StarlightRiver.Content.Items.Misc
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			foreach (MagmaGlob glob in Globs) //TODO: Merge with canhitNPC similar code into method to reduce boilerplate
 			{
@@ -465,7 +477,7 @@ namespace StarlightRiver.Content.Items.Misc
 				{
 					if (Collision.CheckAABBvAABBCollision(target.position, target.Size, glob.position, glob.size))
 					{
-						damage *= 2;
+						modifiers.SourceDamage *= 2f;
 						break;
 					}
 				}

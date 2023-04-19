@@ -33,10 +33,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			if (!StarlightWorld.HasFlag(WorldFlags.DesertOpen) || !Main.LocalPlayer.InModBiome(ModContent.GetInstance<VitricTempleBiome>()))
 				return;
-
-			r = 125 * 0.003f;
-			g = 162 * 0.003f;
-			b = 158 * 0.003f;
+			r = 125 * 0.007f;
+			g = 162 * 0.007f;
+			b = 158 * 0.007f;
 		}
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

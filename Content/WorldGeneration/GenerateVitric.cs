@@ -44,7 +44,7 @@ namespace StarlightRiver.Core
 				TileID.HardenedSand, TileID.FossilOre };
 
 			//Basic biome information
-			vitricBiome = new Rectangle(UndergroundDesertLocation.X - 80, UndergroundDesertLocation.Y + UndergroundDesertLocation.Height, UndergroundDesertLocation.Width + 150, vitricHeight);
+			vitricBiome = new Rectangle(GenVars.UndergroundDesertLocation.X - 80, GenVars.UndergroundDesertLocation.Y + GenVars.UndergroundDesertLocation.Height, GenVars.UndergroundDesertLocation.Width + 150, vitricHeight);
 			//Boss arena protection
 			ProtectionWorld.ProtectedRegions.Add(VitricBossArena);
 
@@ -61,14 +61,14 @@ namespace StarlightRiver.Core
 					KillTile(x, y);
 
 					if (y > vitricBiome.Y + 5 && y < vitricBiome.Y + 9)
-						PlaceTile(x, y, TileType<VitricBossBarrier>(), true, true);
+						PlaceTile(x, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, true, true);
 				}
 			}
 
 			for (int y = vitricBiome.Y + 9; y < vitricBiome.Y + vitricBiome.Height - 77; y++) //collision for pillars
 			{
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, TileType<VitricBossBarrier>(), false, false);
-				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, TileType<VitricBossBarrier>(), false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 - 40, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
+				PlaceTile(vitricBiome.X + vitricBiome.Width / 2 + 41, y, StarlightRiver.Instance.Find<ModTile>("VitricBossBarrier").Type, false, false);
 			}
 
 			VitricIslandLocations = new List<Point>(); //List for island positions
@@ -289,9 +289,9 @@ namespace StarlightRiver.Core
 
 					layers["FLOOR"] = (int)Math.Floor(minFloorDepth - (0.3f + heights[x - vitricBiome.X]) * NOISE_HEIGHT);
 
-					if (x < vitricBiome.Center.X - 35 && genRand.Next(4) == 0)
+					if (x < vitricBiome.Center.X - 35 && genRand.NextBool(4))
 						layers["TOP"] -= genRand.Next(2);
-					if (x > vitricBiome.Center.X + 35 && genRand.Next(4) == 0)
+					if (x > vitricBiome.Center.X + 35 && genRand.NextBool(4))
 						layers["TOP"] += genRand.Next(2);
 					if (layers["TOP"] > vitricBiome.Y)
 						layers["TOP"] = vitricBiome.Y;
@@ -338,7 +338,7 @@ namespace StarlightRiver.Core
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 					Tile t = Main.tile[x, y];
 
-					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.Next(xRand) == 0 || y >= layers["TOP"])
+					if (y < layers["TOP"] && genRand.NextBool(layers["TOP"] - y) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y >= layers["TOP"])
 					{
 						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
 						t.Slope = SlopeType.Solid;
@@ -346,7 +346,7 @@ namespace StarlightRiver.Core
 					}
 				}
 
-				if (!makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.Next(30) == 0)
+				if (!makingLake && xDif > 50 && xDif < vitricBiome.Width - 50 && (xDif < vitricBiome.Width / 2 - 100 || xDif > vitricBiome.Width / 2 + 100) && WorldGen.genRand.NextBool(30))
 				{
 					makingLake = true;
 					lakeStart = xDif;
@@ -359,7 +359,7 @@ namespace StarlightRiver.Core
 
 					int xRand = xDif < 20 ? xDif : vitricBiome.Width - xDif;
 
-					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.Next(xRand) == 0 || y <= layers["BOTTOM"])
+					if (y > layers["BOTTOM"] && genRand.NextBool(y - layers["BOTTOM"]) && t.HasTile && Main.tileSolid[t.TileType] || (xDif < 8 || xDif > vitricBiome.Width - 8) && genRand.NextBool(xRand + 1) || y <= layers["BOTTOM"])
 					{
 						if (t.TileType != TileType<VitricSpike>())
 							PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
@@ -512,20 +512,29 @@ namespace StarlightRiver.Core
 
 		private static void GenForge()
 		{
-			int x = forgeSide == 0 ? vitricBiome.X - 40 : vitricBiome.Right - 40;
+			int x = vitricBiome.X - 37;
 			StructureHelper.Generator.GenerateStructure("Structures/VitricForge", new Point16(x, vitricBiome.Center.Y - 10), StarlightRiver.Instance);
-			NPC.NewNPC(new EntitySource_WorldGen(), vitricBiome.X * 16, (vitricBiome.Center.Y + 10) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
+
+			var dims = new Point16();
+			StructureHelper.Generator.GetDimensions("Structures/VitricForge", StarlightRiver.Instance, ref dims);
+
+			ProtectionWorld.ProtectedRegions.Add(new Rectangle(x, vitricBiome.Center.Y - 10, dims.X, dims.Y));
 		}
 
 		private static void GenTemple()
 		{
-			const int X_OFFSET = 59;
-			const int Y_OFFSET = 71;
+			Point16 dimensions = Point16.Zero;
+			StructureHelper.Generator.GetDimensions("Structures/VitricTempleNew", StarlightRiver.Instance, ref dimensions);
+
+			int yOff = 71;
+
 			StructureHelper.Generator.GenerateStructure(
-				"Structures/VitricTemple",
-				new Point16(vitricBiome.Center.X - X_OFFSET, vitricBiome.Center.Y - Y_OFFSET),
+				"Structures/VitricTempleNew",
+				new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff),
 				StarlightRiver.Instance
 				);
+
+			NPC.NewNPC(new EntitySource_WorldGen(), (vitricBiome.Center.X - 16) * 16, (vitricBiome.Center.Y - 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}
 
 		/// <summary>Generates decor of every type throughout the biome</summary>
@@ -538,7 +547,7 @@ namespace StarlightRiver.Core
 					if (i >= vitricBiome.Center.X - 52 && i <= vitricBiome.Center.X - 51)
 						continue;
 
-					if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.Next(9) == 0 && ValidGround.Any(x => x == Main.tile[i, j].TileType)) //Generates vines, random size between 4-23
+					if (Main.tile[i, j].HasTile && !Main.tile[i, j + 1].HasTile && genRand.NextBool(9) && ValidGround.Any(x => x == Main.tile[i, j].TileType)) //Generates vines, random size between 4-23
 					{
 						int targSize = genRand.Next(4, 23);
 						for (int k = 1; k < targSize; ++k)
@@ -692,7 +701,7 @@ namespace StarlightRiver.Core
 					else
 						depth += genRand.Next(-1, 2);
 
-					if (genRand.Next(3) == 0)
+					if (genRand.NextBool(3))
 					{
 						peak = true;
 						peakStart = i;

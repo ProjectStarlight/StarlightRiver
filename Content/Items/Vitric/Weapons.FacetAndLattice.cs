@@ -158,9 +158,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			return Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && target.active && !target.dontTakeDamage && !target.townNPC;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Main.player[Projectile.owner].direction;
+			modifiers.HitDirectionOverride = Main.player[Projectile.owner].direction;
 
 			if (BuffPower > 0)
 			{
@@ -172,11 +172,11 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
 
-				damage = (int)(damage * (1 + BuffPower / 50f));
-				knockback *= 3;
+				modifiers.FinalDamage *= 1 + BuffPower / 50f;
+				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.Stamina>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Stamina>(), Vector2.One.RotatedBy(Projectile.rotation + Main.rand.NextFloat(0.2f)) * Main.rand.NextFloat(12), 0, default, 1.5f);
 
 				BuffPower = 0;
 			}
@@ -210,10 +210,8 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && Projectile.timeLeft < (int)(50 * Main.player[Projectile.owner].GetTotalAttackSpeed(DamageClass.Melee)) && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				int zero = 0;
-				float zerof = 0f;
-				bool none = false;
-				ModifyHitNPC(NPC, ref zero, ref zerof, ref none, ref zero);
+				var hit = new NPC.HitModifiers();
+				ModifyHitNPC(NPC, ref hit);
 			}
 		}
 
@@ -288,11 +286,11 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			foreach (NPC NPC in Main.npc.Where(n => n.active && !n.dontTakeDamage && !n.townNPC && n.life > 0 && n.immune[Projectile.owner] <= 0 && n.Hitbox.Intersects(Projectile.Hitbox)))
 			{
-				OnHitNPC(NPC, 0, 0, false);
+				OnHitNPC(NPC, new NPC.HitInfo(), 0);
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			ShieldLife -= target.damage / 2;
 			CombatText.NewText(Projectile.Hitbox, new Color(100, 255, 255), target.damage / 2);

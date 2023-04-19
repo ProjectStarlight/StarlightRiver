@@ -25,8 +25,8 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void Load()
 		{
 			StarlightPlayer.PostUpdateEquipsEvent += DisableRegen;
-			StarlightPlayer.ModifyHitNPCEvent += LeechStaminaMelee;
-			StarlightProjectile.ModifyHitNPCEvent += LeechStaminaRanged;
+			StarlightPlayer.OnHitNPCEvent += LeechStaminaMelee;
+			StarlightProjectile.OnHitNPCEvent += LeechStaminaRanged;
 			StarlightNPC.ModifyNPCLootEvent += DropFromDeerclops;
 			StarlightItem.ModifyItemLootEvent += DropFromDeerclopsBag;
 		}
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SafeUpdateAccessory(Player Player, bool hideVisual)
 		{
-			GUI.Stam.overrideTexture = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBlood").Value;
+			GUI.StaminaBar.overrideTexture = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaBlood").Value;
 		}
 
 		private void DisableRegen(StarlightPlayer Player)
@@ -54,16 +54,16 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.Player.GetHandler().StaminaRegenRate = 0;
 		}
 
-		private void LeechStaminaRanged(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void LeechStaminaRanged(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Equipped(Main.player[Projectile.owner]))
-				Main.player[Projectile.owner].GetHandler().Stamina += damage / (Projectile.DamageType == DamageClass.Melee ? 100f : 200f);
+				Main.player[Projectile.owner].GetHandler().Stamina += damageDone / (Projectile.DamageType == DamageClass.Melee ? 100f : 200f);
 		}
 
-		private void LeechStaminaMelee(Player Player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void LeechStaminaMelee(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			if (Equipped(Player))
-				Player.GetHandler().Stamina += damage / 100f;
+				Player.GetHandler().Stamina += damageDone / 100f;
 		}
 	}
 }

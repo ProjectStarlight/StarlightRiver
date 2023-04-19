@@ -17,20 +17,20 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void Load()
 		{
 			StarlightPlayer.OnHitNPCEvent += SpawnManaOnCrit;
-			StarlightProjectile.ModifyHitNPCEvent += SpawnManaOnProjCrit;
+			StarlightProjectile.OnHitNPCEvent += SpawnManaOnProjCrit;
 		}
 
-		private void SpawnManaOnProjCrit(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void SpawnManaOnProjCrit(Projectile Projectile, NPC target, NPC.HitInfo info, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
 
-			if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
+			if (Equipped(Player) && info.Crit && Main.myPlayer == Player.whoAmI)
 				SpawnStar(target.Center);
 		}
 
-		private void SpawnManaOnCrit(Player Player, Item Item, NPC target, int damage, float knockback, bool crit)
+		private void SpawnManaOnCrit(Player Player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (Equipped(Player) && crit && Main.myPlayer == Player.whoAmI)
+			if (Equipped(Player) && info.Crit && Main.myPlayer == Player.whoAmI)
 				SpawnStar(target.Center);
 		}
 

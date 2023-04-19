@@ -32,38 +32,37 @@
 			ExposureMultSummon = 0f;
 		}
 
-		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 		{
-			if (item.CountsAsClass(DamageClass.Melee))
-				damage = (int)(damage * (1f + ExposureMultMelee)) + ExposureAddMelee;
+			if (modifiers.DamageType != null)
+			{
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Melee))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultMelee;
+					modifiers.FinalDamage += ExposureAddMelee;
+				}
 
-			if (item.CountsAsClass(DamageClass.Ranged))
-				damage = (int)(damage * (1f + ExposureMultRanged)) + ExposureAddRanged;
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Ranged))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultRanged;
+					modifiers.FinalDamage += ExposureAddRanged;
+				}
 
-			if (item.CountsAsClass(DamageClass.Magic))
-				damage = (int)(damage * (1f + ExposureMultMagic)) + ExposureAddMagic;
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Magic))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultMagic;
+					modifiers.FinalDamage += ExposureAddMagic;
+				}
 
-			if (item.CountsAsClass(DamageClass.Summon))
-				damage = (int)(damage * (1f + ExposureMultSummon)) + ExposureAddSummon;
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Summon))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultSummon;
+					modifiers.FinalDamage += ExposureAddSummon;
+				}
+			}
 
-			damage = (int)(damage * (1f + ExposureMultAll)) + ExposureAddAll;
-		}
-
-		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
-		{
-			if (projectile.CountsAsClass(DamageClass.Melee))
-				damage = (int)(damage * (1f + ExposureMultMelee)) + ExposureAddMelee;
-
-			if (projectile.CountsAsClass(DamageClass.Ranged))
-				damage = (int)(damage * (1f + ExposureMultRanged)) + ExposureAddRanged;
-
-			if (projectile.CountsAsClass(DamageClass.Magic))
-				damage = (int)(damage * (1f + ExposureMultMagic)) + ExposureAddMagic;
-
-			if (projectile.CountsAsClass(DamageClass.Summon))
-				damage = (int)(damage * (1f + ExposureMultSummon)) + ExposureAddSummon;
-
-			damage = (int)(damage * (1f + ExposureMultAll)) + ExposureAddAll;
+			modifiers.FinalDamage *= 1 + ExposureMultAll;
+			modifiers.FinalDamage += ExposureAddAll;
 		}
 	}
 }

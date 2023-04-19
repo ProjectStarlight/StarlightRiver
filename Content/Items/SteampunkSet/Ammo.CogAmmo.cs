@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -79,7 +80,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 				Projectile.velocity.Y = 16f;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//for some reason the BuzzSpark dust spawns super offset
 			Vector2 dustPos = Projectile.Center + new Vector2(0f, 40f);

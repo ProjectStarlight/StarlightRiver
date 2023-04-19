@@ -8,10 +8,10 @@
 			if (Main.dedServ)
 				return;
 
-			On.Terraria.Main.DrawDust += DrawPrimitives;
+			On_Main.DrawDust += DrawPrimitives;
 		}
 
-		private void DrawPrimitives(On.Terraria.Main.orig_DrawDust orig, Main self)
+		private void DrawPrimitives(On_Main.orig_DrawDust orig, Main self)
 		{
 			orig(self);
 

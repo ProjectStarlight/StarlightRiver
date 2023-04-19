@@ -9,7 +9,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Aqua sapphire");
+			DisplayName.SetDefault("Aqua Sapphire");
 			Tooltip.SetDefault("Barrier negates 5% more damage \n+10 Barrier");
 		}
 

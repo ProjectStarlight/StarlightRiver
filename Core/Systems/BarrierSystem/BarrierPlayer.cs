@@ -64,19 +64,31 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 				Player.GetModPlayer<BarrierPlayer>().dye?.PreDrawEffects(spriteBatch, Player);
 		}
 
-		public void ModifyDamage(ref int damage, ref bool crit)
+		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
+		{
+			if (barrier > 0)
+			{
+				//We need to use the backdoor here since we need to know the final damage to subtract from barrier
+				modifiers.ModifyHurtInfo += ModifyDamage;
+
+				timeSinceLastHit = 0;
+				justHitWithBarrier = true;
+			}
+		}
+
+		public void ModifyDamage(ref Player.HurtInfo info)
 		{
 			if (barrier > 0)
 			{
 				float reduction = 1.0f - barrierDamageReduction;
 
-				if (barrier > damage)
+				if (barrier > info.Damage)
 				{
 					dye?.HitBarrierEffects(Player);
 
-					CombatText.NewText(Player.Hitbox, Color.Cyan, damage);
-					barrier -= damage;
-					damage = (int)(damage * reduction);
+					CombatText.NewText(Player.Hitbox, Color.Cyan, info.Damage);
+					barrier -= info.Damage;
+					info.Damage = (int)(info.Damage * reduction);
 				}
 				else
 				{
@@ -85,27 +97,12 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 					dye?.LoseBarrierEffects(Player);
 
 					CombatText.NewText(Player.Hitbox, Color.Cyan, barrier);
-					int overblow = damage - barrier;
-					damage = (int)(barrier * reduction) + overblow;
+					int overblow = info.Damage - barrier;
+					info.Damage = (int)(barrier * reduction) + overblow;
 
 					barrier = 0;
 				}
 			}
-		}
-
-		public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
-		{
-			if (barrier > 0)
-			{
-				damage = (int)Main.CalculateDamagePlayersTake(damage, Player.statDefense);
-
-				ModifyDamage(ref damage, ref crit);
-				timeSinceLastHit = 0;
-				Player.statDefense = 0;
-				justHitWithBarrier = true;
-			}
-
-			return true;
 		}
 
 		public override void UpdateBadLifeRegen()
@@ -183,7 +180,7 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 			timeSinceLastHit = 0;
 		}
 
-		public override void clientClone(ModPlayer clientClone)
+		public override void CopyClientState(ModPlayer clientClone)
 		{
 			var clone = clientClone as BarrierPlayer;
 			// Here we would make a backup clone of values that are only correct on the local Players Player instance.

@@ -1,6 +1,5 @@
 ﻿using Terraria.GameContent;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -8,7 +7,7 @@ namespace StarlightRiver.Content.Items.Vitric
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public override int BossBagNPC => NPCType<Bosses.VitricBoss.VitricBoss>();
+		//public override int BossBagNPC => NPCType<Bosses.VitricBoss.VitricBoss>();
 
 		public override void SetStaticDefaults()
 		{
@@ -40,7 +39,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			return Color.Lerp(lightColor, Color.White, 0.4f);
 		}
 
-		public override void OpenBossBag(Player Player)
+		/*public override void OpenBossBag(Player Player)
 		{
 			int weapon = Main.rand.Next(5);
 
@@ -65,7 +64,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			if (Main.rand.NextBool(8))
 				Player.QuickSpawnItem(Player.GetSource_OpenItem(Item.type), ItemType<BarrierDye.VitricBossBarrierDye>());
-		}
+		}*/
 
 		//This method is stolen from examplemod and I trust it to emulate vanilla accurately
 		public override void PostUpdate()

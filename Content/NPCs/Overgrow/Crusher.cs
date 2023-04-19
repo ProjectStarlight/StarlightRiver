@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 				for (float k = 0; k <= 0.3f; k += 0.007f)
 				{
 					Vector2 vel = new Vector2(1, 0).RotatedBy(-k) * Main.rand.NextFloat(8);
-					if (Main.rand.Next(2) == 0)
+					if (Main.rand.NextBool(2))
 						vel = new Vector2(-1, 0).RotatedBy(k) * Main.rand.NextFloat(8);
 					Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustID.Stone, vel * 0.7f);
 					Dust.NewDustPerfect(NPC.Center + new Vector2(vel.X * 3, 5), DustType<Dusts.Stamina>(), vel);
@@ -71,24 +71,27 @@ namespace StarlightRiver.Content.NPCs.Overgrow
 			}
 		}
 
-		public override void OnHitPlayer(Player target, int damage, bool crit)
+		public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 		{
 			target.AddBuff(BuffType<Buffs.Squash>(), 450);
 		}
 
-		public override bool? CanHitNPC(NPC target)
+		public override bool CanHitNPC(NPC target)
 		{
 			return true;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target.type == NPCID.Bunny)
 			{
-				damage *= 99;
-				crit = true;
+				modifiers.FinalDamage *= 99f;
+				modifiers.SetCrit();
+
 				for (int k = 0; k < 1000; k++)
+				{
 					Dust.NewDustPerfect(target.Center, DustID.Blood, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(20), 0, default, 3);
+				}
 			}
 		}
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

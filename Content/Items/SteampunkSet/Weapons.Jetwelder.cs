@@ -21,7 +21,6 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		{
 			Item.damage = 20;
 			Item.knockBack = 3f;
-			Item.mana = 10;
 			Item.width = 32;
 			Item.height = 32;
 			Item.useTime = 36;
@@ -32,7 +31,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Item.UseSound = SoundID.Item44;
 			Item.channel = true;
 			Item.noMelee = true;
-			Item.DamageType = DamageClass.Magic;
+			Item.DamageType = DamageClass.Summon;
 			Item.shoot = ModContent.ProjectileType<JetwelderFlame>();
 			Item.autoReuse = false;
 		}
@@ -283,7 +282,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 					for (j = 0; j < 17; j++)
 					{
 						Vector2 direction = Main.rand.NextFloat(6.28f).ToRotationVector2();
-						Dust.NewDustPerfect(position + direction * 6 + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f); //PORTTODO: Uncomment when dust shaders don't crash the game
+						Dust.NewDustPerfect(position + direction * 6 + new Vector2(0, 35), ModContent.DustType<Dusts.BuzzSpark>(), direction.RotatedBy(Main.rand.NextFloat(-0.2f, 0.2f) - 1.57f) * Main.rand.Next(2, 10), 0, new Color(255, 255, 60) * 0.8f, 1.6f);
 					}
 
 					for (j = 0; j < 3; j++)
@@ -424,12 +423,12 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.frame %= Main.projFrames[Projectile.type];
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (Main.rand.NextBool(4))
 				target.AddBuff(BuffID.OnFire, 150);
 
-			knockback = 0;
+			modifiers.Knockback *= 0;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -467,11 +466,11 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Utils.PlotTileLine(Projectile.Center, Projectile.Center + direction * Projectile.width * Projectile.scale, Projectile.height * Projectile.scale, DelegateMethods.CutTiles);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.life <= 0 && Main.rand.NextBool(5))
+			if (target.life <= 0 && Main.rand.NextBool(2))
 				SpawnScrap(target.Center);
-			else if (Main.rand.NextBool(30))
+			else if (Main.rand.NextBool(8))
 				SpawnScrap(target.Center);
 		}
 
@@ -581,7 +580,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 	{
 		public override Position GetDefaultPosition()
 		{
-			return new AfterParent(PlayerDrawLayers.SolarShield); //PORTTODO: find out what the top most layer is for players and replace
+			return new AfterParent(PlayerDrawLayers.SolarShield);
 		}
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)

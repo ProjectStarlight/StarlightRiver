@@ -7,50 +7,36 @@
 		public float MagicCritMult = 0;
 		public float AllCritMult = 0;
 
-		public override void Load()
+		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			StarlightProjectile.ModifyHitNPCEvent += AddCritToProjectiles;
+			float toMult = AllCritMult;
+
+			if (proj.DamageType.Type == DamageClass.Melee.Type)
+				toMult += MeleeCritMult;
+
+			if (proj.DamageType.Type == DamageClass.Ranged.Type)
+				toMult += RangedCritMult;
+
+			if (proj.DamageType.Type == DamageClass.Magic.Type)
+				toMult += MagicCritMult;
+
+			modifiers.CritDamage += toMult;
 		}
 
-		private void AddCritToProjectiles(Projectile Projectile, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (crit)
-			{
-				CritMultiPlayer mp = Main.player[Projectile.owner].GetModPlayer<CritMultiPlayer>();
-				float toMult = mp.AllCritMult;
+			float toMult = AllCritMult;
 
-				if (Projectile.DamageType.Type == DamageClass.Melee.Type)
-					toMult += mp.MeleeCritMult;
+			if (item.DamageType.Type == DamageClass.Melee.Type)
+				toMult += MeleeCritMult;
 
-				if (Projectile.DamageType.Type == DamageClass.Ranged.Type)
-					toMult += mp.RangedCritMult;
+			if (item.DamageType.Type == DamageClass.Ranged.Type)
+				toMult += RangedCritMult;
 
-				if (Projectile.DamageType.Type == DamageClass.Magic.Type)
-					toMult += mp.MagicCritMult;
+			if (item.DamageType.Type == DamageClass.Magic.Type)
+				toMult += MagicCritMult;
 
-				float multiplier = 1 + toMult / 2;
-				damage = (int)(damage * multiplier);
-			}
-		}
-
-		public override void ModifyHitNPC(Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
-		{
-			if (crit)
-			{
-				float toMult = AllCritMult;
-
-				if (Item.DamageType.Type == DamageClass.Melee.Type)
-					toMult += MeleeCritMult;
-
-				if (Item.DamageType.Type == DamageClass.Ranged.Type)
-					toMult += RangedCritMult;
-
-				if (Item.DamageType.Type == DamageClass.Magic.Type)
-					toMult += MagicCritMult;
-
-				float multiplier = 1 + toMult / 2;
-				damage = (int)(damage * multiplier);
-			}
+			modifiers.CritDamage += toMult;
 		}
 
 		public override void ResetEffects()

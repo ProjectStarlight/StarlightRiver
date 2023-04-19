@@ -13,6 +13,7 @@ namespace StarlightRiver.Core.Systems.NPCUpgradeSystem
 
 		public override void NetSend(BinaryWriter writer)
 		{
+			writer.Write((short)townUpgrades.Count);
 			foreach (KeyValuePair<string, bool> upgrade in townUpgrades)
 			{
 				writer.Write(upgrade.Key);
@@ -22,8 +23,11 @@ namespace StarlightRiver.Core.Systems.NPCUpgradeSystem
 
 		public override void NetReceive(BinaryReader reader)
 		{
-			for (int i = 0; i < townUpgrades.Count(); i++)
+			short recievedCount = reader.ReadInt16();
+			for (int i = 0; i < recievedCount; i++)
+			{
 				townUpgrades[reader.ReadString()] = reader.ReadBoolean();
+			}
 		}
 
 		public override void OnWorldLoad()

@@ -76,7 +76,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private bool facingRight;
 
-		private float zRotation = 0;
+		private readonly float zRotation = 0;
 
 		private float rotVel = 0f;
 
@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<float> oldRotation = new();
 		private List<Vector2> oldPosition = new();
 
-		private List<NPC> hit = new();
+		private List<NPC> struckNPCs = new();
 
 		public override string Texture => AssetDirectory.MiscItem + "FryingPan";
 
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (FirstTickOfSwing)
 			{
-				hit = new List<NPC>();
+				struckNPCs = new List<NPC>();
 
 				if (Owner.DirectionTo(Main.MouseWorld).X > 0)
 					facingRight = true;
@@ -277,22 +277,22 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			if (hit.Contains(target))
+			if (struckNPCs.Contains(target))
 				return false;
 
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			hit.Add(target);
+			struckNPCs.Add(target);
 			Helper.PlayPitched("Impacts/PanBonkSmall", 0.5f, Main.rand.NextFloat(-0.2f, 0.2f), target.Center);
 			CameraSystem.shake += 2;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(target.Center.X - Owner.Center.X);
+			modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Owner.Center.X);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -473,7 +473,7 @@ namespace StarlightRiver.Content.Items.Misc
 			return false;
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			Bonk(target.Center);
 			/*Dust.NewDustPerfect(target.Center - new Vector2(54, 47), ModContent.DustType<FryingPanBonkBG>(), dir);

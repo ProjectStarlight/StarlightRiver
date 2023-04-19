@@ -1,12 +1,23 @@
 ﻿using StarlightRiver.Content.Foregrounds;
 using System;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
 	class Dweller : ModNPC
 	{
+		public enum States
+		{
+			Idle,
+			Transforming,
+			Attacking
+		};
+
 		Tile? root = null;
 
 		public ref float State => ref NPC.ai[0];
@@ -16,14 +27,15 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 		public Player Target => Main.player[NPC.target];
 
-		public enum States
-		{
-			Idle,
-			Transforming,
-			Attacking
-		};
-
 		public override string Texture => "StarlightRiver/Assets/NPCs/Corruption/Dweller";
+
+		public override void Load()
+		{
+			for (int j = 1; j <= 7; j++)
+			{
+				GoreLoader.AddGoreFromTexture<SimpleModGore>(Mod, "StarlightRiver/Assets/NPCs/Corruption/DwellerGore" + j);
+			}
+		}
 
 		public override void SetDefaults()
 		{
@@ -39,13 +51,31 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				NPC.width = 64;
 
 			NPC.height = NPC.width;
-
+			NPC.value = 100;
 			NPC.lifeMax = 120;
 			NPC.defense = 6;
 			NPC.knockBackResist = 0;
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.behindTiles = true;
+			NPC.HitSound = SoundID.NPCHit47;
+			NPC.DeathSound = SoundID.NPCDeath49;
+			NPC.damage = 20;
+		}
+
+		public override void OnSpawn(IEntitySource source)
+		{
+			NPC.position.Y -= Main.rand.Next(200, 300);
+			NPC.damage = 0; //Use this to override bestiary entry
+		}
+
+		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+		{
+			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
+			{
+				BestiaryDatabaseNPCsPopulator.CommonTags.SpawnConditions.Biomes.TheCorruption,
+				new FlavorTextBestiaryInfoElement("They have evolved to camoflauge themselves as trees, and use this ability to ambush unsuspecting victims in comical fashion. The laugh just sells the point.")
+			});
 		}
 
 		public override void AI()
@@ -58,7 +88,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				{
 					Tile tile = Framing.GetTileSafely((int)NPC.Center.X / 16, (int)NPC.Center.Y / 16 + k);
 
-					if (tile.HasTile && tile.BlockType == BlockType.Solid)
+					if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType])
 					{
 						root = tile;
 						Height = k * 16;
@@ -96,6 +126,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					if (Timer > 60 && Math.Abs(Target.Center.X - NPC.Center.X) < 32 && yOff < (Height - 16) && yOff > 0) //under the tree
 					{
+						SoundEngine.PlaySound(SoundID.Zombie79, NPC.Center);
 						State = (int)States.Transforming;
 						Timer = 0;
 					}
@@ -146,6 +177,8 @@ namespace StarlightRiver.Content.NPCs.Corruption
 
 					NPC.rotation += NPC.velocity.X / (NPC.width / 2f);
 
+					if (NPC.collideX && NPC.velocity.Y == 0)
+						NPC.velocity.Y = -6;
 					break;
 			}
 		}
@@ -153,13 +186,22 @@ namespace StarlightRiver.Content.NPCs.Corruption
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			var rand = new Random(NPC.GetHashCode());
+			int frameHeight = Request<Texture2D>(Texture + Variant).Value.Height / 4;
+			int frameWidth = Request<Texture2D>(Texture + Variant).Value.Width;
+
+			if (NPC.IsABestiaryIconDummy)
+			{
+				NPC.frame = new Rectangle(0, 0, frameWidth, frameHeight);
+				spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, Color.White, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
+				return false;
+			}
 
 			switch (State)
 			{
 				case (int)States.Transforming: //fall-through moment
 				case (int)States.Idle:
 
-					Texture2D barkTex = Request<Texture2D>("Terraria/Tiles_5_0").Value; //corruption tree bark 
+					Texture2D barkTex = Request<Texture2D>("Terraria/Images/Tiles_5_0").Value; //corruption tree bark 
 
 					for (int k = 0; k < Height; k += 16)
 					{
@@ -211,8 +253,7 @@ namespace StarlightRiver.Content.NPCs.Corruption
 					break;
 
 				case (int)States.Attacking:
-
-					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * NPC.height, NPC.width, NPC.height);
+					NPC.frame = new Rectangle(0, (int)Timer / 7 % 3 * frameHeight, frameWidth, frameHeight);
 
 					spriteBatch.Draw(Request<Texture2D>(Texture + Variant).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, NPC.Size / 2, NPC.scale, 0, 0);
 
@@ -220,6 +261,20 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			}
 
 			return false;
+		}
+
+		public override float SpawnChance(NPCSpawnInfo spawnInfo)
+		{
+			return SpawnCondition.Corruption.Chance * 0.27f;
+		}
+
+		public override void OnKill()
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int j = 1; j <= 7; j++)
+					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("DwellerGore" + j).Type);
+			}
 		}
 	}
 }

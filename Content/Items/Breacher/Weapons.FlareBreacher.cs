@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			return base.OnTileCollide(oldVelocity);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (!stuck && target.life > 0)
 			{
@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Helper.PlayPitched("Guns/FlareBoom", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f), Projectile.Center);
 
 			if (!target.immortal && !target.dontTakeDamage)
-				target.StrikeNPC(Projectile.damage, 0f, 0);
+				target.SimpleStrikeNPC(Projectile.damage, 0);
 
 			CameraSystem.shake = 10;
 			int numberOfProjectiles = Main.rand.Next(4, 6);

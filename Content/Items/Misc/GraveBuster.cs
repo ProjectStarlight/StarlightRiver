@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gravebuster");
-			Tooltip.SetDefault("Destroys nearby graves \nFavorite it to prevent yourself from dropping graves on death \n'You like the taste of brains, we don't like zombies'");
+			Tooltip.SetDefault("Destroys nearby graves \n'You like the taste of brains, we don't like zombies'");
 		}
 
 		public override void SetDefaults()
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 	}
 
-	public class GraveBusterHeld : ModProjectile
+	public class GraveBusterHeld : ModProjectile, IDrawOverTiles
 	{
 		private bool initialized = false;
 
@@ -54,6 +54,8 @@ namespace StarlightRiver.Content.Items.Misc
 		Player Owner => Main.player[Projectile.owner];
 
 		private Vector2 currentDirection => Projectile.rotation.ToRotationVector2();
+
+		private float Progress => 1 - Owner.itemTime / 80f;
 
 		public override void SetStaticDefaults()
 		{
@@ -102,7 +104,6 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							Vector2 graveCenter = new Vector2(i + 1, j + 1) * 16;
 							Vector2 offset = Main.rand.NextVector2Circular(8, 8);
-							Projectile.NewProjectile(Projectile.GetSource_FromThis(), graveCenter + offset, Vector2.Zero, ModContent.ProjectileType<GraveSlash>(), 0, 0, Projectile.owner);
 						}
 					}
 				}
@@ -133,7 +134,52 @@ namespace StarlightRiver.Content.Items.Misc
 				Main.spriteBatch.Draw(texture, position, null, lightColor * .91f, currentDirection.ToRotation() - 3.14f, new Vector2(texture.Width / 2, texture.Height), Projectile.scale, effects1, 0.0f);
 			}
 
+			var range = new Vector2(25, 25);
+			Vector2 startPos = Projectile.Center / 16 - range;
+			Vector2 endPos = Projectile.Center / 16 + range;
+
+			for (int i = (int)startPos.X; i < (int)endPos.X; i++)
+			{
+				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
+				{
+					Tile tile = Main.tile[i, j];
+					Tile tile2 = Main.tile[i + 1, j + 1];
+
+					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					{
+						Texture2D tex = Request<Texture2D>(AssetDirectory.Keys + "GlowAlpha").Value;
+						Vector2 drawPos = new Vector2(i + 1, j + 1) * 16;
+
+						Color color = Color.White * Progress * 0.3f;
+						color.A = 0;
+						Main.spriteBatch.Draw(tex, drawPos - Main.screenPosition, null, color, 0, tex.Size() / 2, 1, SpriteEffects.None, 0f);
+					}
+				}
+			}
+
 			return false;
+		}
+
+		public void DrawOverTiles(SpriteBatch spriteBatch)
+		{
+			var range = new Vector2(25, 25);
+			Vector2 startPos = Projectile.Center / 16 - range;
+			Vector2 endPos = Projectile.Center / 16 + range;
+			for (int i = (int)startPos.X; i < (int)endPos.X; i++)
+			{
+				for (int j = (int)startPos.Y; j < (int)endPos.Y; j++)
+				{
+					Tile tile = Main.tile[i, j];
+					Tile tile2 = Main.tile[i + 1, j + 1];
+
+					if (tile.TileType == 85 && tile.HasTile && tile2.TileType == 85 && tile2.HasTile)
+					{
+						Texture2D tex = TextureAssets.MagicPixel.Value;
+						Vector2 drawPos = new Vector2(i, j) * 16;
+						spriteBatch.Draw(tex, drawPos - Main.screenPosition, new Rectangle(0, 0, 1, 1), Color.White * Progress, 0, Vector2.Zero, 32, SpriteEffects.None, 0f);
+					}
+				}
+			}
 		}
 
 		private void DestroyGraves()
@@ -209,13 +255,10 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void AI()
 		{
-			if (effect == null)
+			effect ??= new BasicEffect(Main.instance.GraphicsDevice)
 			{
-				effect = new BasicEffect(Main.instance.GraphicsDevice)
-				{
-					VertexColorEnabled = true
-				};
-			}
+				VertexColorEnabled = true
+			};
 
 			if (direction == Vector2.Zero)
 				direction = Main.rand.NextFloat(6.28f).ToRotationVector2() * 32 * 0.06f;

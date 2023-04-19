@@ -13,18 +13,15 @@
 
 		public override void Update(Player Player, ref int buffIndex)
 		{
-			if (!StarlightWorld.HasFlag(WorldFlags.SquidBossDowned) || NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
+			if (NPC.AnyNPCs(ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>()))
 			{
 				Player.lifeRegen -= Main.masterMode ? 100 : 60;
-				Player.slow = true;
-				Player.wet = true;
 
 				if (Player == Main.LocalPlayer && Main.netMode != Terraria.ID.NetmodeID.Server)
 					Main.musicFade[Main.curMusic] = 0.05f;
 			}
 			else
 			{
-				Player.wet = true;
 				Player.breath--;
 			}
 		}

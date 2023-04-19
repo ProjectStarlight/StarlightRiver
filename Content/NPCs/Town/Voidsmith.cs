@@ -10,7 +10,7 @@ namespace StarlightRiver.Content.NPCs.Town
 	{
 		public override string Texture => AssetDirectory.TownNPC + "Voidsmith";
 
-		public override bool CanTownNPCSpawn(int numTownNPCs, int money)
+		public override bool CanTownNPCSpawn(int numTownNPCs)
 		{
 			return true;
 		}
@@ -58,11 +58,11 @@ namespace StarlightRiver.Content.NPCs.Town
 			button2 = "Upgrades";
 		}
 
-		public override void OnChatButtonClicked(bool firstButton, ref bool shop)
+		public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 		{
 			if (firstButton)
 			{
-				shop = true;
+				shopName = "Shop";
 			}
 			else
 			{

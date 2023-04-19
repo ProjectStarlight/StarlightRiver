@@ -2,7 +2,6 @@
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -18,12 +17,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void Load()
 		{
-			StarlightPlayer.PreHurtEvent += PreHurtKnockback;
-		}
-
-		public override void Unload()
-		{
-			StarlightPlayer.PreHurtEvent -= PreHurtKnockback;
+			StarlightPlayer.PostHurtEvent += PostHurtKnockback;
 		}
 
 		public override void SafeSetDefaults()
@@ -43,18 +37,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			Player.statDefense += 4;
 		}
 
-		private bool PreHurtKnockback(Player player, bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource, ref int cooldownCounter)
+		private void PostHurtKnockback(Player player, Player.HurtInfo info)
 		{
 			var instance = GetEquippedInstance(player) as ShatteredAegis;
 
 			if (Equipped(player) && instance.cooldown <= 0)
 			{
 				Helper.PlayPitched("Magic/FireSpell", 1, 0.75f, player.Center);
-				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + damage, 0, player.whoAmI);
+				Projectile.NewProjectile(player.GetSource_Accessory(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireRing>(), 20 + info.Damage, 0, player.whoAmI);
 				instance.cooldown = 60;
 			}
-
-			return true;
 		}
 	}
 
@@ -98,9 +90,9 @@ namespace StarlightRiver.Content.Items.Vitric
 			return Helper.CheckCircularCollision(Projectile.Center, (int)Radius + 20, targetHitbox);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * (20 + damage * 0.05f) * target.knockBackResist;
+			target.velocity += Vector2.Normalize(target.Center - Projectile.Center) * (20 + damageDone * 0.05f) * target.knockBackResist;
 			target.AddBuff(BuffID.OnFire, 180);
 
 			for (int k = 0; k < 4; k++)

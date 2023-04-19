@@ -4,6 +4,7 @@ using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
@@ -51,6 +52,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = BASE_DURATION;
 			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override bool? CanHitNPC(NPC target)
@@ -283,7 +285,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 			}
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			victim = target;
 		}

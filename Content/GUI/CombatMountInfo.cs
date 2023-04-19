@@ -41,10 +41,5 @@ namespace StarlightRiver.Content.GUI
 			source = new Rectangle(0, 0, tex.Width, target.Height);
 			spriteBatch.Draw(tex, target, source, Color.Black * 0.5f);
 		}
-
-		public override void Update(GameTime gameTime)
-		{
-
-		}
 	}
 }

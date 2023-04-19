@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+using StarlightRiver.Content.Tiles.Vitric.Temple;
+using StarlightRiver.Core.Systems.CameraSystem;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -24,7 +25,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return GlassTempleZone.Contains((player.Center / 16).ToPoint()) && Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].WallType != Terraria.ID.WallID.None;
+			return Main.tile[(int)(player.Center.X / 16), (int)(player.Center.Y / 16)].WallType == ModContent.WallType<VitricTempleWall>();
 		}
 	}
 }

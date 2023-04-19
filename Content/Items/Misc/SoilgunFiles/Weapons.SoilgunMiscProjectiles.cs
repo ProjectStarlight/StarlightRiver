@@ -403,13 +403,13 @@ namespace StarlightRiver.Content.Items.Misc.SoilgunFiles
 			return true;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			switch (Projectile.frame)
 			{
-				case 0: damage = (int)(damage * 1.3f); break; // platinum coin do more dmg then gold, gold more than silver, etc
-				case 1: damage = (int)(damage * 1.2f); break;
-				case 2: damage = (int)(damage * 1.1f); break;
+				case 0: modifiers.SourceDamage *= 1.3f; break; // platinum coin do more dmg then gold, gold more than silver, etc
+				case 1: modifiers.SourceDamage *= 1.2f; break;
+				case 2: modifiers.SourceDamage *= 1.1f; break;
 			}
 		}
 

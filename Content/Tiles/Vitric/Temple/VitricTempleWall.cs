@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+using Terraria.Graphics;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -16,11 +17,17 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
-			var target = new Rectangle(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y, 16, 16);
-			target.Offset((int)Helpers.Helper.TileAdj.X * 16, (int)Helpers.Helper.TileAdj.Y * 16);
+			var target = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y);
+			target += new Vector2(Helpers.Helper.TileAdj.X * 16, Helpers.Helper.TileAdj.Y * 16);
 			var source = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
 
-			spriteBatch.Draw(tex, target, source, Lighting.GetColor(new Point(i, j)));
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			if (Lighting.NotRetro && !WorldGen.SolidTile(tile))
+			{
+				Lighting.GetCornerColors(i, j, out VertexColors vertices);
+				Main.tileBatch.Draw(tex, target, source, vertices, Vector2.Zero, 1f, SpriteEffects.None);
+			}
 		}
 	}
 
