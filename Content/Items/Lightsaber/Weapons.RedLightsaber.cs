@@ -143,13 +143,13 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			}
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (target == pullTarget)
 			{
 				CameraSystem.shake += 5;
 				launchVector = pullTarget.DirectionTo(Main.MouseWorld);
-				damage = (int)(damage * 2.5f);
+				modifiers.FinalDamage *= 2.5f;
 				target.velocity = Vector2.Zero;
 				pauseTime = 40;
 			}

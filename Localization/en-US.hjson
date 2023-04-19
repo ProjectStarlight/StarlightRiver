@@ -1,4 +1,3 @@
-
 Mods: {
 	StarlightRiver: {
 		Keybinds: {
@@ -3452,6 +3451,18 @@ Mods: {
 			SpawnEgg.DisplayName: Spawn Egg
 			CrescentOrb.DisplayName: Lunar Orb
 			SpearBookProjectile.DisplayName: Spear Book Projectile
+			BlueLightsaberLaser.DisplayName: Laser
+			BlueLightsaberLensFlare.DisplayName: Laser
+			BlueLightsaberProjectile.DisplayName: Lightsaber
+			GreenLightsaberShockwave.DisplayName: Shockwave
+			LightsaberImpactRing.DisplayName: Lightsaber
+			LightsaberProj_Green.DisplayName: Lightsaber
+			LightsaberProj_Orange.DisplayName: Lightsaber
+			LightsaberProj_Purple.DisplayName: Lightsaber
+			LightsaberProj_Red.DisplayName: Lightsaber
+			LightsaberProj_White.DisplayName: Lightsaber
+			LightsaberProj_Yellow.DisplayName: Lightsaber
+			YellowLightsaberDashProjectile.DisplayName: Lightsaber
 		}
 
 		Tiles: {

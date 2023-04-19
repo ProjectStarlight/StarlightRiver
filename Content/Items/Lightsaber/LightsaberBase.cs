@@ -341,7 +341,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hitinfo, int damageDone)
 		{
 			Projectile.penetrate++;
 			hit.Add(target);
@@ -350,9 +350,9 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				CameraSystem.shake += 2;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			hitDirection = Math.Sign(target.Center.X - Owner.Center.X);
+			modifiers.HitDirectionOverride = Math.Sign(target.Center.X - Owner.Center.X);
 		}
 
 		public override bool PreDraw(ref Color lightColor)

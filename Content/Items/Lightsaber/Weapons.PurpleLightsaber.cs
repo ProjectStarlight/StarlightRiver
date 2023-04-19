@@ -274,25 +274,25 @@ namespace StarlightRiver.Content.Items.Lightsaber
 			return base.CanHitNPC(target);
 		}
 
-		public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
+		public override void OnHitNPC(NPC target, NPC.HitInfo hitinfo, int damageDone)
 		{
-			base.OnHitNPC(target, damage, knockback, crit);
+			base.OnHitNPC(target, hitinfo, damageDone);
 
 			if (rightClicked)
 				CameraSystem.shake -= 2;
 		}
 
-		public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
 			if (rightClicked)
 			{
-				knockback = 0;
+				modifiers.Knockback *= 0; // previously: knockback = 0;
 
 				for (int i = 0; i < 5; i++)
 					Dust.NewDustPerfect(target.Center, ModContent.DustType<LightsaberGlow>(), Main.rand.NextVector2Circular(2, 2), 0, Color.Purple, Main.rand.NextFloat(0.45f, 0.85f));
 			}
 
-			base.ModifyHitNPC(target, ref damage, ref knockback, ref crit, ref hitDirection);
+			base.ModifyHitNPC(target, ref modifiers);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
