@@ -8,6 +8,11 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 {
 	public class IgnitionGauntletsImpactRing : ModProjectile, IDrawPrimitive
 	{
+		public Color outerColor = Color.Orange;
+		public int ringWidth = 28;
+		public bool additive = false;
+		public bool behindTiles = false;
+
 		private List<Vector2> cache;
 
 		private Trail trail;
@@ -82,7 +87,10 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 28 * (1 - Progress), factor => Color.Orange);
 
-			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => 10 * (1 - Progress), factor => Color.White);
+			trail ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => ringWidth * (1 - Progress), factor => outerColor);
+
+			trail2 ??= new Trail(Main.instance.GraphicsDevice, 33, new TriangularTip(1), factor => ringWidth * 0.36f * (1 - Progress), factor => Color.White);
+
 			float nextplace = 33f / 32f;
 			var offset = new Vector2((float)Math.Sin(nextplace), (float)Math.Cos(nextplace));
 			offset *= Radius;
