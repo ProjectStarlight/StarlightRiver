@@ -1,6 +1,11 @@
-﻿using System;
+﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Vitric;
+using System;
 using System.IO;
+using System.Linq;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -8,30 +13,28 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class MagmitePassive : ModNPC
+	internal class Coolmite : ModNPC
 	{
+		bool melting = false;
+		int meltingTimer = 0;
+
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
 		public ref float GlobalTimer => ref NPC.ai[2];
 		public ref float TurnTimer => ref NPC.ai[3];
+		public float meltingTransparency => (float)meltingTimer / 150;
 
-		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
-
-		public override void Load()
-		{
-			//GoreLoader.AddGoreFromTexture<MagmiteGore>(StarlightRiver.Instance, "StarlightRiver/Assets/NPCs/Vitric/MagmiteGore");
-		}
+		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Coolmite";
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Small Magmite");
+			DisplayName.SetDefault("Coolmite");
 			Main.npcCatchable[Type] = true;
-			NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCType<Coolmite>();
 		}
 
 		public override void SetDefaults()
 		{
-			NPC.catchItem = ItemType<MagmitePassiveItem>();
+			NPC.catchItem = ItemType<CoolmiteItem>();
 			NPC.width = 24;
 			NPC.height = 24;
 			NPC.damage = 0;
@@ -39,6 +42,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.lifeMax = 25;
 			NPC.aiStyle = -1;
 			NPC.lavaImmune = true;
+			NPC.HitSound = SoundID.Item27;
 
 			ActionState = -1;
 		}
@@ -52,19 +56,18 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			});
 		}
 
-		public override Color? GetAlpha(Color drawColor)
-		{
-			return Color.White;
-		}
-
 		public override void SendExtraAI(BinaryWriter writer)
 		{
 			writer.WritePackedVector2(NPC.velocity);
+			writer.Write(melting);
+			writer.Write(meltingTimer);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			NPC.velocity = reader.ReadPackedVector2();
+			melting = reader.ReadBoolean();
+			meltingTimer = reader.Read();
 		}
 
 		public override void AI()
@@ -80,8 +83,30 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			ActionTimer++;
 			GlobalTimer++;
 
-			if (Main.rand.NextBool(10))
-				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+			if (melting)
+			{
+				meltingTimer++;
+
+				if (meltingTimer % 4 == 0)
+					Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+			}
+
+			if (meltingTimer > 120)
+			{
+				NPC.active = false;
+				NPC magmite = NPC.NewNPCDirect(NPC.GetSource_FromThis(), (int)NPC.position.X, (int)NPC.position.Y, NPCType<MagmitePassive>(), 0, NPC.ai[0], NPC.ai[1], NPC.ai[2], NPC.ai[3], NPC.target);
+				magmite.frame = NPC.frame;
+				magmite.velocity = NPC.velocity;
+				magmite.velocity.Y = -10;
+
+				SoundEngine.PlaySound(SoundID.Item176);
+
+				for (int k = 0; k < 20; k++)
+					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+
+				for (int k = 0; k < 20; k++)
+					Dust.NewDustDirect(NPC.Center, 16, 16, DustID.Torch, 0, 0, 0, default, 1.5f).velocity *= 3f;
+			}
 
 			if (ActionState == -1)
 			{
@@ -131,8 +156,17 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (ActionTimer % 60 == 0)
 					NPC.TargetClosest();
 
-				if (NPC.target >= 0)
+				Vector2? lavaPos = FindLava(); // make coolmite target lava if nearby so it can melt back down to a magmite
+
+				if (lavaPos != null)
+					NPC.velocity.X += ((Vector2)lavaPos).X == NPC.Center.X ? 0 : 0.05f * (((Vector2)lavaPos).X > NPC.Center.X ? 1 : -1);
+				else if (NPC.target >= 0)
 					NPC.velocity.X += 0.05f * (Main.player[NPC.target].Center.X > NPC.Center.X ? 1 : -1);
+
+				if (tile.LiquidAmount > 0 && tile.LiquidType == LiquidID.Lava)
+				{
+					melting = true;
+				}
 
 				NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f);
 				NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f);
@@ -180,10 +214,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 			{
-				for (int k = 0; k < 30; k++)
-					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center, (Vector2.UnitY * Main.rand.NextFloat(-8, -1)).RotatedByRandom(0.5f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
+				for (int k = 0; k < 5; k++)
+					Dust.NewDust(NPC.position, 16, 16, DustID.Demonite);
 
-				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, NPC.Center);
+				for (int k = 0; k < 25; k++)
+					Dust.NewDust(NPC.position, 16, 16, DustID.Glass);
+
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Shatter, NPC.Center);
 			}
 		}
 
@@ -204,65 +241,37 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (NPC.spriteDirection == -1)
 				originX = 30;
 
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, drawColor * (1 - meltingTransparency), 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
-	}
 
-	internal class MagmiteGore : ModGore
-	{
-		public override string Texture => AssetDirectory.VitricNpc + "MagmiteGore";
-
-		public override void OnSpawn(Gore gore, IEntitySource source)
+		private Vector2? FindLava()
 		{
-			gore.timeLeft = 180;
-			gore.sticky = true;
-			gore.numFrames = 2;
-			gore.behindTiles = true;
-		}
-
-		public override Color? GetAlpha(Gore gore, Color lightColor)
-		{
-			return Color.White * (gore.scale < 0.5f ? gore.scale * 2 : 1);
-		}
-
-		public override bool Update(Gore gore)
-		{
-			Lighting.AddLight(gore.position, new Vector3(1.6f, 0.8f, 0) * gore.scale);
-
-			gore.scale *= 0.99f;
-
-			if (gore.scale < 0.1f)
-				gore.active = false;
-
-			if (gore.velocity.Y == 0)
+			Vector2? lavaPos = null;
+			for (int i = -25; i < 25; i++)
 			{
-				gore.velocity.X = 0;
-				gore.rotation = 0;
-				gore.frame = 1;
+				for (int j = -5; j < 15; j++)
+				{
+					Tile tileLava = Main.tile[(int)NPC.Center.X / 16 + i, (int)NPC.Center.Y / 16 + j];
+
+					if (tileLava.LiquidAmount > 0 && tileLava.LiquidType == LiquidID.Lava)
+					{
+						if (lavaPos == null || ((Vector2)lavaPos - NPC.Center).Length() > new Vector2(i, j).Length() * 16)
+						{
+							Vector2 checkPos = NPC.Center + new Vector2(i, j) * 16;
+							if (Collision.CanHitLine(NPC.Center, 1, 1, checkPos, 1, 1) || Collision.CanHitLine(NPC.Center - Vector2.UnitY * 50, 1, 1, checkPos, 1, 1)) // checks if lava can be reached
+								lavaPos = checkPos;
+						}
+					}
+				}
 			}
 
-			//gore.position += gore.velocity;
-
-			if (gore.frame == 0)
-				gore.velocity.Y += 0.5f;
-
-			return true;
+			return lavaPos;
 		}
 	}
 
-	internal class MagmitePassiveItem : QuickCritterItem
+	internal class CoolmiteItem : QuickCritterItem
 	{
-		public MagmitePassiveItem() : base("Magmite", "Release him!", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<MagmitePassive>(), AssetDirectory.VitricItem) { }
+		public CoolmiteItem() : base("Coolmite", "Fragile! Please handle with care.", Item.sellPrice(silver: 15), ItemRarityID.Orange, NPCType<Coolmite>(), AssetDirectory.VitricItem) { }
 	}
-	/*
-    internal class MagmiteBanner : ModBanner
-    {
-    public MagmiteBanner() : base("MagmiteBannerItem", NPCType<MagmitePassive>(), AssetDirectory.VitricNpc) { }
-    }
-
-    internal class MagmiteBannerItem : QuickBannerItem
-    {
-        public MagmiteBannerItem() : base("MagmiteBanner", "Small Magmite", AssetDirectory.VitricNpc) { }
-    }*/
 }
