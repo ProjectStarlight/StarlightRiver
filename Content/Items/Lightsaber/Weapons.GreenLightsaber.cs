@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Projectiles;
+using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.DataStructures;
