@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 
 		private int hitCounter = 0;
 
-		private float curveCounter = 0;
+		private readonly float curveCounter = 0; //TODO: Have this actually used or remove it if not required
 
 		private int originCounter = 0;
 

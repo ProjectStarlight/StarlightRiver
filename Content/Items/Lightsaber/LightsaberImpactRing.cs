@@ -4,7 +4,7 @@ using System;
 using Terraria.ID;
 using Terraria.Graphics.Effects;
 
-namespace StarlightRiver.Content.Projectiles
+namespace StarlightRiver.Content.Items.Lightsaber
 {
 	public class LightsaberImpactRing : ModProjectile
 	{
