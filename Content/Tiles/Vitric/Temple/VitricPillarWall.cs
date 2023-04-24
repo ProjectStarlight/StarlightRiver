@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Biomes;
 using System;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -49,6 +50,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Tile tile = Framing.GetTileSafely(i, j);
 
 			Texture2D tex = Request<Texture2D>(Texture + "Glow").Value;
