@@ -3148,6 +3148,11 @@ Mods: {
 				DisplayName: Lava Vitric Forge Pillar
 				Tooltip: Sturdy
 			}
+
+			MainForgeItem: {
+				DisplayName: Main forge
+				Tooltip: Debug item
+			}
 		}
 
 		Projectiles: {
@@ -3474,6 +3479,7 @@ Mods: {
 			SwordBookParry.DisplayName: Sword Book Parry
 			TallWindowCrystalDummy.DisplayName: ""
 			TallWindowLavaDummy.DisplayName: ""
+			MainForgeDummy.DisplayName: ""
 		}
 
 		Tiles: {
@@ -3647,6 +3653,7 @@ Mods: {
 			TallWindowLava.MapEntry: ""
 			VitricPillarWallCrystal.MapEntry: ""
 			VitricPillarWallLava.MapEntry: ""
+			MainForge.MapEntry: ""
 		}
 
 		Biomes: {
