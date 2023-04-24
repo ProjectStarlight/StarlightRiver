@@ -43,11 +43,32 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Texture2D tex = Request<Texture2D>(TextureOver).Value;
 			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
 
+			var tilePos = (Projectile.position / 16).ToPoint16();
+			RedrawWall(tilePos.X, tilePos.Y + 2);
+			RedrawWall(tilePos.X + 1, tilePos.Y + 2);
+			RedrawWall(tilePos.X + 4, tilePos.Y + 2);
+			RedrawWall(tilePos.X + 5, tilePos.Y + 2);
+
 			spriteBatch.End();
 
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
 			spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+		}
+
+		public void RedrawWall(int i, int j)
+		{
+			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricTempleWall").Value;
+			var target = new Vector2(i * 16 - Main.screenPosition.X, j * 16 - Main.screenPosition.Y);
+			var source = new Rectangle(i % 14 * 16, j % 25 * 16, 16, 16);
+
+			Tile tile = Framing.GetTileSafely(i, j);
+
+			if (Lighting.NotRetro && !WorldGen.SolidTile(tile))
+			{
+				Color color = Lighting.GetColor(i, j);
+				Main.spriteBatch.Draw(tex, target, source, color, 0, Vector2.Zero, 1f, 0, 0);
+			}
 		}
 	}
 
