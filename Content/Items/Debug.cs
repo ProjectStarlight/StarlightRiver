@@ -42,7 +42,6 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.VitricGen(null, null);
 			return true;
 		}
 	}

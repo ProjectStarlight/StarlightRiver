@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Update()
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Vector2 pos = Projectile.Center + new Vector2(7.5f * 16, 11.5f * 16);
 
 			Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.5f) * HammerFunction(Main.GameUpdateCount * 0.01f) * 0.02f);
@@ -76,6 +80,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return false;
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			DrawLaser(spriteBatch);
@@ -92,6 +99,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeOver").Value;

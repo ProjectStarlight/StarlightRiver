@@ -59,7 +59,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void Update()
 		{
 			if (ParentX == LightPuzzleHandler.PuzzleOriginLocation.X && ParentY == LightPuzzleHandler.PuzzleOriginLocation.Y) // Origin always emits
+			{
 				Emit = 1;
+				FindEndpoint();
+			}
 
 			if (rotating)
 			{

@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
@@ -86,7 +87,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			(r, g, b) = (0.5f, 0.35f, 0.2f);
+			if (Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				(r, g, b) = (0.5f, 0.35f, 0.2f);
 		}
 	}
 
@@ -119,6 +121,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void PostDraw(Color lightColor)
 		{
 			base.PostDraw(lightColor);
+
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 

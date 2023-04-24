@@ -32,6 +32,9 @@ namespace StarlightRiver.Content.CustomHooks
 		/// <returns></returns>
 		private bool IsProtected(int x, int y)
 		{
+			if (StarlightRiver.debugMode)
+				return false;
+
 			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
 			{
 				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)

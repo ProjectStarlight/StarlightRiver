@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Biomes;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
@@ -48,6 +49,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			base.Update();
 
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
 
 			if (Size == 0)
@@ -58,6 +62,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
 
 			Texture2D tex = Size switch
 			{
