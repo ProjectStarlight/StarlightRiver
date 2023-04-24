@@ -1,4 +1,3 @@
-
 Mods: {
 	StarlightRiver: {
 		Keybinds: {
@@ -3129,6 +3128,26 @@ Mods: {
 					+10% melee critical damage
 					'''
 			}
+
+			TallWindowCrystalItem: {
+				DisplayName: CrystalWindow Actor
+				Tooltip: Debug Item
+			}
+
+			TallWindowLavaItem: {
+				DisplayName: Lava Window Actor
+				Tooltip: Debug Item
+			}
+
+			VitricPillarWallCrystalItem: {
+				DisplayName: Crystal Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
+
+			VitricPillarWallLavaItem: {
+				DisplayName: Lava Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
 		}
 
 		Projectiles: {
@@ -3453,6 +3472,8 @@ Mods: {
 			CrescentOrb.DisplayName: Lunar Orb
 			SpearBookProjectile.DisplayName: Spear Book Projectile
 			SwordBookParry.DisplayName: Sword Book Parry
+			TallWindowCrystalDummy.DisplayName: ""
+			TallWindowLavaDummy.DisplayName: ""
 		}
 
 		Tiles: {
@@ -3622,6 +3643,10 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			TallWindowCrystal.MapEntry: ""
+			TallWindowLava.MapEntry: ""
+			VitricPillarWallCrystal.MapEntry: ""
+			VitricPillarWallLava.MapEntry: ""
 		}
 
 		Biomes: {
