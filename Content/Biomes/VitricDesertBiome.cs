@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			if (Main.Configuration.Get<bool>("UseHeatDistortion", false))
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !player.InModBiome<VitricTempleBiome>())
 			{
 				if (!Filters.Scene["GradientDistortion"].IsActive())
 				{
