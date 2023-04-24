@@ -123,6 +123,7 @@ namespace StarlightRiver.Content.Items.Lightsaber
 				item.shootSpeed = 14f;
 			}
 		}
+
 		public override bool AltFunctionUse(Item item, Player player)
 		{
 			if (!Main.Configuration.Get<bool>("Lightsabers", true))

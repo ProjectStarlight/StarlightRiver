@@ -367,3 +367,5 @@ FETCH_HEAD
 *.pack
 refs/remotes/origin/ArmorEnchantAndBags
 FETCH_HEAD
+Effects/Compile/3DSwing.fx
+Effects/Compile/LightsaberTrail.fx
