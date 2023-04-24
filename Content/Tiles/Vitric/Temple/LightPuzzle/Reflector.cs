@@ -3,6 +3,7 @@ using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
@@ -31,7 +32,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			{
 				if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<DebugStick>())
 				{
-					dummy.Emit = 1;
+					LightPuzzleHandler.PuzzleOriginLocation = new Point16(i, j);
 					return true;
 				}
 
@@ -57,6 +58,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override void Update()
 		{
+			if (ParentX == LightPuzzleHandler.PuzzleOriginLocation.X && ParentY == LightPuzzleHandler.PuzzleOriginLocation.Y) // Origin always emits
+				Emit = 1;
+
 			if (rotating)
 			{
 				if (Vector2.Distance(Main.MouseWorld, Projectile.Center) > 48)
