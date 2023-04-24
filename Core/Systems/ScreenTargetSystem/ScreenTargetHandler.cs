@@ -30,7 +30,7 @@ namespace StarlightRiver.Core.Systems.ScreenTargetSystem
 
 				Main.QueueMainThreadAction(() =>
 				{
-					targets.ForEach(n => n.RenderTarget.Dispose());
+					targets.ForEach(n => n.RenderTarget?.Dispose());
 					targets.Clear();
 					targets = null;
 				});
