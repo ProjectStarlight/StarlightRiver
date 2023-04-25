@@ -3153,6 +3153,11 @@ Mods: {
 				DisplayName: Main forge
 				Tooltip: Debug item
 			}
+
+			LightActorItem: {
+				DisplayName: Light actor placer
+				Tooltip: Debug item
+			}
 		}
 
 		Projectiles: {
@@ -3480,6 +3485,7 @@ Mods: {
 			TallWindowCrystalDummy.DisplayName: ""
 			TallWindowLavaDummy.DisplayName: ""
 			MainForgeDummy.DisplayName: ""
+			LightActorDummy.DisplayName: ""
 		}
 
 		Tiles: {
@@ -3654,6 +3660,7 @@ Mods: {
 			VitricPillarWallCrystal.MapEntry: ""
 			VitricPillarWallLava.MapEntry: ""
 			MainForge.MapEntry: ""
+			LightActor.MapEntry: ""
 		}
 
 		Biomes: {

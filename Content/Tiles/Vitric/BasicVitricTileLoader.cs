@@ -126,6 +126,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			AddMerge("AncientSandstone", "VitricSoftSand");
 			AddMerge("AncientSandstone", "VitricSandPlain");
 			AddMerge("AncientSandstone", "VitricSand");
+			AddMerge("AncientSandstone", "VitricGlass");
+
+			TileID.Sets.DrawsWalls[StarlightRiver.Instance.Find<ModTile>("VitricGlass").Type] = true;
 		}
 	}
 }
