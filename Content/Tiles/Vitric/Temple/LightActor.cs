@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (Main.rand.NextBool(12))
 				Dust.NewDust(target.TopLeft(), target.Width, target.Height, ModContent.DustType<Dusts.Aurora>(), 0, -Main.rand.NextFloat(2, 5), 0, new Color(100, 200, 255) * 0.75f, Main.rand.NextFloat(0.75f));
 
-			for (int k = 0; k < h; k++)
+			for (int k = 0; k < h / 16; k++)
 			{
 				Lighting.AddLight(pos + Vector2.UnitY * k * 16, new Vector3(0.5f, 0.75f, 0.9f) * 0.5f);
 			}
