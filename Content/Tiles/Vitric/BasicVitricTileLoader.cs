@@ -128,7 +128,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			AddMerge("AncientSandstone", "VitricSand");
 			AddMerge("AncientSandstone", "VitricGlass");
 
-			TileID.Sets.DrawsWalls[StarlightRiver.Instance.Find<ModTile>("VitricGlass").Type] = true;
+			ushort glassType = StarlightRiver.Instance.Find<ModTile>("VitricGlass").Type;
+
+			TileID.Sets.DrawsWalls[glassType] = true;
+			Main.tileBlockLight[glassType] = false;
 		}
 	}
 }
