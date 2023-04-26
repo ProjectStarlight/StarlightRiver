@@ -43,6 +43,23 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
+
+			var start = (Main.MouseWorld / 16).ToPoint16();
+
+			for (int x = 0; x < 20; x++)
+			{
+				for (int y = 0; y < 20; y++)
+				{
+					Tile tile = Framing.GetTileSafely(start.X + x, start.Y + y);
+
+					if (tile.WallType == ModContent.WallType<Tiles.Vitric.AncientSandstoneWall>())
+						tile.WallType = (ushort)ModContent.WallType<Tiles.Vitric.Temple.VitricTempleWallSafe>();
+
+					if (tile.TileType == Mod.Find<ModTile>("VitricSoftSand").Type)
+						tile.TileType = Mod.Find<ModTile>("VitricSand").Type;
+				}
+			}
+
 			return true;
 		}
 	}

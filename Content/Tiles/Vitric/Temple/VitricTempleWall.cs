@@ -41,6 +41,15 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
 
-		public VitricTempleWallItem() : base("Vitric Forge Brick Wall", "Sturdy", WallType<VitricTempleWall>(), ItemRarityID.White) { }
+		public VitricTempleWallItem() : base("Vitric Forge Brick Wall (Danger)", "Debug item", WallType<VitricTempleWall>(), ItemRarityID.White) { }
+	}
+
+	class VitricTempleWallSafe : VitricTempleWall { }
+
+	class VitricTempleWallSafeItem : QuickWallItem
+	{
+		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
+
+		public VitricTempleWallSafeItem() : base("Vitric Forge Brick Wall (Safe)", "Sturdy", WallType<VitricTempleWallSafe>(), ItemRarityID.White) { }
 	}
 }
