@@ -42,8 +42,6 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-<<<<<<< HEAD
-=======
 			player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
 
 			var start = (Main.MouseWorld / 16).ToPoint16();
@@ -62,7 +60,6 @@ namespace StarlightRiver.Content.Items
 				}
 			}
 
->>>>>>> 8ad5f156 (Update structures)
 			return true;
 		}
 	}
