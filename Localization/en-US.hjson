@@ -3163,6 +3163,11 @@ Mods: {
 				DisplayName: Reflector Lens
 				Tooltip: Debug Item
 			}
+
+			VitricTempleWallSafeItem: {
+				DisplayName: Vitric Forge Brick Wall (Safe)
+				Tooltip: Sturdy
+			}
 		}
 
 		Projectiles: {
