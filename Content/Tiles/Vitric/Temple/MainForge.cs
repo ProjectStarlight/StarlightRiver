@@ -22,6 +22,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 	class MainForgeDummy : Dummy
 	{
+		public float power = 0;
+
+		public int timer;
+		public int tickDelay;
+
 		public MainForgeDummy() : base(ModContent.TileType<MainForge>(), 16, 16) { }
 
 		public override void SafeSetDefaults()
@@ -39,18 +44,31 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
+			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints / 2f;
+
+			if (power < puzzleProg - 0.01f)
+				power += 0.01f;
+			else if (power > puzzleProg + 0.01f)
+				power -= 0.01f;
+
+			if (LightPuzzle.LightPuzzleHandler.Solved)
+				timer++;
+
 			Vector2 pos = Projectile.Center + new Vector2(7.5f * 16, 11.5f * 16);
 
-			Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.5f) * HammerFunction(Main.GameUpdateCount * 0.01f) * 0.02f);
+			Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.5f) * HammerFunction(timer * 0.01f) * 0.02f);
 
-			float sin = 0.75f + (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 0.25f;
+			float sin = 0.75f + (float)Math.Sin(timer * 0.025f) * 0.25f;
 
 			Lighting.AddLight(pos + new Vector2(82, 16), new Vector3(1, 0.7f, 0.5f) * sin);
 			Lighting.AddLight(pos + new Vector2(-82, 16), new Vector3(1, 0.7f, 0.5f) * sin);
 
-			Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(-24, 24), -184), ModContent.DustType<Dusts.Cinder>(), new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, 0)), 0, new Color(255, Main.rand.Next(100, 255), 50), Main.rand.NextFloat(2));
+			var color = new Color(255, Main.rand.Next(100, 255), 50);
+			color = Color.Lerp(new Color(100, 220, 255) * 0.25f, color, puzzleProg);
 
-			if (Main.GameUpdateCount % 100 == 0)
+			Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(-24, 24), -184), ModContent.DustType<Dusts.Cinder>(), new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, 0)), 0, color, Main.rand.NextFloat(2) * (0.5f + power * 0.5f));
+
+			if (timer % 100 == 1)
 			{
 				for (float k = 0; k <= 0.3f; k += 0.01f)
 				{
@@ -109,7 +127,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
 
-			var offset = new Vector2(0, HammerFunction(Main.GameUpdateCount * 0.01f));
+			var offset = new Vector2(0, HammerFunction(timer * 0.01f));
 
 			spriteBatch.End();
 
@@ -131,10 +149,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			var origin = new Vector2(0, texBeam.Height / 2);
 			var origin2 = new Vector2(0, texBeam2.Height / 2);
 
+			float puzzleProg = power;
+
 			Vector2 centerPos = Projectile.Center + new Vector2(7.5f * 16, 0);
 			Vector2 endpoint = centerPos + new Vector2(0, 200);
 			float rot = (centerPos - endpoint).ToRotation();
 			var color = Color.Lerp(Color.Orange, new Color(255, 110, 0), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f);
+
+			color = Color.Lerp(new Color(100, 140, 170) * 0.25f, color, puzzleProg);
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
@@ -143,7 +165,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
 
-			float height = texBeam.Height / 2f;
+			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
 			int width = (int)(centerPos - endpoint).Length();
 
 			Vector2 pos = centerPos - Main.screenPosition;
@@ -151,14 +173,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 1.2f));
 			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
 
-			var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * 3, 0, texBeam.Width, texBeam.Height);
-			var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * 3, 0, texBeam2.Width, texBeam2.Height);
+			var source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam.Width, texBeam.Height);
+			var source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(3 * power + 1), 0, texBeam2.Width, texBeam2.Height);
 
 			spriteBatch.Draw(texBeam, target, source, color, rot, origin, 0, 0);
 			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, 0, 0);
 
-			source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * 5, 0, texBeam.Width, texBeam.Height);
-			source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * 5, 0, texBeam2.Width, texBeam2.Height);
+			source = new Rectangle(texBeam.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam.Width, texBeam.Height);
+			source2 = new Rectangle(texBeam2.Width + (int)Main.GameUpdateCount * (int)(5 * power + 1), 0, texBeam2.Width, texBeam2.Height);
 
 			spriteBatch.Draw(texBeam, target, source, color, rot, origin, SpriteEffects.FlipVertically, 0);
 			spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, rot, origin2, SpriteEffects.FlipVertically, 0);
