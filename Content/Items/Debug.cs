@@ -42,6 +42,18 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			for (int k = 0; k < ItemID.Count; k++)
+			{
+				var item = new Item();
+				item.SetDefaults(k);
+
+				if (item.damage > 0 && item.ammo <= 0 && item.pick <= 0 && item.hammer <= 0 && item.axe <= 0)
+				{
+					float estimatedDps = item.damage / (item.useTime / 60f);
+					Mod.Logger.Info($"{item.Name}, {item.rare}, {item.DamageType.Name}, {estimatedDps}");
+				}
+			}
+
 			player.GetModPlayer<Abilities.AbilityHandler>().Lock<Abilities.ForbiddenWinds.Dash>();
 
 			var start = (Main.MouseWorld / 16).ToPoint16();

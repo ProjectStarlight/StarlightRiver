@@ -78,13 +78,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					FindEndpoint();
 					Projectile.netUpdate = true;
 
-					Parent.TileFrameX = (short)(Rotation / 6.28f * 360);
-					Rotation = Parent.TileFrameX / 360f * 6.28f;
+					Parent.TileFrameX = (short)(Rotation / 6.28f * 3600);
+					Rotation = Parent.TileFrameX / 3600f * 6.28f;
 				}
 			}
 			else
 			{
-				Rotation = Parent.TileFrameX / 360f * 6.28f;
+				Rotation = Parent.TileFrameX / 3600f * 6.28f;
 
 				if (rotateAnimation > 0)
 					rotateAnimation--;
@@ -117,7 +117,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		private void ActivateDownstream()
 		{
-
 			Emit = 1;
 			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
@@ -126,7 +125,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if ((dummy.ModProjectile as ReflectorDummy).Emit > 0) //base case to prevent infinite reflections
 					return;
 
-				(dummy.ModProjectile as ReflectorDummy).ActivateDownstream();
+				(dummy.ModProjectile as ReflectorDummy).Emit = 1;
+				(dummy.ModProjectile as ReflectorDummy).FindEndpoint();
 			}
 		}
 
