@@ -108,7 +108,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				spriteBatch.Draw(tex, target2, null, color3 * 0.075f, 1.57f, new Vector2(0, tex.Height / 2f), 0, 0);
 			}
 
-			Utils.DrawBorderString(spriteBatch, $"p: {Parent.TileFrameX}, {Parent.TileFrameY}", pos, Color.White);
+			if (StarlightRiver.debugMode)
+				Utils.DrawBorderString(spriteBatch, $"p: {Parent.TileFrameX}, {Parent.TileFrameY}", pos, Color.White);
 		}
 	}
 }
