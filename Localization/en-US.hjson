@@ -3673,6 +3673,7 @@ Mods: {
 			MainForge.MapEntry: ""
 			LightActor.MapEntry: ""
 			Lens.MapEntry: ""
+			LightGoal.MapEntry: ""
 		}
 
 		Biomes: {

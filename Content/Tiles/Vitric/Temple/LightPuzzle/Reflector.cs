@@ -107,6 +107,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					break;
 				}
 
+				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>())
+				{
+					endPoint = posCheck;
+					Main.NewText("Solved!");
+					LightPuzzleHandler.solvedPoints++;
+				}
+
 				if (Helper.PointInTile(posCheck) || k == 159)
 				{
 					endPoint = posCheck;
@@ -134,6 +141,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 			if (disableSelf)
 				Emit = 0;
+
+			if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).TileType == ModContent.TileType<LightGoal>())
+			{
+				Main.NewText("Unsolved...");
+				LightPuzzleHandler.solvedPoints--;
+			}
 
 			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
