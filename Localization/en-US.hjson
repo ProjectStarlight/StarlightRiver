@@ -3158,6 +3158,11 @@ Mods: {
 				DisplayName: Light actor placer
 				Tooltip: Debug item
 			}
+
+			LensItem: {
+				DisplayName: Reflector Lens
+				Tooltip: Debug Item
+			}
 		}
 
 		Projectiles: {
@@ -3486,6 +3491,7 @@ Mods: {
 			TallWindowLavaDummy.DisplayName: ""
 			MainForgeDummy.DisplayName: ""
 			LightActorDummy.DisplayName: ""
+			LensDummy.DisplayName: ""
 		}
 
 		Tiles: {
@@ -3661,6 +3667,7 @@ Mods: {
 			VitricPillarWallLava.MapEntry: ""
 			MainForge.MapEntry: ""
 			LightActor.MapEntry: ""
+			Lens.MapEntry: ""
 		}
 
 		Biomes: {
