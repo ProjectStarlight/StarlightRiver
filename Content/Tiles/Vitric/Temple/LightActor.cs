@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -69,6 +70,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			{
 				Lighting.AddLight(pos + Vector2.UnitY * k * 16, new Vector3(0.5f, 0.75f, 0.9f) * 0.5f);
 			}
+
+			Projectile.hide = true;
+		}
+
+		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+		{
+			behindNPCsAndTiles.Add(index);
 		}
 
 		public override void PostDraw(Color lightColor)
@@ -88,10 +96,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Vector2 pos = Projectile.Center - Main.screenPosition;
 
-			var target = new Rectangle((int)pos.X, (int)pos.Y - 8, Parent.TileFrameX * 16, Parent.TileFrameY * 16);
+			var target = new Rectangle((int)pos.X, (int)pos.Y + 8, Parent.TileFrameX * 16, Parent.TileFrameY * 16);
 			spriteBatch.Draw(tex, target, null, color * 0.1f, 1.57f, new Vector2(0, tex.Height / 2f), 0, 0);
 
-			var targetBack = new Rectangle((int)pos.X, (int)pos.Y - 8, Parent.TileFrameX * 16, Parent.TileFrameY * 48);
+			var targetBack = new Rectangle((int)pos.X, (int)pos.Y + 8, Parent.TileFrameX * 16, Parent.TileFrameY * 48);
 			spriteBatch.Draw(tex, targetBack, null, color2 * 0.075f, 1.57f, new Vector2(0, tex.Height / 2f), 0, 0);
 
 			for (int k = 0; k < 3; k++)
@@ -103,7 +111,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				};
 
 				Vector2 pos2 = pos + Vector2.UnitX * (float)Math.Sin(Main.GameUpdateCount * 0.02f + (k ^ 168218)) * Parent.TileFrameY * 1.8f;
-				var target2 = new Rectangle((int)pos2.X, (int)pos2.Y - 8, Parent.TileFrameX * 16, Parent.TileFrameY * (8 + (k ^ 978213) % 10));
+				var target2 = new Rectangle((int)pos2.X, (int)pos2.Y + 8, Parent.TileFrameX * 16, Parent.TileFrameY * (8 + (k ^ 978213) % 10));
 
 				spriteBatch.Draw(tex, target2, null, color3 * 0.075f, 1.57f, new Vector2(0, tex.Height / 2f), 0, 0);
 			}
