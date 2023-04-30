@@ -10,6 +10,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC
 	{
+		private bool isBestiaryEntry = true; // defaults to true, is set to false on spawn (as all real NPCs run OnSpawn)
+		private int frameCounter = 0;
+
+		protected float? targetX = 0;
+
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
 		public ref float GlobalTimer => ref NPC.ai[2];
@@ -67,6 +72,23 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.velocity = reader.ReadPackedVector2();
 		}
 
+		public override void OnSpawn(IEntitySource source)
+		{
+			isBestiaryEntry = false;
+
+			base.OnSpawn(source);
+		}
+
+		public override bool PreAI()
+		{
+			if (NPC.target >= 0)
+				targetX = Main.player[NPC.target].Center.X;
+			else
+				targetX = null;
+
+			return base.PreAI();
+		}
+
 		public override void AI()
 		{
 			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
@@ -79,9 +101,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			ActionTimer++;
 			GlobalTimer++;
-
-			if (Main.rand.NextBool(10))
-				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
 			if (ActionState == -1)
 			{
@@ -131,8 +150,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (ActionTimer % 60 == 0)
 					NPC.TargetClosest();
 
-				if (NPC.target >= 0)
-					NPC.velocity.X += 0.05f * (Main.player[NPC.target].Center.X > NPC.Center.X ? 1 : -1);
+				if (targetX != null)
+					NPC.velocity.X += targetX == NPC.Center.X ? 0 : 0.05f * (targetX > NPC.Center.X ? 1 : -1);
 
 				NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f);
 				NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f);
@@ -145,35 +164,21 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				if ((!tileUnder.HasTile || !Main.tileSolid[tileUnder.TileType] && !Main.tileSolidTop[tileUnder.TileType]) && NPC.velocity.Y == 0) //hop off edges
 					NPC.velocity.Y -= 4;
-
-				if (NPC.velocity.Y != 0)
-				{
-					NPC.frame.X = 0;
-					NPC.frame.Y = 0;
-				}
-				else
-				{
-					NPC.frame.X = 42;
-					NPC.frame.Y = (int)(ActionTimer / 5 % 5) * 40;
-				}
 			}
 
-			if (ActionState == 1)
+			if (ActionState == 1 && ActionTimer == 60)
 			{
-				if (ActionTimer == 60)
-				{
-					ActionState = 0;
-					ActionTimer = 0;
-					NPC.position.Y -= 16;
+				ActionState = 0;
+				ActionTimer = 0;
+				NPC.position.Y -= 16;
 					NPC.position.X += 26 * NPC.direction;
-				}
-
-				NPC.frame.X = 84;
-				NPC.frame.Y = (int)(ActionTimer / 60f * 9) * 40;
 			}
+		}
 
-			NPC.frame.Width = 42;
-			NPC.frame.Height = 40;
+		public override void PostAI()
+		{
+			if (Main.rand.NextBool(10))
+				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
@@ -185,6 +190,36 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, NPC.Center);
 			}
+		}
+
+		public override void FindFrame(int frameHeight) {
+			if (isBestiaryEntry)
+			{
+				frameCounter++;
+				NPC.frame.X = 42;
+				NPC.frame.Y = (int)(frameCounter / 5 % 5) * 40;
+			}
+			else if (ActionState == 0)
+			{
+				if (NPC.velocity.Y != 0)
+				{
+					NPC.frame.X = 0;
+					NPC.frame.Y = 0;
+				}
+				else
+				{
+					NPC.frame.X = 42;
+					NPC.frame.Y = (int)(ActionTimer / 5 % 5) * 40;
+				}
+			}
+			else if (ActionState == 1)
+			{
+				NPC.frame.X = 84;
+				NPC.frame.Y = (int)(ActionTimer / 60f * 9) * 40;
+			}
+
+			NPC.frame.Width = 42;
+			NPC.frame.Height = 40;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
