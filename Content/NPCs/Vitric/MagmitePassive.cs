@@ -10,7 +10,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC
 	{
-		private bool isBestiaryEntry = true; // defaults to true, is set to false on spawn (as all real NPCs run OnSpawn)
 		private int frameCounter = 0;
 
 		protected float? targetX = 0;
@@ -70,13 +69,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
 			NPC.velocity = reader.ReadPackedVector2();
-		}
-
-		public override void OnSpawn(IEntitySource source)
-		{
-			isBestiaryEntry = false;
-
-			base.OnSpawn(source);
 		}
 
 		public override bool PreAI()
@@ -193,7 +185,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		}
 
 		public override void FindFrame(int frameHeight) {
-			if (isBestiaryEntry)
+			if (NPC.IsABestiaryIconDummy)
 			{
 				frameCounter++;
 				NPC.frame.X = 42;
