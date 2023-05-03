@@ -108,8 +108,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
                 for (int k = 0; k < 20; k++)
                     Dust.NewDustDirect(NPC.Center, 16, 16, DustID.Torch, 0, 0, 0, default, 1.5f).velocity *= 3f;
-            }
-        }
+			}
+
+			NPC.shimmerTransparency = meltingTransparency;
+		}
 
 		public override void HitEffect(NPC.HitInfo hit)
 		{
