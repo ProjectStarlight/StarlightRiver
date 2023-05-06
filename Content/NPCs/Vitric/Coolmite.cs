@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		bool melting = false;
 		int meltingTimer = 0;
 
-		public float meltingTransparency => (float)meltingTimer / 150;
+		public float MeltingTransparency => (float)meltingTimer / 150;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/Coolmite";
 
@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
                     Dust.NewDustDirect(NPC.Center, 16, 16, DustID.Torch, 0, 0, 0, default, 1.5f).velocity *= 3f;
 			}
 
-			NPC.shimmerTransparency = meltingTransparency;
+			NPC.shimmerTransparency = MeltingTransparency;
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
