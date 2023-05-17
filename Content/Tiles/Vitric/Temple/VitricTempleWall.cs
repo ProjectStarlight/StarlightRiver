@@ -23,11 +23,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			Tile tile = Framing.GetTileSafely(i, j);
 
-			if (Lighting.NotRetro && !WorldGen.SolidTile(tile))
+			if (Lighting.NotRetro)
 			{
-				if (tile.TileType == ModContent.TileType<VitricSpike>())
-					Main.NewText(tile.TileType);
-
 				Lighting.GetCornerColors(i, j, out VertexColors vertices);
 				Main.tileBatch.Draw(tex, target, source, vertices, Vector2.Zero, 1f, SpriteEffects.None);
 			}
