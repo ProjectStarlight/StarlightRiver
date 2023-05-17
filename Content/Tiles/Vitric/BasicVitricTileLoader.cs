@@ -132,6 +132,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 			TileID.Sets.DrawsWalls[glassType] = true;
 			Main.tileBlockLight[glassType] = false;
+
+			ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
+			Main.tileLargeFrames[slabType] = 1;
 		}
 	}
 }

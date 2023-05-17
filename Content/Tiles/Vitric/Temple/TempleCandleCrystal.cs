@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Main.tileLighted[Type] = true;
 			this.QuickSetFurniture(1, 2, 0, SoundID.Dig, false, new Color(80, 131, 142), false, false, "Candle", AnchorTableTop(1, true));
-			ItemDrop = ModContent.ItemType<TempleCandleCrystalItem>();
+			RegisterItemDrop(ModContent.ItemType<TempleCandleCrystalItem>());
 		}
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

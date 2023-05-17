@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileID.Sets.FramesOnKillWall[Type] = true;
 
 			MinPick = 200;
-			ItemDrop = ItemType<AncientSandstoneTorchItem>();
+			RegisterItemDrop(ItemType<AncientSandstoneTorchItem>());
 			DustType = DustType<Dusts.Air>();
 			AddMapEntry(new Color(115, 182, 158));
 		}
