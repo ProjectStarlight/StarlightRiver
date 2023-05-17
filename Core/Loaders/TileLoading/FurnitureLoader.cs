@@ -657,18 +657,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			this.QuickSetFurniture(3, 2, dust, SoundID.Dig, false, color);
 
 			AdjTiles = new int[] { TileID.Dressers };
-			ItemDrop = Mod.Find<ModItem>(name).Type;
+			RegisterItemDrop(Mod.Find<ModItem>(name).Type);
 		}
 
 		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
 		{
 			return true;
-		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), i * 16, j * 16, 48, 32, ItemDrop);
-			Chest.DestroyChest(i, j);
 		}
 
 		public override bool RightClick(int i, int j)
