@@ -17,7 +17,17 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public bool attackVariant = false;
 		public bool disableJumpSound = false;
 
-		float attackType;
+		/// <summary>
+		/// This handles the animations during the NPC spawning phase
+		/// </summary>
+		int summonAnimTime;
+		/// <summary>
+		/// Tracks the animation type to use
+		/// </summary>
+		float animationType;
+		/// <summary>
+		/// Tracks the center off the arena
+		/// </summary>
 		public Vector2 arenaPos;
 
 		internal ref float Phase => ref NPC.ai[0];
@@ -122,6 +132,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void AI()
 		{
 			AttackTimer++;
+
+			if (summonAnimTime > 0)
+				summonAnimTime--;
 
 			switch (Phase)
 			{
@@ -288,7 +301,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 					if (AttackTimer < 60)
 					{
-						NPC.position.Y -= (AttackTimer - 45) * 0.3f;
+						NPC.position.Y -= (AttackTimer - 45) * 0.25f;
 						//NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
 					}
 
@@ -361,6 +374,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (NPC.velocity.Y > 0)
 				frame.Y = frameHeight * 2;
 
+			//gauntlet anims
+			if (summonAnimTime > 0)
+			{
+				frame.X = 0;
+				frame.Y = frameHeight * (int)(Math.Sin(summonAnimTime / 60f * 3.14f) * 4);
+			}
+
 			switch (Phase)
 			{
 				case (int)Phases.GlassGauntlet:
@@ -373,7 +393,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				case (int)Phases.DirectPhase:
 
-					switch (attackType)
+					switch (animationType)
 					{
 						case (int)AttackTypes.Jump:
 

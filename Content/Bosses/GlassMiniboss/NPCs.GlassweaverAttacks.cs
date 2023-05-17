@@ -82,9 +82,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			float progress = Utils.GetLerpValue(timeStart, timeEnd, AttackTimer, true);
 
 			if (!spin)
-				attackType = (int)AttackTypes.Jump;
+				animationType = (int)AttackTypes.Jump;
 			else
-				attackType = (int)AttackTypes.SpinJump;
+				animationType = (int)AttackTypes.SpinJump;
 
 			if (AttackTimer <= timeStart)
 			{
@@ -118,7 +118,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void TripleSlash()
 		{
-			attackType = (int)AttackTypes.TripleSlash;
+			animationType = (int)AttackTypes.TripleSlash;
 
 			if (AttackTimer == 1)
 			{
@@ -182,7 +182,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void MagmaSpear()
 		{
-			attackType = (int)AttackTypes.MagmaSpear;
+			animationType = (int)AttackTypes.MagmaSpear;
 			int lobCount = 3;
 
 			if (Main.masterMode)
@@ -259,7 +259,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void MagmaSpearAlt()
 		{
-			attackType = (int)AttackTypes.MagmaSpear;
+			animationType = (int)AttackTypes.MagmaSpear;
 
 			if (AttackTimer == 1)
 			{
@@ -340,7 +340,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void Whirlwind()
 		{
-			attackType = (int)AttackTypes.Whirlwind;
+			animationType = (int)AttackTypes.Whirlwind;
 
 			//if (AttackTimer == 1)
 			//{
@@ -383,7 +383,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void JavelinRain()
 		{
-			attackType = (int)AttackTypes.JavelinRain;
+			animationType = (int)AttackTypes.JavelinRain;
 
 			int spearCount = 10;
 			int betweenSpearTime = 5;
@@ -442,7 +442,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void GlassRaise()
 		{
-			attackType = (int)AttackTypes.GlassRaise;
+			animationType = (int)AttackTypes.GlassRaise;
 			hammerTime = 80;
 
 			if (AttackTimer == 1)
@@ -492,7 +492,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void GlassRaiseAlt()
 		{
-			attackType = (int)AttackTypes.GlassRaise;
+			animationType = (int)AttackTypes.GlassRaise;
 
 			hammerTime = 110;
 
@@ -551,7 +551,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		/// </summary>
 		private void BigBrightBubble()
 		{
-			attackType = (int)AttackTypes.BigBrightBubble;
+			animationType = (int)AttackTypes.BigBrightBubble;
 
 			if (AttackTimer == 1)
 			{

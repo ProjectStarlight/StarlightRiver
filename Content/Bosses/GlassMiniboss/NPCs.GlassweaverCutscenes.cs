@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			if (AttackTimer < 60)
 			{
-				NPC.position.Y += (AttackTimer - 45) * 0.3f;
+				NPC.position.Y += (AttackTimer - 45) * 0.25f;
 				//NPC.scale = 1 - AttackTimer / 60f * 0.25f;
 			}
 
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			if (AttackTimer < 60)
 			{
-				NPC.position.Y -= (AttackTimer - 45) * 0.3f;
+				NPC.position.Y -= (AttackTimer - 45) * 0.25f;
 				//NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
 			}
 
