@@ -117,8 +117,6 @@ namespace StarlightRiver.Core
 			tag["PermafrostCenter"] = permafrostCenter;
 
 			tag[nameof(flags)] = (int)flags;
-
-			flags = 0; //Needed because new worlds will inherit past worlds flags otherwise for some reason?
 		}
 
 		private static bool CheckForSquidArena(Player Player)
