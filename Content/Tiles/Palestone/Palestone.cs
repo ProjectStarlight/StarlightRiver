@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Tiles.Palestone
 			HitSound = Terraria.ID.SoundID.Tink;
 
 			DustType = Terraria.ID.DustID.Stone;
-			ItemDrop = ItemType<PalestoneItem>();
+			RegisterItemDrop(ItemType<PalestoneItem>());
 
 			AddMapEntry(new Color(167, 180, 191));
 		}
