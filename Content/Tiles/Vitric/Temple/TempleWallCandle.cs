@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			AddMapEntry(new Color(140, 97, 86), name);
 			DustType = 0;
 			HitSound = SoundID.Dig;
-			ItemDrop = ModContent.ItemType<TempleWallCandleItem>();
+			RegisterItemDrop(ModContent.ItemType<TempleWallCandleItem>());
 			AnimationFrameHeight = 36;
 		}
 
