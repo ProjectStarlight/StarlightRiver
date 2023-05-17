@@ -284,7 +284,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 			spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 
-			if ((State == 0 || State == 2) && talkingTo is null)
+			if ((State == 0 || State == 2 || State == 3) && talkingTo is null)
 			{
 				Texture2D exclaim = Request<Texture2D>("StarlightRiver/Assets/Misc/Exclaim").Value;
 				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;

@@ -221,7 +221,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					switch (AttackPhase)
 					{
 						case 0:
-							TripleSlash();
+							if (attackVariant)
+								TripleSlash();
+							else
+								MagmaSpearAlt();
 							break;
 
 						case 1:
