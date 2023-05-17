@@ -265,6 +265,13 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					}
 				});
 
+				RichTextBox.AddButton("Rematch", () =>
+				{
+					NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<Glassweaver>());
+					RichTextBox.CloseDialogue();
+					NPC.active = false;
+				});
+
 				RichTextBox.AddButton("See you later", () =>
 				{
 					RichTextBox.CloseDialogue();
