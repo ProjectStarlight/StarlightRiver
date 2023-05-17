@@ -39,7 +39,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Item.reuseDelay = 20;
 			Item.channel = true;
 			Item.useStyle = ItemUseStyleID.Shoot;
-			Item.knockBack = 10f;
+			Item.knockBack = 6f;
 			Item.value = Item.sellPrice(0, 1, 0, 0);
 			Item.crit = 4;
 			Item.rare = ItemRarityID.Green;
@@ -441,6 +441,8 @@ namespace StarlightRiver.Content.Items.Moonstone
 				timer++; // to prevent repeated freezes
 				slamCharged = true;
 			}
+
+			Player.direction = Main.MouseWorld.X > Player.position.X ? 1 : -1; // prevents incorrect aiming since it takes so long to charge up
 
 			float progress = 0;
 			float startAngle = -MathHelper.PiOver2 + Player.direction * MathHelper.Pi / 12;

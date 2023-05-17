@@ -3111,6 +3111,24 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			SpearBook: {
+				DisplayName: Snake Technique
+				Tooltip:
+					'''
+					Allows execution of combos with spears
+					Right click to deter enemies with a flurry of stabs
+					'''
+			}
+
+			MartialBook: {
+				DisplayName: Martial Encyclopedia
+				Tooltip:
+					'''
+					Effects of Tiger, Snake, and Mantis Techniques
+					+10% melee critical damage
+					'''
+			}
 		}
 
 		Projectiles: {
@@ -3434,6 +3452,7 @@ Mods: {
 			SpawnEgg.DisplayName: Spawn Egg
 			CrescentOrb.DisplayName: Lunar Orb
 			Glint.DisplayName: Glint
+			SpearBookProjectile.DisplayName: Spear Book Projectile
 		}
 
 		Tiles: {

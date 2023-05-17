@@ -34,28 +34,31 @@
 
 		public override void ModifyIncomingHit(NPC npc, ref NPC.HitModifiers modifiers)
 		{
-			if (modifiers.DamageType.CountsAsClass(DamageClass.Melee))
+			if (modifiers.DamageType != null)
 			{
-				modifiers.FinalDamage *= 1 + ExposureMultMelee;
-				modifiers.FinalDamage += ExposureAddMelee;
-			}
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Melee))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultMelee;
+					modifiers.FinalDamage += ExposureAddMelee;
+				}
 
-			if (modifiers.DamageType.CountsAsClass(DamageClass.Ranged))
-			{
-				modifiers.FinalDamage *= 1 + ExposureMultRanged;
-				modifiers.FinalDamage += ExposureAddRanged;
-			}
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Ranged))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultRanged;
+					modifiers.FinalDamage += ExposureAddRanged;
+				}
 
-			if (modifiers.DamageType.CountsAsClass(DamageClass.Magic))
-			{
-				modifiers.FinalDamage *= 1 + ExposureMultMagic;
-				modifiers.FinalDamage += ExposureAddMagic;
-			}
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Magic))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultMagic;
+					modifiers.FinalDamage += ExposureAddMagic;
+				}
 
-			if (modifiers.DamageType.CountsAsClass(DamageClass.Summon))
-			{
-				modifiers.FinalDamage *= 1 + ExposureMultSummon;
-				modifiers.FinalDamage += ExposureAddSummon;
+				if (modifiers.DamageType.CountsAsClass(DamageClass.Summon))
+				{
+					modifiers.FinalDamage *= 1 + ExposureMultSummon;
+					modifiers.FinalDamage += ExposureAddSummon;
+				}
 			}
 
 			modifiers.FinalDamage *= 1 + ExposureMultAll;
