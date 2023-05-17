@@ -1,5 +1,6 @@
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.CameraSystem;
+using System;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static Terraria.ModLoader.ModContent;
@@ -10,6 +11,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 	{
 		public const int FRAME_WIDTH = 110;
 		public const int FRAME_HEIGHT = 92;
+
+		public Player talkingTo;
 
 		Vector2 ArenaPos => StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 
@@ -46,6 +49,20 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		{
 			Timer++;
 			VisualTimer++;
+
+			if (talkingTo != null && Vector2.Distance(talkingTo.Center, NPC.Center) > 2000)
+			{
+				talkingTo = null;
+				TextState = 0;
+				RichTextBox.CloseDialogue();
+			}
+
+			if (talkingTo != null && talkingTo.TalkNPC != NPC)
+			{
+				talkingTo = null;
+				TextState = 0;
+				RichTextBox.CloseDialogue();
+			}
 
 			if (State == 0 || State >= 2)
 			{
@@ -146,6 +163,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override string GetChat()
 		{
+			talkingTo = Main.LocalPlayer;
+
 			if (State == 0) //Waiting at entrance
 			{
 				RichTextBox.OpenDialogue(NPC, "Glassweaver", GetIntroDialogue());
@@ -264,6 +283,18 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			Vector2 origin = new Vector2(FRAME_WIDTH, FRAME_HEIGHT) * 0.5f;
 
 			spriteBatch.Draw(tex, pos, NPC.frame, drawColor, NPC.rotation, origin, NPC.scale, NPC.direction == 1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+
+			if ((State == 0 || State == 2) && talkingTo is null)
+			{
+				Texture2D exclaim = Request<Texture2D>("StarlightRiver/Assets/Misc/Exclaim").Value;
+				Vector2 exclaimPos = NPC.Center + Vector2.UnitY * -95 - Main.screenPosition;
+				exclaimPos.Y += (float)Math.Sin(Main.GameUpdateCount * 0.025f) * 5;
+				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1, 0, 0);
+
+				float pulseTime = Main.GameUpdateCount % 60 < 50 ? 0 : (Main.GameUpdateCount % 60 - 50) / 10f;
+
+				spriteBatch.Draw(exclaim, exclaimPos, null, Color.White * (1 - pulseTime), (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.15f, exclaim.Size() / 2f, 1 + pulseTime, 0, 0);
+			}
 
 			return false;
 		}
