@@ -3,11 +3,11 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Desert
 {
 	internal class Sandscript : ModItem
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.DesertItem + Name;
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Sandscript");

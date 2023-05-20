@@ -3,7 +3,7 @@
 //Glowmask
 
 using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.Dungeon;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;

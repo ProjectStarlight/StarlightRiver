@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Items.Desert;
+using Terraria.DataStructures;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -11,7 +12,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
-			RegisterItemDrop(ItemType<Items.Misc.Sandscript>());
+			RegisterItemDrop(ItemType<Sandscript>());
 			DustType = DustID.Gold;
 		}
 
@@ -23,7 +24,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 
 		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 		{
-			RecipeSystem.LearnRecipie(GetInstance<Items.Misc.Sandscript>().Name);
+			RecipeSystem.LearnRecipie(GetInstance<Sandscript>().Name);
 		}
 	}
 }

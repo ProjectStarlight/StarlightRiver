@@ -9,7 +9,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Dungeon
 {
 	class TwistSword : ModItem
 	{
@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 		int timer = 0;
 		bool noItemLastFrame = false;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.DungeonItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -97,7 +97,7 @@ namespace StarlightRiver.Content.Items.Misc
 				for (int i = 0; i < Main.maxProjectiles; i++)
 				{
 					Projectile proj = Main.projectile[i];
-					if (proj.active && proj.owner == Player.whoAmI && proj.type == ModContent.ProjectileType<TwistSwordProjectile>())
+					if (proj.active && proj.owner == Player.whoAmI && proj.type == ProjectileType<TwistSwordProjectile>())
 					{
 						doesntOwnTwistSwordProj = false;
 						break;
@@ -208,7 +208,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private List<Vector2> cache;
 		private Trail trail;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.DungeonItem + Name;
 
 		public ref float Rotation => ref Projectile.ai[0];
 		public ref float Spinup => ref Projectile.ai[1];

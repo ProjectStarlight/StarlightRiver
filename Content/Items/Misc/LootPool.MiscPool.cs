@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Items.Jungle;
 using StarlightRiver.Core.Systems.ChestLootSystem;
 namespace StarlightRiver.Content.Items.Misc
 {

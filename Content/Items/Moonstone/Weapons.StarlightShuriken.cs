@@ -6,13 +6,13 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Moonstone
 {
 	class StarlightShuriken : ModItem
 	{
 		public int amountToThrow = 3;
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetStaticDefaults()
 		{
@@ -74,7 +74,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.Shuriken, 50);
 			recipe.AddIngredient(ItemID.FallenStar, 5);
-			recipe.AddIngredient(ModContent.ItemType<Moonstone.MoonstoneBarItem>(), 16);
+			recipe.AddIngredient(ModContent.ItemType<MoonstoneBarItem>(), 16);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
@@ -95,7 +95,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Player Owner => Main.player[Projectile.owner];
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetDefaults()
 		{
@@ -255,7 +255,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public Player Owner => Main.player[Projectile.owner];
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.MoonstoneItem + Name;
 
 		public override void SetDefaults()
 		{

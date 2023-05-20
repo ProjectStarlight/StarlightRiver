@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Items.Forest;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -34,7 +35,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Misc.MonkSpade>());
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<MonkSpade>());
 		}
 	}
 

@@ -1,11 +1,11 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Vitric
 {
 	public class GlassArrowhead : SmartAccessory
 	{
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.VitricItem + Name;
 
 		public GlassArrowhead() : base("Glass Arrowhead", "Critical strikes cause fired arrows to shatter into glass shards") { }
 
@@ -36,7 +36,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<Vitric.VitricOre>(), 5);
+			recipe.AddIngredient(ModContent.ItemType<VitricOre>(), 5);
 			recipe.AddTile(TileID.Furnaces);
 			recipe.Register();
 		}

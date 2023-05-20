@@ -5,15 +5,15 @@ using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Jungle
 {
 	public class Corpseflower : CursedAccessory
 	{
 		public int[] maxTimeLefts = new int[Main.maxCombatText];
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.JungleItem + Name;
 
-		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "Corpseflower").Value) { }
+		public Corpseflower() : base(ModContent.Request<Texture2D>(AssetDirectory.JungleItem + "Corpseflower").Value) { }
 
 		public override void Load()
 		{
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 		}
 
 		#region IL
-		private void ChangeDoTColor(MonoMod.Cil.ILContext il)
+		private void ChangeDoTColor(ILContext il)
 		{
 			var c = new ILCursor(il);
 
@@ -148,7 +148,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string DisplayName => "Corpseflowered";
 
-		public override string Texture => AssetDirectory.MiscItem + Name;
+		public override string Texture => AssetDirectory.JungleItem + Name;
 
 		public override bool Debuff => true;
 
@@ -172,9 +172,7 @@ namespace StarlightRiver.Content.Items.Misc
 		private void ResetDamage(NPC NPC)
 		{
 			if (AnyInflicted(NPC))
-			{
 				(GetInstance(NPC) as CorpseflowerBuff).totalDamage = 0;
-			}
 		}
 
 		public override CorpseflowerStack GenerateDefaultStackTyped(int duration)
