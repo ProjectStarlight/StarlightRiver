@@ -3132,6 +3132,15 @@ Mods: {
 			CoolmiteItem: {
 				DisplayName: Magmite
 				Tooltip: Release him!
+
+			DesertMonolithItem: {
+				DisplayName: Desert Monolith
+				Tooltip: Places a section of desert monolith
+			}
+
+			DesertMonolithFlippedItem: {
+				DisplayName: Inverted Desert Monolith
+				Tooltip: Places a section of inverted desert monolith
 			}
 		}
 
@@ -3626,6 +3635,8 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			DesertMonolith.MapEntry: ""
+			DesertMonolithFlipped.MapEntry: ""
 		}
 
 		Biomes: {
