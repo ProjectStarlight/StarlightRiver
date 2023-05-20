@@ -42,8 +42,6 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.Flag(WorldFlags.VitricBossOpen);
-			StarlightWorld.ShrineGen(null, null);
 			return true;
 		}
 	}

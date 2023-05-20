@@ -75,7 +75,7 @@ namespace StarlightRiver.Core
 			{
 				for (int y = 0; y < height; y++)
 				{
-					WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<ThickTree>(), false, true);
+					WorldGen.PlaceTile(tx + x, ty - (y + 4), TileType<ThickTree>(), true, true);
 				}
 			}
 
