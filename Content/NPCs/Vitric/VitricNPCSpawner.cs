@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				return; //only spawn for singlePlayer or on the server
 
+			if (Main.npc.Any(n => n.active && n.boss))
+				return; //No magmites during bosses
+
 			if (Main.rand.NextBool(4) && Main.npc.Count(n => n.active && n.type == NPCType<MagmitePassive>()) < 5)
 			{
 				Point16 coords = Helpers.Helper.FindTile(((Player.Center + Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(200, 500)) / 16).ToPoint16(), n => !n.HasTile && n.LiquidType == LiquidID.Lava && n.LiquidAmount > 0, 10, 2, 2);

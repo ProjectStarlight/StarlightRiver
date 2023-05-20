@@ -206,9 +206,6 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			if (mapColor != null)
 				AddMapEntry(mapColor ?? Color.Transparent);
 
-			if (itemName != null)
-				ItemDrop = Mod.Find<ModItem>(itemName).Type;
-
 			DustType = dustType;
 			HitSound = sound;
 

@@ -3455,6 +3455,7 @@ Mods: {
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
 			CrescentOrb.DisplayName: Lunar Orb
+			Glint.DisplayName: Glint
 			SpearBookProjectile.DisplayName: Spear Book Projectile
 		}
 

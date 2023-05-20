@@ -144,6 +144,8 @@ namespace StarlightRiver.Content.GUI
 
 		public static void CloseDialogue()
 		{
+			Main.LocalPlayer.SetTalkNPC(-1);
+
 			visible = false;
 			boxTimer = 0;
 			textTimer = 0;
