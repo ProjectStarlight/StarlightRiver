@@ -119,6 +119,9 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			SpriteEffects spriteEffects = SpriteEffects.None;
 			Vector2 drawOffset = (fakeNPC.ModNPC as VitricConstructNPC).PreviewOffset;
 
+			if (nearestPlayer is null)
+				return false;
+
 			if (nearestPlayer.Center.X < Projectile.Center.X)
 			{
 				drawOffset.X *= -1;

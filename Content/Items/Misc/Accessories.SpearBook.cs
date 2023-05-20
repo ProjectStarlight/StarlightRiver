@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public void PostLoad()
 		{
 			spearList = new Dictionary<int, bool>();
-			Projectile proj = new Projectile();
+			var proj = new Projectile();
 			for (int i = 0; i < ProjectileLoader.ProjectileCount; i++)
 			{
 				proj.SetDefaults(i);
@@ -257,17 +257,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 end = start;
 
 			if (CurrentAttack == AttackType.ChargedStab)
-			{
 				end += 1.5f * GetSpearEndVector();
-			}
 			else if (CurrentAttack == AttackType.Stab)
-			{
 				end += 1.1f * GetSpearEndVector();
-			}
 			else
-			{
 				end += GetSpearEndVector();
-			}
 
 			return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(), start, end, 10, ref collisionPoint);
 		}
@@ -278,17 +272,11 @@ namespace StarlightRiver.Content.Items.Misc
 			Vector2 end = start;
 
 			if (CurrentAttack == AttackType.ChargedStab)
-			{
 				end += 1.5f * GetSpearEndVector();
-			}
 			else if (CurrentAttack == AttackType.Stab)
-			{
 				end += 1.1f * GetSpearEndVector();
-			}
 			else
-			{
 				end += GetSpearEndVector();
-			}
 
 			Utils.PlotTileLine(start, end, 40 * Projectile.scale, DelegateMethods.CutTiles);
 		}
@@ -317,9 +305,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (CurrentAttack == AttackType.ChargedStab)
 			{
 				if (Main.rand.NextFloat() * 100 < (Owner.GetTotalCritChance(DamageClass.Melee) + Owner.HeldItem.crit) * 2f)
-				{
 					modifiers.SetCrit();
-				}
 
 				modifiers.CritDamage *= 1.5f;
 			}
@@ -522,7 +508,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private void ChargedStab()
 		{
-			EaseBuilder StabEase = new EaseBuilder();
+			var StabEase = new EaseBuilder();
 			StabEase.AddPoint(new Vector2(0, 0.6f), EaseFunction.EaseQuinticOut);
 			StabEase.AddPoint(new Vector2(60, 0.3f), EaseFunction.EaseQuinticOut);
 			StabEase.AddPoint(new Vector2(65, 0.3f), EaseFunction.EaseQuinticOut);

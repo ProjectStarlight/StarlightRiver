@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Biomes;
+using Terraria.ID;
 using static StarlightRiver.Helpers.Helper;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			Tile tile = Main.tile[i, j];
 
-			if (tile.TileFrameX == 0)
+			if (tile.TileFrameX == 0 && Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 			{
 				r = 1f;
 				g = 0.5f;

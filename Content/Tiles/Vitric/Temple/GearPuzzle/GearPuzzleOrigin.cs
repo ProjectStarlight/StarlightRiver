@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Biomes;
+using System;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -38,6 +39,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Engaged = true;
 			RotationVelocity = 2;
 
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Lighting.AddLight(Projectile.Center, new Vector3(1, 0.7f, 0.4f) * 0.5f);
 		}
 
@@ -49,6 +53,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "OriginGear").Value;
 
 			Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Rotation, tex.Size() / 2, 1, 0, 0);
+
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
 
 			Texture2D magmiteTex = ModContent.Request<Texture2D>(AssetDirectory.VitricNpc + "MagmitePassive").Value;
 			float sinTimer = Main.GameUpdateCount / 20f;

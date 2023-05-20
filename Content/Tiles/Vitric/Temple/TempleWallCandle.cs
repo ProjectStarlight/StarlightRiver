@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Biomes;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
@@ -45,9 +46,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
-			r = 1f;
-			g = 0.5f;
-			b = 0.25f;
+			if (Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+			{
+				r = 1f;
+				g = 0.5f;
+				b = 0.25f;
+			}
 		}
 
 		public override void AnimateTile(ref int frame, ref int frameCounter)

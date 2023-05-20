@@ -3129,6 +3129,7 @@ Mods: {
 					'''
 			}
 
+<<<<<<< HEAD
 			CoolmiteItem: {
 				DisplayName: Magmite
 				Tooltip: Release him!
@@ -3141,6 +3142,46 @@ Mods: {
 			DesertMonolithFlippedItem: {
 				DisplayName: Inverted Desert Monolith
 				Tooltip: Places a section of inverted desert monolith
+=======
+			TallWindowCrystalItem: {
+				DisplayName: CrystalWindow Actor
+				Tooltip: Debug Item
+			}
+
+			TallWindowLavaItem: {
+				DisplayName: Lava Window Actor
+				Tooltip: Debug Item
+			}
+
+			VitricPillarWallCrystalItem: {
+				DisplayName: Crystal Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
+
+			VitricPillarWallLavaItem: {
+				DisplayName: Lava Vitric Forge Pillar
+				Tooltip: Sturdy
+			}
+
+			MainForgeItem: {
+				DisplayName: Main forge
+				Tooltip: Debug item
+			}
+
+			LightActorItem: {
+				DisplayName: Light actor placer
+				Tooltip: Debug item
+			}
+
+			LensItem: {
+				DisplayName: Reflector Lens
+				Tooltip: Debug Item
+			}
+
+			VitricTempleWallSafeItem: {
+				DisplayName: Vitric Forge Brick Wall (Safe)
+				Tooltip: Sturdy
+>>>>>>> temple-final
 			}
 		}
 
@@ -3466,6 +3507,12 @@ Mods: {
 			CrescentOrb.DisplayName: Lunar Orb
 			Glint.DisplayName: Glint
 			SpearBookProjectile.DisplayName: Spear Book Projectile
+			SwordBookParry.DisplayName: Sword Book Parry
+			TallWindowCrystalDummy.DisplayName: ""
+			TallWindowLavaDummy.DisplayName: ""
+			MainForgeDummy.DisplayName: ""
+			LightActorDummy.DisplayName: ""
+			LensDummy.DisplayName: ""
 		}
 
 		Tiles: {
@@ -3635,8 +3682,19 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+<<<<<<< HEAD
 			DesertMonolith.MapEntry: ""
 			DesertMonolithFlipped.MapEntry: ""
+=======
+			TallWindowCrystal.MapEntry: ""
+			TallWindowLava.MapEntry: ""
+			VitricPillarWallCrystal.MapEntry: ""
+			VitricPillarWallLava.MapEntry: ""
+			MainForge.MapEntry: ""
+			LightActor.MapEntry: ""
+			Lens.MapEntry: ""
+			LightGoal.MapEntry: ""
+>>>>>>> temple-final
 		}
 
 		Biomes: {

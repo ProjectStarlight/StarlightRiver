@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Items;
-using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
@@ -29,12 +28,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (dummy != null)
 			{
-				if (Main.LocalPlayer.HeldItem.type == ModContent.ItemType<DebugStick>())
-				{
-					dummy.Emit = 1;
-					return true;
-				}
-
 				dummy.DeactivateDownstream();
 				dummy.rotating = true;
 			}
@@ -71,20 +64,20 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					FindEndpoint();
 					Projectile.netUpdate = true;
 
-					Parent.TileFrameX = (short)(Rotation / 6.28f * 360);
-					Rotation = Parent.TileFrameX / 360f * 6.28f;
+					Parent.TileFrameX = (short)(Rotation / 6.28f * 3600);
+					Rotation = Parent.TileFrameX / 3600f * 6.28f;
 				}
 			}
 			else
 			{
-				Rotation = Parent.TileFrameX / 360f * 6.28f;
+				Rotation = Parent.TileFrameX / 3600f * 6.28f;
 
 				if (rotateAnimation > 0)
 					rotateAnimation--;
 			}
 		}
 
-		private void FindEndpoint()
+		protected void FindEndpoint()
 		{
 			for (int k = 2; k < 160; k++)
 			{
@@ -100,6 +93,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 					break;
 				}
 
+				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>())
+				{
+					endPoint = posCheck;
+					Main.NewText("Solved!");
+					LightPuzzleHandler.solvedPoints++;
+				}
+
 				if (Helper.PointInTile(posCheck) || k == 159)
 				{
 					endPoint = posCheck;
@@ -110,7 +110,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		private void ActivateDownstream()
 		{
-
 			Emit = 1;
 			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
@@ -119,7 +118,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if ((dummy.ModProjectile as ReflectorDummy).Emit > 0) //base case to prevent infinite reflections
 					return;
 
-				(dummy.ModProjectile as ReflectorDummy).ActivateDownstream();
+				(dummy.ModProjectile as ReflectorDummy).Emit = 1;
+				(dummy.ModProjectile as ReflectorDummy).FindEndpoint();
 			}
 		}
 
@@ -127,6 +127,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		{
 			if (disableSelf)
 				Emit = 0;
+
+			if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).TileType == ModContent.TileType<LightGoal>())
+			{
+				Main.NewText("Unsolved...");
+				LightPuzzleHandler.solvedPoints--;
+			}
 
 			Projectile dummy = DummyTile.GetDummy<ReflectorDummy>((int)endPoint.X / 16, (int)endPoint.Y / 16);
 
@@ -165,7 +171,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			//Laser
 			int sin = (int)(Math.Sin(StarlightWorld.visualTimer * 3) * 20f); //Just a copy/paste of the boss laser. Need to tune this later
-			var color2 = new Color(100, 200 + sin, 255);
+			Color color2 = new Color(100, 200 + sin, 255) * 0.65f;
 
 			Texture2D texBeam = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
 			Texture2D texBeam2 = ModContent.Request<Texture2D>(AssetDirectory.MiscTextures + "BeamCore").Value;
@@ -175,7 +181,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			Effect effect = StarlightRiver.Instance.Assets.Request<Effect>("Effects/GlowingDust").Value;
 
-			effect.Parameters["uColor"].SetValue(color2.ToVector3());
+			effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
@@ -185,7 +191,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			Vector2 pos = Projectile.Center + Vector2.UnitX.RotatedBy(Rotation) * 6 - Main.screenPosition;
 
-			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.5f));
+			var target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 2.75f));
 			var target2 = new Rectangle((int)pos.X, (int)pos.Y, width, (int)height);
 
 			var source = new Rectangle((int)(Main.GameUpdateCount / 140f * -texBeam.Width), 0, texBeam.Width, texBeam.Height);
@@ -206,11 +212,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			Texture2D impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "GlowTrail").Value;
 
-			target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 3.5f));
+			target = new Rectangle((int)pos.X, (int)pos.Y, width, (int)(height * 4.5f));
 			spriteBatch.Draw(glowTex, target, source, color2 * 0.75f, Rotation, new Vector2(0, glowTex.Height / 2), 0, 0);
 
-			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.8f, 0, 0);
-			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.25f, 0, 0);
+			spriteBatch.Draw(impactTex, endPoint - Main.screenPosition, null, color2 * (height * 0.024f), 0, impactTex.Size() / 2, 2.2f, 0, 0);
+			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 0.5f * (height * 0.1f), StarlightWorld.visualTimer * 2, impactTex2.Size() / 2, 0.2f, 0, 0);
+			spriteBatch.Draw(impactTex2, endPoint - Main.screenPosition, null, color2 * 1.5f * (height * 0.1f), StarlightWorld.visualTimer * 2.2f, impactTex2.Size() / 2, 0.1f, 0, 0);
 		}
 
 		public override void SafeSendExtraAI(BinaryWriter writer)
