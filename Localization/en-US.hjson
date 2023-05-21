@@ -3704,6 +3704,7 @@ Mods: {
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
 			Coolmite.DisplayName: Coolmite
+			Crow.DisplayName: ???
 		}
 
 		Buffs: {

@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Events;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.ShrineGen(null, null);
+			StarlightEventSequenceSystem.sequence = 0;
 			return true;
 		}
 	}
