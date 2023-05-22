@@ -3,6 +3,7 @@ Mods: {
 		Keybinds: {
 			"Forbidden Winds.DisplayName": Mods.StarlightRiver.Keybinds.Forbidden Winds.DisplayName
 			Faeflame.DisplayName: Mods.StarlightRiver.Keybinds.Faeflame.DisplayName
+			"[PH]Hint.DisplayName": "[ P H] Hint"
 		}
 
 		Items: {

@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.GUI
 
 				if (Main.rand.NextBool(5))
 				{
-					Vector2 targetPos = Collection.abilityIconPositions.ContainsKey(equipped.AbilityType) ? Collection.abilityIconPositions[equipped.AbilityType] - Vector2.One * 8 : Vector2.Zero;
+					Vector2 targetPos = AbilityInventory.abilityIconPositions.ContainsKey(equipped.AbilityType) ? AbilityInventory.abilityIconPositions[equipped.AbilityType] - Vector2.One * 8 : Vector2.Zero;
 					Vector2 startPos = GetDimensions().Center() + new Vector2(-6, -6);
 					float dist = Vector2.Distance(targetPos, startPos);
 					Infusion.linkParticles.AddParticle(new Particle(startPos, Vector2.UnitX * dist, 0, Main.rand.NextFloat(0.2f, 0.25f), equipped.color, (int)dist, targetPos));

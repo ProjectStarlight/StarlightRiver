@@ -7,10 +7,10 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.GUI
 {
-	public class Collection : SmartUIState
+	public class AbilityInventory : SmartUIState
 	{
-		public static Ability ActiveAbility;
-		public static bool ShouldReset = false;
+		public static Ability activeAbility;
+		public static bool shouldReset = false;
 		public static Dictionary<Type, Vector2> abilityIconPositions = new(); //to easily communicate ability icon positions to other UI
 
 		public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || ShouldReset)
+			if (!Main.gameMenu && Elements.Count == 0 && Main.LocalPlayer.GetHandler() != null || shouldReset)
 			{
 				RemoveAllChildren();
 				abilityIconPositions.Clear();
@@ -44,7 +44,7 @@ namespace StarlightRiver.Content.GUI
 					AddAbility(ability, pos);
 				}
 
-				ShouldReset = false;
+				shouldReset = false;
 			}
 		}
 	}
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.GUI
 				return;
 
 			if (ability != null)
-				Collection.ActiveAbility = ability;
+				AbilityInventory.activeAbility = ability;
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)

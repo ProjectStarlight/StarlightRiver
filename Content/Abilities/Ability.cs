@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using StarlightRiver.Content.Packets;
 using Terraria.DataStructures;
 using Terraria.GameInput;
@@ -64,7 +65,9 @@ namespace StarlightRiver.Content.Abilities
 		{
 			return new Ability[]
 			{
-				new Dash(), new Whip()
+				new HintAbility(),
+				new Dash(),
+				new Whip(),
 			};
 		}
 	}

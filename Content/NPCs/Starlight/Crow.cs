@@ -1,5 +1,8 @@
-﻿using StarlightRiver.Content.Events;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Abilities.Hint;
+using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System.Linq;
 using Terraria.ID;
@@ -95,6 +98,10 @@ namespace StarlightRiver.Content.NPCs.Starlight
 							RichTextBox.CloseDialogue();
 							StarlightEventSequenceSystem.sequence = 1;
 							StarlightEventSequenceSystem.willOccur = false;
+
+							Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
+							Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
+							UILoader.GetUIState<TextCard>().Display("[PH] Hint", "[PH] Press key to investigate the world", hint);
 						});
 					}
 				});
