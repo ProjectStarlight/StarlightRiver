@@ -7,13 +7,16 @@ namespace StarlightRiver.Content.Events
 	{
 		public static int sequence = 0;
 		public static bool willOccur = false;
+		public static bool occuring = false;
 
-		public static bool Active => !Main.dayTime && willOccur;
+		public static bool Active => !Main.dayTime && occuring;
 
 		public override void PostUpdateTime()
 		{
-			if (Active && Main.time == 0)
+			// The event should trigger the next applicable night
+			if (willOccur && !Main.dayTime && Main.time == 0)
 			{
+				occuring = true;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
 				NPC.NewNPC(null, Main.spawnTileX * 16, Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
