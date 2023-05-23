@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Waters;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
+using System.Linq;
 using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Biomes
@@ -35,7 +36,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override void OnInBiome(Player player)
 		{
-			if (Main.Configuration.Get<bool>("UseHeatDistortion", false))
+			if (Main.Configuration.Get<bool>("UseHeatDistortion", false) && !Main.npc.Any(n => n.active && n.boss))
 			{
 				if (!Filters.Scene["GradientDistortion"].IsActive())
 				{
