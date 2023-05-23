@@ -91,9 +91,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 						RichTextBox.ClearButtons();
 						RichTextBox.AddButton("Accept", () =>
 						{
-							Main.NewText("Trigger animation and hint ability here");
-
-							//Delay?
 							CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
 							RichTextBox.CloseDialogue();
 							StarlightEventSequenceSystem.sequence = 1;
@@ -112,7 +109,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			return TextState switch
 			{
-				0 => "Placeholder Text",
+				0 => "Greetings wanderer. I have been waiting for a very long time to meet you.",
 				1 => "Placeholder Text 2",
 				2 => "Placeholder Text 3",
 				3 => "Placeholder Text 4",
