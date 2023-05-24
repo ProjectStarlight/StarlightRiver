@@ -1,3 +1,4 @@
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
 using Terraria.ID;
 
@@ -44,6 +45,7 @@ namespace StarlightRiver.Content.Items
 		public override bool? UseItem(Player player)
 		{
 			StarlightEventSequenceSystem.sequence = 0;
+			player.GetHandler().unlockedAbilities.Clear();
 			return true;
 		}
 	}

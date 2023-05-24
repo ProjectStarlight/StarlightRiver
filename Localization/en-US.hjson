@@ -3629,19 +3629,73 @@ Mods: {
 		}
 
 		Biomes: {
-			HotspringBiome.DisplayName: Hotsprings
-			MoonstoneBiome.DisplayName: Moonstone
-			OvergrowBiome.DisplayName: "[PH]Overgrowth"
-			PermafrostTempleBiome.DisplayName: Auroracle Temple
-			VitricDesertBiome.DisplayName: Vitric Desert
-			VitricTempleBiome.DisplayName: Vitric Forge
-			CombatShrineBiome.DisplayName: Combat Shrine Biome
-			EvasionShrineBiome.DisplayName: Evasion Shrine Biome
+			HotspringBiome: {
+				DisplayName: Hotsprings
+				TownNPCDialogueName: the Hotspring Biome
+			}
+
+			MoonstoneBiome: {
+				DisplayName: Moonstone
+				TownNPCDialogueName: the Moonstone Biome
+			}
+
+			OvergrowBiome: {
+				DisplayName: "[PH]Overgrowth"
+				TownNPCDialogueName: the Overgrow Biome
+			}
+
+			PermafrostTempleBiome: {
+				DisplayName: Auroracle Temple
+				TownNPCDialogueName: the Permafrost Temple Biome
+			}
+
+			VitricDesertBiome: {
+				DisplayName: Vitric Desert
+				TownNPCDialogueName: the Vitric Desert Biome
+			}
+
+			VitricTempleBiome: {
+				DisplayName: Vitric Forge
+				TownNPCDialogueName: the Vitric Temple Biome
+			}
+
+			CombatShrineBiome: {
+				DisplayName: Combat Shrine Biome
+				TownNPCDialogueName: the Combat Shrine Biome
+			}
+
+			EvasionShrineBiome: {
+				DisplayName: Evasion Shrine Biome
+				TownNPCDialogueName: the Evasion Shrine Biome
+			}
 		}
 
 		NPCs: {
 			Glassweaver.DisplayName: Glassweaver
-			GlassweaverWaiting.DisplayName: Glassweaver
+
+			GlassweaverWaiting: {
+				DisplayName: Glassweaver
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LoveBiome: I love {BiomeName}.
+					LikeBiome: I like {BiomeName}.
+					DislikeBiome: I dislike {BiomeName}.
+					HateBiome: I hate {BiomeName}.
+					LoveNPC: I love {NPCName}.
+					LikeNPC: I like {NPCName}.
+					DislikeNPC: I dislike {NPCName}.
+					HateNPC: I hate {NPCName}.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
 			ArenaActor.DisplayName: ""
 			GoldPlatform.DisplayName: ""
 			IcePlatform.DisplayName: ""
@@ -3700,12 +3754,79 @@ Mods: {
 			Stalker.DisplayName: Stalker
 			Dreambeast.DisplayName: Dreambeast
 			WaterCube.DisplayName: Water Cube
-			EnchantNPC.DisplayName: Enchant N P C
-			Voidsmith.DisplayName: Voidsmith
+
+			EnchantNPC: {
+				DisplayName: Enchant N P C
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LoveBiome: I love {BiomeName}.
+					LikeBiome: I like {BiomeName}.
+					DislikeBiome: I dislike {BiomeName}.
+					HateBiome: I hate {BiomeName}.
+					LoveNPC: I love {NPCName}.
+					LikeNPC: I like {NPCName}.
+					DislikeNPC: I dislike {NPCName}.
+					HateNPC: I hate {NPCName}.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
+			Voidsmith: {
+				DisplayName: Voidsmith
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LoveBiome: I love {BiomeName}.
+					LikeBiome: I like {BiomeName}.
+					DislikeBiome: I dislike {BiomeName}.
+					HateBiome: I hate {BiomeName}.
+					LoveNPC: I love {NPCName}.
+					LikeNPC: I like {NPCName}.
+					DislikeNPC: I dislike {NPCName}.
+					HateNPC: I hate {NPCName}.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
 			Coolmite.DisplayName: Coolmite
-			Crow.DisplayName: ???
+
+			Crow: {
+				DisplayName: ???
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LoveBiome: I love {BiomeName}.
+					LikeBiome: I like {BiomeName}.
+					DislikeBiome: I dislike {BiomeName}.
+					HateBiome: I hate {BiomeName}.
+					LoveNPC: I love {NPCName}.
+					LikeNPC: I like {NPCName}.
+					DislikeNPC: I dislike {NPCName}.
+					HateNPC: I hate {NPCName}.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
 		}
 
 		Buffs: {
