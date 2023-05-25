@@ -96,21 +96,21 @@ namespace StarlightRiver.Content.NPCs.Starlight
 						{
 							Main.LocalPlayer.GetHandler().Unlock<HintAbility>();
 							Stamina.gainAnimationTimer = 240;
-						});
-					}
 
-					if (TextState >= 3)
-					{
-						RichTextBox.ClearButtons();
-						RichTextBox.AddButton("Accept", () =>
-						{
-							CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
-							RichTextBox.CloseDialogue();
-							StarlightEventSequenceSystem.sequence = 1;
-							StarlightEventSequenceSystem.willOccur = false;
+							TextState++;
+							RichTextBox.SetData(NPC, "Crow?", GetIntroDialogue());
 
-							Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
-							UILoader.GetUIState<TextCard>().Display("[PH] Hint", "[PH] Press key to investigate the world", hint);
+							RichTextBox.ClearButtons();
+							RichTextBox.AddButton("Accept", () =>
+							{
+								CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+								RichTextBox.CloseDialogue();
+								StarlightEventSequenceSystem.sequence = 1;
+								StarlightEventSequenceSystem.willOccur = false;
+
+								Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
+								UILoader.GetUIState<TextCard>().Display("[PH] Hint", "[PH] Press key to investigate the world", hint);
+							});
 						});
 					}
 				});

@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pulse");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by a short, frequent, and potent burst of speed\nDecreases stamina cost by 0.25");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash is replaced by a short, frequent, and potent burst of speed\nDecreases starlight cost by 0.25");
 		}
 
 		public override void SetDefaults()
