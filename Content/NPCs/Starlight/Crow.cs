@@ -73,6 +73,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 		}
 
+		private void SpawnAnimation()
+		{
+
+		}
+
+		private void LeaveAnimation()
+		{
+
+		}
+
+		/// <summary>
+		/// Dictates the NPCs behavior during the first encounter, where the player is given stamina and the hint ability
+		/// </summary>
 		private void FirstEncounter()
 		{
 			Main.LocalPlayer.GetHandler().Stamina = 0;
@@ -122,9 +135,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			return TextState switch
 			{
 				0 => "Greetings wanderer. I have been waiting for a very long time to meet you.",
-				1 => "Placeholder Text 2",
-				2 => "Placeholder Text 3",
-				3 => "Placeholder Text 4",
+				1 => "This is not what I will actually say to you, this is a placeholder",
+				2 => "I will now give you the magical power of STARLIGHT! It will let you write better dialogue for me in the future or something.",
+				3 => "Next you will get the tutorial for the hint ability after you hit next, since this is just a placeholder",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
 		}
