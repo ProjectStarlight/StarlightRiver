@@ -12,15 +12,26 @@ namespace StarlightRiver.Content.Abilities.Infusions
 {
 	public abstract class InfusionImprint : InfusionItem
 	{
+		public List<InfusionObjective> objectives = new();
+
+		/// <summary>
+		/// The asset location of the preview video for this imprint
+		/// </summary>
+		public virtual string PreviewVideo => AssetDirectory.Debug;
+
+		/// <summary>
+		/// The item type of the infusion this will transform to
+		/// </summary>
+		public virtual int TransformTo => ItemID.DirtBlock;
+
+		/// <summary>
+		/// If this infusion imprint should be an option from the imprint creation GUI
+		/// </summary>
+		public virtual bool Visible => true;
+
 		public override Type AbilityType => null;
 
 		public override bool Equippable => false;
-
-		public List<InfusionObjective> objectives = new();
-
-		public virtual string PreviewVideo => AssetDirectory.Debug;
-		public virtual int TransformTo => ItemID.DirtBlock;
-		public virtual bool Visible => true;
 
 		public sealed override void SetStaticDefaults()
 		{
@@ -37,7 +48,13 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			Item.rare = ItemRarityID.Blue;
 		}
 
-		public InfusionObjective FindObjective(Player Player, string objectiveText)
+		/// <summary>
+		/// Gets the first objective instance on any imprint in the given player's inventory
+		/// </summary>
+		/// <param name="Player">The player to scan the inventory of</param>
+		/// <param name="objectiveID">The ID to match the objective by</param>
+		/// <returns>The objective instance if found, null otherwise</returns>
+		public static InfusionObjective FindObjective(Player Player, string objectiveID)
 		{
 			for (int k = 0; k < Player.inventory.Length; k++)
 			{
@@ -45,7 +62,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 
 				if (Item.ModItem is InfusionImprint)
 				{
-					InfusionObjective objective = (Item.ModItem as InfusionImprint).objectives.FirstOrDefault(n => n.text == objectiveText);
+					InfusionObjective objective = (Item.ModItem as InfusionImprint).objectives.FirstOrDefault(n => n.ID == objectiveID);
 
 					if (objective != null)
 						return objective;
@@ -55,6 +72,10 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			return null;
 		}
 
+		/// <summary>
+		/// Handles checking the progress of objectives, and transforming when appropriate
+		/// </summary>
+		/// <param name="Player"></param>
 		public override void UpdateInventory(Player Player)
 		{
 			bool transform = true;
@@ -79,6 +100,13 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			}
 		}
 
+		/// <summary>
+		/// This renders the custom tooltip consisting of the vertical list of objective text/bar pairs instead of the standard tooltip
+		/// </summary>
+		/// <param name="lines"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
 		public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
 		{
 			var pos = new Vector2(x, y);
@@ -130,23 +158,29 @@ namespace StarlightRiver.Content.Abilities.Infusions
 
 			foreach (TagCompound objectiveTag in tags)
 			{
-				var objective = new InfusionObjective("Invalid Objective", 1);
+				var objective = new InfusionObjective("Invalid Objective", 1, "null");
 				objective.LoadData(objectiveTag);
 				objectives.Add(objective);
 			}
 		}
 	}
 
+	/// <summary>
+	/// This class represents an objective in an infusion imprint
+	/// </summary>
 	public class InfusionObjective
 	{
 		public float progress;
-		public string text;
 		public float maxProgress;
 
-		public InfusionObjective(string text, float maxProgress)
+		public string text;
+		public string ID;
+
+		public InfusionObjective(string text, float maxProgress, string iD)
 		{
 			this.text = text;
 			this.maxProgress = maxProgress;
+			ID = iD;
 		}
 
 		public void SaveData(TagCompound tag)
@@ -154,6 +188,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			tag["progress"] = progress;
 			tag["maxProgress"] = maxProgress;
 			tag["text"] = text;
+			tag["ID"] = ID;
 		}
 
 		public void LoadData(TagCompound tag)
@@ -161,14 +196,15 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			progress = tag.GetFloat("progress");
 			maxProgress = tag.GetFloat("maxProgress");
 			text = tag.GetString("text");
+			ID = tag.GetString("ID");
 		}
 
-		public void DrawBar(SpriteBatch sb, Vector2 pos)
-		{
-			Texture2D tex = Request<Texture2D>(AssetDirectory.GUI + "ChungusMeter").Value;
-			sb.Draw(tex, pos, Color.White);
-		}
-
+		/// <summary>
+		/// renders the text of this objective. Used by the infusion imprint making GUI
+		/// </summary>
+		/// <param name="sb">the spriteBatch to draw the text with</param>
+		/// <param name="pos">the top-left of the text</param>
+		/// <returns>the botttom Y position of the text, can be used to chain calls to this to draw a vertical list</returns>
 		public float DrawText(SpriteBatch sb, Vector2 pos)
 		{
 			string wrapped = Helpers.Helper.WrapString(text + ": " + progress + "/" + maxProgress, 130, Terraria.GameContent.FontAssets.ItemStack.Value, 0.8f);
@@ -177,6 +213,12 @@ namespace StarlightRiver.Content.Abilities.Infusions
 			return Terraria.GameContent.FontAssets.ItemStack.Value.MeasureString(wrapped).Y * 0.8f;
 		}
 
+		/// <summary>
+		/// This renders the tooltip line of the objective on the infusion imprint item
+		/// </summary>
+		/// <param name="sb">the spriteBatch used to render the text/bar pair</param>
+		/// <param name="pos">the base position the text and bar should draw at</param>
+		/// <returns>the y position of the bottom of the fully drawn section, can be used to chain calls to this to draw a vertical list</returns>
 		public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
 		{
 			string wrapped = ">  " + text + ": " + progress + "/" + maxProgress;

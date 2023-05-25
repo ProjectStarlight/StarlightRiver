@@ -108,7 +108,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		public override void SetDefaults()
 		{
-			objectives.Add(new InfusionObjective("Implement Objectives", 1));
+			objectives.Add(new InfusionObjective("Implement Objectives", 1, "PulsePlaceholder"));
 		}
 	}
 }
