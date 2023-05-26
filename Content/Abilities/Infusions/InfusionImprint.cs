@@ -2,7 +2,6 @@
 using StarlightRiver.Content.GUI;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -73,6 +72,16 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		}
 
 		/// <summary>
+		/// Gets the instance of an objective on this specific imprint by ID. Used for tooltips
+		/// </summary>
+		/// <param name="objectiveID">The ID to match the objective by</param>
+		/// <returns></returns>
+		public InfusionObjective FindObjectiveOnThis(string objectiveID)
+		{
+			return objectives.FirstOrDefault(n => n.ID == objectiveID);
+		}
+
+		/// <summary>
 		/// Handles checking the progress of objectives, and transforming when appropriate
 		/// </summary>
 		/// <param name="Player"></param>
@@ -101,29 +110,54 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		}
 
 		/// <summary>
-		/// This renders the custom tooltip consisting of the vertical list of objective text/bar pairs instead of the standard tooltip
+		/// This renders the custom tooltips of objective text/bar pairs instead of the standard tooltip
 		/// </summary>
-		/// <param name="lines"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
+		/// <param name="line"></param>
+		/// <param name="yOffset"></param>
 		/// <returns></returns>
-		public override bool PreDrawTooltip(ReadOnlyCollection<TooltipLine> lines, ref int x, ref int y)
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 		{
-			var pos = new Vector2(x, y);
+			if (line.Mod == Mod.Name && line.Name.StartsWith("SLRObjective_"))
+			{
+				string[] parts = line.Name.Split('_');
 
-			Utils.DrawBorderString(Main.spriteBatch, "Imprinted slate: " + Item.Name, pos, new Color(170, 120, 255).MultiplyRGB(Main.MouseTextColorReal));
-			pos.Y += 28;
+				if (parts.Length == 2)
+				{
+					string id = parts[1];
+					InfusionObjective objective = FindObjectiveOnThis(id);
 
-			Utils.DrawBorderString(Main.spriteBatch, "Complete objectives to transform into an infusion", pos, Main.MouseTextColorReal);
-			pos.Y += 28;
+					if (objective is null)
+					{
+						Mod.Logger.Error("Invalid objective key in infusion tooltip!");
+						Item.TurnToAir();
+						return false;
+					}
+
+					yOffset = line.Y - (int)objective.DrawTextAndBar(Main.spriteBatch, new Vector2(line.X, line.Y));
+					return false;
+				}
+				else
+				{
+					Mod.Logger.Error("Invalid objective key in infusion tooltip!");
+					Item.TurnToAir();
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			tooltips.Find(n => n.Name == "ItemName").Text = "Imprinted slate: " + Item.Name;
+			tooltips.Find(n => n.Name == "ItemName").OverrideColor = new Color(170, 120, 255);
+
+			tooltips.Add(new(Mod, "SLRInfo", "Complete objectives to transform into an infusion"));
 
 			foreach (InfusionObjective objective in objectives)
 			{
-				objective.DrawTextAndBar(Main.spriteBatch, pos);
-				pos.Y += 28;
+				tooltips.Add(new(Mod, "SLRObjective_" + objective.ID, objective.text));
 			}
-
-			return false;
 		}
 
 		public override ModItem Clone(Item Item)
@@ -221,7 +255,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		/// <returns>the y position of the bottom of the fully drawn section, can be used to chain calls to this to draw a vertical list</returns>
 		public float DrawTextAndBar(SpriteBatch sb, Vector2 pos) //For the UI only
 		{
-			string wrapped = ">  " + text + ": " + progress + "/" + maxProgress;
+			string wrapped = "- " + text + ": " + progress + "/" + maxProgress;
 			Utils.DrawBorderString(sb, wrapped, pos, progress >= maxProgress ? new Color(140, 140, 140).MultiplyRGB(Main.MouseTextColorReal) : Main.MouseTextColorReal);
 			pos.X += Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(wrapped).X + 8;
 			pos.Y += 2;
