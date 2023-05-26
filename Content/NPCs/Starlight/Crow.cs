@@ -11,7 +11,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 {
 	class Crow : ModNPC
 	{
-		public override string Texture => AssetDirectory.Debug;
+		public bool visible;
+
+		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Crow";
 
 		public ref float Timer => ref NPC.ai[0];
 		public ref float State => ref NPC.ai[1];
@@ -33,7 +35,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			NPC.townNPC = true;
 			NPC.friendly = true;
-			NPC.width = 64;
+			NPC.width = 40;
 			NPC.height = 64;
 			NPC.aiStyle = -1;
 			NPC.damage = 10;
@@ -44,6 +46,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			NPC.HitSound = SoundID.NPCHit1;
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
+			NPC.gfxOffY = -4;
 		}
 
 		public override void AI()
@@ -73,6 +76,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 		}
 
+		/// <summary>
+		/// The NPCs spawning animation, which is re-used between encounters
+		/// </summary>
 		private void SpawnAnimation()
 		{
 
@@ -94,7 +100,10 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (CutsceneTimer == 1)
 				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
 
-			if (CutsceneTimer == 60) // First encounter
+			if (CutsceneTimer < 300)
+				SpawnAnimation();
+
+			if (CutsceneTimer == 360) // First encounter
 			{
 				RichTextBox.OpenDialogue(NPC, "Crow?", GetIntroDialogue());
 				RichTextBox.AddButton("Tell me more", () =>
@@ -140,6 +149,11 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				3 => "Next you will get the tutorial for the hint ability after you hit next, since this is just a placeholder",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			return visible;
 		}
 	}
 }

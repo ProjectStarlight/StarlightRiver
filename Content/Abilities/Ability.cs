@@ -20,6 +20,8 @@ namespace StarlightRiver.Content.Abilities
 		public float ActivationCostBonus { get; set; }
 		public bool Active => ReferenceEquals(User.ActiveAbility, this);
 
+		public virtual string Name => "No name";
+		public virtual string Tooltip => "No tooltip";
 		public abstract string Texture { get; }
 		public virtual float ActivationCostDefault { get; }
 		public virtual string PreviewTexture => Texture + "Preview";

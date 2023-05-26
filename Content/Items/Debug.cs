@@ -46,6 +46,9 @@ namespace StarlightRiver.Content.Items
 		{
 			StarlightEventSequenceSystem.sequence = 0;
 			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit++;
+			if (player.GetHandler().InfusionLimit > 3)
+				player.GetHandler().InfusionLimit = 0;
 			return true;
 		}
 	}

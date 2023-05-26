@@ -19,7 +19,7 @@ namespace StarlightRiver.Content.GUI
 		private readonly SmartUIElement infusionElement = new();
 		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
 
-		public override bool Visible => Main.LocalPlayer.GetHandler().StaminaMax != 0 && Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
+		public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -72,6 +72,10 @@ namespace StarlightRiver.Content.GUI
 			InitSlot(topSlotLeft + width / 2 + 4, topSlotTop + height);
 		}
 
+		/// <summary>
+		/// Conditions for which the menu should not draw at all
+		/// </summary>
+		/// <returns>If the GUI should not draw</returns>
 		internal static bool ReturnConditions()
 		{
 			return Main.InReforgeMenu;
@@ -88,6 +92,11 @@ namespace StarlightRiver.Content.GUI
 		{
 			if (ReturnConditions())
 				return;
+
+			Texture2D background = Request<Texture2D>("StarlightRiver/Assets/GUI/Infusions").Value;
+			var backgroundColor = Color.Lerp(Color.White, new Color(100, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
+			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.035f);
+			spriteBatch.Draw(background, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), null, backgroundColor);
 
 			AbilityHandler mp = Main.LocalPlayer.GetHandler();
 
