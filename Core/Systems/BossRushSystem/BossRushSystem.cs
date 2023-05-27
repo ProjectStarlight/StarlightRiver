@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
@@ -7,7 +6,6 @@ using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -355,13 +353,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 
-		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
+		private void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
 			if (!isBossRush)
-			{
-				orig(self, gameTime);
 				return;
-			}
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
@@ -377,8 +372,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				spriteBatch.End();
 			}
-
-			orig(self, gameTime);
 		}
 
 		/// <summary>
@@ -399,6 +392,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="sb"></param>
 		public static void DrawMap(SpriteBatch sb)
 		{
+			if (!isBossRush)
+				return;
+
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			Texture2D gradV = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientV").Value;
 			Texture2D gradH = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientH").Value;

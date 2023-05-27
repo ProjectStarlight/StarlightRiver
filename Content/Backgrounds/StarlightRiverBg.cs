@@ -1,7 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Core.Systems.ScreenTargetSystem;
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
-using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Backgrounds
 {
@@ -53,7 +51,7 @@ namespace StarlightRiver.Content.Backgrounds
 			return false;
 		}
 
-		public delegate void DrawOverlayDelegate(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget);
+		public delegate void DrawOverlayDelegate(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget);
 
 
 		/// <summary>
@@ -71,9 +69,11 @@ namespace StarlightRiver.Content.Backgrounds
 			{
 				foreach (DrawOverlayDelegate del in DrawOverlayEvent.GetInvocationList())
 				{
-					del(orig, self, gameTime, starsMap, starsTarget);
+					del(gameTime, starsMap, starsTarget);
 				}
 			}
+
+			orig(self, gameTime);
 		}
 
 		public delegate void DrawMapDelegate(SpriteBatch sb);
