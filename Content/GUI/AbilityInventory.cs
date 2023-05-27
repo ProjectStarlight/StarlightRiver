@@ -116,7 +116,7 @@ namespace StarlightRiver.Content.GUI
 
 			if (IsMouseHovering)
 			{
-				Tooltip.SetName(ability.Name);
+				Tooltip.SetName($"{ability.Name}    {ability.ActivationCostDefault} SP");
 				Tooltip.SetTooltip(ability.Tooltip);
 			}
 		}

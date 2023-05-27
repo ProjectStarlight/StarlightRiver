@@ -3457,6 +3457,7 @@ Mods: {
 			SpawnEgg.DisplayName: Spawn Egg
 			CrescentOrb.DisplayName: Lunar Orb
 			SpearBookProjectile.DisplayName: Spear Book Projectile
+			HintText.DisplayName: Hint Text
 		}
 
 		Tiles: {
