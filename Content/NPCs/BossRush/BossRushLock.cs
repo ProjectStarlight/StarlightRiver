@@ -1,8 +1,10 @@
-﻿using Terraria.Audio;
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using Terraria.Audio;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.NPCs.BossRush
 {
-	internal class BossRushLock : ModNPC
+	internal class BossRushLock : ModNPC, ILoadable
 	{
 		public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/BossRushLock";
 

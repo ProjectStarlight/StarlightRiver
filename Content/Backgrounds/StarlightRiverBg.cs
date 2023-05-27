@@ -151,5 +151,22 @@ namespace StarlightRiver.Content.Backgrounds
 			if (particle.Timer < 30)
 				particle.Alpha = particle.Timer / 30f;
 		}
+
+		public override void PostUpdateEverything()
+		{
+			// star particles
+			var starColor = new Color(150, Main.rand.Next(150, 255), 255)
+			{
+				A = 0
+			};
+
+			if (Main.rand.NextBool(10))
+				stars.AddParticle(new Particle(new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight)), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f), 0, Main.rand.NextFloat(0.2f), starColor, 1600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
+
+			if (Main.rand.NextBool(4))
+				stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + Main.rand.Next(-100, 200)), new Vector2(Main.rand.NextFloat(5.9f, 6.2f), 1), 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(1f, 5f), default, 1));
+
+			stars.AddParticle(new Particle(new Vector2(0, Main.screenHeight * 0.2f + Main.rand.Next(100)), new Vector2(Main.rand.NextFloat(5.9f, 6.2f), 1), 0, Main.rand.NextFloat(0.2f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f, 3.3f), default, 1));
+		}
 	}
 }
