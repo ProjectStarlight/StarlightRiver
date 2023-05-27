@@ -17,7 +17,28 @@ namespace StarlightRiver.Content.GUI
 
 		private readonly InfusionSlot[] slots = new InfusionSlot[InfusionSlots];
 		private readonly SmartUIElement infusionElement = new();
+
+		/// <summary>
+		/// The timer controlling the gain animation
+		/// </summary>
+		public static int gainAnimationTimer = 0;
+
+		/// <summary>
+		/// Particle system used for the links between infusions and the icons
+		/// </summary>
 		public static ParticleSystem linkParticles = new("StarlightRiver/Assets/Keys/GlowSoft", UpdateLinkDelegate);
+
+		/// <summary>
+		/// Particle system used for the gain animation
+		/// </summary>
+		private readonly ParticleSystem gainAnimationParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateGainParticles);
+
+		private readonly ParticleSystem sparkleParticles = new("StarlightRiver/Assets/GUI/Sparkle", UpdateSparkleParticles);
+
+		/// <summary>
+		/// If the gain animation is currently playing
+		/// </summary>
+		public static bool InGainAnimation => gainAnimationTimer > 0;
 
 		public override bool Visible => Main.playerInventory && Main.LocalPlayer.chest == -1 && Main.npcShop == 0;
 
@@ -93,10 +114,23 @@ namespace StarlightRiver.Content.GUI
 			if (ReturnConditions())
 				return;
 
+			// We want this to draw under even if in the gain animation
 			Texture2D background = Request<Texture2D>("StarlightRiver/Assets/GUI/Infusions").Value;
 			var backgroundColor = Color.Lerp(Color.White, new Color(100, 220, 255), 0.5f + 0.5f * (float)Math.Sin(Main.GameUpdateCount * 0.05f));
 			backgroundColor *= 0.25f + 0.15f * (float)Math.Sin(Main.GameUpdateCount * 0.035f);
 			spriteBatch.Draw(background, new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels), null, backgroundColor);
+
+			if (InGainAnimation)
+			{
+				gainAnimationTimer--;
+				DrawGainAnimation(spriteBatch, 240 - gainAnimationTimer);
+			}
+
+			gainAnimationParticles.DrawParticles(spriteBatch);
+			sparkleParticles.DrawParticles(spriteBatch);
+
+			if (InGainAnimation)
+				return;
 
 			AbilityHandler mp = Main.LocalPlayer.GetHandler();
 
@@ -127,6 +161,147 @@ namespace StarlightRiver.Content.GUI
 			RemoveAllChildren();
 			Initialize();
 			Recalculate();
+		}
+
+		/// <summary>
+		/// Animation for gain during second crow encounter
+		/// </summary>
+		/// <param name="spriteBatch">The spriteBatch to draw with</param>
+		/// <param name="timer">The timer associated with the animation</param>
+		private void DrawGainAnimation(SpriteBatch spriteBatch, int timer)
+		{
+			Texture2D slotTex = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionAnimUnder").Value;
+			Texture2D slotTexGlow = Request<Texture2D>("StarlightRiver/Assets/GUI/InfusionGlow").Value;
+			Texture2D star = Request<Texture2D>("StarlightRiver/Assets/Keys/StarAlpha").Value;
+			var pos = new Vector2(infusionElement.Left.Pixels + 2, infusionElement.Top.Pixels);
+			var starOff = new Vector2(0, -12);
+
+			// Spawn particles
+			if (timer < 64)
+			{
+				float prog = timer / 80f;
+
+				if (Main.rand.NextFloat() < prog)
+				{
+					float rot = Main.rand.NextFloat(6.28f);
+
+					gainAnimationParticles.AddParticle(
+						new Particle(
+								position: pos + new Vector2(30, 18) + Vector2.One.RotatedBy(rot) * Main.rand.NextFloat(80, 150),
+								velocity: Vector2.One.RotatedBy(rot + 1.57f) * 3.5f,
+								rotation: 0,
+								scale: Main.rand.NextFloat(0.5f, 1f),
+								color: new Color(150, 220, 250),
+								timer: 80,
+								storedPosition: pos + new Vector2(30, 18),
+								alpha: 0
+							)
+						);
+				}
+			}
+
+			// Fade in
+			if (timer > 40 && timer < 120)
+			{
+				float prog = (timer - 40) / 80f;
+				float opacity = Helpers.Helper.BezierEase(prog);
+
+				spriteBatch.Draw(slotTexGlow, pos + slotTexGlow.Size() / 2f, slotTexGlow.Frame(), new Color(50, 120, 255) * opacity, 0, slotTexGlow.Size() / 2f, opacity, SpriteEffects.None, 0);
+
+				Color starColor = new Color(150, 220, 255) * Helpers.Helper.SwoopEase(prog);
+				starColor.A = 0;
+
+				spriteBatch.Draw(star, pos + starOff + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
+			}
+
+			// Hold
+			if (timer >= 120 && timer <= 140)
+			{
+				float colorProg = Helpers.Helper.BezierEase((timer - 120) / 20f);
+				var color = Color.Lerp(new Color(50, 120, 255), Color.White, colorProg);
+
+				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
+				Color starColor = Color.Lerp(new Color(150, 220, 255), Color.White, colorProg) * (1 - colorProg);
+				starColor.A = 0;
+
+				spriteBatch.Draw(star, pos + starOff + slotTexGlow.Size() / 2f, star.Frame(), starColor, 0, star.Size() / 2f, (1 + colorProg) * 1.5f, SpriteEffects.None, 0);
+			}
+
+			// Fade out with slot underneath
+			if (timer > 140 && timer < 170)
+			{
+				float prog = (timer - 140) / 30f;
+				float opacity = 1 - Helpers.Helper.BezierEase(prog);
+
+				spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+				spriteBatch.Draw(slotTexGlow, pos, slotTexGlow.Frame(), Color.White * opacity, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+			}
+
+			if (timer >= 90 && Main.rand.NextBool(4))
+			{
+				sparkleParticles.AddParticle(
+					new Particle(
+						position: pos + new Vector2(Main.rand.Next(60), Main.rand.Next(60)),
+						velocity: Vector2.UnitY * Main.rand.NextFloat(0.2f),
+						rotation: 0,
+						scale: 0,
+						color: new Color(255, 50, 50),
+						timer: 90,
+						storedPosition: new Vector2(Main.rand.NextFloat(0.4f, 0.7f), 0),
+						frame: new Rectangle(0, 0, 15, 15))
+					);
+			}
+
+			if (timer >= 170)
+			{
+				spriteBatch.Draw(slotTex, pos, slotTex.Frame(), Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+			}
+
+			if (timer == 239)
+				gainAnimationParticles.ClearParticles();
+		}
+
+		/// <summary>
+		/// Update method for the gain animation particles
+		/// </summary>
+		/// <param name="particle">The particle to process</param>
+		private static void UpdateGainParticles(Particle particle)
+		{
+			particle.Timer--;
+
+			if (Vector2.Distance(particle.Position, particle.StoredPosition) <= 48)
+			{
+				particle.Alpha *= 0.95f;
+				particle.Velocity *= 0.92f;
+				particle.Scale *= 0.92f;
+			}
+			else
+			{
+				particle.Alpha += 0.03f;
+				particle.Velocity += Vector2.Normalize(particle.Position - particle.StoredPosition) * -0.34f;
+
+				if (particle.Velocity.Length() > 4)
+					particle.Velocity = Vector2.Normalize(particle.Velocity) * 4;
+			}
+
+			particle.Position += particle.Velocity;
+		}
+
+		/// <summary>
+		/// Update method for the sparkle particles
+		/// </summary>
+		/// <param name="particle">The particle to process</param>
+		private static void UpdateSparkleParticles(Particle particle)
+		{
+			particle.Timer--;
+
+			particle.Scale = (float)Math.Sin(particle.Timer / 60f * 3.14f) * particle.StoredPosition.X;
+
+			particle.Color = new Color(180, 200, (byte)(Math.Sin(particle.Timer / 60f * 3.14f) * 230)) * (float)Math.Sin(particle.Timer / 60f * 3.14f);
+			particle.Position += particle.Velocity;
+
+			particle.Rotation += 0.05f;
 		}
 	}
 

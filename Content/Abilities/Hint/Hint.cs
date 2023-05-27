@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			effectTimer = 20;
 			hintToDisplay = "Nothing interesting here...";
 
-			Vector2 pos = Main.MouseScreen;
+			Vector2 pos = Main.MouseWorld;
 
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
