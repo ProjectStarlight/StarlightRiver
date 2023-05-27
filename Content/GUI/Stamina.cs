@@ -214,13 +214,6 @@ namespace StarlightRiver.Content.GUI
 			Texture2D emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmpty").Value;
 			Texture2D fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina").Value : overrideTexture;
 
-			//change textures for fancy UI
-			if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
-			{
-				emptyTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmptyFancy").Value;
-				fillTex = overrideTexture is null ? Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaFancy").Value : overrideTexture;
-			}
-
 			int row = 0;
 			for (int k = 0; k <= mp.StaminaMax; k++)
 			{
@@ -245,10 +238,6 @@ namespace StarlightRiver.Content.GUI
 				}
 
 				Texture2D slotTex = emptyTex;
-
-				// Changes the initial container sprite if on the fancy UI style
-				if (k == 0 && Main.ResourceSetsManager.ActiveSetKeyName == "New") //Maybe not the most elegant solution but a functional one
-					slotTex = Request<Texture2D>("StarlightRiver/Assets/GUI/StaminaEmptyFancyFirst").Value;
 
 				// Changes slot textures if needed
 				if (k >= mp.StaminaMax - specialVesselTextures.Count)
