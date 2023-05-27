@@ -97,10 +97,7 @@ namespace StarlightRiver.Content.Events
 		private void DrawRiver(On_Main.orig_DrawStarsInBackground orig, Main self, Main.SceneArea sceneArea, bool artificial)
 		{
 			if (IsSceneEffectActive(Main.LocalPlayer))
-			{
-				Main.spriteBatch.Draw(StarlightRiverBackground.starsTarget.RenderTarget, Vector2.Zero, Color.White);
-				return;
-			}
+				Main.spriteBatch.Draw(StarlightRiverBackground.starsTarget.RenderTarget, Vector2.Zero, Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f));
 
 			orig(self, sceneArea, artificial);
 		}
