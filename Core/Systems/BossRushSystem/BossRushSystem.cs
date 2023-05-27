@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+﻿using Microsoft.Xna.Framework.Graphics;
+using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.Items.Permafrost;
@@ -400,17 +401,43 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
-			mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
-			mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+			if (currentStage != 0)
+			{
+				Effect mapEffect = Filters.Scene["StarMap"].GetShader().Shader;
+				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-			spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
-			spriteBatch.End();
+				spriteBatch.End();
 
-			orig(self, gameTime);
+				orig(self, gameTime);
+			}
+			else
+			{
+				Texture2D distortionMap = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/StarViewWarpMap").Value;
+
+				Effect mapEffect = Filters.Scene["StarViewWarp"].GetShader().Shader;
+				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
+				mapEffect.Parameters["distortionMap"].SetValue(distortionMap);
+				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
+
+				Vector2 pos = visibleArea.TopLeft() - Main.screenPosition + new Vector2(visibleArea.Width, visibleArea.Height) / 2 - Vector2.UnitY * 150;
+
+				mapEffect.Parameters["uIntensity"].SetValue(Main.GameUpdateCount * 0.01f % 2);
+				mapEffect.Parameters["uTargetPosition"].SetValue(pos);
+				mapEffect.Parameters["uResolution"].SetValue(new Vector2(Main.screenWidth, Main.screenHeight));
+
+				spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+
+				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+
+				spriteBatch.End();
+
+				orig(self, gameTime);
+			}
 		}
 
 		/// <summary>
@@ -495,17 +522,36 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			Vector2 pos = visibleArea.TopLeft() - Main.screenPosition;
 
-			sb.Draw(tex, new Rectangle(0, 0, (int)pos.X, Main.screenHeight), Color.White);
-			sb.Draw(gradV, new Rectangle((int)pos.X, 0, 80, Main.screenHeight), color);
+			if (currentStage != 0)
+			{
+				sb.Draw(tex, new Rectangle(0, 0, (int)pos.X, Main.screenHeight), Color.White);
+				sb.Draw(gradV, new Rectangle((int)pos.X, 0, 80, Main.screenHeight), color);
 
-			sb.Draw(tex, new Rectangle((int)(pos.X + visibleArea.Width), 0, Main.screenWidth - (int)(pos.X + visibleArea.Width), Main.screenHeight), Color.White);
-			sb.Draw(gradV, new Rectangle((int)(pos.X + visibleArea.Width - 80), 0, 80, Main.screenHeight), null, color, default, default, SpriteEffects.FlipHorizontally, 0);
+				sb.Draw(tex, new Rectangle((int)(pos.X + visibleArea.Width), 0, Main.screenWidth - (int)(pos.X + visibleArea.Width), Main.screenHeight), Color.White);
+				sb.Draw(gradV, new Rectangle((int)(pos.X + visibleArea.Width - 80), 0, 80, Main.screenHeight), null, color, default, default, SpriteEffects.FlipHorizontally, 0);
 
-			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, (int)pos.Y), Color.White);
-			sb.Draw(gradH, new Rectangle(0, (int)pos.Y, Main.screenWidth, 80), null, color, default, default, SpriteEffects.FlipVertically, 0);
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, (int)pos.Y), Color.White);
+				sb.Draw(gradH, new Rectangle(0, (int)pos.Y, Main.screenWidth, 80), null, color, default, default, SpriteEffects.FlipVertically, 0);
 
-			sb.Draw(tex, new Rectangle(0, (int)(pos.Y + visibleArea.Height), Main.screenWidth, Main.screenHeight - (int)(pos.Y + visibleArea.Height)), Color.White);
-			sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
+				sb.Draw(tex, new Rectangle(0, (int)(pos.Y + visibleArea.Height), Main.screenWidth, Main.screenHeight - (int)(pos.Y + visibleArea.Height)), Color.White);
+				sb.Draw(gradH, new Rectangle(0, (int)(pos.Y + visibleArea.Height - 80), Main.screenWidth, 80), color);
+			}
+			else
+			{
+				Texture2D starView = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/DotTell").Value;
+
+				Effect wobble = Filters.Scene["StarViewWobble"].GetShader().Shader;
+				wobble.Parameters["uTime"].SetValue(Main.GameUpdateCount * 0.05f);
+				wobble.Parameters["uIntensity"].SetValue(1f);
+
+				sb.End();
+				sb.Begin(default, BlendState.Additive, default, default, default, wobble, Main.GameViewMatrix.ZoomMatrix);
+
+				sb.Draw(starView, new Rectangle((int)pos.X - 300 + visibleArea.Width / 2, (int)pos.Y - 300 + visibleArea.Height / 2 - 150, 600, 600), color);
+
+				sb.End();
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			}
 		}
 
 		/// <summary>
