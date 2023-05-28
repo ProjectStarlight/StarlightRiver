@@ -85,13 +85,15 @@ namespace StarlightRiver.Content.Events
 
 		private void DrawBorders(SpriteBatch sb)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
+			if (IsSceneEffectActive(Main.LocalPlayer))
+			{
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/SwirlyNoiseLooping").Value;
 
-			sb.End();
-			sb.Begin(default, default, SamplerState.PointWrap, default, default);
+				sb.End();
+				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
-			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.5f);
-			//sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 2, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.5f);
+				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.5f);
+			}
 		}
 
 		private void DrawRiver(On_Main.orig_DrawStarsInBackground orig, Main self, Main.SceneArea sceneArea, bool artificial)
