@@ -74,6 +74,8 @@ namespace StarlightRiver.Content.Backgrounds
 					del(orig, self, gameTime, starsMap, starsTarget);
 				}
 			}
+
+			orig(self, gameTime);
 		}
 
 		public delegate void DrawMapDelegate(SpriteBatch sb);

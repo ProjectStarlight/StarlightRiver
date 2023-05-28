@@ -47,9 +47,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		public override void Load()
 		{
-			StarlightRiverBackground.DrawMapEvent += DrawMap;
-			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
-			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
+			//StarlightRiverBackground.DrawMapEvent += DrawMap;
+			//StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
+			//StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
 			On_Main.DoUpdate += Speedup;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
@@ -377,8 +377,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 				spriteBatch.End();
 			}
-
-			orig(self, gameTime);
 		}
 
 		/// <summary>
