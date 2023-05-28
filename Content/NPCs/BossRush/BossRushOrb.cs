@@ -59,7 +59,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Lighting.AddLight(NPC.Center, new Vector3(1, 1, 0.4f));
 
 			NPC.position = originalPos + bobbleDirection;
-			bobbleDirection = Vector2.Lerp(Vector2.Zero, bobbleDirection, 0.98f);
+			bobbleDirection = Vector2.Lerp(Vector2.Zero, bobbleDirection, 0.95f);
 			
 			if (isPlayingWarp)
 			{

@@ -359,10 +359,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
 			if (!isBossRush)
-			{
-				orig(self, gameTime);
 				return;
-			}
 
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
