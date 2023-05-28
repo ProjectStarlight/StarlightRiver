@@ -58,6 +58,23 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (InCutscene)
 				CutsceneTimer++;
 
+			if (Main.LocalPlayer.controlHook)
+			{
+				CutsceneTimer = 0;
+				visible = false;
+			}
+
+			if (visible)
+			{
+				if (Main.rand.NextBool(6))
+					Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-16, 16), 32), ModContent.DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-1.5f, -0.25f), 0, new Color(100, Main.rand.Next(150, 255), 255), Main.rand.NextFloat(0.35f, 0.45f));
+
+				if (Timer % 120 == 0)
+					Dust.NewDustPerfect(NPC.Center + new Vector2(Main.rand.Next(-32, 32), 24), ModContent.DustType<Dusts.VerticalGlow>(), Vector2.Zero, 0, new Color(40, Main.rand.Next(150, 255), 255), Main.rand.NextFloat(0.9f, 1.1f));
+
+				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * 4);
+			}
+
 			if (!InCutscene && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400))
 			{
 				CutsceneTimer = 0;
@@ -86,8 +103,83 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// </summary>
 		private void SpawnAnimation()
 		{
-			if (CutsceneTimer >= 200)
+			if (CutsceneTimer > 1 && CutsceneTimer < 30 && Main.rand.NextBool())
+			{
+				int type = ModContent.DustType<Dusts.AuroraFast>();
+				float rot = Main.rand.NextFloat(6.28f);
+				var d = Dust.NewDustPerfect(NPC.Center + Vector2.One.RotatedBy(rot) * 160, type, Vector2.One.RotatedBy(rot) * -Main.rand.NextFloat(16, 18), 0, new Color(40, Main.rand.Next(150, 255), 255), Main.rand.NextFloat(0.5f, 1f));
+				d.customData = Main.rand.NextFloat(0.8f, 1.5f);
+			}
+
+			if (CutsceneTimer >= 130 && CutsceneTimer <= 140)
+			{
+				for (int K = 0; K < 2; K++)
+				{
+					int type = ModContent.DustType<Dusts.Cinder>();
+
+					if (Main.rand.NextBool(4))
+						type = ModContent.DustType<Dusts.Aurora>();
+
+					var d = Dust.NewDustPerfect(NPC.Center, type, Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(6), 0, new Color(40, Main.rand.Next(150, 255), 255), Main.rand.NextFloat(0.5f, 1f));
+					d.customData = Main.rand.NextFloat(0.5f, 1f);
+				}
+			}
+
+			if (CutsceneTimer > 100 && CutsceneTimer < 140)
+			{
+				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * (CutsceneTimer - 100) / 40f * 4);
+			}
+
+			if (CutsceneTimer == 140)
+			{
 				visible = true;
+
+				for (int k = 0; k < 20; k++)
+				{
+
+				}
+			}
+		}
+
+		/// <summary>
+		/// Rendering related to drawing a flashing star, for various animations. Takes 140 frames to complete
+		/// </summary>
+		private void DrawFlashingStar(SpriteBatch spriteBatch, float timer)
+		{
+			Texture2D star = ModContent.Request<Texture2D>("StarlightRiver/Assets/StarTexture").Value;
+			Vector2 pos = NPC.Center - Main.screenPosition;
+
+			// Fade in
+			if (timer > 40 && timer < 120)
+			{
+				float prog = (timer - 40) / 80f;
+				float opacity = Helpers.Helper.BezierEase(prog);
+
+				Color starColor = new Color(150, 220, 255) * Helpers.Helper.SwoopEase(prog);
+				starColor.A = 0;
+
+				Color whiteColor = Color.White * Helpers.Helper.SwoopEase(prog);
+				whiteColor.A = 0;
+
+				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog) * 1.5f, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), whiteColor, 0, star.Size() / 2f, Helpers.Helper.SwoopEase(prog), SpriteEffects.None, 0);
+			}
+
+			// Hold
+			if (timer >= 120 && timer <= 140)
+			{
+				float colorProg = Helpers.Helper.BezierEase((timer - 120) / 20f);
+				var color = Color.Lerp(new Color(50, 120, 255), Color.White, colorProg);
+
+				Color starColor = Color.Lerp(new Color(150, 220, 255), Color.White, colorProg) * (1 - colorProg);
+				starColor.A = 0;
+
+				Color whiteColor = Color.White * (1 - colorProg);
+				whiteColor.A = 0;
+
+				spriteBatch.Draw(star, pos, star.Frame(), starColor, 0, star.Size() / 2f, (1 + colorProg) * 1.5f, SpriteEffects.None, 0);
+				spriteBatch.Draw(star, pos, star.Frame(), whiteColor, 0, star.Size() / 2f, 1 + colorProg, SpriteEffects.None, 0);
+			}
 		}
 
 		/// <summary>
@@ -244,6 +336,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
+			if (InCutscene && CutsceneTimer < 140)
+				DrawFlashingStar(spriteBatch, CutsceneTimer);
+
 			return visible;
 		}
 	}

@@ -46,13 +46,14 @@ namespace StarlightRiver.Content.Backgrounds
 				{
 					isActive |= del();
 				}
+
 				return isActive;
 			}
+
 			return false;
 		}
 
 		public delegate void DrawOverlayDelegate(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget);
-
 
 		/// <summary>
 		/// Event handler for drawing the background -over- the rest of the game
@@ -154,13 +155,16 @@ namespace StarlightRiver.Content.Backgrounds
 
 		public override void PostUpdateEverything()
 		{
+			if (!CheckIsActive())
+				return;
+
 			// star particles
 			var starColor = new Color(150, Main.rand.Next(150, 255), 255)
 			{
 				A = 0
 			};
 
-			if (Main.rand.NextBool(10))
+			if (Main.rand.NextBool(8))
 				stars.AddParticle(new Particle(new Vector2(Main.rand.Next(Main.screenWidth), Main.rand.Next(Main.screenHeight)), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(0.5f), 0, Main.rand.NextFloat(0.2f), starColor, 1600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
 
 			if (Main.rand.NextBool(4))

@@ -47,6 +47,11 @@ namespace StarlightRiver.Content.Items
 			StarlightEventSequenceSystem.sequence = 0;
 			player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;
+
+			Main.time = 53999;
+			Main.dayTime = true;
+			StarlightEventSequenceSystem.willOccur = true;
+
 			return true;
 		}
 	}

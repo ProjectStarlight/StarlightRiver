@@ -124,6 +124,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 	internal class HintText : ModProjectile
 	{
 		public string text;
+		public bool follow;
 
 		public override string Texture => AssetDirectory.Invisible;
 
@@ -147,12 +148,15 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			if (Timer > text.Length * 2f)
 				Projectile.velocity.Y = -0.25f;
+
+			if (follow && !Main.dedServ)
+				Projectile.Center = Main.screenPosition + new Vector2(Main.screenWidth / 2, Main.screenHeight / 2 - 64);
 		}
 
 		public override bool PreDraw(ref Color lightColor)
 		{
 			int end = Math.Min((int)Timer, text.Length);
-			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, 1);
+			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, Projectile.scale);
 
 			float opacity = 1f;
 			int full = text.Length * 3;
@@ -164,11 +168,11 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 			for (int k = 0; k < 4; k++)
 			{
-				Vector2 off = Vector2.One.RotatedBy(Main.GameUpdateCount * 0.08f + k / 4f * 6.28f) * 2f;
-				Main.spriteBatch.DrawString(font, toDraw, Projectile.Center + off - Main.screenPosition, new Color(30, 170, 220) * 0.5f * opacity, 0, font.MeasureString(toDraw) / 2f, 1, 0, 0);
+				Vector2 off = Vector2.One.RotatedBy(Main.GameUpdateCount * 0.08f + k / 4f * 6.28f) * 2f * Projectile.scale;
+				Main.spriteBatch.DrawString(font, toDraw, Projectile.Center + off - Main.screenPosition, new Color(30, 170, 220) * 0.5f * opacity, 0, font.MeasureString(toDraw) / 2f, Projectile.scale, 0, 0);
 			}
 
-			Main.spriteBatch.DrawString(font, toDraw, Projectile.Center - Main.screenPosition, Color.White * opacity, 0, font.MeasureString(toDraw) / 2f, 1, 0, 0);
+			Main.spriteBatch.DrawString(font, toDraw, Projectile.Center - Main.screenPosition, Color.White * opacity, 0, font.MeasureString(toDraw) / 2f, Projectile.scale, 0, 0);
 
 			return false;
 		}

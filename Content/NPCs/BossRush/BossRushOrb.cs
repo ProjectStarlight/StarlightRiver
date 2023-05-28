@@ -1,12 +1,8 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
@@ -60,7 +56,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			NPC.position = originalPos + bobbleDirection;
 			bobbleDirection = Vector2.Lerp(Vector2.Zero, bobbleDirection, 0.98f);
-			
+
 			if (isPlayingWarp)
 			{
 				warpAnimationTimer++;
@@ -107,7 +103,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			return false;
 		}
 
-		public static void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
+		public static void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
 			foreach (BossRushOrb bossRushLock in activeBossRushLocks)
 			{
@@ -153,7 +149,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		public static void DrawMap(SpriteBatch sb)
 		{
 			activeBossRushLocks.RemoveAll(x => !x.NPC.active || !Main.npc.Contains(x.NPC));
-
 
 			foreach (BossRushOrb bossRushLock in activeBossRushLocks)
 			{

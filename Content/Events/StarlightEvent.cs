@@ -1,7 +1,10 @@
-﻿using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Abilities.Hint;
+using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.NPCs.Starlight;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using System;
+using System.Linq;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader.IO;
 
@@ -41,6 +44,50 @@ namespace StarlightRiver.Content.Events
 				NPC.NewNPC(null, Main.spawnTileX * 16, Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 
+			if (Active)
+			{
+				Main.bloodMoon = false;
+
+				if (Main.time == 600)
+				{
+					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+					var proj = Main.projectile[i].ModProjectile as HintText;
+
+					if (proj != null)
+					{
+						proj.text = "Wanderer, I await you at the place you entered this strange world...";
+						proj.follow = true;
+						proj.Projectile.scale = 1.2f;
+					}
+				}
+
+				if (Main.time == 8000)
+				{
+					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+					var proj = Main.projectile[i].ModProjectile as HintText;
+
+					if (proj != null)
+					{
+						proj.text = "Wanderer, do not keep me waiting...";
+						proj.follow = true;
+						proj.Projectile.scale = 1.2f;
+					}
+				}
+
+				if (Main.time == 16200)
+				{
+					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+					var proj = Main.projectile[i].ModProjectile as HintText;
+
+					if (proj != null)
+					{
+						proj.text = "Wanderer, I brought a gift... and ice cream...";
+						proj.follow = true;
+						proj.Projectile.scale = 1.2f;
+					}
+				}
+			}
+
 			if (Active && Main.time > 32400 / 2)
 				Main.time = 32400 / 2;
 		}
@@ -57,13 +104,19 @@ namespace StarlightRiver.Content.Events
 		public override void SaveWorldData(TagCompound tag)
 		{
 			tag["sequence"] = sequence;
-			tag["willOccur"] = willOccur;
+			tag["willOccur"] = willOccur | occuring;
 		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
 			sequence = tag.GetInt("sequence");
 			willOccur = tag.GetBool("willOccur");
+
+			if (!Main.dayTime && willOccur)
+			{
+				occuring = true;
+				willOccur = false;
+			}
 		}
 	}
 
@@ -79,11 +132,11 @@ namespace StarlightRiver.Content.Events
 			StarlightNPC.OnKillEvent += TriggerEventActivation;
 			On_Main.DrawStarsInBackground += DrawRiver;
 			StarlightRiverBackground.CheckIsActiveEvent += () => IsSceneEffectActive(Main.LocalPlayer);
-			StarlightRiverBackground.DrawMapEvent += DrawBorders;
+			StarlightRiverBackground.DrawMapEvent += DrawOverlayMap;
 			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
 		}
 
-		private void DrawBorders(SpriteBatch sb)
+		private void DrawOverlayMap(SpriteBatch sb)
 		{
 			if (IsSceneEffectActive(Main.LocalPlayer))
 			{
@@ -93,6 +146,24 @@ namespace StarlightRiver.Content.Events
 				sb.Begin(default, default, SamplerState.PointWrap, default, default);
 
 				sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), new Rectangle((int)Main.GameUpdateCount / 3, 0, tex.Width, tex.Height), Color.White * (StarlightEventSequenceSystem.fadeTimer / 300f) * 0.5f);
+
+				NPC crow = Main.npc.FirstOrDefault(n => n.active && n.type == ModContent.NPCType<Crow>());
+
+				if (crow != null && crow.ModNPC != null)
+				{
+					var mn = crow.ModNPC as Crow;
+
+					if (mn != null)
+					{
+						Texture2D glowTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowBlack").Value;
+
+						float opacity = Math.Min(1f, mn.CutsceneTimer / 140f);
+						Color color = Color.Black * opacity;
+						//color.A = 0;
+
+						sb.Draw(glowTex, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), null, color, 0, glowTex.Size() / 2f, opacity * 12f, 0, 0);
+					}
+				}
 			}
 		}
 
