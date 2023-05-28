@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
@@ -47,9 +48,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 		public override void Load()
 		{
-			//StarlightRiverBackground.DrawMapEvent += DrawMap;
-			//StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
-			//StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
+			StarlightRiverBackground.DrawMapEvent += DrawMap;
+			StarlightRiverBackground.DrawOverlayEvent += DrawOverlay;
+			StarlightRiverBackground.CheckIsActiveEvent += () => isBossRush;
 			On_Main.DoUpdate += Speedup;
 
 			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, "BossRushWorld.wld"), Mod.GetFileBytes("Worlds/BossRushWorld.wld"));
@@ -158,13 +159,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			{
 				new BossRushStage(
 					"Structures/BossRushStart",
-					ModContent.NPCType<BossRushLock>(),
+					ModContent.NPCType<BossRushOrb>(),
 					new Vector2(250, 200),
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
 
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
+						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
@@ -397,6 +398,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <param name="sb"></param>
 		public static void DrawMap(SpriteBatch sb)
 		{
+			if (!isBossRush)
+				return;
+
 			Texture2D tex = Terraria.GameContent.TextureAssets.MagicPixel.Value;
 			Texture2D gradV = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientV").Value;
 			Texture2D gradH = ModContent.Request<Texture2D>("StarlightRiver/Assets/GradientH").Value;
