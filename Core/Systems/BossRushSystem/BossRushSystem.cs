@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
@@ -156,13 +156,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			{
 				new BossRushStage(
 					"Structures/BossRushStart",
-					ModContent.NPCType<BossRushLock>(),
+					ModContent.NPCType<BossRushOrb>(),
 					new Vector2(250, 200),
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
 
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushLock>());
+						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
