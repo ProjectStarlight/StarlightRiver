@@ -238,8 +238,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 								RichTextBox.CloseDialogue();
 								CutsceneTimer = 363;
 
+								string message = StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys().Count > 0 ?
+									$"Aim your cursor and press {StarlightRiver.Instance.AbilityKeys.Get<HintAbility>().GetAssignedKeys()[0]} to inspect the world." :
+									"Aim your cursor and press [Please bind a key] to inspect the world.";
+
 								Main.LocalPlayer.GetHandler().GetAbility(out HintAbility hint);
-								UILoader.GetUIState<TextCard>().Display("[PH] Hint", "[PH] Press key to investigate the world", hint);
+								UILoader.GetUIState<TextCard>().Display("Starsight", message, hint);
 							});
 						});
 					}
