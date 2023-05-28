@@ -113,6 +113,12 @@ namespace StarlightRiver.Content.GUI
                     Collection.dust.Add(new ExpertDust(dustex, duspos3, Vector2.Zero, new Color(255, 255, 150), 1.8f, 30));
                 }
             }*/
+
+			if (IsMouseHovering)
+			{
+				Tooltip.SetName($"{ability.Name}    {ability.ActivationCostDefault} SP");
+				Tooltip.SetTooltip(ability.Tooltip);
+			}
 		}
 	}
 }

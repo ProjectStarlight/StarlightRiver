@@ -1,4 +1,7 @@
-﻿using Terraria.GameInput;
+﻿using ReLogic.Graphics;
+using System;
+using Terraria.GameContent;
+using Terraria.GameInput;
 
 namespace StarlightRiver.Content.Abilities.Hint
 {
@@ -6,6 +9,10 @@ namespace StarlightRiver.Content.Abilities.Hint
 	{
 		public static int effectTimer;
 		public static string hintToDisplay;
+
+		public override string Name => "Starsight";
+		public override string Tooltip => "Focus starlight into an arcane lens, allowing you to reveal secrets, hidden knowledge and messages left by ancient scholars. NEWBLOCK " +
+			"Most things can be investigated -- treasures, lore, and your foes weaknesses all lie in plain sight to those who can see through the stars.";
 
 		public override float ActivationCostDefault => 0.25f;
 		public override string Texture => "StarlightRiver/Assets/Abilities/Hint";
@@ -62,7 +69,7 @@ namespace StarlightRiver.Content.Abilities.Hint
 			effectTimer = 20;
 			hintToDisplay = "Nothing interesting here...";
 
-			Vector2 pos = Main.MouseScreen;
+			Vector2 pos = Main.MouseWorld;
 
 			for (int k = 0; k < Main.maxNPCs; k++)
 			{
@@ -104,8 +111,66 @@ namespace StarlightRiver.Content.Abilities.Hint
 
 		public override void UpdateActive()
 		{
-			Main.NewText(hintToDisplay);
+			int i = Projectile.NewProjectile(null, Main.MouseWorld + Vector2.UnitY * -32, Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
+			var proj = Main.projectile[i].ModProjectile as HintText;
+
+			if (proj != null)
+				proj.text = hintToDisplay;
+
 			Deactivate();
+		}
+	}
+
+	internal class HintText : ModProjectile
+	{
+		public string text;
+
+		public override string Texture => AssetDirectory.Invisible;
+
+		public ref float Timer => ref Projectile.ai[0];
+
+		public override void SetStaticDefaults()
+		{
+			Projectile.aiStyle = -1;
+			Projectile.tileCollide = false;
+			Projectile.penetrate = -1;
+			Projectile.friendly = false;
+			Projectile.hostile = false;
+		}
+
+		public override void AI()
+		{
+			Timer++;
+
+			if (Timer < text.Length * 5f)
+				Projectile.timeLeft = 2;
+
+			if (Timer > text.Length * 2f)
+				Projectile.velocity.Y = -0.25f;
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			int end = Math.Min((int)Timer, text.Length);
+			string toDraw = Helpers.Helper.WrapString(text[..end], 400, FontAssets.ItemStack.Value, 1);
+
+			float opacity = 1f;
+			int full = text.Length * 3;
+
+			if (Timer > full)
+				opacity = 1 - (Timer - text.Length * 3f) / (text.Length * 2f);
+
+			DynamicSpriteFont font = FontAssets.MouseText.Value;
+
+			for (int k = 0; k < 4; k++)
+			{
+				Vector2 off = Vector2.One.RotatedBy(Main.GameUpdateCount * 0.08f + k / 4f * 6.28f) * 2f;
+				Main.spriteBatch.DrawString(font, toDraw, Projectile.Center + off - Main.screenPosition, new Color(30, 170, 220) * 0.5f * opacity, 0, font.MeasureString(toDraw) / 2f, 1, 0, 0);
+			}
+
+			Main.spriteBatch.DrawString(font, toDraw, Projectile.Center - Main.screenPosition, Color.White * opacity, 0, font.MeasureString(toDraw) / 2f, 1, 0, 0);
+
+			return false;
 		}
 	}
 }
