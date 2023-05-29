@@ -50,7 +50,6 @@ namespace StarlightRiver.Content.Tiles.Desert
 			DustType = DustID.Sand;
 			AdjTiles = new int[] { TileID.Containers };
 			RegisterItemDrop(ModContent.ItemType<AnkhChestItem>());
-			//ContainerName.SetDefault("Ankh Chest");
 		}
 
 		public string MapChestName(string name, int i, int j)

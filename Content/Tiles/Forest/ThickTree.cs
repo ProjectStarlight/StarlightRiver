@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 			AddMapEntry(new Color(169, 125, 93), name);
 
 			RegisterItemDrop(ItemID.Wood);
-			RegisterItemDrop(ItemID.Wood);
 		}
 
 		private float GetLeafSway(float offset, float magnitude, float speed)
