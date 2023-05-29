@@ -11,8 +11,8 @@ namespace StarlightRiver.Content.Abilities.Hint
 		public static string hintToDisplay;
 
 		public override string Name => "Starsight";
-		public override string Tooltip => "Focus starlight into an arcane lens, allowing you to reveal secrets, hidden knowledge and messages left by ancient scholars. NEWBLOCK " +
-			"Most things can be investigated -- treasures, lore, and your foes weaknesses all lie in plain sight to those who can see through the stars.";
+		public override string Tooltip => "Pull a strand of meaning from the memory of the world, allowing you to reveal secrets, hidden knowledge, and messages left by ancient scholars. NEWBLOCK " +
+			"Most things can be investigated - treasures, lore, and enemy weaknesses all lie in plain sight to those who can see with the eyes of a star.";
 
 		public override float ActivationCostDefault => 0.25f;
 		public override string Texture => "StarlightRiver/Assets/Abilities/Hint";
