@@ -12,7 +12,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 		public override void SetStaticDefaults()
 		{
 			Main.tileFrameImportant[Type] = true;
+<<<<<<< HEAD
 			RegisterItemDrop(ItemType<Sandscript>());
+=======
+			RegisterItemDrop(ItemType<Items.Misc.Sandscript>());
+>>>>>>> master
 			DustType = DustID.Gold;
 		}
 
