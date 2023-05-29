@@ -1,5 +1,4 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {
@@ -13,7 +12,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!BossRushSystem.isBossRush)
 				return;
 
-			BossRushSystem.score -= 100;
+			BossRushSystem.hitsTaken++;
 		}
 
 		public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
@@ -21,7 +20,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!BossRushSystem.isBossRush)
 				return;
 
-			BossRushSystem.score -= 100;
+			BossRushSystem.hitsTaken++;
 		}
 
 		public override bool CanUseItem(Item item)

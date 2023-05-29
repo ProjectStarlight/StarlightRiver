@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.GUI
 {
 	public class MasterDeathTicker : SmartUIState
 	{
-		private static int animationTimer = 480;
+		public static int animationTimer = 480;
 		private static string name;
 		private static int deaths;
 		private static string tease;

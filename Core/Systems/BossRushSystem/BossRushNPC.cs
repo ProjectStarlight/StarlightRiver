@@ -82,7 +82,15 @@
 			}
 
 			if (damage == 0)
+			{
 				npc.life++;
+				info.HideCombatText = true;
+				CombatText.NewText(npc.Hitbox, new Color(255, 255, 100), "*");
+			}
+			else
+			{
+				BossRushSystem.damageScore += damage;
+			}
 
 			info.Damage = damage;
 		}
