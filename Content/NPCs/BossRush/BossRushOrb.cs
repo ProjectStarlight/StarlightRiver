@@ -1,31 +1,38 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace StarlightRiver.Content.NPCs.BossRush
 {
 	internal class BossRushOrb : ModNPC, ILoadable
 	{
+		const float MAX_CRACK_ANIMATION = 180;
+
 		public static EaseBuilder VoidEase;
 
 		public static List<BossRushOrb> activeBossRushLocks = new();
 
 		public Vector2 originalPos;
-		public Vector2 bobbleDirection = Vector2.Zero;
 
+		public bool isPlayingCrack = false;
 		public bool isPlayingWarp = false;
+		public float crackAnimationTimer = 0;
 		public float warpAnimationTimer = 0;
 
 		public float starViewScale = 1;
+
+		public float CrackAnimationProgress => crackAnimationTimer / MAX_CRACK_ANIMATION;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/BossRush/BossRushOrb";
 
@@ -39,7 +46,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			VoidEase.AddPoint(new Vector2(0, 0.25f), EaseBuilder.EaseCubicIn);
 			VoidEase.AddPoint(new Vector2(45, 1.5f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
 			VoidEase.AddPoint(new Vector2(75, 0.25f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
-			VoidEase.AddPoint(new Vector2(135, 2f), EaseFunction.EaseCubicInOut);
+			VoidEase.AddPoint(new Vector2(105, 0.25f), EaseBuilder.EaseCubicIn);
+			VoidEase.AddPoint(new Vector2(165, 2f), EaseFunction.EaseCubicInOut);
 		}
 
 		public override void SetDefaults()
@@ -57,20 +65,55 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		public override void AI()
 		{
 			Lighting.AddLight(NPC.Center, new Vector3(1, 1, 0.4f));
-
-			NPC.position = originalPos + bobbleDirection;
-			bobbleDirection = Vector2.Lerp(Vector2.Zero, bobbleDirection, 0.95f);
-			
 			if (isPlayingWarp)
 			{
+				if (warpAnimationTimer == 0)
+				{
+					for (int i = 0; i < 100; i++)
+					{
+						Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(20, 20);
+
+						Dust.NewDustPerfect(pos, DustID.Obsidian, Main.rand.NextVector2Circular(5, 0) - new Vector2(0, Main.rand.NextFloat(5)));
+					}
+				}
+
+				if (warpAnimationTimer < 60)
+				{
+					Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(2).UseIntensity(60.1f - warpAnimationTimer).UseDirection(new Vector2(warpAnimationTimer / 90, warpAnimationTimer / 90));
+				}
+				else
+				{
+					Filters.Scene.Deactivate("Shockwave");
+				}
+
 				warpAnimationTimer++;
 
 				starViewScale = VoidEase.Ease(warpAnimationTimer);
+
+				if (warpAnimationTimer / 300 > 1)
+					NPC.Kill();
+			}
+			else if (isPlayingCrack)
+			{
+				if (CrackAnimationProgress >= 1)
+					isPlayingWarp = true;
+
+				crackAnimationTimer++;
+
+				NPC.velocity = Vector2.Lerp((originalPos - NPC.position) * 0.01f, NPC.velocity, 0.95f);
+				NPC.Center += Main.rand.NextVector2Circular(2, 2) * (1 + CrackAnimationProgress * 0.5f);
 			}
 			else
 			{
+				if (NPC.life < NPC.lifeMax / 2)
+				{
+					NPC.Center += Main.rand.NextVector2Circular(2, 2) * (1f - NPC.life / (NPC.lifeMax / 2f));
+				}
+
 				// starViewScale = 1 + 0.5f * (1f - (float)NPC.life / NPC.lifeMax);
 				starViewScale = 0.25f;
+
+				NPC.velocity = Vector2.Lerp((originalPos - NPC.position) * 0.1f, NPC.velocity, 0.9f);
 			}
 		}
 
@@ -83,13 +126,21 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			hit.HideCombatText = true;
-			bobbleDirection += (NPC.Center - player.Center).SafeNormalize(Vector2.Zero) * item.knockBack;
+
+			if (NPC.velocity.Length() < 3)
+			{
+				NPC.velocity += (NPC.Center - player.Center).SafeNormalize(Vector2.Zero) * item.knockBack * 0.5f;
+			}
 		}
 
 		public override void OnHitByProjectile(Projectile projectile, NPC.HitInfo hit, int damageDone)
 		{
 			hit.HideCombatText = true;
-			bobbleDirection += (NPC.Center - projectile.Center).SafeNormalize(Vector2.Zero) * projectile.knockBack;
+
+			if (NPC.velocity.Length() < 3)
+			{
+				NPC.velocity += (NPC.Center - projectile.Center).SafeNormalize(Vector2.Zero) * projectile.knockBack * 0.5f;
+			}
 		}
 
 		public override bool CheckDead()
@@ -102,9 +153,70 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.dontTakeDamage = true;
 			NPC.active = true;
 
-			isPlayingWarp = true;
+			isPlayingCrack = true;
 
 			return false;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			// DrawBubbleCracks();
+
+			if (isPlayingWarp)
+			{
+				return false;
+			}
+
+			if (isPlayingCrack)
+			{
+				DrawBubbleCracks(0.2f + CrackAnimationProgress * 0.8f);
+				return false;
+			}
+
+			if (NPC.life < NPC.lifeMax / 2)
+			{
+				DrawBubbleCracks((1f - NPC.life / (NPC.lifeMax / 2f)) * 0.2f);
+				return false;
+			}
+
+			return true;
+		}
+
+		private void DrawBubbleCracks(float crackProgress)
+		{
+			// float crackProgress = 0.5f;
+
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+
+			Color color = Color.LightGoldenrodYellow * crackProgress;
+			Effect crack = Filters.Scene["MagmaCracks"].GetShader().Shader;
+			crack.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackMap").Value);
+			crack.Parameters["sampleTexture3"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
+			crack.Parameters["uTime"].SetValue(crackProgress);
+			crack.Parameters["drawColor"].SetValue((color * 1.5f).ToVector4());
+			crack.Parameters["sourceFrame"].SetValue(new Vector4(0, 0, 128, 128));
+			crack.Parameters["texSize"].SetValue(ModContent.Request<Texture2D>(Texture).Value.Size());
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, crack, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, null, Color.Black, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+
+			float glowMult = (0.75f + 0.5f * (float)Math.Pow(Math.Sin(Main.GameUpdateCount / 20f), 2)) * 2f;
+
+			if (isPlayingCrack)
+				glowMult = 1;
+
+			Color glowColor = color * glowMult;
+
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.Keys + "StarAlpha").Value, NPC.Center - Main.screenPosition, null, glowColor, 0, ModContent.Request<Texture2D>(AssetDirectory.Keys + "StarAlpha").Size() * 0.5f, NPC.scale * 1.25f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(AssetDirectory.Keys + "StarAlpha").Value, NPC.Center - Main.screenPosition, null, glowColor, MathHelper.ToRadians(45), ModContent.Request<Texture2D>(AssetDirectory.Keys + "StarAlpha").Size() * 0.5f, NPC.scale * 0.9f, SpriteEffects.None, 0);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public static void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
@@ -153,7 +265,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		public static void DrawMap(SpriteBatch sb)
 		{
 			activeBossRushLocks.RemoveAll(x => !x.NPC.active || !Main.npc.Contains(x.NPC));
-
 
 			foreach (BossRushOrb bossRushLock in activeBossRushLocks)
 			{

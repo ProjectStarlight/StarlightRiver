@@ -414,6 +414,9 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			else if (transitionTimer - 90 <= 30)
 				opacity = (transitionTimer - 90) / 30f;
 
+			if (currentStage == 0 && transitionTimer > 210)
+				opacity = 1;
+
 			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * opacity);
 
 			Vector2 pos = visibleArea.TopLeft() - Main.screenPosition;
