@@ -11,11 +11,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	{
 		public override int DummyType => ModContent.ProjectileType<MainForgeDummy>();
 
-		public override string Texture => AssetDirectory.VitricTile + "MainForge";
+		public override string Texture => AssetDirectory.Invisible;
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 16, 14, ModContent.DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			QuickBlock.QuickSetFurniture(this, 19, 15, ModContent.DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
 			Main.tileLighted[Type] = true;
 		}
 	}
@@ -25,9 +25,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public float power = 0;
 
 		public int timer;
-		public int tickDelay;
 
-		public MainForgeDummy() : base(ModContent.TileType<MainForge>(), 16, 16) { }
+		public MainForgeDummy() : base(ModContent.TileType<MainForge>(), 19 * 16, 15 * 16) { }
 
 		public override void SafeSetDefaults()
 		{
@@ -54,7 +53,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (LightPuzzle.LightPuzzleHandler.Solved)
 				timer++;
 
-			Vector2 pos = Projectile.Center + new Vector2(7.5f * 16, 11.5f * 16);
+			Vector2 pos = Projectile.Center + new Vector2(0, 88);
 
 			Lighting.AddLight(pos, new Vector3(1, 0.8f, 0.5f) * HammerFunction(timer * 0.01f) * 0.02f);
 
@@ -66,7 +65,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			var color = new Color(255, Main.rand.Next(100, 255), 50);
 			color = Color.Lerp(new Color(100, 220, 255) * 0.25f, color, puzzleProg);
 
-			Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(-24, 24), -184), ModContent.DustType<Dusts.Cinder>(), new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, 0)), 0, color, Main.rand.NextFloat(2) * (0.5f + power * 0.5f));
+			Dust.NewDustPerfect(pos + new Vector2(Main.rand.NextFloat(-24, 24), -208), ModContent.DustType<Dusts.Cinder>(), new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-3f, 0)), 0, color, Main.rand.NextFloat(2) * (0.5f + power * 0.5f));
 
 			if (timer % 100 == 1)
 			{
@@ -105,9 +104,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			DrawLaser(spriteBatch);
 
-			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
+			Vector2 pos = Projectile.position - Main.screenPosition;
 
-			var bgTarget = new Rectangle(64, 48, 128, 176);
+			var bgTarget = new Rectangle(80, 48, 128, 200);
 			bgTarget.Offset(pos.ToPoint());
 
 			TempleTileUtils.DrawBackground(spriteBatch, bgTarget);
@@ -125,7 +124,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeOver").Value;
 			Texture2D texHammer = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeHammer").Value;
 
-			Vector2 pos = Projectile.Center - Main.screenPosition - Vector2.One * 8;
+			Vector2 pos = Projectile.position - Main.screenPosition;
 
 			var offset = new Vector2(0, HammerFunction(timer * 0.01f));
 
@@ -151,7 +150,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 			float puzzleProg = power;
 
-			Vector2 centerPos = Projectile.Center + new Vector2(7.5f * 16, 0);
+			Vector2 centerPos = Projectile.position + new Vector2(Projectile.width / 2f, 0);
 			Vector2 endpoint = centerPos + new Vector2(0, 200);
 			float rot = (centerPos - endpoint).ToRotation();
 			var color = Color.Lerp(Color.Orange, new Color(255, 110, 0), 0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.05f) * 0.5f);
