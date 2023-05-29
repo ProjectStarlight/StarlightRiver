@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public StaminaUp() : base("Glass Stamina Vessel", "Increased maximum stamina by 1") { }
+		public StaminaUp() : base("Glass Starlight Vessel", "Increased maximum starlight by 1") { }
 
 		public override void SafeSetDefaults()
 		{

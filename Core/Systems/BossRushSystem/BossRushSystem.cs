@@ -1,5 +1,3 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
@@ -8,7 +6,6 @@ using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.Tiles.Vitric;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -356,7 +353,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 		}
 
-		private void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
+		private void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
 			if (!isBossRush)
 				return;

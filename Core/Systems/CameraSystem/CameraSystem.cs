@@ -62,6 +62,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 			MoveModifier.Timer = 0;
 			MoveModifier.MovementDuration = duration;
 			MoveModifier.Target = target;
+			MoveModifier.Returning = false;
 
 			MoveModifier.EaseFunction = ease ?? Vector2.SmoothStep;
 		}
@@ -75,6 +76,7 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 		{
 			MoveModifier.Timer = 0;
 			MoveModifier.MovementDuration = duration;
+			MoveModifier.Returning = true;
 
 			MoveModifier.EaseFunction = ease ?? Vector2.SmoothStep;
 		}
@@ -100,6 +102,9 @@ namespace StarlightRiver.Core.Systems.CameraSystem
 
 			if (AsymetricalPanModifier.TotalDuration > 0 && AsymetricalPanModifier.target != Vector2.Zero)
 				Main.instance.CameraModifiers.Add(AsymetricalPanModifier);
+
+			if (MoveModifier.MovementDuration > 0 && MoveModifier.Target != Vector2.Zero)
+				Main.instance.CameraModifiers.Add(MoveModifier);
 
 			if (shake > 0)
 				shake--;

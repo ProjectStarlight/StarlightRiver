@@ -145,7 +145,7 @@ namespace StarlightRiver.Core
 			rotation = 0;
 
 			BossBarOverlay.tracked = null;
-			Collection.ShouldReset = true;
+			AbilityInventory.shouldReset = true;
 			inTutorial = false;
 
 			DummyTile.dummies.Clear();

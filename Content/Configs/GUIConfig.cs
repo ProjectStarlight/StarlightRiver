@@ -23,9 +23,9 @@ namespace StarlightRiver.Content.Configs
 	{
 		public override ConfigScope Mode => ConfigScope.ClientSide;
 
-		[Label("Overhead Stamina Display")]
+		[Label("Overhead Starlight Display")]
 		[DrawTicks]
-		[Tooltip("When/If the overhead stamina meter should display")]
+		[Tooltip("When/If the overhead starlight meter should display")]
 		[DefaultValue(typeof(OverlayState), "WhileNotFull")]
 		public OverlayState OverheadStaminaState = OverlayState.WhileNotFull;
 

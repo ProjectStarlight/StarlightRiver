@@ -1,8 +1,9 @@
 Mods: {
 	StarlightRiver: {
 		Keybinds: {
-			"Forbidden Winds.DisplayName": Mods.StarlightRiver.Keybinds.Forbidden Winds.DisplayName
-			Faeflame.DisplayName: Mods.StarlightRiver.Keybinds.Faeflame.DisplayName
+			"[PH]Hint.DisplayName": "[ P H] Hint"
+			"Forbidden Winds.DisplayName": Forbidden  Winds
+			Faeflame.DisplayName: Faeflame
 		}
 
 		Items: {
@@ -26,7 +27,7 @@ Mods: {
 					'''
 					Forbidden Winds Infusion
 					Dash farther and carry more speed
-					Increases stamina cost to 1.3
+					Increases starlight cost to 1.3
 					'''
 			}
 
@@ -36,7 +37,7 @@ Mods: {
 					'''
 					Forbidden Winds Infusion
 					Dash farther and carry even more speed
-					Increases stamina cost to 1.6
+					Increases starlight cost to 1.6
 					'''
 			}
 
@@ -46,7 +47,7 @@ Mods: {
 					'''
 					Forbidden Winds Infusion
 					Dash farther and carry the most speed
-					Increases stamina cost to 2
+					Increases starlight cost to 2
 					'''
 			}
 
@@ -75,7 +76,7 @@ Mods: {
 					'''
 					Forbidden Winds Infusion
 					Dash is replaced by a short, frequent, and potent burst of speed
-					Decreases stamina cost by 0.25
+					Decreases starlight cost by 0.25
 					'''
 			}
 
@@ -1242,9 +1243,9 @@ Mods: {
 			HungryStomach: {
 				Tooltip:
 					'''
-					Restore stamina by damaging foes
+					Restore starlight by damaging foes
 					Melee weapons are twice as effective
-					Cursed: Disables natural stamina regenration
+					Cursed: Disables natural starlight regenration
 					'''
 				DisplayName: Hungry Stomach
 			}
@@ -1303,6 +1304,16 @@ Mods: {
 			MagmaGun: {
 				DisplayName: Pyroclastic Flow
 				Tooltip: Blasts a torrential stream of lava that sticks to tiles and enemies
+			}
+
+			MartialBook: {
+				DisplayName: Martial Encyclopedia
+				Tooltip:
+					'''
+					Combined effects of Tiger, Snake, and Mantis Techniques
+					+10% melee critical damage
+					Quit, don't quit... Noodles, don't noodles.
+					'''
 			}
 
 			PandorasDagger: {
@@ -1430,6 +1441,16 @@ Mods: {
 					'''
 			}
 
+			SpearBook: {
+				DisplayName: Snake Technique
+				Tooltip:
+					'''
+					Allows execution of combos with spears
+					Last combo attack has increased critical strike chance and damage
+					Right click to deter enemies with a flurry of stabs
+					'''
+			}
+
 			SpikedMail: {
 				DisplayName: Spiked Mail
 				Tooltip:
@@ -1445,13 +1466,13 @@ Mods: {
 			}
 
 			StaminaRing: {
-				DisplayName: Band of Endurance
-				Tooltip: Slowly regenerates stamina
+				DisplayName: Band of Starlight
+				Tooltip: Slowly regenerates starlight
 			}
 
 			StaminaUp: {
-				DisplayName: Glass Stamina Vessel
-				Tooltip: Increased maximum stamina by 1
+				DisplayName: Glass Starlight Vessel
+				Tooltip: Increased maximum starlight by 1
 			}
 
 			StarlightShuriken: {
@@ -1520,7 +1541,12 @@ Mods: {
 
 			CrescentQuarterstaff: {
 				DisplayName: Crescent Quarterstaff
-				Tooltip: Update this egshels
+				Tooltip:
+					'''
+					Striking enemies charges the staff with lunar energy
+					Condenses collected energy into a lunar orb when the final slam hits the ground
+					Update this egshels (sfx needed)
+					'''
 			}
 
 			Datsuzei: {
@@ -2172,7 +2198,7 @@ Mods: {
 
 			VitricLegs: {
 				DisplayName: Vitric Greaves
-				Tooltip: Slightly improved stamina regeneration
+				Tooltip: Slightly improved starlight regeneration
 			}
 
 			VitricMagicBook: {
@@ -2204,6 +2230,11 @@ Mods: {
 					'''
 			}
 
+			CoolmiteItem: {
+				DisplayName: Coolmite
+				Tooltip: Fragile! Please handle with care.
+			}
+
 			MagmitePassiveItem: {
 				DisplayName: Magmite
 				Tooltip: Release him!
@@ -2220,7 +2251,7 @@ Mods: {
 			}
 
 			StaminaShardTileItem: {
-				DisplayName: Stamina Shard
+				DisplayName: Starlight Shard
 				Tooltip: Debug Item
 			}
 
@@ -2298,15 +2329,15 @@ Mods: {
 			}
 
 			StaminaGemItem: {
-				DisplayName: Stamina Gem
-				Tooltip: Restores stamina when hit with an ability
+				DisplayName: Starlight Gem
+				Tooltip: Restores starlight when hit with an ability
 			}
 
 			StaminaOrbItem: {
-				DisplayName: Stamina Orb
+				DisplayName: Starlight Orb
 				Tooltip:
 					'''
-					Pass through this to gain stamina!
+					Pass through this to gain starlight!
 					5 second cooldown
 					'''
 			}
@@ -2756,16 +2787,6 @@ Mods: {
 				Tooltip: ""
 			}
 
-			VitricBossBarrierItem: {
-				DisplayName: VitricBossBarrierItem
-				Tooltip: debug item
-			}
-
-			GlassweaverBossBarrierItem: {
-				DisplayName: GlassweaverBossBarrierItem
-				Tooltip: debug item
-			}
-
 			CombatShrineBarrierItem: {
 				DisplayName: CombatShrineBarrierItem
 				Tooltip: debug item
@@ -2859,6 +2880,16 @@ Mods: {
 			VitricDoor: {
 				DisplayName: Vitric Door
 				Tooltip: ""
+			}
+
+			VitricBossBarrierItem: {
+				DisplayName: VitricBossBarrierItem
+				Tooltip: debug item
+			}
+
+			GlassweaverBossBarrierItem: {
+				DisplayName: GlassweaverBossBarrierItem
+				Tooltip: debug item
 			}
 
 			TempleChairItem: {
@@ -3110,29 +3141,6 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
-
-			SpearBook: {
-				DisplayName: Snake Technique
-				Tooltip:
-					'''
-					Allows execution of combos with spears
-					Right click to deter enemies with a flurry of stabs
-					'''
-			}
-
-			MartialBook: {
-				DisplayName: Martial Encyclopedia
-				Tooltip:
-					'''
-					Effects of Tiger, Snake, and Mantis Techniques
-					+10% melee critical damage
-					'''
-			}
-
-			CoolmiteItem: {
-				DisplayName: Magmite
-				Tooltip: Release him!
-			}
 		}
 
 		Projectiles: {
@@ -3262,6 +3270,7 @@ Mods: {
 			TaintedGreataxeProjectile.DisplayName: Ethereal Greataxe
 			ThrusterEmber.DisplayName: Thruster
 			TinCoilWhip.DisplayName: Tin Coil
+			CrescentOrb.DisplayName: Lunar Orb
 			CrescentQuarterstaffProj.DisplayName: Crescent Quarterstaff
 			DianeCrescant.DisplayName: Crescant
 			MoonfuryProj.DisplayName: Moonfury Spike
@@ -3270,7 +3279,6 @@ Mods: {
 			MoonstoneArrowRing.DisplayName: Orbital Strike
 			MoonstoneHamaxeHoldout.DisplayName: Moonstone Hamaxe
 			MoonstoneHamaxeRing.DisplayName: Explosion
-			QuarterOrb.DisplayName: Lunar Orb
 			ShakerBall.DisplayName: Shaker
 			PaleKnight.DisplayName: Pale Knight
 			PalestoneSlash.DisplayName: Pale Slash
@@ -3392,6 +3400,7 @@ Mods: {
 			VitricOreFloatDummy.DisplayName: ""
 			VitricSmallDummy.DisplayName: ""
 			VitricBannerDummy.DisplayName: ""
+			HintText.DisplayName: Hint Text
 			BurningGround.DisplayName: Burning Ground
 			GlassJavelin.DisplayName: Glass Javelin
 			GlassweaverDoor.DisplayName: Glassweaver Door
@@ -3427,6 +3436,7 @@ Mods: {
 			MonkSpadeProjectile.DisplayName: Monk Spade Projectile
 			SandSlash.DisplayName: Sand Slash
 			SorcerwrenchProjectile.DisplayName: Sorcerwrench Projectile
+			SpearBookProjectile.DisplayName: Spear Book Projectile
 			StarGlaive.DisplayName: Star Glaive
 			StarShuriken.DisplayName: Star Shuriken
 			SwordBookProjectile.DisplayName: Sword Book Projectile
@@ -3454,8 +3464,6 @@ Mods: {
 			ConstructSpawner.DisplayName: Construct Spawner
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
-			CrescentOrb.DisplayName: Lunar Orb
-			SpearBookProjectile.DisplayName: Spear Book Projectile
 		}
 
 		Tiles: {
@@ -3564,15 +3572,15 @@ Mods: {
 			VitricDecor2x1Inverted.MapEntry: ""
 			VitricDecor2x2.MapEntry: ""
 			VitricDecor2x2Inverted.MapEntry: ""
-			VitricGiantCrystal.MapEntry: ""
-			VitricLargeCrystal.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
 			VitricLootBox.MapEntry: ""
-			VitricMediumCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
 			VitricOre.MapEntry: Vitric Ore
 			VitricOreFloat.MapEntry: Vitric Ore
 			VitricRoundCactus.MapEntry: ""
 			VitricSmallCactus.MapEntry: ""
-			VitricSmallCrystal.MapEntry: ""
+			// VitricSmallCrystal.MapEntry: ""
 			VitricSpike.MapEntry: ""
 			VitricBathtub.MapEntry: ""
 			VitricBed.MapEntry: ""
@@ -3625,6 +3633,10 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			// VitricGiantCrystal.MapEntry: ""
+			// VitricLargeCrystal.MapEntry: ""
+			// VitricMediumCrystal.MapEntry: ""
+			// VitricSmallCrystal.MapEntry: ""
 		}
 
 		Biomes: {
@@ -3711,7 +3723,24 @@ Mods: {
 			Crusher.DisplayName: Masher
 			Snoobel.DisplayName: Snoobel
 			SwordEnemy.DisplayName: Sky Splicer
+
+			Crow: {
+				DisplayName: ???
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
 			BoomBug.DisplayName: Firebug
+			Coolmite.DisplayName: Coolmite
 			CrystalPopper.DisplayName: Sand Bat
 			CrystalSlime.DisplayName: Crystal Slime
 			DesertWisp.DisplayName: Desert Wisp
@@ -3778,7 +3807,6 @@ Mods: {
 
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
-			Coolmite.DisplayName: Coolmite
 		}
 
 		Buffs: {
@@ -4069,10 +4097,10 @@ Mods: {
 			LayeredPrefix.DisplayName: Layered
 			PlatedPrefix.DisplayName: Plated
 			ReinforcedPrefix.DisplayName: Reinforced
-			StaminaPrefix1.DisplayName: Springy
-			StaminaPrefix2.DisplayName: Energetic
-			StaminaPrefix3.DisplayName: Empowered
-			StaminaPrefix4.DisplayName: Overcharged
+			StaminaPrefix1.DisplayName: Sparkling
+			StaminaPrefix2.DisplayName: Shining
+			StaminaPrefix3.DisplayName: Glowing
+			StaminaPrefix4.DisplayName: Radiant
 			Feral.DisplayName: Feral
 			Jumpy.DisplayName: Jumpy
 			Tanklike.DisplayName: Tanklike
@@ -4204,8 +4232,8 @@ Mods: {
 				DisplayName: G U I Config
 
 				OverheadStaminaState: {
-					Label: Overhead Stamina Display
-					Tooltip: When/If the overhead stamina meter should display
+					Label: Overhead Starlight Display
+					Tooltip: When/If the overhead starlight meter should display
 				}
 
 				KeywordStyle: {

@@ -1,3 +1,5 @@
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Events;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -42,7 +44,9 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightWorld.ShrineGen(null, null);
+			StarlightEventSequenceSystem.sequence = 0;
+			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit = 0;
 			return true;
 		}
 	}

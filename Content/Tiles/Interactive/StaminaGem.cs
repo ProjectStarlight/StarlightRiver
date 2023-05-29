@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Tiles.Interactive
 
 	internal class StaminaGemItem : QuickTileItem
 	{
-		public StaminaGemItem() : base("Stamina Gem", "Restores stamina when hit with an ability", "StaminaGem", 8, AssetDirectory.InteractiveTile) { }
+		public StaminaGemItem() : base("Starlight Gem", "Restores starlight when hit with an ability", "StaminaGem", 8, AssetDirectory.InteractiveTile) { }
 	}
 
 	internal class StaminaGemDummy : Dummy
