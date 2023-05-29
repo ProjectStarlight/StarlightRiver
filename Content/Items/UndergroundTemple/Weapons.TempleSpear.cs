@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 5, 0f, Projectile.owner);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
 
-					Helper.PlayPitched("Effects/FancySwoosh", 1f, Main.rand.NextFloat(-0.05f, 0.05f), Owner.Center);
+					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
 				}
 			}
 
