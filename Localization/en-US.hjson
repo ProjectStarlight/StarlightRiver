@@ -1,4 +1,3 @@
-
 Mods: {
 	StarlightRiver: {
 		Keybinds: {
@@ -3129,6 +3128,11 @@ Mods: {
 					+10% melee critical damage
 					'''
 			}
+
+			CoolmiteItem: {
+				DisplayName: Magmite
+				Tooltip: Release him!
+			}
 		}
 
 		Projectiles: {
@@ -3699,6 +3703,7 @@ Mods: {
 			Voidsmith.DisplayName: Voidsmith
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
+			Coolmite.DisplayName: Coolmite
 		}
 
 		Buffs: {

@@ -10,6 +10,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class MagmitePassive : ModNPC
 	{
+		private int frameCounter = 0;
+
+		protected float? targetX = 0;
+
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
 		public ref float GlobalTimer => ref NPC.ai[2];
@@ -26,6 +30,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			DisplayName.SetDefault("Small Magmite");
 			Main.npcCatchable[Type] = true;
+			NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCType<Coolmite>();
 		}
 
 		public override void SetDefaults()
@@ -66,10 +71,20 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.velocity = reader.ReadPackedVector2();
 		}
 
+		public override bool PreAI()
+		{
+			if (NPC.target >= 0)
+				targetX = Main.player[NPC.target].Center.X;
+			else
+				targetX = null;
+
+			return base.PreAI();
+		}
+
 		public override void AI()
 		{
 			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
-			int y = (int)(NPC.Center.Y / 16);
+			int y = (int)((NPC.Center.Y + 8) / 16);
 			Tile tile = Framing.GetTileSafely(x, y);
 			Tile tileUp = Framing.GetTileSafely(x, y - 1);
 			Tile tileClose = Framing.GetTileSafely(x - NPC.direction, y - 1);
@@ -78,9 +93,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			ActionTimer++;
 			GlobalTimer++;
-
-			if (Main.rand.NextBool(10))
-				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 
 			if (ActionState == -1)
 			{
@@ -101,7 +113,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (ActionState == 0)
 			{
 				if (NPC.velocity.Y == 0 && NPC.velocity.X == 0 && tile.Slope == SlopeType.Solid && !tile.IsHalfBlock &&
-					tile.BlockType == BlockType.Solid &&
+					tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] &&
 					(!tileUp.HasTile || !Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType]) &&
 					(!tileClose.HasTile || !Main.tileSolid[tileClose.TileType] && !Main.tileSolidTop[tileClose.TileType])) //climb up small cliffs
 				{
@@ -110,7 +122,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					ActionTimer = 0;
 					return;
 				}
-				else if (NPC.velocity.X == 0 && tile.HasTile && (!tileUp.HasTile || !Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType]))
+				else if (NPC.velocity.X == 0 && tile.HasTile && Main.tileSolid[tile.TileType] && (!tileUp.HasTile || !Main.tileSolid[tileUp.TileType] && !Main.tileSolidTop[tileUp.TileType]))
 				{
 					NPC.velocity.Y -= 2;
 				}
@@ -130,8 +142,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				if (ActionTimer % 60 == 0)
 					NPC.TargetClosest();
 
-				if (NPC.target >= 0)
-					NPC.velocity.X += 0.05f * (Main.player[NPC.target].Center.X > NPC.Center.X ? 1 : -1);
+				if (targetX != null)
+					NPC.velocity.X += targetX == NPC.Center.X ? 0 : 0.05f * (targetX > NPC.Center.X ? 1 : -1);
 
 				NPC.velocity.X = Math.Min(NPC.velocity.X, 1.5f);
 				NPC.velocity.X = Math.Max(NPC.velocity.X, -1.5f);
@@ -139,40 +151,26 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				NPC.direction = NPC.velocity.X > 0 ? 1 : -1;
 				NPC.spriteDirection = NPC.velocity.X > 0 ? 1 : -1;
 
-				if (tileFar.BlockType == BlockType.Solid && NPC.velocity.Y == 0) //jump up big cliffs
+				if (tileFar.HasTile && tileFar.BlockType == BlockType.Solid && Main.tileSolid[tileFar.TileType] && NPC.velocity.Y == 0) //jump up big cliffs
 					NPC.velocity.Y -= 8;
 
 				if ((!tileUnder.HasTile || !Main.tileSolid[tileUnder.TileType] && !Main.tileSolidTop[tileUnder.TileType]) && NPC.velocity.Y == 0) //hop off edges
 					NPC.velocity.Y -= 4;
-
-				if (NPC.velocity.Y != 0)
-				{
-					NPC.frame.X = 0;
-					NPC.frame.Y = 0;
-				}
-				else
-				{
-					NPC.frame.X = 42;
-					NPC.frame.Y = (int)(ActionTimer / 5 % 5) * 40;
-				}
 			}
 
-			if (ActionState == 1)
+			if (ActionState == 1 && ActionTimer == 60)
 			{
-				if (ActionTimer == 60)
-				{
-					ActionState = 0;
-					ActionTimer = 0;
-					NPC.position.Y -= 16;
+				ActionState = 0;
+				ActionTimer = 0;
+				NPC.position.Y -= 16;
 					NPC.position.X += 26 * NPC.direction;
-				}
-
-				NPC.frame.X = 84;
-				NPC.frame.Y = (int)(ActionTimer / 60f * 9) * 40;
 			}
+		}
 
-			NPC.frame.Width = 42;
-			NPC.frame.Height = 40;
+		public override void PostAI()
+		{
+			if (Main.rand.NextBool(10))
+				Gore.NewGoreDirect(NPC.GetSource_FromAI(), NPC.Center, (Vector2.UnitY * -3).RotatedByRandom(0.2f), Mod.Find<ModGore>("MagmiteGore").Type, Main.rand.NextFloat(0.5f, 0.8f));
 		}
 
 		public override void HitEffect(NPC.HitInfo hit)
@@ -184,6 +182,36 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.DD2_GoblinHurt, NPC.Center);
 			}
+		}
+
+		public override void FindFrame(int frameHeight) {
+			if (NPC.IsABestiaryIconDummy)
+			{
+				frameCounter++;
+				NPC.frame.X = 42;
+				NPC.frame.Y = (int)(frameCounter / 5 % 5) * 40;
+			}
+			else if (ActionState == 0)
+			{
+				if (NPC.velocity.Y != 0)
+				{
+					NPC.frame.X = 0;
+					NPC.frame.Y = 0;
+				}
+				else
+				{
+					NPC.frame.X = 42;
+					NPC.frame.Y = (int)(ActionTimer / 5 % 5) * 40;
+				}
+			}
+			else if (ActionState == 1)
+			{
+				NPC.frame.X = 84;
+				NPC.frame.Y = (int)(ActionTimer / 60f * 9) * 40;
+			}
+
+			NPC.frame.Width = 42;
+			NPC.frame.Height = 40;
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -203,7 +231,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			if (NPC.spriteDirection == -1)
 				originX = 30;
 
-			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White, 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
+			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
 		}
 	}
