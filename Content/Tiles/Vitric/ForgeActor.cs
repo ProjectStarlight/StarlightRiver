@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
+using System;
 using System.Collections.Generic;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -33,8 +34,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			{
 				Vector2 pos = Projectile.position - new Vector2(567, 400);
 
-				Dust.NewDustPerfect(pos + new Vector2(175 + Main.rand.Next(-15, 15), 368), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
-				Dust.NewDustPerfect(pos + new Vector2(965 + Main.rand.Next(-15, 15), 368), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
+				Dust.NewDustPerfect(pos + new Vector2(160 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
+				Dust.NewDustPerfect(pos + new Vector2(965 + Main.rand.Next(-18, 18), 380), DustType<Dusts.Cinder>(), Vector2.UnitY * Main.rand.NextFloat(-2, 0), 0, new Color(255, Main.rand.Next(150, 200), 40), Main.rand.NextFloat());
 			}
 		}
 
@@ -48,21 +49,24 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Player player = Main.player[Main.myPlayer];
 
 			Vector2 pos = Projectile.position - new Vector2(567, 400) - Main.screenPosition;
-			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
-			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
 
-			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - Projectile.position.X, 0) * 0.15f;
+			Texture2D backdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "Backdrop").Value;
 			Texture2D farBackdrop = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdrop").Value;
+
+			Texture2D backdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropGlow").Value;
 			Texture2D farBackdropGlow = Request<Texture2D>(AssetDirectory.Glassweaver + "FarBackdropGlow").Value;
 
 			Texture2D backdropBlack = Request<Texture2D>(AssetDirectory.Glassweaver + "BackdropBlack").Value;
 
+			Vector2 parallaxOffset = new Vector2(Main.screenPosition.X + Main.screenWidth / 2f - Projectile.position.X, 0) * 0.15f;
+
 			var frame = new Rectangle(0, 0, backdrop.Width, backdrop.Height);
 
-			LightingBufferRenderer.DrawWithLighting(pos, backdropBlack, frame);
-
-			LightingBufferRenderer.DrawWithLighting(pos + parallaxOffset, farBackdrop, frame);
+			Main.spriteBatch.Draw(farBackdrop, pos + parallaxOffset, frame, new Color(170, 140 + (int)(Math.Sin(Main.GameUpdateCount * 0.04f) * 15), 90));
 			Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin();
 
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
@@ -71,10 +75,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f));
 
 			float pulse1 = (float)System.Math.Sin(Main.GameUpdateCount * 0.14f + 4) + (float)System.Math.Cos(Main.GameUpdateCount * 0.017f + 2);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(175, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f));
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f));
 
 			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(175, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f);
 
 			float pulseMiddle = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f) + (float)System.Math.Cos(Main.GameUpdateCount * 0.024f);
 
