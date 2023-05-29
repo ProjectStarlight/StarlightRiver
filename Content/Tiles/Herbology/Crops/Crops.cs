@@ -130,7 +130,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			{
 				Main.LocalPlayer.noThrow = 2;
 				Main.LocalPlayer.cursorItemIconEnabled = true;
-				Main.LocalPlayer.cursorItemIconID = ItemDrop;
+				//Main.LocalPlayer.cursorItemIconID = ItemDrop;
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace StarlightRiver.Content.Tiles.Herbology.Crops
 			if (Main.tile[i, j + off].TileFrameX >= LastFrame)
 			{
 				Main.tile[i, j + off].TileFrameX -= (short)FrameHeight;
-				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemDrop, Main.rand.Next(1, 3));
+				//Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemDrop, Main.rand.Next(1, 3));
 				return true;
 			}
 

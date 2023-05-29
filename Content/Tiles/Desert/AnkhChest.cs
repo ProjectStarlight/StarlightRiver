@@ -49,7 +49,8 @@ namespace StarlightRiver.Content.Tiles.Desert
 			AddMapEntry(Color.Cyan, name, MapChestName);
 			DustType = DustID.Sand;
 			AdjTiles = new int[] { TileID.Containers };
-			ItemDrop = ModContent.ItemType<AnkhChestItem>();
+			RegisterItemDrop(ModContent.ItemType<AnkhChestItem>());
+			
 			//ContainerName.SetDefault("Ankh Chest");
 		}
 
@@ -127,7 +128,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 32, 32, ItemDrop);
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 32, 32, ModContent.ItemType<AnkhChestItem>());
 			Chest.DestroyChest(i, j);
 		}
 
@@ -232,7 +233,7 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			if (chest >= 0 && tile.TileFrameX < 72)
 			{
-				player.cursorItemIconID = ItemDrop;
+				//player.cursorItemIconID = ItemDrop;
 				player.cursorItemIconText = "";
 				player.noThrow = 2;
 				player.cursorItemIconEnabled = true;

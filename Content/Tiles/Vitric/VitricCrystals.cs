@@ -13,13 +13,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public WalkableCrystalItem(string name, string placetype, string texturepath) : base(placetype + "Item", name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
 		//public override bool AltFunctionUse(Player Player) => true;
-		public override void AutoLightSelect(ref bool dryTorch, ref bool wetTorch, ref bool glowstick)
-		{
-			glowstick = true;
-			dryTorch = true;
-			wetTorch = true;
-		}
-
 		public override void HoldItem(Player Player)
 		{
 			held = true;
