@@ -8,6 +8,10 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 {
 	public class Whip : Ability
 	{
+		public override string Name => "Fae Whip";
+		public override string Tooltip => "Channel starlight as the alien growths of the overgrowth do to manifest a whip-like appendage from your own arm. NEWBLOCK " +
+			"Objects with a thin, pulsing yellow outline can be gripped with this appendage, as well as enemies and walls. Anything you can overpower can be manipulated, and anything you cant can be used as an anchor to fling yourself.";
+
 		public override string Texture => "StarlightRiver/Assets/Abilities/Faeflame";
 		public override float ActivationCostDefault => 0.15f;
 		public override Color Color => new(255, 247, 126);

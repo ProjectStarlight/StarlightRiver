@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Comet Rush I");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases stamina cost to 1.3");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases starlight cost to 1.3");
 		}
 
 		public override void SetDefaults()
@@ -80,7 +80,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Comet Rush II");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed\nIncreases stamina cost to 1.6");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed\nIncreases starlight cost to 1.6");
 		}
 
 		public override void OnActivate()
@@ -100,7 +100,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Comet Rush III");
-			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed\nIncreases stamina cost to 2");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed\nIncreases starlight cost to 2");
 		}
 
 		public override void OnActivate()
@@ -128,11 +128,23 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 			StarlightItem.OnPickupEvent += TrackPickup;
 		}
 
+		public override void SafeSetStaticDefaults()
+		{
+			DisplayName.SetDefault("Comet Rush");
+			Tooltip.SetDefault("Dash farther and carry more speed");
+		}
+
+		public override void SetDefaults()
+		{
+			objectives.Add(new InfusionObjective("Strike Foes", 10, "AstralStrikeObjective"));
+			objectives.Add(new InfusionObjective("Loot Fallen Stars", 5, "AstralStarObjective"));
+		}
+
 		private bool TrackPickup(Item Item, Player Player)
 		{
 			if (Item.type == ItemID.FallenStar)
 			{
-				InfusionObjective objective = FindObjective(Player, "Loot Fallen Stars");
+				InfusionObjective objective = FindObjective(Player, "AstralStarObjective");
 
 				if (objective != null)
 					objective.progress += Item.stack;
@@ -144,7 +156,7 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 		private void TrackKillsRanged(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
 		{
 			Player Player = Main.player[Projectile.owner];
-			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
+			InfusionObjective killObjective = FindObjective(Player, "AstralStrikeObjective");
 
 			if (killObjective != null)
 				killObjective.progress++;
@@ -152,22 +164,10 @@ namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 
 		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
 		{
-			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
+			InfusionObjective killObjective = FindObjective(Player, "AstralStrikeObjective");
 
 			if (killObjective != null)
 				killObjective.progress++;
-		}
-
-		public override void SafeSetStaticDefaults()
-		{
-			DisplayName.SetDefault("Comet Rush");
-			Tooltip.SetDefault("Dash farther and carry more speed");
-		}
-
-		public override void SetDefaults()
-		{
-			objectives.Add(new InfusionObjective("Strike Foes", 10));
-			objectives.Add(new InfusionObjective("Loot Fallen Stars", 5));
 		}
 	}
 }

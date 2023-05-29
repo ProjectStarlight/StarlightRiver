@@ -184,7 +184,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Greaves");
-			Tooltip.SetDefault("Slightly improved stamina regeneration");
+			Tooltip.SetDefault("Slightly improved starlight regeneration");
 		}
 
 		public override void SetDefaults()

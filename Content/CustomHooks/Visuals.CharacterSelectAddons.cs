@@ -94,7 +94,7 @@ namespace StarlightRiver.Content.CustomHooks
 			for (int k = 0; k < Player.armor.Length; k++)
 			{
 				if (Player.armor[k].ModItem != null && Player.armor[k].ModItem.Mod.Name == StarlightRiver.Instance.Name)
-					Player.GrantPrefixBenefits(Player.armor[k]); 
+					Player.GrantPrefixBenefits(Player.armor[k]);
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;
@@ -139,7 +139,7 @@ namespace StarlightRiver.Content.CustomHooks
 				string texture = Player.GetHandler().Unlocked(ability.GetType())
 					? ability.PreviewTexture
 					: ability.PreviewTextureOff;
-				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(540 - k * 32, 64), Color.White);
+				spriteBatch.Draw(ModContent.Request<Texture2D>(texture).Value, origin + new Vector2(564 - k * 32, 64), Color.White);
 			}
 
 			if (Player.statLifeMax > 400) //why vanilla dosent do this I dont know

@@ -1,3 +1,5 @@
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Events;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
@@ -42,6 +44,14 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			StarlightEventSequenceSystem.sequence = 0;
+			player.GetHandler().unlockedAbilities.Clear();
+			player.GetHandler().InfusionLimit = 0;
+
+			Main.time = 53999;
+			Main.dayTime = true;
+			StarlightEventSequenceSystem.willOccur = true;
+
 			return true;
 		}
 	}

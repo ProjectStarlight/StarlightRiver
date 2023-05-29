@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities.Faewhip;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
+using StarlightRiver.Content.Abilities.Hint;
 using System;
 using System.Collections.Generic;
 
@@ -39,6 +40,7 @@ namespace StarlightRiver.Content.Abilities
 
 		internal void LoadDefaults()
 		{
+			Bind<HintAbility>("[PH]Hint", "Y");
 			Bind<Dash>("Forbidden Winds", "LeftShift");
 			Bind<Whip>("Faeflame", "F");
 		}

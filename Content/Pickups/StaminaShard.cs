@@ -39,9 +39,9 @@ namespace StarlightRiver.Content.Pickups
 			ah.Shards.Add(Parent.TileFrameX);
 
 			if (ah.ShardCount % 3 == 0)
-				UILoader.GetUIState<TextCard>().Display("Stamina Vessel", "Your maximum stamina has increased by 1", null, 240, 0.8f);
+				UILoader.GetUIState<TextCard>().Display("Starlight Vessel", "Your maximum starlight has increased by 1", null, 240, 0.8f);
 			else
-				UILoader.GetUIState<TextCard>().Display("Stamina Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum stamina", null, 240, 0.6f);
+				UILoader.GetUIState<TextCard>().Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", null, 240, 0.6f);
 
 			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
 
@@ -80,6 +80,6 @@ namespace StarlightRiver.Content.Pickups
 	{
 		public override string Texture => "StarlightRiver/Assets/Abilities/Stamina1";
 
-		public StaminaShardTileItem() : base("Stamina Shard", "Debug Item", "StaminaShardTile", 1) { }
+		public StaminaShardTileItem() : base("Starlight Shard", "Debug Item", "StaminaShardTile", 1) { }
 	}
 }

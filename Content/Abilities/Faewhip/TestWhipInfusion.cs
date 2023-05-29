@@ -65,7 +65,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 		public override void SetDefaults()
 		{
-			objectives.Add(new InfusionObjective("Implement Objectives", 1));
+			objectives.Add(new InfusionObjective("Implement Objectives", 1, "WhipPlaceholder"));
 		}
 	}
 }
