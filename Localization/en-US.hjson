@@ -3677,14 +3677,45 @@ Mods: {
 		}
 
 		Biomes: {
-			HotspringBiome.DisplayName: Hotsprings
-			MoonstoneBiome.DisplayName: Moonstone
-			OvergrowBiome.DisplayName: "[PH]Overgrowth"
-			PermafrostTempleBiome.DisplayName: Auroracle Temple
-			VitricDesertBiome.DisplayName: Vitric Desert
-			VitricTempleBiome.DisplayName: Vitric Forge
-			CombatShrineBiome.DisplayName: Combat Shrine Biome
-			EvasionShrineBiome.DisplayName: Evasion Shrine Biome
+			HotspringBiome: {
+				DisplayName: Hotsprings
+				TownNPCDialogueName: the Hotspring Biome
+			}
+
+			MoonstoneBiome: {
+				DisplayName: Moonstone
+				TownNPCDialogueName: the Moonstone Biome
+			}
+
+			OvergrowBiome: {
+				DisplayName: "[PH]Overgrowth"
+				TownNPCDialogueName: the Overgrow Biome
+			}
+
+			PermafrostTempleBiome: {
+				DisplayName: Auroracle Temple
+				TownNPCDialogueName: the Permafrost Temple Biome
+			}
+
+			VitricDesertBiome: {
+				DisplayName: Vitric Desert
+				TownNPCDialogueName: the Vitric Desert Biome
+			}
+
+			VitricTempleBiome: {
+				DisplayName: Vitric Forge
+				TownNPCDialogueName: the Vitric Temple Biome
+			}
+
+			CombatShrineBiome: {
+				DisplayName: Combat Shrine Biome
+				TownNPCDialogueName: the Combat Shrine Biome
+			}
+
+			EvasionShrineBiome: {
+				DisplayName: Evasion Shrine Biome
+				TownNPCDialogueName: the Evasion Shrine Biome
+			}
 		}
 
 		NPCs: {
