@@ -70,7 +70,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <summary>
 		/// Ends the boss rush and submits your final score
 		/// </summary>
-		public void End()
+		public static void End()
 		{
 			if (Main.GameMode == 0)
 				savedNormalScore = score;

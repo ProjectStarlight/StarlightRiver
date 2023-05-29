@@ -21,7 +21,7 @@ namespace StarlightRiver.Content.Backgrounds
 			starsMap = new(DrawMap, CheckIsActive, 1f);
 
 			On_Main.DrawInterface += DrawOverlay;
-			stars = new("StarlightRiver/Assets/Misc/DotTell", updateStars);
+			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
 		}
 
 		public override void Unload()
@@ -46,13 +46,14 @@ namespace StarlightRiver.Content.Backgrounds
 				{
 					isActive |= del();
 				}
+
 				return isActive;
 			}
+
 			return false;
 		}
 
 		public delegate void DrawOverlayDelegate(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget);
-
 
 		/// <summary>
 		/// Event handler for drawing the background -over- the rest of the game
@@ -142,7 +143,7 @@ namespace StarlightRiver.Content.Backgrounds
 		/// The update method for the stardust in the background
 		/// </summary>
 		/// <param name="particle"></param>
-		private static void updateStars(Particle particle)
+		private static void UpdateStars(Particle particle)
 		{
 			particle.Timer--;
 			particle.Position += particle.Velocity;

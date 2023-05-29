@@ -219,7 +219,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.Begin(default, BlendState.AlphaBlend, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 		}
 
-		public static void DrawOverlay(On_Main.orig_DrawInterface orig, Main self, GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
+		public static void DrawOverlay(GameTime gameTime, ScreenTarget starsMap, ScreenTarget starsTarget)
 		{
 			foreach (BossRushOrb bossRushLock in activeBossRushLocks)
 			{
