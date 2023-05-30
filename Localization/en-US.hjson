@@ -3720,7 +3720,22 @@ Mods: {
 
 		NPCs: {
 			Glassweaver.DisplayName: Glassweaver
-			GlassweaverWaiting.DisplayName: Glassweaver
+
+			GlassweaverWaiting: {
+				DisplayName: Glassweaver
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
 			ArenaActor.DisplayName: ""
 			GoldPlatform.DisplayName: ""
 			IcePlatform.DisplayName: ""
@@ -3779,8 +3794,37 @@ Mods: {
 			Stalker.DisplayName: Stalker
 			Dreambeast.DisplayName: Dreambeast
 			WaterCube.DisplayName: Water Cube
-			EnchantNPC.DisplayName: Enchant N P C
-			Voidsmith.DisplayName: Voidsmith
+
+			EnchantNPC: {
+				DisplayName: Enchant N P C
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
+			Voidsmith: {
+				DisplayName: Voidsmith
+
+				TownNPCMood: {
+					Content: I am content.
+					NoHome: I hate not having a home.
+					FarFromHome: I am too far from home.
+					LoveSpace: I love having so much space.
+					DislikeCrowded: I dislike how crowded I am.
+					HateCrowded: I hate how crowded I am.
+					LikeNPC_Princess: I like {NPCName}.
+					Princess_LovesNPC: I like {NPCName}.
+				}
+			}
+
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
 		}
@@ -4080,6 +4124,159 @@ Mods: {
 			Feral.DisplayName: Feral
 			Jumpy.DisplayName: Jumpy
 			Tanklike.DisplayName: Tanklike
+		}
+
+		Configs: {
+			AudioConfig: {
+				DisplayName: Audio Config
+
+				InvSounds: {
+					Label: Custom Inventory Sounds
+					Tooltip: If custom inventory sounds should play for all Items, select few, or none.
+				}
+			}
+
+			CustomSounds: {
+				Tooltip: ""
+				All.Label: All
+				Specific.Label: Specific
+				None.Label: None
+			}
+
+			GraphicsConfig: {
+				DisplayName: Graphics Config
+
+				ScreenshakeMult: {
+					Label: Screenshake
+					Tooltip: Modifies the intensity of screen shake effects
+				}
+
+				LightingPollRate: {
+					Label: Lighting Buffer Poll Rate
+					Tooltip:
+						'''
+						Changes how often the lighting buffer polls for data. 
+						Higher values increase performance but make lighting update slower on some objects. 
+						Lower values result in smoother moving light but may hurt performance.
+						'''
+				}
+
+				ScrollingLightingPoll: {
+					Label: Scrolling Lighting Buffer Building
+					Tooltip:
+						'''
+						Causes the lighting buffer to be built over its poll rate instead of all at once. 
+						May help normalize lag spikes but cause strange lighting artifacts.
+						'''
+				}
+
+				ParticlesActive: {
+					Label: Extra Particles
+					Tooltip:
+						'''
+						Enables/Disables special particles. 
+						Disable this if you have performance issues.
+						'''
+				}
+
+				HighQualityLighting: {
+					Label: High quality lit textures
+					Tooltip:
+						'''
+						Enables/Disables fancy lighting on large textures. 
+						Disable this if you have performance issues.
+						'''
+				}
+
+				ReflectionConfig: {
+					Label: Background Reflections
+					Tooltip:
+						'''
+						Configures what is rendered for background reflections. 
+						Disable this if you have performance issues.
+						'''
+				}
+			}
+
+			ReflectionSubConfig: {
+				Tooltip: ""
+
+				ReflectionsOn: {
+					Label: Background Reflections
+					Tooltip:
+						'''
+						This will Enable/Disable the background reflections system entirely. 
+						If this is off, the other settings in this block are ignored. 
+						Disable this if you have performance issues.
+						'''
+				}
+
+				PlayerReflectionsOn: {
+					Label: Reflect Players
+					Tooltip:
+						'''
+						This will Enable/Disable reflecting Players.
+						 low performance impact.
+						'''
+				}
+
+				NpcReflectionsOn: {
+					Label: Reflect NPCs
+					Tooltip:
+						'''
+						This will Enable/Disable reflecting NPCs.
+						 low performance impact.
+						'''
+				}
+
+				ProjReflectionsOn: {
+					Label: Reflect Projectiles
+					Tooltip:
+						'''
+						This will Enable/Disable reflecting Projectiles.
+						 high performance impact.
+						'''
+				}
+
+				DustReflectionsOn: {
+					Label: Reflect Particles
+					Tooltip:
+						'''
+						This will Enable/Disable reflecting Particles, gores and dusts.
+						 high performance impact.
+						'''
+				}
+			}
+
+			GUIConfig: {
+				DisplayName: G U I Config
+
+				OverheadStaminaState: {
+					Label: Overhead Stamina Display
+					Tooltip: When/If the overhead stamina meter should display
+				}
+
+				KeywordStyle: {
+					Label: Keyword Style
+					Tooltip: How keywords should be displayed in tooltips
+				}
+			}
+
+			OverlayState: {
+				Tooltip: ""
+				AlwaysOn.Label: Always On
+				WhileNotFull.Label: While Not Full
+				WhileUsing.Label: While Using
+				Never.Label: Never
+			}
+
+			KeywordStyle: {
+				Tooltip: ""
+				Colors.Label: Colors
+				Brackets.Label: Brackets
+				Both.Label: Both
+				Neither.Label: Neither
+			}
 		}
 	}
 }
