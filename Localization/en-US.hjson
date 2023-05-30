@@ -3674,6 +3674,7 @@ Mods: {
 			LightActor.MapEntry: ""
 			Lens.MapEntry: ""
 			LightGoal.MapEntry: ""
+			DestructableGlass.MapEntry: ""
 		}
 
 		Biomes: {
