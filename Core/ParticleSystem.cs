@@ -68,9 +68,10 @@ namespace StarlightRiver.Core
 		internal float Alpha;
 		internal Color Color;
 		internal int Timer;
+		internal int Type;
 		internal Rectangle Frame;
 
-		public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = new Rectangle(), float alpha = 1)
+		public Particle(Vector2 position, Vector2 velocity, float rotation, float scale, Color color, int timer, Vector2 storedPosition, Rectangle frame = new Rectangle(), float alpha = 1, int type = 0)
 		{
 			Position = position;
 			Velocity = velocity;
@@ -81,6 +82,7 @@ namespace StarlightRiver.Core
 			StoredPosition = storedPosition;
 			Frame = frame;
 			Alpha = alpha;
+			Type = type;
 		}
 	}
 }

@@ -147,10 +147,18 @@ namespace StarlightRiver.Content.Backgrounds
 		{
 			particle.Timer--;
 			particle.Position += particle.Velocity;
-			particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
 
-			if (particle.Timer < 30)
-				particle.Alpha = particle.Timer / 30f;
+			if (particle.Type == 0)
+			{
+				particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
+
+				if (particle.Timer < 30)
+					particle.Alpha = particle.Timer / 30f;
+			}
+			else if (particle.Type == 1)
+			{
+				particle.Scale = (1f - particle.Timer / 60f) * 1.25f;
+			}
 		}
 
 		public override void PostUpdateEverything()

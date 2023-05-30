@@ -321,10 +321,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			// advance the stage if the boss isnt there anymore
 			if (transitionTimer <= 0 && (!NPC.AnyNPCs(trackedBossType) || trackedBossType == 0))
 			{
-				currentStage++;
-
 				Heal();
 				transitionTimer = 240;
+
+				if (currentStage == 0)
+					transitionTimer = 180;
+
+				currentStage++;
 			}
 
 			// transition animation
@@ -410,9 +413,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				opacity = 1;
 			else if (transitionTimer - 90 <= 30)
 				opacity = (transitionTimer - 90) / 30f;
-
-			if (currentStage == 0 && transitionTimer > 210)
-				opacity = 1;
 
 			sb.Draw(tex, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * opacity);
 
