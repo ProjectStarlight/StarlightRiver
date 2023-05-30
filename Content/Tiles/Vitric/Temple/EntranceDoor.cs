@@ -14,6 +14,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			this.QuickSetFurniture(2, 11, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
 		}
 
+		public override bool CanDrop(int i, int j)
+		{
+			return false;
+		}
+
 		public override bool RightClick(int i, int j)
 		{
 			if (StarlightRiver.debugMode)
