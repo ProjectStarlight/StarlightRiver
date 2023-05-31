@@ -46,9 +46,10 @@ namespace StarlightRiver.Content.Events
 
 			if (Active)
 			{
+				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
 				Main.bloodMoon = false;
 
-				if (Main.time == 600)
+				if (Main.time == 600 && !talking)
 				{
 					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 					var proj = Main.projectile[i].ModProjectile as HintText;
@@ -61,7 +62,7 @@ namespace StarlightRiver.Content.Events
 					}
 				}
 
-				if (Main.time == 8000)
+				if (Main.time == 8000 && !talking)
 				{
 					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 					var proj = Main.projectile[i].ModProjectile as HintText;
@@ -74,7 +75,7 @@ namespace StarlightRiver.Content.Events
 					}
 				}
 
-				if (Main.time == 16200)
+				if (Main.time == 16200 && !talking)
 				{
 					int i = Projectile.NewProjectile(null, Main.LocalPlayer.Center + new Vector2(0, -48), Vector2.Zero, ModContent.ProjectileType<HintText>(), 0, 0, Main.myPlayer);
 					var proj = Main.projectile[i].ModProjectile as HintText;
