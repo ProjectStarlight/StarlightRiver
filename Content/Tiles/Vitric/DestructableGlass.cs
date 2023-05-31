@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSet(this, int.MaxValue, ModContent.DustType<Dusts.GlassGravity>(), SoundID.Shatter, Color.Blue, ModContent.ItemType<Items.Vitric.VitricOre>());
+			QuickBlock.QuickSet(this, int.MaxValue, ModContent.DustType<Dusts.GlassGravity>(), SoundID.Shatter, new Color(100, 150, 255), ModContent.ItemType<Items.Vitric.VitricOre>());
 
 			TileID.Sets.DrawsWalls[Type] = true;
 			Main.tileBlockLight[Type] = false;
