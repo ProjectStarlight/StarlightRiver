@@ -9,7 +9,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	class GlassweaverWaiting : ModNPC
 	{
-		public const int FRAME_WIDTH = 110;
+		public const int FRAME_WIDTH = 124;
+
 		public const int FRAME_HEIGHT = 92;
 
 		public Player talkingTo;
@@ -85,7 +86,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				if (Timer == 60)
 				{
 					NPC.velocity.Y -= 20;
-					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 112);
+
+					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 124);
 				}
 
 				if (Timer > 60)
