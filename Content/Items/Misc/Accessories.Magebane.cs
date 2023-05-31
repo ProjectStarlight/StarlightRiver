@@ -71,7 +71,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Mana replenishing items cannot be used\nMagic attacks have a twenty-five percent chance to leech a large portion of damage as mana on hit");
+			Tooltip.SetDefault("Cursed : You can not drink mana potions or other mana-replenishing items\nMagic attacks have a 25% chance to leech a large portion of their damage as mana");
 		}
 	}
 }

@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Utility
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Chef's Bag");
-			Tooltip.SetDefault("Stores lots of every ingredient");
+			Tooltip.SetDefault("Stores lots of every food ingredient");
 		}
 
 		public override void SetDefaults()

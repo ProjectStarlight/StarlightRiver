@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer partial debuff duration to nearby enemies") { }
+		public SanitizerSpray() : base("Sanitizer Spray", "Critical strikes have a 25% chance to transfer your debuffs, and part of their duration, to nearby enemies") { }
 
 		public override void Load()
 		{

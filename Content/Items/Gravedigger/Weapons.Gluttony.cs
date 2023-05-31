@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gluttony");
-			Tooltip.SetDefault("Suck the soul out of your enemies!");
+			Tooltip.SetDefault("Sucks the souls out of your enemies, turning them against their former brethren");
 		}
 
 		public override void SetDefaults()

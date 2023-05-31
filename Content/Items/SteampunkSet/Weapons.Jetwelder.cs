@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Jetwelder");
-			Tooltip.SetDefault("Collect scrap from damaging enemies \nRight click to use scrap to summon robots");
+			Tooltip.SetDefault("Collect scrap from damaging enemies \nRight click to use the scrap in order to build robots");
 		}
 
 		public override void SetDefaults()

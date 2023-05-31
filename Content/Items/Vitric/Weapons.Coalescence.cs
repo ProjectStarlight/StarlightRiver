@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coalescence");
-			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana when they collide");
+			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana where their arrows meet");
 		}
 
 		public override void SetDefaults()

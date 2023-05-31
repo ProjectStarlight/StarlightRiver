@@ -13,9 +13,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Blasts out Magmites that stick to enemies\n" +
-				"For each Magmite an enemy has stuck on them, they take 10 damage per second, and 3 summon tag damage, up to a maximum of three Magmites\n" +
-				"Magmites bounce off, and deal 50% more damage to enemies with the max amount of Magmites");
+			Tooltip.SetDefault("Blasts out Magmites that stick to enemies and increase summon tag damage");
 		}
 
 		public override void SetDefaults()

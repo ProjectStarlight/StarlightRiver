@@ -99,7 +99,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void UpdateArmorSet(Player player)
 		{
-			player.setBonus = "Accumulate lunar energy by dealing melee damage\ndouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes lunar energy and dissapears at zero";
+			player.setBonus = "Accumulate lunar energy by dealing melee damage\nDouble tap DOWN to summon the legendary spear Datsuzei\nDatsuzei consumes this lunar energy and dissapears at zero";
 
 			if (moonCharge > 720)
 				moonCharge = 720;

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public int comboState;
 
-		public SwordBook() : base("Mantis Technique", "Allows execution of combos with broadswords\nRight click to parry with a broadsword") { }
+		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\nRight click to parry, reflecting projectiles") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SwordBook";
 

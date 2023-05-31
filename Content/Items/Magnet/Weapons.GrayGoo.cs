@@ -38,7 +38,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Gray Goo");
-			Tooltip.SetDefault("Summons a swarm of nanomachines to devour enemies");
+			Tooltip.SetDefault("Summons a swarm of nanomachines to devour your enemies\n'Say the line, Armstrong!'");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}

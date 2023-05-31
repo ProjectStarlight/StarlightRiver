@@ -27,10 +27,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Cursed\n" +
-				"Summons an Ethereal Greataxe, which embeds itself near enemies who were just critically striked\n" +
-				"The enemy that the Greataxe embeds itself in becomes Focused\n" +
-				"<right> on the Greataxe whilst it is Embedded and it will un-embed itself");
+			Tooltip.SetDefault("Cursed : Landing a Critical Strike will inflict Focused on a new, different enemy\n" +
+				"Right-click on the Greataxe whilst it is Embedded to release it");
 		}
 
 		private void ModifyHitNPCWithProj(Player player, Projectile proj, NPC target, ref NPC.HitModifiers hit)

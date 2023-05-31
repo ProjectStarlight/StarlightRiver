@@ -13,8 +13,8 @@ namespace StarlightRiver.Content.Items.Permafrost
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Converts Musket Balls into Auroracle Ink\n" +
-				"Critical hits and kills cause Tentapistols to sprout out from you, that fire at your cursor");
+			Tooltip.SetDefault("Converts Musket Balls into Aurora Ink\n" +
+				"Critical hits and kills cause Tentapistols to sprout from your back");
 		}
 
 		public override void SetDefaults()

@@ -10,7 +10,7 @@ using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
-
+//TODO: sfx
 namespace StarlightRiver.Content.Items.Moonstone
 {
 	public class CrescentQuarterstaff : ModItem
@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Crescent Quarterstaff");
-			Tooltip.SetDefault("Striking enemies charges the staff with lunar energy\n" + "Condenses collected energy into a lunar orb when the final slam hits the ground\n" + "Update this egshels (sfx needed)");
+			Tooltip.SetDefault("Striking enemies charges the staff with lunar energy\n" + "Condenses collected energy into a lunar orb when the final slam hits the ground" + "Update this egshels (sfx needed)");
 		}
 
 		public override void SetDefaults()

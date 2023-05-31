@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Ancient Rune Staff");
-			Tooltip.SetDefault("Hold to summon up to 3 explosive runes\nReleasing will fire the runes towards your cursor\nContinuing to hold will detonate them for increased damage around you");
+			Tooltip.SetDefault("Hold <left> to summon up to 3 explosive runes\nReleasing will fire the runes towards your cursor\nContinuing to hold will detonate them for increased damage around you");
 		}
 
 		public override void SetDefaults()

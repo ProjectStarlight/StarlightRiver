@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Phoenix Storm");
-			Tooltip.SetDefault("Summons a storm of phoenixes that periodically swoops in on enemies");
+			Tooltip.SetDefault("Summons a storm of phoenixes that periodically swoop in on enemies");
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;
 		}

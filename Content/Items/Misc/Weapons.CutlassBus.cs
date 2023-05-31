@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cutlassbus");
-			Tooltip.SetDefault("egshels update this lol");
+			Tooltip.SetDefault("egshels update this lol\nhi its me im egshels im not going to update this lol its debug");
 		}
 
 		public override void SetDefaults()

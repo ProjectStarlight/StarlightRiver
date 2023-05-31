@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Double Cross");
-			Tooltip.SetDefault("Shoots your highest two ammo slots at once");
+			Tooltip.SetDefault("Shoots arrows from your highest two ammo slots at once");
 		}
 
 		public override void SetDefaults()

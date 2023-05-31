@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
+		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases your Inoculation") { }
 
 		public override void Load()
 		{
