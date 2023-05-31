@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems.CutawaySystem;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
-			if (Main.rand.NextBool(4))
+			if (Main.rand.NextBool(4) && CutawayHandler.forgeOverlay.fadeTime < 1)
 			{
 				Vector2 pos = Projectile.position - new Vector2(567, 400);
 
@@ -71,18 +72,20 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
 
-			float pulse0 = (float)System.Math.Sin(Main.GameUpdateCount * 0.14f) + (float)System.Math.Cos(Main.GameUpdateCount * 0.017f);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f));
+			float fade = 1 - CutawayHandler.forgeOverlay.fadeTime;
 
-			float pulse1 = (float)System.Math.Sin(Main.GameUpdateCount * 0.14f + 4) + (float)System.Math.Cos(Main.GameUpdateCount * 0.017f + 2);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f));
+			float pulse0 = (float)Math.Sin(Main.GameUpdateCount * 0.14f) + (float)Math.Cos(Main.GameUpdateCount * 0.017f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse0 * 0.1f) * fade);
 
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f);
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f);
+			float pulse1 = (float)Math.Sin(Main.GameUpdateCount * 0.14f + 4) + (float)Math.Cos(Main.GameUpdateCount * 0.017f + 2);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 350), new Vector3(1, 0.8f, 0.4f) * (1.2f + pulse1 * 0.1f) * fade);
 
-			float pulseMiddle = (float)System.Math.Sin(Main.GameUpdateCount * 0.1f) + (float)System.Math.Cos(Main.GameUpdateCount * 0.024f);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(965, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(160, 150), new Vector3(1, 0.8f, 0.4f) * 1.2f * fade);
 
-			Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulseMiddle * 0.25f));
+			float pulseMiddle = (float)Math.Sin(Main.GameUpdateCount * 0.1f) + (float)Math.Cos(Main.GameUpdateCount * 0.024f);
+
+			Lighting.AddLight(pos + Main.screenPosition + new Vector2(555, 220), new Vector3(1, 0.6f, 0.4f) * (2f + pulseMiddle * 0.25f) * fade);
 		}
 	}
 }
