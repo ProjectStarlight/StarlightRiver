@@ -4,6 +4,7 @@ using StarlightRiver.Content.Events;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
+using System;
 using System.Linq;
 using Terraria.ID;
 
@@ -12,6 +13,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 	class Crow : ModNPC
 	{
 		public bool visible;
+		public bool leaving;
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Starlight/Crow";
 
@@ -55,7 +57,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			Timer++;
 
-			if (InCutscene)
+			if (InCutscene || leaving)
 				CutsceneTimer++;
 
 			if (Main.LocalPlayer.controlHook)
@@ -75,7 +77,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * 4);
 			}
 
-			if (!InCutscene && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400))
+			if (!InCutscene && !leaving && Main.player.Any(n => n.active && Vector2.Distance(n.Center, NPC.Center) < 400))
 			{
 				CutsceneTimer = 0;
 				InCutscene = true;
@@ -96,6 +98,11 @@ namespace StarlightRiver.Content.NPCs.Starlight
 						break;
 				}
 			}
+
+			if (leaving)
+			{
+				LeaveAnimation();
+			}
 		}
 
 		/// <summary>
@@ -113,7 +120,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer >= 130 && CutsceneTimer <= 140)
 			{
-				for (int K = 0; K < 2; K++)
+				for (int K = 0; K < 4; K++)
 				{
 					int type = ModContent.DustType<Dusts.Cinder>();
 
@@ -131,14 +138,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer == 140)
-			{
 				visible = true;
-
-				for (int k = 0; k < 20; k++)
-				{
-
-				}
-			}
 		}
 
 		/// <summary>
@@ -185,10 +185,26 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		/// <summary>
 		/// The NPCs leaving animation, which is re-used between encounters. Note this will increment the starlight event sequence.
 		/// </summary>
-		/// <param name="timer"></param>
-		private void LeaveAnimation(float timer)
+		private void LeaveAnimation()
 		{
-			if (timer > 120)
+			leaving = true;
+
+			if (CutsceneTimer >= 60)
+				visible = false;
+
+			if (CutsceneTimer == 130)
+			{
+				for (int k = 0; k < 40; k++)
+				{
+					float rand = Main.rand.NextFloat(-16, 16);
+					float yVel = (1 - Math.Abs(rand) / 16) * Main.rand.Next(5, 25) * (Main.rand.NextBool() ? -1 : 1);
+
+					var d = Dust.NewDustPerfect(NPC.Center + Vector2.UnitX * rand, ModContent.DustType<Dusts.Aurora>(), Vector2.UnitY * yVel, 0, new Color(100, Main.rand.Next(150, 255), 255), 1);
+					d.customData = Main.rand.NextFloat(1f);
+				}
+			}
+
+			if (CutsceneTimer >= 140)
 			{
 				NPC.active = false;
 				StarlightEventSequenceSystem.willOccur = false;
@@ -196,6 +212,17 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 				StarlightEventSequenceSystem.sequence++;
 			}
+		}
+
+		/// <summary>
+		/// Helper to trigger the leaving state
+		/// </summary>
+		private void Leave()
+		{
+			InCutscene = false;
+			CutsceneTimer = 0;
+
+			leaving = true;
 		}
 
 		/// <summary>
@@ -214,6 +241,20 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer == 360) // First encounter
 			{
+				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, special abort dialogue
+				{
+					RichTextBox.SetData(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
+
+					RichTextBox.ClearButtons();
+					RichTextBox.AddButton("Bye!", () =>
+					{
+						CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+						RichTextBox.CloseDialogue();
+						CutsceneTimer = 363;
+					});
+					return;
+				}
+
 				RichTextBox.OpenDialogue(NPC, "Crow?", GetIntroDialogue());
 				RichTextBox.AddButton("Continue", () =>
 				{
@@ -266,9 +307,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				CutsceneTimer = 361;
 
 			if (CutsceneTimer >= 362)
-			{
-				LeaveAnimation(CutsceneTimer - 362);
-			}
+				Leave();
 		}
 
 		/// <summary>
@@ -284,6 +323,20 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer == 360) // First encounter
 			{
+				if (Main.LocalPlayer.GetHandler().InfusionLimit >= 1) // If they already have the infusion slot, special abort dialogue
+				{
+					RichTextBox.SetData(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
+
+					RichTextBox.ClearButtons();
+					RichTextBox.AddButton("Bye!", () =>
+					{
+						CameraSystem.ReturnCamera(30, Vector2.SmoothStep);
+						RichTextBox.CloseDialogue();
+						CutsceneTimer = 363;
+					});
+					return;
+				}
+
 				RichTextBox.OpenDialogue(NPC, "Alican", GetInfusionDialogue());
 				RichTextBox.AddButton("What?", () =>
 				{
@@ -322,9 +375,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				Infusion.gainAnimationTimer = 240;
 
 			if (CutsceneTimer >= 500)
-			{
-				LeaveAnimation(CutsceneTimer - 500);
-			}
+				Leave();
 		}
 
 		private string GetIntroDialogue()
@@ -332,7 +383,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			return TextState switch
 			{
 				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off and straightening its ruffled feathers.",
-			    1 => "\"CAW, there you are! I've jumped through seventeen different axons and the half the entire CAW - sorry, I caw when I'm excited - Capricorn tropic trying to find you!\"",
+				1 => "\"CAW, there you are! I've jumped through seventeen different axons and the half the entire CAW - sorry, I caw when I'm excited - Capricorn tropic trying to find you!\"",
 				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other! You see, I am a Seeker. A seeker of what, you ask? Well, that information's not free, but I'll give you a hint.\"",
 				3 => "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
 				4 => "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of CAW - sorry - connection. For a favor, I'll teach you a quick incantation!\"",
@@ -359,6 +410,14 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 
 			return visible;
+		}
+
+		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			if (leaving)
+			{
+				DrawFlashingStar(spriteBatch, CutsceneTimer);
+			}
 		}
 	}
 }
