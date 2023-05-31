@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Codex;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 using System.Collections.Generic;
@@ -83,13 +82,10 @@ namespace StarlightRiver.Content.CustomHooks
 
 			var Player = (Player)_Player.GetValue(character);
 			AbilityHandler mp = Player.GetHandler();
-			CodexHandler mp2 = Player.GetModPlayer<CodexHandler>();
 			MedalPlayer mp3 = Player.GetModPlayer<MedalPlayer>();
 
-			if (mp == null || mp2 == null)
-			{
+			if (mp == null || mp3 == null)
 				return;
-			}
 
 			for (int k = 0; k < Player.armor.Length; k++)
 			{
@@ -98,7 +94,6 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			float PlayerStamina = mp.StaminaMaxDefault;
-			int codexProgress = (int)(mp2.Entries.Count(n => !n.Locked) / (float)mp2.Entries.Count * 100f);
 
 			var box = new Rectangle((int)(origin + new Vector2(110, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 80, 25);
 			var box2 = new Rectangle((int)(origin + new Vector2(196, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
@@ -115,19 +110,6 @@ namespace StarlightRiver.Content.CustomHooks
 			{
 				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Stamina3").Value, origin + new Vector2(115, 68), Color.White);
 				Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(142, 68), Color.White);
-			}
-
-			if (mp2.CodexState != 0)//Draw codex percentage if unlocked
-			{
-				string bookTex = mp2.CodexState == 2 ? "StarlightRiver/Assets/GUI/Book2Closed" : "StarlightRiver/Assets/GUI/Book1Closed";
-				Texture2D drawTex = ModContent.Request<Texture2D>(bookTex).Value;
-				spriteBatch.Draw(drawTex, origin + new Vector2(202, 60), Color.White);
-				Utils.DrawBorderString(spriteBatch, codexProgress + "%", origin + new Vector2(236, 68), codexProgress >= 100 ? new Color(255, 205 + (int)(Math.Sin(Main.time / 50000 * 100) * 40), 50) : Color.White);
-			}
-			else//Mysterious if locked
-			{
-				spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/BookLocked").Value, origin + new Vector2(202, 60), Color.White * 0.4f);
-				Utils.DrawBorderString(spriteBatch, "???", origin + new Vector2(236, 68), Color.White);
 			}
 
 			Ability[] abilities = Ability.GetAbilityInstances();
@@ -203,7 +185,6 @@ namespace StarlightRiver.Content.CustomHooks
 				Player.statLifeMax == 500 &&
 				Player.statManaMax == 200 &&
 				PlayerStamina == 5 &&
-				codexProgress == 100 &&
 				!abilities.Any(n => !Player.GetHandler().Unlocked(n.GetType()))
 				)
 			{

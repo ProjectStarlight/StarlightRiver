@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
-using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
@@ -126,8 +125,6 @@ namespace StarlightRiver.Content.Pickups
 
 				Main.LocalPlayer.GetHandler().GetAbility<Dash>(out Dash dash);
 				UILoader.GetUIState<TextCard>().Display("Forbidden Winds", message, dash);
-				Helper.UnlockCodexEntry<WindsEntry>(Main.LocalPlayer);
-				Helper.UnlockCodexEntry<StaminaEntry>(Main.LocalPlayer);
 
 				Filters.Scene.Activate("Shockwave", Player.Center).GetShader().UseProgress(0f).UseIntensity(0);
 				Filters.Scene.Deactivate("Shockwave");

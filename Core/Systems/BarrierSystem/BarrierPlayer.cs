@@ -1,7 +1,5 @@
 ﻿using NetEasy;
-using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Items.BarrierDye;
-using StarlightRiver.Helpers;
 using System;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -109,8 +107,6 @@ namespace StarlightRiver.Core.Systems.BarrierSystem
 		{
 			if (barrier > 0)
 			{
-				Helper.UnlockCodexEntry<BarrierEntry>(Main.LocalPlayer);
-
 				if (rechargeAnimationTimer < 1)
 				{
 					if (dye != null)

@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Helpers;
-using System;
+﻿using System;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities
@@ -56,12 +55,6 @@ namespace StarlightRiver.Content.Abilities
 		{
 			Draw(spriteBatch, Item.Center - Main.screenPosition, 1);
 			return false;
-		}
-
-		public override bool OnPickup(Player Player)
-		{
-			Helper.UnlockCodexEntry<Codex.Entries.InfusionEntry>(Player);
-			return true;
 		}
 
 		public override bool CanRightClick()
