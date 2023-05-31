@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Main.tileMerge[Type][sandstone] = true;
 			Main.tileMerge[sandstone][Type] = true;
 
-			RegisterItemDrop(ModContent.ItemType<Items.Vitric.VitricOre>());
+			RegisterItemDrop(ModContent.ItemType<Items.Vitric.VitricOre>(), 0);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
