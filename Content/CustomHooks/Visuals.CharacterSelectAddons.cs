@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.CustomHooks
 			FieldInfo info = typeof(UICharacterListItem).GetField("_buttonLabel", BindingFlags.Instance | BindingFlags.NonPublic);
 			var text = info.GetValue(self) as UIText;
 
-			text.Left.Set(304, 0);
+			text.Left.Set(190, 0);
 
 			var character = (UICharacter)_PlayerPanel.GetValue(self);
 			var Player = (Player)_Player.GetValue(character);
@@ -99,7 +99,6 @@ namespace StarlightRiver.Content.CustomHooks
 			var box2 = new Rectangle((int)(origin + new Vector2(196, 66)).X, (int)(origin + new Vector2(86, 66)).Y, 104, 25);
 
 			spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/box").Value, box, Color.White); //Stamina box
-			spriteBatch.Draw(ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/box").Value, box2, Color.White); //Codex box
 
 			if (mp.AnyUnlocked)//Draw stamina if any unlocked
 			{
