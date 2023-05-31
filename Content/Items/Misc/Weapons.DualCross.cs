@@ -96,11 +96,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.SilverBar, 10);
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.TungstenBar, 10);
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}

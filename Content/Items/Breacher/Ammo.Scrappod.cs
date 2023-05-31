@@ -32,6 +32,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.shoot = ModContent.ProjectileType<ScrappodProjectile>();
 			Item.shootSpeed = 3.5f;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe(100);
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 1);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	internal class ScrappodProjectile : ModProjectile

@@ -1,8 +1,10 @@
 ﻿using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Items.EvilBiomes;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
@@ -261,6 +263,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			}
 
 			return false;
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<ReplicantCells>(), 25));
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)

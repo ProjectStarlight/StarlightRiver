@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -64,6 +65,15 @@ namespace StarlightRiver.Content.Items.Misc
 		public override bool AltFunctionUse(Player player)
 		{
 			return true;
+		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.DemoniteBar, 10);
+			recipe.AddIngredient(ItemID.ShadowScale, 10);
+			recipe.AddIngredient<LivingBlood>(5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
