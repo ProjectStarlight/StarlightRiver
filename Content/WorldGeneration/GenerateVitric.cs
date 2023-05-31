@@ -246,7 +246,7 @@ namespace StarlightRiver.Core
 			{
 				int xDif = x - (vitricBiome.X - 40);
 
-				if (xDif > 10 || Main.rand.NextBool(10 - xDif))
+				if (xDif > 10 || Main.rand.NextBool(40 - xDif))
 				{
 					for (int y = vitricBiome.Y; y < vitricBiome.Y + vitricBiome.Height; y++)
 					{
