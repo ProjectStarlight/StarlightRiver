@@ -1,5 +1,7 @@
 ﻿using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -37,6 +39,20 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override Color? GetAlpha(Color lightColor)
 		{
 			return Color.Lerp(lightColor, Color.White, 0.4f);
+		}
+
+		public override void ModifyItemLoot(ItemLoot itemLoot)
+		{
+			itemLoot.Add(ItemDropRule.FewFromOptions(3, 1, new int[]
+			{
+				ItemType<FacetAndLattice>(),
+				ItemType<Coalescence>(),
+				ItemType<Needler>(),
+				ItemType<RefractiveBlade>(),
+				ItemType<MagmiteVacpack>(),
+				ItemType<RecursiveFocus>()
+			}
+			));
 		}
 
 		/*public override void OpenBossBag(Player Player)

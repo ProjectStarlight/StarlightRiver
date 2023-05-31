@@ -56,6 +56,15 @@ namespace StarlightRiver.Content.Items.Vitric
 			player.UpdateMaxTurrets();
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricOre>(20);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class RecursiveFocusProjectile : ModProjectile

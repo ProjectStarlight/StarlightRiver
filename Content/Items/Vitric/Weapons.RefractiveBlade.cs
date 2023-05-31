@@ -80,6 +80,17 @@ namespace StarlightRiver.Content.Items.Vitric
 
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricSword>();
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(15);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class RefractiveBladeProj : ModProjectile, IDrawPrimitive
