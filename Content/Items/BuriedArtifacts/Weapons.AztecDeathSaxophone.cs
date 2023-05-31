@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			spriteBatch.Draw(texGlow, position + new Vector2(-1), null, color, 0f, origin, scale, 0f, 0f);
 
-			spriteBatch.Draw(glowTex, position + new Vector2(-65, -75), null, color, 0f, origin, 1f, 0f, 0f);
+			spriteBatch.Draw(glowTex, position + new Vector2(-50, -65), null, color, 0f, origin, 1f, 0f, 0f);
 
 			return false;
 		}
