@@ -8,7 +8,16 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSet(this, int.MaxValue, ModContent.DustType<Dusts.GlassGravity>(), SoundID.Shatter, Color.Blue, ModContent.ItemType<Items.Vitric.VitricOre>());
+			QuickBlock.QuickSet(this, int.MaxValue, ModContent.DustType<Dusts.GlassGravity>(), SoundID.Shatter, new Color(100, 150, 255), ModContent.ItemType<Items.Vitric.VitricOre>());
+
+			TileID.Sets.DrawsWalls[Type] = true;
+			Main.tileBlockLight[Type] = false;
+
+			ushort sandstone = Mod.Find<ModTile>("AncientSandstone").Type;
+			Main.tileMerge[Type][sandstone] = true;
+			Main.tileMerge[sandstone][Type] = true;
+
+			RegisterItemDrop(ModContent.ItemType<Items.Vitric.VitricOre>(), 0);
 		}
 
 		public override void NearbyEffects(int i, int j, bool closer)
@@ -52,7 +61,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 	internal class DestructableGlassItem : QuickTileItem
 	{
-		public DestructableGlassItem() : base("Breakable vitric crystal", "A chunk of vitric crystal susceptible to the force of forbidden winds", "DestructableGlass") { }
+		public override string Texture => AssetDirectory.VitricTile + "VitricGlassItem";
+
+		public DestructableGlassItem() : base("Breakable vitric crystal", "A chunk of vitric crystal susceptible to the force of forbidden winds", "DestructableGlass", 2) { }
 
 		public override void AddRecipes()
 		{
