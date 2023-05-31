@@ -234,6 +234,19 @@ namespace StarlightRiver.Core
 			int lakeStart = 0;
 			int lakeWidth = 30;
 
+			for (int x = vitricBiome.X - 40; x < vitricBiome.X + 20; x++)
+			{
+				int xDif = x - (vitricBiome.X - 40);
+
+				if (xDif > 10 || Main.rand.NextBool(10 - xDif))
+				{
+					for (int y = vitricBiome.Y; y < vitricBiome.Y + vitricBiome.Height; y++)
+					{
+						PlaceTile(x, y, instance.Find<ModTile>("VitricSand").Type, false, true);
+					}
+				}
+			}
+
 			for (int x = vitricBiome.X; x < vitricBiome.X + vitricBiome.Width; x++) //Basic biome shape
 			{
 				int xDif = x - vitricBiome.X;
