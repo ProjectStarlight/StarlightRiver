@@ -243,7 +243,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			{
 				if (Main.LocalPlayer.GetHandler().Unlocked<HintAbility>()) // If they already have the ability, special abort dialogue
 				{
-					RichTextBox.SetData(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
+					RichTextBox.OpenDialogue(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
 
 					RichTextBox.ClearButtons();
 					RichTextBox.AddButton("Bye!", () =>
@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			{
 				if (Main.LocalPlayer.GetHandler().InfusionLimit >= 1) // If they already have the infusion slot, special abort dialogue
 				{
-					RichTextBox.SetData(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
+					RichTextBox.OpenDialogue(NPC, "Alican", "Oh, strange seeing you again here... Sorry, I thought you were someone else. I must leave to search for them now.");
 
 					RichTextBox.ClearButtons();
 					RichTextBox.AddButton("Bye!", () =>
