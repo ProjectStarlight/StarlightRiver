@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void AddRecipes()
 		{
 			CreateRecipe()
-				.AddIngredient(RecipeGroupID.IronBar, 15)
+				.AddIngredient(RecipeGroupID.IronBar, 30)
 				.AddTile(TileID.Anvils)
 				.Register();
 		}

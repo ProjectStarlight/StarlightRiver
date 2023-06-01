@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -68,6 +69,37 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			player.jumpSpeedBoost += 2f;
 			player.extraFall += 10;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.FrogLeg);
+			recipe.AddIngredient(ItemID.TungstenBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.FrogLeg);
+			recipe.AddIngredient(ItemID.SilverBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.CreativeWings);
+			recipe.AddIngredient(ItemID.TungstenBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.HermesBoots);
+			recipe.AddIngredient(ItemID.CreativeWings);
+			recipe.AddIngredient(ItemID.SilverBar, 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 }

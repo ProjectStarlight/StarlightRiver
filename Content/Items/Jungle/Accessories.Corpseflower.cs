@@ -4,6 +4,7 @@ using StarlightRiver.Content.Items.BaseTypes;
 using StarlightRiver.Core.Systems.InstancedBuffSystem;
 using StarlightRiver.Helpers;
 using System;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Jungle
 {
@@ -25,11 +26,35 @@ namespace StarlightRiver.Content.Items.Jungle
 
 			On_CombatText.UpdateCombatText += CombatText_UpdateCombatText;
 			IL_NPC.UpdateNPC_BuffApplyDOTs += ChangeDoTColor;
+
+			StarlightItem.SetStaticDefaultsEvent += AddShimmerRecipe;
+		}
+
+		private void AddShimmerRecipe()
+		{
+			ItemID.Sets.ShimmerTransformToItem[ItemID.NaturesGift] = Type; // ig this works
 		}
 
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can interact with DoT-related accessories\nYou are unable to critically strike");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.NaturesGift;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.NaturesGift);
+			recipe.AddIngredient(ItemID.ShadowScale, 5);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.NaturesGift);
+			recipe.AddIngredient(ItemID.TissueSample, 5);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
 		}
 
 		#region IL

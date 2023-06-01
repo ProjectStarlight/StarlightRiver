@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.SpaceEvent;
 using System;
 using Terraria.ID;
 
@@ -57,9 +58,19 @@ namespace StarlightRiver.Content.Items.Misc
 				Player.wingTime = 0;
 			}
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<Astroscrap>(2);
+			recipe.AddIngredient(ItemID.CloudinaBalloon);
+			recipe.AddIngredient(ItemID.RocketBoots);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
-	public class ThrusterEmber : ModProjectile
+		public class ThrusterEmber : ModProjectile
 	{
 		public override string Texture => AssetDirectory.Assets + "Invisible";
 

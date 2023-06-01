@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
 	internal static class TempleTileUtils
 	{
-		static readonly ScreenTarget bgTarget = new(DrawToTarget, () => Main.LocalPlayer.InModBiome<VitricTempleBiome>(), 1);
+		static readonly ScreenTarget bgTarget = new(DrawToTarget, Main.LocalPlayer.InModBiome<VitricTempleBiome>, 1);
 
 		public static void DrawToTarget(SpriteBatch spriteBatch)
 		{

@@ -43,5 +43,17 @@ namespace StarlightRiver.Content.Items.Magnet
 			Item.height = 32;
 			Item.maxStack = 999;
 		}
+
+		public override void Update(ref float gravity, ref float maxFallSpeed)
+		{
+			if (Item.lavaWet)
+			{
+				int i = Item.NewItem(Item.GetSource_Misc("Transform"), Item.getRect(), ModContent.ItemType<GrayGoo>()); // may need syncing idk
+
+				Item item = Main.item[i];
+				item.velocity += new Vector2(0f, -1.5f);
+				Item.TurnToAir();
+			}
+		}
 	}
 }

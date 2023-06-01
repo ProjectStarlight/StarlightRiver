@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Tiles.Permafrost;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,16 @@ namespace StarlightRiver.Content.Items.Permafrost
 		{
 			Item.rare = ItemRarityID.Green;
 			Item.value = Item.sellPrice(gold: 1, silver: 25);
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Book);
+			recipe.AddIngredient(ItemID.IceBlock, 20);
+			recipe.AddIngredient<AuroraIceBar>(5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 
 		private void ProjectileCritExplosion(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)

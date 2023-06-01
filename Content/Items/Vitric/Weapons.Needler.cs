@@ -75,6 +75,16 @@ namespace StarlightRiver.Content.Items.Vitric
 			player.itemRotation = MathHelper.WrapAngle(player.itemRotation);
 			return false;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>(2);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	public class NeedlerProj : ModProjectile

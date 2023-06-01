@@ -1,5 +1,8 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -8,6 +11,26 @@ namespace StarlightRiver.Content.Items.Misc
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public CasualMirror() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
+
+		public override void Load()
+		{
+			StarlightItem.CanUseItemEvent += TurnMirrorIntoItem;
+		}
+
+		private bool TurnMirrorIntoItem(Item Item, Player Player)
+		{
+			List<int> mirrors = new() { ItemID.IceMirror, ItemID.MagicMirror };
+
+			if (mirrors.Contains(Item.type) && Main.npc.Any(n => n.active && (n.type == NPCID.WallofFlesh || n.type == NPCID.WallofFleshEye)))
+			{
+				Item.TurnToAir();
+
+				Player.QuickSpawnItem(Item.GetSource_Misc("Transform"), Type);
+				return false;
+			}
+
+			return true;
+		}
 
 		public override void SetStaticDefaults()
 		{

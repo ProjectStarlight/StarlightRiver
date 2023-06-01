@@ -43,6 +43,17 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			return new Vector2(-10f, 0f);
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<MagmiteBottle>();
+			recipe.AddIngredient<SandstoneChunk>(10);
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	//literally just for tank drawing lol

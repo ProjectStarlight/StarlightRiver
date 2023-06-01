@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Items.Starwood;
 using Terraria.DataStructures;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Vanity
@@ -15,6 +16,8 @@ namespace StarlightRiver.Content.Items.Vanity
 		{
 			DisplayName.SetDefault("Ancient Starwood Hat");
 			//Tooltip.SetDefault("");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<StarwoodHat>();
 		}
 
 		public override void SetDefaults()
@@ -55,6 +58,8 @@ namespace StarlightRiver.Content.Items.Vanity
 		{
 			DisplayName.SetDefault("Ancient Starwood Robes");
 			//Tooltip.SetDefault("");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<StarwoodChest>();
 		}
 
 		public override void SetDefaults()
@@ -93,6 +98,8 @@ namespace StarlightRiver.Content.Items.Vanity
 		{
 			DisplayName.SetDefault("Ancient Starwood Leggings");
 			//Tooltip.SetDefault(" ");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<StarwoodBoots>();
 		}
 
 		public override void SetDefaults()

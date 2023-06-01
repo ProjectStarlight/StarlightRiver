@@ -45,7 +45,8 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ModContent.ItemType<CoachGun>(), 1);
+			recipe.AddIngredient(ItemID.Handgun);
+			recipe.AddIngredient(ItemID.Grenade, 5);
 			recipe.AddIngredient(ItemID.Bone, 10);
 			recipe.AddTile(TileID.Anvils);
 		}

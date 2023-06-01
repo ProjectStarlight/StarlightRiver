@@ -76,6 +76,17 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
 				mult = 0;
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricBow>();
+			recipe.AddIngredient<SandstoneChunk>(7);
+			recipe.AddIngredient<VitricOre>(7);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	internal class VitricBowProjectile : ModProjectile, IDrawAdditive

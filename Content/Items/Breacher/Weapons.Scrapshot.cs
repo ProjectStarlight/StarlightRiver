@@ -193,6 +193,21 @@ namespace StarlightRiver.Content.Items.Breacher
 			return Player.altFunctionUse != 2;
 		}
 
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Boomstick);
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.IllegalGunParts);
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
+
 		/// <summary>
 		/// we are using the precondition that only 1 scrapshot hook can exist for a Player in order to find and assign the hook in multiPlayer
 		/// </summary>
