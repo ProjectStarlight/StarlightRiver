@@ -96,6 +96,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			};
 			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
+			DropConditionText = this.GetLocalization("FirstKillRule");
 			DropConditionText.SetDefault("Dropped on first kill");
 		}
 
