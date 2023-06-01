@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -36,6 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class DoorVerticalItem : QuickTileItem
 	{
 		public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
@@ -58,6 +60,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class DoorGearsItem : QuickTileItem
 	{
 		public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
@@ -123,6 +126,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class DashableDoorItem : QuickTileItem
 	{
 		public DashableDoorItem() : base("DashableDoor", "Debug Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }

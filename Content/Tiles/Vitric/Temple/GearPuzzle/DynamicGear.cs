@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems;
 using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
@@ -129,6 +130,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
+	[SLRDebug]
 	class GearTilePlacer : QuickTileItem
 	{
 		public GearTilePlacer() : base("Gear puzzle", "Debug Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }

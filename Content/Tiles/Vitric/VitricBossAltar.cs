@@ -4,6 +4,7 @@ using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -119,6 +120,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
+	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
 		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }

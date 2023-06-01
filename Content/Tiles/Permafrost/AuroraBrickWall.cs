@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core.Systems;
+using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
@@ -13,10 +14,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
+	[SLRDebug]
 	class AuroraBrickWallItem : QuickWallItem
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWallItem";
 
-		public AuroraBrickWallItem() : base("Aurora BrickWall", "Oooh... Preeetttyyy", WallType<AuroraBrickWall>(), ItemRarityID.White) { }
+		public AuroraBrickWallItem() : base("Aurora Brick Wall Dangerous", "Oooh... Preeetttyyy", WallType<AuroraBrickWall>(), ItemRarityID.White) { }
 	}
 }

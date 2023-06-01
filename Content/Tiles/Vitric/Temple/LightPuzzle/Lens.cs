@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Core.Systems;
+using System;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
@@ -77,6 +78,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		}
 	}
 
+	[SLRDebug]
 	class LensItem : QuickTileItem
 	{
 		public LensItem() : base("Reflector Lens", "Debug Item", "Lens") { }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	internal class NPCSpawnerItem : QuickTileItem
 	{
 		public NPCSpawnerItem() : base("NPC Spawner", "", "NPCSpawner", 1, AssetDirectory.VitricTile, false) { }

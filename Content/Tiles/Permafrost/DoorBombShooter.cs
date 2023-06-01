@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System.Linq;
 using Terraria.DataStructures;
@@ -34,6 +35,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
+	[SLRDebug]
 	class DoorBombShooterItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

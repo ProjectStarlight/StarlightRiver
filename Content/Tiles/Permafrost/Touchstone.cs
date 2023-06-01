@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,6 +165,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
+	[SLRDebug]
 	class TouchstoneItem : QuickTileItem
 	{
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }

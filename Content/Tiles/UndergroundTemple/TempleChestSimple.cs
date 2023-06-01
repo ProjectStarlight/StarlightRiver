@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.Brewing;
+using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -35,6 +36,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		}
 	}
 
+	[SLRDebug]
 	class TempleChestPlacer : QuickTileItem
 	{
 		public TempleChestPlacer() : base("Temple Chest Placer", "", "TempleChestSimple", 0, AssetDirectory.UndergroundTempleTile) { }

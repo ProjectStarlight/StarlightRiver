@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
@@ -78,6 +79,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		}
 	}
 
+	[SLRDebug]
 	public class JarTallItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

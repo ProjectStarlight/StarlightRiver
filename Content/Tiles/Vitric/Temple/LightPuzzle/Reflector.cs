@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.IO;
@@ -231,6 +232,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		}
 	}
 
+	[SLRDebug]
 	class ReflectorItem : QuickTileItem
 	{
 		public ReflectorItem() : base("Reflector", "Debug Item", "Reflector") { }

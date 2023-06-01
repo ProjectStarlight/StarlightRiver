@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -44,6 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	internal class LightActorItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

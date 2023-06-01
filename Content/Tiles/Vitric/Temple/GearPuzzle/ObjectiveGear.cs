@@ -1,4 +1,6 @@
-﻿namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
+﻿using StarlightRiver.Core.Systems;
+
+namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
 	class ObjectiveGear : GearTile
 	{
@@ -49,6 +51,7 @@
 		}
 	}
 
+	[SLRDebug]
 	class ObjectiveGearItem : QuickTileItem
 	{
 		public ObjectiveGearItem() : base("Gear puzzle Point", "Debug Item", "ObjectiveGear", 8, AssetDirectory.VitricTile + "GearPeg", true) { }

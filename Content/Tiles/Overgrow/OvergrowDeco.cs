@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Helpers;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -31,6 +32,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
+	[SLRDebug]
 	class Rock2x2Item : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.OvergrowTile + Name;

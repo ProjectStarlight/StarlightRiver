@@ -1,15 +1,13 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Events;
+using StarlightRiver.Core.Systems;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items
 {
+	[SLRDebug]
 	class DebugStick : ModItem
 	{
-		public NPC target;
-		public Projectile target2;
-		public Player owner;
-
 		public override string Texture => AssetDirectory.Assets + "Items/DebugStick";
 
 		public override void SetStaticDefaults()

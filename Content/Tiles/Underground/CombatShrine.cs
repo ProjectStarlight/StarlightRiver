@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +67,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 		}
 	}
 
+	[SLRDebug]
 	class CombatShrineItem : QuickTileItem
 	{
 		public CombatShrineItem() : base("Combat shrine placer", "debug item", "CombatShrine") { }
