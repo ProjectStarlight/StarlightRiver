@@ -3262,6 +3262,7 @@ Mods: {
 			VitricSand.MapEntry: ""
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
+			PatreonPlaque.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""
