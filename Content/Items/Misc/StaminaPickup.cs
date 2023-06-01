@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 {
 	internal class StaminaPickup : ModItem
 	{
-		public override string Texture => AssetDirectory.GUI + "Starlight";
+		public override string Texture => AssetDirectory.GUI + "Stamina";
 
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
