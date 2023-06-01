@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Magnet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Uncharged Magnet");
-			Tooltip.SetDefault("May attract charged enemies");
+			Tooltip.SetDefault("Charged enemies are attracted with this in your inventory\nCharged enemies are stronger than normal, but charge this item on death");
 		}
 
 		public override void SetDefaults()

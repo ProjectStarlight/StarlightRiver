@@ -213,7 +213,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Aurora Crown");
-			Tooltip.SetDefault("Summons an aurora throne combat mount\nLashes out with whip-like apendages\nRight click to summon explosive auroralings");
+			Tooltip.SetDefault("Combat Mount: Summons an Aurora Throne\nLashes out with whip-like appendages\nRight click to summon explosive Auroralings");
 		}
 	}
 }

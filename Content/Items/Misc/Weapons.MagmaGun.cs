@@ -18,7 +18,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pyroclastic Flow");
-			Tooltip.SetDefault("Blasts a torrential stream of lava that sticks to tiles and enemies");
+			Tooltip.SetDefault("Blasts a torrential stream of magma that sticks to tiles and enemies");
 		}
 
 		public override void SetDefaults()

@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + "AxeBook";
 
-		public AxeBook() : base("Tiger Technique", "Allows execution of combos with axes\nThe final strike will rend enemies by 1\nRight click to throw your axe") { }
+		public AxeBook() : base("Tiger Technique", "Teaches you the Art of Axes, granting all axe weapons a new combo attack\nThe final strike will rend enemies' armor\nRight click to throw your axe") { }
 
 		public override void Load()
 		{

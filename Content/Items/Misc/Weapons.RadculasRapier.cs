@@ -15,10 +15,9 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Radcula's Rapier");
-			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a deadly bleed\n" +
-				"Press <right> to teleport to the cursor, slashing all those in the way\n" +
-				"The teleport deals increased damage and heals the player depending on the potency of the bleed on the struck enemy\n" +
-				"The more enemies you strike with the teleport, the lower the cooldown");
+			Tooltip.SetDefault("Rapidly stabs enemies, inflicting a stacking bleed\n" +
+				"Press <right> to teleport to the cursor, Reaping bleed stacks of enemies in the way for high damage and lifesteal\n" +
+				"Striking multiple enemies with the teleport lowers its cooldown");
 		}
 
 		public override void SetDefaults()

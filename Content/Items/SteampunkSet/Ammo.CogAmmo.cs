@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cogshot");
-			Tooltip.SetDefault("Bounces up to five times\nHalves damage on hit");
+			Tooltip.SetDefault("Bounces between enemies up to five times\nHalves damage with each bounce");
 		}
 
 		public override void SetDefaults()

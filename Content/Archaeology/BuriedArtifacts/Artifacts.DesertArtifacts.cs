@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
+using StarlightRiver.Content.Items.Desert;
 
 namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 {
@@ -18,6 +19,15 @@ namespace StarlightRiver.Content.Archaeology.BuriedArtifacts
 		public override float SpawnChance => 0.5f;
 
 		public override int ItemType => ModContent.ItemType<ArchaeologistsWhip>();
+	}
+
+	public abstract class SandscriptArtifact : DesertArtifact
+	{
+		public override Vector2 Size => new(30, 34);
+
+		public override float SpawnChance => 1f;
+
+		public override int ItemType => ModContent.ItemType<Sandscript>();
 	}
 
 	public abstract class FossilArtifact : DesertArtifact

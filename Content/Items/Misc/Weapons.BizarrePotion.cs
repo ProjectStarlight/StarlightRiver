@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Bizarre Potion");
-			Tooltip.SetDefault("Throws a random potion with random damaging effects");
+			Tooltip.SetDefault("Throws a random volatile potion with random - usually explosive - effects");
 		}
 
 		public override void SetDefaults()

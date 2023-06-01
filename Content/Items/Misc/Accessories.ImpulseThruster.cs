@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public ImpulseThruster() : base("Impulse Thruster", "Converts all wingtime into a burst of energy") { }
+		public ImpulseThruster() : base("Impulse Thruster", "Converts all wingtime into a burst of energy\n'At least 30 OSHA violations, in the palm of your hand'") { }
 
 		public override void SafeSetDefaults()
 		{

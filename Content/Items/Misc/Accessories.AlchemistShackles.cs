@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Alchemist's Shackles");
-			Tooltip.SetDefault("Mana and health potions are more effective when your health and mana are lower \nCursed : Potion sickness effects last 15 seconds longer");
+			Tooltip.SetDefault("Resource potions are more effective when their respective resource is lower \nCursed : Potion sickness effects last 15 seconds longer");
 		}
 
 		public static void Player_AddBuff(On_Player.orig_AddBuff orig, Player self, int type, int time1, bool quiet = true, bool foodHack = false)

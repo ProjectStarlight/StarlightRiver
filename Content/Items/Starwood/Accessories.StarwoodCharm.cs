@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Starwood
 	{
 		public override string Texture => AssetDirectory.StarwoodItem + Name;
 
-		public StarwoodCharm() : base("Starwood Charm", "Critical strikes generate mana stars\n-3% critical strike chance\n+3% critical strike chance when empowered") { }
+		public StarwoodCharm() : base("Starwood Charm", "Critical strikes generate mana stars\n-3% critical strike chance\n+3% critical strike chance when empowered by Starwood Armor") { }
 
 		public override void SafeSetDefaults()
 		{

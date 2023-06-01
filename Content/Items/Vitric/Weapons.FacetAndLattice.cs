@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Facet & Lattice");
-			Tooltip.SetDefault("Right click to guard\nAttacks are empowered after a guard\nEmpowerment is more effective with better guard timing");
+			Tooltip.SetDefault("Right click to guard, blocking damage depending on timing\nAttacks are empowered after a guard, also depending on your guard timing");
 		}
 
 		public override void SetDefaults()

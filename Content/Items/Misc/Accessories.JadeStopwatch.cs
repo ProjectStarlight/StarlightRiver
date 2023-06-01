@@ -16,9 +16,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public JadeStopwatch() : base("Jade stopwatch", "Time moves more quickly for you\n" +
-			"Time moves more slowly for you briefly after being hit\n" +
-			"50% reduced damage")
+		public JadeStopwatch() : base("Jade Stopwatch", "Time moves more quickly for you\n" +
+			"Time breifly moves more slowly for you after being hit")
 		{ }
 
 		public override void Load()

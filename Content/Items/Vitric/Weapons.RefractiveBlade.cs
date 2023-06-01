@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold RMB down to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
+			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
 		}
 
 		public override void SetDefaults()

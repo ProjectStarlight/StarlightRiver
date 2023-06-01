@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Causal Mirror");
-			Tooltip.SetDefault("Regenerate life when you would take damage-over-time.\nCursed : take damage-over-time when you would regenerate life.\nThis includes natural regeneration");
+			Tooltip.SetDefault("Cursed : Your DoT and regeneration effects are inverted.\nRegenerate life when you would take damage-over-time.\nTake damage-over-time when you would regenerate life.\nThis includes natural regeneration!");
 		}
 
 		public override void SafeUpdateEquip(Player Player)

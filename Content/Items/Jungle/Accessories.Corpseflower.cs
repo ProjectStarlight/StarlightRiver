@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Jungle
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is decreased by 66%\nYou are unable to critically strike while equipped");
+			Tooltip.SetDefault("All damage dealt is converted into damage over time\nDamage is initially decreased, but can interact with DoT-related accessories\nYou are unable to critically strike");
 		}
 
 		#region IL

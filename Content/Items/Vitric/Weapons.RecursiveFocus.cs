@@ -14,7 +14,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Summons an infernal crystal\n" +
-				"The infernal crystal locks onto enemies, ramping up damage overtime\n" +
+				"The infernal crystal locks onto enemies, ramping up damage over time\n" +
 				"Press <right> to cause the crystal to target multiple enemies, at the cost of causing all beams to not ramp up, dealing less damage");
 		}
 

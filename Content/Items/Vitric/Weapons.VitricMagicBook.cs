@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Book");
-			Tooltip.SetDefault("Summons stabbing spikes on nearby ground");
+			Tooltip.SetDefault("Summons spikes to stab enemies above them");
 		}
 
 		public override void SetDefaults()

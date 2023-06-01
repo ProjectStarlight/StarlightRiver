@@ -8,7 +8,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public Cheapskates() : base("Cheapskates", "Maximum movement speed is doubled\nTake up to 25% more damage while moving over default speed\nAcceleration is reduced by 75% when over default speed") { }
+		public Cheapskates() : base("Cheapskates", "Maximum movement speed is doubled\nTake up to 25% more damage while moving over your previous max speed\nAcceleration is reduced by 75% when over your previous max speed") { }
 
 		public override void Load()
 		{

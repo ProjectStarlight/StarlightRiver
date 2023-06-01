@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Hold <left> to fire a rapid stream of soil\nCan use many different types of soils\n33% chance to not consume ammo");
+			Tooltip.SetDefault("Hold <left> to fire a rapid stream of earth\nCan use many different blocks as ammo, each with unique effects\n33% chance to not consume ammo");
 		}
 
 		public override void SafeSetDefaults()

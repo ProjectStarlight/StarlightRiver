@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Jungle
 	{
 		public override string Texture => AssetDirectory.JungleItem + Name;
 
-		public Slitherring() : base("Slitherring", "Whips have a chance to shoot out a smaller, snake whip") { }
+		public Slitherring() : base("Slitherring", "A small snake occasionally attacks with you when you use a whip") { }
 
 		public override void Load()
 		{

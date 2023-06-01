@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Archaeologist's Whip");
-			Tooltip.SetDefault("Strike enemies to make them drop treasure \nCollect treasure to empower minions");
+			Tooltip.SetDefault("Strike enemies to make them drop treasure \nCollect treasure to empower your minions");
 			CreativeItemSacrificesCatalog.Instance.SacrificeCountNeededByItemId[Type] = 1;
 		}
 

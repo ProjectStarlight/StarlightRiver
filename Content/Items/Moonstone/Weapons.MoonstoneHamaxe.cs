@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Press <right> to charge up a slam that destroys walls");
+			Tooltip.SetDefault("Press <right> to charge up a slam that destroys a large area of walls");
 		}
 
 		public override void SetDefaults()

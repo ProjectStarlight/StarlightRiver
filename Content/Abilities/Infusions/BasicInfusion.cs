@@ -16,7 +16,7 @@ namespace StarlightRiver.Content.Abilities.Infusions
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blank Slate");
-			Tooltip.SetDefault("La Tabula Rasa\nCan be imprinted with challenges at an infusion station\nComplete challenges to transform into an infusion\nNew infusions become available as you progress");
+			Tooltip.SetDefault("Can be imprinted with challenges at an infusion station\nComplete challenges to transform into an infusion\nNew infusions become available as you progress");
 		}
 
 		public override void SetDefaults()

@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Tombsmasher");
-			Tooltip.SetDefault("Strikes enemies up into the air \nHit enemies in the air for more damage");
+			Tooltip.SetDefault("Strikes enemies up into the air when holding W and slams them down with S \nHit enemies in the air for more damage");
 		}
 
 		public override void SetDefaults()

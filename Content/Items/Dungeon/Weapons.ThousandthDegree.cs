@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 		public override void SetStaticDefaults()
 		{
 			//probably a bad tooltip idk
-			Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel, melting through enemies and sliding on tiles before returning\n'Rip and tear'");
+			Tooltip.SetDefault("Melts through enemies to build up heat\nReleasing launches the blazing wheel\n'Rip and tear'");
 		}
 
 		public override void SetDefaults()

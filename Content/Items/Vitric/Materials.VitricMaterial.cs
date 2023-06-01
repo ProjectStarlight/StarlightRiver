@@ -4,7 +4,7 @@
 	{
 		public override string Texture => AssetDirectory.VitricItem + Name;
 
-		public VitricOre() : base("Vitric Sliver", "", 999, 200, 2) { }
+		public VitricOre() : base("Vitric Shard", "", 999, 200, 2) { }
 	}
 
 	public class SandstoneChunk : QuickMaterial

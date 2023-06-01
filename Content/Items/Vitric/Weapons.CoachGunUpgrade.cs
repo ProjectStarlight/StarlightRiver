@@ -25,7 +25,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magmatic Coach Gun");
-			Tooltip.SetDefault("Press right click to throw out crystal bombs, bombs explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\nHow does he manage to nuke like that?");
+			Tooltip.SetDefault("Press right click to throw out crystal bombs, which explode in chain reactions \nFiring at a bomb detonates it prematurely for more violent results\n'How does he manage to corenuke like that?'");
 		}
 
 		public override void SetDefaults()

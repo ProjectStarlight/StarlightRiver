@@ -6,7 +6,7 @@ namespace StarlightRiver.Content.Items.EvilBiomes
 	{
 		public override string Texture => AssetDirectory.EvilBiomesItem + Name;
 
-		public ReplicantCells() : base("Replicant Cells", "+15% DoT Resist\nHealth regeneration starts slightly faster") { }
+		public ReplicantCells() : base("Replicant Cells", "+15% Inoculation\nHealth regeneration starts slightly faster") { }
 
 		public override void SafeUpdateEquip(Player Player)
 		{
