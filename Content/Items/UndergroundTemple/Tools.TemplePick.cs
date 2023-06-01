@@ -86,7 +86,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				if (!Main.mouseRight && !Spinning(Player) && charge == 120)
 				{
 					direction = Main.MouseWorld.X > Player.Center.X ? 1 : -1;
-					Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.Zero, ProjectileType<TemplePickProjectile>(), 0, 0, Player.whoAmI, charge, direction);
+					Projectile.NewProjectile(Item.GetSource_FromThis(), Player.Center, Vector2.Zero, ProjectileType<TemplePickProjectile>(), 0, 0, Player.whoAmI, 60, direction);
+
+					charge = 0;
 				}
 			}
 
@@ -117,6 +119,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Timer--;
 
+			Main.NewText(Timer);
+
 			if (Timer <= 0)
 				Projectile.timeLeft = 0;
 
@@ -127,7 +131,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Player.velocity.X = Direction * 8;
 			Player.direction = Timer / 3 % 2 == 0 ? 1 : -1;
 
-			if (Timer % 3 == 0)
+			if (Timer % 4 == 0)
 			{
 				for (int k = 0; k < 3; k++)
 				{
