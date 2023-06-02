@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (dying)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
 				for (int i = 0; i < 8; i++)
 				{
 					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());

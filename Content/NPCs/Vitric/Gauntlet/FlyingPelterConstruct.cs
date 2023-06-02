@@ -84,11 +84,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 100;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
 			NPC.noGravity = true;
 			NPC.behindTiles = true;
 		}
@@ -574,7 +571,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				Projectile.velocity = Vector2.Zero;
 
 				SoundEngine.PlaySound(new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Magic/FireHit"), Projectile.Center);
-				Helper.PlayPitched("Impacts/AirstrikeImpact", 0.4f, Main.rand.NextFloat(-0.1f, 0.1f));
+				Helper.PlayPitched("Impacts/AirstrikeImpact", 0.3f, Main.rand.NextFloat(-0.1f, 0.1f));
 
 				SpawnParticles();
 			}
