@@ -1,14 +1,11 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
+﻿using StarlightRiver.Core.Loaders.TileLoading;
 using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
 
-namespace StarlightRiver.Content.Tiles.Vitric
+namespace StarlightRiver.Content.Tiles.Underground
 {
 	class UndergroundTileLoader : SimpleTileLoader
-    {
-        public override string AssetRoot => AssetDirectory.Assets + "Tiles/Underground/";
+	{
+		public override string AssetRoot => AssetDirectory.Assets + "Tiles/Underground/";
 
 		public override float Priority => 2.02f;
 
@@ -52,5 +49,5 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					)
 				);
 		}
-    }
+	}
 }

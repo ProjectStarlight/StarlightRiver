@@ -1,10 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
-using StarlightRiver.Core;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
 
 namespace StarlightRiver.Content.Items.Utility
 {
@@ -37,7 +34,6 @@ namespace StarlightRiver.Content.Items.Utility
 			if (Player.armor[slot].ModItem is CursedAccessory && slot <= (Main.masterMode ? 9 : 8) + Player.extraAccessorySlots)
 			{
 				(Player.armor[slot].ModItem as CursedAccessory).GoingBoom = true;
-
 				Item.TurnToAir();
 			}
 

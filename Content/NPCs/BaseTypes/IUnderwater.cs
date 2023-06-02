@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-namespace StarlightRiver.Content.NPCs.BaseTypes
+﻿namespace StarlightRiver.Content.NPCs.BaseTypes
 {
 	interface IUnderwater
-    {
-        void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer);
-    }
+	{
+		void DrawUnderWater(SpriteBatch spriteBatch, int NPCLayer);
+	}
 }

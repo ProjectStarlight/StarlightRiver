@@ -1,18 +1,13 @@
-﻿using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-using Terraria.DataStructures;
-using Terraria.Graphics.Effects;
-using StarlightRiver.Content.Items.Geomancer;
+﻿using Terraria.ID;
 using Terraria.Localization;
 
-namespace StarlightRiver.Core.Loaders
+namespace StarlightRiver.Core.RecipeGroups
 {
 	class GraveRecipeGroup : IRecipeGroup
-    {
-        public void AddRecipeGroups()
-        {
-			RecipeGroup group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Lang.GetItemNameValue(ItemID.Tombstone), new int[]
+	{
+		public void AddRecipeGroups()
+		{
+			var group = new RecipeGroup(() => Language.GetTextValue("LegacyMisc.37") + " " + Lang.GetItemNameValue(ItemID.Tombstone), new int[]
 			{
 				ItemID.Tombstone,
 				ItemID.GraveMarker,
@@ -29,6 +24,6 @@ namespace StarlightRiver.Core.Loaders
 			// Registers the new recipe group with the specified name
 			RecipeGroup.RegisterGroup("StarlightRiver:Graves", group);
 		}
-        public float Priority => 1.2f;
-    }
+		public float Priority => 1.2f;
+	}
 }

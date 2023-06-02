@@ -1,16 +1,8 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Codex.Entries;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.Graphics.Effects;
+﻿using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Waters;
+using StarlightRiver.Core.Systems.LightingSystem;
+using StarlightRiver.Helpers;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Biomes
 {
@@ -20,9 +12,13 @@ namespace StarlightRiver.Content.Biomes
 
 		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/GlassPassive");
 
+		public override string MapBackground => AssetDirectory.MapBackgrounds + "GlassMap";
+
 		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
+
+		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
 
 		public override void SetStaticDefaults()
 		{
@@ -31,10 +27,11 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsBiomeActive(Player player)
 		{
-			return StarlightWorld.VitricBiome.Contains((player.position / 16).ToPoint());
-		}
+			Rectangle detectionBox = StarlightWorld.vitricBiome;
+			detectionBox.Inflate(Main.screenWidth / 32, Main.screenHeight / 32);
 
-		public override ModWaterStyle WaterStyle => ModContent.GetInstance<WaterVitric>();
+			return detectionBox.Contains((player.position / 16).ToPoint());
+		}
 
 		public override void OnInBiome(Player player)
 		{
@@ -47,7 +44,7 @@ namespace StarlightRiver.Content.Biomes
 						.UseOpacity(2.5f)
 						.UseIntensity(7f)
 						.UseProgress(6)
-						.UseImage(StarlightRiver.LightingBufferInstance.ScreenLightingTexture, 0);
+						.UseImage(LightingBuffer.screenLightingTarget.RenderTarget, 0);
 				}
 			}
 			else
@@ -66,7 +63,7 @@ namespace StarlightRiver.Content.Biomes
 		public override void OnEnter(Player player)
 		{
 			Helper.UnlockCodexEntry<VitricEntry>(player);
-		}	
+		}
 	}
 
 	public class VitricDesertBackground : ModSceneEffect
@@ -77,7 +74,7 @@ namespace StarlightRiver.Content.Biomes
 
 		public override bool IsSceneEffectActive(Player player)
 		{
-			return StarlightWorld.VitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
+			return StarlightWorld.vitricBiome.Intersects(new Rectangle((int)Main.screenPosition.X / 16, (int)Main.screenPosition.Y / 16, Main.screenWidth / 16, Main.screenHeight / 16));
 		}
 	}
 

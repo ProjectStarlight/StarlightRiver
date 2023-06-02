@@ -1,36 +1,21 @@
-﻿using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.Enums;
-using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.MetaballSystem;
+using System.Linq;
+using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.Items.Misc
 {
 	internal class MagmaMetaballs : MetaballActor
 	{
-		public override bool Active => Main.projectile.Any(n => n.active && n.type == ModContent.ProjectileType<MagmaGunPhantomProj>());
+		public override bool Active => Main.projectile.Any(n => n.active && (n.type == ModContent.ProjectileType<MagmaGunPhantomProj>() || n.type == ModContent.ProjectileType<ArrowMagma>()));
 
-		public override Color outlineColor => new Color(255, 254, 255);
+		public override Color OutlineColor => new(255, 254, 255);
 
 		public override void DrawShapes(SpriteBatch spriteBatch)
 		{
 			Effect borderNoise = Filters.Scene["BorderNoise"].GetShader().Shader;
 
-			var tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "MagmaGunProj").Value;
 
 			if (borderNoise is null)
 				return;

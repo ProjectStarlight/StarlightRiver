@@ -1,25 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StarlightRiver.Core;
-using MonoMod.Cil;
-using Terraria;
-using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using StarlightRiver.Content.CustomHooks;
-using System.Reflection;
-using MonoMod.RuntimeDetour;
-using Microsoft.Xna.Framework.Graphics;
-using Terraria.UI;
-using Mono.Cecil.Cil;
 
 namespace StarlightRiver.Compat.BossChecklist
 {
 	class CeirosPortrait
 	{
-		private static ParticleSystem ceirosSystem = new ParticleSystem("StarlightRiver/Assets/Keys/GlowSoft", n =>
+		private readonly static ParticleSystem ceirosSystem = new("StarlightRiver/Assets/Keys/GlowSoft", n =>
 		{
 			n.Velocity.X = (float)Math.Sin(n.Timer / 10f);
 			n.Velocity *= 0.975f;
@@ -38,9 +23,9 @@ namespace StarlightRiver.Compat.BossChecklist
 
 			float sin = 0.6f + (float)Math.Sin(Main.GameUpdateCount / 100f) * 0.2f;
 
-			var tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBoss").Value;
-			var tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBossGlow").Value;
-			var tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
+			Texture2D tex0 = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBoss").Value;
+			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/BossChecklist/VitricBossGlow").Value;
+			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value;
 			spriteBatch.Draw(tex2, rect, null, Color.Black * 0.6f, 0, Vector2.UnitY * 2, 0, 0);
 
 			spriteBatch.End();

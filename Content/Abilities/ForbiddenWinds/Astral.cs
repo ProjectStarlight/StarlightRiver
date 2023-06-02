@@ -1,176 +1,173 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Abilities.AbilityContent.Infusions;
-using StarlightRiver.Core;
+﻿using StarlightRiver.Content.Abilities.Infusions;
 using System;
-using Terraria;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities.ForbiddenWinds
 {
 	class Astral : InfusionItem<Dash>
-    {
-        public override InfusionTier Tier => InfusionTier.Bronze;
-        public override string Texture => "StarlightRiver/Assets/Abilities/Astral";
-        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
+	{
+		public override InfusionTier Tier => InfusionTier.Bronze;
+		public override string Texture => "StarlightRiver/Assets/Abilities/Astral";
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Comet Rush I");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases stamina cost to 1.3");
-        }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Comet Rush I");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry more speed\nIncreases stamina cost to 1.3");
+		}
 
-        public override void SetDefaults()
-        {
-            Item.width = 20;
-            Item.height = 14;
-            Item.rare = ItemRarityID.Green;
+		public override void SetDefaults()
+		{
+			Item.width = 20;
+			Item.height = 14;
+			Item.rare = ItemRarityID.Green;
 
-            color = new Color(100, 200, 250);
-        }
+			color = new Color(100, 200, 250);
+		}
 
-        public override void OnActivate()
-        {
-            Ability.Speed *= 0.75f;
-            Ability.Boost = 0.5f;
-            Ability.ActivationCostBonus += 0.3f;
+		public override void OnActivate()
+		{
+			Ability.Speed *= 0.75f;
+			Ability.Boost = 0.5f;
+			Ability.ActivationCostBonus += 0.3f;
 
-            base.OnActivate();
-            Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Player.Center);
+			base.OnActivate();
+			Terraria.Audio.SoundEngine.PlaySound(SoundID.Item96, Player.Center);
 
-            Ability.Time = 10;
-        }
+			Ability.Time = 10;
+		}
 
-        public override void UpdateActive()
-        {
-            Player.velocity = Dash.SignedLesserBound(Ability.Dir * Ability.Speed, Player.velocity); // "conservation of momentum"
+		public override void UpdateActive()
+		{
+			Player.velocity = Dash.SignedLesserBound(Ability.Dir * Ability.Speed, Player.velocity); // "conservation of momentum"
 
-            Player.frozen = true;
-            Player.gravity = 0;
-            Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Ability.Speed);
+			Player.frozen = true;
+			Player.gravity = 0;
+			Player.maxFallSpeed = Math.Max(Player.maxFallSpeed, Ability.Speed);
 
-            if (Ability.Time-- <= 0) Ability.Deactivate();
-        }
+			if (Ability.Time-- <= 0)
+				Ability.Deactivate();
+		}
 
-        public override void UpdateActiveEffects()
-        {
-            Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
-            for (float k = -2; k <= 2; k += 0.1f)
-            {
-                Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (4 - Ability.Time);
+		public override void UpdateActiveEffects()
+		{
+			Vector2 nextPos = Player.Center + Vector2.Normalize(Player.velocity) * Ability.Speed;
+			for (float k = -2; k <= 2; k += 0.1f)
+			{
+				Vector2 pos = nextPos + Vector2.UnitX.RotatedBy(Player.velocity.ToRotation() + k) * 7 * (4 - Ability.Time);
 
-                if (Ability.Time == 0)
-                {
-                    //Vector2 pos2 = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 60;
-                    //Dust.NewDustPerfect(pos2, DustType<Dusts.BlueStamina>(), Vector2.UnitY.RotatedBy(Ability.Player.velocity.ToRotation() + k + 1.57f) * Math.Abs(k), 0, default, 3 - Math.Abs(k));
-                }
-                Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.Time / 10f);
+				if (Ability.Time == 0)
+				{
+					//Vector2 pos2 = nextPos + Vector2.UnitX.RotatedBy(Ability.Player.velocity.ToRotation() + k) * 60;
+					//Dust.NewDustPerfect(pos2, DustType<Dusts.BlueStamina>(), Vector2.UnitY.RotatedBy(Ability.Player.velocity.ToRotation() + k + 1.57f) * Math.Abs(k), 0, default, 3 - Math.Abs(k));
+				}
 
-                if (Math.Abs(k) >= 1.5f)
-                    Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.Time / 10f);
-            }
-        }
-    }
+				Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.4f, 0), 0, default, 1 - Ability.Time / 10f);
 
-    class Astral2 : Astral
-    {
-        public override InfusionTier Tier => InfusionTier.Silver;
+				if (Math.Abs(k) >= 1.5f)
+					Dust.NewDustPerfect(pos, DustType<Dusts.BlueStamina>(), Player.velocity * Main.rand.NextFloat(-0.6f, -0.4f), 0, default, 2.2f - Ability.Time / 10f);
+			}
+		}
+	}
 
-        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame1";
+	class Astral2 : Astral
+	{
+		public override InfusionTier Tier => InfusionTier.Silver;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Comet Rush II");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed\nIncreases stamina cost to 1.6");
-        }
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame1";
 
-        public override void OnActivate()
-        {
-            Ability.ActivationCostBonus += 0.3f;
-            Ability.Speed *= 1.25f;
-            base.OnActivate();
-        }
-    }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Comet Rush II");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry even more speed\nIncreases stamina cost to 1.6");
+		}
 
-    class Astral3 : Astral
-    {
-        public override InfusionTier Tier => InfusionTier.Gold;
+		public override void OnActivate()
+		{
+			Ability.ActivationCostBonus += 0.3f;
+			Ability.Speed *= 1.25f;
+			base.OnActivate();
+		}
+	}
 
-        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame2";
+	class Astral3 : Astral
+	{
+		public override InfusionTier Tier => InfusionTier.Gold;
 
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Comet Rush III");
-            Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed\nIncreases stamina cost to 2");
-        }
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame2";
 
-        public override void OnActivate()
-        {
-            Ability.ActivationCostBonus += 0.4f;
-            Ability.Speed *= 1.25f;
-            base.OnActivate();
-        }
-    }
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Comet Rush III");
+			Tooltip.SetDefault("Forbidden Winds Infusion\nDash farther and carry the most speed\nIncreases stamina cost to 2");
+		}
 
-    class AstralImprint : InfusionImprint
-    {
-        public override InfusionTier Tier => InfusionTier.Bronze;
-        public override string Texture => "StarlightRiver/Assets/Abilities/AstralImprint";
-        public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
-        public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+		public override void OnActivate()
+		{
+			Ability.ActivationCostBonus += 0.4f;
+			Ability.Speed *= 1.25f;
+			base.OnActivate();
+		}
+	}
 
-        public override int TransformTo => ItemType<Astral>();
+	class AstralImprint : InfusionImprint
+	{
+		public override InfusionTier Tier => InfusionTier.Bronze;
+		public override string Texture => "StarlightRiver/Assets/Abilities/AstralImprint";
+		public override string FrameTexture => "StarlightRiver/Assets/Abilities/DashFrame0";
+		public override string PreviewVideo => "StarlightRiver/Assets/Videos/AstralPreview";
+
+		public override int TransformTo => ItemType<Astral>();
 
 		public override void Load()
 		{
-            StarlightNPC.ModifyHitByItemEvent += TrackKillsMelee;
-            StarlightNPC.ModifyHitByProjectileEvent += TrackKillsRanged;
+			StarlightNPC.OnHitByItemEvent += TrackKillsMelee;
+			StarlightNPC.OnHitByProjectileEvent += TrackKillsRanged;
 
-            StarlightItem.OnPickupEvent += TrackPickup;
-
-            
+			StarlightItem.OnPickupEvent += TrackPickup;
 		}
 
 		private bool TrackPickup(Item Item, Player Player)
 		{
-            if (Item.type == ItemID.FallenStar)
-            {
-                var objective = FindObjective(Player, "Loot Fallen Stars");
+			if (Item.type == ItemID.FallenStar)
+			{
+				InfusionObjective objective = FindObjective(Player, "Loot Fallen Stars");
 
-                if(objective != null)
-                    objective.progress += Item.stack;
-            }
+				if (objective != null)
+					objective.progress += Item.stack;
+			}
 
-            return true;
+			return true;
 		}
 
-		private void TrackKillsRanged(NPC NPC, Projectile Projectile, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+		private void TrackKillsRanged(NPC NPC, Projectile Projectile, NPC.HitInfo info, int damageDone)
 		{
-            var Player = Main.player[Projectile.owner];
-            var killObjective = FindObjective(Player, "Strike Foes");
+			Player Player = Main.player[Projectile.owner];
+			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
 
-            if (killObjective != null)
-                killObjective.progress++;
+			if (killObjective != null)
+				killObjective.progress++;
 		}
 
-		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, ref int damage, ref float knockback, ref bool crit)
+		private void TrackKillsMelee(NPC NPC, Player Player, Item Item, NPC.HitInfo info, int damageDone)
 		{
-            var killObjective = FindObjective(Player, "Strike Foes");
+			InfusionObjective killObjective = FindObjective(Player, "Strike Foes");
 
-            if (killObjective != null)
-                killObjective.progress++;
-        }
+			if (killObjective != null)
+				killObjective.progress++;
+		}
 
 		public override void SafeSetStaticDefaults()
-        {
-            DisplayName.SetDefault("Comet Rush");
-            Tooltip.SetDefault("Dash farther and carry more speed");
-        }
+		{
+			DisplayName.SetDefault("Comet Rush");
+			Tooltip.SetDefault("Dash farther and carry more speed");
+		}
 
-        public override void SetDefaults()
-        {
-            objectives.Add(new InfusionObjective("Strike Foes", 10, Color.Orange));
-            objectives.Add(new InfusionObjective("Loot Fallen Stars", 5, Color.Orange));
-        }
-    }
+		public override void SetDefaults()
+		{
+			objectives.Add(new InfusionObjective("Strike Foes", 10));
+			objectives.Add(new InfusionObjective("Loot Fallen Stars", 5));
+		}
+	}
 }

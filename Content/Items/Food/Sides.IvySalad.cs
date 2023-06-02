@@ -1,9 +1,4 @@
-﻿using Microsoft.Xna.Framework;
-using StarlightRiver.Core;
-using System;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food
 {
@@ -11,23 +6,26 @@ namespace StarlightRiver.Content.Items.Food
 	{
 		public IvySalad() : base("10% chance to poision with all hits", 60, IngredientType.Side) { }
 
-		public override void SafeSetDefaults() => Item.rare = ItemRarityID.White;
+		public override void SafeSetDefaults()
+		{
+			Item.rare = ItemRarityID.White;
+		}
 
 		public override void Load()
 		{
-			StarlightPlayer.ModifyHitNPCEvent += ChanceToPoision;
-			StarlightPlayer.ModifyHitNPCWithProjEvent += ChanceToPoisionProjectile;
+			StarlightPlayer.OnHitNPCEvent += ChanceToPoision;
+			StarlightPlayer.OnHitNPCWithProjEvent += ChanceToPoisionProjectile;
 		}
 
-		private void ChanceToPoisionProjectile(Player player, Projectile proj, NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection) 
+		private void ChanceToPoisionProjectile(Player player, Projectile proj, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
+			if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
 				target.AddBuff(BuffID.Poisoned, 30);
 		}
 
-		private void ChanceToPoision(Player player, Item Item, NPC target, ref int damage, ref float knockback, ref bool crit)
+		private void ChanceToPoision(Player player, Item Item, NPC target, NPC.HitInfo info, int damageDone)
 		{
-			if (crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
+			if (info.Crit && Active(player) && Main.rand.NextFloat() < (0.1f * player.GetModPlayer<FoodBuffHandler>().Multiplier))
 				target.AddBuff(BuffID.Poisoned, 30);
 		}
 	}

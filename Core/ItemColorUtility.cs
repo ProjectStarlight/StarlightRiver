@@ -1,22 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
+﻿using System.Collections.Generic;
 
 namespace StarlightRiver.Core
 {
 	internal static class ItemColorUtility
 	{
-		private static Dictionary<int, Color> AverageColor = new Dictionary<int, Color>();
+		private static readonly Dictionary<int, Color> AverageColor = new();
 
 		public static Color GetColor(int type)
 		{
 			if (AverageColor.ContainsKey(type))
+			{
 				return AverageColor[type];
+			}
 			else
 			{
 				AddColor(type);
@@ -33,7 +28,7 @@ namespace StarlightRiver.Core
 			int greenTotal = 0;
 			int blueTotal = 0;
 
-			Color[] data = new Color[tex.Width * tex.Height];
+			var data = new Color[tex.Width * tex.Height];
 			tex.GetData(data);
 
 			for (int i = 0; i < tex.Width; i += 2)
@@ -41,6 +36,7 @@ namespace StarlightRiver.Core
 				for (int j = 0; j < tex.Height; j += 2)
 				{
 					Color alpha = data[j * tex.Width + i];
+
 					if (alpha != Color.Transparent)
 					{
 						numPixels++;
@@ -51,6 +47,7 @@ namespace StarlightRiver.Core
 					}
 				}
 			}
+
 			if (numPixels == 0)
 				AverageColor.Add(type, Color.White);
 			else

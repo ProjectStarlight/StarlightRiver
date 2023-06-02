@@ -9,3 +9,4 @@ The Mod is **not** ready, do not ruin it for yourself
 All code here is licensed under the GPL v3 license. To keep it short, it is quite similar to the MIT license, but using our code requires you to open-source yours under the same license.
 
 View the full license [here](LICENSE.txt).
+This item is not authorized for posting on Steam, except under the Steam account named egshels.

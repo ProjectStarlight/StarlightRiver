@@ -1,20 +1,8 @@
-﻿using Microsoft.Xna.Framework.Audio;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using ReLogic.Utilities;
-using StarlightRiver.Configs;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-using System;
-using Terraria;
-using Terraria.ID;
-using static Terraria.ModLoader.ModContent;
-
-namespace StarlightRiver.Content.CustomHooks
+﻿namespace StarlightRiver.Content.CustomHooks
 {
 	class CustomInventorySounds : HookGroup
 	{
-		public override SafetyLevel Safety => SafetyLevel.Fragile; //gonna break if anyone else touches playSound
+		//gonna break if anyone else touches playSound
 
 		public override void Load()
 		{
@@ -22,7 +10,7 @@ namespace StarlightRiver.Content.CustomHooks
 			//IL.Terraria.UI.ItemSlot.LeftClick_ItemArray_int_int += PlayCustomSound;
 		}
 
-        /*
+		/*
 		private void PlayCustomSound(ILContext il)
 		{
 			ILCursor c = new ILCursor(il);

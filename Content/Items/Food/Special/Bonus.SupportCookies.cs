@@ -1,12 +1,4 @@
-﻿using StarlightRiver.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Food.Special
 {
@@ -14,13 +6,16 @@ namespace StarlightRiver.Content.Items.Food.Special
 	{
 		public SupportCookies() : base("Life and mana pickups restore bonus life and mana") { }
 
-		public override FoodRecipie Recipie() => new FoodRecipie(
+		public override FoodRecipie Recipie()
+		{
+			return new FoodRecipie(
 			ModContent.ItemType<SupportCookies>(),
 			ModContent.ItemType<Dough>(),
 			ModContent.ItemType<HealthExtract>(),
 			ModContent.ItemType<ManaExtract>(),
 			ModContent.ItemType<TableSalt>()
 			);
+		}
 
 		public override void Load()
 		{
@@ -29,9 +24,9 @@ namespace StarlightRiver.Content.Items.Food.Special
 
 		private bool BonusHeal(Item Item, Player Player)
 		{
-			if(Active(Player))
+			if (Active(Player))
 			{
-				if(Item.type == ItemID.Heart || Item.type == ItemID.Star)
+				if (Item.type == ItemID.Heart || Item.type == ItemID.Star)
 				{
 					Player.HealEffect(5);
 					Player.ManaEffect(5);

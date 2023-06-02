@@ -1,35 +1,24 @@
-﻿using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
-using StarlightRiver.Content.Dusts;
-using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Items.Vitric;
-using StarlightRiver.Helpers;
-using Terraria;
-using Terraria.ID;
-using Terraria.Enums;
-using Terraria.ModLoader;
-using System;
-using System.Linq;
-using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using Terraria.Graphics.Effects;
-using Terraria.DataStructures;
-using Terraria.GameContent;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
 
 namespace StarlightRiver.Core.Systems.MetaballSystem
 {
 	public abstract class MetaballActor : IOrderedLoadable
 	{
-		public RenderTarget2D Target { get; protected set; }
-		private RenderTarget2D Target2 { get; set; }
+		public ScreenTarget Target { get; protected set; }
+		private ScreenTarget Target2 { get; set; }
 
-		public float Priority => 1.1f;
+		public float Priority => 1f;
 
 		/// <summary>
 		/// The color of the outline of your metaball system
 		/// </summary>
-		public virtual Color outlineColor => Color.Black;
+		public virtual Color OutlineColor => Color.Black;
+
+		/// <summary>
+		/// When your metaball system should draw over enemies
+		/// </summary>
+		public virtual bool OverEnemies => false;
 
 		/// <summary>
 		/// When your metaball system should be active and creating it's rendertargets
@@ -38,19 +27,17 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 
 		public void Load()
 		{
-			MetaballSystem.Actors.Add(this);
+			Target = new(DrawShapes, () => Active, 1);
+			Target2 = new(DrawSecondTarget, () => Active, 1.1f);
+
+			MetaballSystem.actorsSem.WaitOne();
+			MetaballSystem.actors.Add(this);
+			MetaballSystem.actorsSem.Release();
 		}
 
 		public void Unload()
 		{
 
-		}
-
-		public void ResizeTarget(int width, int height)
-		{
-			var graphics = Main.graphics.GraphicsDevice;
-			Target = new RenderTarget2D(graphics, width, height);
-			Target2 = new RenderTarget2D(graphics, width, height);
 		}
 
 		/// <summary>
@@ -85,65 +72,57 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			return true;
 		}
 
+		/// <summary>
+		/// Draws the first render target to the second
+		/// </summary>
+		/// <param name="sb"></param>
+		public void DrawSecondTarget(SpriteBatch sb)
+		{
+			if (PreDraw(sb, Target.RenderTarget))
+				sb.Draw(Target.RenderTarget, position: Vector2.Zero, color: Color.White);
+		}
+
+		/// <summary>
+		/// This method manually replaces the contents of the first RenderTarget later in rendering
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="graphicsDevice"></param>
 		public void DrawToTarget(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
 		{
 			if (Main.gameMenu || !Active)
 				return;
 
-			if (Target is null || Target2 is null)
-				ResizeTarget(Main.screenWidth, Main.screenHeight);
-
-			graphicsDevice.SetRenderTarget(Target);
-			graphicsDevice.Clear(Color.Transparent);
-
-			spriteBatch.Begin();
-
-			DrawShapes(spriteBatch);
-
-			spriteBatch.End();
-
-			graphicsDevice.SetRenderTarget(Target2);
-			graphicsDevice.Clear(Color.Transparent);
-
-			spriteBatch.Begin();
-
-			if(PreDraw(spriteBatch, Target))
-				spriteBatch.Draw(Target, position: Vector2.Zero, color: Color.White);
-
-			spriteBatch.End();
-
-			graphicsDevice.SetRenderTarget(Target);
+			graphicsDevice.SetRenderTarget(Target.RenderTarget);
 			graphicsDevice.Clear(Color.Transparent);
 
 			Effect metaballEdgeDetection = Filters.Scene["MetaballEdgeDetection"].GetShader().Shader;
 			metaballEdgeDetection.Parameters["width"].SetValue((float)Main.screenWidth / 2);
 			metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
-			metaballEdgeDetection.Parameters["border"].SetValue(outlineColor.ToVector4());
-
-			//metaballEdgeDetection.CurrentTechnique.Passes[0].Apply();
+			metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
 
 			spriteBatch.Begin(default, default, default, default, default, metaballEdgeDetection);
 
-			spriteBatch.Draw(Target2, position: Vector2.Zero, color: Color.White);
+			spriteBatch.Draw(Target2.RenderTarget, position: Vector2.Zero, color: Color.White);
 
 			spriteBatch.End();
 
 			graphicsDevice.SetRenderTarget(null);
 		}
 
+		/// <summary>
+		/// Renders the final metaball texture
+		/// </summary>
+		/// <param name="spriteBatch"></param>
 		public void DrawTarget(SpriteBatch spriteBatch)
 		{
 			if (Main.gameMenu || !Active)
 				return;
 
-			if (Target is null || Target2 is null)
-				ResizeTarget(Main.screenWidth, Main.screenHeight);
-
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
-			if(PostDraw(spriteBatch, Target))
-				spriteBatch.Draw(Target, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
+			if (PostDraw(spriteBatch, Target.RenderTarget))
+				spriteBatch.Draw(Target.RenderTarget, Vector2.Zero, null, Color.White, 0, new Vector2(0, 0), 2f, SpriteEffects.None, 0);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);

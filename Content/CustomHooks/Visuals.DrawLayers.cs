@@ -1,78 +1,55 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Tiles.Overgrow;
-using StarlightRiver.Core;
-using StarlightRiver.Keys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria;
-using Terraria.Graphics;
-using static Terraria.ModLoader.ModContent;
+﻿using Terraria.Graphics;
 
 namespace StarlightRiver.Content.CustomHooks
 {
 	class DrawLayers : HookGroup
-    {
-        //A few different hooks for drawing on certain layers. Orig is always run and its just draw calls.
-        public override SafetyLevel Safety => SafetyLevel.Safe;
-
-        public override void Load()
-        {
-            if (Main.dedServ)
-                return;
-
-            //Keys
-            On.Terraria.Main.DrawItems += DrawKeys;
-
-            //On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
-            //On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
-
-            On.Terraria.DataStructures.PlayerDrawLayers.DrawPlayer_RenderAllLayers += PostDrawPlayerLayer;
-        }
-
-		private void PostDrawPlayerLayer(On.Terraria.DataStructures.PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref Terraria.DataStructures.PlayerDrawSet drawinfo)
+	{
+		//A few different hooks for drawing on certain layers. Orig is always run and its just draw calls.
+		public override void Load()
 		{
-            var drawPlayer = drawinfo.drawPlayer;
-            var shadow = drawinfo.shadow;
+			if (Main.dedServ)
+				return;
 
-            if (!Main.gameMenu && shadow == 0) 
-                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+			//On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.DrawPlayer += PostDrawPlayer;
+			//On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.DrawPlayer += PostDrawPlayerGate;
 
-            orig(ref drawinfo);
+			Terraria.DataStructures.On_PlayerDrawLayers.DrawPlayer_RenderAllLayers += PostDrawPlayerLayer;
+		}
 
-            if (!Main.gameMenu && shadow == 0)
-                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
-        }
-
-		private void PostDrawPlayer(On.Terraria.Graphics.Renderers.LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+		private void PostDrawPlayerLayer(Terraria.DataStructures.On_PlayerDrawLayers.orig_DrawPlayer_RenderAllLayers orig, ref Terraria.DataStructures.PlayerDrawSet drawinfo)
 		{
-            if (!Main.gameMenu && shadow == 0) 
-                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+			Player drawPlayer = drawinfo.drawPlayer;
+			float shadow = drawinfo.shadow;
 
-            orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
 
-            if (!Main.gameMenu && shadow == 0)
-                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
-        }
+			orig(ref drawinfo);
 
-        private void PostDrawPlayerGate(On.Terraria.Graphics.Renderers.ReturnGatePlayerRenderer.orig_DrawPlayer orig, object self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
-        {
-            if (!Main.gameMenu && shadow == 0)
-                drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+		}
 
-            orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+		private void PostDrawPlayer(Terraria.Graphics.Renderers.On_LegacyPlayerRenderer.orig_DrawPlayer orig, Terraria.Graphics.Renderers.LegacyPlayerRenderer self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+		{
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
 
-            if (!Main.gameMenu && shadow == 0)
-                drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
-        }
+			orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
 
-        private void DrawKeys(On.Terraria.Main.orig_DrawItems orig, Main self)
-        {
-            foreach (Key key in KeySystem.Keys)
-                key.Draw(Main.spriteBatch);
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+		}
 
-            orig(self);
-        }
-    }
+		private void PostDrawPlayerGate(Terraria.Graphics.Renderers.On_ReturnGatePlayerRenderer.orig_DrawPlayer orig, object self, Camera camera, Player drawPlayer, Vector2 position, float rotation, Vector2 rotationOrigin, float shadow, float scale)
+		{
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PreDraw(drawPlayer, Main.spriteBatch);
+
+			orig(self, camera, drawPlayer, position, rotation, rotationOrigin, shadow, scale);
+
+			if (!Main.gameMenu && shadow == 0)
+				drawPlayer.GetModPlayer<StarlightPlayer>().PostDraw(drawPlayer, Main.spriteBatch);
+		}
+	}
 }

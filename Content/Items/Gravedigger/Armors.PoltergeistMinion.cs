@@ -1,17 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using StarlightRiver.Content.Abilities;
-using StarlightRiver.Core;
-using StarlightRiver.Helpers;
-
+﻿using StarlightRiver.Helpers;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Terraria;
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.GameContent;
 using static Terraria.ModLoader.ModContent;
 
@@ -32,7 +21,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override string Texture => AssetDirectory.Invisible;
 
-		public override bool? CanCutTiles() => false;
+		public override bool? CanCutTiles()
+		{
+			return false;
+		}
 
 		public override void SetStaticDefaults()
 		{
@@ -48,15 +40,14 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Projectile.DamageType = DamageClass.Magic;
 		}
 
-        public override void Kill(int timeLeft)
-        {
+		public override void Kill(int timeLeft)
+		{
 			if (owner?.armor[0]?.ModItem != null && owner.armor[0].type == ModContent.ItemType<PoltergeistHead>())
 				(owner.armor[0].ModItem as PoltergeistHead).minions.Remove(Projectile);
 		}
 
-        public override void AI()
+		public override void AI()
 		{
-			
 
 			if (owner.dead && opacity > 0)
 				opacity -= 0.05f;
@@ -76,11 +67,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 				Timer++;
 
-				var helm = (owner.armor[0].ModItem as PoltergeistHead);
+				var helm = owner.armor[0].ModItem as PoltergeistHead;
 
 				int sleepTimer = helm.sleepTimer;
 				int index = helm.minions.IndexOf(Projectile);
-				float progress = helm.Timer * 0.02f + index / (float)helm.minions.Count * 6.28f;
+				float progress = helm.timer * 0.02f + index / (float)helm.minions.Count * 6.28f;
 
 				Projectile.timeLeft = 2;
 				targetPos = owner.Center + new Vector2(0, -100 + (float)Math.Sin(progress * 3.4f) * 20) + new Vector2((float)Math.Cos(progress) * 100, (float)Math.Sin(progress) * 40);
@@ -107,30 +98,32 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 					if (Item.UseSound.HasValue)
 						Terraria.Audio.SoundEngine.PlaySound(Item.UseSound.Value, Projectile.Center);
-                    
+
 					targetRotation = rot + (Item.staff[Item.type] ? 1.57f / 2 : 0);
 				}
 			}
 		}
 
-        public override void SendExtraAI(BinaryWriter writer)
-        {
+		public override void SendExtraAI(BinaryWriter writer)
+		{
 			if (Item != null)
 				writer.Write(Item.type);
-			 else
+			else
 				writer.Write(-1);
 
 			writer.Write((owner.armor[0].ModItem as PoltergeistHead).sleepTimer);
-			
-        }
 
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
 			int ItemType = reader.ReadInt32();
 			if (ItemType == -1)
+			{
 				Item = null;
-            else
-            {
+			}
+			else
+			{
 				Item = new Item();
 				Item.SetDefaults(ItemType);
 			}
@@ -145,11 +138,11 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 		}
 
-        private bool TryFindTarget(out NPC NPC)
+		private bool TryFindTarget(out NPC NPC)
 		{
-			for(int k = 0; k < Main.maxNPCs; k++)
+			for (int k = 0; k < Main.maxNPCs; k++)
 			{
-				var thisNPC = Main.npc[k];
+				NPC thisNPC = Main.npc[k];
 
 				if (thisNPC.active && thisNPC.CanBeChasedBy(this) && Vector2.Distance(thisNPC.Center, owner.Center) < 500 && Collision.CanHitLine(Projectile.Center, 1, 1, thisNPC.position, thisNPC.width, thisNPC.height))
 				{
@@ -166,8 +159,8 @@ namespace StarlightRiver.Content.Items.Gravedigger
 		{
 			if (Item != null && !Item.IsAir)
 			{
-				
-				var tex = TextureAssets.Item[Item.type].Value;
+
+				Texture2D tex = TextureAssets.Item[Item.type].Value;
 				//var frames = Main.itemFrame[Item.type];
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * opacity, Projectile.rotation, tex.Size() / 2, 1, 0, 0);

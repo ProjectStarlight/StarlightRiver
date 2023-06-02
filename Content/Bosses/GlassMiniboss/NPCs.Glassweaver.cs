@@ -1,394 +1,490 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using StarlightRiver.Content.GUI;
-using StarlightRiver.Core;
-using StarlightRiver.Core.Loaders;
+using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
-using Terraria;
+using System.Linq;
 using Terraria.ID;
-using Terraria.ModLoader;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
 	public partial class Glassweaver : ModNPC
-    {
-        public bool attackVariant = false;
-        public bool disableJumpSound = false;
-        //bool attackLowHPVariant => NPC.life <= NPC.lifeMax * 0.5f;
-
-        internal ref float Phase => ref NPC.ai[0];
-        internal ref float GlobalTimer => ref NPC.ai[1];
-
-        internal ref float AttackPhase => ref NPC.ai[2];
-        internal ref float AttackTimer => ref NPC.ai[3];
-        internal ref float AttackType => ref NPC.localAI[0];
-
-        public Vector2 arenaPos;
-
-        //Phase tracking utils
-        public enum PhaseEnum
-        {
-            SpawnEffects,
-            DespawnEffects,
-            JumpToBackground,
-            GlassGauntlet,
-            ReturnToForeground,
-            DirectPhase,
-            DeathEffects
-        }
-
-        public enum AttackEnum
-        {
-            None,
-            Jump,
-            SpinJump,
-            TripleSlash,
-            MagmaSpear,
-            Whirlwind,
-            JavelinRain,
-            GlassRaise,
-            BigBrightBubble
-        }
-
-        public override void SetStaticDefaults()
-        {
-            DisplayName.SetDefault("Glassweaver"); 
-            NPCID.Sets.TrailCacheLength[Type] = 10;
-            NPCID.Sets.TrailingMode[Type] = 1;
-            NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
-            NPCID.Sets.BossBestiaryPriority.Add(Type);
-
-            NPCID.Sets.NPCBestiaryDrawModifiers drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
-            {
-                
-            };
-            NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-        }
-
-        public override string Texture => AssetDirectory.Glassweaver + Name;
-
-        public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
-
-        public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects) => spriteEffects = GetSpriteEffects();
-
-        public override bool CanHitPlayer(Player target, ref int cooldownSlot) => false; //no contact damage!
-
-        public override void SetDefaults()
-        {
-            NPC.width = 82;
-            NPC.height = 75;
-            NPC.lifeMax = 1800;
-            NPC.damage = 20;
-            NPC.aiStyle = -1;
-            NPC.noGravity = true;
-            NPC.knockBackResist = 0;
-            NPC.boss = true;
-            NPC.defense = 14;
-            NPC.HitSound = SoundID.NPCHit52;
-            Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
-            NPC.dontTakeDamage = true;
-        }
-
-        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
-        {
-            NPC.lifeMax = (int)(2000 * bossLifeScale);
-        }
+	{
+		public static readonly Color GlowDustOrange = new(6255, 108, 0);
+		public static readonly Color GlassColor = new(60, 170, 205);
+
+		public bool attackVariant = false;
+		public bool disableJumpSound = false;
+
+		float attackType;
+		public Vector2 arenaPos;
+
+		internal ref float Phase => ref NPC.ai[0];
+		internal ref float GlobalTimer => ref NPC.ai[1];
+		internal ref float AttackPhase => ref NPC.ai[2];
+		internal ref float AttackTimer => ref NPC.ai[3];
+
+		public Rectangle Arena => new((int)arenaPos.X - 35 * 16, (int)arenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
+
+		public override string Texture => AssetDirectory.Glassweaver + Name;
+
+		public override string BossHeadTexture => AssetDirectory.Glassweaver + Name + "_BossHead";
+
+		//Phase tracking utils
+		public enum Phases
+		{
+			SpawnEffects,
+			DespawnEffects,
+			JumpToBackground,
+			GlassGauntlet,
+			ReturnToForeground,
+			DirectPhase,
+			DeathEffects,
+			FailEffects
+		}
+
+		public enum AttackTypes
+		{
+			None,
+			Jump,
+			SpinJump,
+			TripleSlash,
+			MagmaSpear,
+			Whirlwind,
+			JavelinRain,
+			GlassRaise,
+			BigBrightBubble
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Glassweaver");
+			NPCID.Sets.TrailCacheLength[Type] = 10;
+			NPCID.Sets.TrailingMode[Type] = 1;
+			NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
+			NPCID.Sets.BossBestiaryPriority.Add(Type);
+
+			var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers(0)
+			{
+
+			};
+			NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+		}
+
+		public override void SetDefaults()
+		{
+			NPC.width = 82;
+			NPC.height = 75;
+			NPC.lifeMax = 1800;
+			NPC.damage = 20;
+			NPC.aiStyle = -1;
+			NPC.noGravity = true;
+			NPC.knockBackResist = 0;
+			NPC.boss = true;
+			NPC.defense = 14;
+			NPC.HitSound = SoundID.NPCHit52;
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Miniboss");
+			NPC.dontTakeDamage = true;
+			NPC.npcSlots = 100;
+		}
+
+		private SpriteEffects GetSpriteEffects()
+		{
+			return NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		}
+
+		public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
+		{
+			spriteEffects = GetSpriteEffects();
+		}
+
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+		{
+			return false; //no contact damage!
+		}
+
+		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+		{
+			NPC.lifeMax = (int)(2000 * bossAdjustment);
+		}
+
+		public override bool CheckDead()
+		{
+			StarlightWorld.Flag(WorldFlags.DesertOpen);
 
-        public override bool CheckDead()
-        {
-            StarlightWorld.Flag(WorldFlags.DesertOpen);
+			NPC.life = 1;
+			NPC.dontTakeDamage = true;
 
-            NPC.life = 1;
-            NPC.dontTakeDamage = true;
+			return false;
+		}
 
-            return false;
-        }
+		public override void AI()
+		{
+			AttackTimer++;
 
-        public override void AI()
-        {
-            AttackTimer++;
+			Dust.NewDustPerfect(arenaPos, ModContent.DustType<Dusts.BlueStamina>());
 
-            NPC.noGravity = false;
+			Dust.NewDustPerfect(PickSpot(), ModContent.DustType<Dusts.Stamina>());
+			Dust.NewDustPerfect(PickCloseSpot(), ModContent.DustType<Dusts.Void>());
+			Dust.NewDustPerfect(PickSpotSelf(), ModContent.DustType<Dusts.LavaSpark>());
 
-            switch (Phase)
-            {
-                case (int)PhaseEnum.SpawnEffects:
+			switch (Phase)
+			{
+				case (int)Phases.SpawnEffects:
 
-                    arenaPos = StarlightWorld.VitricBiome.TopLeft() * 16 + new Vector2(1 * 16, 76 * 16) + new Vector2(0, 256);
-                    Phase = (int)PhaseEnum.JumpToBackground;
-                    ResetAttack();
+					arenaPos = StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+					Phase = (int)Phases.JumpToBackground;
+					Projectile.NewProjectile(NPC.GetSource_FromThis(), arenaPos + new Vector2(528 + 48, -46), Vector2.Zero, ProjectileType<GlassweaverDoor>(), Main.myPlayer, 0, NPC.target);
+					ResetAttack();
 
-                    break;
+					break;
 
-                case (int)PhaseEnum.JumpToBackground:
+				case (int)Phases.JumpToBackground:
 
-                    //if (AttackTimer <= 90) 
-                    //    SpawnAnimation();
+					if (AttackTimer <= 120)
+					{
+						SpawnAnimation();
+					}
+					else
+					{
+						Phase = (int)Phases.GlassGauntlet;
+						ResetAttack();
+					}
 
-                    //else
-                    //{
-                    Phase = (int)PhaseEnum.GlassGauntlet;
-                    ResetAttack();
-                    //    NPC.noGravity = false;
-                    //}
+					break;
 
-                    break;
+				case (int)Phases.GlassGauntlet:
 
-                case (int)PhaseEnum.GlassGauntlet:
+					if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
+					{
+						Phase = (int)Phases.FailEffects;
+						AttackTimer = 0;
+						return;
+					}
 
-                    switch (AttackPhase)
-                    {
-                        case 0: GlassGauntlet_Wave0(); break;
+					switch (AttackPhase)
+					{
+						case 0: GauntletWave0(); break;
 
-                        case 1: GlassGauntlet_Wave1(); break;
+						case 1: GauntletWave1(); break;
 
-                        case 2: GlassGauntlet_Wave2(); break;
+						case 2: GauntletWave2(); break;
 
-                        case 3: GlassGauntlet_End(); break;
-                    }
+						case 3: GauntletWave3(); break;
 
-                    break;                
-                
-                case (int)PhaseEnum.ReturnToForeground:
+						case 4: GauntletWave4(); break;
 
-                    if (AttackTimer == 1)
-                        UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
+						case 5: GauntletWave5(); break;
 
-                    JumpBackAnimation();
+						case 6: GauntletWave6(); break;
 
-                    break;
+						case 7: EndGauntlet(); break;
+					}
 
-                case (int)PhaseEnum.DirectPhase:
+					break;
 
-                    NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
-                    if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
-                        Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
+				case (int)Phases.ReturnToForeground:
 
-                    if (AttackTimer == 1)
-                    {
-                        AttackPhase++;
+					if (AttackTimer == 1)
+						UILoader.GetUIState<TextCard>().Display("Glassweaver", "Worker of the Anvil", null, 240, 1.2f, false);
 
-                        if (AttackPhase > 8) 
-                            AttackPhase = 0;
+					JumpBackAnimation();
 
-                        attackVariant = Main.rand.NextBool(2);
-                        NPC.netUpdate = true;
-                    }
+					break;
 
-                    //target
-                    //target
-                    //side specific
-                    //sweep
-                    //target
+				case (int)Phases.DirectPhase:
 
-                    switch (AttackPhase)
-                    {
-                        case 0: TripleSlash(); break;
+					NPC.rotation = MathHelper.Lerp(NPC.rotation, 0, 0.33f);
 
-                        case 1: Whirlwind(); break;
+					if (NPC.velocity.Y > 0f && NPC.collideY && !disableJumpSound)
+						Helpers.Helper.PlayPitched("GlassMiniboss/RippedSoundJump", 1f, -0.1f, NPC.Center);
 
-                        case 2: if (attackVariant) MagmaSpear(); else JavelinRain(); break;
+					if (AttackTimer == 1)
+					{
+						if (!Main.player.Any(n => n.active && !n.dead && n.Hitbox.Intersects(Arena)))
+						{
+							Phase = (int)Phases.FailEffects;
+							AttackTimer = 61;
+							return;
+						}
 
-                        case 3: BigBrightBubble(); break;
+						AttackPhase++;
 
-                        case 4: if (attackVariant) GlassRaise(); else GlassRaiseAlt(); break;
+						if (AttackPhase > 8)
+							AttackPhase = 0;
 
-                        case 5: JavelinRain(); break;
+						attackVariant = Main.rand.NextBool(2);
+						NPC.netUpdate = true;
+					}
 
-                        case 6: TripleSlash(); break;
+					//target
+					//target
+					//side specific
+					//sweep
+					//target
 
-                        case 7: MagmaSpear(); break;
+					switch (AttackPhase)
+					{
+						case 0:
+							TripleSlash();
+							break;
 
-                        case 8: BigBrightBubble(); break;
+						case 1:
+							Whirlwind();
+							break;
 
-                        default: TripleSlash(); break;
-                    }
+						case 2:
+							if (attackVariant)
+								MagmaSpear();
+							else
+								JavelinRain();
+							break;
 
-                    break;
-            }
+						case 3:
+							BigBrightBubble();
+							break;
 
-            disableJumpSound = false;
-        }
+						case 4:
+							if (attackVariant)
+								GlassRaise();
+							else
+								GlassRaiseAlt();
+							break;
 
-        public override bool? CanFallThroughPlatforms() => Target.Bottom.Y > NPC.Top.Y;
+						case 5:
+							JavelinRain();
+							break;
 
-        public override void SendExtraAI(BinaryWriter writer)
-        {
-            writer.Write(attackVariant);
-        }
+						case 6:
+							TripleSlash();
+							break;
 
-        public override void ReceiveExtraAI(BinaryReader reader)
-        {
-            attackVariant = reader.ReadBoolean();
-        }
+						case 7:
+							if (attackVariant)
+								MagmaSpear();
+							else
+								MagmaSpearAlt();
+							break;
 
-        //i hate this specific thing right here
-        public override ModNPC Clone(NPC npc)
-        {
-            var newNPC = base.Clone(npc) as Glassweaver;
-            newNPC.moveTarget = new Vector2();
-            newNPC.moveStart = new Vector2();
-            newNPC.attackVariant = false;
-            newNPC.hammerIndex = -1;
-            newNPC.bubbleIndex = -1;
-            return newNPC;
-        }
+						case 8:
+							BigBrightBubble();
+							break;
 
-        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-        {
-            Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + Name);
-            Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + Name + "Glow");
+						default:
+							TripleSlash();
+							break;
+					}
 
-            if (NPC.IsABestiaryIconDummy)
-            {
-                Rectangle bestiaryFrame = weaver.Frame(1, 6, 0, 4);
-                spriteBatch.Draw(weaver.Value, NPC.Center - screenPos, bestiaryFrame, Color.White, 0, bestiaryFrame.Size() * 0.5f, 1f, 0, 0);
-                return false;
-            }
+					break;
 
-            Rectangle frame = weaver.Frame(1, 6, 0, 0);
-            frame.X = 0;
-            frame.Width = 144;
-            const int frameHeight = 152;
+				case (int)Phases.DeathEffects:
 
-            Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
-            Vector2 drawPos = new Vector2(0, -35) - screenPos;
+					NPC.noGravity = false;
+					NPC.velocity.X = (arenaPos.X - NPC.Center.X) * 0.2f;
 
-            Color baseColor = drawColor;
-            Color glowColor = new Color(255, 255, 255, 128);
+					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
+					{
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 3);
+						NPC.active = false;
+					}
 
-            //gravity frame
-            if (NPC.velocity.Y > 0)
-                frame.Y = frameHeight * 2;
+					break;
 
-            switch (Phase)
-            {
-                case (int)PhaseEnum.GlassGauntlet:
+				case (int)Phases.FailEffects:
 
-                    return false;
+					if (AttackTimer < 60)
+					{
+						NPC.position.Y -= (AttackTimer - 45) * 0.3f;
+						NPC.scale = 0.75f + AttackTimer / 60f * 0.25f;
+					}
 
-                case (int)PhaseEnum.ReturnToForeground:
+					NPC.noGravity = false;
+					NPC.velocity.X = (arenaPos.X - NPC.Center.X) * 0.2f;
 
-                    if (AttackTimer > 30 & AttackTimer < 180)
-                        return false;
+					if (Math.Abs(NPC.Center.X - arenaPos.X) < 5)
+					{
+						NPC.NewNPC(NPC.GetSource_FromThis(), (int)NPC.Center.X, (int)NPC.Center.Y, NPCType<GlassweaverWaiting>(), 0, 0, 2);
+						NPC.active = false;
+					}
 
-                    break;
+					break;
+			}
 
-                case (int)PhaseEnum.DirectPhase:
+			disableJumpSound = false;
+		}
 
-                    switch (AttackType)
-                    {
-                        case (int)AttackEnum.Jump:
+		public override bool? CanFallThroughPlatforms()
+		{
+			return Target.Bottom.Y > NPC.Top.Y;
+		}
 
-                            float jumpProgress = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
-                            if (jumpProgress < 0.33f || NPC.velocity.Y < 0f)
-                                frame.Y = frameHeight;
-                            
-                            break;
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(attackVariant);
+		}
 
-                        case (int)AttackEnum.SpinJump:
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			attackVariant = reader.ReadBoolean();
+		}
 
-                            frame.Y = frameHeight * 5;
+		//i hate this specific thing right here
+		public override ModNPC Clone(NPC npc)
+		{
+			var newNPC = base.Clone(npc) as Glassweaver;
+			newNPC.moveTarget = new Vector2();
+			newNPC.moveStart = new Vector2();
+			newNPC.attackVariant = false;
+			newNPC.hammerIndex = -1;
+			newNPC.bubbleIndex = -1;
+			return newNPC;
+		}
 
-                            break;
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			Asset<Texture2D> weaver = Request<Texture2D>(AssetDirectory.Glassweaver + Name);
+			Asset<Texture2D> weaverGlow = Request<Texture2D>(AssetDirectory.Glassweaver + Name + "Glow");
 
-                        case (int)AttackEnum.TripleSlash:
+			if (NPC.IsABestiaryIconDummy)
+			{
+				Rectangle bestiaryFrame = weaver.Frame(1, 6, 0, 4);
+				spriteBatch.Draw(weaver.Value, NPC.Center - screenPos, bestiaryFrame, Color.White, 0, bestiaryFrame.Size() * 0.5f, 1f, 0, 0);
+				return false;
+			}
 
-                            if (AttackTimer > 40 && AttackTimer < 240)
-                            {
-                                //using a lerp wouldn't look well with the animation, so a little bit of clunk
-                                if (AttackTimer < slashTime[2] + 30)
-                                {
-                                    frame.X = 142;
+			Rectangle frame = weaver.Frame(1, 6, 0, 0);
+			frame.X = 0;
+			frame.Width = 144;
+			const int frameHeight = 152;
 
-                                    if (AttackTimer > slashTime[2])
-                                        frame.Y = frameHeight * 3;
-                                    else if (AttackTimer > slashTime[1])
-                                        frame.Y = frameHeight * 2;
-                                    else if (AttackTimer > slashTime[0])
-                                        frame.Y = frameHeight;
-                                }
-                            }
+			Vector2 origin = frame.Size() * new Vector2(0.5f, 0.5f);
+			Vector2 drawPos = new Vector2(0, -35) - screenPos;
 
-                            break;
-                
-                        case (int)AttackEnum.MagmaSpear:
+			Color baseColor = drawColor;
+			var glowColor = new Color(255, 255, 255, 128);
 
-                            if (AttackTimer < 170 && AttackTimer > 10)
-                            {
-                                frame.X = 142;
-                                frame.Y = frameHeight * (4 + (NPC.velocity.Y != 0 ? 0 : 1));
-                            }
+			//gravity frame
+			if (NPC.velocity.Y > 0)
+				frame.Y = frameHeight * 2;
 
-                            break;
+			switch (Phase)
+			{
+				case (int)Phases.GlassGauntlet:
 
-                        case (int)AttackEnum.Whirlwind:
+					break;
 
+				case (int)Phases.ReturnToForeground:
 
-                            break;
+					break;
 
-                        case (int)AttackEnum.JavelinRain:
+				case (int)Phases.DirectPhase:
 
-                            if (AttackTimer < javelinTime - javelinSpawn + 10)
-                                frame.Y = frameHeight * 3;
-                            break;
+					switch (attackType)
+					{
+						case (int)AttackTypes.Jump:
 
-                        case (int)AttackEnum.GlassRaise:
+							float jumpProgress = Utils.GetLerpValue(jumpStart, jumpEnd, AttackTimer, true);
+							if (jumpProgress < 0.33f || NPC.velocity.Y < 0f)
+								frame.Y = frameHeight;
 
-                            float hammerTimer = AttackTimer - hammerSpawn + 5;
+							break;
 
-                            if (hammerTimer <= hammerTime + 55 && AttackTimer > 50)
-                            {
-                                frame.X = 288;
-                                frame.Width = 180;
-                                origin.X = frame.Width / 2f;
+						case (int)AttackTypes.SpinJump:
 
-                                if (hammerTimer <= hammerTime * 0.87f)
-                                {
-                                    frame.Y = 0;
-                                    bool secFrame = (hammerTimer >= hammerTime * 0.33f) && (hammerTimer < hammerTime * 0.66f);
-                                    if (secFrame)
-                                        frame.Y = frameHeight;
-                                }
-                                else
-                                {
-                                    float swingTime = Utils.GetLerpValue(hammerTime * 0.87f, hammerTime * 0.98f, hammerTimer, true);
-                                    frame.Y = frameHeight + (frameHeight * (int)(1f + (swingTime * 2f)));
-                                }
-                            }
-                            break;
+							frame.Y = frameHeight * 5;
 
-                        case (int)AttackEnum.BigBrightBubble:
+							break;
 
-                            if (AttackTimer > 50)
-                            {
-                                if (AttackTimer < 330)
-                                    frame.Y = frameHeight * 4;
-                                else if (AttackTimer < bubbleRecoil - 60)
-                                    frame.Y = frameHeight;
-                                else if (AttackTimer < bubbleRecoil + 10)
-                                    frame.Y = frameHeight * 5;
-                            }
+						case (int)AttackTypes.TripleSlash:
 
-                            break;
-                    }
+							if (AttackTimer > 40 && AttackTimer < 240)
+							{
+								//using a lerp wouldn't look well with the animation, so a little bit of clunk
+								if (AttackTimer < slashTimes[2] + 30)
+								{
+									frame.X = 142;
 
-                    break;
-            }
+									if (AttackTimer > slashTimes[2])
+										frame.Y = frameHeight * 3;
+									else if (AttackTimer > slashTimes[1])
+										frame.Y = frameHeight * 2;
+									else if (AttackTimer > slashTimes[0])
+										frame.Y = frameHeight;
+								}
+							}
 
-            spriteBatch.Draw(weaver.Value, NPC.Center + drawPos, frame, baseColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
-            spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+							break;
 
-            return false;
-        }
+						case (int)AttackTypes.MagmaSpear:
 
-        private SpriteEffects GetSpriteEffects() => NPC.direction < 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+							if (AttackTimer < 170 && AttackTimer > 10)
+							{
+								frame.X = 142;
+								frame.Y = frameHeight * (4 + (NPC.velocity.Y != 0 ? 0 : 1));
+							}
 
-        public static readonly Color GlowDustOrange = Color.Lerp(Color.DarkOrange, Color.OrangeRed, 0.45f);
-        public static readonly Color GlassColor = new Color(60, 200, 175);
+							break;
 
-    }
+						case (int)AttackTypes.Whirlwind:
+
+							break;
+
+						case (int)AttackTypes.JavelinRain:
+
+							if (AttackTimer < javelinTime - JAVELIN_SPAWN_TIME + 10)
+								frame.Y = frameHeight * 3;
+							break;
+
+						case (int)AttackTypes.GlassRaise:
+
+							float hammerTimer = AttackTimer - HAMMER_SPAWN_TIME + 5;
+
+							if (hammerTimer <= hammerTime + 55 && AttackTimer > 50)
+							{
+								frame.X = 288;
+								frame.Width = 180;
+								origin.X = frame.Width / 2f;
+
+								if (hammerTimer <= hammerTime * 0.87f)
+								{
+									frame.Y = 0;
+									bool secFrame = hammerTimer >= hammerTime * 0.33f && hammerTimer < hammerTime * 0.66f;
+
+									if (secFrame)
+										frame.Y = frameHeight;
+								}
+								else
+								{
+									float swingTime = Utils.GetLerpValue(hammerTime * 0.87f, hammerTime * 0.98f, hammerTimer, true);
+									frame.Y = frameHeight + frameHeight * (int)(1f + swingTime * 2f);
+								}
+							}
+
+							break;
+
+						case (int)AttackTypes.BigBrightBubble:
+
+							if (AttackTimer > 50)
+							{
+								if (AttackTimer < 270)
+									frame.Y = frameHeight * 4;
+								else if (AttackTimer < BUBBLE_RECOIL_TIME - 60)
+									frame.Y = frameHeight;
+								else if (AttackTimer < BUBBLE_RECOIL_TIME + 10)
+									frame.Y = frameHeight * 5;
+							}
+
+							break;
+					}
+
+					break;
+			}
+
+			spriteBatch.Draw(weaver.Value, NPC.Center + drawPos, frame, baseColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+			spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
+
+			return false;
+		}
+	}
 }
