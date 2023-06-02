@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Abilities.ForbiddenWinds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -248,6 +249,7 @@ namespace StarlightRiver.Content.Pickups
 		public override int PickupType => NPCType<ForbiddenWindsPickup>();
 	}
 
+	[SLRDebug]
 	public class WindsTileItem : QuickTileItem
 	{
 		public WindsTileItem() : base("Forbidden Winds", "Debug placer for ability pickup", "ForbiddenWindsPickupTile", -1) { }

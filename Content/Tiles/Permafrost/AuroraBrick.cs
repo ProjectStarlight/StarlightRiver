@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		public AuroraBrickItem() : base("Aurora Brick", "Oooh... Preeetttyyy", "AuroraBrick", ItemRarityID.White) { }
 	}
 
+	[SLRDebug]
 	class AuroraBrickDoorItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
