@@ -7,16 +7,25 @@ namespace StarlightRiver.Core
 {
 	public class ParticleSystem
 	{
+		public enum AnchorOptions
+		{
+			Screen,
+			World
+		}
+
 		public delegate void Update(Particle particle);
 
 		private readonly List<Particle> Particles = new();
 		private Texture2D Texture;
 		private readonly Update UpdateDelegate;
 
-		public ParticleSystem(string texture, Update updateDelegate)
+		private readonly AnchorOptions Anchor;
+
+		public ParticleSystem(string texture, Update updateDelegate, AnchorOptions anchor = AnchorOptions.Screen)
 		{
 			Texture = Request<Texture2D>(texture, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			UpdateDelegate = updateDelegate;
+			Anchor = anchor;
 		}
 
 		public void DrawParticles(SpriteBatch spriteBatch)
@@ -33,8 +42,12 @@ namespace StarlightRiver.Core
 					if (!Main.gameInactive)
 						UpdateDelegate(particle);
 
-					if (Helper.OnScreen(particle.Position))
-						spriteBatch.Draw(Texture, particle.Position, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
+					Vector2 pos = particle.Position;
+					if (Anchor == AnchorOptions.World)
+						pos -= Main.screenPosition;
+
+					if (Helper.OnScreen(pos))
+						spriteBatch.Draw(Texture, pos, particle.Frame == new Rectangle() ? Texture.Bounds : particle.Frame, particle.Color * particle.Alpha, particle.Rotation, particle.Frame.Size() / 2, particle.Scale, 0, 0);
 				}
 
 				Particles.RemoveAll(n => n is null || n.Timer <= 0);

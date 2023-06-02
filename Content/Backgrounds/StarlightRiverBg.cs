@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Backgrounds
 		public static ScreenTarget starsMap;
 		public static ParticleSystem stars;
 
+		public static float starOpacity = 1;
+
 		public override void Load()
 		{
 			if (Main.dedServ)
@@ -152,12 +154,14 @@ namespace StarlightRiver.Content.Backgrounds
 			{
 				particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
 
+				particle.Alpha = starOpacity;
+
 				if (particle.Timer < 30)
-					particle.Alpha = particle.Timer / 30f;
+					particle.Alpha = particle.Timer / 30f * starOpacity;
 			}
 			else if (particle.Type == 1)
 			{
-				particle.Scale = (1f - particle.Timer / 60f) * 1.25f;
+				particle.Scale = (1f - particle.Timer / 60f) * 2f;
 			}
 		}
 
