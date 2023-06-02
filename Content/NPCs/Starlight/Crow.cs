@@ -383,12 +383,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			return TextState switch
 			{
 				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off and straightening its ruffled feathers.",
-				1 => "\"CAW, there you are! I've jumped through seventeen different axons and the half the entire CAW - sorry, I caw when I'm excited - Capricorn tropic trying to find you!\"",
-				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other! You see, I am a Seeker. A seeker of what, you ask? Well, that information's not free, but I'll give you a hint.\"",
+				1 => "\"There you are! I've jumped through seventeen different axons and the half the entire Capricorn Tropic trying to find you!\"",
+				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other. You see, I am a Seeker. Of what, exactly, is not free information, but I'll give you a hint.\"",
 				3 => "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
-				4 => "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of CAW - sorry - connection. For a favor, I'll teach you a quick incantation!\"",
-				5 => "\"This is Starsight. The ability to tap into the Noosphere, the realm of meaning, and grasp onto but a thin thread. If you encounter something beyond your own understanding, use it to borrow the knowledge you need.\"",
-				6 => "\"Kheh... you owe me now! I've got business in the Equatorial Ring, but something about your world seems promising. If you discover something interesting, I'll find you again, and you will share it with me as recompense. Good luck.\"",
+				4 => "\"Mana's not the only thing out there. It's an engine of change, it can blow things up, it can reverse entropy, but it's not all there is. I'm studying *Starlight*. The inverse of mana... the energy of meaning, of memory, of connection. If you let me observe your efforts, I'll teach you how to use it.\"",
+				5 => "\"This is Starsight. The ability to glimpse the weave of fate and meaning, grasping onto but a thin thread. If you encounter something beyond your own understanding, use it to borrow the knowledge you need. I have a feeling you'll be generating a lot of useful data for me...\"",
+				6 => "\"I've got business in the Equatorial Ring, but before I go, one last word of advice... Something lurks beneath the nearby desert. The threads of memory converge in a great tangle - if you wish to understand Starlight, you must confront and decipher whatever's waiting for you there. I'll be watching.\"",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
 		}
