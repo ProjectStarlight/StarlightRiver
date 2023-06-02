@@ -7,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Interactive
 {
-	internal class Bouncer : DummyTile
+	internal class Bouncer : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<BouncerDummy>();
 
@@ -21,6 +21,10 @@ namespace StarlightRiver.Content.Tiles.Interactive
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<BouncerItem>());
+		}
+		public string GetHint()
+		{
+			return "A reactive crystal. It... kinetically interacts with Starlight.";
 		}
 	}
 

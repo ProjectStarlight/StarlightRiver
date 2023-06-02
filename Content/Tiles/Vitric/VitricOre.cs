@@ -10,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricOre : DummyTile
+	internal class VitricOre : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreDummy>();
 
@@ -61,9 +61,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
+		}
 	}
 
-	internal class VitricOreFloat : DummyTile
+	internal class VitricOreFloat : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreFloatDummy>();
 
@@ -88,6 +92,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool CanDrop(int i, int j)
 		{
 			return false;
+		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 

@@ -1,4 +1,5 @@
 using StarlightRiver.Content.DropRules;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
@@ -15,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	[AutoloadBossHead]
-	public partial class SquidBoss : ModNPC, IUnderwater
+	public partial class SquidBoss : ModNPC, IUnderwater, IHintable
 	{
 		public enum AIStates
 		{
@@ -823,6 +824,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+		}
+
+		public string GetHint()
+		{
+			return "Vulnerable only when its shielding tentacles are destroyed...";
 		}
 	}
 }

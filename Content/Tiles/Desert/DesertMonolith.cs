@@ -2,10 +2,11 @@
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
-	internal class DesertMonolith : ModTile
+	internal class DesertMonolith : ModTile, IHintable
 	{
 		public override string Texture => AssetDirectory.DesertTile + Name;
 
@@ -93,6 +94,10 @@ namespace StarlightRiver.Content.Tiles.Desert
 					tile.TileFrameY = (short)(4 * 18 * y + y1 * 18);
 				}
 			}
+		}
+		public string GetHint()
+		{
+			return "These towering monoliths withstood the test of time...";
 		}
 	}
 

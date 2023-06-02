@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Content.Abilities;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -27,7 +28,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 		}
 	}
 
-	class JellyShroomDummy : Dummy
+	class JellyShroomDummy : Dummy, IHintable
 	{
 		public JellyShroomDummy() : base(TileType<JellyShroom>(), 7 * 16, 2 * 16) { }
 
@@ -107,6 +108,10 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 			Color color = Projectile.ai[1] == 0 ? Color.White : Color.Lerp(new Color(255, 100, 100), Color.White, Projectile.ai[0] / 90f);
 			spriteBatch.Draw(tex, target, null, color, 0, tex.Size() / 2, 0, 0);
+		}
+		public string GetHint()
+		{
+			return "This mushroom is different. And bouncy.";
 		}
 	}
 

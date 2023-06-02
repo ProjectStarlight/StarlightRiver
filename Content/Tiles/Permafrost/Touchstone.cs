@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile
+	class Touchstone : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
@@ -129,6 +130,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "Full of Starlight, seemingly with a mind of its own...";
 		}
 	}
 

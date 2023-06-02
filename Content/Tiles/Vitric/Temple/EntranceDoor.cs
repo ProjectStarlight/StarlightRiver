@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Content.Abilities;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -41,6 +42,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			Player.cursorItemIconID = ItemType<Items.Vitric.TempleEntranceKey>();
 			Player.noThrow = 2;
 			Player.cursorItemIconEnabled = true;
+		}
+		public string GetHint()
+		{
+			return "The monolithic door does not budge. You need a key...";
 		}
 	}
 

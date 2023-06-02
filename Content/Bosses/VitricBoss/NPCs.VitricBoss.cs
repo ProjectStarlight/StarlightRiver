@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -17,7 +18,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.VitricBoss
 {
 	[AutoloadBossHead]
-	public sealed partial class VitricBoss : ModNPC
+	public sealed partial class VitricBoss : ModNPC, IHintable
 	{
 		public Vector2 startPos;
 		public Vector2 endPos;
@@ -840,5 +841,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 				arena = new Rectangle((int)homePos.X + 8 - arenaWidth / 2, (int)homePos.Y - 32 - arenaHeight / 2, arenaWidth, arenaHeight);
 		}
 		#endregion Networking
+
+		#region Hint
+		public string GetHint()
+		{
+				return "Glassweaver mentioned a 'Sentinel'... Focus!";
+		}
+		#endregion Hint
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using StarlightRiver.Content.Abilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -8,7 +9,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class MagmitePassive : ModNPC
+	internal class MagmitePassive : ModNPC, IHintable
 	{
 		private int frameCounter = 0;
 
@@ -233,6 +234,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
+		}
+		public string GetHint()
+		{
+			return "Cute!";
+
 		}
 	}
 

@@ -1,10 +1,11 @@
 ﻿using System.Linq;
+using StarlightRiver.Content.Abilities;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Stalker : ModNPC
+	class Stalker : ModNPC, IHintable
 	{
 		public override string Texture => AssetDirectory.Assets + "NPCs/Corruption/" + Name;
 
@@ -93,6 +94,10 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, Color.White * (NPC.alpha / 255f), 0, NPC.Size / 2, 1, 0, 0);
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "Theres... nothing there. An illusion.";
 		}
 	}
 }

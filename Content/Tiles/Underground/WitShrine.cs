@@ -1,11 +1,12 @@
 ﻿using StarlightRiver.Content.Tiles.Underground.WitShrineGames;
 using StarlightRiver.Core.Systems.DummyTileSystem;
+using StarlightRiver.Content.Abilities;
 using System;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class WitShrine : DummyTile
+	class WitShrine : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<WitShrineDummy>();
 
@@ -60,6 +61,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "A shrine - to which deity, you do not know, though it holds a book. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
 	}
 

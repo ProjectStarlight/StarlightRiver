@@ -1,4 +1,5 @@
 ﻿using Terraria.DataStructures;
+using StarlightRiver.Content.Abilities;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -6,7 +7,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class MagmiteShrine : ModTile
+	class MagmiteShrine : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Underground/" + Name;
 
@@ -21,6 +22,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			(r, g, b) = (0.1f, 0.08f, 0.025f);
+		}
+		public string GetHint()
+		{
+			return "A shrine - obviously, to Their Greatness the Magmite. The lil goober's eyes seem to follow you, and heart-shaped runes dance across its pedestal.";
 		}
 	}
 
