@@ -47,7 +47,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			VoidEase = new EaseBuilder();
 			VoidEase.AddPoint(new Vector2(0, 0.25f), EaseFunction.EaseCubicIn);
-			VoidEase.AddPoint(new Vector2(45, 1.5f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
+			VoidEase.AddPoint(new Vector2(45, 1.0f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
 			VoidEase.AddPoint(new Vector2(75, 0.5f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION, 0.1f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION + 20, 2f), EaseFunction.EaseCubicInOut);
@@ -62,8 +62,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0f;
 
-			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/Clink");
-			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/SmallStoneHit");
+			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 		}
 
 		public override void OnSpawn(IEntitySource source)
@@ -160,6 +160,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				else if (warpAnimationTimer == MAX_SUCC_ANIMATION) {
 
 					Helper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
+					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 				}
 
 				starViewScale = VoidEase.Ease(warpAnimationTimer);
@@ -179,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				if (crackAnimationTimer % 100 == 0)
 				{
 					NPC.velocity = Vector2.Zero;
-					CameraSystem.shake += 30;
+					CameraSystem.shake += 20;	
 
 					for (int i = 0; i < 50; i++)
 					{
@@ -196,16 +197,16 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				if (crackAnimationTimer == 0)
 				{
-					Music = MusicLoader.GetMusicSlot(Mod, "ThisSoundDoesNotExist");
 					Helper.PlayPitched("BossRush/ArmillaryCrack1", 1, 0f, NPC.Center);
 				}
-				else if (crackAnimationTimer == 170)
+				else if (crackAnimationTimer == 165)
 				{
 					Helper.PlayPitched("BossRush/ArmillaryCrack2", 1, 0f, NPC.Center);
 				}
 				else if (crackAnimationTimer == 255)
 				{
 					Helper.PlayPitched("BossRush/ArmillaryBreak", 1, 0f, NPC.Center);
+					Music = MusicLoader.GetMusicSlot(Mod, "ThisSoundDoesNotExist");
 				}
 
 				crackAnimationTimer++;
@@ -531,7 +532,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					return 0;
 			}
 
-			return MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/Moonstone");
+			return MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/OminousIdle");
 		}
 	}
 }
