@@ -62,7 +62,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0f;
 
-			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/SmallStoneHit");
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/SmallStoneHit") with { PitchVariance = 0.3f };
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
 		}
 
