@@ -56,7 +56,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.solved;
+			Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.Solved;
 		}
 	}
 
@@ -64,6 +64,29 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 	class DoorGearsItem : QuickTileItem
 	{
 		public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+	}
+
+	class DoorLasers : ModTile
+	{
+		public override string Texture => AssetDirectory.VitricTile + "DoorVertical";
+
+		public override void SetStaticDefaults()
+		{
+			MinPick = int.MaxValue;
+			TileID.Sets.DrawsWalls[Type] = true;
+			this.QuickSetFurniture(1, 5, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+		}
+
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.Solved;
+		}
+	}
+
+	[SLRDebug]
+	class DoorLasersItem : QuickTileItem
+	{
+		public DoorLasersItem() : base("Laser Puzzle Temple Door", "Temple Door, Opens if laser puzzle is solved", "DoorLasers", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
 
 	class DashableDoor : DummyTile

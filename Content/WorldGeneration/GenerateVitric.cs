@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Helpers;
 using StarlightRiver.Noise;
 using System;
@@ -575,11 +576,10 @@ namespace StarlightRiver.Core
 
 			int yOff = 71;
 
-			StructureHelper.Generator.GenerateStructure(
-				"Structures/VitricTempleNew",
-				new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff),
-				StarlightRiver.Instance
-				);
+			var pos = new Point16(vitricBiome.Center.X - dimensions.X / 2, vitricBiome.Center.Y - yOff);
+			StructureHelper.Generator.GenerateStructure("Structures/VitricTempleNew", pos, StarlightRiver.Instance);
+
+			GearPuzzleHandler.PuzzleOriginLocation = pos + new Point16(14, 130);
 
 			NPC.NewNPC(new EntitySource_WorldGen(), (vitricBiome.Center.X - 16) * 16, (vitricBiome.Center.Y - 20) * 16, NPCType<Content.Bosses.GlassMiniboss.GlassweaverWaiting>());
 		}

@@ -103,7 +103,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 
-			if (GearPuzzleHandler.solved) //draws the crystal gear once the puzzle is finished
+			if (GearPuzzleHandler.Solved) //draws the crystal gear once the puzzle is finished
 			{
 				tex = Size switch
 				{

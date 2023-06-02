@@ -2819,6 +2819,11 @@ Mods: {
 				DisplayName: Soft Sand
 				Tooltip: ""
 			}
+
+			DoorLasersItem: {
+				DisplayName: Laser Puzzle Temple Door
+				Tooltip: Temple Door, Opens if laser puzzle is solved
+			}
 		}
 
 		Projectiles: {
@@ -3263,6 +3268,7 @@ Mods: {
 			VitricSoftSand.MapEntry: ""
 			VitricSandPlain.MapEntry: ""
 			PatreonPlaque.MapEntry: ""
+			DoorLasers.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""
