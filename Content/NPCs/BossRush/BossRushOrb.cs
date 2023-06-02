@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using Terraria.Graphics.Effects;
 
 namespace StarlightRiver.Content.NPCs.BossRush
 {
-	internal class BossRushOrb : ModNPC, ILoadable
+	internal class BossRushOrb : ModNPC, ILoadable, IHintable
 	{
 		public static EaseBuilder VoidEase;
 
@@ -176,6 +177,10 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				sb.End();
 				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
+		}
+		public string GetHint()
+		{
+			return "I SEE YOU.";
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Vitric.Gauntlet;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
@@ -7,7 +8,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
 {
-	internal class NPCSpawner : DummyTile
+	internal class NPCSpawner : DummyTile, IHintable
 	{
 		public override string Texture => AssetDirectory.VitricTile + Name;
 
@@ -16,6 +17,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		public override void SetStaticDefaults()
 		{
 			this.QuickSetFurniture(2, 3, 0, SoundID.Tink, new Color(255, 255, 255));
+		}
+		public string GetHint()
+		{
+			return "Dangerous.";
 		}
 	}
 

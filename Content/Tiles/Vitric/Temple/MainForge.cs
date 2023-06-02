@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
-	class MainForgeDummy : Dummy
+	class MainForgeDummy : Dummy, IHintable
 	{
 		public float power = 0;
 
@@ -209,6 +210,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 				return 52 - 60;
 			else
 				return 52 - 60 + Helpers.Helper.BezierEase((input - 0.8f) / 0.2f) * 60;
+		}
+		public string GetHint()
+		{
+			return "An ancient forge, powered by concentrated light...";
 		}
 	}
 

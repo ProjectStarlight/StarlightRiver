@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems;
 using Terraria.DataStructures;
 
@@ -42,7 +43,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
-	class DynamicGearDummy : GearTileDummy
+	class DynamicGearDummy : GearTileDummy, IHintable
 	{
 		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
 
@@ -127,6 +128,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				Main.spriteBatch.End();
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
+		}
+		public string GetHint()
+		{
+			return "A magical gear that can change its shape...";
 		}
 	}
 

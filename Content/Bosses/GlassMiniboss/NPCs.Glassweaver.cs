@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Loaders.UILoading;
 using System;
 using System.IO;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	public partial class Glassweaver : ModNPC
+	public partial class Glassweaver : ModNPC, IHintable
 	{
 		public static readonly Color GlowDustOrange = new(6255, 108, 0);
 		public static readonly Color GlassColor = new(60, 170, 205);
@@ -498,6 +499,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			spriteBatch.Draw(weaverGlow.Value, NPC.Center + drawPos, frame, glowColor, NPC.rotation, origin, NPC.scale, GetSpriteEffects(), 0);
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "Now he's getting serious.";
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Abilities;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Misc
 {
-	class Fogbinder : ModNPC
+	class Fogbinder : ModNPC, IHintable
 	{
 		private class BindedNPC //I made it a class instead of a struct so that I can consistantly pass by reference
 		{
@@ -238,11 +239,15 @@ namespace StarlightRiver.Content.NPCs.Misc
 				}
 			}
 		}
+		public string GetHint()
+		{
+			return "Disrupted with prolonged contact...";
+		}
 	}
 
 	public class Fogbinded : SmartBuff
 	{
 		public override string Texture => AssetDirectory.Invisible;
-		public Fogbinded() : base("Fogbinded", "Bound to the fogbinder", true) { }
+		public Fogbinded() : base("Fogbound", "Bound to the Fogbinder", true) { }
 	}
 }

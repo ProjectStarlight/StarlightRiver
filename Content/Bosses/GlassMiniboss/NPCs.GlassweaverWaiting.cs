@@ -1,4 +1,5 @@
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -7,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Bosses.GlassMiniboss
 {
-	class GlassweaverWaiting : ModNPC
+	class GlassweaverWaiting : ModNPC, IHintable
 	{
 		public const int FRAME_WIDTH = 124;
 
@@ -316,6 +317,10 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		public override void LoadData(TagCompound tag)
 		{
 			State = tag.GetFloat("State");
+		}
+		public string GetHint()
+		{
+			return "Is this... creature... really what 'lurks beneath the desert?'";
 		}
 	}
 }

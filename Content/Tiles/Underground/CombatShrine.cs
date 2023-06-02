@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class CombatShrine : DummyTile
+	class CombatShrine : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<CombatShrineDummy>();
 
@@ -64,6 +65,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			}
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "A shrine - to which deity, you do not know, though it wields a blade. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
 		}
 	}
 

@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Core.Systems.BarrierSystem;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Abilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using Terraria.ModLoader.Utilities;
 
 namespace StarlightRiver.Content.NPCs.Dungeon
 {
-	internal class CrescentCaster : ModNPC, IDrawPrimitive
+	internal class CrescentCaster : ModNPC, IDrawPrimitive, IHintable
 	{
 		private const float ACCELERATION = 0.15f;
 		private const float MAXSPEED = 2;
@@ -399,6 +400,10 @@ namespace StarlightRiver.Content.NPCs.Dungeon
 			}
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "It somehow shields nearby foes...";
 		}
 	}
 

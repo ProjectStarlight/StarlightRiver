@@ -113,10 +113,9 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
 			if (tile.TileFrameX < 90)
-				return "Maybe something inside the temple could free it from it's crystal prison...";
+				return "An altar, encased in crystal rich with binding Starlight. You'd have to use a Starlight power of equal strength...";
 			else
 				return "An altar awaiting an offering...";
-
 		}
 	}
 

@@ -46,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A territorial species found nesting in the sands of the Vitric Desert. Approach with caution - they are passive only until one encroaches upon their territory.")
 			});
 		}
 

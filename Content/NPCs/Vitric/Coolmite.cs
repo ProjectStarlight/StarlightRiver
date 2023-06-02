@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Vitric;
 using System;
@@ -13,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class Coolmite : MagmitePassive
+	internal class Coolmite : MagmitePassive, IHintable
 	{
 		bool melting = false;
 		int meltingTimer = 0;
@@ -149,6 +150,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 
 			return lavaPos;
+		}
+		public string GetHint()
+		{
+			return "Even cuter in crystal!";
 		}
 	}
 

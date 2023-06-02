@@ -1,8 +1,9 @@
 ﻿using Terraria.ID;
+using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
-	internal class TentacleHurtbox : ModNPC
+	internal class TentacleHurtbox : ModNPC, IHintable
 	{
 		public Tentacle tentacle;
 
@@ -74,6 +75,10 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				Parent.NPC.life = Parent.NPC.lifeMax - NPC.lifeMax * 4;
 
 			NPC.life = NPC.lifeMax;
+		}
+		public string GetHint()
+		{
+			return "Its protecting the main body!";
 		}
 	}
 }

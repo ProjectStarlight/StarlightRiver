@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
@@ -8,7 +9,7 @@ using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.NPCs.Moonstone
 {
-	internal class Dreambeast : ModNPC
+	internal class Dreambeast : ModNPC, IHintable
 	{
 		public VerletChain[] chains = new VerletChain[8];
 
@@ -287,6 +288,10 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			return false;
+		}
+		public string GetHint()
+		{
+			return "It's not real. It's not real. It's not real. IT'S NOT REAL. IT'S NOT REAL. IT'S NOT REAL.";
 		}
 	}
 

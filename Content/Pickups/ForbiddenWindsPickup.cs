@@ -12,7 +12,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Pickups
 {
-	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive
+	internal class ForbiddenWindsPickup : AbilityPickup, IDrawPrimitive, IHintable
 	{
 		private List<Vector2> cache1;
 		private List<Vector2> cache2;
@@ -236,6 +236,10 @@ namespace StarlightRiver.Content.Pickups
 			trail4?.Render(effect);
 			trail5?.Render(effect);
 			trail6?.Render(effect);
+		}
+		public string GetHint()
+		{
+			return "A dense conflux of Starlight energy... could this be the tangle Alican mentioned?";
 		}
 	}
 
