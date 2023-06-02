@@ -96,6 +96,22 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
+			bool anyPlayerInRange = false;
+			foreach (Player player in Main.player)
+			{
+				bool thisPlayerInRange = player.active && !player.dead && Arena.Intersects(player.Hitbox);
+				if (thisPlayerInRange)
+				{
+					ShrinePlayer shrineplayer = player.GetModPlayer<ShrinePlayer>();
+					shrineplayer.InNoBuildZone = 10;
+
+					if (State != 0)//may need to exclude -1
+						shrineplayer.CombatShrineActive = true;
+				}
+
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+			}
+
 			if (State == 0 && Parent.TileFrameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
@@ -123,7 +139,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
 				}
 
-				if (State == -1 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
+				if (State == -1 || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
 				{
 					State = -1;
 
@@ -329,22 +345,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
-		}
-	}
-
-	class CombatShrineBiome : ModBiome
-	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
-
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/CombatShrine");
-
-		public override bool IsBiomeActive(Player player)
-		{
-			return Main.projectile.Any(
-				n => n.active &&
-				n.type == ModContent.ProjectileType<CombatShrineDummy>() &&
-				(n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox) &&
-				(n.ModProjectile as CombatShrineDummy).State != 0);
 		}
 	}
 
