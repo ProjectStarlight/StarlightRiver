@@ -20,6 +20,9 @@ namespace StarlightRiver.Content.Tiles.Underground
 		{
 			if (InNoBuildZone > 0)
 				Player.noBuilding = true;
+
+			//if (InNoBuildZone > 0)
+			//	Main.NewText(InNoBuildZone);
 		}
 
 		public override void ResetEffects()

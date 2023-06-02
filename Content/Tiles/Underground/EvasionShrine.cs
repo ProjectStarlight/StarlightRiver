@@ -93,19 +93,24 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void Update()
 		{
 			bool anyPlayerInRange = false;
-			foreach(Player player in Main.player)
+
+			foreach (Player player in Main.player)
 			{
-				bool thisPlayerInRange = player.active && !player.dead && Arena.Intersects(player.Hitbox);
-				if(thisPlayerInRange) 
+				Rectangle NoBuildRect = Arena;
+				NoBuildRect.Inflate((player.lastTileRangeX + 1) * 16, (player.lastTileRangeY + 1) * 16);
+
+				//this checks a larger rect first, so that the no build zone checks for not excluded
+				bool thisPlayerInRange = player.active && !player.dead && NoBuildRect.Intersects(player.Hitbox);
+				if (thisPlayerInRange) 
 				{
 					ShrinePlayer shrineplayer = player.GetModPlayer<ShrinePlayer>();
 					shrineplayer.InNoBuildZone = 10;
 
-					if(State != 0)//may need to exclude -1
+					if (State != 0)//may need to exclude -1
 						shrineplayer.EvasionShrineActive = true;
 				}
 
-				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+				anyPlayerInRange = anyPlayerInRange || (thisPlayerInRange && Arena.Intersects(player.Hitbox));
 			}
 
 			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;

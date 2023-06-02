@@ -97,9 +97,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void Update()
 		{
 			bool anyPlayerInRange = false;
+
 			foreach (Player player in Main.player)
 			{
-				bool thisPlayerInRange = player.active && !player.dead && Arena.Intersects(player.Hitbox);
+				Rectangle NoBuildRect = Arena;
+				NoBuildRect.Inflate((player.lastTileRangeX + 1) * 16, (player.lastTileRangeY + 1) * 16);
+
+				//this checks a larger rect first, so that the no build zone checks for not excluded
+				bool thisPlayerInRange = player.active && !player.dead && NoBuildRect.Intersects(player.Hitbox);
 				if (thisPlayerInRange)
 				{
 					ShrinePlayer shrineplayer = player.GetModPlayer<ShrinePlayer>();
@@ -109,7 +114,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 						shrineplayer.CombatShrineActive = true;
 				}
 
-				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+				anyPlayerInRange = anyPlayerInRange || (thisPlayerInRange && Arena.Intersects(player.Hitbox)); 
 			}
 
 			if (State == 0 && Parent.TileFrameX > 3 * 18)
