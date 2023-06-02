@@ -1,16 +1,20 @@
+Starlight River is a critically-acclaimed mod with a focus on making fun content that pushes the boundaries of Terraria while remaining coherent and exciting.
+Now releasing as an Open Alpha, we're looking to get as much feedback as possible from our amazing community to help us continue driving the mod higher and higher towards its eventual full 1.0 release.
+You can treat this as, by all intents and purposes, a playable release build. Just be aware that bugs are likely, and we're still working on a lot of content!
+
+
 Warning: Like all content mods, Starlight River is best experienced as the main focus of a modpack. Do not report balance inconsistencies or progression skips when played with other large mods.
+This is an open alpha release. Everything here is subject to change. Report issues to https://github.com/ProjectStarlight/StarlightRiver/issues
+Join our Discord server for help and spoilers: https://discord.gg/starlightriver
 
-This is a demo release. Everything here is subject to change. Report issues to https://github.com/ProjectStarlight/StarlightRiver/issues
-
-Starlight River is a content Mod with a focus on high quality and balanced content that expands on all aspects of game. Join our Discord server for help and spoilers: https://discord.gg/snWQ3QE
 
 
 Special thanks to...
 
-Our developers: Ariame, Cultist, Daim, Dominic Karma, egshels, GabeHasWon, Gilded Turtle, Graydee, JellyFish, Kiraaaa, Nomis, OS, Oli, Pacnysam, pkpseudo, QuestionMark, Salvati, Sbubby, ScalarVector, Stevie, SuperAndyHero, Tobias, Trensient, Vinh, Void, Wasabi
+Our developers: Cultist, cynik, Doodle, egshels/minari/未成/original datsuzei writer, HeartPlusUp, IbanPlay, InchKing, Jax, Kiraaaa, Lunatix, Midnight417, Ming, Narnia, Nomis/Nomis 2.0/Nomis 3.0/Nomis Prime/Nimos Phrime/Simon Lime, QuestionMark, Salvati, Sbubby, ScalarVector/Scalie /Whip and nae nae ready *groan noise*, SkippZz, Sok, SuperAndyHero, Tobias, Vinh, Wasabi
 
-Our contributors: Alena, Alexander D. Moon, AwokenEngima, Blanc, Bravos, Calming, Darkpuppey, Davslav, Dual, Duranni, Energykid, Firel, Gallagade, IbanPlay, Iggysaur, Inkplasm, Invalid, JaceDaDorito, Jax, Lionspride, Lunatix, Monstrabot, Moonbee, Nat, SammySemicolon, Santra, Vectix, Vroomy, Webmilio, WhiteIce, Xelo, Zandora / Azura, Zoroarkcity
-
-Our patrons: 123nick, 501warhead, A Sponge, AetherBreaker, Andrey Mogilnikov, Asteros TheGreat, Blub, Ghillie, Lucky, PixelatedFireball, Plebius, Spencer Gilbert, SuperMage, Tury240, WH0S
+Our contributors: Alena, Alexander D. Moon, Ariame, AwokenEngima, Blanc, Bravos, Calming, chloeforever, Cloud, CrownKing, Daim, Dan Yami, Darkpuppey, Davslav, Dominic Karma, Dual, Duranni, Energykid, Firel, GabeHasWon, Gallagade, Graydee, Iggysaur, Inkplasm, Invalid, JaceDaDorito, JellyFish, Lionspride, Lunatix, Monstrabot, Moonbee, Nat, Oli, OS, Pacnysam, pkpseudo, SammySemicolon, Santra, Schmo, Stevie, Trensient, Vectix, Void, Vroomy, Webmilio, WhiteIce, Xelo, Nox, Zoroarkcity
 
 Our testers: AP STP, Ace, Anarchy, Arkh, Blind, BlurredTheLines, Cake, CantWontDo, CptZucchini, Davslav, Dottedboxguy, FuryForged, GalaxyNemesis, Gitgudwo, Hana, Invalid, Kostya, Krazysamurai, Lemmy, Max, Megasweave, Noddlescript, Onyx, ParchmentEngineer, Pope, RaisinJuice.Co, Velvet, Virukino, Waasephi, Yakumo
+
+Our patrons (brace for a long one): 123nick, Aidbutler6424, Chase G, Daniel Yacek, Dylan Goldstein, Ethos (Ali), FBI Webcam Surveillance/thumbtack, Felipe Fresta, Flipolipo, Gehsteigpanzer, GlueThePengu, IgelHD, John Schassen, Kaid Bryce, Leone Nagasama, Leone Nagasama, Liuna, Lodi, LumiEvi, Mike Heng, Pixelatedfireball, Re4p3rKn1ght, Rel Darcae, Robenarcz, Scuzs, Sean Grissom, SleepyChann, Squid_Kid, Stay_Frosty, Stranger, TheBingeGamer, Tommy Huynh, Tristan Hinkins, Tucker, Tyler Krahn, Winteresce, WrathOfOlympus, cullen earl, jaja, solo, tooSlyk, woshkins, zombie wolf, Panic , 501warhead, 8-Bit CornDog, A Sponge, AetherBreaker, Alessandro Glienke, Andrew Weber-Brown, Andrey Mogilnikov, Anton Filatov, Asteros TheGreat, Bart Zetten, Benny Baker, Blake Posey, Blub, Boshua, CBRTNK, Chad Webb, Charles Kropp, Charles Pisani, Cole, Cornelius Clay, Cristian Arsene, Dahbin Jung, Dan Finneck, Diegster, Doodled_lynx, Dow Zabolio, Drazden, Ererum, Ethan Harris, Ever Treadway, Garrett Cawley, Grylken, Haidex, Hero, Hyper Jinx, Italo Minussi Franco, Ivan Lopez, Jacob Newton, Jake Ryan, Jas, Jasper Strauss, João Gabriel, JudeEgg, Justin Packwood, Justin Trim, Killerjerick, Kinglue, Komaboi, Kristopher Georgia, Kyle Olaszek, Lightedflare, Lil Rice Paddy, Lukasz Sylwestrowicz, Lynncore, Marcel Wohlgemuth, NULL, Nicholas Korff, Not A Pro64, NotNessFromEarthbound, Ok Sneak, Orgiv, PaladinJackal, Paul Häusler, Phoenix Nemo, QRiosity, Rem Tan, RenkDev, Ryan Alan Fini, SWB, Samuel Gomez, Sande, Scrumlet, Sebastian Hawn, Seongbin Park, Serioustar, Silvis, Spencer Gilbert, SuperMage, ThePigeon, TitaniumNebula, TotallyThePope, Victor Bériau, WH0S, Wolf, Xc Gao, YouSnooze, Zealousmagician, beans, drowsy, edit edits, joshua, karachter, lassyTohno, man eating bear, mengEO, mitchell jury-dawes, mrmeee 123, paradise, 立衣 襟, nyang yu
