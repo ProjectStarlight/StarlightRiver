@@ -148,8 +148,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public override void PostDraw(Color lightColor)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorOver").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 3.14f - 1.57f / 2, tex.Size() / 2, 1, 0, 0);
+			Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
+			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, Color.White, 0, texUnder.Size() / 2, 1, 0, 0);
+
+			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Reflector").Value;
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 1.57f, tex.Size() / 2, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
@@ -160,7 +163,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			for (int k = 0; k < 30; k++)
 			{
 				float rot = k / 30f * 6.28f;
-				float rotOpacity = 1.0f - Math.Abs(Helpers.Helper.CompareAngle(rot, Rotation)) / 6.28f;
+				float rotOpacity = 1.0f - Math.Abs(Helper.CompareAngle(rot, Rotation)) / 6.28f;
 				Color color = new Color(100, 220, 255) * rotOpacity * opacity;
 				spriteBatch.Draw(tickTexture, Projectile.Center - Main.screenPosition + Vector2.UnitX.RotatedBy(rot) * 32, null, color, rot + 1.57f, tickTexture.Size() / 2, 0.5f + rotOpacity * 0.5f, 0, 0);
 			}

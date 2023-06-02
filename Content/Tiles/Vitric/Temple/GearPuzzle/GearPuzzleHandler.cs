@@ -24,8 +24,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			if (Solved && solveTimer < 180)
 				solveTimer++;
-
-			Main.NewText(engagedObjectives);
 		}
 
 		public override void SaveWorldData(TagCompound tag)
