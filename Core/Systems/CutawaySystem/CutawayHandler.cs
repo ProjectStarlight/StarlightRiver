@@ -37,8 +37,6 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 		/// <returns>If the auroracle arena overlay should be active</returns>
 		private static bool CheckForSquidArena(Player Player)
 		{
-			Main.NewText(StarlightWorld.GlassweaverArena.Intersects(Main.LocalPlayer.Hitbox));
-
 			if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
 			{
 				Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
