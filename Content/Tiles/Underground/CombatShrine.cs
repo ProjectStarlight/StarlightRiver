@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -90,12 +91,32 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+		const int ArenaOffsetX = -25;
+		const int ArenaSizeX = 51;
+		const int ArenaOffsetY = -19;
+		const int ArenaSizeY = 26;
+
+		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
+		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
+			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);
+
+			bool anyPlayerInRange = false;
+
+			foreach (Player player in Main.player)
+			{
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
+				if (thisPlayerInRange && State != 0)
+					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
+
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+			}
+
 			if (State == 0 && Parent.TileFrameX > 3 * 18)
 			{
 				for (int x = 0; x < 3; x++)
@@ -123,7 +144,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(24 * 16, 24 + Main.rand.Next(-40, 40)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.35f);
 				}
 
-				if (State == -1 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
+				if (State == -1 || !anyPlayerInRange) //"fail" conditions, no living Players in radius or already failing
 				{
 					State = -1;
 
@@ -329,22 +350,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(255, (int)(50 * sin), 0) * sin2 * Windup;
-		}
-	}
-
-	class CombatShrineBiome : ModBiome
-	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
-
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/CombatShrine");
-
-		public override bool IsBiomeActive(Player player)
-		{
-			return Main.projectile.Any(
-				n => n.active &&
-				n.type == ModContent.ProjectileType<CombatShrineDummy>() &&
-				(n.ModProjectile as CombatShrineDummy).Arena.Intersects(player.Hitbox) &&
-				(n.ModProjectile as CombatShrineDummy).State != 0);
 		}
 	}
 
