@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -21,6 +22,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override bool SpawnConditions(int i, int j)
 		{
 			return true;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override bool RightClick(int i, int j)
