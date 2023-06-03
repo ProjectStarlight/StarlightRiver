@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private string GetAfterCameraDialogue()
 		{
-			return "\"No- Wait! You can't just barge in, you need a key. I need to know if I am giving my faith and crystal to the right person, so when you think you're strong enough, come back here and I'll test you properly. Don't keep me waiting! You know where to find me.\"";
+			return "\"No- Wait! You can't just barge in, you need a key. I need to know if I am giving my faith and crystal to the right person, so when you think you're strong enough, challenge me properly and I'll put you through my Glassweaver Gauntlet to really test your mettle! Don't keep me waiting! You know where to find me.\"";
 		}
 
 		private string GetWaitingDialogue()
