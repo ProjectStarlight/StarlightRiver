@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Abilities.Faewhip;
+using StarlightRiver.Core.Systems;
 using System;
 using Terraria.Audio;
 using Terraria.Graphics.Effects;
@@ -56,6 +57,7 @@ namespace StarlightRiver.Content.Pickups
 		public override int PickupType => NPCType<FaeflamePickup>();
 	}
 
+	[SLRDebug]
 	public class FaeflameTileItem : QuickTileItem
 	{
 		public FaeflameTileItem() : base("Faeflame", "Debug placer for ability pickup", "FaeflamePickupTile", -1) { }
