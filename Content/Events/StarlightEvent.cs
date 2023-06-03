@@ -206,7 +206,7 @@ namespace StarlightRiver.Content.Events
 			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0) //First visit is after any boss
 				StarlightEventSequenceSystem.willOccur = true;
 
-			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1) //Second visit is after ceiros
+			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1 && false) //Second visit is after ceiros
 				StarlightEventSequenceSystem.willOccur = true;
 		}
 
