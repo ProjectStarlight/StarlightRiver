@@ -51,8 +51,6 @@ namespace StarlightRiver.Content.Items.Dungeon
 				manaConsumedTotal += i;
 			float manaBonus = 1 + Player.GetModPlayer<BarrierPlayer>().barrier * 0.01f;
 
-			/*if (manaBonus > 1)
-				Main.NewText(manaBonus.ToString());*/
 			Player.manaRegen = (int)(Player.manaRegen * manaBonus);
 
 			Player.GetModPlayer<BarrierPlayer>().rechargeRate = (int)(Player.GetModPlayer<BarrierPlayer>().rechargeRate * 1 + manaConsumedTotal * 0.025f);
