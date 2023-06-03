@@ -462,7 +462,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				}
 
 				interpolatedRot.Add(NPC.oldRot[i]);
-				Color color = Color.Cyan * (1f - i * 0.1f);
+				Color color = Color.Cyan * (1f - i * 0.1f) * (1 - (float)NPC.life / (float)NPC.lifeMax);
 
 				foreach (float rotation in interpolatedRot)
 				{
