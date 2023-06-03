@@ -101,7 +101,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 			foreach (Player player in Main.player)
 			{
 				Rectangle NoBuildRect = Arena;
-				NoBuildRect.Inflate((player.lastTileRangeX + 1) * 16, (player.lastTileRangeY + 1) * 16);
+				NoBuildRect.Inflate(((player.lastTileRangeX - 1) * 16) + 4, (player.lastTileRangeY - 1) * 16);
 
 				//this checks a larger rect first, so that the no build zone checks for not excluded
 				bool thisPlayerInRange = player.active && !player.dead && NoBuildRect.Intersects(player.Hitbox);
