@@ -91,9 +91,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+		const int ArenaOffsetX = -25;
+		const int ArenaSizeX = 51;
+		const int ArenaOffsetY = -19;
+		const int ArenaSizeY = 26;
 
-		public Rectangle ArenaTile => new(ParentX - 25, ParentY - 20, 51, 30);
+		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
+		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
@@ -105,21 +109,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			foreach (Player player in Main.player)
 			{
-				Rectangle NoBuildRect = Arena;
-				NoBuildRect.Inflate(((player.lastTileRangeX - 1) * 16) + 4, (player.lastTileRangeY - 1) * 16);
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
-				//this checks a larger rect first, so that the no build zone checks for not excluded
-				bool thisPlayerInRange = player.active && !player.dead && NoBuildRect.Intersects(player.Hitbox);
-				if (thisPlayerInRange)
-				{
-					ShrinePlayer shrineplayer = player.GetModPlayer<ShrinePlayer>();
-					shrineplayer.InNoBuildZone = 10;
+				if (thisPlayerInRange && State != 0)
+					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
 
-					if (State != 0)//may need to exclude -1
-						shrineplayer.CombatShrineActive = true;
-				}
-
-				anyPlayerInRange = anyPlayerInRange || (thisPlayerInRange && Arena.Intersects(player.Hitbox)); 
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
 			}
 
 			if (State == 0 && Parent.TileFrameX > 3 * 18)

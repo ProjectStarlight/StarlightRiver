@@ -88,34 +88,30 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
-		public Rectangle ArenaTile => new(ParentX - 25, ParentY - 20, 51, 30);
+		const int ArenaOffsetX = -27;
+		const int ArenaSizeX = 55;
+		const int ArenaOffsetY = -30;
+		const int ArenaSizeY = 49;
+
+		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
+		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
-			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);
+			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
 
 			bool anyPlayerInRange = false;
 
 			foreach (Player player in Main.player)
 			{
-				Rectangle NoBuildRect = Arena;
-				NoBuildRect.Inflate((player.lastTileRangeX + 1) * 16, (player.lastTileRangeY + 1) * 16);
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
 
-				//this checks a larger rect first, so that the no build zone checks for not excluded
-				bool thisPlayerInRange = player.active && !player.dead && NoBuildRect.Intersects(player.Hitbox);
-				if (thisPlayerInRange) 
-				{
-					ShrinePlayer shrineplayer = player.GetModPlayer<ShrinePlayer>();
-					shrineplayer.InNoBuildZone = 10;
+				if (thisPlayerInRange && State != 0)
+					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
 
-					if (State != 0)//may need to exclude -1
-						shrineplayer.EvasionShrineActive = true;
-				}
-
-				anyPlayerInRange = anyPlayerInRange || (thisPlayerInRange && Arena.Intersects(player.Hitbox));
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
 			}
 
 			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
