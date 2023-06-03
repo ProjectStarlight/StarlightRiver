@@ -61,6 +61,24 @@ namespace StarlightRiver.Content.Items.Geomancer
 			orig();
 		}
 
+		public override void ModifyTooltips(List<TooltipLine> tooltips)
+		{
+			Player Player = Main.LocalPlayer;
+
+			if (IsArmorSet(Player.armor[0], Player.armor[1], Player.armor[2]))
+			{
+				if (!Player.controlUp)
+				{
+					var gemQuery = new TooltipLine(Mod, "StarlightRiver:ArmorGemQuery", "hold UP for buff info")
+					{
+						OverrideColor = new Color(200, 200, 200)
+					};
+
+					tooltips.Add(gemQuery);
+				}
+			}
+		}
+
 		public bool IsGeomancerArmor(Item Item)
 		{
 			return Item.type == ModContent.ItemType<GeomancerHood>() ||
