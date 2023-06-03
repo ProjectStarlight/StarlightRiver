@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			VoidEase = new EaseBuilder();
 			VoidEase.AddPoint(new Vector2(0, 0.25f), EaseFunction.EaseCubicIn);
-			VoidEase.AddPoint(new Vector2(45, 0.75f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
+			VoidEase.AddPoint(new Vector2(45, 1f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
 			VoidEase.AddPoint(new Vector2(75, 0.4f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION, 0.1f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION + 20, 2f), EaseFunction.EaseCubicInOut);
@@ -70,7 +70,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0f;
-			NPC.hide = true;
 			NPC.behindTiles = true;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/SmallStoneHit") with { PitchVariance = 0.3f };
@@ -283,11 +282,6 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			isPlayingCrack = true;
 
 			return false;
-		}
-
-		public override void DrawBehind(int index)
-		{
-			Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 		}
 
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
