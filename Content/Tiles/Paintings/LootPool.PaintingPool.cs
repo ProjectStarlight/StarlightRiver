@@ -9,9 +9,9 @@ namespace StarlightRiver.Content.Tiles.Paintings
 	{
 		public override void AddLoot()
 		{
-			AddItem(ModContent.ItemType<AuroraclePaintingItem>(), ChestRegionFlags.Underground | ChestRegionFlags.Trashcan | ChestRegionFlags.TrappedUnderground, 0.05f, 1, false, -1);
+			AddItem(ModContent.ItemType<RatKingPaintingItem>(), ChestRegionFlags.Underground | ChestRegionFlags.Trashcan | ChestRegionFlags.TrappedUnderground, 0.05f, 1, false, -1);
 			AddItem(ModContent.ItemType<AuroraclePaintingItem>(), ChestRegionFlags.Ice | ChestRegionFlags.Permafrost, 0.1f, 1, false, -1);
-			AddItem(ModContent.ItemType<AuroraclePaintingItem>(), ChestRegionFlags.Underground | ChestRegionFlags.Livingwood, 0.08f, 1, false, -1);
+			AddItem(ModContent.ItemType<EggCodexPaintingItem>(), ChestRegionFlags.Underground | ChestRegionFlags.Livingwood, 0.08f, 1, false, -1);
 		}
 	}
 }
