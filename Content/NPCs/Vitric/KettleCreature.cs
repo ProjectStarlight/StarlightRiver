@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Kettle Kreature");
+			DisplayName.SetDefault("Magmortar");
 		}
 
 		public override void SetDefaults()
@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A construct built by an unknown people, seemingly harvesting crystal and processing it internally. It can be assumed that it has run out of storage after an extremely long amount of time unmaintained, so it uses its excess molten crystal as an automatic defense mechanism.")
 			});
 		}
 

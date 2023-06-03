@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("An extremely elusive specimen. It's taken in a large amount of crystals and Starlight energy, forming a priceless coating over its membrane. Anyone that finds an intact one should be extremely careful not to break it, for it's likely they will never encounter it again.")
 			});
 		}
 
