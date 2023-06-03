@@ -30,6 +30,23 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.PlatinumBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.GoldBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
+		}
 	}
 
 	class PlexusChaliceBuff : ModBuff
