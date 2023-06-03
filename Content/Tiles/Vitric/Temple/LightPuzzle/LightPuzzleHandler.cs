@@ -4,6 +4,6 @@
 	{
 		public static int solvedPoints;
 
-		public static bool Solved => solvedPoints >= 2;
+		public static bool Solved => solvedPoints >= 1;
 	}
 }

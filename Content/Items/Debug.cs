@@ -42,6 +42,17 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
+			for(int x = 0; x < 200; x++)
+			{
+				for (int y = 0; y < 200; y++)
+				{
+					ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
+					var tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16 + x, (int)Main.MouseWorld.Y / 16 + y);
+					if (tile.TileType == slabType)
+						tile.WallType = (ushort)ModContent.WallType<Tiles.Vitric.Temple.VitricTempleWall>();
+				}
+			}
+
 			/*StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;

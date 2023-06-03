@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSet(this, 100, ModContent.DustType<Dusts.GlassGravity>(), SoundID.Shatter, Color.White, 0);
+			TileID.Sets.DrawsWalls[Type] = true;
 		}
 	}
 }
