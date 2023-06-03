@@ -155,11 +155,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
-			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, Color.White, 0, texUnder.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, lightColor, 0, texUnder.Size() / 2, 1, 0, 0);
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Reflector").Value;
 			var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, Color.White, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, lightColor, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
