@@ -213,6 +213,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
+						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
