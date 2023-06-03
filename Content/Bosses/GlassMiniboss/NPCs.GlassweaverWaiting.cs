@@ -234,38 +234,32 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 						RichTextBox.AddButton("\"Wait, what?\"", () =>
 						{
 							TextState++;
+							RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
+							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+
 							RichTextBox.ClearButtons();
-							RichTextBox.AddButton("\"...\"", () =>
+
+							RichTextBox.AddButton("I need a key.", () =>
 							{
+								if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+								{
+									RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
+								}
+								else
+								{
+									Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+									RichTextBox.CloseDialogue();
+								}
 							});
-						});
-					}
-					else if (TextState >= 5)
-					{
-						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 
-						RichTextBox.ClearButtons();
+							RichTextBox.AddButton("Close", () =>
+							{
+								StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 
-						RichTextBox.AddButton("I need a key.", () =>
-						{
-							if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
-							{
-								RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
-							}
-							else
-							{
-								Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 								RichTextBox.CloseDialogue();
-							}
-						});
-
-						RichTextBox.AddButton("Close", () =>
-						{
-							StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
-
-							RichTextBox.CloseDialogue();
-							State = 4;
-							Timer = 0;
+								State = 4;
+								Timer = 0;
+							});
 						});
 					}
 				});

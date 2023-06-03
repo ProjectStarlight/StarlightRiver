@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Core.Systems;
-using StarlightRiver.Content.Abilities;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -14,6 +13,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
+			Main.tileBlockLight[Type] = true;
 			TileObjectData.newTile.RandomStyleRange = 2;
 			TileObjectData.newTile.StyleHorizontal = true;
 			TileObjectData.newTile.StyleLineSkip = 2;
