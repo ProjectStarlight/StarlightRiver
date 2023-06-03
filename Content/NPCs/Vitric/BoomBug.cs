@@ -4,9 +4,9 @@ using StarlightRiver.Content.Items.Misc;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -234,6 +234,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			return spawnInfo.Player.InModBiome(GetInstance<VitricDesertBiome>()) ? 100 : 0;
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<Items.Vitric.SandstoneChunk>(), 3, 1, 3));
 		}
 
 		private int TileGapDown()

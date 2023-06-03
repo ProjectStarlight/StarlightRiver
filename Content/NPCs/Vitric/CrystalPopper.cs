@@ -3,6 +3,7 @@ using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.IO;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -157,6 +158,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			return tile.HasTile && spawnInfo.SpawnTileType != TileType<VitricSpike>() && spawnInfo.Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 95f : 0f;
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<Items.Vitric.SandstoneChunk>(), 2, 2, 5));
 		}
 
 		public override void FindFrame(int frameHeight)
