@@ -3,6 +3,7 @@ using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Onyx Orb");
+			DisplayName.SetDefault("???");
 			NPCID.Sets.TrailCacheLength[Type] = 10;
 			NPCID.Sets.TrailingMode[Type] = 3;
 		}
