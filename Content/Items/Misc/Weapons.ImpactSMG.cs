@@ -20,8 +20,8 @@ namespace StarlightRiver.Content.Items.Misc
 
 			Tooltip.SetDefault("Hold <left> to rapidly fire high impact bullets, heating up over time\n" +
 				"Release to boomerang the gun\n" +
-				"Boomeranging while its not overheated grants you a stacking buff to the Impact SMG's damage\n" +
-				"Boomeranging while its overheated causes it to consume all stacks for a deadly explosion");
+				"Boomeranging while not overheated grants a stacking buff to the Impact SMG's damage\n" +
+				"Boomeranging while overheated will consume all stacks for a deadly explosion");
 		}
 
 		public override void SetDefaults()

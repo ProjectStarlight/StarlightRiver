@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.Audio;
@@ -139,6 +140,15 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Main.mouseLeft && Main.mouseLeftRelease && RhythmTimer > -2 && RhythmTimer < 3)
 				bufferedInput = true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Bone, 5);
+			recipe.AddIngredient<SandstoneChunk>(10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

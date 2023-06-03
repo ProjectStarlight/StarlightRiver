@@ -595,6 +595,12 @@ namespace StarlightRiver.Content.Items.Misc
 				}
 			}
 
+			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 1, 1))
+			{
+				Projectile.Kill();
+				return;
+			}
+
 			Owner.Teleport(teleportPos, -1);
 			tile = Main.tile[(int)Owner.Bottom.X / 16, (int)Owner.Bottom.Y / 16];
 			if (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType]) //additional check for player teleporting inside of a wall somehow (seemed to be caused by slopes)
@@ -728,7 +734,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!teleported)
 				return;
 
-			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 1200 - Utils.Clamp(hitNPCs.Count * 180, 0, 900)); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
+			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 120); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
 
 			for (int i = 0; i < 50; i++)
 			{
