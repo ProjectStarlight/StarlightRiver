@@ -23,11 +23,13 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		public static List<BossRushOrb> activeBossRushLocks = new();
 
 		public Vector2 originalPos;
+		public Vector2 vibratePos = Vector2.Zero;
 
 		public bool isPlayingCrack = false;
 		public bool isPlayingWarp = false;
 		public float crackAnimationTimer = 0;
 		public float warpAnimationTimer = 0;
+
 		public float freezeTimer = 0;
 
 		public ParticleSystem starlight;
@@ -47,10 +49,17 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 			VoidEase = new EaseBuilder();
 			VoidEase.AddPoint(new Vector2(0, 0.25f), EaseFunction.EaseCubicIn);
-			VoidEase.AddPoint(new Vector2(45, 1.5f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
-			VoidEase.AddPoint(new Vector2(75, 0.5f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
+			VoidEase.AddPoint(new Vector2(45, 0.75f), new CubicBezierEase(0.2f, 1.5f, .8f, 1.5f));
+			VoidEase.AddPoint(new Vector2(75, 0.4f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION, 0.1f), new CubicBezierEase(0.15f, 0.6f, .5f, 1f));
 			VoidEase.AddPoint(new Vector2(MAX_SUCC_ANIMATION + 20, 2f), EaseFunction.EaseCubicInOut);
+		}
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Onyx Orb");
+			NPCID.Sets.TrailCacheLength[Type] = 10;
+			NPCID.Sets.TrailingMode[Type] = 3;
 		}
 
 		public override void SetDefaults()
@@ -61,6 +70,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			NPC.aiStyle = -1;
 			NPC.noGravity = true;
 			NPC.knockBackResist = 0f;
+			NPC.hide = true;
+			NPC.behindTiles = true;
 
 			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/Clink");
 			Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/Moonstone");
@@ -78,6 +89,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		{
 			if (isPlayingWarp)
 			{
+				NPC.velocity = Vector2.Zero;
+
 				if (warpAnimationTimer == 0)
 				{
 					for (int i = 0; i < 100; i++)
@@ -95,16 +108,18 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					}
 				}
 
-				if (warpAnimationTimer < 45)
+				if (warpAnimationTimer < 10)
 				{
-					float warpStrength = warpAnimationTimer / 45;
-					Filters.Scene.Activate("Shockwave", NPC.Center).GetShader().UseProgress(2f).UseIntensity(100 - (1 - warpStrength) * 100).UseDirection(new Vector2(1, 2) * 0.1f * warpStrength);
+					float warpStrength = warpAnimationTimer / 10;
+					Filters.Scene.Activate("Shockwave", originalPos).GetShader().UseProgress(2f).UseIntensity(100 - (1 - warpStrength) * 100).UseDirection(new Vector2(1, 2) * 0.1f * warpStrength);
 				}
-				else if (warpAnimationTimer > MAX_SUCC_ANIMATION + 30)
+				else if (warpAnimationTimer == 10)
 				{
 					if (Filters.Scene["Shockwave"].IsActive())
 						Filters.Scene.Deactivate("Shockwave");
-
+				}
+				else if (warpAnimationTimer > MAX_SUCC_ANIMATION + 30)
+				{
 					if (Filters.Scene["ColorSucker"].IsActive())
 						Filters.Scene.Deactivate("ColorSucker");
 				}
@@ -117,7 +132,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				{
 					for (int i = 0; i < Math.Pow(warpAnimationTimer / 40, 2); i++)
 					{
-						Vector2 pos = NPC.Center + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.screenWidth / 2 * Main.rand.NextFloat();
+						Vector2 pos = originalPos + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.screenWidth / 2 * Main.rand.NextFloat();
 						var starColor = new Color(150, Main.rand.Next(150, 255), 255)
 						{
 							A = 0
@@ -126,7 +141,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 						if (Main.rand.NextBool())
 						{
-							pos = NPC.Center + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.screenWidth / 2 * (Main.rand.NextFloat() + 0.7f);
+							pos = originalPos + Vector2.One.RotatedByRandom(MathHelper.TwoPi) * Main.screenWidth / 2 * (Main.rand.NextFloat() + 0.7f);
 							starlightLines.AddParticle(new Particle(pos, Vector2.Zero, 0, Main.rand.NextFloat(0.5f), starColor, 600, Vector2.One * Main.rand.NextFloat(3f), default, 1));
 						}
 					}
@@ -147,7 +162,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					{
 						Vector2 direction = Vector2.One.RotateRandom(MathHelper.TwoPi) * Main.rand.NextFloat(0.9f, 1.1f);
 
-						Vector2 pos = NPC.Center - Main.screenPosition + direction * 20;
+						Vector2 pos = originalPos - Main.screenPosition + direction * 20;
 						StarlightRiverBackground.stars.AddParticle(new Particle(pos, direction * 30 * (0.6f + (1 - bgStarOpacity) * 0.2f), 0, 0, starColor, 60, Vector2.One * Main.rand.NextFloat(3f, 3.3f), default, 1, 1));
 					}
 
@@ -171,14 +186,13 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			}
 			else if (isPlayingCrack)
 			{
-				CameraSystem.DoPanAnimation(800, originalPos);
+				CameraSystem.DoPanAnimation(900, originalPos);
 
 				if (CrackAnimationProgress >= 1)
 					isPlayingWarp = true;
 
 				if (crackAnimationTimer % 100 == 0)
 				{
-					NPC.velocity = Vector2.Zero;
 					CameraSystem.shake += 30;
 
 					for (int i = 0; i < 50; i++)
@@ -189,7 +203,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					}
 				}
 
-				NPC.velocity = Vector2.Lerp((originalPos - NPC.Center) * 0.01f, NPC.velocity, 0.95f);
+				NPC.velocity = Vector2.Lerp((originalPos - NPC.Center) * 0.1f, NPC.velocity, 0.8f);
 				Vibrate(0.5f + CrackAnimationProgress * 0.5f);
 
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.5f, 1f) * (1 + CrackAnimationProgress));
@@ -217,13 +231,22 @@ namespace StarlightRiver.Content.NPCs.BossRush
 					Vibrate(1f - NPC.life / (NPC.lifeMax / 2f));
 				}
 
-				// starViewScale = 1 + 0.5f * (1f - (float)NPC.life / NPC.lifeMax);
 				starViewScale = 0.25f;
 
 				NPC.velocity = Vector2.Lerp((originalPos - NPC.Center) * 0.1f, NPC.velocity, 0.9f);
 
 				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.5f, 1f));
 			}
+
+			float rotationSpeed = 0.0025f * (5f - (float)NPC.life / (float)NPC.lifeMax * 4f);
+
+			if (isPlayingCrack)
+				rotationSpeed *= (float)Math.Pow(1 + CrackAnimationProgress * 3, 2);
+
+			if (isPlayingWarp)
+				rotationSpeed *= 1 + warpAnimationTimer / 600;
+
+			NPC.rotation += rotationSpeed;
 		}
 
 		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
@@ -261,11 +284,17 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			return false;
 		}
 
+		public override void DrawBehind(int index)
+		{
+			Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			float crackProgress;
 			starlight?.DrawParticles(spriteBatch);
 			starlightLines?.DrawParticles(spriteBatch);
+			DrawRings(drawColor);
 
 			if (isPlayingCrack)
 			{
@@ -299,27 +328,35 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				return false;
 			}
 
-			return true;
+			Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+
+			return false;
 		}
 
 		private void Vibrate(float intensity)
 		{
+			if (intensity > 1)
+				intensity = 1;
+
 			Vector2 offset;
 			offset = Main.rand.NextVector2Circular(2, 2) * intensity;
 
-			if ((NPC.Center + offset - originalPos).Length() >= 20)
+			if ((vibratePos + offset).Length() >= 2)
 			{
-				NPC.Center -= offset;
+				vibratePos -= offset;
 				return;
 			}
 
-			NPC.Center += offset;
+			vibratePos += offset;
+
+			if (vibratePos.Length() >= 2)
+			{
+				vibratePos = vibratePos.SafeNormalize(Vector2.Zero) * 2;
+			}
 		}
 
 		private void DrawBubbleCracks(float crackProgress)
 		{
-			Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
-
 			Effect crack = Filters.Scene["OnyxCracks"].GetShader().Shader;
 			crack.Parameters["sampleTexture2"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.VitricBoss + "CrackMap").Value);
 			crack.Parameters["sampleTexture3"].SetValue(ModContent.Request<Texture2D>(AssetDirectory.Glassweaver + "BubbleCrackProgression").Value);
@@ -331,7 +368,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, crack, Main.GameViewMatrix.TransformationMatrix);
 
-			Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			Main.EntitySpriteDraw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, ModContent.Request<Texture2D>(Texture).Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
@@ -345,11 +382,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Asset<Texture2D> glow = ModContent.Request<Texture2D>(Texture + "Glow");
-			Main.spriteBatch.Draw(glow.Value, NPC.Center - Main.screenPosition, null, color * ((crackAnimationTimer - 250) / 50f) * 0.8f, 0, glow.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			Texture2D glow = ModContent.Request<Texture2D>(Texture + "Glow").Value;
+			Main.spriteBatch.Draw(glow, NPC.Center + vibratePos - Main.screenPosition, null, color * ((crackAnimationTimer - 250) / 50f) * 0.8f, 0, glow.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
-			Asset<Texture2D> bloom = ModContent.Request<Texture2D>(Texture + "Bloom");
-			Main.spriteBatch.Draw(bloom.Value, NPC.Center - Main.screenPosition, null, color * CrackAnimationProgress * 0.6f, 0, bloom.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			Texture2D bloom = ModContent.Request<Texture2D>(Texture + "Bloom").Value;
+			Main.spriteBatch.Draw(bloom, NPC.Center + vibratePos - Main.screenPosition, null, color * CrackAnimationProgress * 0.6f, 0, bloom.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
@@ -359,15 +396,15 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			curve.Parameters["intensity"].SetValue(0.5f);
 			curve.CurrentTechnique.Passes[0].Apply();
 
-			Asset<Texture2D> godrayThin = ModContent.Request<Texture2D>(Texture + "GodrayThin");
-			Main.spriteBatch.Draw(godrayThin.Value, NPC.Center - Main.screenPosition, null, Color.White, 0, godrayThin.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			Texture2D godrayThin = ModContent.Request<Texture2D>(Texture + "GodrayThin").Value;
+			Main.spriteBatch.Draw(godrayThin, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThin.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
 			curve.Parameters["color"].SetValue(color.ToVector4() * (crackProgress - 0.2f) * 0.25f * (0.2f + CrackAnimationProgress * 0.8f));
 			curve.Parameters["intensity"].SetValue(0.4f);
 			curve.CurrentTechnique.Passes[0].Apply();
 
-			Asset<Texture2D> godrayThick = ModContent.Request<Texture2D>(Texture + "GodrayThick");
-			Main.spriteBatch.Draw(godrayThick.Value, NPC.Center - Main.screenPosition, null, Color.White, 0, godrayThick.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
+			Texture2D godrayThick = ModContent.Request<Texture2D>(Texture + "GodrayThick").Value;
+			Main.spriteBatch.Draw(godrayThick, NPC.Center + vibratePos - Main.screenPosition, null, Color.White, 0, godrayThick.Size() * 0.5f, NPC.scale, SpriteEffects.None, 0);
 
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
@@ -379,14 +416,63 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			Main.spriteBatch.End();
 			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
-			Asset<Texture2D> pressureWave = ModContent.Request<Texture2D>(AssetDirectory.ArtifactItem + "AztecDeathSaxophoneSoundwave");
+			Texture2D pressureWave = ModContent.Request<Texture2D>(AssetDirectory.ArtifactItem + "AztecDeathSaxophoneSoundwave").Value;
 
 			float start = delay + 45;
 
 			if (warpAnimationTimer > start && warpAnimationTimer <= start + 30)
 			{
 				float progress = (warpAnimationTimer - start) / 30;
-				Main.spriteBatch.Draw(pressureWave.Value, NPC.Center - Main.screenPosition, null, Color.Cyan * progress, rotation, pressureWave.Size() * 0.5f, MathHelper.SmoothStep(15, 0, progress) * scale, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(pressureWave, originalPos - Main.screenPosition, null, Color.Cyan * progress, rotation, pressureWave.Size() * 0.5f, MathHelper.SmoothStep(15, 0, progress) * scale, SpriteEffects.None, 0);
+			}
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		private void DrawRings(Color lightColor)
+		{
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Texture2D smallRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing1").Value;
+			Texture2D mediumRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing2").Value;
+			Texture2D largeRing = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRing3").Value;
+
+			Main.spriteBatch.Draw(smallRing, originalPos - Main.screenPosition, null, lightColor, -NPC.rotation, smallRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(mediumRing, originalPos - Main.screenPosition, null, lightColor, NPC.rotation, mediumRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(largeRing, originalPos - Main.screenPosition, null, lightColor, -NPC.rotation, largeRing.Size() * 0.5f, 1, SpriteEffects.None, 0);
+
+			Texture2D smallRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes1").Value;
+			Texture2D mediumRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes2").Value;
+			Texture2D largeRingRunes = ModContent.Request<Texture2D>("StarlightRiver/Assets/NPCs/BossRush/ArmillaryRingRunes3").Value;
+
+			Main.spriteBatch.End();
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+
+			Main.spriteBatch.Draw(smallRingRunes, originalPos - Main.screenPosition, null, Color.Cyan, -NPC.rotation, smallRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(mediumRingRunes, originalPos - Main.screenPosition, null, Color.Cyan, NPC.rotation, mediumRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(largeRingRunes, originalPos - Main.screenPosition, null, Color.Cyan, -NPC.rotation, largeRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+
+			for (int i = 0; i < NPC.oldRot.Length; i++)
+			{
+				List<float> interpolatedRot = new();
+				float nextPos = i - 1 < 0 ? NPC.rotation : NPC.oldRot[i - 1];
+
+				for (float j = nextPos; j > NPC.oldRot[i]; j -= 0.005f)
+				{
+					interpolatedRot.Add(j);
+				}
+
+				interpolatedRot.Add(NPC.oldRot[i]);
+				Color color = Color.Cyan * (1f - i * 0.1f);
+
+				foreach (float rotation in interpolatedRot)
+				{
+					Main.spriteBatch.Draw(smallRingRunes, originalPos - Main.screenPosition, null, color, -rotation, smallRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+					Main.spriteBatch.Draw(mediumRingRunes, originalPos - Main.screenPosition, null, color, rotation, mediumRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+					Main.spriteBatch.Draw(largeRingRunes, originalPos - Main.screenPosition, null, color, -rotation, largeRingRunes.Size() * 0.5f, 1, SpriteEffects.None, 0);
+				}
 			}
 
 			Main.spriteBatch.End();
@@ -408,9 +494,9 @@ namespace StarlightRiver.Content.NPCs.BossRush
 						mapEffect.Parameters["distortionMap"].SetValue(distortionMap);
 						mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-						Vector2 pos = bossRushLock.NPC.Center - Main.screenPosition;
+						Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
 
-						float intensity = (bossRushLock.warpAnimationTimer - MAX_SUCC_ANIMATION) / 30;
+						float intensity = (bossRushLock.warpAnimationTimer - MAX_SUCC_ANIMATION) / 45;
 
 						mapEffect.Parameters["uIntensity"].SetValue(intensity);
 						mapEffect.Parameters["uTargetPosition"].SetValue(pos);
@@ -464,7 +550,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				// wobble.Parameters["bobbleAngle"].SetValue(bossRushLock.bobbleDirection.ToRotation());
 				// wobble.Parameters["bobbleMag"].SetValue(bossRushLock.bobbleDirection.Length());
 
-				Vector2 pos = bossRushLock.NPC.Center - Main.screenPosition;
+				Vector2 pos = bossRushLock.originalPos - Main.screenPosition;
 
 				Color color = Color.White;
 				color.A = 0;
@@ -485,7 +571,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 			particle.Timer--;
 			particle.Position += particle.Velocity;
 
-			Vector2 diff = NPC.Center - particle.Position;
+			Vector2 diff = originalPos - particle.Position;
 			float mag = diff.Length() / 1000f;
 			Vector2 dir = diff.SafeNormalize(Vector2.Zero);
 

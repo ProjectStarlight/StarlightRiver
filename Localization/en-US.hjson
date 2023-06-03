@@ -3807,6 +3807,7 @@ Mods: {
 
 			DesertWisp2.DisplayName: Desert Wisp2
 			StaminaShardPickup.DisplayName: Stamina Shard Pickup
+			BossRushOrb.DisplayName: ???
 		}
 
 		Buffs: {
