@@ -21,8 +21,6 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 16 * 7, 16 * 7, ItemType<JellyShroomItem>(), 1);
-
 			for (int k = 0; k < 35; k++)
 				Dust.NewDust(new Vector2(i, j) * 16, 16 * 7, 16 * 7, DustType<Dusts.BlueStamina>());
 		}

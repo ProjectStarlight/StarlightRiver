@@ -13,11 +13,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
 			this.QuickSetFurniture(4, 4, DustID.Stone, SoundID.Dig, false, new Color(113, 113, 113), false, false, "Infuser");
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemID.DirtBlock);
-		}
-
 		public override bool RightClick(int i, int j)
 		{
 			InfusionMaker.visible = true;

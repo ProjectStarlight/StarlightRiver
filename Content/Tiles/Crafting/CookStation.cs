@@ -17,11 +17,6 @@ namespace StarlightRiver.Content.Tiles.Crafting
 			Main.tileLighted[Type] = true;
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<CookStationItem>());
-		}
-
 		public override void NumDust(int i, int j, bool fail, ref int num)
 		{
 			num = 1;

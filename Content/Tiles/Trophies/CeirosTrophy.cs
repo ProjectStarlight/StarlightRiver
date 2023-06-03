@@ -13,10 +13,6 @@ namespace StarlightRiver.Content.Tiles.Trophies
 			this.QuickSetPainting(3, 3, 7, new Color(120, 85, 60), "Trophy");
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<CeirosTrophyItem>());
-		}
 	}
 
 	class CeirosTrophyItem : QuickTileItem

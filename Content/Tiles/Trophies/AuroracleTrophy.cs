@@ -45,11 +45,6 @@ namespace StarlightRiver.Content.Tiles.Trophies
 				spriteBatch.Draw(tex2, pos, null, color * 0.075f, 0, tex2.Size() / 2, scale * 0.32f, 0, 0);
 			}
 		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<AuroracleTrophyItem>());
-		}
 	}
 
 	class AuroracleTrophyItem : QuickTileItem

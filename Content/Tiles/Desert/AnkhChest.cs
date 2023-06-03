@@ -126,7 +126,6 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, 32, 32, ModContent.ItemType<AnkhChestItem>());
 			Chest.DestroyChest(i, j);
 		}
 
