@@ -18,6 +18,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 			TileObjectData.newTile.RandomStyleRange = 3;
 			TileObjectData.newTile.DrawYOffset = 2;
 			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
+
+			HitSound = SoundID.Grass;
 		}
 
 		public override void RandomUpdate(int i, int j) //RandomUpdate is vanilla's less-than-ideal way of handling having the entire world loaded at once. a bunch of tiles update every tick at pure random. thanks redcode.
@@ -65,6 +67,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 				}
 
 				Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<ForestBerries>()); //Drops berries
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}
 
 			return true;
@@ -128,6 +131,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 	public class ForestBerryBushItem : QuickTileItem
 	{
-		public ForestBerryBushItem() : base("Berry bush", "Plant to grow your own berries", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
+		public ForestBerryBushItem() : base("Berry Bush", "Plant to grow your own berries", "ForestBerryBush", 1, AssetDirectory.ForestTile) { }
 	}
 }

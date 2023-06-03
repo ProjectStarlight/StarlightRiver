@@ -137,7 +137,39 @@ namespace StarlightRiver.Content.Tiles.Vitric
 					Dust.NewDustPerfect(pos, ModContent.DustType<CrystalSparkle2>(), Vector2.Zero);
 			}
 
+			ushort slabType = StarlightRiver.Instance.Find<ModTile>("AncientSandstone").Type;
+
+			bool left = Framing.GetTileSafely(i - 1, j).TileType == slabType;
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == slabType;
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == slabType;
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == slabType;
+
+			if (left || right || up || down)
+				WorldGen.KillTile(i, j);
+
 			base.SafeNearbyEffects(i, j, closer);
+		}
+
+		public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+		{
+			if (fail || effectOnly)
+				return;
+
+			Framing.GetTileSafely(i, j).HasTile = false;
+
+			bool left = Framing.GetTileSafely(i - 1, j).TileType == Type;
+			bool right = Framing.GetTileSafely(i + 1, j).TileType == Type;
+			bool up = Framing.GetTileSafely(i, j - 1).TileType == Type;
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == Type;
+
+			if (left)
+				WorldGen.KillTile(i - 1, j);
+			if (right)
+				WorldGen.KillTile(i + 1, j);
+			if (up)
+				WorldGen.KillTile(i, j - 1);
+			if (down)
+				WorldGen.KillTile(i, j + 1);
 		}
 	}
 

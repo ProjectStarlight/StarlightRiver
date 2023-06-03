@@ -90,6 +90,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (InCutscene && (Main.netMode == NetmodeID.SinglePlayer || Main.netMode == NetmodeID.MultiplayerClient)) //handles cutscenes
 			{
 				Player player = Main.LocalPlayer;
+				player.immune = true; //TODO: Move this later!!!
+				player.immuneTime = 2;
 
 				switch (StarlightEventSequenceSystem.sequence)
 				{

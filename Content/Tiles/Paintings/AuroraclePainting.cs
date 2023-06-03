@@ -11,11 +11,6 @@ namespace StarlightRiver.Content.Tiles.Paintings
 		{
 			this.QuickSetPainting(4, 4, 7, new Color(30, 30, 120), "Painting");
 		}
-
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<AuroraclePaintingItem>());
-		}
 	}
 
 	class AuroraclePaintingItem : QuickTileItem

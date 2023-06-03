@@ -12,10 +12,6 @@ namespace StarlightRiver.Content.Tiles.Paintings
 			this.QuickSetPainting(2, 2, 7, new Color(180, 180, 120), "Painting");
 		}
 
-		public override void KillMultiTile(int i, int j, int frameX, int frameY)
-		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<EggCodexPaintingItem>());
-		}
 	}
 
 	class EggCodexPaintingItem : QuickTileItem
