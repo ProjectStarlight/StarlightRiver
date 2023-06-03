@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("A barely-sentient bundle of magma, closely related to slimes. Harbos absolutely zeor animosity towards anything ever, and would get along well with just about any creature if it weren't for its body being thousands of degrees.")
+				new FlavorTextBestiaryInfoElement("A barely-sentient bundle of magma, closely related to slimes. Harbors absolutely zero animosity towards anything ever, and would get along well with just about any creature if it weren't for its body being thousands of degrees hotter than they would prefer.")
 			});
 		}
 
