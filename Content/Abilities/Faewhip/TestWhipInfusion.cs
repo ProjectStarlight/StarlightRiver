@@ -1,8 +1,10 @@
 ﻿using StarlightRiver.Content.Abilities.Infusions;
+using StarlightRiver.Core.Systems;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Abilities.Faewhip
 {
+	[SLRDebug]
 	public class TestWhip : InfusionItem<Whip>
 	{
 		public override InfusionTier Tier => InfusionTier.Untiered;
@@ -41,6 +43,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 		}
 	}
 
+	[SLRDebug]
 	class TestWhipImprint : InfusionImprint
 	{
 		public override InfusionTier Tier => InfusionTier.Bronze;
