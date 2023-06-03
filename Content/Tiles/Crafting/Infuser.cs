@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -25,6 +26,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 		}
 	}
 
+	[SLRDebug]
 	public class InfuserItem : QuickTileItem
 	{
 		public InfuserItem() : base("[PH]Infuser", "Used to imprint infusions", "Infuser", 0, AssetDirectory.CraftingTile) { }
