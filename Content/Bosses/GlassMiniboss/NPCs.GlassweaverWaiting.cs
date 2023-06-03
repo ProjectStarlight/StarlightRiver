@@ -1,5 +1,5 @@
-using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Timer == 60)
 				{
-					NPC.velocity.Y -= 20;
+					NPC.velocity.Y -= 5;
 
 					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 124);
 				}
@@ -190,22 +190,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 								RichTextBox.AddButton("\"Show me that temple.\"", () =>
 								{
-									CameraSystem.AsymetricalPan(180, 240, 150, ArenaPos);
+									CameraSystem.AsymetricalPan(180, 240, 150, StarlightWorld.vitricBiome.Center.ToVector2() * 16);
 									RichTextBox.SetData(NPC, "Glassweaver", GetAfterCameraDialogue());
-								});
+									RichTextBox.ClearButtons();
 
-								RichTextBox.AddButton("Close", () =>
-								{
-									RichTextBox.CloseDialogue();
-									State = 1;
-									Timer = 0;
-								});
+									RichTextBox.AddButton("\"See you around.\"", () =>
+									{
+										State = 1;
+										Timer = 0;
 
-								TextState = 0;
+										RichTextBox.CloseDialogue();
+									});
+								});
 							}
 						});
 					}
-
 				});
 			}
 			else if (State == 2) //Waiting in arena
@@ -232,7 +231,8 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						RichTextBox.ClearButtons();
 
-						RichTextBox.AddButton("\"Wait, what?\"", () => {
+						RichTextBox.AddButton("\"Wait, what?\"", () =>
+						{
 							TextState++;
 							RichTextBox.ClearButtons();
 							RichTextBox.AddButton("\"...\"", () =>

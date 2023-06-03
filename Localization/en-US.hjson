@@ -3286,6 +3286,7 @@ Mods: {
 			PatreonPlaque.MapEntry: ""
 			DoorLasers.MapEntry: ""
 			LightBlocker.MapEntry: ""
+			EmptyHolder.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""
@@ -3389,6 +3390,7 @@ Mods: {
 			InfusionSlotPickup.DisplayName: Unnerving Device
 			BerrySlime.DisplayName: Slimeberry
 			TouchstoneWisp.DisplayName: Aurora Spirit
+			BossRushOrb.DisplayName: ???
 		}
 
 		Buffs: {

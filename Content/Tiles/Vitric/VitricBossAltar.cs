@@ -208,8 +208,6 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
-			Main.NewText(CutsceneTimer);
-
 			var parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
 			Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
