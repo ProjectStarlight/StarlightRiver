@@ -1,6 +1,7 @@
 ﻿using StarlightRiver.Content.Items.BuriedArtifacts;
 using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
