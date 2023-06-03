@@ -256,6 +256,13 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.spriteBatch.End();
 		}
 
+		public override void PreWorldGen()
+		{
+			ProtectedRegions.Clear();
+			RuntimeProtectedRegions.Clear();
+			RuntimeRegionsByPoint.Clear();
+		}
+
 		public override void LoadWorldData(TagCompound tag)
 		{
 			ProtectedRegions.Clear();
