@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -21,6 +22,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override bool SpawnConditions(int i, int j)
 		{
 			return true;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override bool RightClick(int i, int j)
@@ -155,11 +164,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
-			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, Color.White, 0, texUnder.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, lightColor, 0, texUnder.Size() / 2, 1, 0, 0);
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Reflector").Value;
 			var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, Color.White, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, lightColor, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
