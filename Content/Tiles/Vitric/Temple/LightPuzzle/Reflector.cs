@@ -40,6 +40,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 	class ReflectorDummy : Dummy, IDrawAdditive
 	{
 		public bool rotating = false;
+		public int frame = 0;
 
 		private int rotateAnimation = 0;
 		private Vector2 endPoint;
@@ -48,6 +49,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public ref float Emit => ref Projectile.ai[1];
 
 		public ReflectorDummy() : base(ModContent.TileType<Reflector>(), 16, 16) { }
+
+		public override void SafeSetDefaults()
+		{
+			frame = Main.rand.Next(5);
+		}
 
 		public override void Update()
 		{
@@ -152,7 +158,8 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, Color.White, 0, texUnder.Size() / 2, 1, 0, 0);
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Reflector").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 1.57f, tex.Size() / 2, 1, 0, 0);
+			var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, Color.White, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
