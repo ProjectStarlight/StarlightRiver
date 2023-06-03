@@ -8,6 +8,8 @@ using Terraria.ID;
 using Terraria;
 using StarlightRiver.Content.CustomHooks;
 using Terraria.DataStructures;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.BaseTypes;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -172,10 +174,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
 					}
 
-					if (State > maxAttacks)
+					if (State > maxAttacks) // --- !  WIN CONDITION  ! ---
 					{
 						if (Timer > 600)
+						{
+							SpawnReward();
 							State = -1;
+						}
 
 						return;
 					}
@@ -261,16 +266,67 @@ namespace StarlightRiver.Content.Tiles.Underground
 			switch (lives)
 			{
 				case 4:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					SimulateGoldChest(false);
+					SimulateGoldChest(true);
 					break;
 				case 3:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					SimulateGoldChest(false);
+					if (Main.rand.NextBool(4))
+						SimulateGoldChest(false);
+
 					break;
 				case 2:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					SimulateGoldChest(false);
+					if (Main.rand.NextBool(4))
+						SimulateWoodenChest();
+
 					break;
 				case 1:
-					break;
-				default:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					SimulateGoldChest(false);
 					break;
 			}
+		}
+
+		private void SimulateGoldChest(bool twiceReforge)
+		{
+			int[] chestItems = new int[] { ItemID.BandofRegeneration, ItemID.MagicMirror, ItemID.CloudinaBottle, ItemID.HermesBoots, ItemID.Mace, ItemID.EnchantedBoomerang, ItemID.ShoeSpikes, ItemID.FlareGun };
+
+			int chosenItem = Main.rand.Next(chestItems);
+
+			if (chosenItem == ItemID.FlareGun)
+			{
+				int i = Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), chosenItem, prefixGiven: -1);
+
+				if (twiceReforge)	
+					Main.item[i].Prefix(-2);
+				
+				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].CanHavePrefixes();
+
+				Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ItemID.Flare, 50);
+			}
+			else
+			{
+				int i = Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), chosenItem, prefixGiven: -1);
+
+				if (twiceReforge)
+					Main.item[i].Prefix(-2);
+
+				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].CanHavePrefixes();
+
+			}
+		}
+
+		private void SimulateWoodenChest()
+		{
+			int[] chestItems = new int[] {ItemID.Spear, ItemID.Blowpipe, ItemID.WoodenBoomerang, ItemID.Aglet, ItemID.ClimbingClaws, ItemID.Umbrella, 3068, ItemID.WandofSparking, ItemID.Radar, ItemID.PortableStool}; // 3068 is guide to plant fiber cortilage or whatever
+
+			int chosenItem = Main.rand.Next(chestItems);
+
+			Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), chosenItem, prefixGiven: -1);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
