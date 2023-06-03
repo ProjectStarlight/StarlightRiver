@@ -54,7 +54,7 @@ namespace StarlightRiver.Content.Tiles.Trophies
 
 	class AuroracleTrophyItem : QuickTileItem
 	{
-		public AuroracleTrophyItem() : base("Auroracle Trophy", "", "AuroracleTrophy", 0, AssetDirectory.TrophyTile + "TrophyGenericItem", true, 0) { }
+		public AuroracleTrophyItem() : base("Auroracle Trophy", "", "AuroracleTrophy", 1, AssetDirectory.TrophyTile) { }
 
 		public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 		{
