@@ -23,7 +23,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 			{
-				int frame = (i + j) % 8;
+				int frame = ((i ^ 123 + j ^ 018) >> 3 ^ 12961) % 8;
 				Vector2 pos = (new Vector2(i, j) + Helpers.Helper.TileAdj) * 16 + Vector2.One * 24;
 				Color lighting = Lighting.GetColor(i, j);
 
