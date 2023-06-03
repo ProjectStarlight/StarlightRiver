@@ -64,7 +64,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			float backScale = 0.75f;
 
-			var pos = new Vector2(position.X + frame.Width * (0.5f * (1 + (float)Math.Sin(sin))), position.Y + frame.Height * Main.rand.NextFloat(0.8f, 1f));
+			var pos = new Vector2(position.X, position.Y + 16 * Main.rand.NextFloat(0.8f, 1f));
 			Vector2 frontPos = pos - new Vector2(80 * particleScale, 80 * particleScale);
 			Vector2 backPos = pos - new Vector2(80 * particleScale * backScale, 80 * particleScale * backScale);
 

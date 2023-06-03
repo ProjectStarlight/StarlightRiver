@@ -2835,6 +2835,11 @@ Mods: {
 				Tooltip: ""
 				DisplayName: ""
 			}
+
+			TarnishedRing: {
+				DisplayName: Tarnished Ring
+				Tooltip: "'Ancient and heavily tarnished, but still solid. You could sculpt this into something useful..."
+			}
 		}
 
 		Projectiles: {
@@ -3280,6 +3285,7 @@ Mods: {
 			VitricSandPlain.MapEntry: ""
 			PatreonPlaque.MapEntry: ""
 			DoorLasers.MapEntry: ""
+			LightBlocker.MapEntry: ""
 			// VitricGiantCrystal.MapEntry: ""
 			// VitricLargeCrystal.MapEntry: ""
 			// VitricMediumCrystal.MapEntry: ""
