@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 			Color color = Color.White * (float)Math.Sin(StarlightWorld.visualTimer);
 			spriteBatch.Draw(Glow, position, new Rectangle(0, 0, 32, 32), color, 0, origin, scale, SpriteEffects.None, 0);
 
-			Vector2 pos = position + frame.Size() / 4 - Vector2.One + (Vector2.One * Main.rand.Next(12)).RotatedBy(Main.rand.NextFloat(0, 6.28f)) + new Vector2(0, 10);
+			Vector2 pos = position + Main.rand.NextVector2Circular(16, 16) + new Vector2(0, 10);
 
 			if (!GoingBoom)
 				CursedSystem.AddParticle(new Particle(pos, new Vector2(0, -0.4f), 0, 0.5f, CurseColor, 60, Vector2.Zero));

@@ -22,6 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileObjectData.newTile.StyleHorizontal = true;
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
 			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);

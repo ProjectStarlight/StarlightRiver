@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Physics;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -18,7 +19,7 @@ namespace StarlightRiver.Content.Tiles
 			this.QuickSetFurniture(2, 4, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(120, 100, 100));
 		}
 	}
-
+	[SLRDebug]
 	class VerletBannerItem : QuickTileItem
 	{
 		public VerletBannerItem() : base("Verlet banner", "Debug Item", "VerletBanner", 1, AssetDirectory.VitricTile, false) { }

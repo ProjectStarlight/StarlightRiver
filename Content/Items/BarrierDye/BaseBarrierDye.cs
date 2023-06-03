@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using System;
 
 namespace StarlightRiver.Content.Items.BarrierDye
@@ -36,6 +37,7 @@ namespace StarlightRiver.Content.Items.BarrierDye
 		}
 	}
 
+	[SLRDebug]
 	class BaseBarrierDye : BarrierDye
 	{
 		public override string Texture => AssetDirectory.Invisible;

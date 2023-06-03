@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using Terraria.Graphics;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
@@ -34,6 +35,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class VitricTempleWallItem : QuickWallItem
 	{
 		public override string Texture => AssetDirectory.VitricTile + "VitricTempleWallItem";
