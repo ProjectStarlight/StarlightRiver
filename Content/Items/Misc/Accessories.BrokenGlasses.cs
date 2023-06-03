@@ -37,7 +37,13 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!c.TryGotoNext(MoveType.After, //move to after the vanilla combat text spawning
 				i => i.MatchLdcI4(0),
 				i => i.MatchLdcI4(1),
-				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) })),
+				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) }))
+				))
+			{
+				return;
+			}
+
+			if (!c.TryGotoNext(MoveType.After, // since corpseflower puts stuff between these two
 				i => i.MatchPop()))
 			{
 				return;
