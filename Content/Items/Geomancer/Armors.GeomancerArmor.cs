@@ -215,7 +215,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 			DisplayName.SetDefault("Effects of different gems:");
 			
 			Tooltip.SetDefault(
-			"[i/s1:" + ItemType<GeoAmethyst>() + "]: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
+			"[i/s1:" + ItemType<GeoDiamond>() + "]: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
 			"[i/s1:" + ItemType<GeoTopaz>() + "]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier \n" +
 			"[i/s1:" + ItemType<GeoEmerald>() + "]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart \n" +
 			"[i/s1:" + ItemType<GeoSapphire>() + "]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars \n" +
