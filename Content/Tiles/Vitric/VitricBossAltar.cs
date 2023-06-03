@@ -208,6 +208,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
+			Main.NewText(CutsceneTimer);
+
 			var parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
 			Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
@@ -276,7 +278,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				CutsceneTimer++;
 
-				if (CutsceneTimer == 180)
+				if (CutsceneTimer >= 180 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
 				{
 					StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 
