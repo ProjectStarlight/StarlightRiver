@@ -115,6 +115,9 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						var modProj = proj.ModProjectile as SpearBookProjectile;
 						modProj.trailColor = ItemColorUtility.GetColor(item.type);
+
+						Main.instance.LoadProjectile(item.shoot);
+
 						modProj.texture = TextureAssets.Projectile[item.shoot].Value;
 						proj.Size = modProj.texture.Size();
 
