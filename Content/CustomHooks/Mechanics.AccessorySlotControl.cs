@@ -3,7 +3,9 @@ using Terraria.UI;
 
 namespace StarlightRiver.Content.CustomHooks
 {
-	public class AccessorySlotControl : HookGroup
+	//GETTING RID OF CURSED LOGIC FOR RELEASE
+
+	/*public class AccessorySlotControl : HookGroup
 	{
 		//Should be a fairly stable hook in theory, but some vanilla behavior is repeated/replaced here. Could be refactored in the future, this is old code.
 		public override void Load()
@@ -111,5 +113,5 @@ namespace StarlightRiver.Content.CustomHooks
 
 			ItemLoader.PostDrawInInventory(Item, sb, drawPos, source, Item.GetAlpha(currentColor), Item.GetColor(color), origin, scaleFactor * scaleFactor2);
 		}
-	}
+	}*/
 }
