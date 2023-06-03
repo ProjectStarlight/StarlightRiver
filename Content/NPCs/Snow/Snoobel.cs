@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Physics;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -485,6 +485,9 @@ namespace StarlightRiver.Content.NPCs.Snow
 
 		public override void AI()
 		{
+			if (parent is null)
+				return;
+
 			if (parent.active)
 			{
 				Projectile.timeLeft = 2;
