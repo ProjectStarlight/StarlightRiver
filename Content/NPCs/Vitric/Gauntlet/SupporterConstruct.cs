@@ -283,7 +283,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, laserRotation, origin2, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2, NPC.scale, spriteEffects, 0f);

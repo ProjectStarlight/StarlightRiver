@@ -301,7 +301,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				int i = Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), chosenItem, prefixGiven: -1);
 
-				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].prefix != 0;
+				if (twiceReforge)	
+					Main.item[i].Prefix(-2);
+				
+				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].CanHavePrefixes();
 
 				Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ItemID.Flare, 50);
 			}
@@ -309,7 +312,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 			{
 				int i = Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), chosenItem, prefixGiven: -1);
 
-				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].prefix != 0;
+				if (twiceReforge)
+					Main.item[i].Prefix(-2);
+
+				Main.item[i].GetGlobalItem<RelicItem>().isRelic = twiceReforge && Main.item[i].CanHavePrefixes();
 
 			}
 		}
