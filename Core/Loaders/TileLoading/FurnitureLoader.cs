@@ -54,7 +54,7 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 			//special stuff for the door
 			Mod.AddContent(new GenericDoorClosed(name + "DoorClosed", color, dust, name + "DoorClosed", path + name + "DoorClosed"));
 			Mod.AddContent(new GenericDoorOpen(name + "DoorOpen", color, dust, name + "DoorOpen", path + name + "DoorOpen"));
-			Mod.AddContent(new GenericFurnitureItem(name + "Door", name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
+			Mod.AddContent(new GenericFurnitureItem(name + "DoorClosed", name + " " + "DoorClosed", path + name + "DoorItem", 6, material));
 		}
 
 		public void Unload() { }
@@ -72,7 +72,6 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 	[Autoload(false)]
 	class GenericFurnitureItem : QuickTileItem
 	{
-		private readonly string internalName;
 		private readonly string name;
 		private readonly int craftingQuantity;
 		private readonly int craftingMaterial;
@@ -82,11 +81,12 @@ namespace StarlightRiver.Core.Loaders.TileLoading
 
 		public override string Texture => texture;
 
+		protected override bool CloneNewInstances => true;
+
 		public GenericFurnitureItem() { }
 
-		public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(name.Replace("Closed", ""), "", name.Replace(" ", ""), 0)
+		public GenericFurnitureItem(string internalName, string name, string texture, int craftingQuantity, int craftingMaterial) : base(internalName, name.Replace("Closed", ""), "", internalName, 0)
 		{
-			this.internalName = internalName;
 			this.name = name;
 			this.craftingQuantity = craftingQuantity;
 			this.craftingMaterial = craftingMaterial;

@@ -2824,6 +2824,16 @@ Mods: {
 				DisplayName: Laser Puzzle Temple Door
 				Tooltip: Temple Door, Opens if laser puzzle is solved
 			}
+
+			VitricDoorClosed: {
+				DisplayName: Vitric Door
+				Tooltip: ""
+			}
+
+			"": {
+				Tooltip: ""
+				DisplayName: ""
+			}
 		}
 
 		Projectiles: {
