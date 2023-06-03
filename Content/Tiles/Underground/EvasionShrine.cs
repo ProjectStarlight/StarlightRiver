@@ -100,8 +100,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
-
 			bool anyPlayerInRange = false;
 
 			foreach (Player player in Main.player)
@@ -147,6 +145,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State != 0)
 			{
+				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
 
@@ -182,6 +182,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 					SpawnObstacles((int)Timer - 128);
 				}
+			}
+			else//temporary check since no build is only active when shrine is, this remove should be on shrine win ideally
+			{	
+				ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 			}
 
 			if (State == -1 || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500) //"fail" conditions, no living Players in radius or already failing

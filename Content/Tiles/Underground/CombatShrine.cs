@@ -103,13 +103,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void Update()
 		{
-			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);
-
 			bool anyPlayerInRange = false;
 
 			foreach (Player player in Main.player)
 			{
-				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);//stop calling this and call RemoveRegionBySource() when shrine is completed
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
 
 				if (thisPlayerInRange && State != 0)
 					player.GetModPlayer<ShrinePlayer>().CombatShrineActive = true;
@@ -135,6 +133,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State != 0)
 			{
+				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(255, 40 + Main.rand.Next(50), 75) * Windup, 0.2f);
 
@@ -192,6 +192,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 					waveTime = (int)Timer;
 					State++;
 				}
+			}
+			else//temporary check since no build is only active when shrine is, this remove should be on shrine win ideally
+			{
+				ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 			}
 		}
 
