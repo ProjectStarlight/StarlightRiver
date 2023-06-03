@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
+using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Items.Geomancer
 {
@@ -142,7 +143,7 @@ namespace StarlightRiver.Content.Items.Geomancer
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "Kills ands critical strikes have a chance to drop magic gems\n" +
+			Player.setBonus = "Kills ands critical strikes with magic have a chance to drop magic gems\n" +
 			"Each gem activates a different effect when picked up\n" +
 			"Obtaining another gem stores the previous effect\n" +
 			"Collecting all breifly activates every effect at once";
@@ -212,13 +213,14 @@ namespace StarlightRiver.Content.Items.Geomancer
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Effects of different gems:");
+			
 			Tooltip.SetDefault(
-			"Diamond: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
-			"Topaz: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier \n" +
-			"Emerald: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart \n" +
-			"Sapphire: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars \n" +
-			"Amethyst: All strikes inflict Toxic Amethyst, a stacking poison debuff \n" +
-			"Ruby: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage");
+			"[i/s1:" + ItemType<GeoDiamond>() + "]: Critical strikes partially ignore armor, with increased chance for missing enemy HP \n" +
+			"[i/s1:" + ItemType<GeoTopaz>() + "]: +100 barrier. Gain a shield that points to your cursor and blocks attacks, consuming barrier \n" +
+			"[i/s1:" + ItemType<GeoEmerald>() + "]: Immediately heal 20 hp. Hits have a chance to create a 5 HP life heart \n" +
+			"[i/s1:" + ItemType<GeoSapphire>() + "]: Immediately refill mana. Hits have a chance to create 1 to 3 mana stars \n" +
+			"[i/s1:" + ItemType<GeoAmethyst>() + "]: All strikes inflict Toxic Amethyst, a stacking poison debuff \n" +
+			"[i/s1:" + ItemType<GeoRuby>() + "]: Hits have a chance to summon a Ruby Dagger to seek the struck enemy for 20% of the hit's damage");
 		}
 
 		public override void SetDefaults()

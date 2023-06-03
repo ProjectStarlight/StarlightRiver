@@ -147,6 +147,13 @@ namespace StarlightRiver.Content.NPCs.Forest
 			GlobalTimer = 0;
 		}
 
+		public override void OnHitByItem(Player player, Item item, NPC.HitInfo hit, int damageDone)
+		{
+			State = (int)BehaviorStates.Fleeing;
+			NPC.velocity.X += Main.rand.NextBool() ? 5 : -5;
+			GlobalTimer = 0;
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, NPC.Center - screenPos, NPC.frame, drawColor, NPC.rotation, new Vector2(13, 10), NPC.scale, NPC.spriteDirection == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally, 0);
