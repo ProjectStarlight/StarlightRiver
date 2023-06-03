@@ -42,13 +42,15 @@ namespace StarlightRiver.Content.Items
 
 		public override bool? UseItem(Player player)
 		{
-			StarlightEventSequenceSystem.sequence = 0;
+			/*StarlightEventSequenceSystem.sequence = 0;
 			//player.GetHandler().unlockedAbilities.Clear();
 			player.GetHandler().InfusionLimit = 0;
 
 			Main.time = 53999;
 			Main.dayTime = true;
-			StarlightEventSequenceSystem.willOccur = true;
+			StarlightEventSequenceSystem.willOccur = true;*/
+
+			WorldGen.spawnMeteor = true;
 
 			return true;
 		}

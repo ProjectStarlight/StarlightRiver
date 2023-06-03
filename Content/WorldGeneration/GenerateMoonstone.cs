@@ -35,7 +35,7 @@ namespace StarlightRiver.Content.WorldGeneration
 			c.Emit(OpCodes.Stloc, spawnMeteorLocal);
 
 			// Swap the meteorite check with moonstone if we want to spawn a moonstone.
-			c.TryGotoNext(MoveType.Before, x => x.MatchLdcI4(TileID.Meteorite));
+			c.TryGotoNext(MoveType.After, x => x.MatchLdcI4(TileID.Meteorite));
 			c.Emit(OpCodes.Pop);
 			c.Emit(OpCodes.Ldloc, spawnMeteorLocal);
 			c.EmitDelegate((bool spawnMeteor) => spawnMeteor ? TileID.Meteorite : TileType<MoonstoneOre>());
