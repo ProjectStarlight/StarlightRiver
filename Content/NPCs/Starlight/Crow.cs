@@ -6,6 +6,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Starlight
@@ -49,6 +50,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
 			NPC.gfxOffY = -4;
+			NPC.noGravity = true;
+
+			NPC.frame = new Rectangle(0, 0, 0, 0);
 
 			visible = false;
 		}
@@ -133,12 +137,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer > 100 && CutsceneTimer < 140)
-			{
 				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * (CutsceneTimer - 100) / 40f * 4);
-			}
 
 			if (CutsceneTimer == 140)
+			{
+				NPC.noGravity = false;
 				visible = true;
+			}
+
+			if (CutsceneTimer >= 140 && CutsceneTimer < 160)
+				SetFrame(0, (int)(CutsceneTimer - 140) / 10);
+
+			if (CutsceneTimer > 160 && CutsceneTimer % 8 == 0 && NPC.velocity.Y == 0 && GetFrame().Y <= 11)
+				SetFrame(0, GetFrame().Y + 1);
 		}
 
 		/// <summary>
@@ -238,6 +249,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 			if (CutsceneTimer < 300)
 				SpawnAnimation();
+			else
+				NPC.direction = Main.LocalPlayer.Center.X > NPC.Center.X ? 1 : -1;
 
 			if (CutsceneTimer == 360) // First encounter
 			{
@@ -404,12 +417,28 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			};
 		}
 
+		private void SetFrame(int x, int y)
+		{
+			NPC.frame = new Rectangle(62 * x, 88 * y, 62, 88);
+		}
+
+		private Point16 GetFrame()
+		{
+			return new Point16(NPC.frame.X / 62, NPC.frame.Y / 88);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			if (InCutscene && CutsceneTimer < 140)
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 
-			return visible;
+			var frame = new Rectangle(0, 88, 62, 88);
+			SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+			if (visible)
+				spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + new Vector2(0, -10) - Main.screenPosition, NPC.frame, Lighting.GetColor((NPC.Center / 16).ToPoint()), 0, new Vector2(31, 44), 1, effects, 0);
+
+			return false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

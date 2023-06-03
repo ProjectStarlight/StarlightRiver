@@ -4,6 +4,7 @@ Mods: {
 			"[PH]Hint.DisplayName": "[ P H] Hint"
 			"Forbidden Winds.DisplayName": Forbidden  Winds
 			Faeflame.DisplayName: Faeflame
+			Starsight.DisplayName: Starsight
 		}
 
 		Items: {

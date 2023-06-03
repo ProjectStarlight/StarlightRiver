@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 
 			if (Active)
