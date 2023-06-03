@@ -79,8 +79,12 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
 		public static SmartAccessory GetEquippedInstance(Player player, int type)
 		{
-			for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
+			int accessoryIndex = 5 + player.GetAmountOfExtraAccessorySlotsToShow();
+
+			for (int k = 3; k <= 3 + accessoryIndex; k++)
 			{
+				Main.NewText(player.armor[k].Name + ": " + k);
+
 				if (player.armor[k].type == type)
 					return player.armor[k].ModItem as SmartAccessory;
 			}
