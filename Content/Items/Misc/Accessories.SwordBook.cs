@@ -15,6 +15,8 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public int comboState;
 
+		private static List<int> blackListedSwords;
+
 		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\nRight click to parry, reflecting projectiles") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SwordBook";
@@ -29,6 +31,11 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			StarlightItem.CanUseItemEvent -= OverrideSwordEffects;
 			StarlightItem.AltFunctionUseEvent -= AllowRightClick;
+		}
+
+		public override void SetStaticDefaults()
+		{
+			blackListedSwords = new() { ModContent.ItemType<Moonstone.Moonfury>() };
 		}
 
 		public override void SafeSetDefaults()
@@ -57,7 +64,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(player))
 			{
-				if (item != player.HeldItem)
+				if (item != player.HeldItem || blackListedSwords.Contains(item.type))
 					return true;
 
 				// Items that deal melee damage, are not tools, have the swung use style, and have a melee hitbox count as swords
@@ -273,8 +280,8 @@ namespace StarlightRiver.Content.Items.Misc
 						{
 							if (Projectile.timeLeft == (int)(lifeSpan * (k / 12f)))
 							{
-								int i = Projectile.NewProjectile(null, Owner.Center, Vector2.UnitX.RotatedBy(Projectile.rotation) * Item.shootSpeed * 0.5f, Item.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
-								Main.projectile[i].scale *= 0.5f;
+								int i = Projectile.NewProjectile(null, Owner.Center, Vector2.UnitX.RotatedBy(Projectile.rotation) * Item.shootSpeed, Item.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
+								Main.projectile[i].scale *= 0.75f;
 
 								if (Main.projectile[i].extraUpdates > 0)
 									Main.projectile[i].timeLeft = 20 * Main.projectile[i].extraUpdates;
