@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core.Systems;
+using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
@@ -15,6 +16,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
+	[SLRDebug]
 	class WispAltarLItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;
@@ -33,6 +35,7 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
+	[SLRDebug]
 	class WispAltarRItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

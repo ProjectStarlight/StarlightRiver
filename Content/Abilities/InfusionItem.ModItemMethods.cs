@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Helpers;
-using System;
+﻿using System;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Abilities
@@ -11,16 +10,24 @@ namespace StarlightRiver.Content.Abilities
 
 		public override bool PreDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color ItemColor, Vector2 origin, float scale)
 		{
-			Draw(spriteBatch, position + Request<Texture2D>(Texture).Value.Size() / 2 * scale, 1);
+			Texture2D back = Request<Texture2D>("StarlightRiver/Assets/Abilities/DefaultFrame", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			Draw(spriteBatch, position, 1, scale);
 			return false;
 		}
 
-		public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity)
+		/// <summary>
+		/// Renders this infusion as a whole, combining it's frame and glyph
+		/// </summary>
+		/// <param name="spriteBatch">the spriteBatch to draw this infusion with</param>
+		/// <param name="position">the center of where the infusion should be drawn</param>
+		/// <param name="opacity">the opacity at which the sprites should be drawn, from 0 to 1</param>
+		/// ///<param name="scale">the scale at which this infusion should be drawn</param>
+		public void Draw(SpriteBatch spriteBatch, Vector2 position, float opacity, float scale = 1)
 		{
 			Texture2D outlineTex = Request<Texture2D>(FrameTexture).Value;
-			spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(outlineTex, position, null, Color.White * opacity, 0, outlineTex.Size() / 2, scale, 0, 0);
 			Texture2D mainTex = Request<Texture2D>(Texture).Value;
-			spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, 1, 0, 0);
+			spriteBatch.Draw(mainTex, position, null, Color.White * opacity, 0, mainTex.Size() / 2, scale, 0, 0);
 		}
 
 		public override void Update(ref float gravity, ref float maxFallSpeed)
@@ -48,12 +55,6 @@ namespace StarlightRiver.Content.Abilities
 		{
 			Draw(spriteBatch, Item.Center - Main.screenPosition, 1);
 			return false;
-		}
-
-		public override bool OnPickup(Player Player)
-		{
-			Helper.UnlockCodexEntry<Codex.Entries.InfusionEntry>(Player);
-			return true;
 		}
 
 		public override bool CanRightClick()

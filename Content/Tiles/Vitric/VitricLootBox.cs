@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StarlightRiver.Core.Systems;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -32,6 +33,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			this.QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
 		}
 	}
+
+	[SLRDebug]
 	class VitricLootBoxItem : QuickTileItem
 	{
 		public VitricLootBoxItem() : base("Vitric Loot Box Item", "", "VitricLootBox", 1, AssetDirectory.VitricTile, false) { }

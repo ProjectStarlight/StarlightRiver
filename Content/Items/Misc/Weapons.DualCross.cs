@@ -12,7 +12,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Double Cross");
-			Tooltip.SetDefault("Shoots your highest two ammo slots at once");
+			Tooltip.SetDefault("Shoots arrows from your highest two ammo slots at once");
 		}
 
 		public override void SetDefaults()
@@ -96,11 +96,13 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			Recipe recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.SilverBar, 10);
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.TungstenBar, 10);
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}

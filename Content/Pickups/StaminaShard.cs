@@ -1,8 +1,7 @@
 ﻿using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
-using StarlightRiver.Helpers;
+using StarlightRiver.Core.Systems;
 using System;
 using static Terraria.ModLoader.ModContent;
 
@@ -44,8 +43,6 @@ namespace StarlightRiver.Content.Pickups
 				UILoader.GetUIState<TextCard>().Display("Starlight Vessel Shard", "Collect " + (3 - ah.ShardCount % 3) + " more to increase your maximum starlight", null, 240, 0.6f);
 
 			Player.GetModPlayer<StarlightPlayer>().maxPickupTimer = 1;
-
-			Helper.UnlockCodexEntry<StaminaShardEntry>(Main.LocalPlayer);
 		}
 
 		private static string GetStaminaTexture()
@@ -75,7 +72,7 @@ namespace StarlightRiver.Content.Pickups
 			Main.NewText("pickup set to stamina shard number " + tile.TileFrameX, Color.Orange);//debug?
 		}
 	}
-
+	[SLRDebug]
 	class StaminaShardTileItem : QuickTileItem
 	{
 		public override string Texture => "StarlightRiver/Assets/Abilities/Stamina1";

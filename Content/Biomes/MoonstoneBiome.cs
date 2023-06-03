@@ -161,7 +161,7 @@ namespace StarlightRiver.Content.Biomes
 		{
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.NewText("Drawing to target!");
+			//Main.NewText("Drawing to target!");
 
 			sb.End();
 			sb.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);

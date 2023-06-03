@@ -12,13 +12,14 @@ namespace StarlightRiver.Content.Items.Misc
 		private Projectile proj;
 
 		private int counter;
+		private float rotation;
 
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Pyroclastic Flow");
-			Tooltip.SetDefault("Blasts a torrential stream of lava that sticks to tiles and enemies");
+			Tooltip.SetDefault("Blasts a torrential stream of magma that sticks to tiles and enemies");
 		}
 
 		public override void SetDefaults()
@@ -42,6 +43,9 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
+			if (rotation == -1)
+				rotation = velocity.ToRotation();
+
 			counter++;
 			foreach (Projectile Projectile in Main.projectile)
 			{
@@ -55,7 +59,7 @@ namespace StarlightRiver.Content.Items.Misc
 				Terraria.Audio.SoundEngine.PlaySound(SoundID.Item13, position);
 			}
 
-			if (proj != null && proj.active)
+			if (proj != null && proj.active && counter % 2 == 0)
 			{
 				proj.damage = damage / 2;
 				var mp = proj.ModProjectile as MagmaGunPhantomProj;
@@ -66,15 +70,18 @@ namespace StarlightRiver.Content.Items.Misc
 					return false;
 				}
 
-				for (int i = 0; i < 3; i++)
+				for (int i = 0; i < 2; i++)
 				{
+					rotation += Helpers.Helper.RotationDifference(velocity.ToRotation(), rotation) * 0.175f;
+					velocity = Vector2.UnitX.RotatedBy(rotation) * velocity.Length();
+
 					Vector2 direction = velocity.RotatedByRandom(0.1f);
 					direction *= Main.rand.NextFloat(0.9f, 1.15f);
 
 					Vector2 position2 = position;
 					position2 += Vector2.Normalize(velocity) * 20;
 					position2 += Vector2.Normalize(velocity.RotatedBy(1.57f * -player.direction)) * 5;
-					mp.CreateGlob(position2, direction);
+					mp.CreateGlob(position2, direction * 0.5f);
 				}
 			}
 			else
@@ -89,6 +96,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (player.ownedProjectileCounts[ModContent.ProjectileType<MagmaGunPhantomProj>()] == 0)
 				proj = Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<MagmaGunPhantomProj>(), 0, 0, player.whoAmI);
+
+			if (!Main.mouseLeft)
+				rotation = -1;
 		}
 
 		public override Vector2? HoldoutOffset()
@@ -147,7 +157,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			this.velocity = velocity;
 			Center = position;
-			endScale = Main.rand.NextFloat(0.7f, 2f) * 0.75f;
+			endScale = Main.rand.NextFloat(0.8f, 1.4f) * 0.75f;
 			rotationConst = (float)Main.rand.NextDouble() * 6.28f;
 		}
 
@@ -315,7 +325,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				A = 0
 			};
-			spriteBatch.Draw(tex, Center - Main.screenPosition, null, color * 0.425f, 0f, tex.Size() / 2, scale * 0.34f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(tex, Center - Main.screenPosition, null, color * 0.425f, 0f, tex.Size() / 2, scale * 0.24f, SpriteEffects.None, 0f);
 		}
 
 		/*public void DrawSinge(SpriteBatch spriteBatch, Texture2D tex)

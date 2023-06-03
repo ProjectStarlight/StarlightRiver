@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Physics;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Snow
 {
-	internal class Snoobel : ModNPC
+	internal class Snoobel : ModNPC, IHintable
 	{
 		private enum Phase
 		{
@@ -453,6 +454,10 @@ namespace StarlightRiver.Content.NPCs.Snow
 			trunkChain.forceGravity = new Vector2(0, 0.1f);
 			trunkChain.useEndPoint = false;
 			phase = Phase.Walking;
+		}
+		public string GetHint()
+		{
+			return "Extremely ugly. so Fucking ugly.";
 		}
 	}
 

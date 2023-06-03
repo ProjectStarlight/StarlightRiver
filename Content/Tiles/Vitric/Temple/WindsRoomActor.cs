@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class WindsRoomActorItem : QuickTileItem
 	{
 		public WindsRoomActorItem() : base("Winds Room Actor", "Debug Item", "WindsRoomActor", 0, AssetDirectory.VitricTile + "WindsRoomOrnamentLeft", true) { }
@@ -40,6 +43,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override bool PreDraw(ref Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return false;
+
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackground").Value;
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Vector2 pos = Projectile.Center + new Vector2(-backdrop.Width / 2, -backdrop.Height + 8) - Main.screenPosition;
@@ -57,6 +63,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			Texture2D backdrop = Request<Texture2D>(AssetDirectory.VitricTile + "WindsRoomBackground").Value;

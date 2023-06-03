@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Starwood
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Starwood Boomerang");
-			Tooltip.SetDefault("Hold LMB to channel the boomerang, causing it to release an explosion");
+			Tooltip.SetDefault("Hold <left> to channel the boomerang, causing it to release an explosion");
 		}
 
 		public override void SetDefaults()

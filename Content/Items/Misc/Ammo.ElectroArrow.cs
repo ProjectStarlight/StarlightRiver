@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Electro Arrow");
-			Tooltip.SetDefault("Chains to nearby enemies\nInflicts overcharge, greatly lowering enemy defense");
+			Tooltip.SetDefault("Chains to nearby enemies\nInflicts Overcharged, greatly lowering enemy defense");
 		}
 
 		public override void SetDefaults()

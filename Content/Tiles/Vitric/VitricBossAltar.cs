@@ -4,6 +4,7 @@ using StarlightRiver.Content.Bosses.VitricBoss;
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Packets;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -112,13 +113,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Tile tile = Framing.GetTileSafely((int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16);
 
 			if (tile.TileFrameX < 90)
-				return "Maybe something inside the temple could free it from it's crystal prison...";
+				return "An altar, encased in crystal rich with binding Starlight. You'd have to use a Starlight power of equal strength...";
 			else
 				return "An altar awaiting an offering...";
-
 		}
 	}
 
+	[SLRDebug]
 	class VitricBossAltarItem : QuickTileItem
 	{
 		public VitricBossAltarItem() : base("Vitric Boss Altar Item", "Debug Item", "VitricBossAltar", 1, AssetDirectory.Debug, true) { }
@@ -207,6 +208,8 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 		public override void Update()
 		{
+			Main.NewText(CutsceneTimer);
+
 			var parentPos = new Point16((int)Projectile.position.X / 16, (int)Projectile.position.Y / 16);
 			Tile parent = Framing.GetTileSafely(parentPos.X, parentPos.Y);
 
@@ -275,7 +278,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				CutsceneTimer++;
 
-				if (CutsceneTimer > 180)
+				if (CutsceneTimer >= 180 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
 				{
 					StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 

@@ -11,19 +11,19 @@ namespace StarlightRiver.Compat.BossChecklist
 			{
 				//Auroracle
 				var SquidBossCollection = new List<int>();
-				string SquidBossInfo = "Drop Auroracle Bait into the prismatic waters of the permafrost shrine.";
+				string SquidBossInfo = "Drop a Suspicious Looking Offering into the prismatic waters of the Permafrost Shrine, accessed only through the coldest caves.";
 				bcl.Call("AddBoss", StarlightRiver.Instance, "Auroracle", ModContent.NPCType<Content.Bosses.SquidBoss.SquidBoss>(), 2.6f,
 					() => StarlightWorld.HasFlag(WorldFlags.SquidBossDowned),
 					() => true,
-					SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The permafrost cathedral falls silent.", AuroraclePortrait.DrawAuroraclePortrait);
+					SquidBossCollection, ModContent.ItemType<SquidBossSpawn>(), SquidBossInfo, "The frozen cathedral falls silent.", AuroraclePortrait.DrawAuroraclePortrait);
 
 				//Glassweaver
 				var vitricMinibossCollection = new List<int>();
-				string vitricMinibossInfo = "Challenge the glassweaver in his forge in the vitric desert.";
+				string vitricMinibossInfo = "Challenge the Glassweaver in his forge, deep within the Vitric Desert.";
 				bcl.Call("AddMiniBoss", StarlightRiver.Instance, "Glassweaver", ModContent.NPCType<Content.Bosses.GlassMiniboss.Glassweaver>(), 4.8999f,
 					() => StarlightWorld.HasFlag(WorldFlags.DesertOpen),
 					() => true,
-					vitricMinibossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricMinibossInfo, "The glassweaver claims victory.");
+					vitricMinibossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricMinibossInfo, "The Glassweaver claims victory.");
 
 				//Ceiros
 				var vitricBossCollection = new List<int>()
@@ -31,11 +31,11 @@ namespace StarlightRiver.Compat.BossChecklist
 					ModContent.ItemType<Content.Tiles.Trophies.CeirosTrophyItem>()
 				};
 
-				string vitricBossInfo = "Use a Glass Idol at cerios' atop the vitric temple, after breaking the crystal covering it.";
+				string vitricBossInfo = "Use a Glass Idol at the altar atop the Vitric Temple, after breaking the crystal covering it.";
 				bcl.Call("AddBoss", StarlightRiver.Instance, "Ceiros", ModContent.NPCType<Content.Bosses.VitricBoss.VitricBoss>(), 4.9f,
 					() => StarlightWorld.HasFlag(WorldFlags.VitricBossDowned),
 					() => true,
-					vitricBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossInfo, "The vitric forge falls silent.", CeirosPortrait.DrawCeirosPortrait);
+					vitricBossCollection, ModContent.ItemType<Content.Items.Vitric.GlassIdol>(), vitricBossInfo, "The Vitric Forge falls silent.", CeirosPortrait.DrawCeirosPortrait);
 
 				//OG Boss
 				var ogBossCollection = new List<int>();

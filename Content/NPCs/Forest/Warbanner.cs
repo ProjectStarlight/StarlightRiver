@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.VerletGenerators;
 using StarlightRiver.Helpers;
@@ -10,7 +11,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Forest
 {
-	class Warbanner : ModNPC, IDrawAdditive
+	class Warbanner : ModNPC, IDrawAdditive, IHintable
 	{
 		public enum BehaviorStates
 		{
@@ -330,6 +331,10 @@ namespace StarlightRiver.Content.NPCs.Forest
 				int goreType = StarlightRiver.Instance.Find<ModGore>("WarbannerGore" + Main.rand.Next(7)).Type;
 				Gore.NewGore(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Vector2.Zero, goreType);
 			}
+		}
+		public string GetHint()
+		{
+			return "It somehow bolsters nearby foes...";
 		}
 	}
 

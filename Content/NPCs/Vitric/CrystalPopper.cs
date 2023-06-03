@@ -63,7 +63,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A territorial bat, related to the Sandviper. It launches itself into the air when startled, accompanied with a burst of its nesting crystals towards any nearby foes.")
 			});
 		}
 

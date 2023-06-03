@@ -1,6 +1,9 @@
-﻿using StarlightRiver.Helpers;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -9,7 +12,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Permafrost
 {
-	class Touchstone : ModTile
+	class Touchstone : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/Touchstone";
 
@@ -107,6 +110,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		public override bool RightClick(int i, int j)
 		{
+			// Prevent spawning a wisp if there is already one in the world
+			if (Main.npc.Any(n => n.active && n.type == ModContent.NPCType<TouchstoneWisp>()))
+				return false;
+
 			Tile tile = Framing.GetTileSafely(i, j);
 			i -= tile.TileFrameX / 18;
 			j -= tile.TileFrameY / 18;
@@ -123,6 +130,10 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			(Main.npc[NPCIndex].ModNPC as TouchstoneWisp).owner = Main.LocalPlayer;
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "Full of Starlight, seemingly with a mind of its own...";
 		}
 	}
 
@@ -159,6 +170,7 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 		}
 	}
 
+	[SLRDebug]
 	class TouchstoneItem : QuickTileItem
 	{
 		public TouchstoneItem() : base("Touchstone", "A guiding light", "Touchstone", 3, AssetDirectory.PermafrostTile) { }

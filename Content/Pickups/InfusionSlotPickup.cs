@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.Abilities;
-using StarlightRiver.Content.Codex.Entries;
 using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Loaders.UILoading;
@@ -102,7 +101,6 @@ namespace StarlightRiver.Content.Pickups
 			if (timer == 559)
 			{
 				UILoader.GetUIState<TextCard>().Display("Mysterious Technology", "What has it done to you?", time: 360);
-				Helper.UnlockCodexEntry<InfusionEntry>(Main.LocalPlayer);
 
 				Player.headPosition = Vector2.Zero;
 				Player.bodyPosition = Vector2.Zero;

@@ -17,10 +17,10 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Staff of Self Disassembly");
-			Tooltip.SetDefault("Reserve 40 life to summon a flesh apparation\n" +
-				"apparations grant increased life regeneration\n" +
-				"life regeneration boost is increased when apparitions strike an enemy");
+			DisplayName.SetDefault("Staff of Self-Disassembly");
+			Tooltip.SetDefault("Reserve 40 life to summon a Flesh Horror\n" +
+				"Horrors grant increased life regeneration\n" +
+				"Life regeneration boost is increased when Horrors strike an enemy");
 
 			ItemID.Sets.GamepadWholeScreenUseRange[Item.type] = true;
 			ItemID.Sets.LockOnIgnoresCollision[Item.type] = true;

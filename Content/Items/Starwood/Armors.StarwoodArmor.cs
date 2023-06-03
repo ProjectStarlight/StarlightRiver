@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items;
+using StarlightRiver.Content.Items.Vanity;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -17,6 +18,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			DisplayName.SetDefault("Starwood Hat");
 			Tooltip.SetDefault("5% increased magic damage");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AncientStarwoodHat>();
 		}
 
 		public override void SetDefaults()
@@ -61,6 +64,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			DisplayName.SetDefault("Starwood Robes");
 			Tooltip.SetDefault("Increases max mana by 20");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AncientStarwoodChest>();
 		}
 
 		public override void SetDefaults()
@@ -90,7 +95,7 @@ namespace StarlightRiver.Content.Items.Starwood
 
 		public override void UpdateArmorSet(Player Player)
 		{
-			Player.setBonus = "Picking up mana stars empowers starwood Items, temporarily granting them new effects";
+			Player.setBonus = "Picking up mana stars empowers Starwood items, temporarily granting them new effects";
 			StarlightPlayer mp = Player.GetModPlayer<StarlightPlayer>();
 
 			if (mp.empowermentTimer > 0 && ArmorHelper.IsSetEquipped(this, Player)) //checks if complete to disable empowerment if set is removed
@@ -131,6 +136,8 @@ namespace StarlightRiver.Content.Items.Starwood
 		{
 			DisplayName.SetDefault("Starwood Leggings");
 			Tooltip.SetDefault("5% increased magic critial strike chance");
+
+			ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<AncientStarwoodBoots>();
 		}
 
 		public override void SetDefaults()

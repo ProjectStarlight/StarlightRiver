@@ -11,7 +11,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Scrap Pod");
-			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor\nIs only able to shatter after a short period of time");
+			Tooltip.SetDefault("Shatters into scrapnel after reaching the mouse cursor");
 		}
 
 		public override void SetDefaults()
@@ -31,6 +31,14 @@ namespace StarlightRiver.Content.Items.Breacher
 			Item.DamageType = DamageClass.Ranged;
 			Item.shoot = ModContent.ProjectileType<ScrappodProjectile>();
 			Item.shootSpeed = 3.5f;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe(100);
+			recipe.AddIngredient(ModContent.ItemType<Content.Items.SpaceEvent.Astroscrap>(), 1);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

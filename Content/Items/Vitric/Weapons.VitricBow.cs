@@ -9,8 +9,8 @@ namespace StarlightRiver.Content.Items.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Vitric Bow");
-			Tooltip.SetDefault("Could use a rework");
+			DisplayName.SetDefault("Ancient Vitric Bow");
+			Tooltip.SetDefault("");
 		}
 
 		public override void SetDefaults()

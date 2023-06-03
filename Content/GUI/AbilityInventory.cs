@@ -80,41 +80,14 @@ namespace StarlightRiver.Content.GUI
 			if (IsMouseHovering)
 				Main.LocalPlayer.mouseInterface = true;
 
+			bool unlocked = Main.LocalPlayer.GetHandler().Unlocked(ability.GetType());
+
 			Vector2 pos = GetDimensions().Center() - Vector2.One;
-			Texture2D tex = !Main.LocalPlayer.GetHandler().Unlocked(ability.GetType()) ? Request<Texture2D>("StarlightRiver/Assets/GUI/blank").Value : Request<Texture2D>(ability.Texture).Value;
+			Texture2D tex = !unlocked ? Request<Texture2D>("StarlightRiver/Assets/GUI/blank").Value : Request<Texture2D>(ability.Texture).Value;
 
 			spriteBatch.Draw(tex, pos, tex.Frame(), Color.White, 0, tex.Size() / 2, 1, 0, 0);
 
-			/*if (Collection.ActiveAbility == Ability) //extra VFX
-            {
-                if (Ability is Dash)
-                {
-                    Texture2D dustex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Fire").Value;
-
-                    for (int k = 0; k < 3; k++)
-                    {
-                        float timer = (float)Math.Sin(LegendWorld.rottime);
-                        Vector2 duspos = pos + new Vector2(2, 0) + new Vector2((float)Math.Sin(LegendWorld.rottime * 2 + k * 2) * (10 - timer * 5), timer * 15);
-                        Collection.dust.Add(new ExpertDust(dustex, duspos, Vector2.Zero, new Color(200, 240, 255), 1.8f, 30));
-                    }
-                }
-
-                if (Ability is Wisp)
-                {
-                    Texture2D dustex = ModContent.Request<Texture2D>("StarlightRiver/Assets/GUI/Fire").Value;
-
-                    Vector2 duspos = pos + new Vector2((float)Math.Cos(LegendWorld.rottime) * 2, (float)Math.Sin(LegendWorld.rottime)) * 8f;
-                    Collection.dust.Add(new ExpertDust(dustex, duspos, Vector2.Zero, new Color(255, 255, 150), 1.8f, 30));
-
-                    Vector2 duspos2 = pos + new Vector2((float)Math.Cos(LegendWorld.rottime + 1), (float)Math.Sin(LegendWorld.rottime + 1) * 2) * 8f;
-                    Collection.dust.Add(new ExpertDust(dustex, duspos2, Vector2.Zero, new Color(255, 255, 150), 1.8f, 30));
-
-                    Vector2 duspos3 = pos + new Vector2((float)Math.Cos(LegendWorld.rottime + 2), (float)Math.Sin(LegendWorld.rottime + 2)) * 16f;
-                    Collection.dust.Add(new ExpertDust(dustex, duspos3, Vector2.Zero, new Color(255, 255, 150), 1.8f, 30));
-                }
-            }*/
-
-			if (IsMouseHovering)
+			if (IsMouseHovering && unlocked)
 			{
 				Tooltip.SetName($"{ability.Name}    {ability.ActivationCostDefault} SP");
 				Tooltip.SetTooltip(ability.Tooltip);

@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A swarming insect found in the Vitric Desert. Rapidly calls forth its lesser bretheren as a means of attack, flying close to their target before detonating their molten nectar to burn and cook their prey.")
 			});
 		}
 
@@ -61,7 +61,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (dying)
 			{
-				Helper.PlayPitched("Magic/FireHit", 0.65f, 0, NPC.Center);
+				Helper.PlayPitched("Magic/FireHit", 0.3f, 0.3f, NPC.Center);
 				for (int i = 0; i < 8; i++)
 				{
 					var dust = Dust.NewDustDirect(NPC.Center - new Vector2(16, 16), 0, 0, ModContent.DustType<CoachGunDust>());
@@ -306,7 +306,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A lesser form of the Firebug, these are at the bottom of the nest's heirarchy. They are regularly sent to their deaths in order to detonate their own bodys to help the hive hunt.")
 			});
 		}
 

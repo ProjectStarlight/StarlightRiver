@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.BarrierSystem;
+﻿using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems.BarrierSystem;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.BarrierDye
@@ -55,6 +56,13 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddTile(TileID.DyeVat);
+			recipe.Register();
 		}
 	}
 }

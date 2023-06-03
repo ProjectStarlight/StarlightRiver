@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Facet & Lattice");
-			Tooltip.SetDefault("Right click to guard\nAttacks are empowered after a guard\nEmpowerment is more effective with better guard timing");
+			Tooltip.SetDefault("Right click to guard, blocking damage depending on timing\nAttacks are empowered after a guard, also depending on your guard timing");
 		}
 
 		public override void SetDefaults()
@@ -102,6 +102,25 @@ namespace StarlightRiver.Content.Items.Vitric
 				Helper.PlayPitched(SoundID.DD2_MonkStaffSwing, 1f, 0, Player.position);
 
 			return true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Spear);
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.Trident);
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(10);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

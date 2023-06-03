@@ -2,9 +2,11 @@ using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Content.Bosses.GlassMiniboss;
 using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Bosses.VitricBoss;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BossRush;
 using StarlightRiver.Content.Tiles.Vitric;
+using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +30,12 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static int trackedBossType = 0;
 
 		public static int scoreTimer;
-		public static int score;
+
+		public static int killScore;
+		public static int damageScore;
+		public static int hitsTaken;
+		public static int timeScore;
+		public static int scoreMult;
 
 		public static int savedNormalScore;
 		public static int savedExpertScore;
@@ -40,6 +47,10 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static Rectangle visibleArea = new(0, 0, 0, 0);
 
 		public static List<BossRushStage> stages;
+
+		public static int HurtScore => hitsTaken > 0 ? hitsTaken * -100 : 10000;
+
+		public static int Score => (killScore + damageScore + HurtScore + timeScore) * scoreMult;
 
 		public static BossRushStage CurrentStage => (currentStage >= 0 && currentStage < stages.Count) ? stages[currentStage] : null;
 
@@ -62,9 +73,17 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			trackedBossType = 0;
 			currentStage = -1;
 			scoreTimer = 0;
-			score = 8000;
+
+			killScore = 0;
+			damageScore = 0;
+			hitsTaken = 0;
+			timeScore = 10000;
+			scoreMult = bossRushDifficulty + 1;
 
 			transitionTimer = 0;
+
+			MasterDeathTicker.animationTimer = 480;
+			UILoader.GetUIState<MessageBox>().Visible = false;
 		}
 
 		/// <summary>
@@ -73,13 +92,16 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		public static void End()
 		{
 			if (Main.GameMode == 0)
-				savedNormalScore = score;
+				savedNormalScore = Score;
 			if (Main.GameMode == 1)
-				savedExpertScore = score * 2;
+				savedExpertScore = Score;
 			if (Main.GameMode == 2)
-				savedMasterScore = score * 3;
+				savedMasterScore = Score;
 
 			WorldGen.SaveAndQuit();
+
+			BossRushScore.Reset();
+			BossRushGUIHack.inScoreScreen = true;
 		}
 
 		/// <summary>
@@ -314,7 +336,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			scoreTimer++;
 
 			if (scoreTimer % 20 == 0)
-				score--;
+				timeScore--;
 
 			// advance the animation
 			if (transitionTimer > 0)
@@ -344,13 +366,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 				{
 					if (currentStage >= stages.Count)
 					{
-						score += 10000; //completion bonus
+						killScore += 10000; //completion bonus
 						End();
 						return;
 					}
 
 					CurrentStage?.EnterArena(Main.LocalPlayer);
-					score += 2000;
+					killScore += 2000;
 				}
 
 				if (transitionTimer == 120)
@@ -388,7 +410,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush)
 				return;
 
-			Utils.DrawBorderString(spriteBatch, "Score: " + score, new Vector2(32, 200), Color.White);
+			Utils.DrawBorderString(spriteBatch, "Score: " + Score, new Vector2(32, 200), Color.White);
 		}
 
 		/// <summary>
@@ -437,6 +459,15 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		}
 
 		/// <summary>
+		/// Reset boss rush when the world is left
+		/// </summary>
+		public override void OnWorldUnload()
+		{
+			if (isBossRush)
+				isBossRush = false;
+		}
+
+		/// <summary>
 		/// Saves if this is a boss rush world, and if so, the arena positions
 		/// </summary>
 		/// <param name="tag"></param>
@@ -453,8 +484,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					tag["stage" + k] = newTag;
 				}
 			}
-
-			isBossRush = false;
 		}
 
 		/// <summary>
@@ -467,8 +496,6 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			if (isBossRush)
 			{
-				Reset();
-
 				for (int k = 0; k < stages.Count; k++)
 				{
 					TagCompound newTag = tag.Get<TagCompound>("stage" + k);

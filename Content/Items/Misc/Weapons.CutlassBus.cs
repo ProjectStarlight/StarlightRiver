@@ -1,3 +1,4 @@
+using StarlightRiver.Core.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using Terraria.ID;
 namespace StarlightRiver.Content.Items.Misc
 {
 	//TODO: Leaving this because its unfinished
+	[SLRDebug]
 	public class CutlassBus : ModItem
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
@@ -14,7 +16,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Cutlassbus");
-			Tooltip.SetDefault("egshels update this lol");
+			Tooltip.SetDefault("egshels update this lol\nhi its me im egshels im not going to update this lol its debug");
 		}
 
 		public override void SetDefaults()

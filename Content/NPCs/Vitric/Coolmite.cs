@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.GlassMiniboss;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
 using StarlightRiver.Content.Items.Vitric;
 using System;
@@ -13,7 +14,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class Coolmite : MagmitePassive
+	internal class Coolmite : MagmitePassive, IHintable
 	{
 		bool melting = false;
 		int meltingTimer = 0;
@@ -40,7 +41,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("Through the power of Shimmer, this form of Magmite has magically cooled down to safe temperatures without rendering itself immobile. Unfortunately, this is a rather chilly temperature for a creature used to being submerged in lava, so they go to great lengths to heat themselves back up.")
 			});
 		}
 
@@ -149,6 +150,10 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			}
 
 			return lavaPos;
+		}
+		public string GetHint()
+		{
+			return "Even cuter in crystal!";
 		}
 	}
 

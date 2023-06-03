@@ -32,13 +32,24 @@ namespace StarlightRiver.Content.CustomHooks
 		/// <returns></returns>
 		private bool IsProtected(int x, int y)
 		{
+			if (StarlightRiver.debugMode)
+				return false;
+
 			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
 			{
 				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
 				{
 					if (region.Contains(new Point(x, y)))
 						return true;
+				}				
+
+				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
+				{
+					if (region.Value.Contains(new Point(x, y)))
+						return true;
 				}
+
+
 
 				Tile tile = Framing.GetTileSafely(x, y);
 
@@ -195,6 +206,14 @@ namespace StarlightRiver.Content.CustomHooks
 					{
 						Projectile.active = false;
 					}
+				}				
+				
+				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
+				{
+					if (region.Value.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
+					{
+						Projectile.active = false;
+					}
 				}
 			}
 		}
@@ -207,6 +226,8 @@ namespace StarlightRiver.Content.CustomHooks
 		public override void LoadWorldData(TagCompound tag)
 		{
 			ProtectedRegions.Clear();
+			RuntimeProtectedRegions.Clear();
+			RuntimeRegionsByPoint.Clear();
 
 			int length = tag.GetInt("RegionCount");
 
@@ -267,5 +288,28 @@ namespace StarlightRiver.Content.CustomHooks
 				});
 			}
 		}
+
+
+		public static void AddRegionBySource(Point16 source, Rectangle region)
+		{
+			if(!RuntimeRegionsByPoint.ContainsKey(source))
+			{
+				var refRect = new Ref<Rectangle>(region);
+				RuntimeRegionsByPoint.Add(source, refRect);
+				RuntimeProtectedRegions.Add(refRect);
+			}
+		}
+
+		public static void RemoveRegionBySource(Point16 source)
+		{
+			if (RuntimeRegionsByPoint.TryGetValue(source, out Ref<Rectangle> refRect))
+			{
+				RuntimeProtectedRegions.Remove(refRect);
+				RuntimeRegionsByPoint.Remove(source);
+			}
+		}
+
+		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
+		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
 	}
 }

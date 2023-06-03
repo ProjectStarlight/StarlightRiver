@@ -1,4 +1,6 @@
-﻿using StarlightRiver.Content.Physics;
+﻿using StarlightRiver.Content.Items.Forest;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -6,7 +8,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Forest
 {
-	class MonkSpear : DummyTile
+	class MonkSpear : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<MonkSpearDummy>();
 
@@ -34,7 +36,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Misc.MonkSpade>());
+			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<MonkSpade>());
+		}
+		public string GetHint()
+		{
+			return "The air here is still, yet the ribbon rides an unseen breeze...";
 		}
 	}
 

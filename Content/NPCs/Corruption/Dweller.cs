@@ -1,15 +1,18 @@
 ﻿using StarlightRiver.Content.Foregrounds;
+using StarlightRiver.Content.Items.EvilBiomes;
+using StarlightRiver.Content.Abilities;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ModLoader.Utilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Corruption
 {
-	class Dweller : ModNPC
+	class Dweller : ModNPC, IHintable
 	{
 		public enum States
 		{
@@ -263,6 +266,11 @@ namespace StarlightRiver.Content.NPCs.Corruption
 			return false;
 		}
 
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<ReplicantCells>(), 25));
+		}
+
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)
 		{
 			return SpawnCondition.Corruption.Chance * 0.27f;
@@ -275,6 +283,10 @@ namespace StarlightRiver.Content.NPCs.Corruption
 				for (int j = 1; j <= 7; j++)
 					Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.position + new Vector2(Main.rand.Next(NPC.width), Main.rand.Next(NPC.height)), Main.rand.NextVector2Circular(3, 3), Mod.Find<ModGore>("DwellerGore" + j).Type);
 			}
+		}
+		public string GetHint()
+		{
+			return "There's something here.";
 		}
 	}
 }

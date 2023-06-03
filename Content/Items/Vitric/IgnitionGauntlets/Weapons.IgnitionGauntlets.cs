@@ -15,8 +15,8 @@ namespace StarlightRiver.Content.Items.Vitric.IgnitionGauntlets
 		{
 			DisplayName.SetDefault("Ignition Gauntlets");
 			Tooltip.SetDefault("Rapidly barrages enemies with your fists while building Ignition Charge\n" +
-							   "Hold RMB to consume charge, propelling yourself forward at escape velocity\n" +
-							   "Attack while still flying to vent remaining charge in a large blast cone|n" +
+							   "Hold <right> to consume charge, propelling yourself forward at escape velocity\n" +
+							   "Attack while still flying to vent remaining charge in a large blast cone\n" +
 							   "'Heroes always arrive from the skies'");
 		}
 

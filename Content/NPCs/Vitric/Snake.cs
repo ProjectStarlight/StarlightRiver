@@ -1,6 +1,5 @@
 ﻿using StarlightRiver.Content.Biomes;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -25,7 +24,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Spittin' Snek");
+			DisplayName.SetDefault("Sandviper");
 		}
 
 		public override void SetDefaults()
@@ -47,7 +46,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A territorial species found nesting in the sands of the Vitric Desert. Approach with caution - they are passive only until one encroaches upon their territory.")
 			});
 		}
 
@@ -183,8 +182,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 				// ---[][]---
 				if (
 					Vector2.Distance(randPos.ToVector2() * 16, Target.Center) > 100 &&
-					Framing.GetTileSafely(randPos).BlockType == BlockType.Solid &&
-					Framing.GetTileSafely(randPos + new Point16(1, 0)).BlockType == BlockType.Solid &&
+					Solid(Framing.GetTileSafely(randPos)) &&
+					Solid(Framing.GetTileSafely(randPos + new Point16(1, 0))) &&
 					!Framing.GetTileSafely(randPos + new Point16(0, -1)).HasTile && Framing.GetTileSafely(randPos + new Point16(0, -1)).LiquidAmount == 0 &&
 					!Framing.GetTileSafely(randPos + new Point16(1, -1)).HasTile && Framing.GetTileSafely(randPos + new Point16(1, -1)).LiquidAmount == 0
 					)
@@ -196,6 +195,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			//Main.NewText("Couldnt find a landing point!");
 			return NPC.Center + new Vector2(16, -36); //when it cant find a landing point, default to the current position
+		}
+
+		private bool Solid(Tile tile)
+		{
+			return tile.HasTile && Main.tileSolid[tile.TileType] && tile.BlockType == BlockType.Solid && !tile.IsActuated;
 		}
 
 		public override float SpawnChance(NPCSpawnInfo spawnInfo)

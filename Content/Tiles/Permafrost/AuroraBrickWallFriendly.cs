@@ -17,6 +17,6 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Permafrost/AuroraBrickWallItem";
 
-		public AuroraBrickWallFriendlyItem() : base("Aurora BrickWall", "Oooh... Preeetttyyy", WallType<AuroraBrickWallFriendly>(), ItemRarityID.White) { }
+		public AuroraBrickWallFriendlyItem() : base("Aurora Brick Wall", "Oooh... Preeetttyyy", WallType<AuroraBrickWallFriendly>(), ItemRarityID.White) { }
 	}
 }

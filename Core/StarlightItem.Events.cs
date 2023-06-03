@@ -4,6 +4,13 @@ namespace StarlightRiver.Core
 {
 	internal partial class StarlightItem : GlobalItem
 	{
+		public delegate void SetStaticDefaultsDelegate();
+		public static event SetStaticDefaultsDelegate SetStaticDefaultsEvent;
+		public override void SetStaticDefaults()
+		{
+			SetStaticDefaultsEvent?.Invoke();
+		}
+
 		public delegate void GetHealLifeDelegate(Item Item, Player Player, bool quickHeal, ref int healValue);
 		public static event GetHealLifeDelegate GetHealLifeEvent;
 		public override void GetHealLife(Item Item, Player Player, bool quickHeal, ref int healValue)
@@ -203,6 +210,7 @@ namespace StarlightRiver.Core
 			CanAccessoryBeEquippedWithEvent = null;
 			ModifyItemLootEvent = null;
 			UseItemEvent = null;
+			SetStaticDefaultsEvent = null;
 		}
 	}
 }

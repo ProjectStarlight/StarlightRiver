@@ -268,9 +268,9 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="timer">The timer associated with the animation</param>
 		private void DrawGainAnimation(SpriteBatch spriteBatch, Rectangle dimensions, int timer)
 		{
-			if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+			/*if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
 				DrawGainAnimationBar(spriteBatch, dimensions, timer);
-			else
+			else*/
 				DrawGainAnimationIcon(spriteBatch, dimensions, timer);
 
 			gainAnimationParticles.DrawParticles(spriteBatch);
@@ -282,10 +282,10 @@ namespace StarlightRiver.Content.GUI
 		/// <param name="spriteBatch">The spriteBatch to draw with</param>
 		/// <param name="dimensions">The dimensions of this UIElement</param>
 		/// <param name="timer">The timer associated with the animation</param>
-		private void DrawGainAnimationBar(SpriteBatch spriteBatch, Rectangle dimensions, int timer)
+		/*private void DrawGainAnimationBar(SpriteBatch spriteBatch, Rectangle dimensions, int timer)
 		{
 
-		}
+		}*/
 
 		/// <summary>
 		/// Animation for gain for icon styles

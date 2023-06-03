@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Buffs;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Linq;
@@ -9,7 +10,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class HotspringFountain : DummyTile
+	class HotspringFountain : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<HotspringFountainDummy>();
 
@@ -43,6 +44,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ModContent.ItemType<HotspringFountainItem>());
+		}
+		public string GetHint()
+		{
+			return "The waters around this spring calm your mind, heal your body, and soothe your soul. A brief reprieve, if only for a moment.";
 		}
 	}
 

@@ -1,4 +1,5 @@
 using StarlightRiver.Content.DropRules;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.NPCs.BaseTypes;
@@ -15,7 +16,7 @@ using static Terraria.ModLoader.ModContent;
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
 	[AutoloadBossHead]
-	public partial class SquidBoss : ModNPC, IUnderwater
+	public partial class SquidBoss : ModNPC, IUnderwater, IHintable
 	{
 		public enum AIStates
 		{
@@ -126,8 +127,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 		public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 		{
-			NPC.lifeMax = Main.masterMode ? (int)(8000 * bossAdjustment) : (int)(6000 * bossAdjustment);
-			baseLife = Main.masterMode ? (int)(4000 * bossAdjustment) : (int)(3000 * bossAdjustment);
+			NPC.lifeMax = Main.masterMode ? 8000 : 6000;
+			baseLife = Main.masterMode ? 4000 : 3000;
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -508,6 +509,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 					{
 						Phase = (int)AIStates.FirstPhaseTwo;
 						GlobalTimer = 0;
+						AttackPhase = 0;
 						ResetAttack();
 						return;
 					}
@@ -584,12 +586,6 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 				if (GlobalTimer > 275 && GlobalTimer <= 325)
 					Arena.waterfallWidth = 50 - ((int)GlobalTimer - 275);
-
-				if (GlobalTimer == 325) //make the remaining tentacles vulnerable
-				{
-					foreach (NPC tentacle in tentacles.Where(n => n.ai[0] == 1))
-						tentacle.ai[0] = 0;
-				}
 
 				if (GlobalTimer > 325) //continue attacking otherwise
 				{
@@ -828,6 +824,11 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 		public override void ReceiveExtraAI(System.IO.BinaryReader reader)
 		{
 			variantAttack = reader.ReadBoolean();
+		}
+
+		public string GetHint()
+		{
+			return "Vulnerable only when its shielding tentacles are destroyed...";
 		}
 	}
 }

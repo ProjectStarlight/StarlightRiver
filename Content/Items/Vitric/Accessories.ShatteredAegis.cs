@@ -48,6 +48,16 @@ namespace StarlightRiver.Content.Items.Vitric
 				instance.cooldown = 60;
 			}
 		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.CobaltShield);
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+		}
 	}
 
 	class FireRing : ModProjectile, IDrawPrimitive

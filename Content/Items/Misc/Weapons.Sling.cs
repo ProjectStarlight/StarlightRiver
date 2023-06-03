@@ -49,7 +49,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			Tooltip.SetDefault("Sling seeds, stones, and mushrooms at your enemies\n" +
-				"Seeds have increase velocity\n" +
+				"Seeds have increased velocity\n" +
 				"Stones have less velocity but deal more damage and knockback\n" +
 				"Mushrooms deal less damage but inflict Poisoned\n" +
 				"75% chance to not consume ammo");

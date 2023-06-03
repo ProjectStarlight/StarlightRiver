@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Archaeologist's Map");
-			Tooltip.SetDefault("Reveals the location of one nearby artifact");
+			Tooltip.SetDefault("Reveals the location of a nearby Artifact");
 		}
 
 		public override void SetDefaults()

@@ -2,6 +2,7 @@ using StarlightRiver.Content.Dusts;
 using StarlightRiver.Helpers;
 using System;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -78,13 +79,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 150;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.2f;
-
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { PitchVariance = 0.3f };
 			cooldownDuration = Main.rand.Next(65, 90);
 			maxSpeed = Main.rand.NextFloat(4.5f, 5.5f);
 			acceleration = Main.rand.NextFloat(0.22f, 0.35f);
@@ -326,6 +322,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				{
 					NPC.velocity.X = NPC.spriteDirection * 17;
 					NPC.velocity.Y = -3;
+					Helper.PlayPitched("Effects/HeavyWhooshShort", Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.5f, 0.8f), NPC.Center);
 				}
 			}
 		}
@@ -396,6 +393,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 					{
 						NPC.velocity = ArcVelocityHelper.GetArcVel(NPC.Bottom, partner.Top + new Vector2(partner.spriteDirection * 15, 0), 0.1f, 120, 350);
 						comboJumped = true;
+
 					}
 
 					if (comboJumped)

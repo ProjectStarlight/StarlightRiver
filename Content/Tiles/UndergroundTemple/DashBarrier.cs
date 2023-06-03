@@ -1,12 +1,13 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.UndergroundTemple
 {
-	class DashBarrier : DummyTile
+	class DashBarrier : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<DashBarrierDummy>();
 
@@ -37,6 +38,10 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 			return false;
 		}
+		public string GetHint()
+		{
+			return "A barrier, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
+		}
 	}
 
 	internal class DashBarrierDummy : Dummy
@@ -55,6 +60,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		}
 	}
 
+	[SLRDebug]
 	public class DashBarrierItem : QuickTileItem
 	{
 		public DashBarrierItem() : base("Dash Barrier", "Debug Item", "DashBarrier", -12, AssetDirectory.UndergroundTempleTile) { }

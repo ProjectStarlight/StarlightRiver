@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Rebar Launcher");
-			Tooltip.SetDefault("Impales enemies \nShoot rebar to drive it deeper into enemies");
+			Tooltip.SetDefault("Impales enemies \nShoot impaled rebar to drive it even deeper into enemies");
 		}
 
 		public override void SetDefaults() //TODO: Adjust rarity sellprice and balance

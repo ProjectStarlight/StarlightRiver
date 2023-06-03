@@ -1,5 +1,6 @@
 using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Items.Vitric;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -36,6 +37,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class DoorVerticalItem : QuickTileItem
 	{
 		public DoorVerticalItem() : base("Vertical Temple Door", "Temple Door, But what if it was vertical?", "DoorVertical", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
@@ -54,13 +56,37 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void NearbyEffects(int i, int j, bool closer)
 		{
-			Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.solved;
+			Framing.GetTileSafely(i, j).IsActuated = GearPuzzle.GearPuzzleHandler.Solved;
 		}
 	}
 
+	[SLRDebug]
 	class DoorGearsItem : QuickTileItem
 	{
 		public DoorGearsItem() : base("Gear Puzzle Temple Door", "Temple Door, Opens if gear puzzle is solved", "DoorGears", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
+	}
+
+	class DoorLasers : ModTile
+	{
+		public override string Texture => AssetDirectory.VitricTile + "DoorVertical";
+
+		public override void SetStaticDefaults()
+		{
+			MinPick = int.MaxValue;
+			TileID.Sets.DrawsWalls[Type] = true;
+			this.QuickSetFurniture(1, 5, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 180, 100), false, true);
+		}
+
+		public override void NearbyEffects(int i, int j, bool closer)
+		{
+			Framing.GetTileSafely(i, j).IsActuated = LightPuzzle.LightPuzzleHandler.Solved;
+		}
+	}
+
+	[SLRDebug]
+	class DoorLasersItem : QuickTileItem
+	{
+		public DoorLasersItem() : base("Laser Puzzle Temple Door", "Temple Door, Opens if laser puzzle is solved", "DoorLasers", ItemRarityID.Blue, AssetDirectory.Debug, true) { }
 	}
 
 	class DashableDoor : DummyTile
@@ -123,6 +149,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		}
 	}
 
+	[SLRDebug]
 	class DashableDoorItem : QuickTileItem
 	{
 		public DashableDoorItem() : base("DashableDoor", "Debug Item", "DashableDoor", 1, AssetDirectory.Debug, true) { }

@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Overflowing Urn");
-			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will frostburn you");
+			Tooltip.SetDefault("Unleashes a torrent of chilling winds\nProlonged use will cause it to go out of control");
 		}
 
 		public override void SetDefaults()

@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Content.Tiles.Moonstone;
+using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 		public override void SetStaticDefaults()
 		{
-			Tooltip.SetDefault("Press <right> to charge up a slam that destroys walls");
+			Tooltip.SetDefault("Press <right> to charge up a slam that destroys a large area of walls");
 		}
 
 		public override void SetDefaults()
@@ -84,6 +85,14 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			return base.CanUseItem(player);
+		}
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddRecipeGroup(RecipeGroupID.Wood, 5);
+			recipe.AddIngredient<MoonstoneBarItem>(10);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

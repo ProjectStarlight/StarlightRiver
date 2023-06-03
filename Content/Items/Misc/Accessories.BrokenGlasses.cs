@@ -117,7 +117,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!c.TryGotoPrev(  //now we go back up to before damage is calculated
 				MoveType.Before,
 				i => i.MatchLdsfld(typeof(Main).GetField(nameof(Main.npc))),
-				i => i.MatchLdloc(16), //16 is the whoAmI of the npc (new variable here because of vanilla terraria. Actually useful to specify where we actually wanna go
+				i => i.MatchLdloc(19), //19 is the whoAmI of the npc (new variable here because of vanilla terraria. Actually useful to specify where we actually wanna go
 				i => i.MatchLdelemRef(),
 				i => i.MatchLdfld(typeof(NPC).GetField(nameof(NPC.immortal)))))
 			{

@@ -17,7 +17,8 @@ namespace StarlightRiver.Content.Items.Misc
 		private int shotTimer = 0;
 
 		public GunstrapBoots() : base("Gunstrap Boots", "All double jumps now shoot out a shotgun blast of bullets below you" +
-		   "\nUsing wings fires constant rounds of machine gun fire")
+		   "\nUsing wings fires constant rounds of machine gun fire" +
+		   "\n'Smells like steak and fries'")
 		{ }
 
 		public override void SafeSetDefaults()

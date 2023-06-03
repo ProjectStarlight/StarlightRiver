@@ -14,8 +14,7 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			DisplayName.SetDefault("Filet Knife");
 			Tooltip.SetDefault("Critical strikes carve chunks of flesh from enemies\n" +
-			"Devour chunks to heal and gain Blood Frenzy\n" +
-			"Blood Frenzy grants increased attack speed and decreased critical strike chance");
+			"Devour chunks to heal and gain Bloodfrenzy");
 		}
 
 		public override void SetDefaults()

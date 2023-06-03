@@ -1,6 +1,7 @@
 using StarlightRiver.Content.CustomHooks;
 using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.LightingSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -151,7 +152,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Vector2 pos = NPC.Center + new Vector2(-832, 35 * 16) + new Vector2(0, -WaterLevel);
 
 			//Lighting
-			if (!(StarlightWorld.cathedralOverlay is null) && StarlightWorld.cathedralOverlay.Fade)
+			if (!(CutawayHandler.cathedralOverlay is null) && CutawayHandler.cathedralOverlay.Fade)
 			{
 				for (int k = 0; k < 45; k++)
 				{

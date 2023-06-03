@@ -23,12 +23,15 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private void SpawnEnemy(Vector2 pos, int type, bool onFloor = true)
 		{
-			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center, Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 0);
+			if (summonAnimTime > 0 && summonAnimTime < 30)
+				summonAnimTime = 30;
+
+			int i = Projectile.NewProjectile(Entity.GetSource_Misc("SLR:GlassGauntlet"), NPC.Center + new Vector2(32, -128), Vector2.Zero, ProjectileType<GauntletSpawner>(), 0, 0, Main.myPlayer, type, onFloor ? 0 : 0);
 
 			if (Main.projectile[i].ModProjectile is GauntletSpawner)
 			{
 				var gs = Main.projectile[i].ModProjectile as GauntletSpawner;
-				gs.startPos = NPC.Center;
+				gs.startPos = NPC.Center + new Vector2(32, -128);
 				gs.targetPos = pos;
 			}
 		}
@@ -51,6 +54,9 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			if (AttackTimer == 1)
 				Main.NewText("Begin", Color.OrangeRed);
 
+			if (AttackTimer == 120)
+				summonAnimTime = 60;
+
 			if (AttackTimer == 150) //Ground melee
 				SpawnEnemy(arenaPos + new Vector2(-300 * PlayerDirection, 0), Grunt, true);
 
@@ -67,7 +73,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave1()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 2", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -76,10 +82,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 			}
 
 			if (AttackTimer == 30) //Ground ranged and air melee
-			{
-				SpawnEnemy(arenaPos + new Vector2(-450 * PlayerDirection, 0), Pelter, true);
 				SpawnEnemy(arenaPos + new Vector2(-360 * PlayerDirection, -100), FlyingGrunt, false);
-			}
 
 			if (AttackTimer == 40) //Air ranged and support
 				SpawnEnemy(arenaPos + new Vector2(-440 * PlayerDirection, -150), FlyingPelter, false);
@@ -91,7 +94,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave2()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 3", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -119,7 +122,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave3()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 4", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -146,7 +149,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave4()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 5", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -163,40 +166,44 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave5()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 6", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
 				SpawnEnemy(arenaPos + new Vector2(200, 0), Shielder, true);
-				SpawnEnemy(arenaPos + new Vector2(260, 0), Grunt, true);
+				SpawnEnemy(arenaPos + new Vector2(260, 0), Pelter, true);
 			}
 
 			if (AttackTimer == 30) //Ground ranged and air melee
 			{
 				SpawnEnemy(arenaPos + new Vector2(-200, 0), Pelter, true);
-				SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingGrunt, false);
+				SpawnEnemy(arenaPos + new Vector2(200, -50), FlyingPelter, false);
 			}
 
 			if (AttackTimer == 40) //Air ranged and support
 			{
-				SpawnEnemy(arenaPos + new Vector2(-320, 0), Supporter, true);
-				SpawnEnemy(arenaPos + new Vector2(-380, 0), Supporter, true);
+				SpawnEnemy(arenaPos + new Vector2(-300, 0), Supporter, true);
 				SpawnEnemy(arenaPos + new Vector2(300, 0), Supporter, true);
-
-				SpawnEnemy(arenaPos + new Vector2(-320, -70), FlyingPelter, false);
 			}
 
-			if (AttackTimer == 161 && ActiveGauntletCount > 4)
-				AttackTimer = 160;
+			if (AttackTimer == 160)
+			{
+				if (ActiveGauntletCount > 4)
+				{
+					AttackTimer = 159;
+				}
+				else
+				{
+					summonAnimTime = 60;
+				}
+			}
 
 			if (AttackTimer == 180)
 			{
-				SpawnEnemy(arenaPos + new Vector2(320, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(380, 0), Grunt, true);
-
 				SpawnEnemy(arenaPos + new Vector2(320, -50), FlyingGrunt, false);
 
 				SpawnEnemy(arenaPos + new Vector2(-260, 0), Pelter, true);
+				SpawnEnemy(arenaPos + new Vector2(-280, 0), Pelter, true);
 			}
 
 			if (AttackTimer > 280)
@@ -206,7 +213,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave6()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Wave 7", Color.OrangeRed);
+				summonAnimTime = 60;
 
 			if (AttackTimer == 20) //Ground melee
 			{
@@ -227,13 +234,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 				SpawnEnemy(arenaPos + new Vector2(-370 * PlayerDirection, 0), Supporter, true);
 			}
 
-			if (AttackTimer == 161 && ActiveGauntletCount > 4)
-				AttackTimer = 160;
+			if (AttackTimer == 160)
+			{
+				if (ActiveGauntletCount > 4)
+				{
+					AttackTimer = 159;
+				}
+				else
+				{
+					summonAnimTime = 60;
+				}
+			}
 
 			if (AttackTimer == 180)
 			{
-				SpawnEnemy(arenaPos + new Vector2(-40 * PlayerDirection, 0), Grunt, true);
-				SpawnEnemy(arenaPos + new Vector2(-460 * PlayerDirection, 0), Pelter, true);
+				SpawnEnemy(arenaPos + new Vector2(-380 * PlayerDirection, -130), FlyingPelter, false);
 				SpawnEnemy(arenaPos + new Vector2(-400 * PlayerDirection, -130), FlyingPelter, false);
 			}
 

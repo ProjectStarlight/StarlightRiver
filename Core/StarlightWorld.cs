@@ -1,6 +1,4 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Tiles.Permafrost;
-using StarlightRiver.Core.Systems.CutawaySystem;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.IO;
@@ -20,14 +18,15 @@ namespace StarlightRiver.Core
 
 		public static float visualTimer;
 
-		public static Cutaway cathedralOverlay;
-
 		public static Rectangle vitricBiome = new();
 
 		public static int squidNPCProgress = 0;
 		public static Rectangle squidBossArena = new();
 
 		public static Rectangle VitricBossArena => new(vitricBiome.X + vitricBiome.Width / 2 - 59, vitricBiome.Y - 1, 108, 74); //ceiros arena
+
+		private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
+		public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
 
 		public StarlightWorld()
 		{
@@ -65,9 +64,6 @@ namespace StarlightRiver.Core
 
 			vitricBiome = ReadRectangle(reader);
 			squidBossArena = ReadRectangle(reader);
-
-			if (CutawayHook.cutaways.Count == 0)
-				CreateCutaways();
 		}
 
 		private void WriteRectangle(BinaryWriter writer, Rectangle rect)
@@ -117,39 +113,6 @@ namespace StarlightRiver.Core
 			tag["PermafrostCenter"] = permafrostCenter;
 
 			tag[nameof(flags)] = (int)flags;
-
-			flags = 0; //Needed because new worlds will inherit past worlds flags otherwise for some reason?
-		}
-
-		private static bool CheckForSquidArena(Player Player)
-		{
-			if (WorldGen.InWorld((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16))
-			{
-				Tile tile = Framing.GetTileSafely((int)Main.LocalPlayer.Center.X / 16, (int)Main.LocalPlayer.Center.Y / 16);
-
-				if (tile != null)
-				{
-					return
-						tile.WallType == WallType<AuroraBrickWall>() &&
-						!Main.LocalPlayer.GetModPlayer<StarlightPlayer>().trueInvisible;
-				}
-			}
-
-			return false;
-		}
-
-		public static void CreateCutaways()
-		{
-			//TODO: Create new overlay for this when the structure is done
-			/*var templeCutaway = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Backgrounds/TempleCutaway").Value, new Vector2(VitricBiome.Center.X - 47, VitricBiome.Center.Y + 5) * 16);
-            templeCutaway.inside = n => n.InModBiome(ModContent.GetInstance<VitricTempleBiome>());
-            CutawayHandler.NewCutaway(templeCutaway);*/
-
-			cathedralOverlay = new Cutaway(Request<Texture2D>("StarlightRiver/Assets/Bosses/SquidBoss/CathedralOver", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value, squidBossArena.TopLeft() * 16)
-			{
-				Inside = CheckForSquidArena
-			};
-			CutawayHook.NewCutaway(cathedralOverlay);
 		}
 
 		public override void LoadWorldData(TagCompound tag)
@@ -168,10 +131,6 @@ namespace StarlightRiver.Core
 
 			flags = (WorldFlags)tag.GetInt(nameof(flags));
 
-			//setup overlays
-			if (Main.netMode == NetmodeID.SinglePlayer)
-				CreateCutaways();
-
 			Content.Physics.VerletChainSystem.toDraw.Clear();
 
 			DummyTile.dummies.Clear();
@@ -179,7 +138,6 @@ namespace StarlightRiver.Core
 
 		public override void Unload()
 		{
-			cathedralOverlay = null;
 			genNoise = null;
 		}
 	}

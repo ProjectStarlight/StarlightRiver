@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Abilities;
 using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using Terraria.DataStructures;
@@ -9,7 +10,7 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric
 {
-	internal class VitricOre : DummyTile
+	internal class VitricOre : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreDummy>();
 
@@ -21,6 +22,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			TileObjectData.newTile.StyleHorizontal = true;
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			var bottomAnchor = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
 			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
@@ -60,9 +62,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		{
 			return false;
 		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
+		}
 	}
 
-	internal class VitricOreFloat : DummyTile
+	internal class VitricOreFloat : DummyTile, IHintable
 	{
 		public override int DummyType => ProjectileType<VitricOreFloatDummy>();
 
@@ -87,6 +93,10 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		public override bool CanDrop(int i, int j)
 		{
 			return false;
+		}
+		public string GetHint()
+		{
+			return "A crystal, infused with binding Starlight. You'd have to use a Starlight power of equal strength...";
 		}
 	}
 
@@ -170,11 +180,13 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
+	[SLRDebug]
 	class VitricOreItem : QuickTileItem
 	{
 		public VitricOreItem() : base("Vitric Ore Crystal Item", "", "VitricOre", 1, AssetDirectory.VitricTile, false) { }
 	}
 
+	[SLRDebug]
 	class VitricOreFloatItem : QuickTileItem
 	{
 		public VitricOreFloatItem() : base("Floating Vitric Ore Crystal Item", "", "VitricOreFloat", 1, AssetDirectory.VitricTile, false) { }

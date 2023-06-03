@@ -20,7 +20,6 @@ namespace StarlightRiver.Content.Tiles.Forest
 			AddMapEntry(new Color(169, 125, 93), name);
 
 			RegisterItemDrop(ItemID.Wood);
-			RegisterItemDrop(ItemID.Wood);
 		}
 
 		private float GetLeafSway(float offset, float magnitude, float speed)
@@ -153,7 +152,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 			bool left = Framing.GetTileSafely(i - 1, j).TileType == ModContent.TileType<ThickTree>();
 			bool right = Framing.GetTileSafely(i + 1, j).TileType == ModContent.TileType<ThickTree>();
 			bool up = Framing.GetTileSafely(i, j - 1).TileType == ModContent.TileType<ThickTree>();
-			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>();
+			bool down = Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTree>() ||
+				Framing.GetTileSafely(i, j + 1).TileType == ModContent.TileType<ThickTreeBase>();
 
 			if (left)
 				WorldGen.KillTile(i - 1, j);
@@ -162,7 +162,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 			if (up)
 				WorldGen.KillTile(i, j - 1);
 			if (down)
-				WorldGen.KillTile(i, j - 1);
+				WorldGen.KillTile(i, j + 1);
 		}
 
 		public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -205,6 +205,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 4, 0);
 			Main.tileAxe[Type] = true;
+			TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 
 			this.QuickSetFurniture(4, 4, 0, SoundID.Dig, false, new Color(169, 125, 93));
 		}

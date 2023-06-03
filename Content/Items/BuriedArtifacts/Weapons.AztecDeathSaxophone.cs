@@ -96,8 +96,8 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void SetStaticDefaults()
 		{
-			DisplayName.SetDefault("Aztec Death Saxophone"); //TODO: better name?
-			Tooltip.SetDefault("Take damage and kill foes to charge the saxophone\nOnce charged, press <left> to play a violent tune, massacring anything caught in the way"); //TODO: make this not a skippzz tooltip :)
+			DisplayName.SetDefault("Death Saxophone"); //TODO: better name?
+			Tooltip.SetDefault("Take damage and kill foes with other weapons to charge the saxophone\nOnce charged, use it to unleash a high-damage roar of primal death"); //TODO: make this not a skippzz tooltip :)
 		}
 
 		public override void SetDefaults()
@@ -160,7 +160,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 			spriteBatch.Draw(texGlow, position + new Vector2(-1), null, color, 0f, origin, scale, 0f, 0f);
 
-			spriteBatch.Draw(glowTex, position + new Vector2(-65, -75), null, color, 0f, origin, 1f, 0f, 0f);
+			spriteBatch.Draw(glowTex, position + new Vector2(-50, -65), null, color, 0f, origin, 1f, 0f, 0f);
 
 			return false;
 		}

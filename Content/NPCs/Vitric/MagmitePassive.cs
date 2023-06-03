@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using StarlightRiver.Content.Abilities;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -8,15 +9,19 @@ using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric
 {
-	internal class MagmitePassive : ModNPC
+	internal class MagmitePassive : ModNPC, IHintable
 	{
+		private static int maxLifeTime = 300; // how many ticks before the magmite starts searching for lava to kill itself :))
+
 		private int frameCounter = 0;
+
+		private int switchTimer;
 
 		protected float? targetX = 0;
 
 		public ref float ActionState => ref NPC.ai[0];
 		public ref float ActionTimer => ref NPC.ai[1];
-		public ref float GlobalTimer => ref NPC.ai[2];
+		public ref float Lifetime => ref NPC.ai[2];
 		public ref float TurnTimer => ref NPC.ai[3];
 
 		public override string Texture => "StarlightRiver/Assets/NPCs/Vitric/MagmitePassive";
@@ -52,7 +57,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A barely-sentient bundle of magma, closely related to slimes. Harbors absolutely zero animosity towards anything ever, and would get along well with just about any creature if it weren't for its body being thousands of degrees hotter than they would prefer.")
 			});
 		}
 
@@ -71,16 +76,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			NPC.velocity = reader.ReadPackedVector2();
 		}
 
-		public override bool PreAI()
-		{
-			if (NPC.target >= 0)
-				targetX = Main.player[NPC.target].Center.X;
-			else
-				targetX = null;
-
-			return base.PreAI();
-		}
-
 		public override void AI()
 		{
 			int x = (int)(NPC.Center.X / 16) + NPC.direction; //check 1 tile infront of la cretura
@@ -91,8 +86,34 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			Tile tileFar = Framing.GetTileSafely(x + NPC.direction * 2, y - 1);
 			Tile tileUnder = Framing.GetTileSafely(x, y + 1);
 
+			Lifetime++;
 			ActionTimer++;
-			GlobalTimer++;
+
+			if (switchTimer > 0)
+				switchTimer--;
+
+			float? lava = null;
+
+			if (Lifetime >= maxLifeTime)
+			{
+				if (NPC.lavaWet)
+					NPC.active = false;
+
+				Vector2? lavaVec = FindLava();
+				if (lavaVec != null)
+					lava = lavaVec.Value.X;
+			}
+
+			bool findNewPoint = (NPC.Center.X - targetX < 10f) && lava != null;
+
+			if ((targetX == 0 || findNewPoint || ActionTimer % 240 == 0) && switchTimer <= 0)
+			{
+				targetX = NPC.Center.X + (Main.rand.NextBool() ? -200 : 200);
+				switchTimer = 45;
+			}
+
+			if (lava != null)
+				targetX = lava;
 
 			if (ActionState == -1)
 			{
@@ -138,9 +159,6 @@ namespace StarlightRiver.Content.NPCs.Vitric
 					NPC.target = -1;
 					TurnTimer = 0;
 				}
-
-				if (ActionTimer % 60 == 0)
-					NPC.TargetClosest();
 
 				if (targetX != null)
 					NPC.velocity.X += targetX == NPC.Center.X ? 0 : 0.05f * (targetX > NPC.Center.X ? 1 : -1);
@@ -233,6 +251,36 @@ namespace StarlightRiver.Content.NPCs.Vitric
 
 			spriteBatch.Draw(Request<Texture2D>(Texture).Value, pos, NPC.frame, Color.White * (1 - NPC.shimmerTransparency), 0, new Vector2(originX, 20), 1, NPC.spriteDirection == -1 ? 0 : SpriteEffects.FlipHorizontally, 0);
 			return false;
+		}
+
+		private Vector2? FindLava()
+		{
+			Vector2? lavaPos = null;
+			for (int i = -25; i < 25; i++)
+			{
+				for (int j = -5; j < 15; j++)
+				{
+					Tile tileLava = Main.tile[(int)NPC.Center.X / 16 + i, (int)NPC.Center.Y / 16 + j];
+
+					if (tileLava.LiquidAmount > 0 && tileLava.LiquidType == LiquidID.Lava)
+					{
+						if (lavaPos == null || ((Vector2)lavaPos - NPC.Center).Length() > new Vector2(i, j).Length() * 16)
+						{
+							Vector2 checkPos = NPC.Center + new Vector2(i, j) * 16;
+							if (Collision.CanHitLine(NPC.Center, 1, 1, checkPos, 1, 1) || Collision.CanHitLine(NPC.Center - Vector2.UnitY * 50, 1, 1, checkPos, 1, 1)) // checks if lava can be reached
+								lavaPos = checkPos;
+						}
+					}
+				}
+			}
+
+			return lavaPos;
+		}
+
+		public string GetHint()
+		{
+			return "Cute!";
+
 		}
 	}
 

@@ -9,6 +9,8 @@ namespace StarlightRiver.Content.NPCs.Vitric
 {
 	internal class CrystalSlime : ModNPC
 	{
+		public int badHits;
+
 		public override string Texture => AssetDirectory.VitricNpc + "CrystalSlime";
 
 		public ref float Shield => ref NPC.ai[1];
@@ -39,7 +41,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("An extremely elusive specimen. It's taken in a large amount of crystals and Starlight energy, forming a priceless coating over its membrane. Anyone that finds an intact one should be extremely careful not to break it, for it's likely they will never encounter it again.")
 			});
 		}
 
@@ -98,7 +100,13 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		public override void ModifyIncomingHit(ref NPC.HitModifiers modifiers)
 		{
 			if (Shield == 1)
+			{
 				modifiers.FinalDamage -= int.MaxValue;
+				modifiers.HideCombatText();
+
+				badHits++;
+				CombatText.NewText(NPC.Hitbox, new Color(200, 255, 255), badHits > 20 ? "Dash into me first!" : "Blocked!");
+			}
 		}
 
 		public override void ModifyHitPlayer(Player target, ref Player.HurtModifiers modifiers)
@@ -119,9 +127,12 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			if (Shield == 1)
 			{
+				Texture2D tex = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value;
+				Texture2D texGlow = Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value;
 				Color color = Helper.IndicatorColor;
-				spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/Crystal").Value, NPC.position - screenPos + new Vector2(-2, -5), Lighting.GetColor((int)NPC.position.X / 16, (int)NPC.position.Y / 16));
-				spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/NPCs/Vitric/CrystalGlow").Value, NPC.position - screenPos + new Vector2(-3, -6), color);
+
+				spriteBatch.Draw(tex, NPC.Center - screenPos, null, drawColor, NPC.rotation, tex.Size() / 2f, NPC.scale, 0, 0);
+				spriteBatch.Draw(texGlow, NPC.Center - screenPos, null, color, NPC.rotation, texGlow.Size() / 2f, NPC.scale, 0, 0);
 			}
 		}
 	}

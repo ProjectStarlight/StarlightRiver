@@ -181,7 +181,7 @@ namespace StarlightRiver.Content.Items.Forest
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Juicy Steak");
-			Tooltip.SetDefault("Summons a feral wolf combat mount\nInflicts bleeding with powerful bites\nRight click to howl and boost the speed of minions");
+			Tooltip.SetDefault("Combat Mount: Summons a Feral Wolf \nInflicts bleeding with powerful bites\nRight click to howl and boost the speed of minions");
 		}
 	}
 }

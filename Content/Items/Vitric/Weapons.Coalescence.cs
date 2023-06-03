@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coalescence");
-			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana when they collide");
+			Tooltip.SetDefault("Charge for a volley of brilliant magic\nFully charged shots leech mana where their arrows meet");
 		}
 
 		public override void SetDefaults()
@@ -75,6 +75,17 @@ namespace StarlightRiver.Content.Items.Vitric
 		{
 			if (Main.projectile.Any(n => n.active && n.owner == Player.whoAmI && n.type == ProjectileType<VitricBowProjectile>()))
 				mult = 0;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricBow>();
+			recipe.AddIngredient<SandstoneChunk>(7);
+			recipe.AddIngredient<VitricOre>(7);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

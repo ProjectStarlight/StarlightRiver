@@ -1,6 +1,9 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using StarlightRiver.Content.Items.Gravedigger;
+using StarlightRiver.Content.Items.Misc;
 using System;
 using System.Linq;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.RatKing
 {
@@ -13,7 +16,7 @@ namespace StarlightRiver.Content.Items.RatKing
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Blood Crystal");
-			Tooltip.SetDefault("Debuffs you inflict are inflicted onto you \nAll debuffs you inflict stack and last longer");
+			Tooltip.SetDefault("Cursed : Debuffs you inflict are also inflicted onto you \nAll debuffs you inflict stack and last longer");
 		}
 
 		public override void SafeSetDefaults()
@@ -24,6 +27,16 @@ namespace StarlightRiver.Content.Items.RatKing
 		public override void SafeUpdateEquip(Player Player)
 		{
 			Player.GetModPlayer<BloodCrystalPlayer>().equipped = true;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient<LivingBlood>(10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddTile(TileID.DemonAltar);
+			recipe.Register();
 		}
 	}
 

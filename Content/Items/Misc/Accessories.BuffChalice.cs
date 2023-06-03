@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Misc
 {
@@ -6,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases debuff resistance") { }
+		public BuffChalice() : base("Plexus Chalice", "Inflicting debuffs temporarily increases your Inoculation") { }
 
 		public override void Load()
 		{
@@ -28,6 +29,23 @@ namespace StarlightRiver.Content.Items.Misc
 						player.AddBuff(ModContent.BuffType<PlexusChaliceBuff>(), 120);
 				}
 			}
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.PlatinumBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient<TarnishedRing>();
+			recipe.AddIngredient(ItemID.GoldBar, 10);
+			recipe.AddRecipeGroup("StarlightRiver:Gems", 10);
+			recipe.AddCondition(Condition.NearLava);
+			recipe.Register();
 		}
 	}
 

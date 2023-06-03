@@ -20,7 +20,7 @@ namespace StarlightRiver.Content.Items.Hell
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Charon's Obol");
-			Tooltip.SetDefault("Converts all dropped money to reflective coins, which ricochet projectiles off themselves\nCoins lose their power when they contact any surface\n'Money is the root of all evil'");
+			Tooltip.SetDefault("Converts all dropped money to ancient coins, which ricochet projectiles off themselves\nCoins lose their power when they contact any surface\n'Soon, may the Ferryman come...'");
 		}
 
 		public override void Load()

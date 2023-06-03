@@ -194,13 +194,22 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 					entity.rotationOffset = -(ratio * rotationOffset) + (1 + ratio) * trueAngle + (float)Math.PI / entity.Teeth;
 
+					if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
+					{
+						var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+						newGear?.OnEngage(this);
+					}
+
 					engaged = true;
 
 					entity.RecurseOverGears(entity.Engage);
 				}
+			}
 
-				Tile tile = Main.tile[Position.X, Position.Y];
-				(ModContent.GetModTile(tile.TileType) as GearTile)?.OnEngage(this);
+			if (!engaged) // I dont care how dumb this looks it works because FORMAL LOGIC and we release in 2 days so fucking send it
+			{
+				var newGear = ModContent.GetModTile(Framing.GetTileSafely(Position).TileType) as GearTile;
+				newGear?.OnEngage(this);
 			}
 
 			engaged = true;

@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Refractive Blade");
-			Tooltip.SetDefault("Hold RMB down to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
+			Tooltip.SetDefault("Hold <right> to charge a laser\nEnemies struck by the laser have 25% increased melee Exposure");
 		}
 
 		public override void SetDefaults()
@@ -79,6 +79,17 @@ namespace StarlightRiver.Content.Items.Vitric
 				combo = 0;
 
 			return false;
+		}
+
+		public override void AddRecipes()
+		{
+			Recipe recipe = CreateRecipe();
+			recipe.AddIngredient<VitricSword>();
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(15);
+			recipe.AddIngredient<MagmaCore>();
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

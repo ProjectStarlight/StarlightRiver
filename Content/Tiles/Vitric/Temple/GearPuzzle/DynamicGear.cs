@@ -1,4 +1,7 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 {
@@ -40,13 +43,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		}
 	}
 
-	class DynamicGearDummy : GearTileDummy
+	class DynamicGearDummy : GearTileDummy, IHintable
 	{
 		public DynamicGearDummy() : base(ModContent.TileType<DynamicGear>()) { }
 
 		public override void Update()
 		{
 			base.Update();
+
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
 
 			Lighting.AddLight(Projectile.Center, new Vector3(0.1f, 0.2f, 0.3f) * Size);
 
@@ -58,6 +64,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 		{
 			Texture2D pegTex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "GearPeg").Value;
 			Main.spriteBatch.Draw(pegTex, Projectile.Center - Main.screenPosition, null, lightColor, 0, pegTex.Size() / 2, 1, 0, 0);
+
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
 
 			Texture2D tex = Size switch
 			{
@@ -95,7 +104,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White * 0.75f, Rotation, tex.Size() / 2, 1, 0, 0);
 
-			if (GearPuzzleHandler.solved) //draws the crystal gear once the puzzle is finished
+			if (GearPuzzleHandler.Solved) //draws the crystal gear once the puzzle is finished
 			{
 				tex = Size switch
 				{
@@ -120,8 +129,13 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 			}
 		}
+		public string GetHint()
+		{
+			return "A magical gear that can change its shape...";
+		}
 	}
 
+	[SLRDebug]
 	class GearTilePlacer : QuickTileItem
 	{
 		public GearTilePlacer() : base("Gear puzzle", "Debug Item", "DynamicGear", 8, AssetDirectory.VitricTile) { }

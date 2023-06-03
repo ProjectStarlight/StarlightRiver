@@ -1,4 +1,7 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Core.Systems;
+using StarlightRiver.Content.Abilities;
+using Terraria.ID;
+using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple
@@ -11,20 +14,42 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 		{
 			MinPick = int.MaxValue;
 			TileID.Sets.DrawsWalls[Type] = true;
-			this.QuickSetFurniture(2, 7, DustType<Content.Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
+			TileObjectData.newTile.RandomStyleRange = 2;
+			TileObjectData.newTile.StyleHorizontal = true;
+			TileObjectData.newTile.StyleLineSkip = 2;
+			this.QuickSetFurniture(2, 11, DustType<Dusts.Air>(), SoundID.Tink, false, new Color(200, 150, 80), false, true, "Vitric Temple Door");
 		}
 
-		public override void NearbyEffects(int i, int j, bool closer)
+		public override bool CanDrop(int i, int j)
 		{
-			Tile tile = Framing.GetTileSafely(i, j);
+			return false;
+		}
 
-			if (StarlightWorld.HasFlag(WorldFlags.DesertOpen))
-				tile.IsActuated = true;
-			else
-				tile.IsActuated = false;
+		public override bool RightClick(int i, int j)
+		{
+			if (Helpers.Helper.TryTakeItem(Main.LocalPlayer, ModContent.ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+			{
+				WorldGen.KillTile(i, j);
+				return true;
+			}
+
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ItemType<Items.Vitric.TempleEntranceKey>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
+		public string GetHint()
+		{
+			return "The monolithic door does not budge. You need a key...";
 		}
 	}
 
+	[SLRDebug]
 	class EntranceDoorItem : QuickTileItem
 	{
 		public override string Texture => AssetDirectory.Debug;

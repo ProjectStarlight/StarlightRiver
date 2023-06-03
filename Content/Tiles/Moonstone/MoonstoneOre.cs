@@ -1,10 +1,11 @@
 ﻿using System;
 using Terraria.ID;
+using StarlightRiver.Content.Abilities;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.Tiles.Moonstone
 {
-	public class MoonstoneOre : ModTile
+	public class MoonstoneOre : ModTile, IHintable
 	{
 		public override string Texture => AssetDirectory.MoonstoneTile + Name;
 
@@ -83,6 +84,11 @@ namespace StarlightRiver.Content.Tiles.Moonstone
 		public override void FloorVisuals(Player player)
 		{
 			player.AddBuff(BuffType<Buffs.Overcharge>(), 120);
+		}
+
+		public string GetHint()
+		{
+			return "This ore is full of Starlight, but... wrong. Twisted.";
 		}
 	}
 }

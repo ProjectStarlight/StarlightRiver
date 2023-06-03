@@ -16,6 +16,7 @@ namespace StarlightRiver.Content.Tiles.Misc
 			TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<DisplayCaseEntity>().Hook_AfterPlacement, -1, 0, false);
 			TileObjectData.newTile.DrawYOffset = 2;
 			QuickBlock.QuickSetFurniture(this, 2, 3, DustID.t_BorealWood, SoundID.Dig, false, new Color(255, 255, 150), false, false, "Relic Case");
+			MinPick = int.MaxValue;
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

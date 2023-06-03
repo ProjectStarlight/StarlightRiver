@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Audio;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -61,13 +62,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 100;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
-
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { Pitch = 0.3f, PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { Pitch = 0.3f, PitchVariance = 0.3f };
 			NPC.noGravity = false;
 		}
 

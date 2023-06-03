@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.NPCs.Overgrow;
+using StarlightRiver.Core.Systems;
 using System.Linq;
 using Terraria.DataStructures;
 using static Terraria.ModLoader.ModContent;
@@ -41,5 +42,6 @@ namespace StarlightRiver.Content.Tiles.Overgrow
 		}
 	}
 
+	[SLRDebug]
 	public class CrusherOvergrowItem : QuickTileItem { public CrusherOvergrowItem() : base("Crusher Trap", "", "CrusherTile", 0, AssetDirectory.OvergrowTile) { } }
 }

@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using Terraria.GameContent;
@@ -10,6 +11,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 	public abstract class WalkableCrystalItem : QuickTileItem
 	{
 		private bool held = false;
+
 		public WalkableCrystalItem(string name, string placetype, string texturepath) : base(placetype + "Item", name, "The slot this Item is in changes the type placed", placetype, ItemRarityID.Blue, texturepath) { }
 
 		public override void HoldItem(Player Player)
@@ -43,21 +45,25 @@ namespace StarlightRiver.Content.Tiles.Vitric
 		}
 	}
 
+	[SLRDebug]
 	public class VitricSmallCrystalItem : WalkableCrystalItem
 	{
 		public VitricSmallCrystalItem() : base("Small vitric crystal", "VitricSmallCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricMediumCrystalItem : WalkableCrystalItem
 	{
 		public VitricMediumCrystalItem() : base("Medium vitric crystal", "VitricMediumCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricLargeCrystalItem : WalkableCrystalItem
 	{
 		public VitricLargeCrystalItem() : base("Large vitric crystal", "VitricLargeCrystal", AssetDirectory.VitricTile) { }
 	}
 
+	[SLRDebug]
 	public class VitricGiantCrystalItem : WalkableCrystalItem
 	{
 		public VitricGiantCrystalItem() : base("Vitric Giant crystal", "VitricGiantCrystal", AssetDirectory.VitricTile) { }

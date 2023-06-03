@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Dusts;
+using StarlightRiver.Content.Items.Desert;
 using System;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -14,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Vitric Book");
-			Tooltip.SetDefault("Summons stabbing spikes on nearby ground");
+			Tooltip.SetDefault("Summons spikes to stab enemies above them");
 		}
 
 		public override void SetDefaults()
@@ -57,7 +58,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemType<Misc.Sandscript>());
+			recipe.AddIngredient(ItemType<Sandscript>());
 			recipe.AddIngredient(ItemType<VitricOre>(), 10);
 			recipe.AddTile(TileID.Bookcases);
 			recipe.Register();

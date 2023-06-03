@@ -1,13 +1,17 @@
 ﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
+using StarlightRiver.Content.Abilities;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
+using Terraria;
+using StarlightRiver.Content.CustomHooks;
+using Terraria.DataStructures;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
-	class EvasionShrine : DummyTile
+	class EvasionShrine : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<EvasionShrineDummy>();
 
@@ -67,6 +71,10 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			return false;
 		}
+		public string GetHint()
+		{
+			return "A shrine - to which deity, you do not know, though it wields a bow. The statue's eyes seem to follow you, and strange runes dance across its pedestal.";
+		}
 	}
 
 	internal partial class EvasionShrineDummy : Dummy, IDrawAdditive
@@ -80,12 +88,30 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+		const int ArenaOffsetX = -27;
+		const int ArenaSizeX = 55;
+		const int ArenaOffsetY = -30;
+		const int ArenaSizeY = 49;
+
+		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
+		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
+			bool anyPlayerInRange = false;
+
+			foreach (Player player in Main.player)
+			{
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
+
+				if (thisPlayerInRange && State != 0)
+					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
+
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+			}
+
 			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
 
 			Lighting.AddLight(Projectile.Center + new Vector2(240, 0), color);
@@ -119,6 +145,8 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			if (State != 0)
 			{
+				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
 
@@ -155,8 +183,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 					SpawnObstacles((int)Timer - 128);
 				}
 			}
+			else//temporary check since no build is only active when shrine is, this remove should be on shrine win ideally
+			{	
+				ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
+			}
 
-			if (State == -1 || lives <= 0 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
+			if (State == -1 || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500) //"fail" conditions, no living Players in radius or already failing
 			{
 				State = -1;
 
@@ -324,22 +356,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
-		}
-	}
-
-	class EvasionShrineBiome : ModBiome
-	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
-
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/EvasionShrine");
-
-		public override bool IsBiomeActive(Player player)
-		{
-			return Main.projectile.Any(
-				n => n.active &&
-				n.type == ModContent.ProjectileType<EvasionShrineDummy>() &&
-				(n.ModProjectile as EvasionShrineDummy).Arena.Intersects(player.Hitbox) &&
-				(n.ModProjectile as EvasionShrineDummy).State != 0);
 		}
 	}
 }

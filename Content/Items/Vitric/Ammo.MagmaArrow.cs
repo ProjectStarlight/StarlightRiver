@@ -15,7 +15,7 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Magma Arrow");
-			Tooltip.SetDefault("Becomes more cooled as it travels");
+			Tooltip.SetDefault("Cools down as it travels, applying less fire but dealing more damage and knockback");
 		}
 
 		public override void SetDefaults()
