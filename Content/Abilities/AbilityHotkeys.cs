@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.Abilities
 
 		internal void LoadDefaults()
 		{
-			Bind<HintAbility>("[PH]Hint", "Y");
+			Bind<HintAbility>("Starsight", "Y");
 			Bind<Dash>("Forbidden Winds", "LeftShift");
 			Bind<Whip>("Faeflame", "F");
 		}
