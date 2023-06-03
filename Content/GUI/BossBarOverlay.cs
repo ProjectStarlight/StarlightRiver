@@ -65,6 +65,10 @@ namespace StarlightRiver.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			NPC NPC = BossBarOverlay.tracked;
+
+			if (NPC is null)
+				return;
+
 			Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(0, 1);
 			var off = new Vector2(30, 12);
 			bool shouldDrawChains = BossBarOverlay.forceInvulnerabilityVisuals != false && (NPC.dontTakeDamage || NPC.immortal) || BossBarOverlay.forceInvulnerabilityVisuals == true;
