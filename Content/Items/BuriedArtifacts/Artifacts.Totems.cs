@@ -24,6 +24,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
+			Item.UseSound = SoundID.DD2_BookStaffCast;
 		}
 
 		public override bool? UseItem(Player player)
@@ -60,6 +61,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 			Item.consumable = false;
 			Item.useStyle = ItemUseStyleID.HoldUp;
 			Item.useTime = Item.useAnimation = 50;
+			Item.UseSound = SoundID.Item20;
 		}
 
 		public override bool? UseItem(Player player)

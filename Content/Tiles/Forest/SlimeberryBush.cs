@@ -19,6 +19,8 @@ namespace StarlightRiver.Content.Tiles.Forest
 			TileObjectData.newTile.RandomStyleRange = 3;
 			TileObjectData.newTile.DrawYOffset = 2;
 			QuickBlock.QuickSetFurniture(this, 2, 2, DustID.Grass, SoundID.Dig, false, new Color(200, 255, 220), false, false, "", anchor, default, valid);
+
+			HitSound = SoundID.Grass;
 		}
 
 		public override void RandomUpdate(int i, int j)
@@ -73,6 +75,7 @@ namespace StarlightRiver.Content.Tiles.Forest
 					int index = NPC.NewNPC(new EntitySource_TileInteraction(null, i, j), i * 16 + Main.rand.Next(32), j * 16 + Main.rand.Next(32), NPCType<BerrySlime>());
 					Main.npc[index].velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -8;
 				}
+				Terraria.Audio.SoundEngine.PlaySound(SoundID.Grass, new Vector2(i, j) * 16);
 			}
 
 			return true;
