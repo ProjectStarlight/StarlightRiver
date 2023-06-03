@@ -1,4 +1,5 @@
 ﻿using StarlightRiver.Content.Backgrounds;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
@@ -587,14 +588,18 @@ namespace StarlightRiver.Content.NPCs.BossRush
 		}
 	}
 
-	public class BossRushOrbMusic : ModSceneEffect
+	public class BossRushOrbEnvironment : ModSceneEffect
 	{
 		public override int Music => GetMusic();
+		public override ModUndergroundBackgroundStyle UndergroundBackgroundStyle => ModContent.Find<ModUndergroundBackgroundStyle>("StarlightRiver/BlankBG");
 
 		public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
 
 		public override bool IsSceneEffectActive(Player player)
 		{
+			if (BossRushSystem.isBossRush && BossRushSystem.currentStage == 0)
+				return true;
+
 			foreach (BossRushOrb orb in BossRushOrb.activeBossRushLocks)
 			{
 				if (orb.NPC.position.Distance(player.position) < 2000)

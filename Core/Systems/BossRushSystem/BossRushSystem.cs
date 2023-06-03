@@ -155,19 +155,21 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			stages = new List<BossRushStage>()
 			{
 				new BossRushStage(
-					"Structures/BossRushStart",
+					"Structures/ArmillarySphereRoom",
 					ModContent.NPCType<BossRushOrb>(),
-					new Vector2(250, 200),
+					new Vector2(952, 720),
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
 
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushOrb>());
+						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
 					},
-					a => _ = a),
+					a => _ = a,
+					100
+					),
 
 				new BossRushStage(
 					"Structures/SquidBossArena",
@@ -271,8 +273,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush)
 				return;
 
-			Main.spawnTileX = 110;
-			Main.spawnTileY = 600;
+			Main.spawnTileX = 159;
+			Main.spawnTileY = 645;
 
 			Main.dungeonX = 1000;
 			Main.dungeonY = 500;

@@ -29,19 +29,24 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// What happens after this stage generates. Can be used to do things like set world variables correctly
 		/// </summary>
 		readonly Action<Point16> onGenerate;
+		/// <summary>
+		/// Extra space between this arena and the arena on the right
+		/// </summary>
+		readonly int marginRight;
 
 		/// <summary>
 		/// The world position of this stage's arena.
 		/// </summary>
 		public Vector2 actualPosition;
 
-		public BossRushStage(string structurePath, int bossType, Vector2 spawnOffset, Action<Vector2> spawnBoss, Action<Point16> onGenerate)
+		public BossRushStage(string structurePath, int bossType, Vector2 spawnOffset, Action<Vector2> spawnBoss, Action<Point16> onGenerate, int marginRight = 0)
 		{
 			this.structurePath = structurePath;
 			this.bossType = bossType;
 			this.spawnOffset = spawnOffset;
 			this.spawnBoss = spawnBoss;
 			this.onGenerate = onGenerate;
+			this.marginRight = marginRight;
 		}
 
 		/// <summary>
@@ -58,7 +63,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 
 			onGenerate(pos.ToPoint16());
 
-			pos.X += dims.X;
+			pos.X += dims.X + marginRight;
 
 			if (pos.X > Main.maxTilesX)
 			{
