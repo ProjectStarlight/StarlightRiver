@@ -102,5 +102,14 @@
 
 			HushArmorSystem.totalDamage += (int)(hit.Damage * (1 / HushArmorSystem.resistance));
 		}
+
+		public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+		{
+			if (BossRushSystem.isBossRush)
+			{
+				spawnRate = 0;
+				maxSpawns = 0;
+			}
+		}
 	}
 }
