@@ -110,7 +110,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				if (warpAnimationTimer < 10)
 				{
 					float warpStrength = warpAnimationTimer / 10;
-					Filters.Scene.Activate("Shockwave", originalPos).GetShader().UseProgress(2f).UseIntensity(100 - (1 - warpStrength) * 100).UseDirection(new Vector2(1, 2) * 0.1f * warpStrength);
+					Filters.Scene.Activate("Shockwave", originalPos).GetShader().UseProgress(2f).UseIntensity(100 - (1 - warpStrength) * 100).UseDirection(new Vector2(2, 1) * 0.1f * warpStrength);
 				}
 				else if (warpAnimationTimer == 10)
 				{
@@ -180,7 +180,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				starViewScale = VoidEase.Ease(warpAnimationTimer);
 
-				Lighting.AddLight(NPC.Center, new Vector3(1, 1, 2));
+				Lighting.AddLight(NPC.Center, new Vector3(5, 5, 10));
 
 				if (warpAnimationTimer > 600)
 					NPC.Kill();
@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				NPC.velocity = Vector2.Lerp((originalPos - NPC.Center) * 0.1f, NPC.velocity, 0.8f);
 				Vibrate(0.5f + CrackAnimationProgress * 0.5f);
 
-				Lighting.AddLight(NPC.Center, new Vector3(0.5f, 0.5f, 1f) * (1 + CrackAnimationProgress));
+				Lighting.AddLight(NPC.Center, new Vector3(2.5f, 2.5f, 5f) * (1 + CrackAnimationProgress));
 
 				if (crackAnimationTimer == 0)
 				{
