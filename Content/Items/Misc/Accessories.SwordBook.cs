@@ -275,7 +275,11 @@ namespace StarlightRiver.Content.Items.Misc
 							{
 								int i = Projectile.NewProjectile(null, Owner.Center, Vector2.UnitX.RotatedBy(Projectile.rotation) * Item.shootSpeed * 0.5f, Item.shoot, Projectile.damage / 4, Projectile.knockBack, Projectile.owner);
 								Main.projectile[i].scale *= 0.5f;
-								Main.projectile[i].timeLeft = 20 * Main.projectile[i].extraUpdates;
+
+								if (Main.projectile[i].extraUpdates > 0)
+									Main.projectile[i].timeLeft = 20 * Main.projectile[i].extraUpdates;
+								else
+									Main.projectile[i].timeLeft = 20;
 							}
 						}
 					}
