@@ -96,7 +96,11 @@ Mods: {
 					'''
 			}
 
-			CauldronItem.Tooltip: Alchemic Cauldron
+			CauldronItem: {
+				DisplayName: Alchemic Cauldron
+				Tooltip: Places an Alchemic Cauldron
+			}
+
 			MixingStick.Tooltip:
 				'''
 				Mixing Stick
