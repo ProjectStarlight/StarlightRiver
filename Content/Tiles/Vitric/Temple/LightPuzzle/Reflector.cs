@@ -3,13 +3,14 @@ using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
+using StarlightRiver.Content.Abilities;
 using System;
 using System.IO;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
-	class Reflector : DummyTile
+	class Reflector : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<ReflectorDummy>();
 
@@ -44,6 +45,10 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			return true;
+		}
+		public string GetHint()
+		{
+			return "Sandstone blocks the lens, but these relics should be a good way to redirect the light...";
 		}
 	}
 
