@@ -176,7 +176,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Texture2D tex = Request<Texture2D>(AssetDirectory.VitricTile + "VitricOreFloatGlow").Value;
 			Color color = Helper.IndicatorColorProximity(150, 300, Projectile.Center);
 
-			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 5) - Main.screenPosition, color);
+			Main.spriteBatch.Draw(tex, Projectile.position - new Vector2(1, 1) - Main.screenPosition, color);
 		}
 	}
 

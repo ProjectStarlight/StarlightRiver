@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
@@ -173,6 +174,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D tickTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "TickLine").Value;
 			float opacity = rotateAnimation / 15f;
 

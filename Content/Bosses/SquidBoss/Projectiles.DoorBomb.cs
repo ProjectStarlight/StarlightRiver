@@ -29,6 +29,9 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Projectile.ai[1] += 0.1f;
 			Projectile.rotation = Projectile.velocity.ToRotation() + 1.57f;
 
+			if (!Main.LocalPlayer.InModBiome<Biomes.PermafrostTempleBiome>())
+				return;
+
 			float sin = 1 + (float)Math.Sin(Projectile.ai[1]);
 			float cos = 1 + (float)Math.Cos(Projectile.ai[1]);
 			var color = new Color(0.5f + cos * 0.2f, 0.8f, 0.5f + sin * 0.2f);

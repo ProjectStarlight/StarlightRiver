@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.Tiles.Permafrost;
+using StarlightRiver.Core.Systems.BossRushSystem;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
@@ -35,13 +36,16 @@ namespace StarlightRiver.Content.CustomHooks
 			if (StarlightRiver.debugMode)
 				return false;
 
+			if (BossRushSystem.isBossRush)
+				return true;
+
 			if (!Main.gameMenu || Main.dedServ) //shouldnt trigger while generating the world from the menu
 			{
 				foreach (Rectangle region in ProtectionWorld.ProtectedRegions)
 				{
 					if (region.Contains(new Point(x, y)))
 						return true;
-				}				
+				}
 
 				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
 				{
@@ -49,9 +53,10 @@ namespace StarlightRiver.Content.CustomHooks
 						return true;
 				}
 
-
-
 				Tile tile = Framing.GetTileSafely(x, y);
+
+				if (tile.WallType == WallType<Content.Tiles.Vitric.Temple.VitricTempleWall>())
+					return true;
 
 				if (tile.WallType == WallType<AuroraBrickWall>())
 				{
@@ -206,8 +211,8 @@ namespace StarlightRiver.Content.CustomHooks
 					{
 						Projectile.active = false;
 					}
-				}				
-				
+				}
+
 				foreach (Ref<Rectangle> region in ProtectionWorld.RuntimeProtectedRegions)
 				{
 					if (region.Value.Contains(new Point((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16)))
@@ -222,6 +227,41 @@ namespace StarlightRiver.Content.CustomHooks
 	public class ProtectionWorld : ModSystem
 	{
 		public static List<Rectangle> ProtectedRegions = new();
+
+		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
+		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
+
+		public override void PostDrawTiles()
+		{
+			if (!StarlightRiver.debugMode)
+				return;
+
+			Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+			foreach (Rectangle rect in ProtectedRegions)
+			{
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
+				Main.spriteBatch.Draw(tex, target, Color.Red * 0.25f);
+			}
+
+			foreach (Ref<Rectangle> rectRef in RuntimeProtectedRegions)
+			{
+				var rect = rectRef.Value;
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
+				Main.spriteBatch.Draw(tex, target, Color.Blue * 0.25f);
+			}
+
+			Main.spriteBatch.End();
+		}
+
+		public override void PreWorldGen()
+		{
+			ProtectedRegions.Clear();
+			RuntimeProtectedRegions.Clear();
+			RuntimeRegionsByPoint.Clear();
+		}
 
 		public override void LoadWorldData(TagCompound tag)
 		{
@@ -289,10 +329,9 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 		}
 
-
 		public static void AddRegionBySource(Point16 source, Rectangle region)
 		{
-			if(!RuntimeRegionsByPoint.ContainsKey(source))
+			if (!RuntimeRegionsByPoint.ContainsKey(source))
 			{
 				var refRect = new Ref<Rectangle>(region);
 				RuntimeRegionsByPoint.Add(source, refRect);
@@ -308,8 +347,5 @@ namespace StarlightRiver.Content.CustomHooks
 				RuntimeRegionsByPoint.Remove(source);
 			}
 		}
-
-		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
-		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
 	}
 }

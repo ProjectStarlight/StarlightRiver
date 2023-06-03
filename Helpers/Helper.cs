@@ -268,7 +268,7 @@ namespace StarlightRiver.Helpers
 
 					Tile tile = Framing.GetTileSafely(thisPoint);
 
-					if (Main.tileSolid[tile.TileType] && tile.HasTile)
+					if (Main.tileSolid[tile.TileType] && tile.HasTile && !Main.tileSolidTop[tile.TileType])
 					{
 						var rect = new Rectangle(thisPoint.X * 16, thisPoint.Y * 16, 16, 16);
 

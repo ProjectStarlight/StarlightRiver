@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints / 2f;
+			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints;
 
 			if (power < puzzleProg - 0.01f)
 				power += 0.01f;

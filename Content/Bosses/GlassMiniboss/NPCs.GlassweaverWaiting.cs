@@ -1,5 +1,5 @@
-using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using Terraria.ID;
@@ -86,7 +86,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 				if (Timer == 60)
 				{
-					NPC.velocity.Y -= 20;
+					NPC.velocity.Y -= 5;
 
 					NPC.frame = new Rectangle(FRAME_WIDTH, FRAME_HEIGHT, FRAME_WIDTH, 124);
 				}
@@ -126,7 +126,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private string GetAfterCameraDialogue()
 		{
-			return "\"No- Wait! You can't just barge in, you need a key. I need to know if I am giving my faith and crystal to the right person, so when you think you're strong enough, come back here and I'll test you properly. Don't keep me waiting! You know where to find me.\"";
+			return "\"No- Wait! You can't just barge in, you need a key. I need to know if I am giving my faith and crystal to the right person, so when you think you're strong enough, challenge me properly and I'll put you through my Glassweaver Gauntlet to really test your mettle! Don't keep me waiting! You know where to find me.\"";
 		}
 
 		private string GetWaitingDialogue()
@@ -190,22 +190,21 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 								RichTextBox.AddButton("\"Show me that temple.\"", () =>
 								{
-									CameraSystem.AsymetricalPan(180, 240, 150, ArenaPos);
+									CameraSystem.AsymetricalPan(180, 240, 150, StarlightWorld.vitricBiome.Center.ToVector2() * 16);
 									RichTextBox.SetData(NPC, "Glassweaver", GetAfterCameraDialogue());
-								});
+									RichTextBox.ClearButtons();
 
-								RichTextBox.AddButton("Close", () =>
-								{
-									RichTextBox.CloseDialogue();
-									State = 1;
-									Timer = 0;
-								});
+									RichTextBox.AddButton("\"See you around.\"", () =>
+									{
+										State = 1;
+										Timer = 0;
 
-								TextState = 0;
+										RichTextBox.CloseDialogue();
+									});
+								});
 							}
 						});
 					}
-
 				});
 			}
 			else if (State == 2) //Waiting in arena
@@ -232,40 +231,35 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 					{
 						RichTextBox.ClearButtons();
 
-						RichTextBox.AddButton("\"Wait, what?\"", () => {
+						RichTextBox.AddButton("\"Wait, what?\"", () =>
+						{
 							TextState++;
+							RichTextBox.SetData(NPC, "Glassweaver", GetWinDialogue());
+							Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+
 							RichTextBox.ClearButtons();
-							RichTextBox.AddButton("\"...\"", () =>
+
+							RichTextBox.AddButton("I need a key.", () =>
 							{
+								if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
+								{
+									RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
+								}
+								else
+								{
+									Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
+									RichTextBox.CloseDialogue();
+								}
 							});
-						});
-					}
-					else if (TextState >= 5)
-					{
-						Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 
-						RichTextBox.ClearButtons();
+							RichTextBox.AddButton("Close", () =>
+							{
+								StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
 
-						RichTextBox.AddButton("I need a key.", () =>
-						{
-							if (Helpers.Helper.HasItem(Main.LocalPlayer, ItemType<Items.Vitric.TempleEntranceKey>(), 1))
-							{
-								RichTextBox.SetData(NPC, "Glassweaver", GetKeyDialogue());
-							}
-							else
-							{
-								Item.NewItem(NPC.GetSource_FromThis(), Main.LocalPlayer.Center, ItemType<Items.Vitric.TempleEntranceKey>());
 								RichTextBox.CloseDialogue();
-							}
-						});
-
-						RichTextBox.AddButton("Close", () =>
-						{
-							StarlightWorld.Flag(WorldFlags.GlassweaverDowned);
-
-							RichTextBox.CloseDialogue();
-							State = 4;
-							Timer = 0;
+								State = 4;
+								Timer = 0;
+							});
 						});
 					}
 				});

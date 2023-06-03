@@ -7,7 +7,7 @@ namespace StarlightRiver.Content.Items.Misc
 	{
 		public override string Texture => AssetDirectory.MiscItem + Name;
 
-		public AlchemistShackles() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "CasualMirror").Value) { }
+		public AlchemistShackles() : base(ModContent.Request<Texture2D>(AssetDirectory.MiscItem + "AlchemistShackles").Value) { }
 
 		public override void Load()
 		{
