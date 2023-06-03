@@ -8,6 +8,7 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
+using StarlightRiver.Content.CustomHooks;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -92,10 +93,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
 
+		public Rectangle ArenaTile => new(ParentX - 25, ParentY - 20, 51, 30);
+
 		public CombatShrineDummy() : base(ModContent.TileType<CombatShrine>(), 3 * 16, 6 * 16) { }
 
 		public override void Update()
 		{
+			ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);
+
 			bool anyPlayerInRange = false;
 
 			foreach (Player player in Main.player)

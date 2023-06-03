@@ -18,11 +18,11 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public override void PreUpdateBuffs()
 		{
-			if (InNoBuildZone > 0)
-			{
-				Player.noBuilding = true;
-				Player.AddBuff(BuffID.NoBuilding, 2);
-			}
+			//if (InNoBuildZone > 0)
+			//{
+			//	Player.noBuilding = true;
+			//	Player.AddBuff(BuffID.NoBuilding, 2);
+			//}
 
 			//if (InNoBuildZone > 0)
 			//	Main.NewText(InNoBuildZone);
