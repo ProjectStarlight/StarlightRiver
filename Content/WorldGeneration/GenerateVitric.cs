@@ -393,7 +393,6 @@ namespace StarlightRiver.Core
 					if (makingTunnel && xDif > tunnelFinal - tunnelWidth && xDif < tunnelFinal)
 					{
 						int tunnelDif = tunnelFinal - xDif;
-						Main.NewText(tunnelDif);
 
 						if (tunnelDif < 5 || tunnelDif > tunnelWidth - 5)
 							PlaceTile(x, y, ModContent.TileType<VitricSpike>(), true, true);

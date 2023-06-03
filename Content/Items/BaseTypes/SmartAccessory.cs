@@ -83,8 +83,6 @@ namespace StarlightRiver.Content.Items.BaseTypes
 
 			for (int k = 3; k <= 3 + accessoryIndex; k++)
 			{
-				Main.NewText(player.armor[k].Name + ": " + k);
-
 				if (player.armor[k].type == type)
 					return player.armor[k].ModItem as SmartAccessory;
 			}

@@ -1,9 +1,9 @@
-﻿using StarlightRiver.Content.Biomes;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
-using StarlightRiver.Content.Abilities;
 using System;
 using System.IO;
 using Terraria.ID;
@@ -118,7 +118,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>())
 				{
 					endPoint = posCheck;
-					Main.NewText("Solved!");
 					LightPuzzleHandler.solvedPoints++;
 				}
 
@@ -152,7 +151,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).TileType == ModContent.TileType<LightGoal>())
 			{
-				Main.NewText("Unsolved...");
 				LightPuzzleHandler.solvedPoints--;
 			}
 

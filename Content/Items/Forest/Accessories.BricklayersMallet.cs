@@ -33,7 +33,6 @@ namespace StarlightRiver.Content.Items.Forest
 				else
 					target = Main.MouseWorld;
 
-				Main.NewText(target);
 				bool outsideXRange = target.X < Player.Center.X ? Math.Abs(Player.Left.X - target.X) > (Player.tileRangeX - 1) * 16f : Math.Abs(Player.Right.X - target.X) > (Player.tileRangeX - 1) * 16f;
 				bool outsideYRange = target.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - target.Y) > (Player.tileRangeY - 2) * 16f : Math.Abs(Player.Top.Y - target.Y) > (Player.tileRangeY - 2) * 16f;
 

@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Buffs;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Buffs;
 using StarlightRiver.Content.Physics;
 using StarlightRiver.Core.Systems.MetaballSystem;
 using System;
@@ -236,8 +236,6 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 		{
 			if (NPC.Opacity < 1)
 				NPC.Opacity += 0.05f;
-
-			Main.NewText("Shoot attack");
 
 			AttackTimer = 0;
 			Phase = 1;
