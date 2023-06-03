@@ -1,5 +1,4 @@
-﻿using ReLogic.Content;
-using StarlightRiver.Content.Backgrounds;
+﻿using StarlightRiver.Content.Backgrounds;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Core.Systems.ScreenTargetSystem;
 using StarlightRiver.Helpers;
@@ -171,7 +170,8 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				{
 					StarlightRiverBackground.starOpacity = 0;
 				}
-				else if (warpAnimationTimer == MAX_SUCC_ANIMATION) {
+				else if (warpAnimationTimer == MAX_SUCC_ANIMATION)
+				{
 
 					Helper.PlayPitched("BossRush/ArmillaryExplode", 1, 0f, NPC.Center);
 					Music = MusicLoader.GetMusicSlot(Mod, "Sounds/Music/OminousIdle");
@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.NPCs.BossRush
 
 				if (crackAnimationTimer % 100 == 0)
 				{
-					CameraSystem.shake += 20;	
+					CameraSystem.shake += 20;
 
 					for (int i = 0; i < 50; i++)
 					{
