@@ -67,7 +67,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			Main.spriteBatch.Draw(farBackdropGlow, pos + parallaxOffset, frame, Color.White);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin();
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
 
 			LightingBufferRenderer.DrawWithLighting(pos, backdrop, frame);
 			Main.spriteBatch.Draw(backdropGlow, pos, frame, Color.White);
