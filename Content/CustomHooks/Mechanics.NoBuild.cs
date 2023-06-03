@@ -55,6 +55,9 @@ namespace StarlightRiver.Content.CustomHooks
 
 				Tile tile = Framing.GetTileSafely(x, y);
 
+				if (tile.WallType == WallType<Content.Tiles.Vitric.Temple.VitricTempleWall>())
+					return true;
+
 				if (tile.WallType == WallType<AuroraBrickWall>())
 				{
 					for (int k = 0; k < Main.maxProjectiles; k++) //this is gross. Unfortunate.
@@ -225,6 +228,34 @@ namespace StarlightRiver.Content.CustomHooks
 	{
 		public static List<Rectangle> ProtectedRegions = new();
 
+		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
+		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
+
+		public override void PostDrawTiles()
+		{
+			if (!StarlightRiver.debugMode)
+				return;
+
+			Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+
+			foreach (Rectangle rect in ProtectedRegions)
+			{
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
+				Main.spriteBatch.Draw(tex, target, Color.Red * 0.25f);
+			}
+
+			foreach (Ref<Rectangle> rectRef in RuntimeProtectedRegions)
+			{
+				var rect = rectRef.Value;
+				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/MagicPixel").Value;
+				var target = new Rectangle(rect.X * 16 - (int)Main.screenPosition.X, rect.Y * 16 - (int)Main.screenPosition.Y, rect.Width * 16, rect.Height * 16);
+				Main.spriteBatch.Draw(tex, target, Color.Blue * 0.25f);
+			}
+
+			Main.spriteBatch.End();
+		}
+
 		public override void LoadWorldData(TagCompound tag)
 		{
 			ProtectedRegions.Clear();
@@ -309,8 +340,5 @@ namespace StarlightRiver.Content.CustomHooks
 				RuntimeRegionsByPoint.Remove(source);
 			}
 		}
-
-		private static readonly Dictionary<Point16, Ref<Rectangle>> RuntimeRegionsByPoint = new();
-		public static readonly List<Ref<Rectangle>> RuntimeProtectedRegions = new();
 	}
 }
