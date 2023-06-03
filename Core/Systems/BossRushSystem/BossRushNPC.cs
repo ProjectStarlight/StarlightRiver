@@ -19,7 +19,7 @@
 
 			if (pollTimer % 20 == 0)
 			{
-				float thisDPS = totalDamage * 3f;
+				float thisDPS = totalDamage * 3f + 1;
 				totalDamage = 0;
 
 				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
