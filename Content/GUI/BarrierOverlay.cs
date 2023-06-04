@@ -9,6 +9,7 @@ namespace StarlightRiver.Content.GUI
 {
 	class BarrierOverlay : SmartUIState
 	{
+		readonly List<String> resourceSetsWithText = new List<string> { "Default", "HorizontalBarsWithText", "HorizontalBarsWithFullText", "NewWithText" };
 		public override bool Visible => true;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -21,7 +22,7 @@ namespace StarlightRiver.Content.GUI
 			Player Player = Main.LocalPlayer;
 			BarrierPlayer sp = Player.GetModPlayer<BarrierPlayer>();
 
-			if ((sp.barrier > 0 || sp.maxBarrier > 0) && Main.ResourceSetsManager.ActiveSetKeyName == "Default") //Text, only present on classic UI
+			if ((sp.barrier > 0 || sp.maxBarrier > 0) && resourceSetsWithText.Contains(Main.ResourceSetsManager.ActiveSetKeyName)) //Text
 			{
 				int num4 = (int)((float)Main.player[Main.myPlayer].statLifeMax2 / 20);
 				if (num4 >= 10)
@@ -40,9 +41,18 @@ namespace StarlightRiver.Content.GUI
 
 				string shieldText = $"  {sp.barrier}/{sp.maxBarrier}";
 				float textWidth = Terraria.GameContent.FontAssets.MouseText.Value.MeasureString(shieldText).X / 2;
-				var pos2 = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
 
-				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, pos2, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)));
+				Vector2 textPos;
+				if (Main.ResourceSetsManager.ActiveSetKeyName == "Default")
+					textPos = new Vector2(Main.screenWidth - 300 + 13 * num4 + vector.X * 0.5f - textWidth - 6, 6f);
+				else if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText")
+					textPos = new Vector2(Main.screenWidth - 215 + 8 * num4 + vector.X * 0.5f - textWidth - 6, 1f);
+				else if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
+					textPos = new Vector2(Main.screenWidth - 215 + 8 * num4 + vector.X * 0.5f - textWidth - 6, 0f);
+				else // NewWithText
+					textPos = new Vector2(Main.screenWidth - 205 + 8 * num4 + vector.X * 0.5f - textWidth - 6, 0f);
+
+				spriteBatch.DrawString(Terraria.GameContent.FontAssets.MouseText.Value, shieldText, textPos, Main.MouseTextColorReal.MultiplyRGB(new Color(120, 255, 255)));
 			}
 
 			if (sp.barrier > 0)
@@ -59,10 +69,21 @@ namespace StarlightRiver.Content.GUI
 				for (int k = 0; k <= fullHeartsToDraw; k++)
 				{
 					Vector2 pos = Vector2.Zero;
-
-					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars")
+					
+					if (Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBars" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithText" || Main.ResourceSetsManager.ActiveSetKeyName == "HorizontalBarsWithFullText")
 					{
-						pos = new Vector2(Main.screenWidth - 72 - k * 12, 24f);
+						float yOffset = 24f;
+						switch (Main.ResourceSetsManager.ActiveSetKeyName)
+						{
+							case "HorizontalBarsWithText":
+								yOffset = 28f;
+								break;
+							case "HorizontalBarsWithFullText":
+								yOffset = 26f;
+								break;
+						}
+
+						pos = new Vector2(Main.screenWidth - 72 - k * 12, yOffset);
 
 						Texture2D texBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBar").Value;
 						Texture2D texOverBar = ModContent.Request<Texture2D>(AssetDirectory.GUI + "PlayerShieldBarOver").Value;
@@ -96,9 +117,14 @@ namespace StarlightRiver.Content.GUI
 						if (k >= 10)
 							pos += new Vector2(-260, 26);
 					}
-					else if (Main.ResourceSetsManager.ActiveSetKeyName == "New")
+					else if (Main.ResourceSetsManager.ActiveSetKeyName == "New" || Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
 					{
-						pos = new Vector2(Main.screenWidth - 292 + k * 24, 19f);
+						float yOffset = 19f;
+						if (Main.ResourceSetsManager.ActiveSetKeyName == "NewWithText")
+						{
+							yOffset = 25f;
+						}
+						pos = new Vector2(Main.screenWidth - 292 + k * 24, yOffset);
 						if (k >= 10)
 							pos += new Vector2(-240, 28);
 					}
