@@ -1,6 +1,11 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
+using StarlightRiver.Content.Items.Food;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Items.Starwood;
+using StarlightRiver.Content.NPCs.Actors;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
@@ -27,6 +32,16 @@ namespace StarlightRiver.Core
 
 		private static Vector2 GlassweaverArenaPos => vitricBiome.TopLeft() * 16 + new Vector2(0, 80 * 16) + new Vector2(0, 256);
 		public static Rectangle GlassweaverArena => new((int)GlassweaverArenaPos.X - 35 * 16, (int)GlassweaverArenaPos.Y - 30 * 16, 70 * 16, 30 * 16);
+
+		public override void OnModLoad()
+		{
+			StarwaterConversion.Load();
+		}
+
+		public override void OnModUnload()
+		{
+			StarwaterConversion.Unload();
+		}
 
 		public StarlightWorld()
 		{
