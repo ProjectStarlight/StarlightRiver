@@ -73,6 +73,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			recipe.AddIngredient<LivingBlood>(5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddIngredient(ItemID.TissueSample, 10);
+			recipe.AddIngredient<LivingBlood>(5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 

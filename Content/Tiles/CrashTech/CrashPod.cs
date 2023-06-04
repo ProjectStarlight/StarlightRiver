@@ -23,6 +23,14 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 			Main.tileLighted[Type] = true;
 		}
 
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
+
 		public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 		{
 			r = 1;
@@ -62,6 +70,7 @@ namespace StarlightRiver.Content.Tiles.CrashTech
 		{
 			return false;
 		}
+
 		public string GetHint()
 		{
 			return "A fallen droppod, made of metal rich in binding Starlight. You'd have to use a Starlight power of equal strength...";

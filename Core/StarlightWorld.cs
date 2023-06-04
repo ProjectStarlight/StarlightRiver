@@ -1,8 +1,5 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
-using StarlightRiver.Content.Items.Food;
-using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Items.Starwood;
-using StarlightRiver.Content.NPCs.Actors;
+using StarlightRiver.Content.GUI;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
@@ -111,6 +108,8 @@ namespace StarlightRiver.Core
 
 		public override void OnWorldLoad()
 		{
+			RichTextBox.CloseDialogue(); //Safeguard
+
 			vitricBiome.X = 0;
 			vitricBiome.Y = 0;
 

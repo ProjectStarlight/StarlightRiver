@@ -28,6 +28,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			this.QuickSetFurniture(2, 3, DustType<Air>(), SoundID.Shatter, new Color(200, 255, 230), 18, false, false, "Vitric Ore", bottomAnchor);
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
+
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)
 		{
 			int item = Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j) * 16, ItemType<Items.Vitric.VitricOre>(), 12);
@@ -79,6 +92,19 @@ namespace StarlightRiver.Content.Tiles.Vitric
 			this.QuickSetFurniture(2, 2, DustType<Air>(), SoundID.Shatter, false, new Color(200, 255, 230), false, false, "Vitric Ore");
 			MinPick = int.MaxValue;
 			TileID.Sets.Ore[Type] = true;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)

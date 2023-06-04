@@ -27,24 +27,13 @@ namespace StarlightRiver.Content.Tiles.Underground
 			return false;
 		}
 
-		//public override void SafeNearbyEffects(int i, int j, bool closer)
-		//{
-		//	Tile tile = Framing.GetTileSafely(i, j);
-
-		//	if ((tile.TileFrameX == 0 || tile.TileFrameX == 5 * 18) && tile.TileFrameY == 0)
-		//	{
-		//		Projectile dummy = Dummy(i, j);
-
-		//		if (dummy is null)
-		//			return;
-
-		//		//if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)//resets frame if idle, duplicated from dummy code?
-		//		//{
-		//		//	tile.TileFrameX -= 5 * 18;
-		//		//	dummy.ai[0] = 0;
-		//		//}
-		//	}
-		//}
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.GenericHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
 
 		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
 		{
