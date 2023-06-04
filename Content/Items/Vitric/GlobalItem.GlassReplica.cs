@@ -57,7 +57,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				if (item.GetGlobalItem<GlassReplica>().firstTime)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 					Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/RiftCrafting/Glow1").Value;
 					float scale1 = Terraria.GameContent.TextureAssets.Item[item.type].Size().Length() / tex.Size().Length();
@@ -69,7 +69,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["VitricReplicaItem"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
 				Filters.Scene["VitricReplicaItem"].GetShader().Shader.Parameters["uTime"].SetValue(StarlightWorld.visualTimer);
 			}
 
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			if (item.GetGlobalItem<GlassReplica>().isReplica)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

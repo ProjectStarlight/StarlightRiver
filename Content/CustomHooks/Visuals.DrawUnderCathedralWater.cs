@@ -40,7 +40,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			NPC NPC = Main.npc.FirstOrDefault(n => n.active && n.ModNPC is ArenaActor);
 

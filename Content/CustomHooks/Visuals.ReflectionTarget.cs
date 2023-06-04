@@ -168,7 +168,7 @@ namespace StarlightRiver.Content.CustomHooks
 
 			if (reflectionConfig.DustReflectionsOn)
 			{
-				sb.Begin(SpriteSortMode.Deferred, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Deferred, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				try
 				{
 					//tml does this try catch for some reason, maybe gores are bugged in this version, v2022.3.35.3, possible TODO: remove the try catch if tml removes theirs
@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (restartSpriteBatch)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 
 				var data = new DrawData(normalMap, screenPos, new Color(255, 255, 255, 0));
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, RasterizerState.CullNone, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
 
 			shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
 			shader.Parameters["uIntensity"].SetValue(0.5f);
@@ -291,7 +291,7 @@ namespace StarlightRiver.Content.CustomHooks
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

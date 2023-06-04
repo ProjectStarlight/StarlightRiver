@@ -14,7 +14,7 @@
 		private void DrawAdditive(On_Main.orig_DrawDust orig, Main self)
 		{
 			orig(self);
-			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < Main.maxProjectiles; k++) //Projectiles
 			{

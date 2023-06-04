@@ -107,7 +107,7 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.Draw(texB, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.Black);
 
 			sb.End();
-			sb.Begin(default, default, SamplerState.LinearWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, SamplerState.LinearWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Noise/MiscNoise1").Value;
 			var color = new Color(100, 230, 220)
@@ -136,7 +136,7 @@ namespace StarlightRiver.Content.Backgrounds
 			sb.Draw(tex, target, source, color * 0.05f);
 
 			sb.End();
-			sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			stars.DrawParticles(sb);
 		}

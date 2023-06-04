@@ -66,7 +66,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["sampleTexture3"].SetValue(hotspringShineTarget.RenderTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SpritebatchChangeBack()
@@ -77,7 +77,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			effect.Parameters["sampleTexture3"].SetValue(hotspringShineTarget.RenderTarget);
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount / 20f);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

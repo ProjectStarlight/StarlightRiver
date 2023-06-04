@@ -69,7 +69,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		private static void DrawAuroraTarget(SpriteBatch sb)
 		{
 			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex2 = ModContent.Request<Texture2D>("StarlightRiver/Assets/Misc/AuroraWaterMap", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
@@ -101,7 +101,7 @@ namespace StarlightRiver.Core.Systems.AuroraWaterSystem
 		private static void DrawAuroraBackTarget(SpriteBatch sb)
 		{
 			sb.End();
-			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, BlendState.Additive, SamplerState.PointWrap, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 

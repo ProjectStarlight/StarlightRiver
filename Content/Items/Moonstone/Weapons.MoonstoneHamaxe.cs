@@ -356,7 +356,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			effect.Parameters["sampleTexture2"].SetValue(TextureAssets.MagicPixel.Value);
 
 			trail2?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 	internal class MoonstoneHamaxeRing : ModProjectile, IDrawPrimitive
