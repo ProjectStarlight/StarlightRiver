@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Items.SteampunkSet;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.BuriedArtifacts
 {
@@ -9,7 +10,7 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Exotic Geode");
-			Tooltip.SetDefault("'Incredibly shiny'");
+			Tooltip.SetDefault("'Incredibly shiny'\nCan be used at an extractinator");
 			ItemID.Sets.ExtractinatorMode[Item.type] = Item.type;
 		}
 
@@ -29,6 +30,13 @@ namespace StarlightRiver.Content.Items.BuriedArtifacts
 
 		public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
 		{
+			if (Main.rand.NextBool(2))
+			{
+				resultStack = Main.rand.Next(2, 3);
+				resultType = ModContent.ItemType<AncientGear>();
+				return;
+			}
+
 			int[] gems = new int[]
 			{
 				ItemID.Topaz,
