@@ -52,11 +52,13 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			{
 				Item.noUseGraphic = true;
 				Item.noMelee = true;
+				Item.channel = true; //sort of hacky but gets around tml bug where pickaxes with channel don't benefit from mining speed
 			}
 			else
 			{
 				Item.noUseGraphic = false;
 				Item.noMelee = false;
+				Item.channel = false;
 			}
 
 			return true;
