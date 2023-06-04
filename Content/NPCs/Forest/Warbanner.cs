@@ -56,7 +56,8 @@ namespace StarlightRiver.Content.NPCs.Forest
 			NPC.width = 80;
 			NPC.height = 200;
 			NPC.knockBackResist = 0.1f;
-			NPC.lifeMax = 100;
+			NPC.lifeMax = 150;
+			NPC.defense = 5;
 			NPC.noGravity = true;
 			NPC.noTileCollide = true;
 			NPC.damage = 1;
