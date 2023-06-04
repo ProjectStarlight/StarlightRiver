@@ -734,7 +734,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (!teleported)
 				return;
 
-			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 120); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
+			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 1200 - Utils.Clamp(hitNPCs.Count * 180, 0, 900)); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
 
 			for (int i = 0; i < 50; i++)
 			{
