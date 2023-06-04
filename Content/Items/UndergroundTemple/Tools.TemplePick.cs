@@ -83,9 +83,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 					{
 						Terraria.Audio.SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
 
-						for (int k = 0; k < 100; k++)
+						for (int k = 0; k < 30; k++)
 						{
-							Dust.NewDustPerfect(Player.Center, DustType<Dusts.Stamina>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(10));
+							Dust.NewDustPerfect(Player.Center, DustType<Dusts.Glow>(), Vector2.One.RotatedByRandom(6.28f) * Main.rand.NextFloat(2), 0, Color.Yellow, 0.25f);
 						}
 					}
 				}

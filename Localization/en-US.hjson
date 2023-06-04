@@ -3544,6 +3544,7 @@ Mods: {
 			ConstructSpawner.DisplayName: Construct Spawner
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
+			PalestoneDummy.DisplayName: Pale Slash
 		}
 
 		Tiles: {
@@ -4185,6 +4186,15 @@ Mods: {
 			Fogbinded: {
 				DisplayName: Fogbinded
 				Description: Bound to the fogbinder
+			}
+
+			TouchstoneWispBuff: {
+				DisplayName: Aurora Curiosity
+				Description:
+					'''
+					What lies below?
+					Increased mining speed
+					'''
 			}
 		}
 
