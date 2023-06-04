@@ -404,7 +404,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float TrailFade()

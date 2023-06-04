@@ -272,7 +272,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			trail?.Render(effect);
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float TotalLength(List<Vector2> points)

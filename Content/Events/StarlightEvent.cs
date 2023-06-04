@@ -188,7 +188,7 @@ namespace StarlightRiver.Content.Events
 				mapEffect.Parameters["map"].SetValue(starsMap.RenderTarget);
 				mapEffect.Parameters["background"].SetValue(starsTarget.RenderTarget);
 
-				spriteBatch.Begin(default, default, default, default, default, mapEffect, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, mapEffect, Main.GameViewMatrix.TransformationMatrix);
 
 				spriteBatch.Draw(starsMap.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 

@@ -207,7 +207,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			//DrawTrail(Main.spriteBatch);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = ModContent.Request<Texture2D>(Texture + "Glow").Value;
 
@@ -221,7 +221,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			if (flashTimer < 1)
 			{
@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 

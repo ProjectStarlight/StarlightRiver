@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			DrawPrimitives();
 			if (embedded)
 			{
-				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 				Texture2D bloomTex = ModContent.Request<Texture2D>(AssetDirectory.Keys + "Glow").Value;
 				for (int i = 0; i < cache.Count - 1; i++)
 				{
@@ -210,7 +210,7 @@ namespace StarlightRiver.Content.Items.Magnet
 				Main.spriteBatch.End();
 			}
 
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private void ManageCache()

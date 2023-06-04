@@ -850,7 +850,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{
@@ -915,7 +915,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			spriteBatch.Draw(NPCTarget.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

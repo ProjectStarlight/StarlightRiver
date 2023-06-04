@@ -346,7 +346,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			if (superLaser)
 				superTrail?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawPrimitives()
@@ -455,7 +455,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			effect.Parameters["topColor"].SetValue(topColor.ToVector3());
 			effect.Parameters["bottomColor"].SetValue(bottomColor.ToVector3());
 
-			sb.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
+			sb.Begin(default, default, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			sb.Draw(ballTex, laserStartpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult, SpriteEffects.None, 0f);
 			sb.Draw(ballTex, laserEndpoint - Main.screenPosition, null, Color.White, ballRotation, ballTex.Size() / 2, scale * laserSizeMult * 0.85f, SpriteEffects.None, 0f);
@@ -468,7 +468,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, endState, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, endState, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawAdditive(SpriteBatch sb)

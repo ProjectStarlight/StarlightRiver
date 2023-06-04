@@ -326,7 +326,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			spriteBatch.Draw(head, position - Main.screenPosition, null, lightColor, Projectile.rotation + 0.78f, origin, scale, SpriteEffects.None, 0);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawPrimitives();
 
@@ -612,7 +612,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 
 				trail?.Render(effect);
 
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
