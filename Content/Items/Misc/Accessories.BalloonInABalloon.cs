@@ -37,8 +37,7 @@ namespace StarlightRiver.Content.Items.Misc
 			recipe.Register();
 
 			recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
-			recipe.AddIngredient(ItemID.ShinyRedBalloon, 1);
+			recipe.AddIngredient(ItemID.ShinyRedBalloon, 2);
 			recipe.AddTile(TileID.TinkerersWorkbench);
 			recipe.Register();
 		}
