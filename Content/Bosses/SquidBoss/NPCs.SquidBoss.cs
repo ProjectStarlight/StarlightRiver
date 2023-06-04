@@ -12,6 +12,7 @@ using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
+using StarlightRiver.Content.Items.Misc;
 
 namespace StarlightRiver.Content.Bosses.SquidBoss
 {
@@ -162,6 +163,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 				ItemType<Octogun>(),
 				ItemType<TentacleHook>()
 			});
+
+			normalMode.OnSuccess(ItemDropRule.OneFromOptions(1, new int[]
+			{ 
+				ItemType<AxeBook>(),
+				ItemType<SwordBook>()
+			}));
 
 			npcLoot.Add(normalMode);
 			npcLoot.Add(CustomDropRules.onlyInNormalMode(ItemType<SquidFins>(), 4));

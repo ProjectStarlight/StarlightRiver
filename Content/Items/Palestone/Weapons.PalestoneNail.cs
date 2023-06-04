@@ -1,4 +1,5 @@
 using StarlightRiver.Content.Buffs.Summon;
+using StarlightRiver.Content.Tiles.Palestone;
 using System;
 using System.Linq;
 using Terraria;
@@ -53,15 +54,15 @@ namespace StarlightRiver.Content.Items.Palestone
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-
+				
 			recipe.AddIngredient(ItemID.SilverBar, 12);
-			recipe.AddRecipeGroup("StarlightRiver:BugShells");
+			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 
 			recipe = CreateRecipe();
 			recipe.AddIngredient(ItemID.TungstenBar, 12);
-			recipe.AddRecipeGroup("StarlightRiver:BugShells");
+			recipe.AddIngredient<PalestoneItem>(25);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
 		}
