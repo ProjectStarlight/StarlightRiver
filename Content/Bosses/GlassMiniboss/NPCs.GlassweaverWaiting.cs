@@ -156,11 +156,25 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		private string GetKeyDialogue()
 		{
+			if (StarlightWorld.HasFlag(WorldFlags.VitricBossDowned))
+				return GetPostDialogue();
+
 			return Main.rand.Next(3) switch
 			{
 				0 => "\"It doesn't look like you've cleared out the forge. What are you standing there for? I'm busy standing here!\"",
 				1 => "\"Don't you have better things to be doing, like fixing my forge?\"",
 				2 => "\"Adventurer! You defeated the Sentinel so soon? It's a miracle! Oh. Oh, you didn't. Never mind. Go away.\"",
+				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
+			};
+		}
+
+		private string GetPostDialogue()
+		{
+			return Main.rand.Next(3) switch
+			{
+				0 => "\"Seems like you got some of that ceramic dust on you... oh dont worry, it probably dosent cause lung cancer. Anyways thanks for taking care of that sentinel! I'll get my things ready to move in...\"",
+				1 => "\"Wow, I wasn't sure you could handle that! Erm, I mean, I totally believed in you the whole time. Totally didnt have money on the sentinel. Anyways, I'll be moving in soon.\"",
+				2 => "\"Dont worry about the burn marks, they'll buff out. Thanks for clearing out that sentinel for me, I'll be moving in soon, so dont go poking through my stuff.\"",
 				_ => "This text should never be seen! Please report to https://github.com/ProjectStarlight/StarlightRiver/issues",
 			};
 		}
