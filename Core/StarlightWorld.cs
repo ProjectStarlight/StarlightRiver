@@ -1,5 +1,6 @@
 ﻿using StarlightRiver.Content.Bosses.SquidBoss;
 using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.NPCs.Actors;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
