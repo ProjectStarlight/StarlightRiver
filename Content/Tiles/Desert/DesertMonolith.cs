@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Tiles.Desert
 
 			var anchor = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 4, 0);
 			QuickBlock.QuickSetFurniture(this, 4, 4, DustID.Sand, SoundID.Tink, new Color(200, 160, 50), bottomAnchor: anchor, anchorTiles: new int[] { Type });
+
+			RegisterItemDrop(ModContent.ItemType<DesertMonolithItem>());
 		}
 
 		public override void PlaceInWorld(int i, int j, Item item)
@@ -116,6 +118,11 @@ namespace StarlightRiver.Content.Tiles.Desert
 	internal class DesertMonolithFlipped : DesertMonolith
 	{
 		//huh, not much to do here, huh?
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+			RegisterItemDrop(ModContent.ItemType<DesertMonolithFlippedItem>());
+		}
 	}
 
 	internal class DesertMonolithFlippedItem : QuickTileItem
