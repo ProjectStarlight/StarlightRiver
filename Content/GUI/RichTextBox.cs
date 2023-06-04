@@ -53,7 +53,7 @@ namespace StarlightRiver.Content.GUI
 				Terraria.Audio.SoundEngine.PlaySound(Terraria.ID.SoundID.MenuTick);
 				textTimer++;
 			}
-			Main.NewText(Main.UIScale);
+
 			Vector2 target = talking.Center + new Vector2(0, 50 + talking.height * 0.5f);
 			Vector2 absolutePosition = target - Main.screenPosition + (target - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2)) * 0.15f;
 
