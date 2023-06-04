@@ -1,4 +1,5 @@
 using StarlightRiver.Content.DropRules;
+using StarlightRiver.Content.Items.Misc;
 using Terraria.GameContent;
 using Terraria.GameContent.Creative;
 using Terraria.GameContent.ItemDropRules;
@@ -67,6 +68,13 @@ namespace StarlightRiver.Content.Items.Permafrost
 				ItemType<Octogun>(),
 				ItemType<TentacleHook>()
 			}, 3);
+
+			itemLoot.Add(ItemDropRule.OneFromOptions(1, new int[]
+			{
+				ItemType<AxeBook>(),
+				ItemType<SpearBook>(),
+				ItemType<SwordBook>()
+			}));
 
 			itemLoot.Add(notMasterMode);
 			itemLoot.Add(masterMode);
