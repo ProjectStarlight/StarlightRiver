@@ -555,11 +555,11 @@ namespace StarlightRiver.Content.NPCs.BossRush
 				int starViewWidth = (int)(600 * bossRushLock.starViewScale);
 
 				sb.End();
-				sb.Begin(default, BlendState.Additive, default, default, default, wobble, Main.GameViewMatrix.ZoomMatrix);
+				sb.Begin(default, BlendState.Additive, default, default, default, wobble, Main.GameViewMatrix.TransformationMatrix);
 				sb.Draw(starView, new Rectangle((int)pos.X - starViewWidth / 2, (int)pos.Y - starViewWidth / 2, starViewWidth, starViewWidth), color);
 
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

@@ -115,9 +115,9 @@ namespace StarlightRiver.Content.CustomHooks
 				canUseTarget = false;
 
 				GD.Clear(Color.Transparent);
-				Main.GameViewMatrix.Zoom = new Vector2(1, 1);
+				//Main.GameViewMatrix.Zoom = new Vector2(1, 1);
 				sb.End();
-				sb.Begin(SpriteSortMode.Texture, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(SpriteSortMode.Texture, default, default, default, default, default);
 
 				DrawWallReflectionNormalMapEvent?.Invoke(sb);
 			}
@@ -218,7 +218,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (restartSpriteBatch)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+					spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 				}
 
 				var data = new DrawData(normalMap, screenPos, new Color(255, 255, 255, 0));
@@ -240,7 +240,7 @@ namespace StarlightRiver.Content.CustomHooks
 				if (restartSpriteBatch)
 				{
 					spriteBatch.End();
-					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+					spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 				}
 			}
 		}
@@ -253,7 +253,7 @@ namespace StarlightRiver.Content.CustomHooks
 				return;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, Filters.Scene["ReflectionMapper"].GetShader().Shader, Main.GameViewMatrix.TransformationMatrix);
 
 			shader.Parameters["uColor"].SetValue(new Vector3(0.5f, 0.5f, 1f));
 			shader.Parameters["uIntensity"].SetValue(0.5f);

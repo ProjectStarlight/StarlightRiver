@@ -228,7 +228,7 @@ namespace StarlightRiver.Content.NPCs.Actors
 			if (transformTime > 0)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 
@@ -250,19 +250,19 @@ namespace StarlightRiver.Content.NPCs.Actors
 				d.customData = Main.rand.NextFloat(0.2f, 0.5f) * alphaMaster;
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			if (windDown > 0)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
 				spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, new Color(100, 150, 255) * (windDown / 240f), 0, tex.Size() / 2, windDown / 240f * 2, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			return base.PreDrawInWorld(Item, spriteBatch, lightColor, alphaColor, ref rotation, ref scale, whoAmI);

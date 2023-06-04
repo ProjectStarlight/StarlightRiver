@@ -12,7 +12,23 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 		public virtual void LoseBarrierEffects(Player Player) { }
 
-		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player Player) { }
+		public virtual void PreDrawEffects(SpriteBatch spriteBatch, Player player) {
+			//awful horrible quick hack to fix the spritebatch
+			//TODO: find out wtf is leaking BlendState.Additive into the predraw on the player so this can be removed.
+			//it'll likely cause bugs elsewhere if not fixed at the source
+
+			//DO NOT LET THIS PASS CODE REVIEW WITHOUT FIXING THIS AT THE SOURCE
+			if (!CustomHooks.PlayerTarget.canUseTarget)
+				return;
+
+			spriteBatch.End();
+			SamplerState samplerState = Main.DefaultSamplerState;
+
+			if (player.mount.Active)
+				samplerState = Terraria.Graphics.Renderers.LegacyPlayerRenderer.MountedSamplerState;
+
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, samplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		}
 
 		public virtual void PostDrawEffects(SpriteBatch spriteBatch, Player Player) { }
 
@@ -74,11 +90,8 @@ namespace StarlightRiver.Content.Items.BarrierDye
 			{
 				Vector2 dir = Vector2.UnitX.RotatedBy(k / 8f * 6.28f) * (5.5f + sin * 3.2f);
 				Color color = new Color(100, 255, 255) * (opacity - sin * 0.1f) * 0.9f;
-
-				if (Main.LocalPlayer.gravDir == -1f)
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
-				else
-					spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
+				
+				spriteBatch.Draw(CustomHooks.PlayerTarget.Target, CustomHooks.PlayerTarget.getPlayerTargetPosition(player.whoAmI) + dir, CustomHooks.PlayerTarget.getPlayerTargetSourceRectangle(player.whoAmI), color);
 			}
 
 			spriteBatch.End();

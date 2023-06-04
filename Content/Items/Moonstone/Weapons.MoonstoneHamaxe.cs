@@ -342,7 +342,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["DatsuzeiTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(-Projectile.timeLeft * 0.05f);
@@ -455,7 +455,7 @@ namespace StarlightRiver.Content.Items.Moonstone
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

@@ -236,7 +236,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (!StarlightRiver.debugMode)
 				return;
 
-			Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, SamplerState.PointWrap, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			foreach (Rectangle rect in ProtectedRegions)
 			{

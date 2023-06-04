@@ -67,13 +67,10 @@ namespace StarlightRiver.Content.Items.BarrierDye
 
 			Vector2 drawPos = CustomHooks.PlayerTarget.getPlayerTargetPosition(Player.whoAmI);
 
-			if (Main.LocalPlayer.gravDir == -1f)
-				spriteBatch.Draw(tex, drawPos, rect, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.FlipVertically, 0f);
-			else
-				spriteBatch.Draw(tex, drawPos, rect, Color.White);
+			spriteBatch.Draw(tex, drawPos, rect, Color.White);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }
