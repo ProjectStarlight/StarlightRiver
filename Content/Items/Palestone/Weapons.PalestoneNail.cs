@@ -41,13 +41,15 @@ namespace StarlightRiver.Content.Items.Palestone
 			Item.shoot = ProjectileType<PaleKnight>();
 		}
 
+		public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+		{
+			position = Main.MouseWorld;
+		}
+
 		public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 		{
 			// This is needed so the buff that keeps your minion alive and allows you to despawn it properly applies
 			player.AddBuff(Item.buffType, 2);
-
-			// Here you can change where the minion is spawned. Most vanilla minions spawn at the cursor position.
-			position = Main.MouseWorld;
 			return true;
 		}
 
@@ -128,12 +130,14 @@ namespace StarlightRiver.Content.Items.Palestone
 			Projectile.height = 32;
 
 			Projectile.tileCollide = true;
+			Projectile.ignoreWater = true;
 
 			Projectile.minion = true;
 
 			Projectile.minionSlots = 1f;
 
 			Projectile.penetrate = -1;
+			Projectile.DamageType = DamageClass.Summon;
 		}
 
 		public override bool? CanCutTiles()
@@ -237,7 +241,11 @@ namespace StarlightRiver.Content.Items.Palestone
 				AttackState = Walking;
 			}
 
-			if (Vector2.Distance(Projectile.position, Player.position) > MinionFlybackRange && Vector2.Distance(Projectile.Center, validZone.Center()) > MinionFlybackRange && !foundTarget)
+			bool farAway = Vector2.Distance(Projectile.position, Player.position) > MinionFlybackRange && Vector2.Distance(Projectile.Center, validZone.Center()) > MinionFlybackRange;
+
+			bool stuck = Vector2.Distance(Projectile.Center, Player.Center) > 200f && !Collision.CanHitLine(Projectile.Center, 1, 1, Player.Center, 1, 1);
+
+			if ((farAway || stuck) && !foundTarget)
 			{
 				Projectile.tileCollide = false;
 				AttackState = Flying;
@@ -290,34 +298,46 @@ namespace StarlightRiver.Content.Items.Palestone
 					break;
 				case Flying:
 
-					float adjust = 1f;
-					Vector2 toPlayer = Player.Center - Projectile.Center;
-					if (toPlayer.Length() < 0.0001f)
+					var idlePos = new Vector2(Player.Center.X, Player.Center.Y - 70);
+
+					Vector2 toIdlePos = idlePos - Projectile.Center;
+					if (toIdlePos.Length() < 0.0001f)
 					{
-						toPlayer = Vector2.Zero;
+						toIdlePos = Vector2.Zero;
 					}
 					else
 					{
-						adjust = Vector2.Distance(toPlayer, Projectile.Center) * 0.01f;
-						adjust = Utils.Clamp(adjust, 0.15f, 0.5f);
+						float speed = Vector2.Distance(idlePos, Projectile.Center) * 0.2f;
+						speed = Utils.Clamp(speed, 1f, 25f);
+						toIdlePos.Normalize();
+						toIdlePos *= speed;
 					}
 
-					if (Projectile.Distance(Player.Center) > 100f)
-						Projectile.velocity += Vector2.Normalize(Player.Center - Projectile.Center) * adjust;
-					else
-						Projectile.velocity += Projectile.DirectionTo(Player.Center) * (adjust * 3f);
+					Projectile.velocity = (Projectile.velocity * (45f - 1) + toIdlePos) / 45f;
 
-					if (Vector2.Distance(Projectile.Center, Player.Center) < 50f)
+					if (Vector2.Distance(Projectile.Center, idlePos) < 50f)
+					{ 
 						AttackState = Walking;
+						Projectile.velocity *= 0.25f;
+					}
 
 					break;
 				case Attacking:
 					if (Projectile.Center.Y < targetCenter.Y)
 						Projectile.shouldFallThrough = true;
 
+					NPC target = Main.npc[(int)EnemyWhoAmI];
+
+
+					if (!Collision.CanHitLine(Projectile.Center, 1, 1, target.Center, 1, 1))
+					{
+						AttackState = Flying;
+						Projectile.tileCollide = false;
+					}
+
 					if (Projectile.Center.Distance(targetCenter) < 250f && JumpDelay <= 0 && AttackDelay <= 0 && WorldGen.SolidTileAllowBottomSlope((int)(Projectile.Center.X / 16), (int)(Projectile.Bottom.Y / 16)))
 					{
-						Projectile.velocity.Y -= 5f + (Projectile.Center.Y - Main.npc[(int)EnemyWhoAmI].Top.Y) * 0.1f;
+						Projectile.velocity.Y -= 5f + (Projectile.Center.Y - target.Top.Y) * 0.1f;
 						JumpDelay = 120;
 					}
 					else
@@ -331,11 +351,11 @@ namespace StarlightRiver.Content.Items.Palestone
 						{
 							Vector2 pogoPos = Main.npc[(int)EnemyWhoAmI].Top;
 
-							Vector2 toIdlePos = pogoPos - Projectile.Center;
-							toIdlePos.Normalize();
-							toIdlePos *= 10f;
+							Vector2 toPogoPos = pogoPos - Projectile.Center;
+							toPogoPos.Normalize();
+							toPogoPos *= 10f;
 
-							Projectile.velocity = (Projectile.velocity * 14f + toIdlePos) / 15f;
+							Projectile.velocity = (Projectile.velocity * 14f + toPogoPos) / 15f;
 						}
 						else if (Math.Abs(Projectile.Center.X - targetCenter.X) < 30f)
 						{
@@ -365,44 +385,67 @@ namespace StarlightRiver.Content.Items.Palestone
 
 					if (AttackDelay <= 0)
 					{
-						if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Top) < 50f && Projectile.Center.Y < Main.npc[(int)EnemyWhoAmI].Top.Y)
+						if (Projectile.Distance(target.Top) < 50f && Projectile.Center.Y < target.Top.Y)
 						{
-							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 0, 1f).ModProjectile as PalestoneSlash;
-							proj.parent = Projectile;
-							proj.knockbackVelo = new Vector2(0f, 25f);
+							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Bottom, Vector2.UnitY * 15f, ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 0, 1f);
+
+							PalestoneSlash slash = proj.ModProjectile as PalestoneSlash;
+
+
+							slash.parent = Projectile;
+							slash.knockbackVelo = new Vector2(0f, 25f);
+							proj.rotation = MathHelper.ToRadians(90);
+
 							AttackDelay = 24;
 							Projectile.velocity *= 0.25f;
 							JustPogod = true;
 							PogoAnimTimer = 20;
 							Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+
+							HitNPC(new Vector2(0, 25f), true, target);
 						}
-						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Left) < 35f && Projectile.Center.X < Main.npc[(int)EnemyWhoAmI].Left.X)
+						else if (Projectile.Distance(target.Left) < 35f && Projectile.Center.X < target.Left.X)
 						{
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(10f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, -1).ModProjectile as PalestoneSlash;
 							proj.parent = Projectile;
-							proj.knockbackVelo = new Vector2(6.5f, 0);
 							AttackDelay = 44;
 							Projectile.velocity *= 0.25f;
 							AttackAnimTimer = 20;
+							Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+
+							HitNPC(new Vector2(6.5f, 0), false, target);
 						}
-						else if (Projectile.Distance(Main.npc[(int)EnemyWhoAmI].Right) < 35f && Projectile.Center.X > Main.npc[(int)EnemyWhoAmI].Right.X)
+						else if (Projectile.Distance(target.Right) < 35f && Projectile.Center.X > target.Right.X)
 						{
 							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, new Vector2(-5f, 5f), ModContent.ProjectileType<PalestoneSlash>(), Projectile.damage, 1f, Projectile.owner, 1).ModProjectile as PalestoneSlash;
 							proj.parent = Projectile;
-							proj.knockbackVelo = new Vector2(-6.5f, 0f);
 							AttackDelay = 44;
 							Projectile.velocity *= 0.25f;
 							AttackAnimTimer = 20;
+							Terraria.Audio.SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+
+							HitNPC(new Vector2(-6.5f, 0), false, target);
 						}
 					}
 
 					break;
 			}
 
-			if (Projectile.Distance(Player.Center) > 2500f)
+			if (Projectile.Distance(Player.Center) > 1500f)
 			{
 				Projectile.velocity += Main.rand.NextVector2Circular(2.5f, 2.5f);
+
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, Color.White, 0.55f);
+				}
+
 				Projectile.Center = Player.Center;
+
+				for (int i = 0; i < 5; i++)
+				{
+					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), Main.rand.NextVector2Circular(2.5f, 2.5f), 0, Color.White, 0.55f);
+				}
 			}
 
 			Projectile.velocity.X = Vector2.Clamp(Projectile.velocity, -new Vector2(8f), new Vector2(8f)).X;
@@ -477,6 +520,21 @@ namespace StarlightRiver.Content.Items.Palestone
 			modPlayer.KnightCount++;
 		}
 
+		private void HitNPC(Vector2 knockbackVelo, bool Down, NPC target) // rather do this than an actual proj, less jank, hits consistently. Projectile is just for visuals (can be moved to drawcode in future).
+		{
+			Projectile.NewProjectile(Projectile.GetSource_FromThis(), target.Center, Vector2.Zero, ModContent.ProjectileType<PalestoneDummy>(), Projectile.damage, 0f, Projectile.owner); // yes this sucks i know ill fix it later
+
+			Projectile.velocity -= knockbackVelo;
+			for (int i = 0; i < 5; i++)
+			{
+				float mult = Main.rand.NextFloat(0.75f, 1.5f);
+				if (Down)
+					mult = Main.rand.NextFloat(0.1f, 0.35f);
+
+				Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), -knockbackVelo.RotatedByRandom(0.35f) * mult, 0, Color.White, 0.55f);
+			}
+		}
+
 		public override bool TileCollideStyle(ref int width, ref int height, ref bool fallThrough, ref Vector2 hitboxCenterFrac)
 		{
 			fallThrough = Projectile.shouldFallThrough;
@@ -528,6 +586,35 @@ namespace StarlightRiver.Content.Items.Palestone
 		}
 	}
 
+	public class PalestoneDummy : ModProjectile // stupid fucking bandaid fix but damage was janky before
+	{
+		public override string Texture => AssetDirectory.PalestoneItem + "KnightSlash";
+
+		public override void SetStaticDefaults()
+		{
+			DisplayName.SetDefault("Pale Slash");
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.width = 50;
+			Projectile.height = 50;
+
+			Projectile.tileCollide = false;
+
+			Projectile.friendly = true;
+			Projectile.alpha = 255;
+
+			Projectile.penetrate = 1;
+
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = -1;
+
+			Projectile.timeLeft = 5;
+			Projectile.DamageType = DamageClass.Summon;
+		}
+	}
+
 	public class PalestoneSlash : ModProjectile
 	{
 		public Vector2 knockbackVelo;
@@ -552,14 +639,14 @@ namespace StarlightRiver.Content.Items.Palestone
 
 			Projectile.tileCollide = false;
 
-			Projectile.friendly = true;
+			Projectile.friendly = false;
 
 			Projectile.penetrate = -1;
 
 			Projectile.usesLocalNPCImmunity = true;
 			Projectile.localNPCHitCooldown = -1;
 
-			Projectile.timeLeft = 18;
+			Projectile.timeLeft = 12;
 			Projectile.scale = 1.5f;
 		}
 
@@ -582,26 +669,8 @@ namespace StarlightRiver.Content.Items.Palestone
 				Projectile.Kill();
 			}
 
-			if (++Projectile.frameCounter % 3 == 0)
+			if (++Projectile.frameCounter % 2 == 0)
 				Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
-		}
-
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			if (parent != null && !hasHit)
-			{
-				parent.velocity -= knockbackVelo;
-				for (int i = 0; i < 5; i++)
-				{
-					float mult = Main.rand.NextFloat(0.75f, 1.5f);
-					if (Down)
-						mult = Main.rand.NextFloat(0.1f, 0.35f);
-
-					Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<Dusts.GlowFastDecelerate>(), -knockbackVelo.RotatedByRandom(0.35f) * mult, 0, Color.White, 0.55f);
-				}
-			}
-
-			hasHit = true;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
