@@ -633,7 +633,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -761,7 +761,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Effect effect = Filters.Scene["OrbitalStrikeTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);
@@ -850,7 +850,7 @@ namespace StarlightRiver.Content.Items.Breacher
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int i = 0; i < Main.npc.Length; i++)
 			{

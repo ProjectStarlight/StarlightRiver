@@ -88,7 +88,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Effect trailEffect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			trailEffect.Parameters["time"].SetValue(Projectile.timeLeft * -0.04f);
@@ -114,7 +114,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			effect.Parameters["texSize"].SetValue(tex.Size());
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			SpriteEffects spriteEffects = SpriteEffects.None;
 			Vector2 drawOffset = (fakeNPC.ModNPC as VitricConstructNPC).PreviewOffset;
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			Main.spriteBatch.Draw(tex, drawOffset + Projectile.Center - Main.screenPosition, null, Color.White, 0, new Vector2(tex.Width / 2, tex.Height - 5), 1, spriteEffects, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}

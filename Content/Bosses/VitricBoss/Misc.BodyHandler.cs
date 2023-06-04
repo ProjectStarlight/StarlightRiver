@@ -203,12 +203,12 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			effect.Parameters["texSize"].SetValue(tex.Size());
 
 			sb.End();
-			sb.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			sb.Draw(tex, pos - Main.screenPosition, source, Lighting.GetColor((int)pos.X / 16, (int)pos.Y / 16), rot, source.Size() / 2, 1, flip, 0);
 
 			sb.End();
-			sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void UpdateBody()

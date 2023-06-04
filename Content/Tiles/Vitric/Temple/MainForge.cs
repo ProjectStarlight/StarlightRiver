@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeGlow").Value;
 			spriteBatch.Draw(texGlow, pos, Color.White);
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
 			int width = (int)(centerPos - endpoint).Length();

@@ -232,7 +232,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Effect effect = Filters.Scene["GluttonyTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(0.05f * Main.GameUpdateCount);
@@ -333,13 +333,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.Black * prog * 0.8f, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect1, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, new Color(220, 50, 90) * prog, Projectile.rotation + 1.57f + 0.1f, new Vector2(tex.Width / 2, tex.Height), prog * 0.55f, 0, 0);
 			//spriteBatch.Draw(Terraria.GameContent.TextureAssets.MagicPixel.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			return false;
 		}
@@ -439,7 +439,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			Effect effect = Filters.Scene["GhoulTrail"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

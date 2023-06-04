@@ -193,7 +193,7 @@ namespace StarlightRiver.Content.NPCs.Snow
 			Effect effect = Terraria.Graphics.Effects.Filters.Scene["SnoobelTrunk"].GetShader().Shader;
 
 			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
 			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["transformMatrix"].SetValue(world * view * projection);

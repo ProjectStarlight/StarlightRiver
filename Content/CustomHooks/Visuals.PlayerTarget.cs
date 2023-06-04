@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.CustomHooks
 			Main.graphics.GraphicsDevice.SetRenderTarget(Target);
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
-			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.Transform);
+			Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.EffectMatrix);
 
 			for (int i = 0; i < Main.maxPlayers; i++)
 			{
@@ -178,7 +178,7 @@ namespace StarlightRiver.Content.CustomHooks
 					oldScreen = Main.screenPosition;
 					oldItemLocation = player.itemLocation;
 					int oldHeldProj = player.heldProj;
-
+					
 					//temp change Player's actual position to lock into their frame
 					positionOffset = getPositionOffset(i);
 					player.position = positionOffset;

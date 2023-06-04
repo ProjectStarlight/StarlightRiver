@@ -29,7 +29,7 @@ namespace StarlightRiver.Content.GUI
 
 		public override bool Visible => visible;
 
-		public override InterfaceScaleType Scale => InterfaceScaleType.Game;
+		//public override InterfaceScaleType Scale => InterfaceScaleType.Game;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -55,11 +55,13 @@ namespace StarlightRiver.Content.GUI
 			}
 
 			Vector2 target = talking.Center + new Vector2(0, 50 + talking.height * 0.5f);
-			position = target - Main.screenPosition + (target - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2)) * 0.15f;
+			Vector2 absolutePosition = target - Main.screenPosition + (target - (Main.screenPosition + Main.ScreenSize.ToVector2() / 2)) * 0.15f;
 
-			var nearby = new Rectangle(-52 + (int)position.X - 260, (int)position.Y - 40, 620, Math.Max(140, (int)Markdown.GetHeight(message, 1, 500) + 40));
+			var nearby = new Rectangle(-52 + (int)absolutePosition.X - 260, (int)absolutePosition.Y - 40, 620, Math.Max(140, (int)Markdown.GetHeight(message, 1, 500) + 40));
 			Rectangle player = Main.LocalPlayer.Hitbox;
 			player.Offset((-Main.screenPosition).ToPoint());
+
+			position = absolutePosition / Main.UIScale;
 
 			if (nearby.Intersects(player))
 			{
@@ -74,7 +76,7 @@ namespace StarlightRiver.Content.GUI
 			icon = Main.screenTarget;
 
 			Vector2 pos = talking.Center - Main.screenPosition;
-			iconFrame = new Rectangle((int)pos.X - 44, (int)pos.Y - 44, 88, 88);
+			iconFrame = new Rectangle((int)pos.X - 44, (int)pos.Y - 44, (int)(88 * Main.GameViewMatrix.Zoom.X), (int)(88 * Main.GameViewMatrix.Zoom.X));
 
 			if (message == "")
 				return;
