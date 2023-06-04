@@ -13,7 +13,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				"TempleBrick",
 				"Ancient Bricks",
 				new TileLoadData(
-					minPick: 0,
+					minPick: 100,
 					dustType: DustID.Stone,
 					hitSound: SoundID.Tink,
 					mapColor: new Color(150, 150, 150),

@@ -1,5 +1,4 @@
 ﻿using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Items.Gravedigger;
 using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace StarlightRiver.Content.Items.Misc
+namespace StarlightRiver.Content.Items.Gravedigger
 {
 	public class RadculasRapier : ModItem
 	{
@@ -23,7 +22,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Item.damage = 30;
+			Item.damage = 12;
 			Item.DamageType = DamageClass.Melee;
 
 			Item.useTime = 30;
@@ -161,9 +160,7 @@ namespace StarlightRiver.Content.Items.Misc
 				trailPositions.Add(PlayerTarget.getPlayerTargetPosition(Player.whoAmI) + Main.screenPosition);
 
 				if (Main.rand.NextBool(5))
-				{
 					Dust.NewDustPerfect(Player.Center + Main.rand.NextVector2Circular(Player.width, Player.height), ModContent.DustType<Dusts.GlowFastDecelerate>(), Player.velocity * 0.25f, 0, new Color(255, 0, 0, 100), 0.5f);
-				}
 			}
 
 			if (trailPositions.Count > 30 || trailPositions.Count > 0 && teleportTimer == 0)
@@ -308,7 +305,7 @@ namespace StarlightRiver.Content.Items.Misc
 					{
 						float lerper = stabTimer / (totalTime * 0.5f);
 
-						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, EaseBuilder.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(new Vector2(75, 0), stabVec, EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 					else
 					{
@@ -321,7 +318,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 						float lerper = (stabTimer - totalTime * 0.5f) / (float)(totalTime * 0.5f);
 
-						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), EaseBuilder.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+						offset = Vector2.Lerp(stabVec, new Vector2(75, 0), EaseFunction.EaseCircularOut.Ease(lerper)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 					}
 				}
 				else
@@ -524,7 +521,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 			if (Projectile.timeLeft < 25 && Projectile.timeLeft > 15)
 			{
-				float progress = EaseBuilder.EaseQuinticInOut.Ease(1f - (Projectile.timeLeft - 15) / 10f);
+				float progress = EaseFunction.EaseQuinticInOut.Ease(1f - (Projectile.timeLeft - 15) / 10f);
 				Projectile.rotation = MathHelper.Lerp(0, 3.5f * Projectile.direction, progress);
 			}
 			else if (Projectile.timeLeft <= 15)
@@ -535,12 +532,12 @@ namespace StarlightRiver.Content.Items.Misc
 				if (Projectile.timeLeft > 5f)
 				{
 					progress = 1f - (Projectile.timeLeft - 5f) / 10f;
-					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), EaseBuilder.EaseQuinticOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(0, 0), new Vector2(-30, 0), EaseFunction.EaseQuinticOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 				else
 				{
 					progress = 1f - Projectile.timeLeft / 5f;
-					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), EaseBuilder.EaseQuinticInOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
+					offset = Vector2.Lerp(new Vector2(-30, 0), new Vector2(10, 0), EaseFunction.EaseQuinticInOut.Ease(progress)).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
 				}
 			}
 
@@ -611,7 +608,7 @@ namespace StarlightRiver.Content.Items.Misc
 			teleported = true;
 
 			float step = 0.1f;
-			for (int i = 0; i < (1 / step); i++)
+			for (int i = 0; i < 1 / step; i++)
 			{
 				var stepPos = Vector2.Lerp(originalPos, Owner.Center, step * i);
 				teleportPositions.Add(stepPos);
@@ -644,9 +641,7 @@ namespace StarlightRiver.Content.Items.Misc
 			for (int j = 0; j < Owner.hurtCooldowns.Length; j++)
 			{
 				if (Owner.hurtCooldowns[j] < 45)
-				{
 					anyIFramesWouldBeGiven = true;
-				}
 			}
 
 			if (anyIFramesWouldBeGiven)
@@ -657,9 +652,7 @@ namespace StarlightRiver.Content.Items.Misc
 				for (int i = 0; i < Owner.hurtCooldowns.Length; i++)
 				{
 					if (Owner.hurtCooldowns[i] < 45)
-					{
 						Owner.hurtCooldowns[i] = 45;
-					}
 				}
 			}
 		}

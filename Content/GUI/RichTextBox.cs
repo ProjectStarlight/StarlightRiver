@@ -139,6 +139,11 @@ namespace StarlightRiver.Content.GUI
 			sb.Draw(tex, new Rectangle(target.X, target.Y + target.Height, 6, 6), sourceCorner, color, (float)Math.PI * 1.5f, Vector2.Zero, 0, 0);
 		}
 
+		public override void SafeUpdate(GameTime gameTime)
+		{
+			Recalculate();
+		}
+
 		public static void OpenDialogue(NPC NPC, string newTitle, string newMessage)
 		{
 			visible = true;

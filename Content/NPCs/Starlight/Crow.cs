@@ -36,7 +36,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override void SetDefaults()
 		{
-			NPC.townNPC = true;
 			NPC.friendly = true;
 			NPC.width = 40;
 			NPC.height = 64;
@@ -247,7 +246,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			Main.LocalPlayer.GetHandler().SetStaminaRegenCD(0);
 
 			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
+				CameraSystem.MoveCameraOut(30, NPC.Center + Vector2.UnitY * 120, Vector2.SmoothStep);
 
 			if (CutsceneTimer < 300)
 				SpawnAnimation();
@@ -450,6 +449,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 			}
 		}
+
 		public string GetHint()
 		{
 			return "What does he want with me?";
