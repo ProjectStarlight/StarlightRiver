@@ -332,7 +332,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 
 		public override void LoadData(TagCompound tag)
 		{
-			State = tag.GetInt("State");
+			State = tag.GetAsInt("State");
 		}
 		public string GetHint()
 		{
