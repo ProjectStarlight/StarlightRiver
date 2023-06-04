@@ -2,6 +2,7 @@ Starlight River is a critically-acclaimed mod with a focus on making fun content
 Now releasing as an Open Alpha, we're looking to get as much feedback as possible from our amazing community to help us continue driving the mod higher and higher towards its eventual full 1.0 release.
 You can treat this as, by all intents and purposes, a playable release build. Just be aware that bugs are likely, and we're still working on a lot of content!
 
+Starlight River features stunning multi-phase bosses, challenging encounters, tons of unique weapons for every class, a dynamic and in-depth approach to buildcrafting, and tons of secrets.
 
 Warning: Like all content mods, Starlight River is best experienced as the main focus of a modpack. Do not report balance inconsistencies or progression skips when played with other large mods.
 This is an open alpha release. Everything here is subject to change. Report issues to https://github.com/ProjectStarlight/StarlightRiver/issues
