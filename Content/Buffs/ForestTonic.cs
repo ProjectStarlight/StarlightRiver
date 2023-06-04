@@ -2,7 +2,7 @@
 {
 	public class ForestTonic : SmartBuff
 	{
-		public ForestTonic() : base("Forest Tonic", "Immunity to poision\nSlowly regenerate life", false) { }
+		public ForestTonic() : base("Forest Tonic", "Immunity to poison\nSlowly regenerate life", false) { }
 
 		public override string Texture => AssetDirectory.Buffs + "ForestTonic";
 
