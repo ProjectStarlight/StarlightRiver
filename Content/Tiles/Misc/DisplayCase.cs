@@ -7,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-	class DisplayCase : ModTile
+	class DisplayCase : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
@@ -86,6 +86,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 		private float GetProgress(float off)
 		{
 			return (Main.GameUpdateCount + off * 3) % 300 / 300f;
+		}
+
+		public string GetHint()
+		{
+			return "The contents are shiny... but the glass is infused with starlight. A starlight power of equal strength may shatter it...";
 		}
 	}
 
