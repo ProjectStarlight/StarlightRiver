@@ -98,13 +98,13 @@ namespace StarlightRiver.Content.CustomHooks
 				Vector2 basepoint = (StarlightWorld.vitricBiome != default) ? StarlightWorld.vitricBiome.TopLeft() * 16 + new Vector2(-2000, 0) : Vector2.Zero;
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				float x = basepoint.X + GetParallaxOffset(basepoint.X, 0.6f) - Main.screenPosition.X;
 				float y = basepoint.Y + GetParallaxOffsetY(basepoint.Y, 0.2f) - Main.screenPosition.Y;
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 				for (int k = 5; k >= 0; k--)
 				{
@@ -131,7 +131,7 @@ namespace StarlightRiver.Content.CustomHooks
 					if (k == 0)
 					{
 						Main.spriteBatch.End();
-						Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+						Main.spriteBatch.Begin(default, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 						float progress = (float)Math.Sin(Main.GameUpdateCount / 50f);
 						var color = new Color(255, 255, 100);
@@ -144,7 +144,7 @@ namespace StarlightRiver.Content.CustomHooks
 						DrawLayer(basepoint, Request<Texture2D>("StarlightRiver/Assets/Backgrounds/Glass0Glow").Value, k + 1, Vector2.UnitY * off + Vector2.One.RotatedBy(MathHelper.PiOver2) * progress * 2, color * (0.45f + (progress + colorAdd) * 0.2f), false);
 
 						Main.spriteBatch.End();
-						Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+						Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 					}
 
 					if (k == 1)
@@ -175,7 +175,7 @@ namespace StarlightRiver.Content.CustomHooks
 				}
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 				DrawTilingBackground();
 			}
 		}

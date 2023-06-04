@@ -200,7 +200,7 @@ namespace StarlightRiver.Core.Systems.LightingSystem
 			if (scale == default)
 				scale = Vector2.One;
 
-			var zoom =  //Main.GameViewMatrix.ZoomMatrix;
+			var zoom =  //Main.GameViewMatrix.TransformationMatrix;
 			new Matrix
 			(
 				Main.GameViewMatrix.Zoom.X, 0, 0, 0,

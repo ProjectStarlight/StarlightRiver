@@ -52,7 +52,7 @@ namespace StarlightRiver.Content.Bosses.GlassMiniboss
 		private void GauntletWave0()
 		{
 			if (AttackTimer == 1)
-				Main.NewText("Begin", Color.OrangeRed);
+				Main.NewText("Begin!", Color.OrangeRed);
 
 			if (AttackTimer == 120)
 				summonAnimTime = 60;

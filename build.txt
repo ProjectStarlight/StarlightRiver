@@ -1,4 +1,4 @@
 displayName = Starlight River
 author = Scalar, Egshels, and the Code Monkeys / Minari, Scalie, and the Shoehorned Vocaloid/ULTRAKILL/RoR2 References / Angela, Vector, and the Oblique Jokey Dev Team Names
-version = 0.01
+version = 0.1.2
 dllReferences = StructureHelper, NetEasy_v0.1.8, NetSerializer, ProjectStarlight.Interchange, SixLabors.ImageSharp

@@ -276,7 +276,7 @@ namespace StarlightRiver.Content.Tiles.Vitric
 
 				CutsceneTimer++;
 
-				if (CutsceneTimer == 180)
+				if (CutsceneTimer >= 180 && !StarlightWorld.HasFlag(WorldFlags.VitricBossOpen))
 				{
 					StarlightWorld.Flag(WorldFlags.VitricBossOpen);
 

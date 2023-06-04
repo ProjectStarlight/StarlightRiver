@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.Events
 				occuring = true;
 				willOccur = false;
 				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
-				NPC.NewNPC(null, Main.spawnTileX * 16, Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 
 			if (Active)
@@ -117,6 +117,8 @@ namespace StarlightRiver.Content.Events
 			{
 				occuring = true;
 				willOccur = false;
+				Main.NewText("A strange traveler has arrived...", new Color(150, 200, 255));
+				NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
 			}
 		}
 	}
@@ -206,7 +208,7 @@ namespace StarlightRiver.Content.Events
 			if (NPC.boss && StarlightEventSequenceSystem.sequence <= 0) //First visit is after any boss
 				StarlightEventSequenceSystem.willOccur = true;
 
-			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1) //Second visit is after ceiros
+			if (NPC.type == ModContent.NPCType<VitricBoss>() && StarlightEventSequenceSystem.sequence == 1 && false) //Second visit is after ceiros
 				StarlightEventSequenceSystem.willOccur = true;
 		}
 

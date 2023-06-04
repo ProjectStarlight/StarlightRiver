@@ -2,6 +2,7 @@ Starlight River is a critically-acclaimed mod with a focus on making fun content
 Now releasing as an Open Alpha, we're looking to get as much feedback as possible from our amazing community to help us continue driving the mod higher and higher towards its eventual full 1.0 release.
 You can treat this as, by all intents and purposes, a playable release build. Just be aware that bugs are likely, and we're still working on a lot of content!
 
+Starlight River features stunning multi-phase bosses, challenging encounters, tons of unique weapons for every class, a dynamic and in-depth approach to buildcrafting, and tons of secrets.
 
 Warning: Like all content mods, Starlight River is best experienced as the main focus of a modpack. Do not report balance inconsistencies or progression skips when played with other large mods.
 This is an open alpha release. Everything here is subject to change. Report issues to https://github.com/ProjectStarlight/StarlightRiver/issues
@@ -13,7 +14,7 @@ Special thanks to...
 
 Our developers: Cultist, cynik, Doodle, egshels/minari/未成/original datsuzei writer, HeartPlusUp, IbanPlay, InchKing, Jax, Kiraaaa, Lunatix, Midnight417, Ming, Narnia, Nomis/Nomis 2.0/Nomis 3.0/Nomis Prime/Nimos Phrime/Simon Lime, QuestionMark, Salvati, Sbubby, ScalarVector/Scalie /Whip and nae nae ready *groan noise*, SkippZz, Sok, SuperAndyHero, Tobias, Vinh, Wasabi
 
-Our contributors: Alena, Alexander D. Moon, Ariame, AwokenEngima, Blanc, Bravos, Calming, chloeforever, Cloud, CrownKing, Daim, Dan Yami, Delly, Darkpuppey, Davslav, Dominic Karma, Dual, Duranni, Energykid, Firel, GabeHasWon, Gallagade, Graydee, Iggysaur, Inkplasm, Invalid, JaceDaDorito, JellyFish, Lionspride, Lunatix, Monstrabot, Moonbee, Nat, Oli, OS, Pacnysam, pkpseudo, SammySemicolon, Santra, Schmo, Stevie, Trensient, Vectix, Void, Vroomy, Webmilio, WhiteIce, Xelo, Nox, Zoroarkcity
+Our contributors: Alena, Alexander D. Moon, Ariame, AwokenEngima, Blanc, Bravos, Calming, chloeforever, Cloud, CrownKing, Daim, Dan Yami, Delly, Darkpuppey, Davslav, Dominic Karma, Dual, Duranni, Energykid, Firel, GabeHasWon, Gallagade, Graydee, Iggysaur, Inkplasm, Invalid, JaceDaDorito, JellyFish, Lionspride, Lunatix, Monstrabot, Moonbee, Naom, Nat, Oli, OS, Pacnysam, pkpseudo, SammySemicolon, Santra, Schmo, Tomat, Trensient, Vectix, Void, Vroomy, Webmilio, WhiteIce, Xelo, Nox, Zoroarkcity
 
 Our testers: AP STP, Ace, Anarchy, Arkh, Blind, BlurredTheLines, Cake, CantWontDo, CptZucchini, Davslav, Dottedboxguy, FuryForged, GalaxyNemesis, Gitgudwo, Hana, Invalid, Kostya, Krazysamurai, Lemmy, Max, Megasweave, Noddlescript, Onyx, ParchmentEngineer, Pope, RaisinJuice.Co, Velvet, Virukino, Waasephi, Yakumo
 

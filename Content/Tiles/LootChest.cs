@@ -1,7 +1,10 @@
 ﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Content.Tiles.UndergroundTemple;
 using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Helpers;
 using System.Collections.Generic;
+using Terraria.GameContent;
+using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles
@@ -18,15 +21,35 @@ namespace StarlightRiver.Content.Tiles
 			return true;
 		}
 
+		public virtual int HoverItemIcon => ModContent.ItemType<TempleChestPlacer>();
+
+		public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
+		{
+			return true;
+		}
+
 		public override void SetStaticDefaults()
 		{
+			TileID.Sets.HasOutlines[Type] = true;
+			TileID.Sets.DisableSmartCursor[Type] = true;
+			Main.tileSpelunker[Type] = true;
+			Main.tileOreFinderPriority[Type] = 500;
 			SafeSetDefaults();
 			MinPick = int.MaxValue;
 		}
 
+		public override void MouseOver(int i, int j)
+		{
+			Player player = Main.LocalPlayer;
+
+			player.noThrow = 2;
+			player.cursorItemIconEnabled = true;
+			player.cursorItemIconID = HoverItemIcon;
+		}
+
 		public override bool RightClick(int i, int j)
 		{
-			if (CanOpen(Main.LocalPlayer))
+			if (CanOpen(Main.LocalPlayer) && !UILoader.GetUIState<LootUI>().Visible)//second check makes sure that you cant open the ui when its already open
 			{
 				var smallLoot = new Loot[5];
 

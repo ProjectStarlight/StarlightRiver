@@ -66,8 +66,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			ModItem item = base.Clone(newEntity);
 			(item as RuneStaff).charge = charge;
 
-			Main.NewText("Cloned new staff with a charge level of: " + (item as RuneStaff).charge);
-
 			return item;
 		}
 	}

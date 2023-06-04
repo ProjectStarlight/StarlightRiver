@@ -333,7 +333,7 @@ namespace StarlightRiver.Content.Items.Magnet
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, null, Main.GameViewMatrix.TransformationMatrix);
 
 			var goos = Main.projectile.Where(n => n.active && n.type == ProjectileType<GrayGooProj>()).ToList();
 			goos.ForEach(n => DrawGooTarget(n, spriteBatch));

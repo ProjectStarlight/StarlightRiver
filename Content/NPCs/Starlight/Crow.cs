@@ -6,6 +6,7 @@ using StarlightRiver.Core.Loaders.UILoading;
 using StarlightRiver.Core.Systems.CameraSystem;
 using System;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.NPCs.Starlight
@@ -35,7 +36,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 
 		public override void SetDefaults()
 		{
-			NPC.townNPC = true;
 			NPC.friendly = true;
 			NPC.width = 40;
 			NPC.height = 64;
@@ -49,6 +49,9 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			NPC.DeathSound = SoundID.NPCDeath1;
 			NPC.knockBackResist = 0;
 			NPC.gfxOffY = -4;
+			NPC.noGravity = true;
+
+			NPC.frame = new Rectangle(0, 0, 0, 0);
 
 			visible = false;
 		}
@@ -86,6 +89,8 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (InCutscene && (Main.netMode == NetmodeID.SinglePlayer || Main.netMode == NetmodeID.MultiplayerClient)) //handles cutscenes
 			{
 				Player player = Main.LocalPlayer;
+				player.immune = true; //TODO: Move this later!!!
+				player.immuneTime = 2;
 
 				switch (StarlightEventSequenceSystem.sequence)
 				{
@@ -133,12 +138,19 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			}
 
 			if (CutsceneTimer > 100 && CutsceneTimer < 140)
-			{
 				Lighting.AddLight(NPC.Center, new Vector3(0.1f, 0.2f, 0.25f) * (CutsceneTimer - 100) / 40f * 4);
-			}
 
 			if (CutsceneTimer == 140)
+			{
+				NPC.noGravity = false;
 				visible = true;
+			}
+
+			if (CutsceneTimer >= 140 && CutsceneTimer < 160)
+				SetFrame(0, (int)(CutsceneTimer - 140) / 10);
+
+			if (CutsceneTimer > 160 && CutsceneTimer % 8 == 0 && NPC.velocity.Y == 0 && GetFrame().Y <= 11)
+				SetFrame(0, GetFrame().Y + 1);
 		}
 
 		/// <summary>
@@ -234,10 +246,12 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			Main.LocalPlayer.GetHandler().SetStaminaRegenCD(0);
 
 			if (CutsceneTimer == 1)
-				CameraSystem.MoveCameraOut(30, NPC.Center, Vector2.SmoothStep);
+				CameraSystem.MoveCameraOut(30, NPC.Center + Vector2.UnitY * 120, Vector2.SmoothStep);
 
 			if (CutsceneTimer < 300)
 				SpawnAnimation();
+			else
+				NPC.direction = Main.LocalPlayer.Center.X > NPC.Center.X ? 1 : -1;
 
 			if (CutsceneTimer == 360) // First encounter
 			{
@@ -382,7 +396,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 		{
 			return TextState switch
 			{
-				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off and straightening its ruffled feathers.",
+				0 => "The crow-like... creature... gets up off the ground with a triumphant look in its beady eyes, dusting itself off, and then straightening its ruffled feathers.",
 				1 => "\"There you are! I've jumped through seventeen different axons and the half the entire Capricorn Tropic trying to find you!\"",
 				2 => "\"Yes, yes, my name is Alican, and I believe we can help each other. You see, I am a Seeker. Of what, exactly, is not free information, but I'll give you a hint.\"",
 				3 => "Alican leans towards you, with its voice reduced to a whisper and a manic glint in its eye.",
@@ -404,12 +418,28 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			};
 		}
 
+		private void SetFrame(int x, int y)
+		{
+			NPC.frame = new Rectangle(62 * x, 88 * y, 62, 88);
+		}
+
+		private Point16 GetFrame()
+		{
+			return new Point16(NPC.frame.X / 62, NPC.frame.Y / 88);
+		}
+
 		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			if (InCutscene && CutsceneTimer < 140)
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 
-			return visible;
+			var frame = new Rectangle(0, 88, 62, 88);
+			SpriteEffects effects = NPC.direction == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+			if (visible)
+				spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, NPC.Center + new Vector2(0, -10) - Main.screenPosition, NPC.frame, Lighting.GetColor((NPC.Center / 16).ToPoint()), 0, new Vector2(31, 44), 1, effects, 0);
+
+			return false;
 		}
 
 		public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -419,6 +449,7 @@ namespace StarlightRiver.Content.NPCs.Starlight
 				DrawFlashingStar(spriteBatch, CutsceneTimer);
 			}
 		}
+
 		public string GetHint()
 		{
 			return "What does he want with me?";

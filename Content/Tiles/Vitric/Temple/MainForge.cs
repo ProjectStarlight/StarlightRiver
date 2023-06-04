@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Biomes;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
 using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Core.Systems.LightingSystem;
@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void SetStaticDefaults()
 		{
-			QuickBlock.QuickSetFurniture(this, 19, 15, ModContent.DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black);
+			QuickBlock.QuickSetFurniture(this, 19, 15, ModContent.DustType<Dusts.Air>(), SoundID.Shatter, false, Color.Black, mapName: "Vitric Forgeheart");
 			Main.tileLighted[Type] = true;
 		}
 	}
@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
 				return;
 
-			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints / 2f;
+			float puzzleProg = LightPuzzle.LightPuzzleHandler.solvedPoints;
 
 			if (power < puzzleProg - 0.01f)
 				power += 0.01f;
@@ -135,7 +135,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			LightingBufferRenderer.DrawWithLighting(pos + offset, texHammer, Color.White);
 			LightingBufferRenderer.DrawWithLighting(pos, tex, Color.White);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.Transform);
+			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D texGlow = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MainForgeGlow").Value;
 			spriteBatch.Draw(texGlow, pos, Color.White);
@@ -164,7 +164,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 			effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 2f * (0.5f + puzzleProg * 0.5f);
 			int width = (int)(centerPos - endpoint).Length();

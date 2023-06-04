@@ -11,6 +11,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 	{
 		public override string Texture => AssetDirectory.UndergroundTempleTile + Name;
 
+		public override int HoverItemIcon => ModContent.ItemType<TempleChestPlacer>();
+
 		internal override List<Loot> GoldLootPool => new()
 		{
 				new Loot(ItemType<Items.UndergroundTemple.TemplePick>(), 1),
@@ -32,7 +34,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		public override void SafeSetDefaults()
 		{
 			TileObjectData.newTile.DrawYOffset = 2;
-			this.QuickSetFurniture(2, 2, DustID.GoldCoin, SoundID.Tink, false, new Color(151, 151, 151));
+			this.QuickSetFurniture(2, 2, DustID.Stone, SoundID.Tink, false, new Color(151, 151, 151));
 		}
 	}
 

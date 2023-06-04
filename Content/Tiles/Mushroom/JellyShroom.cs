@@ -1,8 +1,9 @@
-﻿using StarlightRiver.Core.Systems.DummyTileSystem;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -16,7 +17,7 @@ namespace StarlightRiver.Content.Tiles.Mushroom
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(7, 7, -1, SoundID.NPCDeath1, false, new Color(100, 200, 220), false, false, "Jelly Shroom");
+			this.QuickSetFurniture(7, 7, -1, SoundID.NPCDeath1, false, new Color(100, 200, 220), false, false, "Jelly Shroom", new AnchorData(AnchorType.SolidTile, 7, 0));
 		}
 
 		public override void KillMultiTile(int i, int j, int frameX, int frameY)

@@ -119,8 +119,6 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		{
 			Timer--;
 
-			Main.NewText(Timer);
-
 			if (Timer <= 0)
 				Projectile.timeLeft = 0;
 

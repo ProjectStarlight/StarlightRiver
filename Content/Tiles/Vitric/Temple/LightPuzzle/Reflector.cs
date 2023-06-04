@@ -1,4 +1,7 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Biomes;
+using StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using StarlightRiver.Helpers;
 using System;
@@ -7,7 +10,7 @@ using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 {
-	class Reflector : DummyTile
+	class Reflector : DummyTile, IHintable
 	{
 		public override int DummyType => ModContent.ProjectileType<ReflectorDummy>();
 
@@ -23,6 +26,14 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			return true;
 		}
 
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<GearTilePlacer>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
+		}
+
 		public override bool RightClick(int i, int j)
 		{
 			var dummy = Dummy(i, j).ModProjectile as ReflectorDummy;
@@ -35,11 +46,16 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			return true;
 		}
+		public string GetHint()
+		{
+			return "Sandstone blocks the lens, but these relics should be a good way to redirect the light...";
+		}
 	}
 
 	class ReflectorDummy : Dummy, IDrawAdditive
 	{
 		public bool rotating = false;
+		public int frame = 0;
 
 		private int rotateAnimation = 0;
 		private Vector2 endPoint;
@@ -48,6 +64,11 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public ref float Emit => ref Projectile.ai[1];
 
 		public ReflectorDummy() : base(ModContent.TileType<Reflector>(), 16, 16) { }
+
+		public override void SafeSetDefaults()
+		{
+			frame = Main.rand.Next(5);
+		}
 
 		public override void Update()
 		{
@@ -97,7 +118,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 				if (Framing.GetTileSafely((int)posCheck.X / 16, (int)posCheck.Y / 16).TileType == ModContent.TileType<LightGoal>())
 				{
 					endPoint = posCheck;
-					Main.NewText("Solved!");
 					LightPuzzleHandler.solvedPoints++;
 				}
 
@@ -131,7 +151,6 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 
 			if (Framing.GetTileSafely((int)endPoint.X / 16, (int)endPoint.Y / 16).TileType == ModContent.TileType<LightGoal>())
 			{
-				Main.NewText("Unsolved...");
 				LightPuzzleHandler.solvedPoints--;
 			}
 
@@ -149,14 +168,18 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 		public override void PostDraw(Color lightColor)
 		{
 			Texture2D texUnder = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "MirrorUnder").Value;
-			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, Color.White, 0, texUnder.Size() / 2, 1, 0, 0);
+			Main.spriteBatch.Draw(texUnder, Projectile.Center - Main.screenPosition, null, lightColor, 0, texUnder.Size() / 2, 1, 0, 0);
 
 			Texture2D tex = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "Reflector").Value;
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation - 1.57f, tex.Size() / 2, 1, 0, 0);
+			var drawFrame = new Rectangle(50 * frame, 0, 50, 50);
+			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, drawFrame, lightColor, Rotation - 1.57f, Vector2.One * 25, 1, 0, 0);
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Texture2D tickTexture = ModContent.Request<Texture2D>(AssetDirectory.VitricTile + "TickLine").Value;
 			float opacity = rotateAnimation / 15f;
 
@@ -188,7 +211,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			effect.Parameters["uColor"].SetValue(color2.ToVector3() * 0.35f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 			float height = texBeam.Height / 10f * (1 - opacity);
 			int width = (int)(Projectile.Center - endPoint).Length() - 6;
@@ -210,7 +233,7 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.LightPuzzle
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D impactTex = ModContent.Request<Texture2D>(AssetDirectory.Assets + "Keys/GlowSoft").Value;
 			Texture2D impactTex2 = ModContent.Request<Texture2D>(AssetDirectory.GUI + "ItemGlow").Value;

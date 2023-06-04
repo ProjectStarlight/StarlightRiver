@@ -89,7 +89,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 		/// <summary>
 		/// Ends the boss rush and submits your final score
 		/// </summary>
-		public void End()
+		public static void End()
 		{
 			if (Main.GameMode == 0)
 				savedNormalScore = Score;
@@ -177,19 +177,21 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			stages = new List<BossRushStage>()
 			{
 				new BossRushStage(
-					"Structures/BossRushStart",
+					"Structures/ArmillarySphereRoom",
 					ModContent.NPCType<BossRushOrb>(),
-					new Vector2(250, 200),
+					new Vector2(952, 720),
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle(0, 2000, 40, 40);
 
-						NPC.NewNPC(null, (int)a.X + 250, (int)a.Y + 200, ModContent.NPCType<BossRushOrb>());
+						NPC.NewNPC(null, (int)a.X + 952, (int)a.Y + 720, ModContent.NPCType<BossRushOrb>());
 
 						visibleArea = new Rectangle((int)a.X, (int)a.Y, 500, 360);
 						HushArmorSystem.DPSTarget = 50;
 					},
-					a => _ = a),
+					a => _ = a,
+					100
+					),
 
 				new BossRushStage(
 					"Structures/SquidBossArena",
@@ -211,6 +213,7 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 					a =>
 					{
 						StarlightWorld.vitricBiome = new Rectangle((int)(a.X + 37 * 16) / 16, (int)(a.Y - 68 * 16) / 16, 400, 140);
+						CutawaySystem.CutawayHandler.forgeOverlay.pos = StarlightWorld.GlassweaverArena.TopLeft() + new Vector2(-2, 2) * 16;
 
 						NPC.NewNPC(null, (int)a.X + 600, (int)a.Y + 24 * 16, ModContent.NPCType<Glassweaver>());
 
@@ -293,8 +296,8 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			if (!isBossRush)
 				return;
 
-			Main.spawnTileX = 110;
-			Main.spawnTileY = 600;
+			Main.spawnTileX = 159;
+			Main.spawnTileY = 645;
 
 			Main.dungeonX = 1000;
 			Main.dungeonY = 500;
@@ -343,10 +346,13 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			// advance the stage if the boss isnt there anymore
 			if (transitionTimer <= 0 && (!NPC.AnyNPCs(trackedBossType) || trackedBossType == 0))
 			{
-				currentStage++;
-
 				Heal();
 				transitionTimer = 240;
+
+				if (currentStage == 0)
+					transitionTimer = 180;
+
+				currentStage++;
 			}
 
 			// transition animation

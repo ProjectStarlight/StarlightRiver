@@ -1,4 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
+﻿using StarlightRiver.Content.Biomes;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void Update()
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			Vector2 pos = Projectile.Center;
 			int w = Parent.TileFrameY * 8; // The sprite is flipped so we have to flip this too
 			int h = Parent.TileFrameX * 16;
@@ -83,6 +87,9 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple
 
 		public override void PostDraw(Color lightColor)
 		{
+			if (!Main.LocalPlayer.InModBiome<VitricTempleBiome>())
+				return;
+
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			var color = new Color(100, 220, 255)
 			{

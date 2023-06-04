@@ -45,7 +45,7 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>If the item is equipped or simulated.</returns>
 		public bool Equipped(Player Player)
 		{
-			for (int k = 3; k < 10; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
+			for (int k = 3; k < 10 + Player.extraAccessorySlots; k++) //didnt work with extra slots, in my case, master mode extra slot. I referred to vanilla code to fix it
 			{
 				if (Player.IsItemSlotUnlockedAndUsable(k))
 				{
@@ -79,7 +79,9 @@ namespace StarlightRiver.Content.Items.BaseTypes
 		/// <returns>The SmartAccessory instance if one is found, null if the item is not equipped or simulated.</returns>
 		public static SmartAccessory GetEquippedInstance(Player player, int type)
 		{
-			for (int k = 3; k <= 7 + player.extraAccessorySlots; k++)
+			int accessoryIndex = 5 + player.GetAmountOfExtraAccessorySlotsToShow();
+
+			for (int k = 3; k <= 3 + accessoryIndex; k++)
 			{
 				if (player.armor[k].type == type)
 					return player.armor[k].ModItem as SmartAccessory;

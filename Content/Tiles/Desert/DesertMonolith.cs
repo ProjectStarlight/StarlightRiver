@@ -1,8 +1,8 @@
-﻿using Terraria.DataStructures;
+﻿using StarlightRiver.Content.Abilities;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
-using StarlightRiver.Content.Abilities;
 
 namespace StarlightRiver.Content.Tiles.Desert
 {
@@ -93,8 +93,13 @@ namespace StarlightRiver.Content.Tiles.Desert
 					tile.TileFrameX = (short)(4 * 18 * x + x1 * 18);
 					tile.TileFrameY = (short)(4 * 18 * y + y1 * 18);
 				}
+
+				Tile flat = Framing.GetTileSafely(i + x1, j + 4);
+				flat.Slope = SlopeType.Solid;
+				flat.IsHalfBlock = false;
 			}
 		}
+
 		public string GetHint()
 		{
 			return "These towering monoliths withstood the test of time...";

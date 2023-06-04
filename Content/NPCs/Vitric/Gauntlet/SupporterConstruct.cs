@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Audio;
 using static Terraria.ModLoader.ModContent;
 
 namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
@@ -61,13 +62,8 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			NPC.lifeMax = 100;
 			NPC.value = 0f;
 			NPC.knockBackResist = 0.6f;
-
-			NPC.HitSound = SoundID.Item27 with
-			{
-				Pitch = -0.3f
-			};
-
-			NPC.DeathSound = SoundID.Shatter;
+			NPC.HitSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/IceHit") with { Pitch = 0.3f, PitchVariance = 0.3f };
+			NPC.DeathSound = new SoundStyle($"{nameof(StarlightRiver)}/Sounds/Impacts/EnergyBreak") with { Pitch = 0.3f, PitchVariance = 0.3f };
 			NPC.noGravity = false;
 		}
 
@@ -272,7 +268,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				effect.Parameters["uColor"].SetValue(color.ToVector3());
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(default, default, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				float height = texBeam.Height / 8f;
 				int width = (int)(NPC.Center - healingTarget.Center).Length();
@@ -287,7 +283,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 				spriteBatch.Draw(texBeam2, target2, source2, color * 0.5f, laserRotation, origin2, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			Main.spriteBatch.Draw(mainTex, NPC.Center - screenPos, NPC.frame, drawColor, 0f, NPC.frame.Size() / 2, NPC.scale, spriteEffects, 0f);

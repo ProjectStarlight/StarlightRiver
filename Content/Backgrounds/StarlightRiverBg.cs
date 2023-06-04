@@ -12,6 +12,8 @@ namespace StarlightRiver.Content.Backgrounds
 		public static ScreenTarget starsMap;
 		public static ParticleSystem stars;
 
+		public static float starOpacity = 1;
+
 		public override void Load()
 		{
 			if (Main.dedServ)
@@ -21,7 +23,7 @@ namespace StarlightRiver.Content.Backgrounds
 			starsMap = new(DrawMap, CheckIsActive, 1f);
 
 			On_Main.DrawInterface += DrawOverlay;
-			stars = new("StarlightRiver/Assets/Misc/DotTell", updateStars);
+			stars = new("StarlightRiver/Assets/Misc/DotTell", UpdateStars);
 		}
 
 		public override void Unload()
@@ -143,14 +145,24 @@ namespace StarlightRiver.Content.Backgrounds
 		/// The update method for the stardust in the background
 		/// </summary>
 		/// <param name="particle"></param>
-		private static void updateStars(Particle particle)
+		private static void UpdateStars(Particle particle)
 		{
 			particle.Timer--;
 			particle.Position += particle.Velocity;
-			particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
 
-			if (particle.Timer < 30)
-				particle.Alpha = particle.Timer / 30f;
+			if (particle.Type == 0)
+			{
+				particle.Position.Y += (float)Math.Sin(particle.Timer * 0.015f) * particle.StoredPosition.X;
+
+				particle.Alpha = starOpacity;
+
+				if (particle.Timer < 30)
+					particle.Alpha = particle.Timer / 30f * starOpacity;
+			}
+			else if (particle.Type == 1)
+			{
+				particle.Scale = (1f - particle.Timer / 60f) * 2f;
+			}
 		}
 
 		public override void PostUpdateEverything()

@@ -17,13 +17,13 @@ namespace StarlightRiver.Content.Items.Misc
 
 		public override void SetDefaults()
 		{
-			Item.damage = 14;
+			Item.damage = 4;
 			Item.noMelee = true;
 			Item.DamageType = DamageClass.Ranged;
 			Item.width = 28;
 			Item.height = 42;
 			Item.useTime = 1;
-			Item.useAnimation = 20;
+			Item.useAnimation = 40;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.shoot = ProjectileID.Shuriken;
 			Item.useAmmo = AmmoID.Arrow;
@@ -33,7 +33,7 @@ namespace StarlightRiver.Content.Items.Misc
 			Item.UseSound = SoundID.Item5;
 			Item.autoReuse = true;
 			Item.shootSpeed = 7.8f;
-			Item.crit = 6;
+			Item.crit = 2;
 			Item.noUseGraphic = true;
 		}
 
@@ -81,7 +81,7 @@ namespace StarlightRiver.Content.Items.Misc
 			{
 				Vector2 offset = Vector2.Normalize(velocity).RotatedBy(-1.57f * player.direction) * 10;
 				position += offset;
-				player.itemTime = 19;
+				player.itemTime = 39;
 				Projectile.NewProjectile(source, position, Vector2.Zero, ModContent.ProjectileType<DualCrossHeld>(), 0, 0, player.whoAmI);
 			}
 			else

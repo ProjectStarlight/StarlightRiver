@@ -1,9 +1,11 @@
-﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
@@ -17,35 +19,60 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			MinPick = int.MaxValue;
 		}
 
-		public override void SafeNearbyEffects(int i, int j, bool closer)
+		public override bool CanExplode(int i, int j)
 		{
-			Tile tile = Framing.GetTileSafely(i, j);
+			return false;
+		}
 
-			if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
-			{
-				Projectile dummy = Dummy(i, j);
+		//public override void SafeNearbyEffects(int i, int j, bool closer)
+		//{
+		//	Tile tile = Framing.GetTileSafely(i, j);
 
-				if (dummy is null)
-					return;
+		//	if ((tile.TileFrameX == 0 || tile.TileFrameX == 5 * 18) && tile.TileFrameY == 0)
+		//	{
+		//		Projectile dummy = Dummy(i, j);
 
-				if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)
-				{
-					tile.TileFrameX -= 5 * 18;
-					dummy.ai[0] = 0;
-				}
-			}
+		//		if (dummy is null)
+		//			return;
+
+		//		//if (((EvasionShrineDummy)dummy.ModProjectile).State == 0 && tile.TileFrameX >= 90)//resets frame if idle, duplicated from dummy code?
+		//		//{
+		//		//	tile.TileFrameX -= 5 * 18;
+		//		//	dummy.ai[0] = 0;
+		//		//}
+		//	}
+		//}
+
+		public override bool SpawnConditions(int i, int j)//ensures the dummy can spawn if the tile gets stuck in the second frame
+		{
+			Tile tile = Main.tile[i, j];
+			return (tile.TileFrameX == 0 || tile.TileFrameX == 5 * 18) && tile.TileFrameY == 0;
 		}
 
 		public override bool RightClick(int i, int j)
 		{
 			var tile = (Tile)Framing.GetTileSafely(i, j).Clone();
 
+			if (tile.TileFrameX == 5 * 18)//shrine is active
+			{
+				return false;
+			}
+			else if (tile.TileFrameX >= 10 * 18)//shrine is dormant
+			{
+				Main.NewText("The shrine has gone dormant...", Color.DarkSlateGray);
+				return false;
+			}
+
 			int x = i - tile.TileFrameX / 18;
 			int y = j - tile.TileFrameY / 18;
 
 			Projectile dummy = Dummy(x, y);
+
+			if (dummy is null)
+				return false;
 
 			if ((dummy.ModProjectile as EvasionShrineDummy).State == 0)
 			{
@@ -85,12 +112,45 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 		public float Windup => Math.Min(1, Timer / 120f);
 
-		public Rectangle Arena => new(ParentX * 16 - 25 * 16, ParentY * 16 - 20 * 16, 51 * 16, 30 * 16);
+		const int ArenaOffsetX = -27;
+		const int ArenaSizeX = 55;
+		const int ArenaOffsetY = -30;
+		const int ArenaSizeY = 49;
+
+		public Rectangle ArenaPlayer => new((ParentX + ArenaOffsetX) * 16, (ParentY + ArenaOffsetY) * 16, ArenaSizeX * 16, ArenaSizeY * 16);
+		public Rectangle ArenaTile => new(ParentX + ArenaOffsetX, ParentY + ArenaOffsetY, ArenaSizeX, ArenaSizeY);
 
 		public EvasionShrineDummy() : base(ModContent.TileType<EvasionShrine>(), 5 * 16, 6 * 16) { }
 
+		const float ShrineState_Idle = 0;
+		//const float ShrineState_Active = 1;
+		const float ShrineState_Failed = -1;
+		const float ShrineState_Defeated = -2;
+
 		public override void Update()
 		{
+			if (State == ShrineState_Defeated)//dont run anything if this is defeated
+				return;
+
+			//this check never succeeds since the tile does not spawn dummys on the 3rd frame
+			if (Parent.TileFrameX >= 10 * 18)//check file frame for this being defeated
+			{
+				State = ShrineState_Defeated;
+				return;//return here so defeated shrines never run the below code even when spawning a new dummy
+			}
+
+			bool anyPlayerInRange = false;
+
+			foreach (Player player in Main.player)
+			{
+				bool thisPlayerInRange = player.active && !player.dead && ArenaPlayer.Intersects(player.Hitbox);
+
+				if (thisPlayerInRange && State != ShrineState_Idle)
+					player.GetModPlayer<ShrinePlayer>().EvasionShrineActive = true;
+
+				anyPlayerInRange = anyPlayerInRange || thisPlayerInRange;
+			}
+
 			Vector3 color = new Vector3(0.15f, 0.12f, 0.2f) * 3.4f;
 
 			Lighting.AddLight(Projectile.Center + new Vector2(240, 0), color);
@@ -104,26 +164,16 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 			Lighting.AddLight(Projectile.Center + new Vector2(0, -230), color);
 
-			if (State == 0 && Parent.TileFrameX > 5 * 18)
+			if (State == ShrineState_Idle && Parent.TileFrameX >= 5 * 18)//if idle and frame isnt default (happens when entity is despawned while active)
 			{
-				for (int x = 0; x < 5; x++)
-				{
-					for (int y = 0; y < 6; y++)
-					{
-						int realX = ParentX - 2 + x;
-						int realY = ParentY - 3 + y;
-
-						Framing.GetTileSafely(realX, realY).TileFrameX = (short)(x * 18);
-
-						Main.NewText(Framing.GetTileSafely(realX, realY).ToString());
-					}
-				}
-
+				SetFrame(0);
 				Timer = 0;
 			}
 
-			if (State != 0)
+			if (State != ShrineState_Idle)
 			{
+				ProtectionWorld.AddRegionBySource(new Point16(ParentX, ParentY), ArenaTile);//stop calling this and call RemoveRegionBySource() when shrine is completed
+
 				(Mod as StarlightRiver).useIntenseMusic = true;
 				Dust.NewDustPerfect(Projectile.Center + new Vector2(Main.rand.NextFloat(-24, 24), 28), ModContent.DustType<Dusts.Glow>(), Vector2.UnitY * -Main.rand.NextFloat(2), 0, new Color(150, 30, 205) * Windup, 0.2f);
 
@@ -133,7 +183,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					Dust.NewDustPerfect(Projectile.Center + new Vector2(26 * 16, 96 + Main.rand.Next(-44, 44)), ModContent.DustType<Dusts.Glow>(), Vector2.UnitX * Main.rand.NextFloat(2), 0, new Color(155, 40 + Main.rand.Next(50), 255) * Windup, 0.35f);
 				}
 
-				if (State > 0)
+				if (State > ShrineState_Idle)
 				{
 					Timer++;
 
@@ -149,10 +199,15 @@ namespace StarlightRiver.Content.Tiles.Underground
 						attackOrder = Helpers.Helper.RandomizeList<int>(attackOrder);
 					}
 
-					if (State > maxAttacks)
+					if (State > maxAttacks) // --- !  WIN CONDITION  ! ---
 					{
 						if (Timer > 600)
-							State = -1;
+						{
+							SpawnReward();
+							State = ShrineState_Defeated;
+							SetFrame(2);
+							ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
+						}
 
 						return;
 					}
@@ -160,10 +215,14 @@ namespace StarlightRiver.Content.Tiles.Underground
 					SpawnObstacles((int)Timer - 128);
 				}
 			}
+			//else//renable this if there are issues with protection being left on
+			//{	
+			//	ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
+			//}
 
-			if (State == -1 || lives <= 0 || !Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500)) //"fail" conditions, no living Players in radius or already failing
+			if (State == ShrineState_Failed || lives <= 0 || !anyPlayerInRange)//Main.player.Any(n => n.active && !n.dead && Vector2.Distance(n.Center, Projectile.Center) < 500) //"fail" conditions, no living Players in radius or already failing
 			{
-				State = -1;
+				State = ShrineState_Failed;
 
 				if (Timer > 128)
 					Timer = 128;
@@ -172,11 +231,28 @@ namespace StarlightRiver.Content.Tiles.Underground
 
 				if (Timer <= 0)
 				{
-					State = 0;
+					State = ShrineState_Idle;
 					attackOrder = null;
+					ProtectionWorld.RemoveRegionBySource(new Point16(ParentX, ParentY));
 				}
 
 				return;
+			}
+		}
+
+		private void SetFrame(int frame)
+		{
+			const int tileWidth = 5;
+			const int tileHeight = 6;
+			for (int x = 0; x < tileWidth; x++)
+			{
+				for (int y = 0; y < tileHeight; y++)
+				{
+					int realX = ParentX - 2 + x;
+					int realY = ParentY - 3 + y;
+
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
+				}
 			}
 		}
 
@@ -234,21 +310,34 @@ namespace StarlightRiver.Content.Tiles.Underground
 			switch (lives)
 			{
 				case 4:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					ShrinePlayer.SimulateGoldChest(Projectile, true);
 					break;
 				case 3:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					if (Main.rand.NextBool(4))
+						ShrinePlayer.SimulateGoldChest(Projectile, false);
+
 					break;
 				case 2:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					ShrinePlayer.SimulateGoldChest(Projectile, false);
+					if (Main.rand.NextBool(4))
+						ShrinePlayer.SimulateWoodenChest(Projectile);
+
 					break;
 				case 1:
-					break;
-				default:
+					Item.NewItem(Projectile.GetSource_FromAI(), Projectile.getRect(), ModContent.ItemType<TarnishedRing>());
+					ShrinePlayer.SimulateGoldChest(Projectile, false);
 					break;
 			}
 		}
 
 		public void DrawAdditive(SpriteBatch spriteBatch)
 		{
-			if (State != 0)
+			if (State != ShrineState_Idle && State != ShrineState_Defeated)
 			{
 				Texture2D tex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Moonstone/GlowSmall").Value;
 				var origin = new Vector2(tex.Width / 2, tex.Height);
@@ -256,7 +345,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 2) * 0.8f, 0, origin, 2.5f, 0, 0);
 				spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(-10, 60), default, GetBeamColor(StarlightWorld.visualTimer + 4) * 0.8f, 0, origin, 3.2f, 0, 0);
 
-				if (State > 0)
+				if (State > ShrineState_Idle)
 				{
 					Texture2D fireTex = ModContent.Request<Texture2D>("StarlightRiver/Assets/Tiles/Underground/BrazierFlame").Value;
 					var frame = new Rectangle(0, 32 * (int)(Main.GameUpdateCount / 6 % 6), 16, 32);
@@ -329,22 +418,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			float sin = 0.5f + (float)Math.Sin(time * 2 + 1) * 0.5f;
 			float sin2 = 0.5f + (float)Math.Sin(time) * 0.5f;
 			return new Color(80 + (int)(50 * sin), 60, 255) * sin2 * Windup;
-		}
-	}
-
-	class EvasionShrineBiome : ModBiome
-	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossLow;
-
-		public override int Music => MusicLoader.GetMusicSlot("StarlightRiver/Sounds/Music/EvasionShrine");
-
-		public override bool IsBiomeActive(Player player)
-		{
-			return Main.projectile.Any(
-				n => n.active &&
-				n.type == ModContent.ProjectileType<EvasionShrineDummy>() &&
-				(n.ModProjectile as EvasionShrineDummy).Arena.Intersects(player.Hitbox) &&
-				(n.ModProjectile as EvasionShrineDummy).State != 0);
 		}
 	}
 }

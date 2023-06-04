@@ -65,12 +65,12 @@ namespace StarlightRiver.Content.GUI
 			Color barColor = Color.White * Math.Clamp(timer / 45f, 0f, 1f);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
+			spriteBatch.Begin(default, BlendState.AlphaBlend, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 			spriteBatch.Draw(Request<Texture2D>("StarlightRiver/Assets/Keys/Glow").Value, new Rectangle(startX - (int)(Longest * 2 * slide2), startY - (int)(25 * textScale), (int)(Longest * 4 * slide2), (int)(150 * textScale)), Color.Black * 0.6f * Math.Clamp(timer / 60f, 0f, 1f));
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default);
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.UIScaleMatrix);
 
 			if (reverse)
 			{

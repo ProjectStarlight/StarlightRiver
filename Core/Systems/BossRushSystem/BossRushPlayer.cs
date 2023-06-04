@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.GUI;
+using StarlightRiver.Core.Loaders.UILoading;
+using Terraria.ID;
 
 namespace StarlightRiver.Core.Systems.BossRushSystem
 {
@@ -38,6 +40,24 @@ namespace StarlightRiver.Core.Systems.BossRushSystem
 			}
 
 			return base.CanUseItem(item);
+		}
+
+		public override void OnEnterWorld()
+		{
+			if (!BossRushSystem.isBossRush)
+				return;
+
+			bool starterGear = true;
+			for (int k = 0; k < Player.inventory.Length; k++)
+			{
+				Item item = Player.inventory[k];
+
+				if (!item.IsAir && item.type != ItemID.CopperAxe && item.type != ItemID.CopperPickaxe && item.type != ItemID.CopperShortsword)
+					starterGear = false;
+			}
+
+			if (starterGear)
+				UILoader.GetUIState<MessageBox>().Display("WARNING", "Make sure to equip yourself properly before attempting this trial!");
 		}
 	}
 }

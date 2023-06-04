@@ -1,5 +1,4 @@
-﻿using StarlightRiver.Content.Projectiles;
-using StarlightRiver.Core.Systems.CameraSystem;
+﻿using StarlightRiver.Core.Systems.CameraSystem;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -26,8 +25,8 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			Item.DamageType = DamageClass.Melee;
 			Item.width = 32;
 			Item.height = 32;
-			Item.damage = 11;
-			Item.crit = 10;
+			Item.damage = 15;
+			Item.crit = 6;
 			Item.useStyle = ItemUseStyleID.Shoot;
 			Item.useTime = 60;
 			Item.useAnimation = 60;
@@ -123,7 +122,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 				if (charged)
 				{
-					Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 5, 0f, Projectile.owner);
+					var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TempleSpearLaser>(), Projectile.damage * 2, 0f, Projectile.owner);
 					(proj.ModProjectile as TempleSpearLaser).parent = Projectile;
 
 					Helper.PlayPitched("Effects/FancySwoosh", 1f, 0.2f, Owner.Center);
@@ -137,7 +136,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 				Projectile.timeLeft = 2;
 
 				Timer++;
-				
+
 				if (Timer < 15) // Pullback
 				{
 					float lerper = EaseBuilder.EaseQuinticOut.Ease(Timer / 15f);
@@ -214,7 +213,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 
 			if (stabbing)
 			{
-				Color oldColor = Color.Lerp(Color.Transparent, new Color(255, 240, 130), oldCharge / (maxCharge + 15f));
+				var oldColor = Color.Lerp(Color.Transparent, new Color(255, 240, 130), oldCharge / (maxCharge + 15f));
 				glowColor = Color.Lerp(oldColor, Color.Transparent, Timer / 25f);
 			}
 			else
@@ -228,9 +227,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			glowColor.A *= 0;
 
 			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + offset, null, glowColor * fade, Projectile.rotation - MathHelper.PiOver4, texGlow.Size() / 2f, Projectile.scale, 0, 0);
-			
+
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + offset, null, Color.White * fade, Projectile.rotation - MathHelper.PiOver4, tex.Size() / 2f, Projectile.scale, 0, 0);
-			
+
 			Main.spriteBatch.Draw(bloomTex, Projectile.Center - Main.screenPosition - new Vector2(10, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, glowColor * fade * 0.6f, 0f, bloomTex.Size() / 2f, 0.65f, 0, 0);
 
 			offset = new Vector2(-5, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2);
@@ -321,7 +320,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 		public override void Kill(int timeLeft)
 		{
 			Vector2 pos = Projectile.Center + new Vector2(100, 0f).RotatedBy(parent.rotation - MathHelper.PiOver2);
-			Projectile proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
+			var proj = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), pos, Vector2.Zero, ModContent.ProjectileType<TempleSpearLight>(), Projectile.damage, 0f, Projectile.owner);
 			proj.rotation = Projectile.rotation;
 		}
 
@@ -382,9 +381,9 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			spriteBatch.End();
 			Effect effect = Filters.Scene["CeirosRing"].GetShader().Shader;
 
-			Matrix world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
-			Matrix view = Main.GameViewMatrix.ZoomMatrix;
-			Matrix projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			var world = Matrix.CreateTranslation(-Main.screenPosition.Vec3());
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 
 			effect.Parameters["time"].SetValue(Main.GameUpdateCount * -0.03f);
 			effect.Parameters["repeats"].SetValue(1);

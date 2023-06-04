@@ -2,6 +2,7 @@
 using StarlightRiver.Content.Items.Utility;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -13,7 +14,7 @@ namespace StarlightRiver.Content.Tiles.Crafting
 
 		public override void SetStaticDefaults()
 		{
-			this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station");
+			this.QuickSetFurniture(6, 4, DustID.t_LivingWood, SoundID.Dig, true, new Color(151, 107, 75), false, false, "Cooking Station", new AnchorData(AnchorType.SolidTile, 6, 0));
 			Main.tileLighted[Type] = true;
 		}
 

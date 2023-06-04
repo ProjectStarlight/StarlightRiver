@@ -121,12 +121,12 @@ namespace StarlightRiver.Content.Tiles.Vitric.Temple.GearPuzzle
 				effect.Parameters["texSize"].SetValue(tex.Size());
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(default, BlendState.NonPremultiplied, default, default, default, effect, Main.GameViewMatrix.TransformationMatrix);
 
 				Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White, Rotation, tex.Size() / 2, 1, 0, 0);
 
 				Main.spriteBatch.End();
-				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.ZoomMatrix);
+				Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 		public string GetHint()

@@ -1,5 +1,6 @@
 ﻿using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ObjectData;
 using static Terraria.ModLoader.ModContent;
@@ -193,6 +194,11 @@ namespace StarlightRiver.Content.Tiles.Forest
 		{
 			for (int k = 0; k < 20; k++)
 				Dust.NewDust(NPC.position, 16, 16, DustID.t_Slime, 0, 0, 200, NPC.color, 0.5f);
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemID.Gel, 1, 1, 2));
 		}
 
 		/*public override void NPCLoot()

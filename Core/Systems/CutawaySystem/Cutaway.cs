@@ -7,7 +7,9 @@ namespace StarlightRiver.Core.Systems.CutawaySystem
 	public class Cutaway
 	{
 		private readonly Texture2D tex;
-		private readonly Vector2 pos;
+
+		public Vector2 pos;
+
 		public float fadeTime = 1;
 
 		public bool Fade => Inside(Main.LocalPlayer);

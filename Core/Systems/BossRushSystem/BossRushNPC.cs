@@ -19,7 +19,7 @@
 
 			if (pollTimer % 20 == 0)
 			{
-				float thisDPS = totalDamage * 3f;
+				float thisDPS = totalDamage * 3f + 1;
 				totalDamage = 0;
 
 				if (thisDPS > DPSTarget && (DPSTarget / thisDPS) < resistance)
@@ -101,6 +101,15 @@
 				return;
 
 			HushArmorSystem.totalDamage += (int)(hit.Damage * (1 / HushArmorSystem.resistance));
+		}
+
+		public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+		{
+			if (BossRushSystem.isBossRush)
+			{
+				spawnRate = 0;
+				maxSpawns = 0;
+			}
 		}
 	}
 }

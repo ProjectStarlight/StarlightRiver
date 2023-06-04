@@ -3,6 +3,7 @@ using StarlightRiver.Content.Tiles.Vitric;
 using System;
 using System.IO;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using static Terraria.ModLoader.ModContent;
 
@@ -63,7 +64,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("A territorial bat, related to the Sandviper. It launches itself into the air when startled, accompanied with a burst of its nesting crystals towards any nearby foes.")
 			});
 		}
 
@@ -157,6 +158,11 @@ namespace StarlightRiver.Content.NPCs.Vitric
 		{
 			Tile tile = Framing.GetTileSafely(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			return tile.HasTile && spawnInfo.SpawnTileType != TileType<VitricSpike>() && spawnInfo.Player.InModBiome(ModContent.GetInstance<VitricDesertBiome>()) ? 95f : 0f;
+		}
+
+		public override void ModifyNPCLoot(NPCLoot npcLoot)
+		{
+			npcLoot.Add(ItemDropRule.Common(ItemType<Items.Vitric.SandstoneChunk>(), 2, 2, 5));
 		}
 
 		public override void FindFrame(int frameHeight)

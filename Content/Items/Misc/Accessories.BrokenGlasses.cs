@@ -37,7 +37,13 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!c.TryGotoNext(MoveType.After, //move to after the vanilla combat text spawning
 				i => i.MatchLdcI4(0),
 				i => i.MatchLdcI4(1),
-				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) })),
+				i => i.MatchCall(typeof(CombatText).GetMethod(nameof(CombatText.NewText), new Type[] { typeof(Rectangle), typeof(Color), typeof(int), typeof(bool), typeof(bool) }))
+				))
+			{
+				return;
+			}
+
+			if (!c.TryGotoNext(MoveType.After, // since corpseflower puts stuff between these two
 				i => i.MatchPop()))
 			{
 				return;
@@ -117,7 +123,7 @@ namespace StarlightRiver.Content.Items.Misc
 			if (!c.TryGotoPrev(  //now we go back up to before damage is calculated
 				MoveType.Before,
 				i => i.MatchLdsfld(typeof(Main).GetField(nameof(Main.npc))),
-				i => i.MatchLdloc(16), //16 is the whoAmI of the npc (new variable here because of vanilla terraria. Actually useful to specify where we actually wanna go
+				i => i.MatchLdloc(19), //19 is the whoAmI of the npc (new variable here because of vanilla terraria. Actually useful to specify where we actually wanna go
 				i => i.MatchLdelemRef(),
 				i => i.MatchLdfld(typeof(NPC).GetField(nameof(NPC.immortal)))))
 			{

@@ -41,7 +41,7 @@ namespace StarlightRiver.Content.NPCs.Vitric
 			bestiaryEntry.Info.AddRange(new IBestiaryInfoElement[]
 			{
 				Bestiary.SLRSpawnConditions.VitricDesert,
-				new FlavorTextBestiaryInfoElement("[PH] Entry")
+				new FlavorTextBestiaryInfoElement("Through the power of Shimmer, this form of Magmite has magically cooled down to safe temperatures without rendering itself immobile. Unfortunately, this is a rather chilly temperature for a creature used to being submerged in lava, so they go to great lengths to heat themselves back up.")
 			});
 		}
 

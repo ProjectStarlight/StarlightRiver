@@ -26,8 +26,15 @@ namespace StarlightRiver.Content.Items.Forest
 
 			if (Main.myPlayer == Player.whoAmI)
 			{
-				bool outsideXRange = Main.MouseWorld.X < Player.Center.X ? Math.Abs(Player.Left.X - Main.MouseWorld.X) > (Player.tileRangeX - 1) * 16f : Math.Abs(Player.Right.X - Main.MouseWorld.X) > (Player.tileRangeX - 1) * 16f;
-				bool outsideYRange = Main.MouseWorld.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - Main.MouseWorld.Y) > (Player.tileRangeY - 2) * 16f : Math.Abs(Player.Top.Y - Main.MouseWorld.Y) > (Player.tileRangeY - 2) * 16f;
+				Vector2 target;
+
+				if (Main.SmartCursorIsUsed)
+					target = new Vector2(Main.SmartCursorX * 16, Main.SmartCursorY * 16);
+				else
+					target = Main.MouseWorld;
+
+				bool outsideXRange = target.X < Player.Center.X ? Math.Abs(Player.Left.X - target.X) > (Player.tileRangeX - 1) * 16f : Math.Abs(Player.Right.X - target.X) > (Player.tileRangeX - 1) * 16f;
+				bool outsideYRange = target.Y > Player.Center.Y ? Math.Abs(Player.Bottom.Y - target.Y) > (Player.tileRangeY - 2) * 16f : Math.Abs(Player.Top.Y - target.Y) > (Player.tileRangeY - 2) * 16f;
 
 				if (outsideXRange || outsideYRange)
 					Player.pickSpeed *= 1.5f;

@@ -29,7 +29,7 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD0) : COLOR0
     float2 rescale = (st - uTargetPosition / uResolution) / 2.0 + center;
     float distort = tex2D(InputLayer1, (rescale)).x;
     
-    float mag = distort * (pow(uIntensity, 2.0) * 2.0);
+    float mag = distort * uIntensity * 3.5;
     if (mag > 1.0) mag = 1.0;
     float2 distorted  = st - (st - uTargetPosition / uResolution) * mag;
 
