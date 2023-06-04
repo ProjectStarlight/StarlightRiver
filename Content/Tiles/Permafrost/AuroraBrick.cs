@@ -20,6 +20,11 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			QuickBlock.QuickSet(this, int.MaxValue, DustID.Ice, SoundID.Tink, new Color(81, 192, 240), ItemType<AuroraBrickItem>());
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
 		public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 		{
 			float off = (float)Math.Sin((i + j) * 0.2f) * 300 + (float)Math.Cos(j * 0.15f) * 200;

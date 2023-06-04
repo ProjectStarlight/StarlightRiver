@@ -894,7 +894,7 @@ namespace StarlightRiver.Content.Items.Vitric
 				}
 			}
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 	}
 }

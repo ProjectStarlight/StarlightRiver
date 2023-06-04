@@ -302,7 +302,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 
 				glowTrail?.Render(effect);
 
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 
 			if (startPoint == Vector2.Zero)
@@ -319,7 +319,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 			if (attached)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				Texture2D endTex = Request<Texture2D>("StarlightRiver/Assets/Abilities/" + (endRooted ? "WhipEndRoot" : "WhipEndGrab")).Value;
 				Texture2D endGlow = Request<Texture2D>("StarlightRiver/Assets/Keys/GlowSoft").Value;
@@ -328,7 +328,7 @@ namespace StarlightRiver.Content.Abilities.Faewhip
 				spriteBatch.Draw(endGlow, tipsPosition - Main.screenPosition, null, new Color(255, 190, 100), 0, endGlow.Size() / 2, endScale, 0, 0);
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 

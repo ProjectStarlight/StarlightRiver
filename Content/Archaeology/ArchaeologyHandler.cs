@@ -34,7 +34,7 @@ namespace StarlightRiver.Content.Archaeology
 
 		public void DrawArtifacts(On_Main.orig_DoDraw_DrawNPCsBehindTiles orig, Main self)
 		{
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			foreach (KeyValuePair<int, TileEntity> item in TileEntity.ByID)
 			{
 				if (item.Value is Artifact artifact && artifact.IsOnScreen())

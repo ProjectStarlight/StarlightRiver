@@ -558,7 +558,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 		public override void DrawHealingGlow(SpriteBatch spriteBatch)
 		{
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			float sin = 0.5f + (float)Math.Sin(Main.timeForVisualEffects * 0.04f) * 0.5f;
 			float distance = sin * 3 + 4;
@@ -573,7 +573,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -631,7 +631,7 @@ namespace StarlightRiver.Content.NPCs.Vitric.Gauntlet
 			effect.Parameters["sampleTexture"].SetValue(Request<Texture2D>("StarlightRiver/Assets/FireTrail").Value);
 
 			trail?.Render(effect);
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D tex = Request<Texture2D>(Texture).Value;
 			Texture2D glowTex = Request<Texture2D>(Texture + "_Glow").Value;

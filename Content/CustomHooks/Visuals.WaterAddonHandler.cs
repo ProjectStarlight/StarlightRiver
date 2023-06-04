@@ -132,7 +132,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -151,7 +151,7 @@ namespace StarlightRiver.Content.CustomHooks
 			if (activeAddon != null)
 			{
 				sb.End();
-				sb.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				sb.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 	}

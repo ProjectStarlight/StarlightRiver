@@ -26,9 +26,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override void SetDefaults()
 		{
 			Item.DamageType = DamageClass.Melee;
-			Item.damage = 35;
-			Item.useTime = 35;
-			Item.useAnimation = 35;
+			Item.damage = 37;
+			Item.crit = 6;
+			Item.useTime = 30;
+			Item.useAnimation = 30;
 			Item.width = 32;
 			Item.height = 32;
 			Item.knockBack = 8;
@@ -154,7 +155,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			}
 
 			if (Projectile.timeLeft > (int)(20 * speed) && Projectile.timeLeft < (int)(50 * speed))
-				Projectile.extraUpdates = 8;
+				Projectile.extraUpdates = 1;
 			else
 				Projectile.extraUpdates = 0;
 
@@ -174,6 +175,10 @@ namespace StarlightRiver.Content.Items.Vitric
 		public override bool? CanHitNPC(NPC target)
 		{
 			Player Player = Main.player[Projectile.owner];
+
+			if (target.immune[Projectile.owner] > 0)
+				return false;
+
 			return Projectile.timeLeft < (int)(50 * Player.GetTotalAttackSpeed(DamageClass.Melee)) && target.active && !target.dontTakeDamage && !target.townNPC;
 		}
 
@@ -191,7 +196,7 @@ namespace StarlightRiver.Content.Items.Vitric
 
 				Terraria.Audio.SoundEngine.PlaySound(slot2, Projectile.Center);
 
-				modifiers.FinalDamage *= 1 + BuffPower / 50f;
+				modifiers.FinalDamage *= 1 + BuffPower / 25f;
 				modifiers.Knockback *= 3;
 
 				for (int k = 0; k < 20; k++)
