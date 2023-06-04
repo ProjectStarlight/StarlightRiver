@@ -197,7 +197,7 @@ namespace StarlightRiver.Content.Biomes
 			effect.Parameters["screenPosition"].SetValue(Main.screenPosition);
 			effect.Parameters["drawOriginal"].SetValue(false);
 
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, effect);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect);
 
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
 
@@ -220,7 +220,7 @@ namespace StarlightRiver.Content.Biomes
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default);
 
 			Main.spriteBatch.Draw(target.RenderTarget, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White * 0.9f);
 

@@ -100,7 +100,7 @@ namespace StarlightRiver.Core.Systems.MetaballSystem
 			metaballEdgeDetection.Parameters["height"].SetValue((float)Main.screenHeight / 2);
 			metaballEdgeDetection.Parameters["border"].SetValue(OutlineColor.ToVector4());
 
-			spriteBatch.Begin(default, default, default, default, default, metaballEdgeDetection);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, metaballEdgeDetection);
 
 			spriteBatch.Draw(Target2.RenderTarget, position: Vector2.Zero, color: Color.White);
 

@@ -24,7 +24,7 @@ namespace StarlightRiver.Content.Waters.WaterAddons
 			Main.graphics.GraphicsDevice.Clear(Color.Transparent);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, BlendState.Additive, default, default, default, default);
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default);
 
 			for (int k = 0; k < Main.maxProjectiles; k++)
 			{
