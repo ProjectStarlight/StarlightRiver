@@ -325,7 +325,7 @@ namespace StarlightRiver.Content.Items.Dungeon
 
 						if (ammoType != -1)
 						{
-							var proj = Projectile.NewProjectileDirect(Projectile.GetSource_ItemUse_WithPotentialAmmo(baseItem, AmmoID.Bullet), position + offset * 43, direction, ModContent.ProjectileType<SkullBusterBullet>(), 0, Projectile.knockBack, Owner.whoAmI);
+							var proj = Projectile.NewProjectileDirect(null, position + offset * 43, direction, ModContent.ProjectileType<SkullBusterBullet>(), 0, Projectile.knockBack, Owner.whoAmI);
 							(proj.ModProjectile as SkullBusterBullet).target = targetBomb.whoAmI;
 							shotBombs.Add(targetBomb);
 
