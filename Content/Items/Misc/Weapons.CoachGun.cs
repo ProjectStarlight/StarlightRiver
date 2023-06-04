@@ -27,7 +27,7 @@ namespace StarlightRiver.Content.Items.Misc
 		public override void SetStaticDefaults()
 		{
 			DisplayName.SetDefault("Coach Gun");
-			Tooltip.SetDefault("Right-click to throw out an exploding bundle of dynamite\n" +
+			Tooltip.SetDefault("<right> to throw out an exploding bundle of dynamite\n" +
 				"Shoot it to detonate it early\n" +
 				"'My business, my rules'");
 		}

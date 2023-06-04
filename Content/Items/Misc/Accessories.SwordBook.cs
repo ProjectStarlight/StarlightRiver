@@ -17,7 +17,7 @@ namespace StarlightRiver.Content.Items.Misc
 
 		private static List<int> blackListedSwords;
 
-		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\nRight click to parry, reflecting projectiles") { }
+		public SwordBook() : base("Mantis Technique", "Teaches you the Art of the Sword, granting all sword weapons a new combo attack\n<right> to parry, reflecting projectiles") { }
 
 		public override string Texture => AssetDirectory.MiscItem + "SwordBook";
 
