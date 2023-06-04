@@ -115,7 +115,7 @@ namespace StarlightRiver.Content.CustomHooks
 				canUseTarget = false;
 
 				GD.Clear(Color.Transparent);
-				//Main.GameViewMatrix.Zoom = new Vector2(1, 1);
+				Main.GameViewMatrix.Zoom = new Vector2(1, 1);
 				sb.End();
 				sb.Begin(SpriteSortMode.Texture, default, default, default, RasterizerState.CullNone, default);
 
