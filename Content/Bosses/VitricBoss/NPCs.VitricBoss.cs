@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Content.Foregrounds;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.Foregrounds;
 using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.Items.Vitric;
 using StarlightRiver.Core.Systems.CameraSystem;
@@ -496,7 +496,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 			//find crystals
 			if (crystals.Count < 4)
-				findCrystals();
+				FindCrystals();
 
 			//Ticks the timer
 			GlobalTimer++;
@@ -631,6 +631,9 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 
 					BossBarOverlay.glowColor = new Color(0.6f + 0.1f * sin, 0.4f + 0.1f * sin, 0) * 0.7f;
 
+					if (NPC.life <= NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount)
+						NPC.life = NPC.lifeMax - (1 + crystals.Count(n => n.ai[0] == 3 || n.ai[0] == 1)) * healthGateAmount + 1; //set health at phase gate
+
 					AngerAttack();
 					break;
 
@@ -755,7 +758,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 			justRecievedPacket = false; //at end of frame set to no longer just recieved
 		}
 
-		public void findCrystals()
+		public void FindCrystals()
 		{
 			//finds the crystals for ceiros for mp if they haven't been found yet
 			crystals.Clear(); // clear incase it was an edge case where fewer than all 4 were found on a frame since the npc spawn information hadn't arrived yet
@@ -845,7 +848,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		#region Hint
 		public string GetHint()
 		{
-				return "Glassweaver mentioned a 'Sentinel'... Focus!";
+			return "Glassweaver mentioned a 'Sentinel'... Focus!";
 		}
 		#endregion Hint
 	}
