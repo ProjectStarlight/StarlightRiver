@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Items.Brewing;
+﻿using StarlightRiver.Content.Items.Potions;
 using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -17,6 +17,8 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 		{
 				new Loot(ItemType<Items.UndergroundTemple.TemplePick>(), 1),
 				new Loot(ItemType<Items.UndergroundTemple.TempleSpear>(), 1),
+				new Loot(ItemType<Items.UndergroundTemple.RuneStaff>(), 1),
+				new Loot(ItemType<Items.UndergroundTemple.TempleLens>(), 1),
 				new Loot(ItemType<Items.UndergroundTemple.TempleRune>(), 1)
 			};
 
@@ -28,7 +30,7 @@ namespace StarlightRiver.Content.Tiles.UndergroundTemple
 				new Loot(ItemID.SilverBullet, 20, 30),
 				new Loot(ItemID.Dynamite, 2, 4),
 				new Loot(ItemID.SpelunkerGlowstick, 15),
-				new Loot(ItemType<IvySeeds>(), 4, 8)
+				new Loot(ItemType<LesserBarrierPotion>(), 4, 8)
 			};
 
 		public override void SafeSetDefaults()

@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using StarlightRiver.Content.Tiles.Vitric.Temple;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Items.Vitric
 {
@@ -25,6 +26,12 @@ namespace StarlightRiver.Content.Items.Vitric
 			recipe.AddIngredient<SandstoneChunk>(5);
 			recipe.AddIngredient<VitricOre>(5);
 			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddTile(ModContent.TileType<MainForge>());
 			recipe.Register();
 		}
 	}

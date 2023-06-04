@@ -1,4 +1,4 @@
-﻿using StarlightRiver.Content.Tiles.UndergroundTemple;
+﻿using StarlightRiver.Content.Items.Permafrost;
 using StarlightRiver.Core.Systems;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -15,9 +15,9 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 
 		internal override List<Loot> GoldLootPool => new()
 		{
-				new Loot(ItemType<Items.UndergroundTemple.TemplePick>(), 1),
-				new Loot(ItemType<Items.UndergroundTemple.TempleSpear>(), 1),
-				new Loot(ItemType<Items.UndergroundTemple.TempleRune>(), 1)
+				new Loot(ItemID.BlizzardinaBottle, 1),
+				new Loot(ItemID.FlurryBoots, 1),
+				new Loot(ItemType<BookOfFrost>(), 1)
 			};
 
 		internal override List<Loot> SmallLootPool => new()
@@ -30,7 +30,8 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 				new Loot(ItemID.PlatinumBar, 10, 20),
 				new Loot(ItemID.Diamond, 1, 1),
 				new Loot(ItemID.IceBlock, 200, 800),
-				new Loot(ItemType<AuroraIceBar>(), 2, 5)
+				new Loot(ItemType<AuroraIceBar>(), 2, 5),
+				new Loot(ItemType<SquidBossSpawn>(), 1, 1)
 			};
 
 		public override void SafeSetDefaults()
