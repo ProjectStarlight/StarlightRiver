@@ -1,5 +1,5 @@
-﻿using StarlightRiver.Core.Systems;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Helpers;
 using System;
 using System.Collections.Generic;
@@ -22,6 +22,12 @@ namespace StarlightRiver.Content.Tiles.Permafrost
 			Main.tileLighted[Type] = true;
 
 			QuickBlock.QuickSetFurniture(this, 2, 4, DustID.Ice, SoundID.Tink, false, new Color(155, 200, 255), false, false, "Touchstone");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

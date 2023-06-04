@@ -20,6 +20,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 			MinPick = int.MaxValue;
 		}
 
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
+		}
+
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 		{
 			Tile tile = Main.tile[i, j];

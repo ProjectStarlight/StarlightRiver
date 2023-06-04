@@ -1,5 +1,7 @@
-﻿using StarlightRiver.Core.Systems;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Core.Systems;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using StarlightRiver.Content.CustomHooks;
-using StarlightRiver.Content.Items.Misc;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -22,6 +22,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 3, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		//public override void SafeNearbyEffects(int i, int j, bool closer)//does not do anything?
@@ -42,7 +48,6 @@ namespace StarlightRiver.Content.Tiles.Underground
 			Tile tile = Main.tile[i, j];
 			return (tile.TileFrameX == 0 || tile.TileFrameX == 3 * 18) && tile.TileFrameY == 0;
 		}
-
 
 		public override bool RightClick(int i, int j)
 		{
@@ -238,7 +243,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					int realX = ParentX - 1 + x;
 					int realY = ParentY - 3 + y;
 
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + (frame * tileWidth)) * 18);
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
 				}
 			}
 		}

@@ -1,15 +1,12 @@
-﻿using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
-using StarlightRiver.Content.Abilities;
+﻿using StarlightRiver.Content.Abilities;
+using StarlightRiver.Content.CustomHooks;
+using StarlightRiver.Content.Items.Misc;
+using StarlightRiver.Content.Tiles.Underground.EvasionShrineBullets;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
-using Terraria;
-using StarlightRiver.Content.CustomHooks;
 using Terraria.DataStructures;
-using StarlightRiver.Content.Items.Misc;
-using StarlightRiver.Content.Items.BaseTypes;
+using Terraria.ID;
 
 namespace StarlightRiver.Content.Tiles.Underground
 {
@@ -22,6 +19,12 @@ namespace StarlightRiver.Content.Tiles.Underground
 		public override void SetStaticDefaults()
 		{
 			QuickBlock.QuickSetFurniture(this, 5, 6, DustID.Stone, SoundID.Tink, false, new Color(100, 100, 100), false, false, "Mysterious Shrine");
+			MinPick = int.MaxValue;
+		}
+
+		public override bool CanExplode(int i, int j)
+		{
+			return false;
 		}
 
 		//public override void SafeNearbyEffects(int i, int j, bool closer)
@@ -248,7 +251,7 @@ namespace StarlightRiver.Content.Tiles.Underground
 					int realX = ParentX - 2 + x;
 					int realY = ParentY - 3 + y;
 
-					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + (frame * tileWidth)) * 18);
+					Framing.GetTileSafely(realX, realY).TileFrameX = (short)((x + frame * tileWidth) * 18);
 				}
 			}
 		}
