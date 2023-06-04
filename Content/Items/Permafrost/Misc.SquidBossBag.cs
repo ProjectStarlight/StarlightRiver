@@ -79,7 +79,7 @@ namespace StarlightRiver.Content.Items.Permafrost
 			itemLoot.Add(notMasterMode);
 			itemLoot.Add(masterMode);
 
-			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 3));
+			itemLoot.Add(ItemDropRule.Common(ItemType<SquidFins>(), 1));
 		}
 
 		//This method is stolen from examplemod and I trust it to emulate vanilla accurately
