@@ -3212,6 +3212,21 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			FaeHover: {
+				DisplayName: Fae Hover
+				Tooltip: ""
+			}
+
+			GenericHover: {
+				DisplayName: Generic Hover
+				Tooltip: ""
+			}
+
+			WindsHover: {
+				DisplayName: Winds Hover
+				Tooltip: ""
+			}
 		}
 
 		Projectiles: {
@@ -3225,6 +3240,7 @@ Mods: {
 			GlassSword.DisplayName: Glass Sword
 			LavaLob.DisplayName: Hot Lob
 			Whirlwind.DisplayName: Spinning Blades
+			Whirl.DisplayName: Whirl
 			InkBlob.DisplayName: Rainbow Ink
 			InkBlobGravity.DisplayName: Rainbow Ink
 			SpewBlob.DisplayName: Aurora Shard
@@ -3544,6 +3560,7 @@ Mods: {
 			ConstructSpawner.DisplayName: Construct Spawner
 			GauntletSpawner.DisplayName: Gauntlet Spawner
 			SpawnEgg.DisplayName: Spawn Egg
+			PalestoneDummy.DisplayName: Pale Slash
 		}
 
 		Tiles: {
@@ -4185,6 +4202,15 @@ Mods: {
 			Fogbinded: {
 				DisplayName: Fogbinded
 				Description: Bound to the fogbinder
+			}
+
+			TouchstoneWispBuff: {
+				DisplayName: Aurora Curiosity
+				Description:
+					'''
+					What lies below?
+					Increased mining speed
+					'''
 			}
 		}
 

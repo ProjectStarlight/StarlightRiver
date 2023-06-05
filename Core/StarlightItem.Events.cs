@@ -4,6 +4,13 @@ namespace StarlightRiver.Core
 {
 	internal partial class StarlightItem : GlobalItem
 	{
+		public delegate void ExtractinatorUseDelegate(int extractType, int extractinatorBlockType, ref int resultType, ref int resultStack);
+		public static event ExtractinatorUseDelegate ExtractinatorUseEvent;
+		public override void ExtractinatorUse(int extractType, int extractinatorBlockType, ref int resultType, ref int resultStack)
+		{
+			ExtractinatorUseEvent?.Invoke(extractType, extractinatorBlockType, ref resultType, ref resultStack);
+		}
+
 		public delegate void SetStaticDefaultsDelegate();
 		public static event SetStaticDefaultsDelegate SetStaticDefaultsEvent;
 		public override void SetStaticDefaults()
@@ -199,6 +206,7 @@ namespace StarlightRiver.Core
 
 		public override void Unload()
 		{
+			ExtractinatorUseEvent = null;
 			GetHealLifeEvent = null;
 			ModifyWeaponDamageEvent = null;
 			GetWeaponCritEvent = null;

@@ -73,6 +73,13 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			recipe.AddIngredient<LivingBlood>(5);
 			recipe.AddTile(TileID.Anvils);
 			recipe.Register();
+
+			recipe = CreateRecipe();
+			recipe.AddIngredient(ItemID.CrimtaneBar, 10);
+			recipe.AddIngredient(ItemID.TissueSample, 10);
+			recipe.AddIngredient<LivingBlood>(5);
+			recipe.AddTile(TileID.Anvils);
+			recipe.Register();
 		}
 	}
 
@@ -94,7 +101,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().teleportTimer > 0)
@@ -107,7 +114,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -116,7 +123,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (PlayerTarget.canUseTarget)
 			{
 				spriteBatch.End();
-				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, blendState: BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 				bool active = player.active && !player.outOfRange && !player.dead;
 				if (active && player.GetModPlayer<RadculasRapierPlayer>().trailPositions.Count > 0)
@@ -129,7 +136,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 
 				spriteBatch.End();
-				spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+				spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 			}
 		}
 
@@ -457,7 +464,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix); //also dont know if this spritebatch reset is needed
 
 			Main.spriteBatch.Draw(texGlow, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + new Vector2(-55, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2), null, color, Projectile.rotation, texGlow.Size() / 2f, Projectile.scale, 0, 0);
 			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition + new Vector2(0, Main.player[Projectile.owner].gfxOffY) + off, null, Color.White * fade, Projectile.rotation, Vector2.Zero, Projectile.scale, 0, 0);
@@ -727,7 +734,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 			if (!teleported)
 				return;
 
-			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 120); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
+			Owner.AddBuff(ModContent.BuffType<RadculasRapierCooldown>(), 1200 - Utils.Clamp(hitNPCs.Count * 180, 0, 900)); //20 seconds by default, plus up to 15 seconds decrease based on enemies hit
 
 			for (int i = 0; i < 50; i++)
 			{

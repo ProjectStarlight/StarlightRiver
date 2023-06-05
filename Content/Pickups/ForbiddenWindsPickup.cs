@@ -238,6 +238,7 @@ namespace StarlightRiver.Content.Pickups
 			trail5?.Render(effect);
 			trail6?.Render(effect);
 		}
+
 		public string GetHint()
 		{
 			return "A dense conflux of Starlight energy... could this be the tangle Alican mentioned?";

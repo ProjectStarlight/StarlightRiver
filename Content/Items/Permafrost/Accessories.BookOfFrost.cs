@@ -10,8 +10,9 @@ namespace StarlightRiver.Content.Items.Permafrost
 {
 	public class BookOfFrost : SmartAccessory
 	{
-		public BookOfFrost() : base("Book Of Frost", "Melee critical strikes cause an icy explosion") { }
 		public override string Texture => AssetDirectory.PermafrostItem + Name;
+
+		public BookOfFrost() : base("Book Of Frost", "Melee critical strikes cause an icy explosion") { }
 
 		public override void Load()
 		{

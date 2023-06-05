@@ -7,7 +7,7 @@ using Terraria.ObjectData;
 
 namespace StarlightRiver.Content.Tiles.Misc
 {
-	class DisplayCase : ModTile
+	class DisplayCase : ModTile, IHintable
 	{
 		public override string Texture => "StarlightRiver/Assets/Tiles/Misc/DisplayCase";
 
@@ -23,6 +23,14 @@ namespace StarlightRiver.Content.Tiles.Misc
 		public override bool CanExplode(int i, int j)
 		{
 			return false;
+		}
+
+		public override void MouseOver(int i, int j)
+		{
+			Player Player = Main.LocalPlayer;
+			Player.cursorItemIconID = ModContent.ItemType<Items.Hovers.WindsHover>();
+			Player.noThrow = 2;
+			Player.cursorItemIconEnabled = true;
 		}
 
 		public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -78,6 +86,11 @@ namespace StarlightRiver.Content.Tiles.Misc
 		private float GetProgress(float off)
 		{
 			return (Main.GameUpdateCount + off * 3) % 300 / 300f;
+		}
+
+		public string GetHint()
+		{
+			return "The contents are shiny... but the glass is infused with starlight. A starlight power of equal strength may shatter it...";
 		}
 	}
 

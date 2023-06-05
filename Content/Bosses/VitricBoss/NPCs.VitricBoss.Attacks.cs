@@ -1028,7 +1028,7 @@ namespace StarlightRiver.Content.Bosses.VitricBoss
 		private void AngerAttack()
 		{
 
-			NPC.defense = Main.expertMode ? 30 : 20;
+			NPC.defense = Main.expertMode ? 50 : 30;
 
 			if (crystals.Count(n => n.ai[0] == 2) == 0)
 			{

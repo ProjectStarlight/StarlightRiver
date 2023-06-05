@@ -256,8 +256,8 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 
 			var zoom = new Matrix
 				(
-					Main.GameViewMatrix.Zoom.X, 0, 0, 0,
-					0, Main.GameViewMatrix.Zoom.X, 0, 0,
+					Main.GameViewMatrix.TransformationMatrix.M11, 0, 0, 0,
+					0, Main.GameViewMatrix.TransformationMatrix.M22, 0, 0,
 					0, 0, 1, 0,
 					0, 0, 0, 1
 				);
@@ -338,7 +338,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public void DrawBigWindow(SpriteBatch spriteBatch)
@@ -410,7 +410,7 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			Vector2 shinePos = NPC.Center - backdrop.Size() / 2 + new Vector2(0, 1760 - WaterLevel) - Main.screenPosition;
 			DrawShine(new Rectangle((int)shinePos.X, (int)shinePos.Y, backdrop.Width, 240));
 
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Texture2D dome = Request<Texture2D>(AssetDirectory.SquidBoss + "WindowDome").Value;
 			spriteBatch.Draw(dome, NPC.Center - dome.Size() / 2 + domeOffset - Main.screenPosition, null, Color.White * 0.325f, 0, Vector2.Zero, 1, 0, 0);
@@ -432,12 +432,12 @@ namespace StarlightRiver.Content.Bosses.SquidBoss
 			}
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.LinearClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawReflections(spriteBatch);
 
 			spriteBatch.End();
-			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, SamplerState.PointClamp, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		/// <summary>

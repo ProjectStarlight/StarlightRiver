@@ -448,7 +448,7 @@ namespace StarlightRiver.Content.Items.Vitric
 			bool IsSummoner = projectile.minion || projectile.DamageType == DamageClass.Summon || ProjectileID.Sets.MinionShot[projectile.type] == true;
 
 			if (projectile.owner == magmiteOwner && projectile.friendly && IsSummoner && npc.whoAmI == player.MinionAttackTargetNPC && magmiteAmount > 0 && player.HasMinionAttackTargetNPC)
-				modifiers.SourceDamage += magmiteAmount * 3;
+				modifiers.SourceDamage += magmiteAmount * 2;
 		}
 	}
 }

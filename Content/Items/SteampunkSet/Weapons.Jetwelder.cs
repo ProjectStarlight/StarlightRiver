@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StarlightRiver.Content.Items.Vitric;
+using System;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -83,14 +84,10 @@ namespace StarlightRiver.Content.Items.SteampunkSet
 		public override void AddRecipes()
 		{
 			Recipe recipe = CreateRecipe();
-			recipe.AddIngredient(ItemID.DemoniteBar, 10);
-			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
+			recipe.AddIngredient<VitricOre>(5);
+			recipe.AddIngredient<SandstoneChunk>(5);
+			recipe.AddIngredient(ModContent.ItemType<AncientGear>(), 6);
 			recipe.AddTile(TileID.Anvils);
-
-			Recipe recipe2 = CreateRecipe();
-			recipe2.AddIngredient(ItemID.CrimtaneBar, 10);
-			recipe2.AddIngredient(ModContent.ItemType<AncientGear>(), 8);
-			recipe2.AddTile(TileID.Anvils);
 		}
 	}
 

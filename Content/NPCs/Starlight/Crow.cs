@@ -63,12 +63,6 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			if (InCutscene || leaving)
 				CutsceneTimer++;
 
-			if (Main.LocalPlayer.controlHook)
-			{
-				CutsceneTimer = 0;
-				visible = false;
-			}
-
 			if (visible)
 			{
 				if (Main.rand.NextBool(6))

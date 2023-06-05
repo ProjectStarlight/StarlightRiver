@@ -30,7 +30,7 @@ namespace StarlightRiver.Content.Items.Breacher
 		{
 			Item.width = 24;
 			Item.height = 28;
-			Item.damage = 6;
+			Item.damage = 9;
 			Item.useAnimation = 30;
 			Item.useTime = 30;
 			Item.useStyle = ItemUseStyleID.Shoot;

@@ -24,9 +24,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(Main.player[proj.owner]))
 			{
-				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
+				hit.CritDamage += 0.5f - target.life / (float)target.lifeMax / 2;
 
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
+				if (!target.boss && (target.life / (float)target.lifeMax) < 0.1f)
 					Execute(target, proj.owner);
 			}
 		}
@@ -35,9 +35,9 @@ namespace StarlightRiver.Content.Items.Misc
 		{
 			if (Equipped(Player))
 			{
-				hit.CritDamage += 0.5f - target.life / target.lifeMax / 2;
+				hit.CritDamage += 0.5f - target.life / (float)target.lifeMax / 2;
 
-				if (!target.boss && (target.life / target.lifeMax) < 0.1f)
+				if (!target.boss && (target.life / (float)target.lifeMax) < 0.1f)
 					Execute(target, Player.whoAmI);
 			}
 		}

@@ -277,7 +277,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			Texture2D eyeTex = ModContent.Request<Texture2D>(Texture + "_Eyes").Value;
 			Vector2 origin = texture.Size() / 2f;
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			for (int k = 0; k < NPC.oldPos.Length; k++)
 			{
@@ -288,7 +288,7 @@ namespace StarlightRiver.Content.NPCs.Moonstone
 			}
 
 			Main.spriteBatch.End();
-			Main.spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			Main.spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			Main.spriteBatch.Draw(texture, NPC.Center - screenPos, null, Color.White, NPC.rotation, texture.Size() / 2f, NPC.scale, SpriteEffects.None, 0f);
 

@@ -204,6 +204,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			if (!stabbing)
 			{
 				float lerper = MathHelper.Lerp(0f, 0.65f, Timer / (maxCharge + 15f));
+				lerper = Utils.Clamp(lerper, 0f, 0.65f);
 				offset = Main.rand.NextVector2Circular(lerper, lerper);
 			}
 
@@ -404,7 +405,7 @@ namespace StarlightRiver.Content.Items.UndergroundTemple
 			trail?.Render(effect);
 			trail2?.Render(effect);
 
-			spriteBatch.Begin(default, default, default, default, default, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		private float TrailFade()
