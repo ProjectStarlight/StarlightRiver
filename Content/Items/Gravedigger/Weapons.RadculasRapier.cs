@@ -423,7 +423,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			return Projectile.friendly && !hitNPCs.Contains(target);
+			return Projectile.friendly && !hitNPCs.Contains(target) && !target.friendly;
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -574,7 +574,15 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 			Vector2 teleportPos = Owner.Center + Owner.DirectionTo(Main.MouseWorld) * 250f;
 
-			Tile tile = Main.tile[(int)teleportPos.X / 16, (int)teleportPos.Y / 16];
+			Tile tile = Main.tile[(int)Main.MouseWorld.X / 16, (int)Main.MouseWorld.Y / 16];
+
+			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 3, 3) || (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])) 
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			tile = Main.tile[(int)teleportPos.X / 16, (int)teleportPos.Y / 16];
 
 			if (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])
 			{
@@ -599,18 +607,12 @@ namespace StarlightRiver.Content.Items.Gravedigger
 				}
 			}
 
-			if (!Collision.CanHitLine(Owner.Center, 1, 1, teleportPos, 1, 1))
-			{
-				Projectile.Kill();
-				return;
-			}
-
 			Owner.Teleport(teleportPos, -1);
 			tile = Main.tile[(int)Owner.Bottom.X / 16, (int)Owner.Bottom.Y / 16];
 			if (tile.HasTile && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType]) //additional check for player teleporting inside of a wall somehow (seemed to be caused by slopes)
 				Owner.position -= new Vector2(0f, Owner.height);
 
-			Owner.velocity += originalPos.DirectionTo(Main.MouseWorld) * 5;
+			Owner.velocity += originalPos.DirectionTo(Main.MouseWorld) * 6.5f;
 
 			teleported = true;
 
@@ -726,7 +728,7 @@ namespace StarlightRiver.Content.Items.Gravedigger
 
 		public override bool? CanHitNPC(NPC target)
 		{
-			return Projectile.friendly && !hitNPCs.Contains(target) && Projectile.timeLeft == 30;
+			return Projectile.friendly && !hitNPCs.Contains(target) && Projectile.timeLeft == 30 && !target.friendly;
 		}
 
 		public override void Kill(int timeLeft)
