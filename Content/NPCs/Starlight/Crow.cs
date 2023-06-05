@@ -56,6 +56,11 @@ namespace StarlightRiver.Content.NPCs.Starlight
 			visible = false;
 		}
 
+		public override bool CheckActive()
+		{
+			return false;
+		}
+
 		public override void AI()
 		{
 			Timer++;

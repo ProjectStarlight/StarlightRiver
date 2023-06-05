@@ -46,6 +46,10 @@ namespace StarlightRiver.Content.Events
 
 			if (Active)
 			{
+				// Failsafe incase the crow despawns... shouldn't happen anymore but who knows!
+				if (!Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>()))
+					NPC.NewNPC(null, Main.spawnTileX * 16, sequence == 0 ? Main.spawnTileY * 16 - 240 : Main.spawnTileY * 16 - 120, ModContent.NPCType<Crow>());
+
 				bool talking = Main.npc.Any(n => n.active && n.type == ModContent.NPCType<Crow>() && (n.ModNPC as Crow).InCutscene);
 				Main.bloodMoon = false;
 
