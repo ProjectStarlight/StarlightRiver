@@ -3212,6 +3212,21 @@ Mods: {
 				DisplayName: Pink Laser Pointer
 				Tooltip: ""
 			}
+
+			FaeHover: {
+				DisplayName: Fae Hover
+				Tooltip: ""
+			}
+
+			GenericHover: {
+				DisplayName: Generic Hover
+				Tooltip: ""
+			}
+
+			WindsHover: {
+				DisplayName: Winds Hover
+				Tooltip: ""
+			}
 		}
 
 		Projectiles: {
@@ -3225,6 +3240,7 @@ Mods: {
 			GlassSword.DisplayName: Glass Sword
 			LavaLob.DisplayName: Hot Lob
 			Whirlwind.DisplayName: Spinning Blades
+			Whirl.DisplayName: Whirl
 			InkBlob.DisplayName: Rainbow Ink
 			InkBlobGravity.DisplayName: Rainbow Ink
 			SpewBlob.DisplayName: Aurora Shard
