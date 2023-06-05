@@ -3,7 +3,6 @@ using StarlightRiver.Content.GUI;
 using StarlightRiver.Content.NPCs.Actors;
 using StarlightRiver.Core.Systems.DummyTileSystem;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
@@ -109,7 +108,8 @@ namespace StarlightRiver.Core
 
 		public override void OnWorldLoad()
 		{
-			RichTextBox.CloseDialogue(); //Safeguard
+			if (!Main.dedServ)
+				RichTextBox.CloseDialogue(); //Safeguard
 
 			vitricBiome.X = 0;
 			vitricBiome.Y = 0;
